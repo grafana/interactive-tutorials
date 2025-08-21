@@ -16,7 +16,7 @@
               class="interactive"
               data-targetaction="sequence"
               data-reftarget="span#drilldown-metrics"
-              data-requirements="navmenu-open,has-datasource:prometheus,has-datasource:loki">
+              data-requirements="navmenu-open,has-datasource:prometheus">
           <ul>
             <li class="interactive"
                 data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']"
@@ -75,15 +75,113 @@
           </ul>
         </span>
 
+        <h2>Section: Drilldown Logs</h2>
+
+        <span id="drilldown-logs"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#drilldown-logs"
+              data-requirements="navmenu-open,has-datasource:loki">
+          <ul>
+            <li class="interactive"
+                data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-lokiexplore-app/explore']"
+                data-targetaction='highlight'>
+              Navigate to the <strong>Logs</strong> section from the left navigation menu. This is the main entry point for the Logs Drilldown app, where you can explore and analyze log data from your connected Loki data sources with powerful correlation capabilities.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='div[data-testid="data-testid template variable"]'
+                data-targetaction='highlight'
+                data-doit='false'>
+              <span class="interactive-comment">This dropdown shows your currently selected <strong>Loki data source</strong>. Switch between different log sources if you have multiple configured.</span>
+              Notice the <strong>Data source</strong> dropdown at the top. This shows your currently selected Loki data source. Click it to switch between different data sources if you have multiple log sources configured in your environment.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='input[placeholder="Filter by label values"]'
+                data-targetaction='highlight'
+                data-doit='false'>
+              <span class="interactive-comment">Use this field to filter logs by <strong>label values</strong> (e.g., <code>service_name="my-app"</code>).</span>
+              <strong>Optional step:</strong> Explore the filter functionality to narrow down logs by specific label values. This powerful feature allows you to focus on logs from particular services, instances, or any other labels in your log data. For example, you might filter by <code>service_name="webapp"</code> to see only logs from a specific service.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='div[data-viz-panel-key]'
+                data-targetaction='highlight'
+                data-doit='false'>
+              <span class="interactive-comment">This <strong>metrics panel</strong> shows log volume over time with different log levels (debug, info, etc.).</span>
+              Examine the <strong>metrics visualization panel</strong> above the logs. This chart shows the volume and distribution of your log data over time, broken down by log levels (debug, info, warn, error). The legend on the right displays the total count for each level, helping you quickly understand the overall health and activity patterns of your services.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='a[data-testid="data-testid button-select-service"]'
+                data-targetaction='highlight'>
+              Click the <strong>Show logs</strong> button on any service to drill down into detailed log exploration for that specific service. This action will navigate you to a focused view where you can analyze individual log entries, search through messages, and correlate with metrics data.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='section[data-testid*="data-testid Panel header"]:last-of-type'
+                data-targetaction='highlight'
+                data-doit='false'>
+              <span class="interactive-comment">This <strong>logs panel</strong> displays individual log entries with timestamps, levels, and formatted messages.</span>
+              Examine the structure of the <strong>logs panel</strong> below the metrics chart. This section displays individual log entries in chronological order, each showing:
+              <ul>
+                <li><strong>Timestamp</strong> when the log event occurred</li>
+                <li><strong>Log level</strong> (debug, info, warn, error) with color coding</li>
+                <li><strong>Structured message</strong> with syntax highlighting for key-value pairs</li>
+                <li><strong>Menu button</strong> (three dots) for additional log entry actions</li>
+              </ul>
+            </li>
+
+            <li class="interactive"
+                data-reftarget='button[aria-label="Log menu"]'
+                data-targetaction='highlight'>
+              Click the <strong>menu button</strong> (three dots) next to any log entry to access additional actions like copying the log line, viewing context, or adding filters based on that specific log entry. This provides quick access to common log analysis operations.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='button[data-testid="data-testid Tab Related metrics"]'
+                data-targetaction='highlight'>
+              Navigate to the <strong>Related metrics</strong> tab to discover metrics that correlate with your current log query. This powerful cross-signal analysis helps you understand the performance implications of log events by showing metrics from the same services, time ranges, and label combinations. Perfect for correlating errors with resource usage or performance degradation.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='button[data-testid="data-testid Tab Log patterns"]'
+                data-targetaction='highlight'>
+              <span class="interactive-comment">This feature automatically detects <strong>recurring log patterns</strong> and groups similar messages together.</span>
+              Explore the <strong>Log patterns</strong> tab to automatically identify recurring patterns and anomalies in your log data. This intelligent feature groups similar log messages together, making it easier to spot unusual events, track error frequencies, and understand normal vs. abnormal behavior patterns in your applications without manual log parsing.
+            </li>
+
+            <li class="interactive"
+                data-reftarget='button[data-testid="data-testid Tab Fields analysis"]'
+                data-targetaction='highlight'>
+              <span class="interactive-comment">Analyze <strong>extracted fields</strong> from structured logs (JSON, logfmt) to identify trends and outliers.</span>
+              Check out the <strong>Fields analysis</strong> tab to dive deep into structured log data. This feature automatically extracts and analyzes fields from JSON, logfmt, and other structured log formats, providing statistical insights, top values, and field distribution analysis. Essential for understanding application behavior through structured logging.
+            </li>
+          </ul>
+        </span>
+
         <h2>🎉 Done!</h2>
-        <p>You've learned how to navigate the Metrics Drilldown interface! You can now:</p>
+        <p>You've learned how to navigate both the Metrics and Logs Drilldown interfaces! You can now:</p>
+        
+        <h3>Metrics Drilldown Skills:</h3>
         <ul>
           <li>Select your Prometheus data source</li>
           <li>Filter metrics by labels (optional)</li>
           <li>Explore metric preview charts</li>
           <li>Use the drilldown workflow to pivot between metrics and related signals</li>
         </ul>
-        <p>This same workflow works with any Prometheus metrics in your environment.</p>
+        
+        <h3>Logs Drilldown Skills:</h3>
+        <ul>
+          <li>Navigate and query Loki log data sources</li>
+          <li>Use LogQL syntax for advanced log filtering</li>
+          <li>Analyze log entries and extract structured data</li>
+          <li>Correlate logs with metrics for comprehensive troubleshooting</li>
+          <li>Discover patterns and analyze fields in structured logs</li>
+        </ul>
+        
+        <p>These workflows work with any Prometheus metrics and Loki logs in your environment, providing a complete observability experience for both metrics and logs correlation.</p>
 
     </body>
 </html>
