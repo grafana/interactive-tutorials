@@ -1,0 +1,111 @@
+---
+alwaysApply: true
+description: help is available on writing good guides through best practices for authorship.
+---
+
+## Best Practices
+
+The following best practices are oriented around the idea of defensive 
+design. Interactive tutorials are written to make it easy for beginners
+and those without expert knowledge. As such, they cannot be allowed to fail.
+Complexity is bad, unmet requirements mean confusion, which is the opposite
+of the intent.  All best practices are orienting around creating interactive
+guides which are simple, clear, and robust, meaning it is difficult or
+impossible to get the tutorial into a broken state.
+
+### Keep prose very brief
+
+Interactive guides are displayed in a right-hand sidebar. Paragraphs of text are bad, because they
+scroll the display vertically. Tutorials shine when they're very direct and punchy action-oriented
+language, not discourse & concepts. Rely on links for concepts.
+
+### Include requirements wherever possible
+
+* Every DOM interaction needs exists-reftarget
+* Navigation elements need navmenu-open
+* Page-specific actions need on-page:/path
+* Be aware of what roles a given feature needs; Admin features need `is-admin` or appropriate role requirements
+
+### Connect Requirements and Objectives
+
+If section 1 has the objective of creating a resource (for example a data source), step 2 should probably 
+have the requirement that data source exists.
+
+### Strict Requirements Prevent Breakages
+
+Be aggressive and state as many requirements up front as are reasonably necessary. This guides the user
+to fix any missing dependencies, and minimizes the chances they'll go down a broken path they cannot complete.
+An example of this is that if step 5 requires admin and can't be skipped, consider promoting the admin requirement
+to the top of the section to block starting step 1.
+
+### Use Stable Selectors
+
+* Prefer `data-testid` attributes over CSS classes
+* Use button[data-testid='save'] not .btn-primary
+* Include fallback selectors for critical elements
+
+### Handle Edge Cases Gracefully
+
+Make admin-only steps data-skippable="true" with helpful hints
+Use data-objectives to auto-complete already-done steps
+Provide alternative workflows for different user permissions
+
+### Verify State Changes
+
+* Use data-verify for actions that change state
+* Include verification after save/create operations
+* Check for expected outcomes after navigation
+
+### Write Clear, Actionable Content
+
+* Step descriptions should be action-focused: "Save your dashboard" not "The save button can be clicked"
+* Include helpful hints explaining what will happen
+* Use interactive comments for complex UI elements
+
+### Structure for Resilience
+
+* Break complex workflows into logical sections
+* Use sequence for multi-step processes with dependencies
+* Use multistep for related actions that should happen together
+* Include section completion requirements for dependencies
+
+### Content Quality
+
+* Keep interactive comments under 250 characters
+* Use <strong> for UI elements, <code> for technical terms
+* Write user-centric descriptions that match mental models
+* Include context about why each step matters
+
+```html
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>(TUTORIAL NAME GOES HERE))</title>
+    </head>
+    <body>
+
+        <h1>(TUTORIAL NAME GOES HERE)</h1>
+
+        <p>A 1 sentence description of your tutorial</p>
+
+        <h2>Section: Heading Name</h2>
+
+        <span id="tutorial-name-root"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#tutorial-name-root"
+              data-requirements="navmenu-open">
+          <ul>
+            <li class="interactive"
+                data-reftarget="FILL ME OUT"
+                data-targetaction='FILL ME OUT'>
+               Step 1: User does a thing
+            </li>
+        </ul>
+    </body>
+</html>
+```
+
+5. Finally, encourage the user to go edit this file, and remind them of the
+other commands that you have available.
