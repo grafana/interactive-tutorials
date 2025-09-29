@@ -6,6 +6,442 @@
     </head>
     <body>
         <h1>RCA Demo</h1>
-        <p>TODO</p>
+
+        <p>This interactive guide walks through an end-to-end RCA (Root Cause Analysis) demo using Grafana's RCA workbench and related views. It follows the flow from an alert to investigation across services and databases, and wraps up with impact analysis.</p>
+
+        <ul>
+            <li>Navigate from an alert to the RCA workbench</li>
+            <li>Investigate anomalies in services and databases</li>
+            <li>Use KPI drawers and trace/log pivots for context</li>
+            <li>Assess blast radius and business impact</li>
+            <li>[Optional] Explore Workbench AI and incident flows</li>
+        </ul>
+
+        <h2>Section 1: Start from an Alert</h2>
+        <p>Open the alert context used by this demo.</p>
+        <span id="start-from-alert"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#start-from-alert">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="navigate"
+                    data-reftarget="/d/rca-demo-alert/slack-rca-demo-alert"
+                    data-verify="on-page:/d/rca-demo-alert/slack-rca-demo-alert">
+                    Open the RCA demo alert dashboard (in a new tab).
+                </li>
+                <!-- If this route requires auth or a specific tenant, ensure you're logged in first. -->
+            </ul>
+        </span>
+
+        <h2>Section 2: Go to the RCA Workbench</h2>
+        <p>Jump directly to the RCA workbench timeframe and entity-based view for this incident.</p>
+        <span id="go-to-rca-workbench"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#go-to-rca-workbench">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="navigate"
+                    data-reftarget="/a/grafana-asserts-app/assertions?start=1759049400000&end=1759057200000&search=productcatalogservice%20connected%20services&view=BY_ENTITY"
+                    data-verify="on-page:/a/grafana-asserts-app/assertions">
+                    Open the RCA workbench at the prepared time range and filter.
+                </li>
+                <!-- NOTE: If the time range/filters differ in your environment, adjust the URL params above. -->
+            </ul>
+        </span>
+
+        <h2>Section 3: Orient to the RCA Workbench</h2>
+        <p>Get familiar with key UI areas. These are show-only highlights to orient you without changing state.</p>
+        <span id="rca-orientation"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#rca-orientation">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:div[data-testid='rca-workbench-timeline']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Timeline</strong>: shows anomalies and state over time for selected entities.</span>
+                    Examine the timeline visualization.
+                </li>
+                <!-- TODO: Replace selector above with the actual timeline container testid/selector. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='rca-tab-graph']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Graph tab</strong>: pivots to a service graph to understand relationships and blast radius.</span>
+                    Inspect the Graph tab control.
+                </li>
+                <!-- TODO: Replace with the actual tab button selector for Graph. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='rca-tab-timeline']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Timeline tab</strong>: returns to the timeline-centric view.</span>
+                    Inspect the Timeline tab control.
+                </li>
+                <!-- TODO: Replace with the actual tab button selector for Timeline. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='rca-kpi-icon']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>KPI icon</strong>: opens a drawer with service/database KPIs, properties, traces, and logs.</span>
+                    Locate the KPI icon for a selected entity.
+                </li>
+                <!-- TODO: Replace with the actual selector for the KPI icon adjacent to an entity. -->
+            </ul>
+        </span>
+
+        <h2>Section 4: Investigate the Initial Change</h2>
+        <p>Look at the first insight (e.g., a feature flag change) associated with the incident.</p>
+        <span id="initial-change"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#initial-change">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:div[data-testid='rca-insight-item']:first-of-type"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment">Highlight the first <strong>insight</strong> for the incident, e.g. <em>productCatalogReadFromPostgres</em> feature flag state change.</span>
+                    Examine the first insight.
+                </li>
+                <!-- NOTE: If demo data lacks this insight, this will remain a show-only explanation. Adjust when data is available. -->
+            </ul>
+        </span>
+
+        <h2>Section 5: What’s going on with the Frontend Service</h2>
+        <p>Drill into the frontend service to understand anomalies around the <code>/Product</code> endpoint.</p>
+        <span id="frontend-investigation"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#frontend-investigation">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:div[data-testid='rca-frontend-timeline-red-blob']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false"
+                    data-hint="Hover in the UI to reveal tooltip details">
+                    <span class="interactive-comment">This area shows a large cluster of <strong>errors</strong> (red). Hovering reveals details.</span>
+                    Observe the red cluster in the Frontend timeline.
+                </li>
+                <!-- TODO: Replace selector to target the red anomaly cluster in the frontend service timeline. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='entity-frontend-expand']"
+                    data-requirements="exists-reftarget">
+                    Expand the <strong>Frontend</strong> service anomaly details.
+                </li>
+                <!-- TODO: Replace selector to click the Frontend entity to expand its anomaly tree. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:a[data-testid='endpoint-link'][href$='/Product']"
+                    data-requirements="exists-reftarget">
+                    Select the <strong>GET /Product</strong> endpoint.
+                </li>
+                <!-- TODO: Replace with actual endpoint link selector ending with /Product. -->
+            </ul>
+        </span>
+
+        <h2>Section 6 (Optional): How are users impacted?</h2>
+        <p>Explore user impact by navigating to the <em>Frontend</em> entity and its KPIs.</p>
+        <span id="user-impact"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#user-impact">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='entity-open']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Entity</strong> view for <em>Frontend</em>.
+                </li>
+                <!-- TODO: Replace with the entity-open icon/button selector on the Frontend row. -->
+
+                <li class="interactive"
+                    data-targetaction="button"
+                    data-reftarget="Services"
+                    data-requirements="exists-reftarget">
+                    In the popup, choose <strong>Services</strong>.
+                </li>
+                <!-- TODO: Ensure the popup contains a clickable item labeled "Services". -->
+
+                <li class="interactive" data-targetaction="multistep">
+                    <span class="interactive" data-targetaction="highlight" data-reftarget="TODO-REPLACE:button[data-testid='expand-front-end-proxy']" data-requirements="exists-reftarget"></span>
+                    <span class="interactive" data-targetaction="highlight" data-reftarget="TODO-REPLACE:button[data-testid='open-frontend']" data-requirements="exists-reftarget"></span>
+                    Expand <strong>Front End proxy</strong>, then open <strong>Frontend</strong> and click its <strong>KPI</strong> icon.
+                </li>
+                <!-- TODO: Replace with selectors for expanding Front End proxy, selecting Frontend, and its KPI icon. -->
+            </ul>
+        </span>
+
+        <h2>Section 7 (Optional): Declare an Incident</h2>
+        <p>This flow may not be available from this entry point. Use as narrative only.</p>
+        <span id="declare-incident"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#declare-incident">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='declare-incident']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment">If available from the alert context, <strong>Declare Incident</strong> starts incident tracking. From a static dashboard image this may be unavailable.</span>
+                    Explain the Declare Incident entry point.
+                </li>
+                <!-- TODO: Only enable actionable click if a real button is present in your environment. -->
+            </ul>
+        </span>
+
+        <h2>Section 8: Investigate the Database</h2>
+        <p>Focus on <em>productcatalog-postgres</em> and its failures.</p>
+        <span id="investigate-db"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#investigate-db">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='entity-productcatalog-postgres']"
+                    data-requirements="exists-reftarget">
+                    Select <strong>productcatalog-postgres</strong>.
+                </li>
+                <!-- TODO: Replace with the entity row selector/button for productcatalog-postgres. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='entity-section-failure']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>failure</strong> section.
+                </li>
+                <!-- TODO: Replace with selector for the failure section toggle. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:a[data-testid='assertion-PostgreSQLHighConnections']"
+                    data-requirements="exists-reftarget">
+                    Click <strong>PostgreSQLHighConnections</strong>.
+                </li>
+                <!-- TODO: Replace with selector for the specific assertion link/item. -->
+            </ul>
+        </span>
+
+        <h2>Section 9: Investigate the Product Catalog Service</h2>
+        <p>Drill into <em>productcatalogservice</em> failures and pod state.</p>
+        <span id="investigate-service"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#investigate-service">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='entity-productcatalogservice']"
+                    data-requirements="exists-reftarget">
+                    Select <strong>productcatalogservice</strong>.
+                </li>
+                <!-- TODO: Replace with the entity row selector/button for productcatalogservice. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='entity-section-failure']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>failure</strong> section, then click <strong>KubePodCrashLooping</strong>.
+                </li>
+                <!-- TODO: If KubePodCrashLooping is a nested item, add a more specific selector. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='entity-section-failure']"
+                    data-requirements="exists-reftarget">
+                    Collapse the <strong>failure</strong> section.
+                </li>
+                <!-- TODO: If collapse uses a different control, update the selector accordingly. -->
+            </ul>
+        </span>
+
+        <h2>Section 10: Use the KPI Drawer (Service)</h2>
+        <p>Open the KPI drawer for <em>productcatalogservice</em> and traverse tabs for deeper context.</p>
+        <span id="service-kpi-drawer"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#service-kpi-drawer">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-productcatalogservice']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>KPI</strong> drawer for <em>productcatalogservice</em>.
+                </li>
+                <!-- TODO: Replace with KPI icon selector next to productcatalogservice. -->
+
+                <li class="interactive" data-targetaction="button" data-reftarget="Properties" data-requirements="exists-reftarget">Open the <strong>Properties</strong> tab.</li>
+                <li class="interactive" data-targetaction="button" data-reftarget="Service overview" data-requirements="exists-reftarget">Open the <strong>Service overview</strong> tab.</li>
+                <li class="interactive" data-targetaction="button" data-reftarget="Kubernetes" data-requirements="exists-reftarget">Open the <strong>Kubernetes</strong> tab.</li>
+                <li class="interactive" data-targetaction="button" data-reftarget="Traces" data-requirements="exists-reftarget">Open the <strong>Traces</strong> tab.</li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:div[data-testid='errors-per-second-chart']"
+                    data-requirements="exists-reftarget">
+                    Click the <strong>errors/s</strong> chart to focus the time region.
+                </li>
+                <!-- TODO: Replace with selector for the errors/s chart in the drawer. -->
+
+                <li class="interactive" data-targetaction="button" data-reftarget="Comparison" data-requirements="exists-reftarget">Open the <strong>Comparison</strong> tab (bottom area).</li>
+                <li class="interactive" data-targetaction="button" data-reftarget="Errored Traces" data-requirements="exists-reftarget">Open the <strong>Errored Traces</strong> tab and select the first trace.</li>
+                <!-- TODO: If needed, add a specific selector for the first trace link in the table. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:div[data-testid='service-operation-tree'] li:last-child"
+                    data-requirements="exists-reftarget">
+                    In the <strong>Service &amp; Operation</strong> tree, select the bottom item.
+                </li>
+                <!-- TODO: Replace to target the exact operation node in the trace view. -->
+
+                <li class="interactive" data-targetaction="button" data-reftarget="Logs" data-requirements="exists-reftarget">Open the <strong>Logs</strong> tab.</li>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:input[data-testid='log-line-wrapping']"
+                    data-requirements="exists-reftarget">
+                    Enable <strong>log line wrapping</strong>.
+                </li>
+                <!-- TODO: Replace with the actual toggle/input selector for log line wrapping. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:div[data-testid='stack-trace']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false"
+                    data-hint="Scroll to reveal the stack trace if not visible">
+                    <span class="interactive-comment">Scroll to find the <strong>stack trace</strong> for error context.</span>
+                    Observe the stack trace details.
+                </li>
+                <!-- TODO: Replace with the stack trace container selector in the Logs tab. -->
+            </ul>
+        </span>
+
+        <h2>Section 11: Use the KPI Drawer (Database)</h2>
+        <p>Open the KPI drawer for <em>productcatalog-postgres</em> and review key tabs.</p>
+        <span id="db-kpi-drawer"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#db-kpi-drawer">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='drawer-close']"
+                    data-requirements="exists-reftarget">
+                    Close any currently open drawer.
+                </li>
+                <!-- TODO: Replace with the close control selector for the open drawer. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-productcatalog-postgres']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>KPI</strong> drawer for <em>productcatalog-postgres</em>.
+                </li>
+                <!-- TODO: Replace with KPI icon selector next to productcatalog-postgres. -->
+
+                <li class="interactive" data-targetaction="button" data-reftarget="Properties" data-requirements="exists-reftarget">Open the <strong>Properties</strong> tab.</li>
+                <li class="interactive" data-targetaction="button" data-reftarget="Postgres overview" data-requirements="exists-reftarget">Open the <strong>Postgres overview</strong> tab.</li>
+                <li class="interactive" data-targetaction="button" data-reftarget="Logs" data-requirements="exists-reftarget">Open the <strong>Logs</strong> tab.</li>
+            </ul>
+        </span>
+
+        <h2>Section 12: Putting it all together</h2>
+        <p>Narrative wrap-up on hypothesis, evidence gathered, and likely root cause.</p>
+        <span id="rca-wrap-up"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#rca-wrap-up">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:div[data-testid='rca-summary-area']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment">Summarize findings: feature flag change, DB connection saturation, productcatalogservice pod crashes, and frontend impact on <code>/Product</code>.</span>
+                    Review the narrative summary.
+                </li>
+                <!-- TODO: Replace with a real summary area if available; otherwise keep as narrative-only. -->
+            </ul>
+        </span>
+
+        <h2>Section 13: What’s the blast radius?</h2>
+        <p>Use the Graph view to see impacted dependencies.</p>
+        <span id="blast-radius"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#blast-radius">
+            <ul>
+                <li class="interactive" data-targetaction="button" data-reftarget="Graph" data-requirements="exists-reftarget">Switch to the <strong>Graph</strong> tab.</li>
+                <!-- TODO: If the tab isn't a text button, replace with the actual selector as a highlight step. -->
+            </ul>
+        </span>
+
+        <h2>Section 14: Was the business impacted?</h2>
+        <p>Return to the Timeline and check business KPIs for <em>checkoutservice</em>.</p>
+        <span id="business-impact"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#business-impact">
+            <ul>
+                <li class="interactive" data-targetaction="button" data-reftarget="Timeline" data-requirements="exists-reftarget">Switch back to the <strong>Timeline</strong> tab.</li>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-checkoutservice']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>KPI</strong> drawer for <em>checkoutservice</em>.
+                </li>
+                <!-- TODO: Replace with KPI icon selector next to checkoutservice. -->
+                <li class="interactive" data-targetaction="button" data-reftarget="Business" data-requirements="exists-reftarget">Open the <strong>Business</strong> tab.</li>
+            </ul>
+        </span>
+
+        <h2>Section 15 (Optional): Using AI to speed up the investigation</h2>
+        <p>Generate a workbench AI analysis (if available in your environment).</p>
+        <span id="workbench-ai"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#workbench-ai">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='rca-workbench-ai']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false"
+                    data-hint="This may be experimental and can take a while to generate.">
+                    <span class="interactive-comment"><strong>Workbench AI</strong> provides an automated narrative analysis across signals and entities.</span>
+                    Show the Workbench AI entry point.
+                </li>
+                <!-- TODO: Replace with the actual floating AI button selector. Consider adding a separate actionable step if safe. -->
+            </ul>
+        </span>
+
+        <h2>🎉 Done!</h2>
+        <p>You have walked through the RCA workbench and related analysis flows:</p>
+        <ul>
+            <li>Navigated from an alert to the RCA workbench</li>
+            <li>Explored anomalies in services and databases</li>
+            <li>Used KPI drawers and trace/log pivots for context</li>
+            <li>Assessed blast radius and business impact</li>
+            <li>[Optional] Located AI-assisted analysis and incident flows</li>
+        </ul>
+        <p><strong>Next:</strong> Adjust any TODO selectors in this guide to match your environment's DOM. Prefer <code>data-testid</code>, <code>href</code>, stable <code>id</code>s, or ARIA attributes per best practices.</p>
     </body>
 </html>
