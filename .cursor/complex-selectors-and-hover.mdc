@@ -1,0 +1,722 @@
+---
+alwaysApply: true
+description: Complex selector support and hover interactions for interactive tutorials
+---
+
+# Complex Selectors and Hover Interactions Reference
+
+## Overview
+
+The interactive tutorial system now supports advanced CSS selectors including `:has()` and `:contains()` pseudo-selectors, plus a dedicated `hover` action type for revealing hidden UI elements.
+
+## Hover Action Type
+
+### Purpose
+Trigger hover states on elements to reveal UI that appears only on hover (e.g., Tailwind `group-hover:` classes, CSS `:hover` states).
+
+### Syntax
+```html
+<li class="interactive" 
+    data-targetaction="hover" 
+    data-reftarget="{CSS_SELECTOR}"
+    data-requirements="exists-reftarget">
+  {Description of what to hover}
+</li>
+```
+
+### Behavior
+- **Show Mode**: Highlights the element without triggering hover
+- **Do Mode**: Dispatches mouse events (`mouseenter`, `mouseover`, `mousemove`)
+- **Duration**: Maintains hover state for 2 seconds (configurable)
+- **Cleanup**: Natural mouse movement cleans up hover state
+
+### Common Use Cases
+
+#### Hover-Revealed Action Buttons
+```html
+<!-- Buttons that appear on row hover -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='tr[data-row-id="user-123"]'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="Edit"
+        data-requirements="exists-reftarget"></span>
+  Edit user details
+</li>
+```
+
+#### Hover-Revealed Menus
+```html
+<!-- Dropdown menus on navigation hover -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='nav[role="navigation"] > div:contains("Settings")'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="Preferences"
+        data-requirements="exists-reftarget"></span>
+  Access preferences from settings menu
+</li>
+```
+
+#### Service List Hover Actions
+```html
+<!-- Application Observability workload list -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="Dashboard"
+        data-requirements="exists-reftarget"></span>
+  Open checkout service dashboard
+</li>
+```
+
+### Best Practices for Hover
+
+1. **Always use multistep** for hover-then-click patterns
+2. **Include exists-reftarget** for both hover and subsequent actions
+3. **Use complex selectors** to target specific items in lists
+4. **Test timing** - default 2s works for most cases
+5. **Sequence matters** - hover must come before clicking revealed elements
+
+## Complex Selector Engine
+
+### `:contains()` Pseudo-Selector
+
+Finds elements containing specific text content (jQuery-style selector).
+
+#### Basic Usage
+```html
+<!-- Find by text content -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div:contains("checkoutservice")'
+    data-requirements="exists-reftarget">
+  Highlight checkout service
+</li>
+
+<!-- Case-sensitive matching -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='p:contains("ERROR")'
+    data-requirements="exists-reftarget">
+  Find error messages
+</li>
+
+<!-- Partial text matching -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='span:contains("Running")'
+    data-requirements="exists-reftarget">
+  Find running status indicators
+</li>
+```
+
+#### Combined with Attributes
+```html
+<!-- Most reliable: Attribute + text content -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-cy="service-card"]:contains("frontend")'
+    data-requirements="exists-reftarget">
+  Find frontend service card
+</li>
+
+<!-- Dashboard list item by title -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='a[data-testid="dashboard-link"]:contains("Production Metrics")'
+    data-requirements="exists-reftarget">
+  Find production dashboard
+</li>
+```
+
+### `:has()` Pseudo-Selector
+
+Finds elements that contain specific descendant elements.
+
+#### Basic Usage
+```html
+<!-- Find containers with specific children -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-cy="service-card"]:has(p)'
+    data-requirements="exists-reftarget">
+  Highlight service cards with descriptions
+</li>
+
+<!-- Find panels with alerts -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-testid="panel"]:has(svg[data-icon="alert"])'
+    data-requirements="exists-reftarget">
+  Find panels with alert icons
+</li>
+
+<!-- Find forms with errors -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='form:has(span[role="alert"])'
+    data-requirements="exists-reftarget">
+  Highlight forms with validation errors
+</li>
+```
+
+#### Advanced Targeting
+```html
+<!-- Find rows with specific buttons -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='tr:has(button[data-action="delete"])'
+    data-requirements="exists-reftarget">
+  Find deletable rows
+</li>
+
+<!-- Find sections with interactive elements -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='section:has(button[data-testid="configure"])'
+    data-requirements="exists-reftarget">
+  Find configurable sections
+</li>
+```
+
+### Combined Complex Selectors
+
+The most powerful feature: combining `:has()` and `:contains()` for precise targeting.
+
+#### Service/Workload Lists
+```html
+<!-- Find specific service by name -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'
+    data-requirements="exists-reftarget">
+  Highlight checkout service item
+</li>
+
+<!-- Find service with specific status -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-service]:has(span:contains("Running")):has(span:contains("Healthy"))'
+    data-requirements="exists-reftarget">
+  Find healthy running services
+</li>
+```
+
+#### Dashboard and Panel Selection
+```html
+<!-- Find dashboard by title -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-testid="dashboard-card"]:has(h3:contains("Production"))'
+    data-requirements="exists-reftarget">
+  Find production dashboard
+</li>
+
+<!-- Find panel by title -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-testid="panel"]:has(h2:contains("CPU Usage"))'
+    data-requirements="exists-reftarget">
+  Find CPU usage panel
+</li>
+```
+
+#### Form Error Handling
+```html
+<!-- Find forms with specific errors -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='form:has(div:contains("Invalid credentials"))'
+    data-requirements="exists-reftarget">
+  Highlight login form with error
+</li>
+
+<!-- Find required fields with errors -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-field]:has(span:contains("required"))'
+    data-requirements="exists-reftarget">
+  Find required field errors
+</li>
+```
+
+#### Hover + Complex Selector Patterns
+```html
+<!-- Hover over specific service to reveal buttons -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="Dashboard"
+        data-requirements="exists-reftarget"></span>
+  View checkout service dashboard
+</li>
+
+<!-- Hover over dashboard card to reveal actions -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='div[data-testid="dashboard-card"]:has(h3:contains("Kubernetes"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="Star"
+        data-requirements="exists-reftarget"></span>
+  Star the Kubernetes dashboard
+</li>
+```
+
+## Browser Compatibility
+
+### Native Support
+- **:has()**: Chrome 105+, Safari 17.2+, Firefox 140+
+- **:contains()**: Not supported natively (jQuery extension)
+
+### Automatic Fallback
+The system provides transparent JavaScript fallbacks:
+
+```typescript
+// Automatically handled by querySelectorAllEnhanced()
+// No manual intervention needed
+```
+
+**When Native Fails:**
+- System parses selector to identify complex pseudo-selectors
+- Executes equivalent JavaScript-based DOM traversal
+- Returns results in same format as native queries
+- Logs fallback usage for debugging (in dev mode)
+
+### No Configuration Required
+```html
+<!-- Just use complex selectors - system handles compatibility -->
+<li class="interactive" 
+    data-reftarget='div:has(p:contains("text"))'>
+```
+
+## Performance Optimization
+
+### Efficient Selector Strategies
+
+#### Good Selectors (Fast)
+```html
+<!-- Specific base with complex refinement -->
+div[data-cy="service-item"]:has(p:contains("checkout"))
+div[data-testid="card"]:contains("Production")
+section[id="services"]:has(button:contains("Configure"))
+```
+
+#### Poor Selectors (Slow)
+```html
+<!-- Too generic - searches entire DOM -->
+div:contains("service")
+div:has(button)
+
+<!-- Overly complex nesting -->
+div:has(ul:has(li:has(span:contains("text"))))
+```
+
+### Performance Guidelines
+
+1. **Narrow Scope First**: Use specific attributes before complex selectors
+   - Good: `div[data-cy="item"]:contains("text")`
+   - Bad: `div:contains("text")`
+
+2. **Limit Nesting**: Keep `:has()` nesting to 2 levels maximum
+   - Good: `div:has(p:contains("text"))`
+   - Avoid: `div:has(ul:has(li:has(span:contains("text"))))`
+
+3. **Test Performance**: Complex selectors may be slower on large DOMs
+   ```javascript
+   // Test selector performance in console
+   console.time('selector');
+   document.querySelectorAll('div[data-cy="item"]:has(p:contains("test"))');
+   console.timeEnd('selector');
+   ```
+
+4. **Cache When Possible**: System caches results within action execution
+
+## Real-World Examples
+
+### Application Observability Workload List
+
+```html
+<!-- Navigate to specific service -->
+<span id="inspect-checkout-service" class="interactive" data-targetaction="sequence" data-reftarget="span#inspect-checkout-service">
+  <ul>
+    <li class="interactive" data-targetaction="multistep">
+      <span class="interactive" 
+            data-targetaction="hover" 
+            data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'
+            data-requirements="exists-reftarget"></span>
+      <span class="interactive" 
+            data-targetaction="button" 
+            data-reftarget="Dashboard"
+            data-requirements="exists-reftarget"></span>
+      Open checkout service dashboard
+    </li>
+  </ul>
+</span>
+```
+
+### Kubernetes Workload Management
+
+```html
+<!-- Interact with specific pod -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='tr[data-resource="pod"]:has(td:contains("nginx-deployment"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="View logs"
+        data-requirements="exists-reftarget"></span>
+  View nginx pod logs
+</li>
+```
+
+### Dashboard Management
+
+```html
+<!-- Star specific dashboard -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='div[data-testid="dashboard-card"]:has(h3:contains("Production Metrics"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="Mark &quot;Production Metrics&quot; as favorite"
+        data-requirements="exists-reftarget"></span>
+  Favorite the production metrics dashboard
+</li>
+```
+
+### Alert Rules by Name
+
+```html
+<!-- Edit specific alert rule -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='div[data-testid="alert-rule-row"]:has(span:contains("High CPU Alert"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="Edit"
+        data-requirements="exists-reftarget"></span>
+  Edit the high CPU alert rule
+</li>
+```
+
+## Complex Selector Reference
+
+### `:contains()` Pseudo-Selector
+
+**Syntax**: `element:contains("text")`  
+**Matches**: Elements whose text content includes the specified string  
+**Case-Sensitive**: Yes  
+**Partial Match**: Yes
+
+#### Examples
+```html
+<!-- Service names -->
+<li data-reftarget='div:contains("checkoutservice")'>
+
+<!-- Status indicators -->
+<li data-reftarget='span:contains("Running")'>
+
+<!-- Error messages -->
+<li data-reftarget='p:contains("ERROR")'>
+
+<!-- Dashboard titles -->
+<li data-reftarget='h2:contains("Production")'>
+
+<!-- Button labels -->
+<li data-reftarget='button:contains("Configure")'>
+```
+
+### `:has()` Pseudo-Selector
+
+**Syntax**: `parent:has(child_selector)`  
+**Matches**: Elements that contain descendants matching the child selector  
+**Nesting**: Supports multiple levels (but limit to 2 for performance)
+
+#### Examples
+```html
+<!-- Cards with descriptions -->
+<li data-reftarget='div[data-cy="card"]:has(p)'>
+
+<!-- Services with alerts -->
+<li data-reftarget='div[data-service]:has(svg[data-icon="alert"])'>
+
+<!-- Panels with queries -->
+<li data-reftarget='div[data-panel]:has(textarea[data-testid="query-editor"])'>
+
+<!-- Forms with errors -->
+<li data-reftarget='form:has(span[role="alert"])'>
+
+<!-- Lists with checkboxes -->
+<li data-reftarget='ul:has(input[type="checkbox"])'>
+```
+
+### Combined Selectors
+
+**Syntax**: `parent:has(child:contains("text"))`  
+**Power**: Most precise targeting for dynamic content
+
+#### Examples
+```html
+<!-- Specific service item -->
+<li data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'>
+
+<!-- Dashboard with status -->
+<li data-reftarget='div[data-testid="dashboard-card"]:has(span:contains("Active"))'>
+
+<!-- Alert rule by name -->
+<li data-reftarget='tr[data-alert-rule]:has(td:contains("High Memory"))'>
+
+<!-- User row by email -->
+<li data-reftarget='tr[data-user]:has(td:contains("admin@example.com"))'>
+
+<!-- Panel by title -->
+<li data-reftarget='div[data-panel-id]:has(h2:contains("CPU Usage"))'>
+```
+
+### Nested Complex Selectors
+
+**Use Sparingly**: Performance impact increases with nesting depth
+
+```html
+<!-- Good: One level of complexity -->
+<li data-reftarget='div[data-service]:has(span:contains("Running"))'>
+
+<!-- Acceptable: Two levels of complexity -->
+<li data-reftarget='div[data-service]:has(div[data-status]:contains("Healthy"))'>
+
+<!-- Avoid: Three+ levels of complexity -->
+<li data-reftarget='div:has(ul:has(li:has(span:contains("text"))))'>
+```
+
+## AI Generation Guidelines
+
+### When to Use Hover
+
+Use `hover` action when:
+- ✅ UI elements only appear on hover (Tailwind `group-hover:`, CSS `:hover`)
+- ✅ Action buttons are hidden until mouse interaction
+- ✅ Menus expand on hover
+- ✅ Tooltips contain clickable elements
+- ✅ Table rows reveal actions on hover
+
+Don't use `hover` when:
+- ❌ Elements are always visible
+- ❌ Click alone reveals elements (use `highlight` instead)
+- ❌ Elements appear on focus (use `highlight` with keyboard support)
+
+### When to Use Complex Selectors
+
+Use `:contains()` when:
+- ✅ Targeting elements by their text content
+- ✅ No stable `data-testid` or `id` available
+- ✅ Content is dynamic but text is predictable
+- ✅ Selecting from lists by item name
+
+Use `:has()` when:
+- ✅ Targeting parents by their children
+- ✅ Finding containers with specific content
+- ✅ Filtering by nested structure
+- ✅ Identifying elements by their composition
+
+Use combined selectors when:
+- ✅ Both text content and structure matter
+- ✅ Maximum precision needed (e.g., specific service in a list)
+- ✅ Multiple similar elements need differentiation
+- ✅ Stable attributes exist but aren't unique enough
+
+### Selector Decision Tree
+
+```
+Need to target element:
+├─ Has unique data-testid or id?
+│  └─ Use: button[data-testid="save"]
+├─ Is a button with stable text?
+│  └─ Use: data-targetaction="button" with text
+├─ Has stable attribute + needs text filter?
+│  └─ Use: div[data-cy="item"]:contains("specific-name")
+├─ Parent has stable attribute, child has text?
+│  └─ Use: div[data-cy="item"]:has(p:contains("text"))
+└─ Only text content is stable?
+   └─ Use: div:contains("text") (less preferred)
+```
+
+## Common Patterns
+
+### Service List Interactions
+
+```html
+<!-- Pattern: Find service, hover to reveal, click action -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("{{SERVICE_NAME}}"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="{{ACTION_BUTTON}}"
+        data-requirements="exists-reftarget"></span>
+  {{ACTION_DESCRIPTION}}
+</li>
+```
+
+### Table Row Actions
+
+```html
+<!-- Pattern: Find row by content, hover, click action -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='tr:has(td:contains("{{ROW_IDENTIFIER}}"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="{{ACTION_BUTTON}}"
+        data-requirements="exists-reftarget"></span>
+  {{ACTION_DESCRIPTION}}
+</li>
+```
+
+### Card-Based UIs
+
+```html
+<!-- Pattern: Find card by title, hover, click action -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" 
+        data-targetaction="hover" 
+        data-reftarget='div[data-card]:has(h3:contains("{{CARD_TITLE}}"))'
+        data-requirements="exists-reftarget"></span>
+  <span class="interactive" 
+        data-targetaction="button" 
+        data-reftarget="{{ACTION_BUTTON}}"
+        data-requirements="exists-reftarget"></span>
+  {{ACTION_DESCRIPTION}}
+</li>
+```
+
+## Migration Examples
+
+### Before: Limited Targeting
+
+```html
+<!-- Old approach: Less precise -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-cy="wb-list-item"]:first-of-type'>
+  Highlight first service (might not be the right one)
+</li>
+```
+
+### After: Precise Targeting
+
+```html
+<!-- New approach: Exact targeting -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'
+    data-requirements="exists-reftarget">
+  Highlight checkout service (exact match)
+</li>
+```
+
+### Before: Manual Hover Not Possible
+
+```html
+<!-- Old: Couldn't interact with hover-revealed elements -->
+<!-- Required workaround or skipped these interactions -->
+```
+
+### After: Hover Support
+
+```html
+<!-- New: Full hover interaction support -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="item"]'></span>
+  <span class="interactive" data-targetaction="button" data-reftarget="Edit"></span>
+  Edit item
+</li>
+```
+
+## Troubleshooting
+
+### Selector Not Working
+
+1. **Test in Browser Console**:
+   ```javascript
+   document.querySelectorAll('div:has(p:contains("text"))');
+   ```
+
+2. **Check Fallback Usage**:
+   - Open browser DevTools console
+   - Look for "Using fallback selector" messages
+   - Verify element actually contains the text
+
+3. **Verify Text Content**:
+   ```javascript
+   // Check exact text content
+   document.querySelectorAll('div[data-cy="item"]').forEach(el => {
+     console.log(el.textContent);
+   });
+   ```
+
+### Hover Not Revealing Elements
+
+1. **Check CSS**: Verify element uses `:hover` or `group-hover:`
+2. **Increase Duration**: May need longer than 2s for complex animations
+3. **Test Manually**: Confirm manual hover reveals the element
+4. **Check Z-Index**: Ensure revealed elements are properly layered
+
+### Performance Issues
+
+1. **Add Scope**: Narrow selector to specific container
+2. **Reduce Nesting**: Limit `:has()` depth to 2 levels
+3. **Use Attributes**: Add stable attributes for faster targeting
+4. **Test Alternatives**: Try different selector approaches
+
+## Best Practices Summary
+
+### Hover Actions
+- ✅ Always use `multistep` for hover-then-click patterns
+- ✅ Include `exists-reftarget` requirement
+- ✅ Test hover timing (default 2s usually sufficient)
+- ✅ Use complex selectors for precise hover targets
+- ❌ Don't use hover for always-visible elements
+
+### Complex Selectors
+- ✅ Prefer `div[data-attr]:contains("text")` over `div:contains("text")`
+- ✅ Use `:has()` for parent-child relationships
+- ✅ Combine `:has()` and `:contains()` for maximum precision
+- ✅ Test in target browsers
+- ❌ Don't nest more than 2 levels deep
+- ❌ Don't use overly generic base selectors
+
+### Requirements
+- ✅ Always include `exists-reftarget` for complex selectors
+- ✅ Add `on-page:/path` for page-specific elements
+- ✅ Include appropriate page requirements
+- ❌ Don't assume elements exist without checking
+
+This enhanced functionality makes interactive tutorials significantly more powerful and precise, especially for dynamic interfaces like Application Observability, Kubernetes monitoring, and dashboard management.
