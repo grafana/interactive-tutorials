@@ -96,7 +96,7 @@ This guide explains the supported interactive types, when to use each, what `dat
 
 ### multistep
 
-- **Purpose**: A single “step” that internally performs multiple actions in order.
+- **Purpose**: A single "step" that internally performs multiple actions in order.
 - **Definition**: A `<li class="interactive" data-targetaction="multistep">` with internal `<span class="interactive" ...>` actions.
 - **Behavior**: Handles its own Show/Do timing and requirement checks per internal action.
 - **Use when**: A user-facing instruction bundles multiple micro-actions that should run as one.
@@ -109,6 +109,55 @@ This guide explains the supported interactive types, when to use each, what `dat
 </li>
 ```
 
+### guided
+
+- **Purpose**: A middle ground between automated "Do it" actions and manual user execution. The system highlights elements and displays instructions, then **waits for the user to manually perform the action** before proceeding.
+- **Definition**: A `<li class="interactive" data-targetaction="guided">` with internal `<span class="interactive" ...>` actions that define the sequence.
+- **Behavior**: Highlights each action step and waits for user to complete it manually (hover for 500ms, or click). Each internal action can have an `<span class="interactive-comment">` child that appears as a tooltip.
+- **Supported actions**: `hover`, `button`, `highlight` (formfill and navigate not supported)
+- **Use when**: Actions depend on CSS `:hover` states that can't be programmatically triggered, or you want users to learn by doing rather than watching automation.
+- **Options**:
+  - `data-step-timeout`: How long to wait for user action before showing skip option (default: 30000ms)
+  - `data-skippable`: Whether users can skip the guided interaction (default: false)
+
+```html
+<li class="interactive"
+    data-targetaction="guided"
+    data-step-timeout="45000"
+    data-skippable="true">
+  <span class="interactive" 
+        data-targetaction="hover"
+        data-reftarget='.gf-form:has([data-testid="data-testid prometheus type"]) label > svg[tabindex="0"]'
+        data-requirements="exists-reftarget">
+    <span class="interactive-comment">
+      The <strong>Performance</strong> section contains advanced settings. Hovering over the information icon reveals detailed explanations.
+    </span>
+  </span>
+  <span class="interactive"
+        data-targetaction="highlight"
+        data-reftarget='[data-testid="data-testid prometheus type"]'>
+    <span class="interactive-comment">
+      The <strong>Prometheus type</strong> dropdown lets you specify whether you're connecting to a standard Prometheus server or a compatible service.
+    </span>
+  </span>
+  <span class="interactive"
+        data-targetaction="button"
+        data-reftarget="Save & test">
+    <span class="interactive-comment">
+      Click <strong>Save & test</strong> to create your data source and verify the connection is working.
+    </span>
+  </span>
+  
+  Explore Prometheus configuration settings and save your data source.
+</li>
+```
+
+**Key differences from multistep**:
+- **Multistep**: System performs all actions automatically
+- **Guided**: System highlights and waits for user to perform actions manually
+- **Hover support**: Real hover (triggers CSS `:hover` states), not simulated
+- **Learning**: Users learn by doing rather than watching automation
+
 ## Choosing the right type
 
 - **Click by CSS selector**: highlight
@@ -117,3 +166,4 @@ This guide explains the supported interactive types, when to use each, what `dat
 - **Route change**: navigate
 - **Teach a linear section**: sequence
 - **Bundle micro-steps into one**: multistep
+- **User manual interaction with highlights**: guided
