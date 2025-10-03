@@ -153,14 +153,14 @@
                     data-targetaction="guided"
                     data-step-timeout="45000"
                     data-skippable="true">
-        <span class="interactive" 
-              data-targetaction="hover" 
+                    <span class="interactive" 
+                          data-targetaction="hover" 
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))">
                         <span class="interactive-comment">
                             Hover over the <strong>FeatureFlagStateChange</strong> row to reveal the insight icon.
                         </span>
                     </span>
-        <span class="interactive" 
+                    <span class="interactive" 
                           data-targetaction="hover" 
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)">
                         <span class="interactive-comment">
@@ -714,15 +714,20 @@
                     <span class="interactive-comment"><strong>Graph tab</strong>: shows service topology, dependencies, and which services are impacted (colored by insight status).</span>
                     Switch to the Graph tab.
       </li>
-            </ul>
-        </span>
-        
+    </ul>
+  </span>
+
         <p><strong>What the graph reveals:</strong> The topology shows <code>productcatalog-postgres</code> at the center, with <code>productcatalogservice</code> directly connected. From there, you can see the cascading impact—<strong>recommendationservice</strong> and <strong>checkoutservice</strong> both depend on productcatalog, and their insights (visible as colored indicators) show they're experiencing issues with product-related endpoints.</p>
         
         <p>The graph makes the blast radius immediately clear: a bug in one service's database connection handling has rippled through the entire product browsing and checkout flow. This visual complements the timeline view—one shows <em>when</em> things went wrong, the other shows <em>what's connected and impacted</em>.</p>
 
-        <h2>Section 14: Was the business impacted?</h2>
-        <p>Return to the Timeline and check business KPIs for <em>checkoutservice</em>.</p>
+        <h2>Section 14: Quantify the Business Impact</h2>
+        <p>We know the technical root cause—now let's answer the critical business question: <strong>How much revenue did we lose?</strong></p>
+        
+        <p><strong>Value proposition:</strong> The RCA Workbench is <strong>extensible</strong>—you can attach your own custom dashboards to specific entity types. Your painstakingly curated business KPIs, application metrics, and infrastructure insights can automatically appear in the KPI Drawer when those services are impacted. This means you <em>never have to leave the RCA Workbench</em> during an investigation—everything you need is just a few clicks away.</p>
+        
+        <p>For this demo, we've attached a <strong>Business</strong> dashboard to all checkout-related services. When we open the checkoutservice KPI drawer, it's already there—showing custom metrics outside of what the knowledge graph tracks, like revenue and order abandonment rates.</p>
+        
         <span id="business-impact"
               class="interactive"
               data-targetaction="sequence"
@@ -732,48 +737,70 @@
                     data-targetaction="highlight"
                     data-reftarget="button[data-testid='data-testid Tab Timeline']"
                     data-requirements="exists-reftarget">
-                    Switch back to the <strong>Timeline</strong> tab.
+                    <span class="interactive-comment">Switch back to the timeline to locate the checkoutservice.</span>
+                    Switch back to the Timeline tab.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="guided"
-                    data-step-timeout="45000">
+                    data-step-timeout="45000"
+                    data-skippable="true">
                     <span class="interactive"
                           data-targetaction="hover"
-                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))"> 
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>checkoutservice</strong> to reveal the KPI button.
+                        </span>
                     </span>
-                    <span class="interactive-comment">
-                        Hover over the <strong>checkoutservice</strong> service to reveal the KPI icon.
-                    </span>   
                     <span class="interactive" 
-                    data-targetaction="hover"
-                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice')) button:nth-of-type(4)">
-                    <span class="interactive-comment">
-                        Click the <b>KPI icon</b>.
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <strong>KPI button</strong> to open the drawer—notice the <strong>Business</strong> tab for custom metrics.
+                        </span>
                     </span>
-                    Hover over the <strong>checkoutservice</strong> service to reveal the KPI icon, then click it.
+                    Hover and click to open the checkoutservice KPI drawer.
                 </li>
 
                 <li class="interactive" 
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Business']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Business</strong> tab.
+                    <span class="interactive-comment">The <strong>Business</strong> tab is a custom dashboard automatically attached to checkout services—showing revenue and order metrics.</span>
+                    Open the Business tab.
                 </li>
 
-                <!-- Get them to close the drawer so we can continue with the next steps!-->
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="button[data-testid='data-testid Drawer close']"
                     data-requirements="exists-reftarget">
-                    <span class="interactive-comment">Click the <strong>Close</strong> icon to close the drawer.</span>
-                    Close the KPI drawer when you are done.
+                    <span class="interactive-comment">Close the drawer to return to the timeline.</span>
+                    Close the KPI drawer.
                 </li>  
             </ul>
         </span>
+        
+        <p><strong>The business impact:</strong> During the incident window, the Business dashboard reveals:</p>
+        <ul>
+            <li><strong>$407k in lost revenue</strong></li>
+            <li><strong>32.4% reduction in orders</strong></li>
+            <li><strong>100% purchase abandonment</strong> during the peak of the incident</li>
+            <li>Geographic breakdown shows which regions were most affected</li>
+        </ul>
+        
+        <p>This demonstrates the power of extensibility—<strong>your custom dashboards, right in the investigation flow</strong>. No dashboard hunting, no leaving the RCA Workbench. The system knew "this is a checkout service" and automatically presented the Business dashboard with your curated metrics. You can configure similar attachments for any entity type with specific properties.</p>
+        
+        <p><strong>Complete observability:</strong> In one investigation workflow, we combined OOTB insights (knowledge graph, anomaly detection, OOTB alerts) with <em>your</em> custom business metrics. General observability + business-specific insights = a fully customizable, extendable tool ready when incidents occur.</p>
 
-        <h2>Section 15 (Optional): Using AI to speed up the investigation</h2>
-        <p>Generate a workbench AI analysis (if available in your environment).</p>
+        <h2>Section 15 (Optional): AI-Powered Investigation</h2>
+        <p><strong>⚠️ Experimental Feature:</strong> Workbench AI is currently <strong>experimental</strong>. It's subject to change, doesn't have an SLA or support commitment, and could potentially be removed. That said, even in this early stage, it provides tremendous value to the RCA process.</p>
+        
+        <p><strong>What it does:</strong> Grafana's <strong>Workbench AI</strong> can automatically perform <em>all the steps we just did manually</em>—analyzing connected services, examining the chronological sequence, reviewing critical signals in KPI drawers, and forming a hypothesis about the incident. All without another click from you. Incredibly powerful and nearly instantaneous.</p>
+        
+        <p><strong>Why we didn't lead with this:</strong> We wanted you to experience the magic of the RCA Workbench first—understanding how the knowledge graph, OOTB insights, and KPI drawers work together. If we'd started with AI doing everything automatically, you'd miss the investigative power under the hood.</p>
+        
+        <p>Now let's see it in action. Click the <strong>Workbench AI</strong> button in the bottom right corner (note: as an experimental feature, this button's location may change).</p>
+        
         <span id="workbench-ai"
               class="interactive"
               data-targetaction="sequence"
@@ -784,11 +811,21 @@
                     data-reftarget="button[aria-label='Workbench AI (Preview)']"
                     data-requirements="exists-reftarget"
                     data-hint="Generation of an AI analysis may take a few moments.">
-                    <span class="interactive-comment"><strong>Workbench AI</strong> provides an automated narrative analysis across signals and entities.</span>
-                    Begin a Workbench AI analysis.
+                    <span class="interactive-comment"><strong>Workbench AI</strong> will analyze all services, insights, and signals to generate a probable impact chain and hypothesis—matching our manual findings.</span>
+                    Click Workbench AI to generate automated analysis.
                 </li>
             </ul>
         </span>
+        
+        <p><strong>What the AI generates:</strong> After a few moments, you'll see a <strong>probable impact chain</strong> showing how the incident cascaded through your services. The proposed hypothesis should match our manual findings:</p>
+        <ul>
+            <li>Feature flag <code>productCatalogReadFromPostgres</code> was toggled</li>
+            <li>This impacted the postgres database with connection overload</li>
+            <li>Cascading effect to productcatalog, frontend, recommendation, and checkout services</li>
+            <li>Null pointer exception causing crash-looping</li>
+        </ul>
+        
+        <p><strong>The power of automation:</strong> What took us 14 sections to investigate manually, AI can analyze in seconds—but now you understand <em>how</em> it works and can validate its findings.</p>
 
         <h2>🎉 Done!</h2>
         <p>You have walked through the RCA workbench and related analysis flows:</p>
