@@ -1,10 +1,10 @@
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>RCA Demo</title>
-    </head>
-    <body>
+</head>
+<body>
         <h1>RCA Demo</h1>
 
         <p>This interactive guide walks through an end-to-end RCA (Root Cause Analysis) demo using Grafana's RCA workbench and related views. It follows the flow from an alert to investigation across services and databases, and wraps up with impact analysis.</p>
@@ -35,8 +35,13 @@
             </ul>
         </span>
 
-        <h2>Section 2: Go to the RCA Workbench</h2>
-        <p>Jump directly to the RCA workbench timeframe and entity-based view for this incident.</p>
+        <h2>Section 2: Jump to Investigation</h2>
+        <p>The <strong>Search Product Latency</strong> alert fired because users are experiencing slow product searches—a critical business workflow. This SLO-based alert reduces mean time to resolution by including a direct link to the RCA Workbench, scoped to the <code>productcatalogservice</code> and its connected dependencies.</p>
+        
+        <p><strong>Why start here?</strong> Focusing on this specific service narrows our investigation to the services that power product search, rather than investigating the entire frontend and all its connections.</p>
+        
+        <p>The annotation marker below represents the alert's investigation link. In production, this would come from Slack or your alerting system—letting you acknowledge the alert and jump straight into root cause analysis.</p>
+        
         <span id="go-to-rca-workbench"
               class="interactive"
               data-targetaction="sequence"
@@ -44,14 +49,13 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="a[data-testid='data-testid Nav menu item'][href*='/a/grafana-asserts-app/assertions']"
+                    data-reftarget='div[role="button"][title="Navigate to data link"]'
                     data-requirements="exists-reftarget">
                     <span class="interactive-comment">
-                        Click <strong>RCA Workbench</strong> to open the incident investigation view with the prepared time range and filters.
+                        This annotation represents the alert link. Click it to open the RCA Workbench with the incident timeframe and service context pre-configured.
                     </span>
-                    Open the RCA workbench at the prepared time range and filter.
+                    Click the annotation to start investigating.
                 </li>
-                <!-- NOTE: The workbench will open with the time range and filters pre-configured for this incident. -->
             </ul>
         </span>
 
@@ -104,14 +108,14 @@
                           data-targetaction="highlight"
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('flagd'))"
                           data-requirements="exists-reftarget"></span>
-                    <span class="interactive"
+        <span class="interactive" 
                           data-targetaction="highlight"
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('amend'))"
-                          data-requirements="exists-reftarget"></span>
-                    <span class="interactive"
-                          data-targetaction="highlight"
+              data-requirements="exists-reftarget"></span>
+        <span class="interactive" 
+              data-targetaction="highlight" 
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))"
-                          data-requirements="exists-reftarget"></span>
+              data-requirements="exists-reftarget"></span>
                     First, fully expand the service entry named <b>flagd</b>.
                 </li>
 
@@ -227,7 +231,7 @@
                     <span class="interactive" 
                         data-targetaction="hover" 
                         data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) button:nth-of-type(3)">
-                        <span class="interactive-comment">
+        <span class="interactive-comment">
                             Click the <b>dashboard button</b> (grid icon) to open Frontend observability.
                         </span>
                     </span>
@@ -495,9 +499,9 @@
                     data-requirements="exists-reftarget">
                     <span class="interactive-comment"><strong>Graph tab</strong>: pivots to a service graph to understand relationships and blast radius.</span>
                     Switch to the <strong>Graph</strong> tab.
-                </li>
-            </ul>
-        </span>
+      </li>
+    </ul>
+  </span>
 
         <h2>Section 14: Was the business impacted?</h2>
         <p>Return to the Timeline and check business KPIs for <em>checkoutservice</em>.</p>
@@ -555,5 +559,5 @@
             <li>Assessed blast radius and business impact</li>
             <li>Located AI-assisted analysis and incident flows</li>
         </ul>
-    </body>
+</body>
 </html>
