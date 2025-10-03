@@ -680,7 +680,21 @@
         <p><em>Optional: In your incident tracker, you might add: "We've reached the final stage of our investigation in the productcatalog-postgres KPI drawer. The postgres-specific dashboard confirms our database has too many clients trying to connect—a ripple effect from the bug in the productcatalog service that's impacting the rest of our services."</em></p>
 
         <h2>Section 12: Putting it all together</h2>
-        <p>TODO: Narrative wrap-up on hypothesis, evidence gathered, and likely root cause.</p>
+        
+        <p><strong>Investigation recap:</strong></p>
+        <ol>
+            <li>A <strong style="color: #3b82f6;">feature flag</strong> <code>productCatalogReadFromPostgres</code> was toggled (blue change insight)</li>
+            <li><strong>PostgreSQL database</strong> experienced anomalous connection surges</li>
+            <li><strong>Error thresholds breached</strong> on productcatalog, frontend, and recommendation services (<code>/ListProducts</code> endpoints)</li>
+            <li><strong>Frontend</strong> showed high error rates impacting user experience</li>
+            <li><strong>productcatalog service</strong> began crash-looping</li>
+        </ol>
+        
+        <p><strong>What actually happened:</strong> When the feature flag was enabled, the productcatalog service switched from reading products from a static file to the live postgres database. A bug in the postgres connection code caused connections to remain open instead of closing properly. As connections built up to the 100-connection limit, new connection attempts failed with <strong>"pq: too many clients already"</strong> errors. The service didn't handle this error, setting the connection state variable to <strong>null</strong>, which caused a <strong>null pointer exception → segment violation → crash</strong>. Kubernetes restarted the pod repeatedly (crash-looping), but the bug persisted.</p>
+        
+        <p><strong>Resolution:</strong> Fix the productcatalog service to properly close database connections and add error handling for connection failures to prevent null pointer exceptions.</p>
+        
+        <p><strong>Impact:</strong> Users couldn't browse or purchase products. Revenue loss. The entire customer journey was degraded.</p>
        
         <h2>Section 13: What’s the blast radius?</h2>
         <p>Use the Graph view to see impacted dependencies.</p>
