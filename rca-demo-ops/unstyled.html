@@ -94,7 +94,7 @@
                     data-targetaction="highlight"
                     data-reftarget="button[data-testid='data-testid Tab Graph']"
                     data-requirements="exists-reftarget"
-                    data-doit="false">
+                    data-doit="true">
                     <span class="interactive-comment"><strong>Graph tab</strong>: shows service topology and blast radius.</span>
                     Inspect the Graph tab control.
                 </li>
@@ -103,7 +103,7 @@
                     data-targetaction="highlight"
                     data-reftarget="button[data-testid='data-testid Tab Timeline']"
                     data-requirements="exists-reftarget"
-                    data-doit="false">
+                    data-doit="true">
                     <span class="interactive-comment"><strong>Timeline tab</strong>: returns to the timeline view.</span>
                     Inspect the Timeline tab control.
                 </li>
@@ -111,56 +111,76 @@
         </span>
 
         <h2>Section 4: Investigate the Initial Change</h2>
-        <p>Look at the first insight (e.g., a feature flag change) associated with the incident.</p>
+        <p>Remember the <strong style="color: #3b82f6;">blue notification</strong> that appeared first on the timeline? That's our starting point. It occurred before all the <span style="color: #dc2626;">red errors</span> cascaded across connected services.</p>
+        
+        <p>The RCA Workbench gathers details on each insight, letting you expand them to understand severity, timing, and impact. Let's drill into that first blue insight—a feature flag change called <code>productCatalogReadFromPostgres</code> that was turned on.</p>
+        
+        <p><strong>Key findings so far:</strong></p>
+        <ul>
+            <li>A feature flag state change occurred <em>before</em> services started reporting issues</li>
+            <li>The <code>productcatalog</code> service was critically impacted (triggering our alert)</li>
+            <li>Connected services are now showing cascading failures</li>
+        </ul>
+        
         <span id="initial-change"
               class="interactive"
               data-targetaction="sequence"
               data-reftarget="span#initial-change">
             <ul>
-                
                 <li class="interactive" data-targetaction="multistep">
                     <span class="interactive"
                           data-targetaction="highlight"
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('flagd'))"
-                          data-requirements="exists-reftarget"></span>
-        <span class="interactive" 
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to expand the <strong>flagd</strong> service.</span>
+                    </span>
+                    <span class="interactive" 
                           data-targetaction="highlight"
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('amend'))"
-              data-requirements="exists-reftarget"></span>
-        <span class="interactive" 
-              data-targetaction="highlight" 
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to expand the nested item.</span>
+                    </span>
+                    <span class="interactive" 
+                          data-targetaction="highlight" 
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))"
-              data-requirements="exists-reftarget"></span>
-                    First, fully expand the service entry named <b>flagd</b>.
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to expand <strong>FeatureFlagStateChange</strong>—this is the blue insight that started everything.</span>
+                    </span>
+                    Expand the flagd service to reveal the FeatureFlagStateChange insight.
                 </li>
 
-                <!-- BELOW: Work in progress to get the KPI hover sequence to work. --> 
                 <li class="interactive"
                     data-targetaction="guided"
-                    deta-step-timeout="45000"
+                    data-step-timeout="45000"
                     data-skippable="true">
-                    <span class="interactive"
-                          data-targetaction="hover"
+        <span class="interactive" 
+              data-targetaction="hover" 
                           data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>FeatureFlagStateChange</strong> row to reveal the insight icon.
+                        </span>
                     </span>
-                    <span class="interactive-comment">
-                        Hover over the <b>FeatureFlagStateChange</b> entry to reveal the insight icon.
+        <span class="interactive" 
+                          data-targetaction="hover" 
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>insight icon</strong> to see details about the <code>productCatalogReadFromPostgres</code> flag change.
+                        </span>
                     </span>
-                    <span 
-                        class="interactive" 
-                        data-targetaction="hover" 
-                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)">
-                    </span>
-                    <span class="interactive-comment">
-                        Hover over the insights icon to reveal the insights.
-                    </span>
-                    Hover over the <b>FeatureFlagStateChange</b> entry, and then hover over the insight icon to reveal the insight.
+                    Hover to reveal and view the insight details.
                 </li>
             </ul>
         </span>
 
-        <h2>Section 5: What’s going on with the Frontend Service</h2>
-        <p>Drill into the frontend service to understand anomalies around the <code>/Product</code> endpoint.</p>
+        <h2>Section 5: Investigate Frontend Impact</h2>
+        <p><em>Note: If your audience isn't interested in frontend observability, feel free to skip this section.</em></p>
+        
+        <p>The <strong>frontend</strong> service shows a massive <span style="color: #dc2626;">red blob</span> on the timeline—clearly heavily impacted. Hovering over it reveals numerous error buildups and <strong>anomalies</strong>.</p>
+        
+        <p>An <strong>anomaly</strong> occurs when metrics like request rate, latency, or resource consumption fall outside their expected range. Grafana RCA's anomaly detection comes out of the box, automatically identifying what's normal versus anomalous.</p>
+        
+        <p>Let's drill into one specific anomaly: the <code>GetProduct</code> endpoint experiencing unusually high latency. This is critical—we're an ecommerce platform, and users can't buy products if they can't view them.</p>
+        
         <span id="frontend-investigation"
               class="interactive"
               data-targetaction="sequence"
@@ -170,27 +190,37 @@
                     data-targetaction="highlight"
                     data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))"
                     data-requirements="exists-reftarget">
-                    Expand the service entry named <b>frontend</b>.
+                    <span class="interactive-comment">Click to expand the <strong>frontend</strong> service.</span>
+                    Expand the frontend service.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="div[data-cy='wb-list-item']:has(p:contains('anomaly'))"
                     data-requirements="exists-reftarget">
-                    Expand the section named <b>anomaly</b>.
+                    <span class="interactive-comment">Click to expand the <strong>anomaly</strong> section to see detected anomalies.</span>
+                    Expand the anomaly section.
                 </li>
 
                 <li class="interactive"
-                    data-targetaction="highlight"
+              data-targetaction="highlight" 
                     data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalogService/GetProduct'])"
                     data-requirements="exists-reftarget">
-                    Click on the endpoint that ends with <b>/GetProduct</b>.
+                    <span class="interactive-comment">Click to view the anomaly details. You'll see a <strong>green line</strong> (actual latency) with a <strong>pale yellow band</strong> (normal range). Yellow bars indicate anomalous spikes outside the expected range.</span>
+                    View the GetProduct endpoint anomaly.
                 </li>
             </ul>
         </span>
+        
+        <p>Scrolling through the anomalies reveals widespread latency issues—customers are definitely feeling the impact. For better insight into the overall user experience, we can turn to <strong>Grafana Frontend Observability</strong>.</p>
 
         <h2>Section 6 (Optional): How are users impacted?</h2>
-        <p>Explore user impact by navigating to the <em>Frontend</em> entity and its KPIs.</p>
+        <p><em>Skip this section if you skipped Section 5—this is only relevant if your audience is interested in frontend observability.</em></p>
+        
+        <p>We've seen backend anomalies, but what about actual user impact? The RCA Workbench integrates with <strong>Grafana Frontend Observability</strong>, letting us investigate browser behavior and user experience without leaving our investigation context.</p>
+        
+        <p>The <strong>KPI Drawer</strong> is the hub in a hub-and-spoke model—it ties all signals into a single interaction point. Every service in the RCA Workbench has one, dynamically showing relevant information based on what the knowledge graph discovered. Since it knows this is a Frontend O11y application, it includes the frontend observability tab.</p>
+        
         <span id="user-impact"
               class="interactive"
               data-targetaction="sequence"
@@ -198,13 +228,13 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="guided"
-                    deta-step-timeout="45000"
+                    data-step-timeout="45000"
                     data-skippable="true">
                     <span class="interactive"
                         data-targetaction="hover"
                         data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))">
                         <span class="interactive-comment">
-                            Hover over the <b>frontend</b> service to reveal the Entity icon.
+                            Hover over the <strong>frontend</strong> service to reveal the Entity icon.
                         </span>
                     </span>
                     <span 
@@ -212,28 +242,28 @@
                         data-targetaction="hover"
                         data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend')) button:nth-of-type(3)">
                         <span class="interactive-comment">
-                            Click the <b>Entity icon</b>.
+                            Click the <strong>Entity icon</strong> to explore connected entities.
                         </span>
                     </span>
                     <span class="interactive"
                         data-targetaction="hover"
                         data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Service'))">
                         <span class="interactive-comment">
-                            Click to expand the <b>Service</b> section.
+                            Click to expand the <strong>Service</strong> section. The frontend here is actually just an API gateway—we need to navigate to the actual frontend client.
                         </span>
                     </span>
                     <span class="interactive"
                         data-targetaction="hover"
                         data-reftarget="div[data-cy='entity-list-item']:has(p:contains('frontendproxy'))">
                         <span class="interactive-comment">
-                            Click on the <b>frontendproxy</b> entry.
+                            Click on <strong>frontendproxy</strong> to drill deeper.
                         </span>
                     </span>
                     <span class="interactive"
                         data-targetaction="hover"
                         data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Frontend'))">
                         <span class="interactive-comment">
-                            Click to expand the <b>Frontend</b> section.
+                            Click to expand the <strong>Frontend</strong> entity types.
                         </span>
                     </span>
                     <span class="interactive" 
@@ -247,26 +277,34 @@
                         data-targetaction="hover" 
                         data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) button:nth-of-type(3)">
         <span class="interactive-comment">
-                            Click the <b>dashboard button</b> (grid icon) to open Frontend observability.
+                            Click the <strong>KPI/dashboard button</strong> to open the KPI Drawer with Frontend Observability.
                         </span>
                     </span>
-                    Explore the frontend using the KPI drawer.
+                    Navigate through entities to open the Frontend Observability KPI Drawer.
                 </li>
-                <!-- Get them to close the draewer so we can continue with the next steps!-->
+                
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="button[data-testid='data-testid Drawer close']"
                     data-requirements="exists-reftarget"
                     data-doit="false">
-                    <span class="interactive-comment">Click the <strong>Close</strong> icon to close the drawer.</span>
+                    <span class="interactive-comment">After reviewing the data, close the drawer to continue.</span>
                     Close the KPI drawer.
                 </li>  
             </ul>
         </span>
+        
+        <p><strong>What you'll see:</strong> During the incident window, <strong>1,267 errors</strong> were reported against only 906 total page loads—a staggering error rate clearly degrading user experience. Most errors occur on the <strong>home page</strong> (where products are displayed), plus significant errors on the <strong>cart</strong> and <strong>checkout</strong> pages. The entire customer purchase journey is impacted.</p>
+        
+        <p>Good news: Core Web Vitals aren't heavily impacted. Bad news: with this many errors, users are frustrated and we're likely <em>losing revenue</em>.</p>
 
-        <h2>Section 7 (Optional): Declare an Incident</h2>
-        <p>At this point, we might want to declare an incident using Grafana IRM.</p>
-        <p>We won't do this now, but know that it's available from the IRM menu.</p>
+        <h2>Section 7 (Optional): Track with Grafana IRM</h2>
+        <p><em>Skip this section if your audience isn't interested in IRM or if you want to shorten the demo.</em></p>
+        
+        <p>Now that we've done preliminary investigation, let's check on our <strong>Grafana IRM</strong> incident tracker. In production, clicking "Declare Incident" from the Slack alert creates an incident in Grafana and opens a dedicated Slack channel for responders. It provides a central location to track findings, participants (commanders, investigators), and progress toward resolution.</p>
+        
+        <p>For this demo, we have a <strong>pre-created incident</strong> tracking this investigation. The incident page shows issue details, related alert groups, and our findings. In a real scenario, you'd add updates like: <em>"Feature flag <code>productCatalogReadFromPostgres</code> was toggled, followed by cascading errors across connected services. Frontend is experiencing high error rates impacting the customer purchase journey."</em></p>
+        
         <span id="declare-incident"
               class="interactive"
               data-targetaction="sequence"
@@ -275,17 +313,36 @@
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-irm-app/incidents']"
-                    data-requirements="navmenu-open,exists-reftarget"
-                    data-doit="false">
-                    <span class="interactive-comment"><strong>Incidents</strong>: view, create, and manage incidents.</span>
-                    An incident can be created from the IRM menu.
+                    data-requirements="navmenu-open,exists-reftarget">
+                    <span class="interactive-comment"><strong>Incidents</strong>: central hub for tracking and managing incidents.</span>
+                    Open the IRM Incidents page.
+                </li>
+                
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='td.title a[href="/a/grafana-irm-app/incidents/1"]:contains("Day in the Life Demo")'
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to view the pre-created incident tracking this investigation. In production, this would have been created from the Slack alert.</span>
+                    View the demo incident details.
+                </li>
+                
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-asserts-app/assertions"]'
+                    data-requirements="navmenu-open,exists-reftarget">
+                    <span class="interactive-comment">Return to the RCA Workbench to continue investigating.</span>
+                    Navigate back to RCA Workbench.
                 </li>
             </ul>
-            <!-- TODO what if the main menu isn't open? -->
         </span>
+        
+        <p><strong>Key IRM benefits:</strong> Centralized tracking, participant management, Slack integration, and seamless handoffs between team members. The incident page also links to the original alert group, keeping all context in one place.</p>
 
         <h2>Section 8: Investigate the Database</h2>
-        <p>Let's see what's going on with the <em>productcatalog-postgres</em> service.</p>
+        <p>Let's examine <code>productcatalog-postgres</code>—one of the downstream services experiencing issues. Notice the <span style="color: #f59e0b;">yellow warnings</span> on the timeline? There aren't many insights here, but that's actually a <strong>feature</strong>: the Knowledge Graph detects even small behavioral anomalies that might relate to bigger problems.</p>
+        
+        <p>Hovering over the yellow insights reveals OOTB alerts for PostgreSQL databases. Specifically, we're seeing <strong>PostgreSQLHighConnections</strong> firing intermittently throughout the incident window—not a good sign.</p>
+        
         <span id="investigate-db"
               class="interactive"
               data-targetaction="sequence"
@@ -295,21 +352,24 @@
                     data-targetaction="highlight"
                     data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))"
                     data-requirements="exists-reftarget">
-                    Expand the service entry named <strong>productcatalog-postgres</strong>.
+                    <span class="interactive-comment">Click to expand the <strong>productcatalog-postgres</strong> service.</span>
+                    Expand the productcatalog-postgres service.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
                     data-requirements="exists-reftarget">
-                    Expand the section named <b>failure</b>.
+                    <span class="interactive-comment">Click to expand the <strong>failure</strong> section to see what went wrong.</span>
+                    Expand the failure section.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="div[data-cy='wb-list-item']:has(p:contains('PostgreSQLHighConnections'))"
                     data-requirements="exists-reftarget">
-                    Expand the section named <b>PostgreSQLHighConnections</b>.
+                    <span class="interactive-comment">Click to view the <strong>PostgreSQLHighConnections</strong> insight details.</span>
+                    View the PostgreSQLHighConnections insight.
                 </li>
 
                 <li class="interactive"
@@ -317,13 +377,28 @@
                     data-reftarget="div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))"
                     data-requirements="exists-reftarget"
                     data-doit="false">
-                    This insight shows connection spikes on the PostgreSQL database.
+                    <span class="interactive-comment">The chart shows significant spikes in database connections—unusual behavior worth investigating further.</span>
+                    Observe the connection spike pattern.
                 </li>
             </ul>
         </span>
+        
+        <p><strong>Finding:</strong> The database is experiencing significant connection spikes throughout the incident period. This is unusual and likely contributing to the service degradation.</p>
+        
+        <p><em>Optional: In your incident tracker, you might add: "The productcatalog-postgres service is experiencing intermittent spikes in connection count, correlating with the service errors."</em></p>
 
         <h2>Section 9: Investigate the Product Catalog Service</h2>
-        <p>Drill into <em>productcatalogservice</em> failures and pod state.</p>
+        <p>The <code>productcatalogservice</code> is our next logical target—it's at the center of this incident. Grafana combines <strong>application and infrastructure signals</strong> in one view, so you can investigate all angles without switching contexts or hunting for the right dashboard.</p>
+        
+        <p><strong>What hovering reveals:</strong></p>
+        <ul>
+            <li><strong>Latency anomalies</strong> firing across 5 endpoints</li>
+            <li><strong>Kubernetes pod crash looping</strong> repeatedly</li>
+            <li><strong>Errors on /ListProducts endpoint</strong> mounting</li>
+        </ul>
+        
+        <p>This demonstrates how the RCA Workbench correlates infrastructure (pod crashes) and application (endpoint errors/latency) insights into an easy-to-consume view. It's not looking good—let's see if the crashes are frequent or just a one-off.</p>
+        
         <span id="investigate-service"
               class="interactive"
               data-targetaction="sequence"
@@ -333,32 +408,40 @@
                     data-targetaction="highlight"
                     data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))"
                     data-requirements="exists-reftarget">
-                    Expand the service entry named <b>productcatalogservice</b>.
+                    <span class="interactive-comment">Click to expand the <strong>productcatalogservice</strong>.</span>
+                    Expand the productcatalogservice.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
                     data-requirements="exists-reftarget">
-                    Expand the section named <b>failure</b>.
+                    <span class="interactive-comment">Click to expand the <strong>failure</strong> section.</span>
+                    Expand the failure section.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='KubePodCrashLooping'])"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('KubePodCrashLooping'))"
                     data-requirements="exists-reftarget">
-                    Click on <b>KubePodCrashLooping</b>.
+                    <span class="interactive-comment">Click to view the <strong>KubePodCrashLooping</strong> insight—this shows the pod is repeatedly crashing.</span>
+                    View the KubePodCrashLooping insight.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])"
+                    data-reftarget="div.grid.wb-item:has(p:contains('KubePodCrashLooping'))"
                     data-requirements="exists-reftarget"
                     data-doit="false">
-                    Hover over the timeline to see more details.
+                    <span class="interactive-comment">The timeline shows the pod crashed repeatedly throughout the incident—not a one-off.</span>
+                    Observe the crash looping pattern.
                 </li>
             </ul>
         </span>
+        
+        <p><strong>Key findings from this service:</strong> The productcatalog service is experiencing high endpoint latencies, the <code>/ListProducts</code> endpoint has mounting errors, and the underlying Kubernetes pod is crash looping. All this information—from infrastructure to application level—was available without switching contexts or screens. Everything here is an <strong>OOTB insight</strong>, no configuration or manual analysis required.</p>
+        
+        <p><em>Optional: In your incident tracker, you might add: "The productcatalog service is behaving abnormally with high endpoint latencies, /ListProducts errors, and pod crash looping throughout the incident window."</em></p>
 
         <h2>Section 10: Use the KPI Drawer (Service)</h2>
         <p>Open the KPI drawer for <em>productcatalogservice</em> and traverse tabs for deeper context.</p>
@@ -371,11 +454,24 @@
               data-reftarget="span#service-kpi-drawer">
             <ul>
                 <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))"
-                    data-requirements="exists-reftarget"
-                    data-doit="false">
-                    Open the <strong>KPI</strong> drawer for <em>productcatalogservice</em>.
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>productcatalogservice</strong> row to reveal the KPI button.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <strong>KPI/dashboard button</strong> (grid icon) to open the KPI drawer and see detailed metrics.
+                        </span>
+                    </span>
+                    Hover and click to open the KPI drawer for productcatalogservice.
                 </li>
 
                 <li class="interactive" 
@@ -405,13 +501,12 @@
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="div[data-viz-panel-key='75903a26-8a1b-4df1-b56a-daa3a11c5b8a']"
-                    data-requirements="exists-reftarget">
-                    Click the <strong>errors/s</strong> chart to focus the time region.
+                    data-reftarget="section[data-testid='data-testid Panel header Errors rate']"
+                    data-requirements="exists-reftarget"
+                    data-skippable="true">
+                    <span class="interactive-comment">Click on the <strong>Errors rate</strong> chart to focus on the time region where errors occurred.</span>
+                    Click the Errors rate chart to focus the time region. Skip this step if the error chart is already focused.
                 </li>
-                <!-- TODO: Simon - this is somewhere to look at - can't focus this? -->
-                <!-- TODO: Simon test and try ahead from these... -->
-                <!-- TODO: Simon - looks like the errors chart has data-testid="data-testid panel content" -->
 
                 <li class="interactive" 
                     data-targetaction="highlight" 
