@@ -430,7 +430,7 @@
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="div.grid.wb-item:has(p:contains('KubePodCrashLooping'))"
+                    data-reftarget="div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])"
                     data-requirements="exists-reftarget"
                     data-doit="false">
                     <span class="interactive-comment">The timeline shows the pod crashed repeatedly throughout the incident—not a one-off.</span>
@@ -443,11 +443,24 @@
         
         <p><em>Optional: In your incident tracker, you might add: "The productcatalog service is behaving abnormally with high endpoint latencies, /ListProducts errors, and pod crash looping throughout the incident window."</em></p>
 
-        <h2>Section 10: Use the KPI Drawer (Service)</h2>
-        <p>Open the KPI drawer for <em>productcatalogservice</em> and traverse tabs for deeper context.</p>
-        <!-- TODO: Change this to a guided sequence -->
-        <!-- guess at the kpi drawer selector: -->
-        <!-- "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')) button:nth-of-type(4)" -->
+        <h2>Section 10: Deep Dive with the KPI Drawer</h2>
+        <p>Now we get to the root cause. Let's open the <strong>KPI Drawer</strong> for the productcatalog service—the same hub-and-spoke interface we used for Frontend O11y, but this time dynamically populated with dashboards and signals relevant to a backend service.</p>
+        
+        <p><strong>Value proposition:</strong> Grafana compiles <strong>OOTB dashboards</strong> with critical signals for troubleshooting and intelligently identifies what dashboards should be present based on the entity type. No dashboard hunting, no context switching—the right visualizations come to you. The RCA Workbench ties together <em>all</em> types of Grafana observability: drilldowns, logs, traces, Application O11y, Frontend O11y, and Kubernetes O11y.</p>
+        
+        <p><strong>Notice the tabs:</strong> The KPI drawer for productcatalogservice has <em>more tabs</em> than the frontend-client drawer. This is by design! The knowledge graph knows this is a Go service running in Kubernetes, so it pulls in Properties, Service Overview (App O11y), Kubernetes, Traces, and Logs tabs automatically. Custom dashboards can be attached to entity types too.</p>
+        
+        <p><strong>What we'll discover:</strong></p>
+        <ul>
+            <li><strong>Properties</strong>: Go app v3.7.5, Kubernetes deployment, cluster/namespace details—all without running queries</li>
+            <li><strong>Service Overview</strong>: Application O11y shows errors and latency spikes on <code>/ListProducts</code> endpoint</li>
+            <li><strong>Kubernetes</strong>: Memory consumption well below limits (200MiB)—<strong>not an OOM issue</strong></li>
+            <li><strong>Traces (Comparison)</strong>: 100% of errored spans are <code>/ListProducts</code>, with "PQ: sorry too many clients already" errors</li>
+            <li><strong>Logs</strong>: Stack trace reveals <strong>null pointer exception → segment violation → database connection failures</strong></li>
+        </ul>
+        
+        <p><strong>Root cause:</strong> A variable was accidentally set to null, causing a null pointer exception that crashes the pod and prevents database connections. The feature flag toggle likely introduced this bug. We need better error handling!</p>
+        
         <span id="service-kpi-drawer"
               class="interactive"
               data-targetaction="sequence"
@@ -478,25 +491,29 @@
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Properties']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Properties</strong> tab.
+                    <span class="interactive-comment">View service properties: Go v3.7.5, Kubernetes deployment, cluster/namespace—all auto-discovered.</span>
+                    Open the Properties tab.
                 </li>
                 <li class="interactive" 
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Service overview']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Service overview</strong> tab.
+                    <span class="interactive-comment">Application Observability dashboard shows errors and latency spikes on <code>/ListProducts</code> endpoint.</span>
+                    Open the Service overview tab.
                 </li>
                 <li class="interactive" 
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Kubernetes']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Kubernetes</strong> tab.
+                    <span class="interactive-comment">Kubernetes dashboard shows memory consumption is low (well below 200MiB limit)—rules out OOM as the crash cause.</span>
+                    Open the Kubernetes tab.
                 </li>
                 <li class="interactive" 
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Traces']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Traces</strong> tab.
+                    <span class="interactive-comment">Traces tab shows error patterns and lets us investigate individual failing requests.</span>
+                    Open the Traces tab.
                 </li>
 
                 <li class="interactive"
@@ -512,86 +529,155 @@
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Comparison']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Comparison</strong> tab (bottom area).
+                    <span class="interactive-comment"><strong>Comparison</strong> analyzes span attributes to find statistically significant differences between errored and successful traces. Watch for <code>/ListProducts</code>.</span>
+                    Open the Comparison tab (bottom area).
                 </li>
 
-                <!-- TODO Make this multistep possibly-->
-                <li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='data-testid Tab Errored traces']" data-requirements="exists-reftarget">Open the <strong>Errored Traces</strong> tab and select the first trace.</li>
+                <li class="interactive" data-targetaction="multistep">
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="button[data-testid='data-testid Tab Errored traces']"
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to see the list of traces with errors.</span>
+                    </span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget='div[role="grid"] div[role="row"][aria-rowindex="2"] div.cell-link'>
+                        <span class="interactive-comment">Click on the first trace to open it in Explore—look for "PQ: sorry too many clients already" in the error details.</span>
+                    </span>
+                    Open the Errored traces tab and select the first trace.
+                </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="button:has(span:contains('productcatalogservice'))"
                     data-requirements="exists-reftarget">
-                    In the <strong>Service &amp; Operation</strong> tree, select the bottom item.
+                    <span class="interactive-comment">Select the most downstream <code>productcatalogservice</code> span to see the database connection error.</span>
+                    In the Service & Operation tree, select the bottom item.
                 </li>
 
-                <li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='data-testid Tab Logs']" data-requirements="exists-reftarget">Open the <strong>Logs</strong> tab.</li>
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Logs']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Close Explore and return to the KPI Drawer, then open the <strong>Logs</strong> tab to see the crash stack trace.</span>
+                    Open the Logs tab.
+                </li>
                 <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="button[aria-label='Wrap lines']"
-                    data-requirements="exists-reftarget">
-                    Enable <strong>log line wrapping</strong>.
+                    data-requirements="exists-reftarget"
+                    data-skippable="true">
+                    <span class="interactive-comment">Enable line wrapping so the stack trace is readable.</span>
+                    Enable log line wrapping. Skip this step if already enabled.
                 </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="div:contains('panic')"
+                    data-reftarget='section[data-testid*="Panel header Logs"] div:contains("level=error"):nth-match(1)'
                     data-requirements="exists-reftarget"
                     data-doit="false"
                     data-hint="Scroll to reveal the stack trace if not visible">
-                    <span class="interactive-comment">Scroll to find the <strong>stack trace</strong> for error context.</span>
+                    <span class="interactive-comment">Scroll to find the <strong>panic</strong> in the logs—this shows the stack trace and error context.</span>
                     Observe the stack trace details.
                 </li>
                 <!-- TODO: Replace with the stack trace container selector in the Logs tab. -->
             </ul>
         </span>
+        
+        <p><strong>Investigation complete!</strong> By systematically exploring the KPI Drawer tabs, we've uncovered the full story:</p>
+        <ol>
+            <li><strong>Properties</strong>: Confirmed it's a Go v3.7.5 service in Kubernetes</li>
+            <li><strong>Service Overview</strong>: Application O11y showed <code>/ListProducts</code> endpoint errors and latency spikes</li>
+            <li><strong>Kubernetes</strong>: Ruled out OOM—memory is well below limits</li>
+            <li><strong>Traces</strong>: Comparison analysis revealed 100% of errors on <code>/ListProducts</code>, trace details showed "PQ: sorry too many clients already"</li>
+            <li><strong>Logs</strong>: Stack trace exposed the smoking gun—null pointer exception causing crashes and blocking database connections</li>
+        </ol>
+        
+        <p>All of this—infrastructure metrics, application traces, Kubernetes details, and logs—was accessible from one drawer. No dashboard hunting, no context switching, no manual query writing. The knowledge graph brought it all together.</p>
+        
+        <p><em>Optional: In your incident tracker, you might add: "After investigating the KPI drawer for the productcatalog service, we identified the root cause. The crash looping is not caused by an OOM issue. Instead, it's the result of a variable being accidentally set to null (likely from the feature flag toggle), which caused a null pointer exception and segment violation, impacting our ability to make connections with the downstream postgres database."</em></p>
 
-        <h2>Section 11: Use the KPI Drawer (Database)</h2>
-        <p>Open the KPI drawer for <em>productcatalog-postgres</em> and review key tabs.</p>
+        <h2>Section 11: Confirm the Database Impact</h2>
+        <p>We've found the smoking gun—a null pointer exception crashing the productcatalog service and preventing database connections. But let's verify the other side of the equation: <strong>Is the database actually seeing connection overload?</strong></p>
+        
+        <p>Open the KPI Drawer for <code>productcatalog-postgres</code>. Notice how Grafana automatically discovered this is a <strong>PostgreSQL database</strong> and populated the drawer with postgres-specific dashboards. This saves you from hunting for the right dashboard—Grafana Cloud identifies the most relevant observability solutions for each service type.</p>
+        
+        <p><strong>What we'll confirm:</strong></p>
+        <ul>
+            <li><strong>Properties</strong>: Auto-discovered postgres type, version, cluster, and namespace</li>
+            <li><strong>Postgres Overview</strong>: Active connections spiking and dropping periodically—exactly matching the service crashes</li>
+            <li><strong>Logs</strong>: Explicit "too many clients" error messages from the database perspective</li>
+        </ul>
+        
+        <p>This is the final piece of the puzzle—the database confirms it's being bombarded with connection attempts from the buggy productcatalog service.</p>
+        
         <span id="db-kpi-drawer"
               class="interactive"
               data-targetaction="sequence"
               data-reftarget="span#db-kpi-drawer">
             <ul>
                 <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="button[data-testid='data-testid Drawer close']"
-                    data-requirements="exists-reftarget">
-                    Close any currently open drawer.
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>productcatalog-postgres</strong> service to reveal the KPI button.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <strong>KPI/dashboard button</strong> to open the database drawer—notice the postgres-specific tabs.
+                        </span>
+                    </span>
+                    Hover and click to open the database KPI drawer.
                 </li>
-
-                <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-productcatalog-postgres']"
-                    data-requirements="exists-reftarget">
-                    Open the <strong>KPI</strong> drawer for <em>productcatalog-postgres</em>.
-                </li>
-                <!-- TODO: Replace with KPI icon selector next to productcatalog-postgres. -->
 
                 <li class="interactive" 
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Properties']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Properties</strong> tab.
+                    <span class="interactive-comment">View properties—Grafana auto-discovered this is PostgreSQL with version, cluster, and namespace details.</span>
+                    Open the Properties tab.
                 </li>
 
                 <li class="interactive" 
                     data-targetaction="highlight" 
-                    data-reftarget="button[data-testid='data-testid Tab Postgres overview']" 
+                    data-reftarget="button[data-testid='data-testid Tab Postgres Overview']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Postgres overview</strong> tab.
+                    <span class="interactive-comment">The <strong>Postgres Overview</strong> dashboard shows active connections spiking and dropping—matching the service crash pattern.</span>
+                    Open the Postgres Overview tab.
                 </li>
-                <!-- Note: I don't see a Postgres overview tab in the demo environment. -->
-                <!-- TODO: Simon - this is somewhere to look at - can't focus this? -->
 
                 <li class="interactive" 
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Logs']" 
                     data-requirements="exists-reftarget">
-                    Open the <strong>Logs</strong> tab.
+                    <span class="interactive-comment">Database logs will show "too many clients" errors—confirming the connection overload from the database's perspective.</span>
+                    Open the Logs tab.
                 </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Close the drawer to return to the RCA Workbench timeline.</span>
+                    Close the KPI drawer.
+                </li>  
             </ul>
         </span>
+        
+        <p><strong>Database confirmation:</strong> The postgres database logs explicitly show <strong>"too many clients"</strong> errors, and the Postgres Overview dashboard reveals active connections spiking and dropping in sync with the productcatalog service crashes. This confirms the ripple effect—the buggy service is overwhelming the database with connection attempts.</p>
+        
+        <p><strong>Complete picture:</strong> From Properties, we confirmed Grafana auto-discovered this as PostgreSQL. The postgres-specific dashboard (available without any configuration) showed the connection spike pattern. The logs provided explicit error messages. Everything we needed was dynamically assembled in one drawer.</p>
+        
+        <p><em>Optional: In your incident tracker, you might add: "We've reached the final stage of our investigation in the productcatalog-postgres KPI drawer. The postgres-specific dashboard confirms our database has too many clients trying to connect—a ripple effect from the bug in the productcatalog service that's impacting the rest of our services."</em></p>
 
         <h2>Section 12: Putting it all together</h2>
         <p>TODO: Narrative wrap-up on hypothesis, evidence gathered, and likely root cause.</p>
