@@ -574,14 +574,13 @@
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget='section[data-testid*="Panel header Logs"] table tbody td:contains("level=error"):nth-match(1)'
+                    data-reftarget='section[data-testid*="Panel header Logs"]'
                     data-requirements="exists-reftarget"
                     data-doit="false"
                     data-hint="Scroll to reveal the stack trace if not visible">
                     <span class="interactive-comment">Scroll to find the first <strong>level=error</strong> log entry—this shows "too many clients" and the panic stack trace.</span>
-                    Observe the stack trace details.
+                    As you can see the error logs indicate the postgres database is being bombarded with connection attempts.
                 </li>
-                <!-- TODO: Replace with the stack trace container selector in the Logs tab. -->
             </ul>
         </span>
         
@@ -729,25 +728,47 @@
               data-targetaction="sequence"
               data-reftarget="span#business-impact">
             <ul>
-                <li class="interactive" 
+                <li class="interactive"
                     data-targetaction="highlight"
                     data-reftarget="button[data-testid='data-testid Tab Timeline']"
                     data-requirements="exists-reftarget">
                     Switch back to the <strong>Timeline</strong> tab.
                 </li>
+
                 <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-checkoutservice']"
-                    data-requirements="exists-reftarget">
-                    Open the <strong>KPI</strong> drawer for <em>checkoutservice</em>.
+                    data-targetaction="guided"
+                    data-step-timeout="45000">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))"> 
+                    </span>
+                    <span class="interactive-comment">
+                        Hover over the <strong>checkoutservice</strong> service to reveal the KPI icon.
+                    </span>   
+                    <span class="interactive" 
+                    data-targetaction="hover"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice')) button:nth-of-type(4)">
+                    <span class="interactive-comment">
+                        Click the <b>KPI icon</b>.
+                    </span>
+                    Hover over the <strong>checkoutservice</strong> service to reveal the KPI icon, then click it.
                 </li>
-                <!-- TODO: Replace with KPI icon selector next to checkoutservice. -->
+
                 <li class="interactive" 
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Business']" 
                     data-requirements="exists-reftarget">
                     Open the <strong>Business</strong> tab.
                 </li>
+
+                <!-- Get them to close the drawer so we can continue with the next steps!-->
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click the <strong>Close</strong> icon to close the drawer.</span>
+                    Close the KPI drawer when you are done.
+                </li>  
             </ul>
         </span>
 
