@@ -574,11 +574,11 @@
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget='section[data-testid*="Panel header Logs"] div:contains("level=error"):nth-match(1)'
+                    data-reftarget='section[data-testid*="Panel header Logs"] table tbody td:contains("level=error"):nth-match(1)'
                     data-requirements="exists-reftarget"
                     data-doit="false"
                     data-hint="Scroll to reveal the stack trace if not visible">
-                    <span class="interactive-comment">Scroll to find the <strong>panic</strong> in the logs—this shows the stack trace and error context.</span>
+                    <span class="interactive-comment">Scroll to find the first <strong>level=error</strong> log entry—this shows "too many clients" and the panic stack trace.</span>
                     Observe the stack trace details.
                 </li>
                 <!-- TODO: Replace with the stack trace container selector in the Logs tab. -->
@@ -696,8 +696,13 @@
         
         <p><strong>Impact:</strong> Users couldn't browse or purchase products. Revenue loss. The entire customer journey was degraded.</p>
        
-        <h2>Section 13: What’s the blast radius?</h2>
-        <p>Use the Graph view to see impacted dependencies.</p>
+        <h2>Section 13: Visualize the Blast Radius</h2>
+        <p>We've traced the root cause through multiple services. Now let's visualize <strong>how everything connects</strong> and understand the full blast radius of this incident.</p>
+        
+        <p><strong>Value proposition:</strong> Using infrastructure and application metrics, Grafana creates an <strong>OOTB topology visualization</strong> of your application services and infrastructure. This real-time view shows how everything is connected and highlights which insights each object has—no manual diagramming or searching required.</p>
+        
+        <p>The <strong>Graph tab</strong> displays the knowledge graph for <code>productcatalogservice</code> and its connected services. This is the <em>same data</em> powering the RCA Workbench timeline—built from traces, service meshes, and network flow data that show how services interact.</p>
+        
         <span id="blast-radius"
               class="interactive"
               data-targetaction="sequence"
@@ -707,11 +712,15 @@
                     data-targetaction="highlight"
                     data-reftarget="button[data-testid='data-testid Tab Graph']"
                     data-requirements="exists-reftarget">
-                    <span class="interactive-comment"><strong>Graph tab</strong>: pivots to a service graph to understand relationships and blast radius.</span>
-                    Switch to the <strong>Graph</strong> tab.
+                    <span class="interactive-comment"><strong>Graph tab</strong>: shows service topology, dependencies, and which services are impacted (colored by insight status).</span>
+                    Switch to the Graph tab.
       </li>
-    </ul>
-  </span>
+            </ul>
+        </span>
+        
+        <p><strong>What the graph reveals:</strong> The topology shows <code>productcatalog-postgres</code> at the center, with <code>productcatalogservice</code> directly connected. From there, you can see the cascading impact—<strong>recommendationservice</strong> and <strong>checkoutservice</strong> both depend on productcatalog, and their insights (visible as colored indicators) show they're experiencing issues with product-related endpoints.</p>
+        
+        <p>The graph makes the blast radius immediately clear: a bug in one service's database connection handling has rippled through the entire product browsing and checkout flow. This visual complements the timeline view—one shows <em>when</em> things went wrong, the other shows <em>what's connected and impacted</em>.</p>
 
         <h2>Section 14: Was the business impacted?</h2>
         <p>Return to the Timeline and check business KPIs for <em>checkoutservice</em>.</p>
