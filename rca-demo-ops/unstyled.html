@@ -1,54 +1,559 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Explore Service Dashboards</title>
-</head>
-<body>
-  <h1>Explore Service Dashboards</h1>
-  
-  <p>Learn how to navigate to individual service dashboards from the workload list.</p>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RCA Demo</title>
+    </head>
+    <body>
+        <h1>RCA Demo</h1>
 
-  <h2>Access Service Dashboard</h2>
-  
-  <p>Workload items have hidden action buttons that appear when you hover over. Let's explore the adaptive-logs-api service.</p>
+        <p>This interactive guide walks through an end-to-end RCA (Root Cause Analysis) demo using Grafana's RCA workbench and related views. It follows the flow from an alert to investigation across services and databases, and wraps up with impact analysis.</p>
 
-  <span id="view-service-dashboard" class="interactive" data-targetaction="sequence" data-reftarget="span#view-service-dashboard">
-    <ul>
-      <li class="interactive"
-          data-targetaction="guided"
-          data-step-timeout="45000"
-          data-skippable="true">
-        <span class="interactive" 
-              data-targetaction="hover" 
-              data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("adaptive-logs-api")):nth-match(1)'
-              >
-          <span class="interactive-comment">
-            Hover over the <strong>adaptive-logs-api</strong> service item to reveal the hidden action buttons. These buttons only appear when your mouse is over the item.
-          </span>
+        <ul>
+            <li>Navigate from an alert to the RCA workbench</li>
+            <li>Investigate anomalies in services and databases</li>
+            <li>Use KPI drawers and trace/log pivots for context</li>
+            <li>Assess blast radius and business impact</li>
+            <li>[Optional] Explore Workbench AI and incident flows</li>
+        </ul>
+
+        <h2>Section 1: Start from an Alert</h2>
+        <p>Open the alert context used by this demo.</p>
+        <span id="start-from-alert"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#start-from-alert">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="navigate"
+                    data-reftarget="/d/rca-demo-alert/slack-rca-demo-alert"
+                    data-verify="on-page:/d/rca-demo-alert/slack-rca-demo-alert"
+                    data-showme="false">
+                    Open the RCA demo alert dashboard (in a new tab).
+                </li>
+                <!-- If this route requires auth or a specific tenant, ensure you're logged in first. -->
+            </ul>
         </span>
-        <span class="interactive" 
-              data-targetaction="hover" 
-              data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("adaptive-logs-api")):nth-match(1) button:nth-of-type(4)'
-              >
-          <span class="interactive-comment">
-            The <strong>dashboard button</strong> (grid icon) appears when you hover over a service item. 
-            This button takes you to a pre-configured dashboard showing <code>metrics</code>, <code>logs</code>, 
-            and <code>traces</code> for the <em>adaptive-logs-api</em> service, giving you complete observability 
-            in a single view.
-          </span>
-        </span>
-        
-        Hover over the adaptive-logs-api service and click the dashboard button to open its service dashboard.
-      </li>
-    </ul>
-  </span>
 
-  <h2>🎉 Complete!</h2>
-  
-  <p>You've learned how to access service-specific dashboards from the workload list. This pattern works for all services in your application observability view.</p>
-  
-  <p><strong>Tip:</strong> Each service has multiple action buttons that reveal on hover - explore them to discover logs, traces, and configuration options!</p>
-</body>
+        <h2>Section 2: Go to the RCA Workbench</h2>
+        <p>Jump directly to the RCA workbench timeframe and entity-based view for this incident.</p>
+        <span id="go-to-rca-workbench"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#go-to-rca-workbench">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="a[data-testid='data-testid Nav menu item'][href*='/a/grafana-asserts-app/assertions']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">
+                        Click <strong>RCA Workbench</strong> to open the incident investigation view with the prepared time range and filters.
+                    </span>
+                    Open the RCA workbench at the prepared time range and filter.
+                </li>
+                <!-- NOTE: The workbench will open with the time range and filters pre-configured for this incident. -->
+            </ul>
+        </span>
+
+        <h2>Section 3: Orient to the RCA Workbench</h2>
+        <p>Get familiar with key UI areas. These are show-only highlights to orient you without changing state.</p>
+        <span id="rca-orientation"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#rca-orientation">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.h-full.w-full.overflow-y-scroll.block"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Timeline</strong>: shows anomalies and state over time for selected entities.</span>
+                    Examine the timeline visualization.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Graph']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Graph tab</strong>: pivots to a service graph to understand relationships and blast radius.</span>
+                    Inspect the Graph tab control.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Timeline']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Timeline tab</strong>: returns to the timeline-centric view.</span>
+                    Inspect the Timeline tab control.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 4: Investigate the Initial Change</h2>
+        <p>Look at the first insight (e.g., a feature flag change) associated with the incident.</p>
+        <span id="initial-change"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#initial-change">
+            <ul>
+                
+                <li class="interactive" data-targetaction="multistep">
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('flagd'))"
+                          data-requirements="exists-reftarget"></span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('amend'))"
+                          data-requirements="exists-reftarget"></span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))"
+                          data-requirements="exists-reftarget"></span>
+                    First, fully expand the service entry named <b>flagd</b>.
+                </li>
+
+                <!-- BELOW: Work in progress to get the KPI hover sequence to work. --> 
+                <li class="interactive"
+                    data-targetaction="guided"
+                    deta-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))">
+                    </span>
+                    <span class="interactive-comment">
+                        Hover over the <b>FeatureFlagStateChange</b> entry to reveal the insight icon.
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)">
+                    </span>
+                    <span class="interactive-comment">
+                        Hover over the insights icon to reveal the insights.
+                    </span>
+                    Hover over the <b>FeatureFlagStateChange</b> entry, and then hover over the insight icon to reveal the insight.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 5: What’s going on with the Frontend Service</h2>
+        <p>Drill into the frontend service to understand anomalies around the <code>/Product</code> endpoint.</p>
+        <span id="frontend-investigation"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#frontend-investigation">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))"
+                    data-requirements="exists-reftarget">
+                    Expand the service entry named <b>frontend</b>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('anomaly'))"
+                    data-requirements="exists-reftarget">
+                    Expand the section named <b>anomaly</b>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalogService/GetProduct'])"
+                    data-requirements="exists-reftarget">
+                    Click on the endpoint that ends with <b>/GetProduct</b>.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 6 (Optional): How are users impacted?</h2>
+        <p>Explore user impact by navigating to the <em>Frontend</em> entity and its KPIs.</p>
+        <span id="user-impact"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#user-impact">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="guided"
+                    deta-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))">
+                        <span class="interactive-comment">
+                            Hover over the <b>frontend</b> service to reveal the Entity icon.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend')) button:nth-of-type(3)">
+                        <span class="interactive-comment">
+                            Click the <b>Entity icon</b>.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Service'))">
+                        <span class="interactive-comment">
+                            Click to expand the <b>Service</b> section.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='entity-list-item']:has(p:contains('frontendproxy'))">
+                        <span class="interactive-comment">
+                            Click on the <b>frontendproxy</b> entry.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Frontend'))">
+                        <span class="interactive-comment">
+                            Click to expand the <b>Frontend</b> section.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>frontend-client</strong> entity to reveal action buttons.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) button:nth-of-type(3)">
+                        <span class="interactive-comment">
+                            Click the <b>dashboard button</b> (grid icon) to open Frontend observability.
+                        </span>
+                    </span>
+                    Explore the frontend using the KPI drawer.
+                </li>
+                <!-- Get them to close the draewer so we can continue with the next steps!-->
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment">Click the <strong>Close</strong> icon to close the drawer.</span>
+                    Close the KPI drawer.
+                </li>  
+            </ul>
+        </span>
+
+        <h2>Section 7 (Optional): Declare an Incident</h2>
+        <p>At this point, we might want to declare an incident using Grafana IRM.</p>
+        <p>We won't do this now, but know that it's available from the IRM menu.</p>
+        <span id="declare-incident"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#declare-incident">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-irm-app/incidents']"
+                    data-requirements="navmenu-open,exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Incidents</strong>: view, create, and manage incidents.</span>
+                    An incident can be created from the IRM menu.
+                </li>
+            </ul>
+            <!-- TODO what if the main menu isn't open? -->
+        </span>
+
+        <h2>Section 8: Investigate the Database</h2>
+        <p>Let's see what's going on with the <em>productcatalog-postgres</em> service.</p>
+        <span id="investigate-db"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#investigate-db">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))"
+                    data-requirements="exists-reftarget">
+                    Expand the service entry named <strong>productcatalog-postgres</strong>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
+                    data-requirements="exists-reftarget">
+                    Expand the section named <b>failure</b>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('PostgreSQLHighConnections'))"
+                    data-requirements="exists-reftarget">
+                    Expand the section named <b>PostgreSQLHighConnections</b>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    This insight shows connection spikes on the PostgreSQL database.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 9: Investigate the Product Catalog Service</h2>
+        <p>Drill into <em>productcatalogservice</em> failures and pod state.</p>
+        <span id="investigate-service"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#investigate-service">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))"
+                    data-requirements="exists-reftarget">
+                    Expand the service entry named <b>productcatalogservice</b>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
+                    data-requirements="exists-reftarget">
+                    Expand the section named <b>failure</b>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='KubePodCrashLooping'])"
+                    data-requirements="exists-reftarget">
+                    Click on <b>KubePodCrashLooping</b>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    Hover over the timeline to see more details.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 10: Use the KPI Drawer (Service)</h2>
+        <p>Open the KPI drawer for <em>productcatalogservice</em> and traverse tabs for deeper context.</p>
+        <!-- TODO: Change this to a guided sequence -->
+        <!-- guess at the kpi drawer selector: -->
+        <!-- "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')) button:nth-of-type(4)" -->
+        <span id="service-kpi-drawer"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#service-kpi-drawer">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    Open the <strong>KPI</strong> drawer for <em>productcatalogservice</em>.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Properties']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Properties</strong> tab.
+                </li>
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Service overview']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Service overview</strong> tab.
+                </li>
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Kubernetes']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Kubernetes</strong> tab.
+                </li>
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Traces']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Traces</strong> tab.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-viz-panel-key='75903a26-8a1b-4df1-b56a-daa3a11c5b8a']"
+                    data-requirements="exists-reftarget">
+                    Click the <strong>errors/s</strong> chart to focus the time region.
+                </li>
+                <!-- TODO: Simon - this is somewhere to look at - can't focus this? -->
+                <!-- TODO: Simon test and try ahead from these... -->
+                <!-- TODO: Simon - looks like the errors chart has data-testid="data-testid panel content" -->
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Comparison']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Comparison</strong> tab (bottom area).
+                </li>
+
+                <!-- TODO Make this multistep possibly-->
+                <li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='data-testid Tab Errored traces']" data-requirements="exists-reftarget">Open the <strong>Errored Traces</strong> tab and select the first trace.</li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button:has(span:contains('productcatalogservice'))"
+                    data-requirements="exists-reftarget">
+                    In the <strong>Service &amp; Operation</strong> tree, select the bottom item.
+                </li>
+
+                <li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='data-testid Tab Logs']" data-requirements="exists-reftarget">Open the <strong>Logs</strong> tab.</li>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[aria-label='Wrap lines']"
+                    data-requirements="exists-reftarget">
+                    Enable <strong>log line wrapping</strong>.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div:contains('panic')"
+                    data-requirements="exists-reftarget"
+                    data-doit="false"
+                    data-hint="Scroll to reveal the stack trace if not visible">
+                    <span class="interactive-comment">Scroll to find the <strong>stack trace</strong> for error context.</span>
+                    Observe the stack trace details.
+                </li>
+                <!-- TODO: Replace with the stack trace container selector in the Logs tab. -->
+            </ul>
+        </span>
+
+        <h2>Section 11: Use the KPI Drawer (Database)</h2>
+        <p>Open the KPI drawer for <em>productcatalog-postgres</em> and review key tabs.</p>
+        <span id="db-kpi-drawer"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#db-kpi-drawer">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget">
+                    Close any currently open drawer.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-productcatalog-postgres']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>KPI</strong> drawer for <em>productcatalog-postgres</em>.
+                </li>
+                <!-- TODO: Replace with KPI icon selector next to productcatalog-postgres. -->
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Properties']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Properties</strong> tab.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Postgres overview']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Postgres overview</strong> tab.
+                </li>
+                <!-- Note: I don't see a Postgres overview tab in the demo environment. -->
+                <!-- TODO: Simon - this is somewhere to look at - can't focus this? -->
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Logs']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Logs</strong> tab.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 12: Putting it all together</h2>
+        <p>TODO: Narrative wrap-up on hypothesis, evidence gathered, and likely root cause.</p>
+       
+        <h2>Section 13: What’s the blast radius?</h2>
+        <p>Use the Graph view to see impacted dependencies.</p>
+        <span id="blast-radius"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#blast-radius">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Graph']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment"><strong>Graph tab</strong>: pivots to a service graph to understand relationships and blast radius.</span>
+                    Switch to the <strong>Graph</strong> tab.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 14: Was the business impacted?</h2>
+        <p>Return to the Timeline and check business KPIs for <em>checkoutservice</em>.</p>
+        <span id="business-impact"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#business-impact">
+            <ul>
+                <li class="interactive" 
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Timeline']"
+                    data-requirements="exists-reftarget">
+                    Switch back to the <strong>Timeline</strong> tab.
+                </li>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-checkoutservice']"
+                    data-requirements="exists-reftarget">
+                    Open the <strong>KPI</strong> drawer for <em>checkoutservice</em>.
+                </li>
+                <!-- TODO: Replace with KPI icon selector next to checkoutservice. -->
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Business']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Business</strong> tab.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 15 (Optional): Using AI to speed up the investigation</h2>
+        <p>Generate a workbench AI analysis (if available in your environment).</p>
+        <span id="workbench-ai"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#workbench-ai">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[aria-label='Workbench AI (Preview)']"
+                    data-requirements="exists-reftarget"
+                    data-hint="Generation of an AI analysis may take a few moments.">
+                    <span class="interactive-comment"><strong>Workbench AI</strong> provides an automated narrative analysis across signals and entities.</span>
+                    Begin a Workbench AI analysis.
+                </li>
+            </ul>
+        </span>
+
+        <h2>🎉 Done!</h2>
+        <p>You have walked through the RCA workbench and related analysis flows:</p>
+        <ul>
+            <li>Navigated from an alert to the RCA workbench</li>
+            <li>Explored anomalies in services and databases</li>
+            <li>Used KPI drawers and trace/log pivots for context</li>
+            <li>Assessed blast radius and business impact</li>
+            <li>Located AI-assisted analysis and incident flows</li>
+        </ul>
+    </body>
 </html>
