@@ -29,14 +29,13 @@
                     data-reftarget="/d/rca-demo-alert/slack-rca-demo-alert"
                     data-verify="on-page:/d/rca-demo-alert/slack-rca-demo-alert"
                     data-showme="false">
-                    Open the RCA demo alert dashboard (in a new tab).
+                    Open the RCA demo alert dashboard.
                 </li>
-                <!-- If this route requires auth or a specific tenant, ensure you're logged in first. -->
             </ul>
         </span>
 
         <h2>Section 2: Jump to Investigation</h2>
-        <p>The <strong>Search Product Latency</strong> alert fired—users are experiencing slow product searches. This SLO-based alert includes a direct link to the RCA Workbench, scoped to "productcatalogservice" and connected services. In production, you'd receive this in Slack and use the link to jump straight into investigation.</p>
+        <p>The <strong>Search Product Latency</strong> alert fired—users are experiencing slow product searches. This SLO-based alert includes a direct link to the RCA Workbench, scoped to "productcatalogservice" and connected services. In production, you'd receive this in Slack and use the link to jump straight into an investigation.</p>
         
         <span id="go-to-rca-workbench"
               class="interactive"
@@ -55,8 +54,8 @@
             </ul>
         </span>
 
-        <h2>Section 3: Orient to the RCA Workbench</h2>
-        <p>You're now viewing a <strong>timeline of insights</strong> for "productcatalogservice" and connected services. Insights appear as ticks—<span style="color: #dc2626;">red</span> for errors, <span style="color: #f59e0b;">yellow</span> for warnings, <span style="color: #3b82f6;">blue</span> for changes. Notice the blue change followed by cascading red errors? That's your first clue.</p>
+        <h2>Section 3: Get Familiar with the RCA Workbench</h2>
+        <p>You're now viewing a <strong>timeline of insights</strong> for "productcatalogservice" and connected services. Insights appear as ticks — <span style="color: #dc2626;">red</span> for errors, <span style="color: #f59e0b;">yellow</span> for warnings, <span style="color: #3b82f6;">blue</span> for changes. Notice the blue change followed by cascading red errors? That's your first clue.</p>
         
         <span id="rca-orientation"
               class="interactive"
@@ -107,7 +106,7 @@
         </span>
 
         <h2>Section 4: Investigate the Initial Change</h2>
-        <p>Note the <strong style="color: #3b82f6;">blue notification</strong> at the front of the timeline, before the <span style="color: #dc2626;">red errors</span> cascaded. Let's drill into it —va feature flag change called "productCatalogReadFromPostgres" was turned on. This occurred <em>before</em> the productcatalog service (our alert trigger) started failing and cascading to connected services.</p>
+        <p>Note the <strong style="color: #3b82f6;">blue notification</strong> at the front of the timeline, before the <span style="color: #dc2626;">red errors</span> cascaded. Let's drill into it — a feature flag change called "productCatalogReadFromPostgres" was turned on. This occurred <em>before</em> the productcatalog service (our alert trigger) started failing and cascading to connected services.</p>
         
         <span id="initial-change"
               class="interactive"
@@ -159,10 +158,9 @@
             </ul>
         </span>
 
-        <h2>Section 5: Investigate Frontend Impact</h2>
-        <p><em>Skip this if your audience isn't interested in frontend observability.</em></p>
-        
-        <p>The frontend service shows a massive <span style="color: #dc2626;">red blob</span>—heavily impacted with error buildups and <strong>anomalies</strong> (OOTB detection of metrics falling outside expected range). Let's drill into the "GetProduct" endpoint anomaly—critical for an ecommerce platform where users can't buy products if they can't view them.</p>
+        <h2>Section 5: Investigate Frontend Impact</h2>     
+        <p><em>Skip this if you don't want to learn about front end observability.</em></p>   
+        <p>The frontend service shows a massive <span style="color: #dc2626;">red blob</span> — heavily impacted with error buildups and <strong>anomalies</strong> (OOTB detection of metrics falling outside expected range). Let's drill into the "GetProduct" endpoint anomaly — critical for an ecommerce platform where users can't buy products if they can't view them.</p>
         
         <span id="frontend-investigation"
               class="interactive"
@@ -200,7 +198,7 @@
         <h2>Section 6 (Optional): Quantify User Impact</h2>
         <p><em>Skip this if you skipped Section 5.</em></p>
         
-        <p>Backend anomalies found—but what about actual user impact? The <strong>KPI Drawer</strong> integrates Frontend Observability, letting us investigate browser behavior without leaving the RCA Workbench. Every service has a KPI drawer, dynamically populated based on what the knowledge graph discovered—this one includes frontend observability.</p>
+        <p>We've found backend anomalies, but what about actual user impact? The <strong>KPI Drawer</strong> integrates Frontend Observability, letting us investigate browser behavior without leaving the RCA Workbench. Every service has a KPI drawer, dynamically populated based on what the knowledge graph discovered — this one includes frontend observability.</p>
         
         <span id="user-impact"
               class="interactive"
@@ -275,12 +273,11 @@
             </ul>
         </span>
         
-        <p><strong>User impact:</strong> 1,267 errors vs 906 page loads—massive error rate degrading user experience. Errors on home, cart, and checkout pages. Core Web Vitals stable, but users frustrated and <em>revenue lost</em>.</p>
+        <p>Here we see the impact on users. 1,267 errors vs 906 page loads significantly degrades user experience. We have errors on the home, cart, and checkout pages. Core web vitals are stable, but users are frustrated and <em>revenue is being lost</em>.</p>
 
         <h2>Section 7 (Optional): Track with Grafana IRM</h2>
-        <p><em>Skip this if not interested in IRM.</em></p>
-        
-        <p><strong>Grafana IRM</strong> provides a central hub to track findings, participants, and progress. In production, "Declare Incident" from Slack creates the incident and opens a dedicated Slack channel. For this demo, we have a <strong>pre-created incident</strong> tracking our investigation with issue details and alert groups.</p>
+
+        <p><strong>Grafana IRM</strong> provides a central hub to track findings, participants, and progress. In production, you can declare incidents directly from Slack.  This creates an incident in Grafana IRM and opens a dedicated Slack channel. For this demo, we have a <strong>pre-created incident</strong> tracking our investigation with issue details and alert groups.</p>
         
         <span id="declare-incident"
               class="interactive"
@@ -299,7 +296,7 @@
                     data-targetaction="highlight"
                     data-reftarget='td.title a[href="/a/grafana-irm-app/incidents/1"]:contains("Day in the Life Demo")'
                     data-requirements="exists-reftarget">
-                    <span class="interactive-comment">Click to view the pre-created incident tracking this investigation. In production, this would have been created from the Slack alert.</span>
+                    <span class="interactive-comment">Click to view the pre-created incident tracking for this investigation. In production, this would have been created from the Slack alert.</span>
                     View the demo incident details.
                 </li>
                 
@@ -316,7 +313,7 @@
         <p><strong>IRM benefits:</strong> Centralized tracking, participant management, Slack integration, seamless handoffs—all context in one place.</p>
 
         <h2>Section 8: Investigate the Database</h2>
-        <p>The "productcatalog-postgres" service shows <span style="color: #f59e0b;">yellow warnings</span>—few insights, but the Knowledge Graph detects even small anomalies that relate to bigger problems. OOTB PostgreSQL alerts show <strong>PostgreSQLHighConnections</strong> firing intermittently.</p>
+        <p>The "productcatalog-postgres" service shows <span style="color: #f59e0b;">yellow warnings</span>.  There are few insights here, but the Knowledge Graph detects even small anomalies that relate to bigger problems. Out of the box PostgreSQL alerts show <strong>PostgreSQLHighConnections</strong> firing intermittently.</p>
         
         <span id="investigate-db"
               class="interactive"
@@ -352,16 +349,16 @@
                     data-reftarget="div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))"
                     data-requirements="exists-reftarget"
                     data-doit="false">
-                    <span class="interactive-comment">The chart shows significant spikes in database connections—unusual behavior worth investigating further.</span>
+                    <span class="interactive-comment">The chart shows significant spikes in database connections: unusual behavior worth investigating further.</span>
                     Observe the connection spike pattern.
                 </li>
             </ul>
         </span>
         
-        <p><strong>Finding:</strong> Significant connection spikes throughout the incident—unusual and likely contributing to degradation.</p>
+        <p><strong>Finding:</strong> Significant connection spikes throughout the incident.  This is unusual and likely contributing to degradation.</p>
 
         <h2>Section 9: Investigate the Product Catalog Service</h2>
-        <p>The "productcatalogservice" is at the center of this incident. Grafana combines <strong>application and infrastructure signals</strong> in one view—no context switching. Hovering reveals: latency anomalies (5 endpoints), Kubernetes pod crash looping, and /ListProducts endpoint errors. Let's check if crashes are frequent or a one-off.</p>
+        <p>The "productcatalogservice" is at the center of this incident. Grafana combines <strong>application and infrastructure signals</strong> in one view: no context switching required. Hovering reveals: latency anomalies (5 endpoints), Kubernetes pod crash looping, and /ListProducts endpoint errors. Let's check if crashes are frequent or a one-off.</p>
         
         <span id="investigate-service"
               class="interactive"
@@ -403,12 +400,12 @@
             </ul>
         </span>
         
-        <p><strong>Findings:</strong> High endpoint latencies, /ListProducts errors, and pod crash-looping—all from <strong>OOTB insights</strong> visible without switching contexts.</p>
+        <p><strong>Findings:</strong> High endpoint latencies, /ListProducts errors, and pod crash-looping—all from <strong>out of the box insights</strong> visible without switching contexts.</p>
 
         <h2>Section 10: Find the Root Cause</h2>
         <p>The <strong>KPI Drawer</strong> for productcatalogservice is dynamically populated with relevant dashboards—Properties, Service Overview (App O11y), Kubernetes, Traces, and Logs. The RCA Workbench ties together all observability signals without dashboard hunting or context switching.</p>
         
-        <p><strong>What we'll find:</strong> Go app v3.7.5 in Kubernetes • /ListProducts errors and latency • Memory well below limits (not OOM) • 100% of errors on /ListProducts with "PQ: too many clients" • Stack trace showing <strong>null pointer exception → crash → database connection failures</strong>. Root cause: feature flag introduced a bug causing null pointer exceptions and preventing database connections.</p>
+        <p>What we see is that there were errors and latency on the /ListProducts endpoint and that all of the errors show too many clients connecting to the database. Stack traces show null pointer exceptions and crashes with database connection failures. The ultimate root cause is that switching a feature flag introduced a bug causing null pointer exceptions and preventing database connections.</p>
         
         <span id="service-kpi-drawer"
               class="interactive"
@@ -454,7 +451,7 @@
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Kubernetes']" 
                     data-requirements="exists-reftarget">
-                    <span class="interactive-comment">Kubernetes dashboard shows memory consumption is low (well below 200MiB limit)—rules out OOM as the crash cause.</span>
+                    <span class="interactive-comment">Kubernetes dashboard shows memory consumption is low (well below 200MiB limit) — rules out out of memory as the crash cause.</span>
                     Open the Kubernetes tab for a comprehensive overview of the Kubernetes workload.
                 </li>
                 <li class="interactive" 
@@ -492,7 +489,7 @@
                     <span class="interactive"
                           data-targetaction="highlight"
                           data-reftarget='div[role="grid"] div[role="row"][aria-rowindex="2"] div.cell-link'>
-                        <span class="interactive-comment">Click on the first trace to open it in Explore—look for "PQ: sorry too many clients already" in the error details.</span>
+                        <span class="interactive-comment">Click on the first trace to open it in Explore — look for "PQ: sorry too many clients already" in the error details.</span>
                     </span>
                     Open the Errored traces tab and select the first trace.
                 </li>
@@ -527,8 +524,8 @@
                     data-requirements="exists-reftarget"
                     data-doit="false"
                     data-hint="Scroll to reveal the stack trace if not visible">
-                    <span class="interactive-comment">Scroll to find the first <strong>level=error</strong> log entry—this shows "too many clients" and the panic stack trace.</span>
-                    As you can see the error logs indicate the postgres database is being bombarded with connection attempts.
+                    <span class="interactive-comment">Scroll to find the first <strong>level=error</strong> log entry — this shows "too many clients" and the panic stack trace.</span>
+                    As you can see the error logs indicate the Postgres database is being bombarded with connection attempts.
                 </li>
 
                 <li class="interactive"
@@ -541,10 +538,10 @@
             </ul>
         </span>
         
-        <p><strong>Root cause found:</strong> Null pointer exception from the feature flag causing crashes and blocking database connections. Infrastructure + application + logs—all in one drawer.</p>
+        <p><strong>We're able to determine the root cause:</strong> Null pointer exceptions from switching on a feature flag caused crashes and blocked database connections. Note how we can see our infrastructure, application and logs all in one drawer.</p>
 
         <h2>Section 11: Confirm Database Impact</h2>
-        <p>We found the service bug—now verify the database side. The KPI Drawer auto-discovered this as PostgreSQL and populated postgres-specific dashboards. We'll see: auto-discovered properties, active connections spiking/dropping (matching service crashes), and "too many clients" errors confirming the connection overload.</p>
+        <p>We found the service bug — now let's verify the impact on the database. The KPI Drawer auto-discovered that we're using PostgreSQL and populated postgres-specific dashboards. We'll see: auto-discovered properties, active connections spiking/dropping (matching service crashes), and "too many clients" errors confirming the connection overload.</p>
         
         <span id="db-kpi-drawer"
               class="interactive"
@@ -577,7 +574,7 @@
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Properties']" 
                     data-requirements="exists-reftarget">
-                    <span class="interactive-comment">View properties—Grafana auto-discovered this is PostgreSQL with version, cluster, and namespace details.</span>
+                    <span class="interactive-comment">View properties: Grafana auto-discovered this is PostgreSQL with version, cluster, and namespace details.</span>
                     Open the Properties tab.
                 </li>
 
@@ -593,7 +590,7 @@
                     data-targetaction="highlight" 
                     data-reftarget="button[data-testid='data-testid Tab Logs']" 
                     data-requirements="exists-reftarget">
-                    <span class="interactive-comment">Database logs will show "too many clients" errors—confirming the connection overload from the database's perspective.</span>
+                    <span class="interactive-comment">Database logs will show "too many clients" errors, confirming the connection overload from the database's perspective.</span>
                     Open the Logs tab.
                 </li>
 
@@ -607,25 +604,26 @@
             </ul>
         </span>
         
-        <p><strong>Confirmed:</strong> Database logs show "too many clients" errors. Connection spikes sync with service crashes—the buggy service is overwhelming the database.</p>
+        <p>We've confirmed that the database logs show "too many clients" errors. Connection spikes sync with service crashes: the buggy service is overwhelming the database.</p>
 
         <h2>Section 12: Putting it all together</h2>
         
         <p><strong>Investigation recap:</strong></p>
         <ol>
             <li>A <strong style="color: #3b82f6;">feature flag</strong> "productCatalogReadFromPostgres" was toggled (blue change insight)</li>
-            <li><strong>PostgreSQL database</strong> experienced anomalous connection surges</li>
-            <li><strong>Error thresholds breached</strong> on productcatalog, frontend, and recommendation services ("/ListProducts" endpoints)</li>
-            <li><strong>Frontend</strong> showed high error rates impacting user experience</li>
-            <li><strong>productcatalog service</strong> began crash-looping</li>
+            <li><strong>The PostgreSQL database</strong> experienced anomalous connection surges</li>
+            <li><strong>Error thresholds were breached</strong> on productcatalog, frontend, and recommendation services ("/ListProducts" endpoints)</li>
+            <li><strong>Frontend</strong> service showed high error rates impacting user experience</li>
+            <li><strong>productcatalog</strong> service began crash-looping</li>
         </ol>
         
-        <p><strong>What happened:</strong> Feature flag enabled → productcatalog service switched to live postgres → bug left connections open → hit 100-connection limit → "pq: too many clients" error → no error handling → null pointer exception → crash → Kubernetes restart loop.</p>
+        <p><strong>What happened:</strong> A feature flag was enabled, introducing a bug that left database connections open.  We hit a connection limit and Postgres started reporitng "too many clients" errors.  A lack of error handling led to a null pointer exception, crash, and Kubernetes restart loop.</p>
         
-        <p><strong>Resolution:</strong> Fix connection closing and add error handling. <strong>Impact:</strong> Users can't browse/purchase. Revenue loss. Customer journey degraded.</p>
+        <p><strong>Resolution:</strong> Fix connection handling to close connections and add error handling.</p>
+        <p><strong>Impact:</strong> Users can't browse/purchase, leading to revenue loss and degredation of the customer experience.</p>
        
         <h2>Section 13: Visualize the Blast Radius</h2>
-        <p>The <strong>Graph tab</strong> shows an OOTB topology visualization of how services connect—the same knowledge graph data powering the timeline. Real-time view with no manual diagramming required.</p>
+        <p>The <strong>Graph tab</strong> shows a topology visualization of how services connect, using the same knowledge graph data powering the timeline.  It's a real-time view with no manual diagramming required.</p>
         
         <span id="blast-radius"
               class="interactive"
@@ -642,10 +640,10 @@
     </ul>
   </span>
 
-        <p><strong>Blast radius:</strong> Database at center → productcatalogservice → recommendation/checkout services. Colored indicators show cascading impact through the entire product browsing and checkout flow. Timeline shows <em>when</em>, graph shows <em>what's connected</em>.</p>
+        <p><strong>Blast radius:</strong> The database was at the center, and this affected our productcatalogservice and recommendation/checkout services. Colored indicators show a cascading impact through the entire product browsing and checkout flow. The timeline shows <em>when</em>, the graph shows <em>what's connected</em>.</p>
 
         <h2>Section 14: Quantify Business Impact</h2>
-        <p>Technical root cause found—now the business question: <strong>How much revenue did we lose?</strong> The RCA Workbench is <strong>extensible</strong>—attach custom dashboards to entity types so your curated KPIs appear automatically. For this demo, a <strong>Business</strong> dashboard is attached to checkout services, showing revenue and abandonment metrics.</p>
+        <p>Having found the technical root cause, let's examine the business question: <strong>How much revenue did we lose?</strong> The RCA Workbench is <strong>extensible</strong>: we can attach custom dashboards to entity types so your curated KPIs appear automatically. For this demo, a <strong>Business</strong> dashboard is attached to the checkout services, showing revenue and abandonment metrics.</p>
         
         <span id="business-impact"
               class="interactive"
@@ -699,14 +697,14 @@
             </ul>
         </span>
         
-        <p><strong>Business impact:</strong> $407k lost revenue • 32.4% fewer orders • 100% purchase abandonment at peak • Geographic breakdown by region.</p>
+        <p><strong>Business impact:</strong> We lost $407k in revenue and took 32.4% fewer orders. At the peak, there was 100% purchase abandonment.</p>
         
-        <p><strong>Extensibility in action:</strong> Custom dashboards appear automatically in the investigation flow—OOTB insights + your business metrics in one workflow.</p>
+        <p><strong>Extensibility in action:</strong> Custom dashboards appear automatically in the investigation flow combining out of the box insights with your business metrics in one workflow.</p>
 
         <h2>Section 15 (Optional): AI-Powered Investigation</h2>
-        <p><strong>⚠️ Experimental:</strong> Workbench AI is experimental—subject to change, no SLA/support, could be removed. But it provides tremendous value.</p>
+        <p><strong>⚠️ Experimental:</strong> Workbench AI is experimental feature!</p>
         
-        <p><strong>What it does:</strong> Automatically performs <em>all the steps we just did</em>—analyzing services, chronological sequence, KPI signals, and forming a hypothesis. Instantaneous. We didn't lead with this so you'd experience the RCA Workbench magic first and understand what's happening under the hood.</p>
+        <p><strong>What it does:</strong> Workbench AI can automatically perform all the steps we just did: analyzing services, chronological sequence, KPI signals, and forming a hypothesis. Instantaneous. We didn't lead with this so you'd experience the RCA Workbench magic first and understand what's happening under the hood.</p>
         
         <span id="workbench-ai"
               class="interactive"
@@ -724,8 +722,6 @@
             </ul>
         </span>
         
-        <p><strong>AI output:</strong> Probable impact chain matching our findings—feature flag toggle → postgres overload → cascading failures → null pointer exception. What took 14 sections manually, AI analyzes in seconds. You can now validate its findings.</p>
-
         <h2>🎉 Done!</h2>
         <p>You have walked through the RCA workbench and related analysis flows:</p>
         <ul>
