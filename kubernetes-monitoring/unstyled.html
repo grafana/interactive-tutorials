@@ -1,0 +1,298 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Explore Kubernetes Monitoring in Grafana Cloud</title>
+    </head>
+    <body>
+        <h1>Explore Your Infrastructure with Kubernetes Monitoring</h1>
+        <p>Grafana Cloud's Kubernetes Monitoring provides a comprehensive view of your Kubernetes infrastructure with powerful visualization and analysis tools. In this tutorial, you'll learn how to:
+        </p>
+
+        <h2>Overview</h2>
+
+        <p>Use the Overview page to viewport a high-level view of your Clusters, usage, and alerts. </p>
+
+        <span id="explore-overview" 
+            class="interactive" 
+            data-targetaction="sequence" 
+            data-reftarget="span#explore-overview"
+            data-requirements="navmenu-open,has-kubernetes-app" > 
+            
+            <div style="background-color: #e8f4fd; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <h4>Time range and filtering</h4>
+                <p>Use the time range tool and filtering to narrow the scope to what you're looking for.</p>
+                <ul>
+                  <li class="interactive" 
+                      data-reftarget="button[data-testid*='time-range']"
+                      data-targetaction='highlight'>
+                    Adjust the time range to view historical data - try setting it to "Last 24 hours" for better visibility.</li>
+                  <li class="interactive" 
+                      data-reftarget="input[placeholder*='cluster']"
+                      data-targetaction='highlight'>
+                    Use the cluster filter to focus on a specific cluster or view all clusters.</li>
+    
+            </div>
+        </span>    
+                
+        <h2>Search</h2>
+
+        <p>Find and navigate to any Kubernetes object using search.</p>
+        
+        <span id="search-navigate" 
+              class='interactive' 
+              data-targetaction='sequence' 
+              data-reftarget="span#search-navigate"
+              data-requirements="has-kubernetes-app">
+            <ul>
+              <li class="interactive" 
+                  data-reftarget="input[placeholder*='Search']"
+                  data-targetaction='formfill' data-targetvalue='nginx'>
+                Use the search bar to find a specific workload. Try searching for "nginx" or any workload name you know exists.</li>
+
+              <li class="interactive" data-targetaction='highlight' data-reftarget="div[data-testid*='search-results'] a:first-child">
+                Click on the first search result to open that workload's detail page.
+              </li>
+
+              <li style="background-color: #fff8dc; padding: 10px; margin: 10px 0;">
+                💡 <strong>Navigation Tip:</strong> Notice the breadcrumb navigation at the top. You can click any level to jump back up the hierarchy.
+              </li>
+
+              <li class="interactive" data-reftarget="button[data-testid*='view-pods']" data-targetaction='highlight'>
+                On the workload detail page, look for links to view the pods in this workload.
+              </li>
+
+              <li class="interactive" data-hint="This shows you the hierarchical structure: Workload → Pods → Containers"
+                  data-reftarget="a[data-testid*='pod-name']:first-child"
+                  data-targetaction='highlight'>
+                Click on a pod name to drill down to the pod level and see individual pod metrics.
+              </li>
+            </ul>
+
+            <div style="background-color: #f5f5f5; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <h4>Understanding the Kubernetes Hierarchy</h4>
+                <p>Kubernetes Monitoring reflects the natural structure of Kubernetes:</p>
+                <ul>
+                    <li><strong>Clusters</strong> → contain multiple nodes and namespaces</li>
+                    <li><strong>Namespaces</strong> → organize workloads within a cluster</li>
+                    <li><strong>Workloads</strong> → deployments, daemonsets, statefulsets, etc.</li>
+                    <li><strong>Pods</strong> → individual instances of your applications</li>
+                    <li><strong>Containers</strong> → the actual processes running your code</li>
+                </ul>
+            </div>
+        </span>
+
+        <h2>Step 4: Analyze Performance with Specialized Tabs</h2>
+
+        <p>Each detail page offers specialized views for different aspects of performance. Let's explore the CPU and Memory tabs.</p>
+
+        <span id="analyze-performance" 
+              class='interactive' 
+              data-targetaction='sequence' 
+              data-reftarget="span#analyze-performance"
+              data-requirements="has-kubernetes-app">
+            <ul>
+              <li class="interactive" 
+                  data-reftarget="button[data-testid*='cpu-tab']"
+                  data-targetaction='highlight'>
+                Click the <strong>CPU</strong> tab to see detailed CPU analysis.</li>
+
+              <li style="background-color: #f0f9ff; padding: 10px; margin: 10px 0;">
+                📊 <strong>What you're seeing:</strong>
+                <ul>
+                    <li><strong>Usage vs. Capacity:</strong> How much CPU is being used compared to what's available</li>
+                    <li><strong>Usage vs. Requests:</strong> How actual usage compares to what was requested</li>
+                    <li><strong>Throttling:</strong> When containers are being limited due to resource constraints</li>
+                </ul>
+              </li>
+
+              <li class="interactive" data-reftarget="button[data-testid*='memory-tab']" data-targetaction='highlight'>
+                Switch to the <strong>Memory</strong> tab to see memory utilization patterns.
+              </li>
+
+              <li class="interactive" data-hint="Look for containers that are using significantly more memory than requested"
+                  data-reftarget="div[data-testid*='memory-usage-chart']"
+                  data-targetaction='highlight'>
+                Examine the memory usage graphs. Look for any containers approaching their memory limits.
+              </li>
+
+              <li class="interactive" data-reftarget="button[data-testid*='network-tab']" data-targetaction='highlight'>
+                Click the <strong>Network</strong> tab to understand bandwidth usage and potential network saturation.
+              </li>
+            </ul>
+        </span>
+
+        <h2>Step 5: Investigate Alerts and Issues</h2>
+
+        <p>Learn how to quickly identify and investigate issues using the alerts and troubleshooting features.</p>
+
+        <span id="investigate-alerts" 
+              class='interactive' 
+              data-targetaction='sequence' 
+              data-reftarget="span#investigate-alerts"
+              data-requirements="has-kubernetes-app">
+            <ul>
+              <li class="interactive" 
+                  data-reftarget="a[href*='/alerts']"
+                  data-targetaction='highlight'>
+                Navigate to the <strong>Alerts</strong> page to see all Kubernetes-related alerts.</li>
+
+              <li class="interactive" data-reftarget="th[data-testid*='firing-since']" data-targetaction='highlight'>
+                Sort alerts by "Firing Since" to prioritize the most critical or longest-running issues.
+              </li>
+
+              <li class="interactive" data-hint="This takes you directly to the problematic component"
+                  data-reftarget="a[data-testid*='alert-target']:first-child"
+                  data-targetaction='highlight'>
+                Click on a pod or container name in an alert to jump directly to its detail page.
+              </li>
+
+              <li style="background-color: #fff3cd; padding: 10px; margin: 10px 0;">
+                🔧 <strong>Troubleshooting Tools Available:</strong>
+                <ul>
+                    <li><strong>Run Sift Investigation:</strong> Automated diagnostic checks</li>
+                    <li><strong>Explore buttons:</strong> Deep-dive into raw metrics</li>
+                    <li><strong>RCA Workbench:</strong> Root cause analysis (requires Asserts)</li>
+                    <li><strong>Logs & Events tab:</strong> View related log entries</li>
+                </ul>
+              </li>
+
+              <li class="interactive" data-reftarget="button[data-testid*='run-sift']" data-targetaction='button'>
+                If available, try clicking "Run Sift Investigation" to start an automated diagnostic.
+              </li>
+            </ul>
+        </span>
+
+        <h2>Step 6: Optimize Costs and Efficiency</h2>
+
+        <p>Use the cost analysis and efficiency tools to optimize your Kubernetes resource usage and spending.</p>
+
+        <span id="optimize-costs" 
+              class='interactive' 
+              data-targetaction='sequence' 
+              data-reftarget="span#optimize-costs"
+              data-requirements="has-kubernetes-app">
+            <ul>
+              <li class="interactive" 
+                  data-reftarget="a[href*='/cost']"
+                  data-targetaction='highlight'>
+                Navigate to the <strong>Cost</strong> page to analyze your Kubernetes spending.</li>
+
+              <li class="interactive" data-reftarget="button[data-testid*='savings-tab']" data-targetaction='highlight'>
+                Click the <strong>Savings</strong> tab to see optimization recommendations.
+              </li>
+
+              <li style="background-color: #f0fff0; padding: 10px; margin: 10px 0;">
+                💰 <strong>Cost Optimization Insights:</strong>
+                <ul>
+                    <li><strong>Stranded Resources:</strong> Unused CPU/memory you're paying for</li>
+                    <li><strong>Over-provisioned Workloads:</strong> Resources that could be rightsized</li>
+                    <li><strong>Cost per Namespace:</strong> Understanding which teams/apps cost the most</li>
+                </ul>
+              </li>
+
+              <li class="interactive" data-reftarget="a[href*='/efficiency']" data-targetaction='highlight'>
+                Navigate to the <strong>Efficiency</strong> page to see resource utilization patterns.
+              </li>
+
+              <li class="interactive" data-hint="Look for workloads with low average usage but high resource requests"
+                  data-reftarget="table[data-testid*='efficiency-table'] tr:first-child"
+                  data-targetaction='highlight'>
+                Click on a workload in the efficiency table to see detailed resource usage analysis.
+              </li>
+            </ul>
+        </span>
+
+        <h2>Step 7: Use Machine Learning Predictions</h2>
+
+        <p>Leverage Grafana Cloud's ML capabilities to predict future resource usage and detect anomalies.</p>
+
+        <span id="use-ml-predictions" 
+              class='interactive' 
+              data-targetaction='sequence' 
+              data-reftarget="span#use-ml-predictions"
+              data-requirements="has-kubernetes-app">
+            <ul>
+              <li style="background-color: #e8f4fd; padding: 10px; margin: 10px 0;">
+                🤖 <strong>Prerequisites:</strong> Machine Learning features require the ML plugin to be enabled on your Grafana Cloud stack.
+              </li>
+
+              <li class="interactive" 
+                  data-reftarget="button[data-testid*='predict-cpu']"
+                  data-targetaction='button'>
+                Look for and click a <strong>"Predict CPU"</strong> button on any detail page to see future CPU usage predictions.</li>
+
+              <li class="interactive" data-reftarget="button[data-testid*='predict-mem']" data-targetaction='button'>
+                Try the <strong>"Predict Mem Usage"</strong> button to forecast memory requirements.
+              </li>
+
+              <li style="background-color: #fff8dc; padding: 10px; margin: 10px 0;">
+                📈 <strong>Using Predictions:</strong>
+                <ul>
+                    <li><strong>Capacity Planning:</strong> Ensure resources will be available during predicted spikes</li>
+                    <li><strong>Cost Optimization:</strong> Right-size resources based on predicted usage patterns</li>
+                    <li><strong>Scaling Decisions:</strong> Know when to scale up or down proactively</li>
+                </ul>
+              </li>
+
+              <li class="interactive" data-hint="This helps identify pods behaving differently from their peers"
+                  data-reftarget="a[data-testid*='outlier-cpu']"
+                  data-targetaction='highlight'>
+                On multi-pod workloads, look for "outliers by CPU" links to identify problematic pods.
+              </li>
+            </ul>
+        </span>
+
+        <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0;">
+            <h3>🎉 Congratulations!</h3>
+            <p>You've now mastered the key features of Grafana Cloud's Kubernetes Monitoring! You can:</p>
+            <ul>
+                <li>✅ Navigate efficiently through your Kubernetes infrastructure</li>
+                <li>✅ Analyze performance using specialized views and tabs</li>
+                <li>✅ Investigate alerts and troubleshoot issues systematically</li>
+                <li>✅ Optimize costs and improve resource efficiency</li>
+                <li>✅ Use ML predictions for proactive capacity planning</li>
+            </ul>
+        </div>
+
+        <h2>Advanced Features & Next Steps</h2>
+
+        <div style="background-color: #e8f4fd; padding: 20px; margin: 20px 0; border-radius: 8px;">
+            <h3>🚀 Explore Additional Capabilities</h3>
+            
+            <h4>📊 Storage & Persistent Volumes</h4>
+            <ul>
+                <li><strong>Storage Tab:</strong> Monitor PV/PVC usage, storage classes, and I/O performance</li>
+                <li><strong>Volume Status:</strong> Track persistent volume binding and health</li>
+                <li><strong>Throughput & IOPS:</strong> Understand storage performance bottlenecks</li>
+            </ul>
+
+            <h4>🌱 Energy & Sustainability</h4>
+            <ul>
+                <li><strong>Energy Tab:</strong> View power consumption by workloads and nodes</li>
+                <li><strong>Kepler Integration:</strong> Understand the environmental impact of your workloads</li>
+                <li><strong>Green Computing:</strong> Optimize for both performance and sustainability</li>
+            </ul>
+
+            <h4>🔍 Deep Troubleshooting</h4>
+            <ul>
+                <li><strong>Logs & Events:</strong> Correlate metrics with log entries and Kubernetes events</li>
+                <li><strong>Application Observability:</strong> Jump to APM data for your applications</li>
+                <li><strong>Trace Integration:</strong> View distributed traces alongside infrastructure metrics</li>
+                <li><strong>Cloud Provider Links:</strong> Navigate directly to AWS EC2, GCP, or Azure resources</li>
+            </ul>
+
+            <h3>📚 Best Practices</h3>
+            <ul>
+                <li><strong>Set Meaningful Time Ranges:</strong> Use appropriate time windows for your analysis</li>
+                <li><strong>Bookmark Key Views:</strong> Save frequently-used filtered views</li>
+                <li><strong>Use Filters Effectively:</strong> Combine cluster, namespace, and time filters</li>
+                <li><strong>Leverage Historical Data:</strong> Compare current state with past performance</li>
+                <li><strong>Monitor Deleted Objects:</strong> Use historical views to understand past issues</li>
+            </ul>
+        </div>
+
+        <p><em>Happy monitoring! You now have the skills to effectively manage and optimize your Kubernetes infrastructure with Grafana Cloud. 🚀📊</em></p>
+        
+    </body>
+</html>
