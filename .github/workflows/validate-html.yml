@@ -1,0 +1,115 @@
+name: Validate HTML
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate-html:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+      
+    - name: Find all unstyled.html files
+      id: find-html-files
+      run: |
+        HTML_FILES=$(find . -name "unstyled.html" -type f)
+        echo "Found HTML files:"
+        echo "$HTML_FILES"
+        echo "html_files<<EOF" >> $GITHUB_OUTPUT
+        echo "$HTML_FILES" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+        # Count files
+        FILE_COUNT=$(echo "$HTML_FILES" | wc -l)
+        echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
+              
+    - name: Validate HTML files
+      run: |
+        echo "Validating HTML files for well-formedness..."
+        
+        # Read the HTML files from the previous step
+        HTML_FILES="${{ steps.find-html-files.outputs.html_files }}"
+        FILE_COUNT="${{ steps.find-html-files.outputs.file_count }}"
+        
+        echo "Found $FILE_COUNT HTML file(s) to validate"
+        
+        # Initialize counters
+        VALID_FILES=0
+        INVALID_FILES=0
+        TOTAL_FILES=0
+        
+        # Process each HTML file
+        while IFS= read -r file; do
+          if [ -n "$file" ]; then
+            TOTAL_FILES=$((TOTAL_FILES + 1))
+            echo ""
+            echo "🔍 Validating: $file"
+            
+            # Check if file exists and is readable
+            if [ ! -f "$file" ]; then
+              echo "❌ Error: File $file does not exist"
+              INVALID_FILES=$((INVALID_FILES + 1))
+              continue
+            fi
+            
+            # Validate HTML syntax
+            python3 .github/scripts/validate_html.py "$file" syntax 2>&1
+            
+            if [ $? -eq 0 ]; then
+              echo "✅ $file is valid HTML"
+              VALID_FILES=$((VALID_FILES + 1))
+            else
+              echo "❌ $file has HTML validation errors"
+              INVALID_FILES=$((INVALID_FILES + 1))
+            fi
+          fi
+        done <<< "$HTML_FILES"
+        
+        echo ""
+        echo "📊 Validation Summary:"
+        echo "  Total files processed: $TOTAL_FILES"
+        echo "  Valid files: $VALID_FILES"
+        echo "  Invalid files: $INVALID_FILES"
+        
+        if [ $INVALID_FILES -gt 0 ]; then
+          echo ""
+          echo "❌ HTML validation failed! $INVALID_FILES file(s) have errors."
+          exit 1
+        else
+          echo ""
+          echo "🎉 All HTML files are well-formed!"
+        fi
+      
+    - name: Additional HTML structure checks
+      run: |
+        echo "Performing additional HTML structure validation..."
+        
+        HTML_FILES="${{ steps.find-html-files.outputs.html_files }}"
+        
+        # Check each file for basic HTML structure requirements
+        while IFS= read -r file; do
+          if [ -n "$file" ]; then
+            echo ""
+            echo "🔍 Checking structure of: $file"
+            
+            # Check HTML structure
+            python3 .github/scripts/validate_html.py "$file" structure 2>&1
+            
+            if [ $? -ne 0 ]; then
+              echo "❌ Structure validation failed for $file"
+              exit 1
+            fi
+          fi
+        done <<< "$HTML_FILES"
+        
+        echo ""
+        echo "✅ All HTML files passed structure validation!"
