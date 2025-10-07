@@ -1,0 +1,225 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafana Alerting 101</title>
+  </head>
+  <body>
+    <h1>Grafana alerting 101</h1>
+
+    <p>
+      Welcome to your Grafana Alerting journey! In this interactive tutorial,
+      we'll guide you through creating and testing your first alert in Grafana.
+      By the end, you'll know how to:
+    </p>
+    <ul>
+      <li>Navigate to the Alerting section in Grafana</li>
+      <li>Create a contact point to receive notifications</li>
+      <li>Build your first alert rule</li>
+      <li>Trigger and receive an alert notification</li>
+    </ul>
+
+    <h2>Section 1: Create a contact point</h2>
+    <p>
+      Alerts need somewhere to go! Let’s configure a <strong>contact point</strong>
+      to tell Grafana how to notify you when an alert fires.
+    </p>
+
+    <span id="setup-contactpoint"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#setup-contactpoint">
+      <ul>
+        <li class="interactive"
+            data-reftarget="a[data-testid='data-testid Nav menu item'][href='/alerting']"
+            data-targetaction="highlight">
+          Click <strong>Alerting</strong> in the left-hand menu to manage alerting.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="a[href='/alerting/notifications']"
+            data-targetaction="highlight">
+          Go to <strong>Contact points</strong> in the Alerting section.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="a[aria-label='add contact point']"
+            data-targetaction="highlight">
+          Click <strong>Add contact point</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='name']"
+            data-targetaction="formfill"
+            data-targetvalue="email-alerts">
+          Name your contact point <strong>email-alerts</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='contact-point-type-items.0.']"
+            data-targetaction="formfill"
+            data-targetvalue="Email">
+          Select <strong>Email</strong> as the notification method.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="textarea[id='items.0.settings.addresses']"
+            data-targetaction="formfill"
+            data-targetvalue="your@email.com">
+          Enter your email address so Grafana can send alerts to you.
+        </li>
+
+        <li class="interactive" data-targetaction="multistep">
+          <span class="interactive" data-targetaction="button" data-reftarget="Test"></span>
+          <span class="interactive" data-targetaction="button" data-reftarget="Send test notification"></span>
+          Click <strong>Test</strong> and then <strong>Send test notification</strong>. You should receive a test email.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[type='submit']"
+            data-targetaction="highlight">
+          Click <strong>Save contact point</strong> to finish.
+        </li>
+      </ul>
+    </span>
+
+    <h2>Section 2: Create an alert rule</h2>
+    <p>
+      Now that Grafana knows where to send alerts, let’s define <strong>when</strong>
+      an alert should fire.
+    </p>
+
+    <h3>Create an alert query</h3>
+    <p>
+      We'll start by creating an alert query. This is a PromQL query that will be used to determine what data to alert on.
+    </p>
+
+    <span id="create-alert"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#create-alert">
+      <ul>
+        <li class="interactive"
+            data-reftarget="a[data-testid='data-testid Nav menu item'][href='/alerting/list']"
+            data-targetaction="highlight">
+          Navigate to the <strong>Alert rules</strong> page.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="a[href='alerting/new/alerting']"
+            data-targetaction="highlight">
+          Click <strong>New alert rule</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='name']"
+            data-targetaction="formfill"
+            data-targetvalue="High CPU Usage">
+          Name your alert rule <strong>High CPU Usage</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[data-testid='data-testid Select a data source']"
+            data-targetaction="formfill"
+            data-targetvalue="prometheus">
+          Select your <strong>prometheus</strong> data source.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="textarea.inputarea"
+            data-targetaction="formfill"
+            data-targetvalue="avg(node_cpu_seconds_total{mode='system'})">
+          Enter a PromQL query like:
+          <pre>avg(node_cpu_seconds_total{mode='system'})</pre>
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[type='number']"
+            data-targetaction="formfill"
+            data-targetvalue="0.5">
+          Set a threshold of <strong>0.5</strong> to trigger when average CPU usage is above 50%.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[data-testid='data-testid alert-rule preview-button']"
+            data-targetaction="highlight">
+          Click <strong>Preview</strong> to see the alert rule in action.
+        </li>
+
+        <li class="interactive" data-targetaction="multistep">
+          <span class="interactive" data-targetaction="button" data-reftarget="New folder"></span>
+          <span class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='data-testid alert-rule name-folder-name-field']" data-targetvalue="Alerts"></span>
+          <span class="interactive" data-targetaction="button" data-reftarget="Create"></span>
+          Click the <strong>New folder</strong> button, then create an <strong>Alerts</strong> folder to store the alert rule.
+        </li>
+      </ul>
+    </span>
+
+    <h3>Define an evaluation group</h3>
+    <p>
+      Now that we have an alert query, we need to define an evaluation group. This is allows you to define how often the alert rule should be evaluated.
+    </p>
+
+    <span id="define-evaluation-group"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#define-evaluation-group">
+      <ul>
+        <li class="interactive" data-targetaction="multistep">
+          <span class="interactive" data-targetaction="button" data-reftarget="New evaluation group"></span>
+          <span class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='data-testid alert-rule new-evaluation-group-name']" data-targetvalue="Default"></span>
+          <span class="interactive" data-targetaction="button" data-reftarget="10s"></span>
+          <span class="interactive" data-targetaction="button" data-reftarget="Create"></span>
+          Click the <strong>New evaluation group</strong> button, then create a new evaluation group named <strong>Default</strong> with a <strong>10s</strong> interval.
+        </li>
+
+        <li class="interactive"
+          data-targetaction="formfill"
+          data-reftarget="input[id='eval-for-input']"
+          data-targetvalue="0s">
+          Enter <strong>0s</strong> as the evaluation groups Pending period.
+        </li>
+      </ul>
+    </span>
+
+    <h3>Configure the notifications</h3>
+    <p>
+      Now that we have an evaluation group, we need to configure how the alert rule should be notified.
+    </p>
+    
+    <span id="define-notification-policy"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#define-notification-policy">
+      <ul>
+
+        <li class="interactive"
+            data-reftarget="div[data-testid='contact-point-picker'] div[data-testid='input-wrapper']"
+            data-targetaction="formfill"
+            data-targetvalue="email-alerts"
+            data-doit="false">
+          Choose <strong>email-alerts</strong> as the notification method.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="Save"
+            data-targetaction="button">
+          Click <strong>Save</strong> to save the alert rule.
+        </li>
+      </ul>
+    </span>
+
+    <h2>🎉 Congratulations!</h2>
+    <p>
+      You now have a new alert rule that will notify you via email when the average CPU usage is above 50%.
+    </p>
+    <p>
+      Well done! You now know how to:
+    </p>
+    <ul>
+      <li>✅ Create a contact point (notification destination)</li>
+      <li>✅ Send a test alert and confirm delivery</li>
+      <li>✅ Build and configure an alert rule based on a PromQL query</li>
+    </ul>
+  </body>
+</html>
