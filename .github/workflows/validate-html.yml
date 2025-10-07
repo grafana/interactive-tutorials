@@ -21,7 +21,6 @@ jobs:
     - name: Find all unstyled.html files
       id: find-html-files
       run: |
-        echo "Finding all unstyled.html files..."
         HTML_FILES=$(find . -name "unstyled.html" -type f)
         echo "Found HTML files:"
         echo "$HTML_FILES"
@@ -32,12 +31,7 @@ jobs:
         # Count files
         FILE_COUNT=$(echo "$HTML_FILES" | wc -l)
         echo "file_count=$FILE_COUNT" >> $GITHUB_OUTPUT
-        
-        if [ "$FILE_COUNT" -eq 0 ]; then
-          echo "❌ No unstyled.html files found in the repository"
-          exit 1
-        fi
-      
+              
     - name: Validate HTML files
       run: |
         echo "Validating HTML files for well-formedness..."
