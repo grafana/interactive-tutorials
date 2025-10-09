@@ -49,6 +49,24 @@ Examples:
 - `data-testid` values under Grafana core are more stable than CSS classes. Favor them whenever available.
 - Avoid selecting by auto-generated class names or deep DOM nesting; use attributes (`data-testid`, `href`, `aria-*`, `id`) instead.
 
+## Unsupported selectors
+
+Some CSS pseudo-classes are **not supported** in our selector engine. Avoid these:
+
+| Unsupported Selector | Use Instead        | Example                                                                     |
+| -------------------- | ------------------ | --------------------------------------------------------------------------- |
+| `:first`             | `:nth-match(1)`    | `div[data-cy="item"]:nth-match(1)` instead of `div[data-cy="item"]:first`  |
+| `:last`              | `:nth-match(-1)`   | `div[data-cy="item"]:nth-match(-1)` instead of `div[data-cy="item"]:last`  |
+
+**Why `:nth-match()`?**
+- `:nth-match(1)` selects the first element matching the entire selector
+- `:first` is ambiguous in complex selectors and not widely supported
+- Use `:nth-match(1)` for the first match, `:nth-match(-1)` for the last
+
+**Note on auto-generated CSS classes:**
+- Avoid classes like `.css-8mjxyo`, `.css-1fg2lur` - these are auto-generated and change between builds
+- Use semantic attributes (`data-cy`, `data-testid`, `aria-label`) or stable structural selectors instead
+
 ## Contributing more mappings
 
 When you find a reliable selector, contribute it here with a short note so authors can reuse stable patterns.

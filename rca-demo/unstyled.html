@@ -27,7 +27,8 @@
                 <li class="interactive"
                     data-targetaction="navigate"
                     data-reftarget="/d/rca-demo-alert/slack-rca-demo-alert"
-                    data-verify="on-page:/d/rca-demo-alert/slack-rca-demo-alert">
+                    data-verify="on-page:/d/rca-demo-alert/slack-rca-demo-alert"
+                    data-showme="false">
                     Open the RCA demo alert dashboard (in a new tab).
                 </li>
                 <!-- If this route requires auth or a specific tenant, ensure you're logged in first. -->
@@ -43,8 +44,9 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="navigate"
-                    data-reftarget="/a/grafana-asserts-app/assertions?start=1759049400000&end=1759057200000&search=productcatalogservice%20connected%20services&view=BY_ENTITY"
-                    data-verify="on-page:/a/grafana-asserts-app/assertions">
+                    data-reftarget="/a/grafana-asserts-app/assertions?start=1759222872683&end=1759228903317&search=productcatalogservice%20connected%20services&view=BY_ENTITY"
+                    data-verify="on-page:/a/grafana-asserts-app/assertions"
+                    data-showme="false">
                     Open the RCA workbench at the prepared time range and filter.
                 </li>
                 <!-- NOTE: If the time range/filters differ in your environment, adjust the URL params above. -->
@@ -84,16 +86,6 @@
                     <span class="interactive-comment"><strong>Timeline tab</strong>: returns to the timeline-centric view.</span>
                     Inspect the Timeline tab control.
                 </li>
-
-                <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='rca-kpi-icon']"
-                    data-requirements="exists-reftarget"
-                    data-doit="false">
-                    <span class="interactive-comment"><strong>KPI icon</strong>: opens a drawer with service/database KPIs, properties, traces, and logs.</span>
-                    Locate the KPI icon for a selected entity.
-                </li>
-                <!-- TODO: Replace with the actual selector for the KPI icon adjacent to an entity. -->
             </ul>
         </span>
 
@@ -104,15 +96,44 @@
               data-targetaction="sequence"
               data-reftarget="span#initial-change">
             <ul>
-                <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:div[data-testid='rca-insight-item']:first-of-type"
-                    data-requirements="exists-reftarget"
-                    data-doit="false">
-                    <span class="interactive-comment">Highlight the first <strong>insight</strong> for the incident, e.g. <em>productCatalogReadFromPostgres</em> feature flag state change.</span>
-                    Examine the first insight.
+                
+                <li class="interactive" data-targetaction="multistep">
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('flagd'))"
+                          data-requirements="exists-reftarget"></span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('amend'))"
+                          data-requirements="exists-reftarget"></span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))"
+                          data-requirements="exists-reftarget"></span>
+                    First, fully expand the service entry named <b>flagd</b>.
                 </li>
-                <!-- NOTE: If demo data lacks this insight, this will remain a show-only explanation. Adjust when data is available. -->
+
+                <li class="interactive"
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))">
+                        <span class="interactive-comment">
+                            Hover over the <b>FeatureFlagStateChange</b> entry to reveal the insight icon.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)">
+                        <span class="interactive-comment">
+                            Hover over the insights icon to reveal the insights.
+                        </span>
+                    </span>
+                    Hover over the <b>FeatureFlagStateChange</b> entry, and then hover over the insight icon to reveal the insight.
+                </li>
             </ul>
         </span>
 
@@ -125,30 +146,24 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:div[data-testid='rca-frontend-timeline-red-blob']"
-                    data-requirements="exists-reftarget"
-                    data-doit="false"
-                    data-hint="Hover in the UI to reveal tooltip details">
-                    <span class="interactive-comment">This area shows a large cluster of <strong>errors</strong> (red). Hovering reveals details.</span>
-                    Observe the red cluster in the Frontend timeline.
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))"
+                    data-requirements="exists-reftarget">
+                    Expand the service entry named <b>frontend</b>.
                 </li>
-                <!-- TODO: Replace selector to target the red anomaly cluster in the frontend service timeline. -->
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='entity-frontend-expand']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('anomaly'))"
                     data-requirements="exists-reftarget">
-                    Expand the <strong>Frontend</strong> service anomaly details.
+                    Expand the section named <b>anomaly</b>.
                 </li>
-                <!-- TODO: Replace selector to click the Frontend entity to expand its anomaly tree. -->
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:a[data-testid='endpoint-link'][href$='/Product']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalogService/GetProduct'])"
                     data-requirements="exists-reftarget">
-                    Select the <strong>GET /Product</strong> endpoint.
+                    Click on the endpoint that ends with <b>/GetProduct</b>.
                 </li>
-                <!-- TODO: Replace with actual endpoint link selector ending with /Product. -->
             </ul>
         </span>
 
@@ -160,32 +175,75 @@
               data-reftarget="span#user-impact">
             <ul>
                 <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='entity-open']"
-                    data-requirements="exists-reftarget">
-                    Open the <strong>Entity</strong> view for <em>Frontend</em>.
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))">
+                        <span class="interactive-comment">
+                            Hover over the <b>frontend</b> service to reveal the Entity icon.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend')) button:nth-of-type(3)">
+                        <span class="interactive-comment">
+                            Click the <b>Entity icon</b>.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Service'))">
+                        <span class="interactive-comment">
+                            Click to expand the <b>Service</b> section.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='entity-list-item']:has(p:contains('frontendproxy'))">
+                        <span class="interactive-comment">
+                            Click on the <b>frontendproxy</b> entry.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Frontend'))">
+                        <span class="interactive-comment">
+                            Click to expand the <b>Frontend</b> section.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>frontend-client</strong> entity to reveal action buttons.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) button:nth-of-type(3)">
+                        <span class="interactive-comment">
+                            Click the <b>dashboard button</b> (grid icon) to open Frontend observability.
+                        </span>
+                    </span>
+                    Explore the frontend using the KPI drawer.
                 </li>
-                <!-- TODO: Replace with the entity-open icon/button selector on the Frontend row. -->
-
+                <!-- Get them to close the drawer so we can continue with the next steps!-->
                 <li class="interactive"
-                    data-targetaction="button"
-                    data-reftarget="Services"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
                     data-requirements="exists-reftarget">
-                    In the popup, choose <strong>Services</strong>.
-                </li>
-                <!-- TODO: Ensure the popup contains a clickable item labeled "Services". -->
-
-                <li class="interactive" data-targetaction="multistep">
-                    <span class="interactive" data-targetaction="highlight" data-reftarget="TODO-REPLACE:button[data-testid='expand-front-end-proxy']" data-requirements="exists-reftarget"></span>
-                    <span class="interactive" data-targetaction="highlight" data-reftarget="TODO-REPLACE:button[data-testid='open-frontend']" data-requirements="exists-reftarget"></span>
-                    Expand <strong>Front End proxy</strong>, then open <strong>Frontend</strong> and click its <strong>KPI</strong> icon.
-                </li>
-                <!-- TODO: Replace with selectors for expanding Front End proxy, selecting Frontend, and its KPI icon. -->
+                    <span class="interactive-comment">Click the <strong>Close</strong> icon to close the drawer.</span>
+                    Close the KPI drawer when you are done.
+                </li>  
             </ul>
         </span>
 
         <h2>Section 7 (Optional): Declare an Incident</h2>
-        <p>This flow may not be available from this entry point. Use as narrative only.</p>
+        <p>At this point, we might want to declare an incident using Grafana IRM.</p>
+        <p>We won't do this now, but know that it's available from the IRM menu.</p>
         <span id="declare-incident"
               class="interactive"
               data-targetaction="sequence"
@@ -193,18 +251,18 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='declare-incident']"
-                    data-requirements="exists-reftarget"
+                    data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-irm-app/incidents']"
+                    data-requirements="navmenu-open,exists-reftarget"
                     data-doit="false">
-                    <span class="interactive-comment">If available from the alert context, <strong>Declare Incident</strong> starts incident tracking. From a static dashboard image this may be unavailable.</span>
-                    Explain the Declare Incident entry point.
+                    <span class="interactive-comment"><strong>Incidents</strong>: view, create, and manage incidents.</span>
+                    An incident can be created from the IRM menu.
                 </li>
-                <!-- TODO: Only enable actionable click if a real button is present in your environment. -->
             </ul>
+            <!-- TODO what if the main menu isn't open? -->
         </span>
 
         <h2>Section 8: Investigate the Database</h2>
-        <p>Focus on <em>productcatalog-postgres</em> and its failures.</p>
+        <p>Let's see what's going on with the <em>productcatalog-postgres</em> service.</p>
         <span id="investigate-db"
               class="interactive"
               data-targetaction="sequence"
@@ -212,27 +270,32 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='entity-productcatalog-postgres']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))"
                     data-requirements="exists-reftarget">
-                    Select <strong>productcatalog-postgres</strong>.
+                    Expand the service entry named <strong>productcatalog-postgres</strong>.
                 </li>
-                <!-- TODO: Replace with the entity row selector/button for productcatalog-postgres. -->
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='entity-section-failure']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
                     data-requirements="exists-reftarget">
-                    Open the <strong>failure</strong> section.
+                    Expand the section named <b>failure</b>.
                 </li>
-                <!-- TODO: Replace with selector for the failure section toggle. -->
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:a[data-testid='assertion-PostgreSQLHighConnections']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('PostgreSQLHighConnections'))"
                     data-requirements="exists-reftarget">
-                    Click <strong>PostgreSQLHighConnections</strong>.
+                    Expand the section named <b>PostgreSQLHighConnections</b>.
                 </li>
-                <!-- TODO: Replace with selector for the specific assertion link/item. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    This insight shows connection spikes on the PostgreSQL database.
+                </li>
             </ul>
         </span>
 
@@ -245,82 +308,143 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='entity-productcatalogservice']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))"
                     data-requirements="exists-reftarget">
-                    Select <strong>productcatalogservice</strong>.
+                    Expand the service entry named <b>productcatalogservice</b>.
                 </li>
-                <!-- TODO: Replace with the entity row selector/button for productcatalogservice. -->
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='entity-section-failure']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
                     data-requirements="exists-reftarget">
-                    Open the <strong>failure</strong> section, then click <strong>KubePodCrashLooping</strong>.
+                    Expand the section named <b>failure</b>.
                 </li>
-                <!-- TODO: If KubePodCrashLooping is a nested item, add a more specific selector. -->
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='entity-section-failure']"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='KubePodCrashLooping'])"
                     data-requirements="exists-reftarget">
-                    Collapse the <strong>failure</strong> section.
+                    Click on <b>KubePodCrashLooping</b>.
                 </li>
-                <!-- TODO: If collapse uses a different control, update the selector accordingly. -->
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    Hover over the timeline to see more details.
+                </li>
             </ul>
         </span>
 
         <h2>Section 10: Use the KPI Drawer (Service)</h2>
         <p>Open the KPI drawer for <em>productcatalogservice</em> and traverse tabs for deeper context.</p>
+        <!-- TODO: Change this to a guided sequence -->
+        <!-- guess at the kpi drawer selector: -->
+        <!-- "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')) button:nth-of-type(4)" -->
         <span id="service-kpi-drawer"
               class="interactive"
               data-targetaction="sequence"
               data-reftarget="span#service-kpi-drawer">
             <ul>
                 <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-productcatalogservice']"
-                    data-requirements="exists-reftarget">
-                    Open the <strong>KPI</strong> drawer for <em>productcatalogservice</em>.
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>productcatalogservice</strong> service to reveal the KPI icon.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <b>KPI icon</b>.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="button[data-testid='data-testid Tab Properties']">
+                        <span class="interactive-comment">
+                            Click the <b>Properties</b> tab.
+                        </span>
+                    </span>
+                    Explore the properties available in the KPI drawer.
                 </li>
-                <!-- TODO: Replace with KPI icon selector next to productcatalogservice. -->
 
-                <li class="interactive" data-targetaction="button" data-reftarget="Properties" data-requirements="exists-reftarget">Open the <strong>Properties</strong> tab.</li>
-                <li class="interactive" data-targetaction="button" data-reftarget="Service overview" data-requirements="exists-reftarget">Open the <strong>Service overview</strong> tab.</li>
-                <li class="interactive" data-targetaction="button" data-reftarget="Kubernetes" data-requirements="exists-reftarget">Open the <strong>Kubernetes</strong> tab.</li>
-                <li class="interactive" data-targetaction="button" data-reftarget="Traces" data-requirements="exists-reftarget">Open the <strong>Traces</strong> tab.</li>
+                <!-- TODO simon: continue from here... -->
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Service overview']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Service overview</strong> tab.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Kubernetes']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Kubernetes</strong> tab.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Traces']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Traces</strong> tab.
+                </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:div[data-testid='errors-per-second-chart']"
-                    data-requirements="exists-reftarget">
+                    data-reftarget="div[data-viz-panel-key='75903a26-8a1b-4df1-b56a-daa3a11c5b8a']"
+                    data-requirements="exists-reftarget"
+                    data-skippable="true">
                     Click the <strong>errors/s</strong> chart to focus the time region.
                 </li>
-                <!-- TODO: Replace with selector for the errors/s chart in the drawer. -->
+                <!-- TODO: Simon - I marked this skippable because the panel moves around depending on whether it was previously selected...-->
+                <!-- TODO: Simon - this is somewhere to look at - can't focus this? -->
+                <!-- TODO: Simon test and try ahead from these... -->
+                <!-- TODO: Simon - looks like the errors chart has data-testid="data-testid panel content" -->
 
-                <li class="interactive" data-targetaction="button" data-reftarget="Comparison" data-requirements="exists-reftarget">Open the <strong>Comparison</strong> tab (bottom area).</li>
-                <li class="interactive" data-targetaction="button" data-reftarget="Errored Traces" data-requirements="exists-reftarget">Open the <strong>Errored Traces</strong> tab and select the first trace.</li>
-                <!-- TODO: If needed, add a specific selector for the first trace link in the table. -->
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Comparison']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Comparison</strong> tab (bottom area).
+                </li>
+
+                <!-- TODO Make this multistep possibly-->
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Errored traces']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Errored Traces</strong> tab and select the first trace.
+                </li>
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:div[data-testid='service-operation-tree'] li:last-child"
+                    data-reftarget="button:has(span:contains('productcatalogservice'))"
                     data-requirements="exists-reftarget">
                     In the <strong>Service &amp; Operation</strong> tree, select the bottom item.
                 </li>
-                <!-- TODO: Replace to target the exact operation node in the trace view. -->
 
-                <li class="interactive" data-targetaction="button" data-reftarget="Logs" data-requirements="exists-reftarget">Open the <strong>Logs</strong> tab.</li>
+                <li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='data-testid Tab Logs']" data-requirements="exists-reftarget">Open the <strong>Logs</strong> tab.</li>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:input[data-testid='log-line-wrapping']"
+                    data-reftarget="button[aria-label='Wrap lines']"
                     data-requirements="exists-reftarget">
                     Enable <strong>log line wrapping</strong>.
                 </li>
-                <!-- TODO: Replace with the actual toggle/input selector for log line wrapping. -->
 
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:div[data-testid='stack-trace']"
+                    data-reftarget="div:contains('panic')"
                     data-requirements="exists-reftarget"
                     data-doit="false"
                     data-hint="Scroll to reveal the stack trace if not visible">
@@ -339,46 +463,62 @@
               data-reftarget="span#db-kpi-drawer">
             <ul>
                 <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='drawer-close']"
-                    data-requirements="exists-reftarget">
-                    Close any currently open drawer.
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>productcatalog-postgres</strong> service to reveal the KPI icon.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <b>KPI icon</b>.
+                        </span>
+                    </span>
+                    Hover and click to open the database KPI drawer.
                 </li>
-                <!-- TODO: Replace with the close control selector for the open drawer. -->
 
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Properties']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Properties</strong> tab.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab PostgreSQL Database']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>PostgreSQL Database</strong> tab.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Logs']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Logs</strong> tab.
+                </li>
+
+                <!-- Get them to close the drawer so we can continue with the next steps!-->
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-productcatalog-postgres']"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
                     data-requirements="exists-reftarget">
-                    Open the <strong>KPI</strong> drawer for <em>productcatalog-postgres</em>.
-                </li>
-                <!-- TODO: Replace with KPI icon selector next to productcatalog-postgres. -->
-
-                <li class="interactive" data-targetaction="button" data-reftarget="Properties" data-requirements="exists-reftarget">Open the <strong>Properties</strong> tab.</li>
-                <li class="interactive" data-targetaction="button" data-reftarget="Postgres overview" data-requirements="exists-reftarget">Open the <strong>Postgres overview</strong> tab.</li>
-                <li class="interactive" data-targetaction="button" data-reftarget="Logs" data-requirements="exists-reftarget">Open the <strong>Logs</strong> tab.</li>
+                    <span class="interactive-comment">Click the <strong>Close</strong> icon to close the drawer.</span>
+                    Close the KPI drawer when you are done.
+                </li>  
             </ul>
         </span>
 
         <h2>Section 12: Putting it all together</h2>
-        <p>Narrative wrap-up on hypothesis, evidence gathered, and likely root cause.</p>
-        <span id="rca-wrap-up"
-              class="interactive"
-              data-targetaction="sequence"
-              data-reftarget="span#rca-wrap-up">
-            <ul>
-                <li class="interactive"
-                    data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:div[data-testid='rca-summary-area']"
-                    data-requirements="exists-reftarget"
-                    data-doit="false">
-                    <span class="interactive-comment">Summarize findings: feature flag change, DB connection saturation, productcatalogservice pod crashes, and frontend impact on <code>/Product</code>.</span>
-                    Review the narrative summary.
-                </li>
-                <!-- TODO: Replace with a real summary area if available; otherwise keep as narrative-only. -->
-            </ul>
-        </span>
-
+        <p>TODO: Narrative wrap-up on hypothesis, evidence gathered, and likely root cause.</p>
+       
         <h2>Section 13: What’s the blast radius?</h2>
         <p>Use the Graph view to see impacted dependencies.</p>
         <span id="blast-radius"
@@ -386,8 +526,13 @@
               data-targetaction="sequence"
               data-reftarget="span#blast-radius">
             <ul>
-                <li class="interactive" data-targetaction="button" data-reftarget="Graph" data-requirements="exists-reftarget">Switch to the <strong>Graph</strong> tab.</li>
-                <!-- TODO: If the tab isn't a text button, replace with the actual selector as a highlight step. -->
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Graph']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment"><strong>Graph tab</strong>: pivots to a service graph to understand relationships and blast radius.</span>
+                    Switch to the <strong>Graph</strong> tab.
+                </li>
             </ul>
         </span>
 
@@ -398,15 +543,49 @@
               data-targetaction="sequence"
               data-reftarget="span#business-impact">
             <ul>
-                <li class="interactive" data-targetaction="button" data-reftarget="Timeline" data-requirements="exists-reftarget">Switch back to the <strong>Timeline</strong> tab.</li>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='kpi-icon-checkoutservice']"
+                    data-reftarget="button[data-testid='data-testid Tab Timeline']"
                     data-requirements="exists-reftarget">
-                    Open the <strong>KPI</strong> drawer for <em>checkoutservice</em>.
+                    Switch back to the <strong>Timeline</strong> tab.
                 </li>
-                <!-- TODO: Replace with KPI icon selector next to checkoutservice. -->
-                <li class="interactive" data-targetaction="button" data-reftarget="Business" data-requirements="exists-reftarget">Open the <strong>Business</strong> tab.</li>
+
+                <li class="interactive"
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>checkoutservice</strong> service to reveal the KPI icon.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice')) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <b>KPI icon</b>.
+                        </span>
+                    </span>
+                    Hover over the <strong>checkoutservice</strong> service to reveal the KPI icon, then click it.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Business']" 
+                    data-requirements="exists-reftarget">
+                    Open the <strong>Business</strong> tab.
+                </li>
+
+                <!-- Get them to close the drawer so we can continue with the next steps!-->
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click the <strong>Close</strong> icon to close the drawer.</span>
+                    Close the KPI drawer when you are done.
+                </li>  
             </ul>
         </span>
 
@@ -419,14 +598,12 @@
             <ul>
                 <li class="interactive"
                     data-targetaction="highlight"
-                    data-reftarget="TODO-REPLACE:button[data-testid='rca-workbench-ai']"
+                    data-reftarget="button[aria-label='Workbench AI (Preview)']"
                     data-requirements="exists-reftarget"
-                    data-doit="false"
-                    data-hint="This may be experimental and can take a while to generate.">
+                    data-hint="Generation of an AI analysis may take a few moments.">
                     <span class="interactive-comment"><strong>Workbench AI</strong> provides an automated narrative analysis across signals and entities.</span>
-                    Show the Workbench AI entry point.
+                    Begin a Workbench AI analysis.
                 </li>
-                <!-- TODO: Replace with the actual floating AI button selector. Consider adding a separate actionable step if safe. -->
             </ul>
         </span>
 
@@ -437,8 +614,7 @@
             <li>Explored anomalies in services and databases</li>
             <li>Used KPI drawers and trace/log pivots for context</li>
             <li>Assessed blast radius and business impact</li>
-            <li>[Optional] Located AI-assisted analysis and incident flows</li>
+            <li>Located AI-assisted analysis and incident flows</li>
         </ul>
-        <p><strong>Next:</strong> Adjust any TODO selectors in this guide to match your environment's DOM. Prefer <code>data-testid</code>, <code>href</code>, stable <code>id</code>s, or ARIA attributes per best practices.</p>
     </body>
 </html>

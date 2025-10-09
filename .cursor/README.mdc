@@ -24,6 +24,9 @@ Reference [Common Workflows](common-workflows.mdc) and [Tutorial Patterns](tutor
 ### 5. Selectors
 Use [Selector Library](selector-library.mdc) for stable, tested UI element selectors.
 
+### 5a. Complex Selectors and Hover (NEW)
+Review [Complex Selectors and Hover](complex-selectors-and-hover.mdc) for advanced targeting with `:has()`, `:contains()`, and hover interactions.
+
 ### 6. Edge Cases
 Check [Edge Cases and Troubleshooting](edge-cases-and-troubleshooting.mdc) for handling complex scenarios.
 
@@ -85,9 +88,13 @@ Click button with stable text → button action
 Click element with stable selector → highlight action
 Fill form field → formfill action
 Navigate to page → navigate action
+Reveal hover-hidden UI → hover action
 Multiple related actions → multistep action
 Multi-step workflow → sequence action
 Explain interface → highlight with data-doit="false"
+Hover then click → multistep with hover + button/highlight
+Find by text content → use :contains("text") in selector
+Find by structure → use :has(child) in selector
 ```
 
 ### Requirements Selection
@@ -122,6 +129,21 @@ Sequential dependency → section-completed:id
     data-reftarget="selector"
     data-doit="false">
   <span class="interactive-comment">{explanation}</span>
+  {description}
+</li>
+
+<!-- Hover then click -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="item"]:has(p:contains("name"))'></span>
+  <span class="interactive" data-targetaction="button" data-reftarget="Action"></span>
+  {description}
+</li>
+
+<!-- Complex selector targeting -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("servicename"))'
+    data-requirements="exists-reftarget">
   {description}
 </li>
 ```
@@ -200,9 +222,13 @@ Click button with stable text → button action
 Click element with stable selector → highlight action
 Fill form field → formfill action
 Navigate to page → navigate action
+Reveal hover-hidden UI → hover action
 Multiple related actions → multistep action
 Multi-step workflow → sequence action
 Explain interface → highlight with data-doit="false"
+Hover then click → multistep with hover + button/highlight
+Find by text content → use :contains("text") in selector
+Find by structure → use :has(child) in selector
 ```
 
 ### Requirements Selection
@@ -237,6 +263,21 @@ Sequential dependency → section-completed:id
     data-reftarget="selector"
     data-doit="false">
   <span class="interactive-comment">{explanation}</span>
+  {description}
+</li>
+
+<!-- Hover then click -->
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="item"]:has(p:contains("name"))'></span>
+  <span class="interactive" data-targetaction="button" data-reftarget="Action"></span>
+  {description}
+</li>
+
+<!-- Complex selector targeting -->
+<li class="interactive" 
+    data-targetaction="highlight" 
+    data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("servicename"))'
+    data-requirements="exists-reftarget">
   {description}
 </li>
 ```

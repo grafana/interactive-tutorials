@@ -1,0 +1,735 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RCA Demo</title>
+</head>
+<body>
+        <h1>RCA Demo</h1>
+
+        <p>This interactive guide walks through an end-to-end RCA (Root Cause Analysis) demo using Grafana's RCA workbench and related views. It follows the flow from an alert to investigation across services and databases, and wraps up with impact analysis.</p>
+
+        <ul>
+            <li>Navigate from an alert to the RCA workbench</li>
+            <li>Investigate anomalies in services and databases</li>
+            <li>Use KPI drawers and trace/log pivots for context</li>
+            <li>Assess blast radius and business impact</li>
+            <li>[Optional] Explore Workbench AI and incident flows</li>
+        </ul>
+
+        <h2>Section 1: Start from an Alert</h2>
+        <p>Open the alert context used by this demo.</p>
+        <span id="start-from-alert"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#start-from-alert">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="navigate"
+                    data-reftarget="/d/rca-demo-alert/slack-rca-demo-alert"
+                    data-verify="on-page:/d/rca-demo-alert/slack-rca-demo-alert"
+                    data-showme="false">
+                    Open the RCA demo alert dashboard.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 2: Jump to Investigation</h2>
+        <p>The <strong>Search Product Latency</strong> alert fired—users are experiencing slow product searches. This SLO-based alert includes a direct link to the RCA Workbench, scoped to "productcatalogservice" and connected services. In production, you'd receive this in Slack and use the link to jump straight into an investigation.</p>
+        
+        <span id="go-to-rca-workbench"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#go-to-rca-workbench">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='div[data-testid="data-testid panel content"] div[role="button"]:has(span:contains("1"))'
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">
+                        Click the annotation marker to open the RCA Workbench with pre-configured time range and filters.
+                    </span>
+                    Click the annotation to start investigating.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 3: Get Familiar with the RCA Workbench</h2>
+        <p>You're now viewing a <strong>timeline of insights</strong> for "productcatalogservice" and connected services. Insights appear as ticks — <span style="color: #dc2626;">red</span> for errors, <span style="color: #f59e0b;">yellow</span> for warnings, <span style="color: #3b82f6;">blue</span> for changes. Notice the blue change followed by cascading red errors? That's your first clue.</p>
+        
+        <span id="rca-orientation"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#rca-orientation">
+            <ul>
+                <li class="interactive" data-targetaction="multistep">
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div.text-xs:has(span:contains('Sort By'))">
+                        <span class="interactive-comment">Click to open the sort options.</span>
+                    </span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget='div[role="menu"] button[role="menuitem"]:has(span:contains("Time"))'>
+                        <span class="interactive-comment">Select <strong>Time</strong> to sort insights chronologically—this helps you trace the sequence of what went wrong.</span>
+                    </span>
+                    Sort insights by Time to see the chronological sequence.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.h-full.w-full.overflow-y-scroll.block"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment"><strong>Timeline</strong>: shows insights and their state over time for the queried services.</span>
+                    Examine the timeline visualization. Insights correspond to things that have gone wrong or are otherwise of interest.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Graph']"
+                    data-requirements="exists-reftarget"
+                    data-doit="true">
+                    <span class="interactive-comment"><strong>Graph tab</strong>: shows service topology and blast radius.</span>
+                    Inspect the Graph tab control.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Timeline']"
+                    data-requirements="exists-reftarget"
+                    data-doit="true">
+                    <span class="interactive-comment"><strong>Timeline tab</strong>: returns to the timeline view.</span>
+                    Inspect the Timeline tab control.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 4: Investigate the Initial Change</h2>
+        <p>Note the <strong style="color: #3b82f6;">blue notification</strong> at the front of the timeline, before the <span style="color: #dc2626;">red errors</span> cascaded. Let's drill into it — a feature flag change called "productCatalogReadFromPostgres" was turned on. This occurred <em>before</em> the productcatalog service (our alert trigger) started failing and cascading to connected services.</p>
+        
+        <span id="initial-change"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#initial-change">
+            <ul>
+                <li class="interactive" data-targetaction="multistep">
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('flagd'))"
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to expand the <strong>flagd</strong> service.</span>
+                    </span>
+                    <span class="interactive" 
+                          data-targetaction="highlight"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('amend'))"
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to expand the nested item.</span>
+                    </span>
+                    <span class="interactive" 
+                          data-targetaction="highlight" 
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))"
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to expand <strong>FeatureFlagStateChange</strong>—this is the blue insight that started everything.</span>
+                    </span>
+                    Expand the flagd service to reveal the FeatureFlagStateChange insight.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+        <span class="interactive" 
+              data-targetaction="hover" 
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>FeatureFlagStateChange</strong> row to reveal the insight icon.
+                        </span>
+                    </span>
+        <span class="interactive" 
+                          data-targetaction="hover" 
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>insight icon</strong> to see details about the "productCatalogReadFromPostgres" flag change.
+                        </span>
+                    </span>
+                    Hover to reveal and view the insight details.
+                </li>
+            </ul>
+        </span>
+
+        <h2>Section 5: Investigate Frontend Impact</h2>     
+        <p><em>Skip this if you don't want to learn about front end observability.</em></p>   
+        <p>The frontend service shows a massive <span style="color: #dc2626;">red blob</span> — heavily impacted with error buildups and <strong>anomalies</strong> (OOTB detection of metrics falling outside expected range). Let's drill into the "GetProduct" endpoint anomaly — critical for an ecommerce platform where users can't buy products if they can't view them.</p>
+        
+        <span id="frontend-investigation"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#frontend-investigation">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to expand the <strong>frontend</strong> service.</span>
+                    Expand the frontend service.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('anomaly'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to expand the <strong>anomaly</strong> section to see detected anomalies.</span>
+                    Expand the anomaly section.
+                </li>
+
+                <li class="interactive"
+              data-targetaction="highlight" 
+                    data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalogService/GetProduct'])"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to view the anomaly details. You'll see a <strong>green line</strong> (actual latency) with a <strong>pale yellow band</strong> (normal range). Yellow bars indicate anomalous spikes outside the expected range.</span>
+                    View the GetProduct endpoint anomaly.
+                </li>
+            </ul>
+        </span>
+        
+        <p>Widespread latency anomalies confirm customers are feeling the impact.</p>
+
+        <h2>Section 6 (Optional): Quantify User Impact</h2>
+        <p><em>Skip this if you skipped Section 5.</em></p>
+        
+        <p>We've found backend anomalies, but what about actual user impact? The <strong>KPI Drawer</strong> integrates Frontend Observability, letting us investigate browser behavior without leaving the RCA Workbench. Every service has a KPI drawer, dynamically populated based on what the knowledge graph discovered — this one includes frontend observability.</p>
+        
+        <span id="user-impact"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#user-impact">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>frontend</strong> service to reveal the Entity icon.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('frontend')) button:nth-of-type(3)">
+                        <span class="interactive-comment">
+                            Click the <strong>Entity icon</strong> to explore connected entities.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Service'))">
+                        <span class="interactive-comment">
+                            Click to expand the <strong>Service</strong> section. The frontend here is actually just an API gateway—we need to navigate to the actual frontend client.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='entity-list-item']:has(p:contains('frontendproxy'))">
+                        <span class="interactive-comment">
+                            Click on the <strong>frontendproxy</strong> row to drill deeper.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                        data-targetaction="hover"
+                        data-reftarget="div[role='dialog'] button[type='button']:has(div:contains('Frontend'))">
+                        <span class="interactive-comment">
+                            Click to expand the <strong>Frontend</strong> entity types.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client'))">
+                        <span class="interactive-comment">
+                            Hover over the <strong>frontend-client</strong> entity to reveal action buttons.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                        data-targetaction="hover" 
+                        data-reftarget="div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) button:nth-of-type(3)">
+        <span class="interactive-comment">
+                            Click the <strong>KPI/dashboard button</strong> to open the KPI Drawer with Frontend Observability.
+                        </span>
+                    </span>
+                    Navigate through entities to open the Frontend Observability KPI Drawer.
+                </li>
+                
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget"
+                    data-doit="true">
+                    <span class="interactive-comment">After reviewing the data, close the drawer to continue.</span>
+                    Close the KPI drawer.
+                </li>  
+            </ul>
+        </span>
+        
+        <p>Here we see the impact on users. 1,267 errors vs 906 page loads significantly degrades user experience. We have errors on the home, cart, and checkout pages. Core web vitals are stable, but users are frustrated and <em>revenue is being lost</em>.</p>
+
+        <h2>Section 7 (Optional): Track with Grafana IRM</h2>
+
+        <p><strong>Grafana IRM</strong> provides a central hub to track findings, participants, and progress. In production, you can declare incidents directly from Slack.  This creates an incident in Grafana IRM and opens a dedicated Slack channel. For this demo, we have a <strong>pre-created incident</strong> tracking our investigation with issue details and alert groups.</p>
+        
+        <span id="declare-incident"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#declare-incident">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-irm-app/incidents']"
+                    data-requirements="navmenu-open,exists-reftarget">
+                    <span class="interactive-comment"><strong>Incidents</strong>: central hub for tracking and managing incidents.</span>
+                    Open the IRM Incidents page.
+                </li>
+                
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='td.title a[href="/a/grafana-irm-app/incidents/1"]:contains("Day in the Life Demo")'
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to view the pre-created incident tracking for this investigation. In production, this would have been created from the Slack alert.</span>
+                    View the demo incident details.
+                </li>
+                
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-asserts-app/assertions"]'
+                    data-requirements="navmenu-open,exists-reftarget">
+                    <span class="interactive-comment">Return to the RCA Workbench to continue investigating.</span>
+                    Navigate back to RCA Workbench.
+                </li>
+            </ul>
+        </span>
+        
+        <p><strong>IRM benefits:</strong> Centralized tracking, participant management, Slack integration, seamless handoffs—all context in one place.</p>
+
+        <h2>Section 8: Investigate the Database</h2>
+        <p>The "productcatalog-postgres" service shows <span style="color: #f59e0b;">yellow warnings</span>.  There are few insights here, but the Knowledge Graph detects even small anomalies that relate to bigger problems. Out of the box PostgreSQL alerts show <strong>PostgreSQLHighConnections</strong> firing intermittently.</p>
+        
+        <span id="investigate-db"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#investigate-db">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to expand the <strong>productcatalog-postgres</strong> service.</span>
+                    Expand the productcatalog-postgres service.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to expand the <strong>failure</strong> section to see what went wrong.</span>
+                    Expand the failure section.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('PostgreSQLHighConnections'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to view the <strong>PostgreSQLHighConnections</strong> insight details.</span>
+                    View the PostgreSQLHighConnections insight.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment">The chart shows significant spikes in database connections: unusual behavior worth investigating further.</span>
+                    Observe the connection spike pattern.
+                </li>
+            </ul>
+        </span>
+        
+        <p><strong>Finding:</strong> Significant connection spikes throughout the incident.  This is unusual and likely contributing to degradation.</p>
+
+        <h2>Section 9: Investigate the Product Catalog Service</h2>
+        <p>The "productcatalogservice" is at the center of this incident. Grafana combines <strong>application and infrastructure signals</strong> in one view: no context switching required. Hovering reveals: latency anomalies (5 endpoints), Kubernetes pod crash looping, and /ListProducts endpoint errors. Let's check if crashes are frequent or a one-off.</p>
+        
+        <span id="investigate-service"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#investigate-service">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to expand the <strong>productcatalogservice</strong>.</span>
+                    Expand the productcatalogservice.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p:contains('failure'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to expand the <strong>failure</strong> section.</span>
+                    Expand the failure section.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div[data-cy='wb-list-item']:has(p[data-original='KubePodCrashLooping'])"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Click to view the <strong>KubePodCrashLooping</strong> insight—this shows the pod is repeatedly crashing.</span>
+                    View the KubePodCrashLooping insight.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])"
+                    data-requirements="exists-reftarget"
+                    data-doit="false">
+                    <span class="interactive-comment">The timeline shows the pod crashed repeatedly throughout the incident—not a one-off.</span>
+                    Observe the crash looping pattern.
+                </li>
+            </ul>
+        </span>
+        
+        <p><strong>Findings:</strong> High endpoint latencies, /ListProducts errors, and pod crash-looping—all from <strong>out of the box insights</strong> visible without switching contexts.</p>
+
+        <h2>Section 10: Find the Root Cause</h2>
+        <p>The <strong>KPI Drawer</strong> for productcatalogservice is dynamically populated with relevant dashboards—Properties, Service Overview (App O11y), Kubernetes, Traces, and Logs. The RCA Workbench ties together all observability signals without dashboard hunting or context switching.</p>
+        
+        <p>What we see is that there were errors and latency on the /ListProducts endpoint and that all of the errors show too many clients connecting to the database. Stack traces show null pointer exceptions and crashes with database connection failures. The ultimate root cause is that switching a feature flag introduced a bug causing null pointer exceptions and preventing database connections.</p>
+        
+        <span id="service-kpi-drawer"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#service-kpi-drawer">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>productcatalogservice</strong> row to reveal the KPI button.
+                        </span>
+                    </span>
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <strong>KPI/dashboard button</strong> (grid icon) to open the KPI drawer and see detailed metrics.
+                        </span>
+                    </span>
+                    Hover and click to open the KPI drawer for productcatalogservice.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Properties']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">View service properties: Go v3.7.5, Kubernetes deployment, cluster/namespace—all auto-discovered.</span>
+                    Open the Properties tab to see important infrastructure and application details.
+                </li>
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Service overview']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Application Observability dashboard shows errors and latency spikes on the "/ListProducts" endpoint.</span>
+                    Open the Service overview tab to understand the impact at the application level.
+                </li>
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Kubernetes']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Kubernetes dashboard shows memory consumption is low (well below 200MiB limit) — rules out out of memory as the crash cause.</span>
+                    Open the Kubernetes tab for a comprehensive overview of the Kubernetes workload.
+                </li>
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Traces']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Traces tab shows error patterns and lets us investigate individual failing requests.</span>
+                    Open the Traces tab to dig into what is causing the crash looping.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="section[data-testid='data-testid Panel header Errors rate']"
+                    data-requirements="exists-reftarget"
+                    data-skippable="true">
+                    <span class="interactive-comment">Click on the <strong>Errors rate</strong> chart to focus on the time region where errors occurred.</span>
+                    Click the Errors rate chart to focus the time region. Skip this step if the error chart is already focused.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Comparison']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment"><strong>Comparison</strong> analyzes span attributes to find statistically significant differences between errored and successful traces. Watch for "/ListProducts".</span>
+                    Open the Comparison tab (bottom area).
+                </li>
+
+                <li class="interactive" data-targetaction="multistep">
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget="button[data-testid='data-testid Tab Errored traces']"
+                          data-requirements="exists-reftarget">
+                        <span class="interactive-comment">Click to see the list of traces with errors.</span>
+                    </span>
+                    <span class="interactive"
+                          data-targetaction="highlight"
+                          data-reftarget='div[role="grid"] div[role="row"][aria-rowindex="2"] div.cell-link'>
+                        <span class="interactive-comment">Click on the first trace to open it in Explore — look for "PQ: sorry too many clients already" in the error details.</span>
+                    </span>
+                    Open the Errored traces tab and select the first trace.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button:has(span:contains('productcatalogservice'))"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Select the most downstream "productcatalogservice" span to see the database connection error.</span>
+                    In the Service & Operation tree, select the bottom item.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Logs']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Close Explore and return to the KPI Drawer, then open the <strong>Logs</strong> tab to see the crash stack trace.</span>
+                    Open the Logs tab.
+                </li>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[aria-label='Wrap lines']"
+                    data-requirements="exists-reftarget"
+                    data-skippable="true">
+                    <span class="interactive-comment">Enable line wrapping so the stack trace is readable.</span>
+                    Enable log line wrapping. Skip this step if already enabled.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='section[data-testid*="Panel header Logs"]'
+                    data-requirements="exists-reftarget"
+                    data-doit="false"
+                    data-hint="Scroll to reveal the stack trace if not visible">
+                    <span class="interactive-comment">Scroll to find the first <strong>level=error</strong> log entry — this shows "too many clients" and the panic stack trace.</span>
+                    As you can see the error logs indicate the Postgres database is being bombarded with connection attempts.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Close the drawer to return to the RCA Workbench timeline.</span>
+                    Close the KPI drawer.
+                </li>
+            </ul>
+        </span>
+        
+        <p><strong>We're able to determine the root cause:</strong> Null pointer exceptions from switching on a feature flag caused crashes and blocked database connections. Note how we can see our infrastructure, application and logs all in one drawer.</p>
+
+        <h2>Section 11: Confirm Database Impact</h2>
+        <p>We found the service bug — now let's verify the impact on the database. The KPI Drawer auto-discovered that we're using PostgreSQL and populated postgres-specific dashboards. We'll see: auto-discovered properties, active connections spiking/dropping (matching service crashes), and "too many clients" errors confirming the connection overload.</p>
+        
+        <span id="db-kpi-drawer"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#db-kpi-drawer">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>productcatalog-postgres</strong> service to reveal the KPI button.
+                        </span>
+                    </span>
+                    <span 
+                        class="interactive" 
+                        data-targetaction="hover"
+                        data-reftarget="div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <strong>KPI/dashboard button</strong> to open the database drawer—notice the postgres-specific tabs.
+                        </span>
+                    </span>
+                    Hover and click to open the database KPI drawer.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Properties']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">View properties: Grafana auto-discovered this is PostgreSQL with version, cluster, and namespace details.</span>
+                    Open the Properties tab.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab PostgreSQL Database']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">The <strong>Postgres Overview</strong> dashboard shows active connections spiking and dropping—matching the service crash pattern.</span>
+                    Open the Postgres Overview tab.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Logs']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Database logs will show "too many clients" errors, confirming the connection overload from the database's perspective.</span>
+                    Open the Logs tab.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Close the drawer to return to the RCA Workbench timeline.</span>
+                    Close the KPI drawer.
+                </li>  
+            </ul>
+        </span>
+        
+        <p>We've confirmed that the database logs show "too many clients" errors. Connection spikes sync with service crashes: the buggy service is overwhelming the database.</p>
+
+        <h2>Section 12: Putting it all together</h2>
+        
+        <p><strong>Investigation recap:</strong></p>
+        <ol>
+            <li>A <strong style="color: #3b82f6;">feature flag</strong> "productCatalogReadFromPostgres" was toggled (blue change insight)</li>
+            <li><strong>The PostgreSQL database</strong> experienced anomalous connection surges</li>
+            <li><strong>Error thresholds were breached</strong> on productcatalog, frontend, and recommendation services ("/ListProducts" endpoints)</li>
+            <li><strong>Frontend</strong> service showed high error rates impacting user experience</li>
+            <li><strong>productcatalog</strong> service began crash-looping</li>
+        </ol>
+        
+        <p><strong>What happened:</strong> A feature flag was enabled, introducing a bug that left database connections open.  We hit a connection limit and Postgres started reporitng "too many clients" errors.  A lack of error handling led to a null pointer exception, crash, and Kubernetes restart loop.</p>
+        
+        <p><strong>Resolution:</strong> Fix connection handling to close connections and add error handling.</p>
+        <p><strong>Impact:</strong> Users can't browse/purchase, leading to revenue loss and degredation of the customer experience.</p>
+       
+        <h2>Section 13: Visualize the Blast Radius</h2>
+        <p>The <strong>Graph tab</strong> shows a topology visualization of how services connect, using the same knowledge graph data powering the timeline.  It's a real-time view with no manual diagramming required.</p>
+        
+        <span id="blast-radius"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#blast-radius">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Graph']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment"><strong>Graph tab</strong>: shows service topology, dependencies, and which services are impacted (colored by insight status).</span>
+                    Switch to the Graph tab.
+      </li>
+    </ul>
+  </span>
+
+        <p><strong>Blast radius:</strong> The database was at the center, and this affected our productcatalogservice and recommendation/checkout services. Colored indicators show a cascading impact through the entire product browsing and checkout flow. The timeline shows <em>when</em>, the graph shows <em>what's connected</em>.</p>
+
+        <h2>Section 14: Quantify Business Impact</h2>
+        <p>Having found the technical root cause, let's examine the business question: <strong>How much revenue did we lose?</strong> The RCA Workbench is <strong>extensible</strong>: we can attach custom dashboards to entity types so your curated KPIs appear automatically. For this demo, a <strong>Business</strong> dashboard is attached to the checkout services, showing revenue and abandonment metrics.</p>
+        
+        <span id="business-impact"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#business-impact">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Tab Timeline']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Switch back to the timeline to locate the checkoutservice.</span>
+                    Switch back to the Timeline tab.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="guided"
+                    data-step-timeout="45000"
+                    data-skippable="true">
+                    <span class="interactive"
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1)">
+                        <span class="interactive-comment">
+                            Hover over the <strong>checkoutservice</strong> to reveal the KPI button.
+                        </span>
+                    </span>
+                    <span class="interactive" 
+                          data-targetaction="hover"
+                          data-reftarget="div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1) button:nth-of-type(4)">
+                        <span class="interactive-comment">
+                            Click the <strong>KPI button</strong> to open the drawer—notice the <strong>Business</strong> tab for custom metrics.
+                        </span>
+                    </span>
+                    Hover and click to open the checkoutservice KPI drawer.
+                </li>
+
+                <li class="interactive" 
+                    data-targetaction="highlight" 
+                    data-reftarget="button[data-testid='data-testid Tab Business']" 
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">The <strong>Business</strong> tab is a custom dashboard automatically attached to checkout services—showing revenue and order metrics.</span>
+                    Open the Business tab.
+                </li>
+
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[data-testid='data-testid Drawer close']"
+                    data-requirements="exists-reftarget">
+                    <span class="interactive-comment">Close the drawer to return to the timeline.</span>
+                    Close the KPI drawer.
+                </li>  
+            </ul>
+        </span>
+        
+        <p><strong>Business impact:</strong> We lost $407k in revenue and took 32.4% fewer orders. At the peak, there was 100% purchase abandonment.</p>
+        
+        <p><strong>Extensibility in action:</strong> Custom dashboards appear automatically in the investigation flow combining out of the box insights with your business metrics in one workflow.</p>
+
+        <h2>Section 15 (Optional): AI-Powered Investigation</h2>
+        <p><strong>⚠️ Experimental:</strong> Workbench AI is experimental feature!</p>
+        
+        <p><strong>What it does:</strong> Workbench AI can automatically perform all the steps we just did: analyzing services, chronological sequence, KPI signals, and forming a hypothesis. Instantaneous. We didn't lead with this so you'd experience the RCA Workbench magic first and understand what's happening under the hood.</p>
+        
+        <span id="workbench-ai"
+              class="interactive"
+              data-targetaction="sequence"
+              data-reftarget="span#workbench-ai">
+            <ul>
+                <li class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget="button[aria-label='Workbench AI (Preview)']"
+                    data-requirements="exists-reftarget"
+                    data-hint="Generation of an AI analysis may take a few moments.">
+                    <span class="interactive-comment"><strong>Workbench AI</strong> will analyze all services, insights, and signals to generate a probable impact chain and hypothesis—matching our manual findings.</span>
+                    Click Workbench AI to generate automated analysis.
+                </li>
+            </ul>
+        </span>
+        
+        <h2>🎉 Done!</h2>
+        <p>You have walked through the RCA workbench and related analysis flows:</p>
+        <ul>
+            <li>Navigated from an alert to the RCA workbench</li>
+            <li>Explored anomalies in services and databases</li>
+            <li>Used KPI drawers and trace/log pivots for context</li>
+            <li>Assessed blast radius and business impact</li>
+            <li>Located AI-assisted analysis and incident flows</li>
+        </ul>
+</body>
+</html>
