@@ -17,6 +17,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         persist-credentials: false
+        submodules: false
       
     - name: Find all unstyled.html files
       id: find-html-files
@@ -54,14 +55,12 @@ jobs:
             echo ""
             echo "🔍 Validating: $file"
             
-            # Check if file exists and is readable
             if [ ! -f "$file" ]; then
               echo "❌ Error: File $file does not exist"
               INVALID_FILES=$((INVALID_FILES + 1))
               continue
             fi
             
-            # Validate HTML syntax
             python3 .github/scripts/validate_html.py "$file" syntax 2>&1
             
             if [ $? -eq 0 ]; then
