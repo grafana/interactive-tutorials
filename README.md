@@ -22,6 +22,17 @@ don't get rate limited
 5. **See an example** - Check out `first-dashboard/unstyled.html` for a complete working example
 6. **Get help** - Use `/lint`, `/check`, and `/attack` commands to Cursor for validation and testing of what you're writing as you go.
 
+## Ask Cursor Questions in Dev Loop
+
+* Cursor has a bunch of docs on how these guides are structured and how this all works. (See `docs/` and `.cursor`)
+you could read them all, or just ask Cursor to explain things as you go.
+* DOM selectors for elements (`data-reftarget` in the guides) is usually the trickiest part. New tooling on the way
+to help with that soon
+
+## Ask Humans Questions in `#proj-grafana-pathfinder`
+
+* Talk to Tom Glenn, David Allen, or Simon Prickett, all of whom have done this before. They will help.
+
 ## Getting Your Tutorial Into Pathfinder
 
 1. Open a PR to this repo with your new guide! Ping Jay Clifford, Tom Glenn, or
