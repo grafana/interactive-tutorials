@@ -31,7 +31,9 @@
 
   <span id="select-datasource" class="interactive" data-targetaction="sequence" data-reftarget="span#select-datasource">
     <ul>
-      <li class="interactive" data-targetaction="multistep">
+      <li class="interactive" 
+          data-targetaction="multistep"
+          data-requirements="exists-reftarget">
         <span class="interactive" 
               data-targetaction="highlight" 
               data-reftarget='input[data-testid="data-testid Select a data source"]'>
@@ -40,34 +42,59 @@
               data-targetaction="highlight" 
               data-reftarget='button:has(span:contains("loki_nginx"))'>
         </span>
-        <span class="interactive-comment">The <strong>data source picker</strong> allows you to select which Loki data source to query. In Grafana, you can have multiple Loki instances configured (e.g., production logs, development logs, different regions). The <strong>App o11y frontend</strong> data source is a Loki instance that contains logs from the application observability frontend services. Selecting this data source will connect you to the specific Loki instance where you can explore and query logs from the frontend application.</span>
+        <span class="interactive-comment">The <strong>data source picker</strong> allows you to select which Loki data source to query. In Grafana, you can have multiple Loki instances configured (e.g., production logs, development logs, different regions). The <strong>Loki Demo Kit (loki_nginx)</strong> data source contains sample logs that we'll use for this tutorial. Selecting this data source will connect you to the specific Loki instance where you can explore and query logs.</span>
         Click on the <strong>data source picker</strong>, then select the <strong>Loki Demo Kit (loki_nginx)</strong> data source.
-      </li>
-
-      <li class="interactive" 
-          data-reftarget='div[data-testid="QueryEditorModeToggle"] label[for^="option-code-radiogroup"]'
-          data-targetaction='highlight'>
-        Switch to <strong>Code</strong> mode by clicking the raw query toggle to write LogQL directly.
-      </li>
-
-      <li class="interactive" 
-          data-reftarget='textarea.inputarea'
-          data-targetaction='formfill' 
-          data-targetvalue='{'>
-        Start off your query by typing the opening brace (`{`). 
-        <pre>{</pre>
-      </li>
-
-      <li class="interactive" 
-          data-reftarget='textarea.inputarea'
-          data-targetaction='formfill' 
-          data-targetvalue='{container="alloy"}'>
-        Enter this LogQL query:
-        <pre>{container="alloy"}</pre>
       </li>
     </ul>
   </span>
 
-  <p><strong>Ready to begin?</strong> Let's dive into the world of LogQL! 🎉</p>
+  <h2>✍️ Write Your First LogQL Query</h2>
+  
+  <p>Now that we have our data source selected and Code mode enabled, let's write our first LogQL query! Every LogQL query starts with a label selector enclosed in curly braces.</p>
+
+  <span id="first-query" 
+        class="interactive" 
+        data-targetaction="sequence" 
+        data-reftarget="span#first-query"
+        data-requirements="section-completed:select-datasource"
+        data-hint="Learn to write basic LogQL queries using label selectors">
+    <ul>
+
+      <li class="interactive" 
+          data-reftarget='div[data-testid="QueryEditorModeToggle"] label[for^="option-code-radiogroup"]'
+          data-targetaction='highlight'
+          data-requirements="exists-reftarget">
+        <span class="interactive-comment">The <strong>Code mode</strong> allows you to write LogQL queries directly as text, giving you full control over the query syntax. This is perfect for learning LogQL's powerful query language.</span>
+        Switch to <strong>Code</strong> mode by clicking the raw query toggle to write LogQL directly.
+      </li>
+      <li class="interactive" 
+          data-targetaction="multistep"
+          data-requirements="exists-reftarget">
+        <span class="interactive" 
+              data-targetaction="formfill" 
+              data-reftarget='textarea.inputarea'
+              data-targetvalue='{'>
+        </span>
+        <span class="interactive" 
+              data-targetaction="button" 
+              data-reftarget="service_name">
+        </span>
+        <span class="interactive-comment">Every LogQL query begins with <code>{</code> to start a <strong>label selector</strong>. When you type the opening brace, Grafana shows an autocomplete menu with available labels. The <strong>service_name</strong> label helps you filter logs by the service that generated them.</span>
+        Type the opening brace (<code>{</code>), then select <strong>service_name</strong> from the dropdown menu.
+      </li>
+
+      <li class="interactive" 
+          data-reftarget='textarea.inputarea'
+          data-targetaction='formfill' 
+          data-targetvalue='{service_name="nginx_access_log"}'
+          data-requirements="exists-reftarget">
+        <span class="interactive-comment">Complete the query by adding <code>="nginx_access_log"</code> and closing the brace. This query <code>{service_name="nginx_access_log"}</code> selects all log lines from the Nginx access log service. Label selectors use the format <code>{label_name="value"}</code> to filter logs by specific attributes.</span>
+        Complete the query to filter by the Nginx access log service:
+        <pre>{service_name="nginx_access_log"}</pre>
+      </li>
+    </ul>
+  </span>
+
+  <p><strong>Great work!</strong> You've written your first LogQL query. Let's continue exploring LogQL's powerful features! 🎉</p>
 </body>
 </html>
