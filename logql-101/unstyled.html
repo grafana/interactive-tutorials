@@ -86,7 +86,8 @@
       <li class="interactive" 
           data-reftarget='div[data-testid="data-testid panel content"]'
           data-targetaction='highlight'
-          data-requirements="exists-reftarget">
+          data-requirements="exists-reftarget"
+          data-doit='false'>
         <span class="interactive-comment">The <strong>panel content</strong> area displays the results of your LogQL query. This is where you can see the actual log data that matches your query criteria.</span>
         Notice the <strong>panel content</strong> area where your query results are displayed. You can see that the query returned 1000 log lines, which is the default limit. Let's try to narrow down our search further.
       </li>
@@ -99,13 +100,13 @@
         <span class="interactive-comment">Let's refine our query by adding more specific filters. We're adding a <strong>host</strong> label selector to filter by a specific server, and using the <strong>line filter</strong> <code>|= "500"</code> to only show log entries containing "500" (HTTP 500 errors).</span>
         Type a more specific query: <pre>{service_name="nginx_access_log", host="appfelstrudel"} |= "500"</pre> to filter for 500 errors from a specific host.
       </li>
-      <li class="interactive" 
-          data-reftarget='button[aria-label="Run query"]'
-          data-targetaction='click'
-          data-requirements="exists-reftarget">
-        <span class="interactive-comment">Now let's execute this refined query to see the filtered results.</span>
-        Click the <strong>Run query</strong> button to execute the refined query and see the filtered results.
-      </li>
+        <li class="interactive" 
+            data-reftarget='button[data-testid="data-testid RefreshPicker run button"]'
+            data-targetaction='click'
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">Now let's execute this refined query to see the filtered results.</span>
+          Click the <strong>Run query</strong> button to execute the refined query and see the filtered results.
+        </li>
         <p>Oops! We meant to filter for HTTP 500 errors, but the query returns lines that have "500" anywhere in the body. We'll have to be more specific.</p>
         <li class="interactive" 
             data-reftarget='textarea.inputarea'
@@ -115,13 +116,13 @@
           <span class="interactive-comment">Let's combine both approaches! We'll use <strong>|= "500"</strong> to include lines containing "500" and <strong>!= "200"</strong> to exclude lines containing "200". This gives us a more precise filter for HTTP 500 errors.</span>
           Type a combined query: <pre>{service_name="nginx_access_log", host="apfelstrudel"} |= "500" != "200"</pre> to filter for lines containing "500" but not "200".
         </li>
-        <li class="interactive" 
-            data-reftarget='button[aria-label="Run query"]'
-            data-targetaction='click'
-            data-requirements="exists-reftarget">
-          <span class="interactive-comment">Now let's execute this combined query to see the filtered results that contain "500" but not "200".</span>
-          Click the <strong>Run query</strong> button to execute the query and see the filtered error logs.
-        </li>
+          <li class="interactive" 
+              data-reftarget='button[data-testid="data-testid RefreshPicker run button"]'
+              data-targetaction='click'
+              data-requirements="exists-reftarget">
+            <span class="interactive-comment">Now let's execute this combined query to see the filtered results that contain "500" but not "200".</span>
+            Click the <strong>Run query</strong> button to execute the query and see the filtered error logs.
+          </li>
       </ul>
     </span>
 
@@ -142,13 +143,13 @@
         <span class="interactive-comment">Here's a much better approach! We'll use the <strong>| json</strong> parser to extract structured data from the log lines, then filter by the <strong>status</strong> field directly. This is more precise than string matching.</span>
         Type a better query: <pre>{service_name="nginx_access_log", host="appfelstrudel"} | json | status = "500"</pre> to parse JSON and filter by the status field.
       </li>
-      <li class="interactive" 
-          data-reftarget='button[aria-label="Run query"]'
-          data-targetaction='click'
-          data-requirements="exists-reftarget">
-        <span class="interactive-comment">Now let's execute this JSON-based query to see the precise HTTP 500 error logs.</span>
-        Click the <strong>Run query</strong> button to execute the JSON parsing query and see the filtered results.
-      </li>
+        <li class="interactive" 
+            data-reftarget='button[data-testid="data-testid RefreshPicker run button"]'
+            data-targetaction='click'
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">Now let's execute this JSON-based query to see the precise HTTP 500 error logs.</span>
+          Click the <strong>Run query</strong> button to execute the JSON parsing query and see the filtered results.
+        </li>
     </ul>
   </span>
 </body>
