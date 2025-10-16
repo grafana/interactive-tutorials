@@ -5,7 +5,7 @@ Developer Advocacy. It's designed to work with Cursor's AI assistant.
 
 ## First: Understand What We're Building!
 
-1. Go to the [Drilldown area on Ops](https://ops.grafana-ops.net/drilldown), click "Open Grafana Pathfinder" button extreme upper right by Assistant button.
+1. Click "Open Grafana Pathfinder" button extreme upper right by Assistant button.
 2. Make sure you're on the home screen, check the Recommendations tab.
 3. Follow the _Interactive Tutorial: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
 an interactive tutorial like that!
