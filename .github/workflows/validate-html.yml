@@ -19,6 +19,16 @@ jobs:
         persist-credentials: false
         submodules: false
       
+    - name: Checkout validation scripts from main
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        sparse-checkout: |
+          .github/scripts/
+        sparse-checkout-cone-mode: false
+        path: .github-trusted
+        persist-credentials: false
+      
     - name: Find all unstyled.html files
       id: find-html-files
       run: |
@@ -61,7 +71,7 @@ jobs:
               continue
             fi
             
-            python3 .github/scripts/validate_html.py "$file" syntax 2>&1
+            python3 .github-trusted/.github/scripts/validate_html.py "$file" syntax 2>&1
             
             if [ $? -eq 0 ]; then
               echo "✅ $file is valid HTML"
@@ -101,7 +111,7 @@ jobs:
             echo "🔍 Checking structure of: $file"
             
             # Check HTML structure
-            python3 .github/scripts/validate_html.py "$file" structure 2>&1
+            python3 .github-trusted/.github/scripts/validate_html.py "$file" structure 2>&1
             
             if [ $? -ne 0 ]; then
               echo "❌ Structure validation failed for $file"
