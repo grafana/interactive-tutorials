@@ -18,6 +18,16 @@ jobs:
         persist-credentials: false
         submodules: false
       
+    - name: Checkout validation scripts from main
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        sparse-checkout: |
+          .github/scripts/
+        sparse-checkout-cone-mode: false
+        path: .github-trusted
+        persist-credentials: false
+      
     - name: Validate index.json
       run: |
         echo "Validating index.json for well-formed JSON..."
@@ -29,7 +39,7 @@ jobs:
         fi
         
         # Validate JSON using the validation script
-        python3 .github/scripts/validate_json.py index.json
+        python3 .github-trusted/.github/scripts/validate_json.py index.json
         
         if [ $? -eq 0 ]; then
           echo "🎉 All validations passed! index.json is well-formed and properly structured."
