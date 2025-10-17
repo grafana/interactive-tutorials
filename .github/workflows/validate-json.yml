@@ -28,58 +28,12 @@ jobs:
           exit 1
         fi
         
-        # Validate JSON syntax using python
-        python3 -m json.tool index.json > /dev/null
+        # Validate JSON using the validation script
+        python3 .github/scripts/validate_json.py index.json
+        
         if [ $? -eq 0 ]; then
-          echo "✅ index.json is valid JSON"
+          echo "🎉 All validations passed! index.json is well-formed and properly structured."
         else
-          echo "❌ Error: index.json contains invalid JSON syntax"
+          echo "❌ JSON validation failed!"
           exit 1
         fi
-        
-        # Additional validation: check if it's an object with expected structure
-        echo "Checking JSON structure..."
-        python3 -c "
-        import json
-        import sys
-        
-        try:
-            with open('index.json', 'r') as f:
-                data = json.load(f)
-            
-            # Check if it's a dictionary
-            if not isinstance(data, dict):
-                print('❌ Error: Root element must be an object')
-                sys.exit(1)
-            
-            # Check if 'rules' key exists
-            if 'rules' not in data:
-                print('❌ Error: Missing required \"rules\" key')
-                sys.exit(1)
-            
-            # Check if 'rules' is a list
-            if not isinstance(data['rules'], list):
-                print('❌ Error: \"rules\" must be an array')
-                sys.exit(1)
-            
-            # Validate each rule has required fields
-            required_fields = ['title', 'url', 'description', 'type', 'match']
-            for i, rule in enumerate(data['rules']):
-                if not isinstance(rule, dict):
-                    print(f'❌ Error: Rule {i} must be an object')
-                    sys.exit(1)
-                
-                for field in required_fields:
-                    if field not in rule:
-                        print(f'❌ Error: Rule {i} missing required field \"{field}\"')
-                        sys.exit(1)
-            
-            print('✅ JSON structure validation passed')
-            print(f'✅ Found {len(data[\"rules\"])} valid rule(s)')
-            
-        except Exception as e:
-            print(f'❌ Error during structure validation: {e}')
-            sys.exit(1)
-        "
-        
-        echo "🎉 All validations passed! index.json is well-formed and properly structured."
