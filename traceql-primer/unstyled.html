@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraceQL Primer</title>
+</head>
+<body>
+    <h1>A TraceQL Primer</h1>
+
+    <p>Welcome to your TraceQL journey! In this interactive tutorial, you'll learn:</p>
+    <ul>
+        <li>How to navigate to the Explore page</li>
+        <li>How to select the Tempo data source</li>
+        <li>How to use the TraceQL query editor</li>
+        <li>How to write and execute basic TraceQL queries</li>
+        <li>How to explore trace results and view individual spans</li>
+        <li>How to analyze trace details using the waterfall visualization</li>
+    </ul>
+
+    <p>By the end of this tutorial, you'll be able to query and investigate distributed traces using TraceQL!</p>
+
+    <h2>Step 1: Navigate to Explore</h2>
+    <p>The Explore page is where you can run ad-hoc queries and investigate your data. Let's start by opening it.</p>
+    <p>It's perfect for running ad-hoc queries, investigating traces with TraceQL, analyzing logs with LogQL, and exploring metrics with PromQL - all without needing to create a dashboard.</p>
+    <span id="navigate-to-explore" class="interactive" data-targetaction="sequence" data-reftarget="span#navigate-to-explore">
+        <ul>
+            <li class="interactive"
+                data-requirements="navmenu-open"
+                data-reftarget="a[data-testid='data-testid Nav menu item'][href='/explore']"
+                data-targetaction='highlight'>
+            Click <strong>Explore</strong> in the navigation menu.
+            </li>
+        </ul>
+    </span>
+
+    <h2>Step 2: Select the Tempo Data Source</h2>
+    <p><strong>Tempo</strong> is Grafana's distributed tracing data source. It stores and queries traces from your applications, helping you understand request flows across microservices and identify performance bottlenecks.</span>We'll select it as our data source to query traces using TraceQL.</p>
+    <span id="select-tempo" class="interactive" data-targetaction="sequence" data-reftarget="span#select-tempo" data-requirements="section-completed:navigate-to-explore,has-datasource:tempo">
+        <ul>
+            <li class="interactive" data-targetaction="multistep">
+                <span class="interactive" data-targetaction="highlight" data-reftarget='input#data-source-picker'></span>
+                <span class="interactive" data-targetaction="button" data-reftarget='Tempo'></span>
+                Open the data source picker and select <strong>Tempo</strong>.
+            </li>
+        </ul>
+    </span>
+
+    <h2>Step 3: Select the TraceQL Tab</h2>
+    <p>Tempo's query editor has multiple query modes. TraceQL is a powerful query language designed specifically for querying traces.</p>
+    <span id="select-traceql-tab" class="interactive" data-targetaction="sequence" data-reftarget="span#select-traceql-tab" data-requirements="section-completed:select-tempo">
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='div[data-testid="data-testid radio-button"] label:contains("TraceQL")'>
+            <span class="interactive-comment"><strong>TraceQL</strong> (Trace Query Language) is a powerful query language inspired by PromQL and LogQL. It lets you filter, aggregate, and analyze traces using familiar syntax with curly braces <code>{}</code> for filtering and pipes <code>|</code> for transformations.</span>
+            Click the <strong>TraceQL</strong> tab to switch to the TraceQL query editor.
+            </li>
+        </ul>
+    </span>
+
+    <h2>Step 4: Enter Your First TraceQL Query</h2>
+    <p>Let's start with the simplest TraceQL query: <code>{}</code>. This query returns all traces, similar to how <code>{}</code> works in PromQL and LogQL.</p>
+    <span id="first-traceql-query" class="interactive" data-targetaction="sequence" data-reftarget="span#select-traceql-tab" data-requirements="section-completed:select-tempo">
+        <ul>
+            <li class="interactive"
+                data-targetaction="formfill"
+                data-reftarget='textarea[aria-label="Editor content;Press Alt+F1 for Accessibility Options."]'
+                data-targetvalue='{ }'>
+                Enter the following query into the query editor: <code>{}</code>. This query will return any traces where any of the spans match the span selector. In this case, the span selector is empty, so this matches any spans in any traces.
+            </li>
+        </ul>
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='button[data-testid="data-testid RefreshPicker run button"]'>
+                <span class="interactive-comment">Click the <strong>Run Query</strong> button to execute your query and see the results.</span>
+                Click the <strong>Run Query</strong> button to execute your query and see the results.
+            </li>
+        </ul>
+    </span>
+
+    <h2>Step 5: Observe the Results</h2>
+    <p>The results table shows you the traces that match your query. In this case, because we've entered <code>{}</code>, this matches any spans in any traces stored in Tempo (ie. any traces match the query!). Each trace shows the TraceID, the Start time of the root span, the root Service the root span belongs to, the name of the root span, and the duration of the root span. We can take a look at the returned matches spans for each trace by expanding the trace.</p>
+    <span id="first-traceql-query" class="interactive" data-targetaction="sequence" data-reftarget="span#select-traceql-tab" data-requirements="section-completed:first-traceql-query">
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='div[title="Toggle Row Expanded"]:nth-match(1)'>
+                Select the <strong>Expand</strong> button to expand the first trace.
+            </li>
+        </ul>
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='a[data-testid="data-testid Data link"]:nth-match(1)'>
+                Select the first <strong>Span</strong> link to view the results in a table.
+            </li>
+        </ul>
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='button[role="switch"]:nth-match(1)'>
+                Select the first <strong>span</strong> in the trace to expand it and view its intrinsics and attributes.
+            </li>
+        </ul>
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='div[data-testid="AccordianKeyValues--header"]:nth-match(1)'>
+                Select the <strong>Span attributes</strong> attributes to view the attributes for the first span.
+            </li>
+        </ul>
+        <ul>
+            <li id="close-trace-visualisation-panel" class="interactive" data-targetaction="multistep">
+                <span class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='button[aria-label="Show more items"]:nth-match(2)'></span>
+                <span class="interactive"
+                    data-targetaction="highlight"
+                    data-reftarget='button[aria-label="Close split pane"]:nth-match(3)'></span>
+                Finally close the trace visualisation panel by selecting the elipses at the top right of the panel, and then selecting the <Strong>Close</Strong> button.
+            </li>
+        </ul>
+        </span>
+    </span>
+
+    <h2>Step 6: Try a TraceQL Metrics Query</h2>
+    <p>TraceQL includes a powerful set of metrics functions that can be used to aggregate the results of a query. You can use these functions to convert the results to time-series data, that can then be visualised as graphs, heatmaps, tables or any other type of visualisation that Grafana supports for time-series data. Let's try a simple metrics query to count the number of traces that match our query.</p>
+    <span id="first-traceql-metrics-query" class="interactive" data-targetaction="sequence" data-reftarget="span#select-traceql-tab" data-requirements="section-completed:select-tempo">
+        <ul>
+            <li class="interactive"
+                data-targetaction="formfill"
+                data-reftarget='textarea[aria-label="Editor content;Press Alt+F1 for Accessibility Options."]'
+                data-targetvalue='{ } | count_over_time() by (resource.service.name, span:name)'>
+                Enter the following query into the query editor:
+                <p><code>{ } | count_over_time() by (resource.service.name, span:name)</code></P>
+                This query:
+                </p>
+                <ul>
+                    <li>Matches on any span in any of our traces.</li>
+                    <li>Pipes the results into the <code>count_over_time()</code> function, which counts the number of spans in each time window</li>
+                    <li>Groups the results by the service name and span name (ie. the number of spans for each service and span name)</li>
+                    <li>Converts the results to time-series data</li>
+                </ul>
+            </li>
+        </ul>
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='button[data-testid="data-testid RefreshPicker run button"]'>
+                Select the <strong>Run Query</strong> button or enter <kbd>Shift</kbd>+<kbd>Enter</kbd> to execute your query and see the results.
+            </li>
+        </ul>
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='label:contains("Bars"):nth-match(1)'>
+                The time-series is rendered by default as a line graph showing the count of the spans aggregated by service and span name. You can change the visualisation to a different type of graph by selecting the format you want in the top-right. Try now by selecting <strong>Bars</strong>.
+            </li>
+        </ul>
+        <ul>
+            <li class="interactive"
+                data-targetaction="highlight"
+                data-reftarget='label:contains("Points"):nth-match(1)'>
+                You can select any of the other visualisation formats to see how the data is rendered in a different way. Now try selecting <strong>Points</strong>.
+            </li>
+        </ul>
+    </span>
+
+    <h2>🎉 Congratulations!</h2>
+    <p>Excellent work! You've successfully queried and explored traces using TraceQL. You now know:</p>
+    <ul>
+        <li>✅ How to navigate to the Explore page</li>
+        <li>✅ How to select the Tempo data source</li>
+        <li>✅ How to switch to the TraceQL query editor</li>
+        <li>✅ How to write and execute a basic TraceQL query</li>
+        <li>✅ How to select a trace and span in the results list to visualise a trace</li>
+        <li>✅ How to expand a span in a visualised trace to see its intrinsics and attributes</li>
+        <li>✅ How to run a TraceQL metrics query to count the number of spans in each time window</li>
+        <li>✅ How to change the visualisation of the metrics query results</li>
+    </ul>
+
+    <h3>What's Next?</h3>
+    <p>Now that you've run your first TraceQL query, here are some next steps:</p>
+    <ul>
+        <li><strong>Add filters</strong> - Try <code>{service.name="my-service"}</code> to filter traces by service name</li>
+        <li><strong>Filter by duration</strong> - Use <code>{duration > 1s}</code> to find slow traces</li>
+        <li><strong>Filter by status</strong> - Try <code>{status=error}</code> to find failed requests</li>
+        <li><strong>Combine filters</strong> - Use <code>{service.name="api" && status=error}</code> for complex queries</li>
+        <li><strong>Explore span attributes</strong> - Query specific span attributes like <code>{span.http.method="POST"}</code></li>
+    </ul>
+
+    <p><strong>You're now ready to explore your distributed traces!</strong> TraceQL gives you powerful querying capabilities to understand your application's behavior.</p>
+</body>
+</html>
+
