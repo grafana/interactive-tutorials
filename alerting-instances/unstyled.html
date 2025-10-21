@@ -1,0 +1,616 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-dimensional Alerts and Routing</title>
+  </head>
+  <body>
+    <h1>Multi-dimensional Alerts and Routing</h1>
+
+    <p>
+      Welcome! In this interactive tutorial, you'll learn how to create alert rules 
+      that return <strong>multiple alert instances</strong> and route them to different 
+      contact points using <strong>notification policies</strong> and <strong>labels</strong>.
+    </p>
+
+    <p>
+      This tutorial builds on basic alerting concepts. By the end, you'll know how to:
+    </p>
+    <ul>
+      <li>Understand what alert instances are and how they work</li>
+      <li>Create notification policies with label matchers</li>
+      <li>Build alert rules that return multiple alert instances</li>
+      <li>Route different alert instances to different contact points</li>
+    </ul>
+
+    <h2>Understanding Alert Instances</h2>
+    <p>
+      Before we start building, let's understand a key concept: <strong>alert instances</strong>.
+    </p>
+
+    <p>
+      When an alert rule evaluates a query that returns multiple time series, 
+      each time series becomes a separate <strong>alert instance</strong>. Each instance 
+      can be in a different state (Normal or Firing) and can be routed independently 
+      to different contact points based on its labels.
+    </p>
+
+    <div style="background-color: #f5f5f5; padding: 15px; margin: 15px 0; border-left: 4px solid #3274d9;">
+      <p><strong>Example:</strong></p>
+      <p>
+        Imagine monitoring website traffic from different devices. Your query returns:
+      </p>
+      <ul>
+        <li><code>device=desktop, views=1200</code></li>
+        <li><code>device=mobile, views=900</code></li>
+      </ul>
+      <p>
+        If your alert threshold is "views &gt; 1000", only the desktop instance 
+        would trigger an alert. The <code>device</code> label can be used to route 
+        this alert to a specific team or notification channel.
+      </p>
+    </div>
+
+    <h2>Section 1: Create Contact Points</h2>
+    <p>
+      First, let's create two contact points that we'll use to demonstrate routing 
+      different alert instances to different destinations.
+    </p>
+
+    <span id="setup-contact-points"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#setup-contact-points">
+      <ul>
+        <li class="interactive"
+            data-reftarget="a[data-testid='data-testid Nav menu item'][href='/alerting']"
+            data-targetaction="highlight"
+            data-requirements="navmenu-open">
+          Click <strong>Alerting</strong> in the left-hand menu.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="a[href='/alerting/notifications']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Go to <strong>Contact points</strong> in the Alerting section.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="a[aria-label='add contact point']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click <strong>Add contact point</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='name']"
+            data-targetaction="formfill"
+            data-targetvalue="desktop-alerts"
+            data-requirements="exists-reftarget">
+          Name your first contact point <strong>desktop-alerts</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='contact-point-type-items.0.']"
+            data-targetaction="formfill"
+            data-targetvalue="Webhook"
+            data-requirements="exists-reftarget">
+          Select <strong>Webhook</strong> as the notification method.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='items.0.settings.url']"
+            data-targetaction="formfill"
+            data-targetvalue="https://webhook.site/desktop"
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">
+            In production, this would be your actual webhook endpoint. 
+            For testing, you can use services like <code>webhook.site</code> to 
+            inspect the alert notifications being sent.
+          </span>
+          Enter a webhook URL for desktop alerts.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[type='submit']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click <strong>Save contact point</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="a[aria-label='add contact point']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click <strong>Add contact point</strong> again to create a second one.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='name']"
+            data-targetaction="formfill"
+            data-targetvalue="mobile-alerts"
+            data-requirements="exists-reftarget">
+          Name your second contact point <strong>mobile-alerts</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='contact-point-type-items.0.']"
+            data-targetaction="formfill"
+            data-targetvalue="Webhook"
+            data-requirements="exists-reftarget">
+          Select <strong>Webhook</strong> again.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='items.0.settings.url']"
+            data-targetaction="formfill"
+            data-targetvalue="https://webhook.site/mobile"
+            data-requirements="exists-reftarget">
+          Enter a different webhook URL for mobile alerts.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[type='submit']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click <strong>Save contact point</strong> to finish.
+        </li>
+      </ul>
+    </span>
+
+    <h2>Section 2: Create Notification Policies</h2>
+    <p>
+      Now we'll create <strong>notification policies</strong> that route alert instances 
+      with specific labels to different contact points. Policies use label matchers 
+      to determine where each alert instance should be sent.
+    </p>
+
+    <span id="create-notification-policies"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#create-notification-policies"
+      data-requirements="section-completed:setup-contact-points">
+      <ul>
+        <li class="interactive"
+            data-reftarget="a[href='/alerting/routes']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Navigate to <strong>Notification policies</strong>.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='notification-policies']"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            <strong>Notification policies</strong> form a tree structure. The default policy 
+            catches all alerts that don't match any child policies. Child policies can 
+            have <code>label matchers</code> that route specific alerts to different contact points.
+          </span>
+          Observe the notification policy tree structure.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[aria-label='New child policy']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click <strong>+ New child policy</strong> on the Default policy.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[placeholder='label']"
+            data-targetaction="formfill"
+            data-targetvalue="device"
+            data-requirements="exists-reftarget">
+          Enter <strong>device</strong> as the label to match.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[placeholder='value']"
+            data-targetaction="formfill"
+            data-targetvalue="desktop"
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">
+            This policy will match alert instances where the <code>device</code> 
+            label equals <code>desktop</code>. Labels can come from your queries, 
+            data sources, or be manually added to alert rules.
+          </span>
+          Enter <strong>desktop</strong> as the value to match.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="div[data-testid='contact-point-picker'] input"
+            data-targetaction="formfill"
+            data-targetvalue="desktop-alerts"
+            data-requirements="exists-reftarget">
+          Select <strong>desktop-alerts</strong> as the contact point.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="input[type='checkbox'][id*='continue-matching']"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            <strong>Continue matching subsequent sibling nodes</strong> allows an alert 
+            to match multiple policies. This is useful if you want to send the same 
+            alert to multiple destinations.
+          </span>
+          Notice the "Continue matching" option (we'll leave it unchecked for now).
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[type='submit']"
+            data-targetaction="button"
+            data-requirements="exists-reftarget">
+          Click <strong>Save policy</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[aria-label='New child policy']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click <strong>+ New child policy</strong> again to create a second policy.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[placeholder='label']"
+            data-targetaction="formfill"
+            data-targetvalue="device"
+            data-requirements="exists-reftarget">
+          Enter <strong>device</strong> as the label.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[placeholder='value']"
+            data-targetaction="formfill"
+            data-targetvalue="mobile"
+            data-requirements="exists-reftarget">
+          Enter <strong>mobile</strong> as the value this time.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="div[data-testid='contact-point-picker'] input"
+            data-targetaction="formfill"
+            data-targetvalue="mobile-alerts"
+            data-requirements="exists-reftarget">
+          Select <strong>mobile-alerts</strong> as the contact point.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[type='submit']"
+            data-targetaction="button"
+            data-requirements="exists-reftarget">
+          Click <strong>Save policy</strong> to finish.
+        </li>
+      </ul>
+    </span>
+
+    <p>
+      Great! You now have two notification policies that will route alerts differently 
+      based on the <code>device</code> label. Let's create an alert rule that 
+      produces multiple instances with these labels.
+    </p>
+
+    <h2>Section 3: Create Multi-Instance Alert Rule</h2>
+    <p>
+      Now we'll create an alert rule that returns multiple alert instances using 
+      the <strong>TestData</strong> data source with CSV data. This will simulate 
+      monitoring traffic from different devices.
+    </p>
+
+    <span id="create-multi-instance-alert"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#create-multi-instance-alert"
+      data-requirements="section-completed:create-notification-policies">
+      <ul>
+        <li class="interactive"
+            data-reftarget="a[data-testid='data-testid Nav menu item'][href='/alerting/list']"
+            data-targetaction="highlight"
+            data-requirements="navmenu-open">
+          Navigate to <strong>Alert rules</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="a[href='alerting/new/alerting']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click <strong>New alert rule</strong>.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[id='name']"
+            data-targetaction="formfill"
+            data-targetvalue="Web Traffic Monitor"
+            data-requirements="exists-reftarget">
+          Name your alert rule <strong>Web Traffic Monitor</strong>.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='query-editor-section']"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            The <strong>query section</strong> is where you define what data to monitor. 
+            Each row returned by your query can become a separate alert instance. 
+            In this example, we'll use CSV data to simulate traffic from different devices.
+          </span>
+          Examine the query and alert condition section.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[data-testid='data-testid Select a data source']"
+            data-targetaction="formfill"
+            data-targetvalue="TestData"
+            data-requirements="exists-reftarget">
+          Select <strong>TestData</strong> as the data source.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="select[aria-label='Scenario']"
+            data-targetaction="formfill"
+            data-targetvalue="CSV Content"
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">
+            <strong>CSV Content</strong> scenario allows you to provide custom data 
+            in CSV format. This is perfect for testing alert rules with multiple 
+            time series without needing a real data source.
+          </span>
+          Select <strong>CSV Content</strong> as the scenario.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="textarea[data-testid='csv-content']"
+            data-targetaction="formfill"
+            data-targetvalue="device,views&#10;desktop,1200&#10;mobile,900"
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">
+            This CSV data creates two time series with different <code>device</code> 
+            labels and <code>views</code> values. The desktop device has 1200 views 
+            and mobile has 900 views. These labels will be used for routing.
+          </span>
+          Enter the CSV data:
+          <pre>device,views
+desktop,1200
+mobile,900</pre>
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='alert-condition-section']"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            The <strong>alert condition</strong> determines which instances fire. 
+            The reducer function (Last, Min, Max, etc.) extracts a single value 
+            from each time series, and the threshold determines if it fires.
+          </span>
+          Notice the alert condition with reducer and threshold.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="input[data-testid='alert-threshold-input']"
+            data-targetaction="formfill"
+            data-targetvalue="1000"
+            data-requirements="exists-reftarget">
+          Set the threshold to <strong>1000</strong>. This means alerts fire when views exceed 1000.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[data-testid='data-testid alert-rule preview-button']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">
+            <strong>Preview</strong> shows you which alert instances would fire 
+            with your current query and threshold. You should see desktop (1200) 
+            in Firing state and mobile (900) in Normal state.
+          </span>
+          Click <strong>Preview alert rule condition</strong> to see the alert instances.
+        </li>
+
+        <li class="interactive" data-targetaction="multistep"
+            data-requirements="exists-reftarget">
+          <span class="interactive" data-targetaction="button" data-reftarget="New folder"></span>
+          <span class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='data-testid alert-rule name-folder-name-field']" data-targetvalue="Traffic Alerts"></span>
+          <span class="interactive" data-targetaction="button" data-reftarget="Create"></span>
+          Create a new folder called <strong>Traffic Alerts</strong> to organize your alert rules.
+        </li>
+
+        <li class="interactive" data-targetaction="multistep"
+            data-requirements="exists-reftarget">
+          <span class="interactive" data-targetaction="button" data-reftarget="New evaluation group"></span>
+          <span class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='data-testid alert-rule new-evaluation-group-name']" data-targetvalue="1m-evaluation"></span>
+          <span class="interactive" data-targetaction="button" data-reftarget="1m"></span>
+          <span class="interactive" data-targetaction="button" data-reftarget="Create"></span>
+          <span class="interactive-comment">
+            <strong>Evaluation groups</strong> determine how often Grafana checks 
+            your alert conditions. A 1-minute interval means your alert instances 
+            are evaluated every minute.
+          </span>
+          Create a new evaluation group with a <strong>1m</strong> interval.
+        </li>
+
+        <li class="interactive"
+          data-targetaction="formfill"
+          data-reftarget="input[id='eval-for-input']"
+          data-targetvalue="0s"
+          data-requirements="exists-reftarget">
+          Set the <strong>pending period</strong> to <strong>0s</strong> so alerts fire immediately when the condition is met.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='notifications-section']"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            The <strong>notifications section</strong> shows how your alert instances 
+            will be routed. You can either specify a contact point directly or let 
+            notification policies handle the routing based on labels.
+          </span>
+          Examine the notifications section.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[data-testid='toggle-advanced-options']"
+            data-targetaction="button"
+            data-requirements="exists-reftarget">
+          Click <strong>Advanced options</strong> to see notification routing.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[data-testid='preview-routing']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          <span class="interactive-comment">
+            <strong>Preview routing</strong> shows which notification policies will 
+            match each alert instance based on their labels. You should see that 
+            alerts with <code>device=desktop</code> route to desktop-alerts and 
+            <code>device=mobile</code> route to mobile-alerts.
+          </span>
+          Click <strong>Preview routing</strong> to see how instances will be routed.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="Save"
+            data-targetaction="button"
+            data-requirements="exists-reftarget">
+          Click <strong>Save</strong> to create your multi-instance alert rule.
+        </li>
+      </ul>
+    </span>
+
+    <h2>Section 4: Verify Alert Instance Routing</h2>
+    <p>
+      Let's verify that your alert instances are being created and routed correctly 
+      to different contact points based on their labels.
+    </p>
+
+    <span id="verify-routing"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#verify-routing"
+      data-requirements="section-completed:create-multi-instance-alert">
+      <ul>
+        <li class="interactive"
+            data-reftarget="a[href='/alerting/groups']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Navigate to <strong>Alert groups</strong> to see your firing alert instances.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='alert-group-panel']"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            <strong>Alert groups</strong> show all your alert instances organized 
+            by evaluation group. You should see your Web Traffic Monitor rule with 
+            two instances: one for desktop (Firing) and one for mobile (Normal).
+          </span>
+          Observe your alert instances in the alert groups view.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='alert-instance']:has(span:contains('device=desktop'))"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            The <strong>desktop alert instance</strong> should be in <code>Firing</code> 
+            state because its views (1200) exceed the threshold (1000). Notice the 
+            <code>device=desktop</code> label that enables routing to the desktop-alerts 
+            contact point.
+          </span>
+          Locate the desktop alert instance with its labels.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='alert-instance']:has(span:contains('device=mobile'))"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            The <strong>mobile alert instance</strong> should be in <code>Normal</code> 
+            state because its views (900) are below the threshold. Even though it's 
+            not firing, it exists as a separate instance with the <code>device=mobile</code> label.
+          </span>
+          Locate the mobile alert instance with its labels.
+        </li>
+
+        <li class="interactive"
+            data-reftarget="button[data-testid='view-alert-rule']"
+            data-targetaction="highlight"
+            data-requirements="exists-reftarget">
+          Click to <strong>view the alert rule</strong> details.
+        </li>
+
+        <li class="interactive"
+            data-targetaction="highlight"
+            data-reftarget="div[data-testid='routing-tree']"
+            data-requirements="exists-reftarget"
+            data-doit="false">
+          <span class="interactive-comment">
+            The <strong>routing tree</strong> visualization shows the path each alert 
+            instance takes through your notification policies. You can see how labels 
+            determine which child policy matches and ultimately which contact point 
+            receives the notification.
+          </span>
+          Examine the routing tree showing how labels match policies.
+        </li>
+      </ul>
+    </span>
+
+    <h2>🎉 Congratulations!</h2>
+    <p>
+      Excellent work! You now understand how to create sophisticated alert routing 
+      in Grafana using multi-dimensional alerts and notification policies.
+    </p>
+
+    <p>
+      You've successfully learned how to:
+    </p>
+    <ul>
+      <li>✅ <strong>Understand alert instances</strong> - Multiple alerts from a single rule</li>
+      <li>✅ <strong>Create notification policies</strong> - Route alerts based on label matchers</li>
+      <li>✅ <strong>Build multi-instance alert rules</strong> - Using queries that return multiple time series</li>
+      <li>✅ <strong>Route alert instances</strong> - Send different instances to different contact points</li>
+      <li>✅ <strong>Use labels for routing</strong> - Leverage labels from queries and data sources</li>
+    </ul>
+
+    <h3>Real-World Use Cases</h3>
+    <p>
+      Now that you understand multi-dimensional alerting, you can apply it to many scenarios:
+    </p>
+    <ul>
+      <li><strong>Multi-region monitoring</strong> - Route alerts from different regions to regional teams</li>
+      <li><strong>Severity-based routing</strong> - Send critical alerts to PagerDuty and warnings to Slack</li>
+      <li><strong>Service-specific alerts</strong> - Route each microservice's alerts to its owning team</li>
+      <li><strong>Environment separation</strong> - Handle production and staging alerts differently</li>
+      <li><strong>Customer-specific monitoring</strong> - Route alerts for different customers to different channels</li>
+    </ul>
+
+    <h3>What's Next?</h3>
+    <p>
+      Continue building on your alerting knowledge:
+    </p>
+    <ul>
+      <li><strong>Silences</strong> - Learn to temporarily mute alerts during maintenance</li>
+      <li><strong>Alert groups</strong> - Group related alerts to reduce notification noise</li>
+      <li><strong>Mute timings</strong> - Define schedules when alerts shouldn't fire</li>
+      <li><strong>Advanced label matchers</strong> - Use regex and other operators for complex routing</li>
+      <li><strong>Contact point integrations</strong> - Connect to Slack, PagerDuty, email, and more</li>
+    </ul>
+
+    <p>
+      <strong>Pro tip:</strong> In production, use meaningful label names that reflect 
+      your organization's structure (team, service, environment, severity) to make 
+      routing policies intuitive and maintainable.
+    </p>
+  </body>
+</html>
