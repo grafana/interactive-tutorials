@@ -15,7 +15,7 @@ an interactive tutorial like that!
 
 0. **Make sure you have Cursor** (trust me it's worth it). [Download it](https://cursor.com/downloads).
 1. If you don't have acess, request cursor access in `#it-help`. You'll need it so you
-don't get rate limited
+don't get rate limited or using Grafana License Manager (GLM)
 2. Sign in with your Grafana account after getting access
 3. **Open in Cursor** - This repo is Cursor-enabled with AI guidance
 4. **Create a tutorial** - Use the `/new` command to start a new tutorial, giving it a name.
