@@ -17,7 +17,7 @@ an interactive tutorial like that!
 
 ## Quick Start: Let's Build a new Interactive Guide
 
-**[This video is a complete 10-minute guide to the development process for guides](https://drive.google.com/file/d/1YTOrwTRna6YXJ6-GLkkZH-qv8J6h967j/view?usp=sharing)**.  The instructions below will recap the key parts.
+**[This video is a complete 10-minute guide to the development process for guides](https://www.youtube.com/watch?v=zMXf1enyPN0)**.  The instructions below will recap the key parts.
 
 ### Set up the Interactive Learning Plugin Locally
 
