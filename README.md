@@ -27,7 +27,7 @@ an interactive tutorial like that!
 * Once you've logged into your running version of Grafana, go to the Interactive Learning Plugin settings page, and set the
 end of the URL to include `?dev=true`. The full URL should be roughly `{instance}/plugins/grafana-pathfinder-app?dev=true`
 
-<img src="docs/img/dev-mode.png" alt="Dev Mode" width="500" style="height:auto;" />
+<img src="docs/img/dev-mode.png" alt="Dev Mode" width="50%" height="50%" />
 
 * **The checkbox will not appear unless `dev=true` is in the URL**. Select that and save plugin settings
 
