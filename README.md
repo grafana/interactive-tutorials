@@ -1,40 +1,88 @@
 # Interactive Tutorials
 
 This repository contains interactive wizard experiences for Grafana, designed by
-Developer Advocacy. It's designed to work with Cursor's AI assistant.
+Developer Advocacy. It is designed to work with Cursor's AI assistant.
 
 ## First: Understand What We're Building!
 
-1. Click "Open Grafana Pathfinder" button extreme upper right by Assistant button.
-2. Make sure you're on the home screen, check the Recommendations tab.
+0. Go to [Drilldown section of Grafana Play](https://play.grafana.org/drilldown)
+1. Click the `?` help icon in the upper right hand corner of the screen, to open the interactive learning plugin
+
+![Interactive Learning Icon](docs/img/icon.png)
+
+2. Make sure you're on the Drilldown page, check the Recommendations tab.
 3. Follow the _Interactive Tutorial: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
 an interactive tutorial like that!
 4. Notice the structure: it's built in sections, of individual steps, with each step having a "Show Me" and "Do It" option.
 
 ## Quick Start: Let's Build a new Interactive Guide
 
-0. **Make sure you have Cursor** (trust me it's worth it). [Download it](https://cursor.com/downloads).
-1. If you don't have acess, request cursor access in `#it-help` or using Grafana License Manager (GLM). You'll need it so you
-don't get rate limited.
-2. Sign in with your Grafana account after getting access
+**[This video is a complete 10-minute guide to the development process for guides](https://drive.google.com/file/d/1YTOrwTRna6YXJ6-GLkkZH-qv8J6h967j/view?usp=sharing)**.  The instructions below will recap the key parts.
+
+### Set up the Interactive Learning Plugin Locally
+
+* **Make sure you have Cursor** (it's worth it). [Download it](https://cursor.com/downloads).
+* Clone this repo to your machine.  Also clone the [interactive learning plugin](https://github.com/grafana/grafana-pathfinder-app)
+* Start the plugin repo.  [full instructions are here](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/LOCAL_DEV.md) but the short version is: `npm install` then `npm run build && npm run server` and go to http://localhost:3000/
+* Once you've logged into your running version of Grafana, go to the Interactive Learning Plugin settings page, and set the
+end of the URL to include `?dev=true`. The full URL should be roughly `{instance}/plugins/grafana-pathfinder-app?dev=true`
+
+![Dev Mode](docs/img/dev-mode.png)
+
+* **The checkbox will not appear unless `dev=true` is in the URL**. Select that and save plugin settings
+
+### Create a Draft HTML Guide
+
+Interactive guides are just HTML documents, with a few extra special attributes that tell the plugin how
+to interact.  So writing a guide is just making an HTML file. There are a lot of examples in this repo; see 
+any `unstyled.html` file in one of the sub-directories.
+
+#### Start from Scratch
+
+In cursor, use Agent mode and just type in `/new My First Guide`.  This will create a directory and an HTML
+file for you in the right format, which you can just go edit.
+
+#### Start from Existing Instructions
+
+If you have existing written instructions, you can use [the importer app](https://pathfinder-importer.vercel.app/) to upload 
+a file you may have already written. This tool uses AI to help you reformat your doc into a basic
+HTML interactive guide. Please note, in the "Enhance" tab there is a function called "Content Advisor" that can give basic 
+feedback about whether your doc is a good candidate for an interactive guide. In general we're looking for clear step-by-step
+instructions.
+
+### Iterate & Develop
+
+We recommend hosting your local HTML file on a local server; we use the [Live Server extension](https://marketplace.cursorapi.com/items/?itemName=ritwickdey.LiveServer) in Cursor to do this. Install this extension, click "Go Live" in the extreme bottom right of Cursor, and
+local files will be hosted on http://localhost:5000 or different port.
+
+You can then use the Tutorial tester to iterate. Simply put the URL to your `unstyled.html` draft guide into the box.
+
+![Test Tutorial](docs/img/test-tutorial.png)
+
+**NOTE**: The tutorial tester will not appear unless you are in dev mode.
+
+### DOM Selectors
+
+Writing interactive guides usually boils down to writing lists of steps and their accompanying text, which is 
+straightforward. We draw your attention to the `data-reftarget` attributes in the HTML, which contain DOM selectors.
+These are absolutely critical to get right, because they tell the plugin which buttons, input boxes, etc. are being
+targeted by the interactive features.
+
+### Interactive Action Types
+
+What kinds of interactive steps can you make?  See [docs/interactive-types.md] for a full list, or 
+just ask Cursor.
+
+### Getting Help: Ask Cursor
+
+Cursor knows quite a lot about what's in this repo!  Use `Ask` mode and ask it 
+questions about how different interactive elements work. Cursor will use the `docs` 
+folder in this repo to answer your questions.
+
 3. **Open in Cursor** - This repo is Cursor-enabled with AI guidance
 4. **Create a tutorial** - Use the `/new` command to start a new tutorial, giving it a name.
 5. **See an example** - Check out `first-dashboard/unstyled.html` for a complete working example
 6. **Get help** - Use `/lint`, `/check`, and `/attack` commands to Cursor for validation and testing of what you're writing as you go.
-
-## Authoring workflow / testing your tutorial in Pathfinder
-
-There are several ways to be able to test your interactive tutorials before setting them live. Depending on your set-up it will alter your workflow or dictate what options are available to you.
-
-1. Enable dev mode in Pathfinder. You do this by navigating to the configuration page in Pathfinder and appending the `dev=true` query parameter to your URL. In your Grafana instance the full path should be: `{instance}/plugins/grafana-pathfinder-app?page=configuration&dev=true`
-2. This will show a Dev Mode checkbox in the configuration page. Ensure it is checked then save your settings. The page will automatically refresh.
-3. This will enable the Dev Mode tools in Pathfinder which you can find under the 'Recommendations' tab.
-4. One of the tools is the 'Tutorial Tester'. Here you will see two tabs where you can enter a URL to load up in Pathfinder. The main difference between the two is the 'GitHub' tab has additional validation steps to help guide you to the right path and doesn't expect the `unstyled.html` suffix, where the 'Other' tab is free-form and lets you enter any path which ends in `unstyled.html`.
-5. For what URL to put in, you have two choices:
-  - Either create a GitHub branch in this repo and push your changes as you make updates.
-  - OR run a local server which is serving your interactive tutorials. VSCode / Cursor have an extension called [Live Server authored by Ritwick Dey](https://marketplace.cursorapi.com/items/?itemName=ritwickdey.LiveServer) which makes this exceptionally easy. Just open this repo in Cursor and in the bottom right you click 'Go Live'. Open the local server in your browser (it should open automatically) and you can navigate to any `unstyled.html` tutorial, copy the link and open it in your Pathfinder instance.
-- In Pathfinder there is a refresh button, so as you make changes to your tutorial you don't have to refresh your Grafana Cloud window, just click the refresh button to see your changes immediately.
-- Iterate on your Interactive Tutorial, and once it is complete commit the changes to the branch and open a Pull Request so it can be merged into `main` and set live in production!
 
 ## Ask Cursor Questions in Dev Loop
 
@@ -43,14 +91,18 @@ you could read them all, or just ask Cursor to explain things as you go.
 * DOM selectors for elements (`data-reftarget` in the guides) is usually the trickiest part. New tooling on the way
 to help with that soon
 
-## Ask Humans Questions in `#proj-grafana-pathfinder`
+## Ask Us Questions!
 
 * Talk to Tom Glenn, David Allen, or Simon Prickett, all of whom have done this before. They will help.
+* They can be reached by email (if they have shared with you) or internal on Grafana's slack in `#proj-grafana-pathfinder`
 
-## Getting Your Tutorial Into Pathfinder
+## Getting Your Tutorial Into The Plugin
+
+Once you're finished with a draft, we need to add it to the recommender. This will 
+ensure that the right users get the content recommended to them when using Grafana.
 
 1. Open a PR to this repo with your new guide! Ping Jay Clifford, Tom Glenn, or
-David Allen in `#team-dev-advocacy` to get it merged.
+David Allen to get it merged.
 2. We'll wire it into the recommender for you.
 3. MAKE SURE TO INCLUDE IN YOUR PR:  When should users see your guide? What are they looking at in the UI when it appears as a recommendation? Who should see your guide? Admins only?  Commercial stacks?  Free stacks? "Everybody" is an acceptable answer.  This determines how it will appear.
 
