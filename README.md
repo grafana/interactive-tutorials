@@ -1,6 +1,6 @@
-# Interactive Tutorials
+# Interactive Learning Tutorials
 
-This repository contains interactive wizard experiences for Grafana, designed by
+This repository contains interactive learning tutorials for Grafana, designed by
 Developer Advocacy. It is designed to work with Cursor's AI assistant.
 
 ## First: Understand What We're Building!
@@ -8,7 +8,7 @@ Developer Advocacy. It is designed to work with Cursor's AI assistant.
 0. Go to [Drilldown section of Grafana Play](https://play.grafana.org/drilldown)
 1. Click the `?` help icon in the upper right hand corner of the screen, to open the interactive learning plugin
 
-![Interactive Learning Icon](docs/img/icon.png)
+<img src="docs/img/icon.png" alt="Interactive Learning Icon" width="80" style="height:auto;" />
 
 2. Make sure you're on the Drilldown page, check the Recommendations tab.
 3. Follow the _Interactive Tutorial: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
@@ -27,7 +27,7 @@ an interactive tutorial like that!
 * Once you've logged into your running version of Grafana, go to the Interactive Learning Plugin settings page, and set the
 end of the URL to include `?dev=true`. The full URL should be roughly `{instance}/plugins/grafana-pathfinder-app?dev=true`
 
-![Dev Mode](docs/img/dev-mode.png)
+<img src="docs/img/dev-mode.png" alt="Dev Mode" width="500" style="height:auto;" />
 
 * **The checkbox will not appear unless `dev=true` is in the URL**. Select that and save plugin settings
 
@@ -37,20 +37,24 @@ Interactive guides are just HTML documents, with a few extra special attributes 
 to interact.  So writing a guide is just making an HTML file. There are a lot of examples in this repo; see 
 any `unstyled.html` file in one of the sub-directories.
 
-#### Start from Scratch
+#### Option 1: Start from Scratch
 
 In cursor, use Agent mode and just type in `/new My First Guide`.  This will create a directory and an HTML
 file for you in the right format, which you can just go edit.
 
-#### Start from Existing Instructions
+#### Option 2: Start from Existing Instructions
 
-If you have existing written instructions, you can use [the importer app](https://pathfinder-importer.vercel.app/) to upload 
+You can use [the importer app](https://pathfinder-importer.vercel.app/) to upload 
 a file you may have already written. This tool uses AI to help you reformat your doc into a basic
-HTML interactive guide. Please note, in the "Enhance" tab there is a function called "Content Advisor" that can give basic 
+HTML interactive guide. 
+
+In the "Enhance" tab there is a function called "Content Advisor" that can give basic 
 feedback about whether your doc is a good candidate for an interactive guide. In general we're looking for clear step-by-step
 instructions.
 
 ### Iterate & Develop
+
+As you build your guide, you'll want to see it in the plugin, and test to make sure it works.
 
 We recommend hosting your local HTML file on a local server; we use the [Live Server extension](https://marketplace.cursorapi.com/items/?itemName=ritwickdey.LiveServer) in Cursor to do this. Install this extension, click "Go Live" in the extreme bottom right of Cursor, and
 local files will be hosted on http://localhost:5000 or different port.
@@ -61,35 +65,28 @@ You can then use the Tutorial tester to iterate. Simply put the URL to your `uns
 
 **NOTE**: The tutorial tester will not appear unless you are in dev mode.
 
+If you don't have the Live Server extension or don't want to host the file locally, you can push to a branch of this
+repo, and use Tutorial Tester >> Github to load from Github. We like Live server because it's faster and lets us iterate
+without `git push`.
+
 ### DOM Selectors
 
 Writing interactive guides usually boils down to writing lists of steps and their accompanying text, which is 
 straightforward. We draw your attention to the `data-reftarget` attributes in the HTML, which contain DOM selectors.
-These are absolutely critical to get right, because they tell the plugin which buttons, input boxes, etc. are being
+**These are absolutely critical to get right**, because they tell the plugin which buttons, input boxes, etc. are being
 targeted by the interactive features.
 
-### Interactive Action Types
+### Interactive Action Types: Asking Cursor for Help
 
 What kinds of interactive steps can you make?  See [docs/interactive-types.md] for a full list, or 
-just ask Cursor.
-
-### Getting Help: Ask Cursor
+just ask Cursor.  A good way to get started is to read one of the existing guides, highlight bits and
+add it to the model context, and ask cursor "How does this part work?"
 
 Cursor knows quite a lot about what's in this repo!  Use `Ask` mode and ask it 
 questions about how different interactive elements work. Cursor will use the `docs` 
 folder in this repo to answer your questions.
 
-3. **Open in Cursor** - This repo is Cursor-enabled with AI guidance
-4. **Create a tutorial** - Use the `/new` command to start a new tutorial, giving it a name.
-5. **See an example** - Check out `first-dashboard/unstyled.html` for a complete working example
-6. **Get help** - Use `/lint`, `/check`, and `/attack` commands to Cursor for validation and testing of what you're writing as you go.
-
-## Ask Cursor Questions in Dev Loop
-
-* Cursor has a bunch of docs on how these guides are structured and how this all works. (See `docs/` and `.cursor`)
-you could read them all, or just ask Cursor to explain things as you go.
-* DOM selectors for elements (`data-reftarget` in the guides) is usually the trickiest part. New tooling on the way
-to help with that soon
+![Cursor Explain](docs/img/cursor-explain.png)
 
 ## Ask Us Questions!
 
