@@ -86,6 +86,8 @@ Cursor knows quite a lot about what's in this repo!  Use `Ask` mode and ask it
 questions about how different interactive elements work. Cursor will use the `docs` 
 folder in this repo to answer your questions.
 
+Here's an example of Cursor in Ask mode, explaining a feature:
+
 ![Cursor Explain](docs/img/cursor-explain.png)
 
 ## Ask Us Questions!
