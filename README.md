@@ -26,6 +26,7 @@ an interactive tutorial like that!
 * Start the plugin repo.  [full instructions are here](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/LOCAL_DEV.md) but the short version is: `npm install` then `npm run build && npm run server` and go to http://localhost:3000/
 * Once you've logged into your running version of Grafana, go to the Interactive Learning Plugin settings page, and set the
 end of the URL to include `?dev=true`. The full URL should be roughly `{instance}/plugins/grafana-pathfinder-app?dev=true`
+* **Click the `?` help icon** (as shown earlier in step 1) to open the sidebar where you'll find the dev mode settings:
 
 <img src="docs/img/dev-mode.png" alt="Dev Mode" width="50%" height="50%" />
 
