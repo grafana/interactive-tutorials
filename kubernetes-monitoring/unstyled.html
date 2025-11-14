@@ -1,479 +1,566 @@
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Explore Kubernetes Monitoring</title>
-    </head>
-    <body>
-        <h1>Explore your infrastructure with Kubernetes Monitoring</h1>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Monitoring Interactive Tutorial</title>
+  </head>
+  <body>
+    <h1>Monitor Kubernetes with Grafana Cloud</h1>
+    <p>
+      This interactive tutorial walks you through Grafana Cloud’s Kubernetes Monitoring application so you can
+      move from high-level cluster health to container-level troubleshooting in just a few clicks.
+    </p>
+    <ul>
+      <li>Launch Kubernetes Monitoring from the Observability navigation</li>
+      <li>Drill down from clusters to nodes, pods, containers, and workloads</li>
+      <li>Search for any Kubernetes object and jump between key pages</li>
+      <li>Read performance insights across CPU, memory, and network tabs</li>
+      <li>Use predictive analytics to plan capacity and spot anomalies early</li>
+    </ul>
 
-        <h2>Step 1: Navigate to Kubernetes Monitoring</h2>
+    <h2>Section 1: Launch Kubernetes Monitoring</h2>
+    <p>Open the Kubernetes Monitoring overview to see the health of every connected cluster.</p>
 
-        <p>Grafana provides specialized views for monitoring Kubernetes. Let's start by exploring the Infrastructure section 
-           where you can view your Kubernetes clusters and their resources.</p>
+    <span
+      id="launch-k8s-app"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#launch-k8s-app"
+      data-requirements="navmenu-open,has-datasource:prometheus"
+      data-objectives="opened-k8s-monitoring"
+    >
+      <ul>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[data-testid='data-testid Nav menu item'][href='/observability']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Observability groups infrastructure experiences, including Kubernetes Monitoring.
+          </span>
+          Click <strong>Observability</strong> in the left navigation.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            The Kubernetes tile opens the dedicated experience with curated dashboards and drilldowns.
+          </span>
+          Select <strong>Kubernetes</strong> to open the Kubernetes Monitoring overview.
+        </li>
+      </ul>
+    </span>
 
-        <span id="navigate-to-k8s" 
-            class="interactive" 
-            data-targetaction="sequence" 
-            data-reftarget="navigate-to-k8s" 
-            data-requirements="navmenu-open,has-datasource:prometheus">
+    <h2>Section 2: Explore clusters, nodes, pods, and containers</h2>
+    <p>
+      Follow the curated drilldowns to move from cluster health to container-level optimization data without losing context.
+    </p>
 
-            highlight|button[aria-label="Expand section: Observability"]|
-            <ul>
-              <li class="interactive" 
-                  data-reftarget="a[data-testid='data-testid Nav menu item'][href='/observability']"
-                  data-targetaction='highlight'>
-                Click <strong>Observability</strong> in the left navigation menu.</li>
-            </ul>
-        </span>    
-          
-        <h2>Section: Exploring your infrastructure.</h2>
+    <span
+      id="cluster-to-container-tour"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#cluster-to-container-tour"
+      data-requirements="on-page:/a/grafana-k8s-app"
+      data-objectives="navigated-hierarchy"
+    >
+      <ul>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='cluster-count'] a"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            The overview tile shows how many clusters are currently reporting metrics.
+          </span>
+          Click the <strong>Clusters</strong> summary tile to open the full cluster list.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="table tbody tr:nth-match(1) a"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Cluster rows surface status, workload count, and alert totals so you can pick the busiest cluster first.
+          </span>
+          Open the first cluster to view its detail page.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='cluster-information']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Cluster information summarizes location, total capacity, and current resource usage.
+          </span>
+          Review the <strong>Cluster information</strong> panel for inventory context.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='cluster-optimization']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Optimization graphs surface over/under-provisioning trends across CPU and memory.
+          </span>
+          Examine <strong>Cluster optimization</strong> to spot efficiency opportunities.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='cpu-requests-limits']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Requests vs limits help identify workloads that risk eviction or noisy neighbors.
+          </span>
+          Inspect the <strong>CPU requests &amp; limits</strong> panel.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='memory-requests-limits']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Memory requests and limits reveal pods that might crash loop because of under-provisioning.
+          </span>
+          Review the <strong>Memory requests &amp; limits</strong> panel.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='nodes-list']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Node tables combine utilization, alert count, and kubelet status for quick triage.
+          </span>
+          Scroll to the <strong>Nodes</strong> list within the cluster.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="table tbody tr:nth-match(1) td a[data-testid*='node-link']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Jumping into a node keeps breadcrumb navigation intact so you can bounce back easily.
+          </span>
+          Click the first node name to open the node detail page.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='node-optimization']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Long-term CPU and memory trends reveal which nodes might need rescheduling or scaling.
+          </span>
+          Review the <strong>Node optimization</strong> graphs.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='pods-list']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Pod tables surface workload ownership, namespace, restart counts, and current status.
+          </span>
+          Scroll to the <strong>Pods</strong> list for this node.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="table tbody tr:nth-match(1) td a[data-testid*='pod-link']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Pod detail pages inherit filters so time ranges and cluster context stay consistent.
+          </span>
+          Open the first pod from the list.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="table tbody tr:nth-match(1) td a[data-testid*='container-link']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Containers inherit workload labels, making it easy to trace back to deployments or statefulsets.
+          </span>
+          From the pod detail page, open the first container.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='container-information']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Container information links back to the namespace, node, pod, and workload that own it.
+          </span>
+          Inspect the <strong>Container information</strong> section.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='container-overview']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Optimization hints recommend request and limit adjustments based on observed usage.
+          </span>
+          Review the <strong>Container optimization</strong> insights.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[data-testid*='namespace-link']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Breadcrumb links let you pivot back to namespace-level visibility without losing context.
+          </span>
+          Use the namespace link to jump back up the hierarchy when you are ready.
+        </li>
+      </ul>
+    </span>
 
-        <h3>What you will learn</h3>
-        <p>Travel through your Kubernetes cluster and search for any Kubernetes object.</p>
+    <h3>What you have learned</h3>
+    <p>You can now traverse the full object hierarchy to isolate issues down to individual containers.</p>
 
-        <span id="navigate-hierarchy" 
-            class="interactive" 
-            data-targetaction="sequence" 
-            data-reftarget="span#navigate-hierarchy"
-            data-requirements="navmenu-open,on-page:/a/grafana-k8s-app" 
-            data-objectives="navigated-hierarchy">
-            <ul>
+    <h2>Section 3: Search and navigation shortcuts</h2>
+    <p>Combine global search with in-app menus to locate any Kubernetes object in seconds.</p>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='cluster-count'] a"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the cluster count.</span>
-                Click the cluster count on the <strong>Kubernetes Overview</strong> page to open the list of all clusters in your environment.
-              </li>
-              
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child a"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the name of any cluster.</span>
-                Click the name of any cluster to open its detail page.
-              </li>
+    <span
+      id="search-and-browse"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#search-and-browse"
+      data-requirements="navmenu-open"
+      data-objectives="used-search-and-shortcuts"
+    >
+      <ul>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            The menu item returns you to the Kubernetes overview from anywhere in Grafana.
+          </span>
+          Click <strong>Kubernetes</strong> to ensure the overview is in focus.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[href*='/search']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Global search indexes dashboards, Kubernetes objects, alerts, and more.
+          </span>
+          Open <strong>Search</strong> from the main navigation.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="formfill"
+          data-reftarget="input[placeholder*='Search']"
+          data-targetvalue="nginx"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Searching by namespace, workload, pod, or container name jumps you straight to the correct page.
+          </span>
+          Type the name of an object you expect, such as <strong>nginx</strong>.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[data-testid*='search-result']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Results show object type and hierarchy so you know exactly where each link leads.
+          </span>
+          Choose a search result to navigate directly to that object.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[href*='/a/grafana-k8s-app/nodes']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Dedicated landing pages (Nodes, Namespaces, Workloads) give you sortable tables and filters.
+          </span>
+          Use the navigation to open the <strong>Nodes</strong> page.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='page-navigation-menu']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            The page navigation button exposes quick links to sibling resources without leaving the context.
+          </span>
+          Expand the page navigation menu next to the Nodes title.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[href*='/a/grafana-k8s-app/alerting']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Use Alerts to review Kubernetes-specific incidents and route them to the right team.
+          </span>
+          Open the <strong>Alerts</strong> view to review active issues.
+        </li>
+      </ul>
+    </span>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='cluster-overview']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Notice the <strong>Cluster information</strong> section.</span>
-                The <strong>Cluster information</strong> section contains cluster identification information as well as memory and disk size.
-              </li>
+    <h3>What you have learned</h3>
+    <p>You can now jump between overviews, search results, and alert-focused views without breaking your flow.</p>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='cluster-optimization']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">View <strong>Cluster optimization</strong>.</span>
-                In the <strong>Cluster optimization</strong> section, you can view CPU and memory usage graphs to help identify potential over-provisioning.
-              </li>
+    <h2>Section 4: Analyze namespaces and workloads</h2>
+    <p>Use dedicated performance tabs to evaluate CPU, memory, and network behavior for any namespace or workload.</p>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='cpu-requests-limits']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Notice CPU requests and limits.</span>
-                The CPU requests and limits show the number of containers in the cluster that have requests and limits set. When CPU requests are not set for a container, you can see issues with quality of service and stability.
-              </li>
+    <span
+      id="performance-tabs"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#performance-tabs"
+      data-requirements="on-page:/a/grafana-k8s-app"
+      data-objectives="reviewed-performance-tabs"
+    >
+      <ul>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[href*='/a/grafana-k8s-app/namespaces']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Namespace landing pages highlight saturation and cost signals across workloads.
+          </span>
+          Navigate to <strong>Namespaces</strong>.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="table tbody tr:nth-match(1) a"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Each row includes status, workloads, pods, and alert counts for rapid prioritization.
+          </span>
+          Open the first namespace.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='cpu-tab']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            CPU views combine requests, limits, usage, and saturation so you can right-size workloads.
+          </span>
+          Select the <strong>CPU</strong> tab.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="hover"
+          data-reftarget="div[data-testid*='cpu-usage'] i[data-testid*='info-icon']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Tooltips explain how each metric is calculated and why it matters.
+          </span>
+          Hover any information icon inside the CPU tab.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='memory-tab']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Memory insights correlate working set, RSS, limits, and throttling events.
+          </span>
+          Open the <strong>Memory</strong> tab.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='network-tab']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Network graphs expose traffic spikes, saturation, and dropped packets.
+          </span>
+          Switch to the <strong>Network</strong> tab.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="a[href*='/a/grafana-k8s-app/workloads']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Workloads surfaces deployments, statefulsets, daemonsets, and jobs in one place.
+          </span>
+          Navigate to <strong>Workloads</strong>.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="table tbody tr:nth-match(1) a"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Workload detail pages include the same performance tabs plus rollout and replica summaries.
+          </span>
+          Open the first workload in the list.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='cpu-tab']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            CPU charts highlight usage versus requests so you can estimate headroom.
+          </span>
+          Confirm the <strong>CPU</strong> tab for the workload.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='memory-tab']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Memory trends help you catch impending OOMKills before they happen.
+          </span>
+          Check the <strong>Memory</strong> tab.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='network-tab']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Network panels highlight latency-sensitive workloads that may need QoS adjustments.
+          </span>
+          Review the <strong>Network</strong> tab for the workload.
+        </li>
+      </ul>
+    </span>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='memory-requests-limits']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Notice memory requests and limits.</span>
-                Memory requests and limits show the number of containers in the cluster that have memory requests and limits set. When these are not set, you can see issues with crash looping and stability.
-              </li>
+    <h3>What you have learned</h3>
+    <p>You can now evaluate namespace and workload performance across CPU, memory, and network dimensions.</p>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='nodes-list']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Review the list of nodes.</span>
-                The <strong>Nodes</strong> list displays a list of nodes in the cluster and:
-                <ul>
-                  <li>Their CPU and memory usage data</li>
-                  <li>The number of alerts firing for each node</li>
-                </ul>
-              </li>
+    <h2>Section 5: Use predictive insights</h2>
+    <p>
+      Machine learning powered predictions help you understand when to scale capacity or adjust resource requests.
+    </p>
 
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child td a"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any node name.</span>
-                Click any node name in the list to open its detail page.
-              </li>
+    <span
+      id="predict-capacity"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#predict-capacity"
+      data-requirements="on-page:/a/grafana-k8s-app/workloads"
+      data-objectives="used-ml-predictions"
+    >
+      <ul>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="table tbody tr:nth-match(1) a"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Pick a workload with meaningful historical data to train the prediction model.
+          </span>
+          Open a workload from the list.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="button[data-testid*='dashboards-timepicker-button']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Longer time ranges improve forecast accuracy by giving the model more signal.
+          </span>
+          Expand the time range control and select <strong>Last 7 days</strong>.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="button"
+          data-reftarget="Predict CPU usage"
+          data-requirements="exists-reftarget"
+          data-skippable="true"
+        >
+          <span class="interactive-comment">
+            CPU predictions display a forecast band and expected saturation window.
+          </span>
+          Click <strong>Predict CPU usage</strong> in the CPU usage panel.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="button"
+          data-reftarget="Predict Mem Usage"
+          data-requirements="exists-reftarget"
+          data-skippable="true"
+        >
+          <span class="interactive-comment">
+            Memory predictions highlight when to raise limits or add replicas before OOM events occur.
+          </span>
+          Click <strong>Predict Mem Usage</strong> in the memory panel.
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[data-testid*='prediction-results']"
+          data-requirements="exists-reftarget"
+        >
+          <span class="interactive-comment">
+            Prediction cards summarize trend direction, confidence interval, and next recommended action.
+          </span>
+          Review the prediction summary and close it when you are finished.
+        </li>
+      </ul>
+    </span>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='node-optimization']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">View <strong>Node optimization</strong>.</span>
-                Just like the cluster detail page, the <strong>Node optimization</strong> section is below the <strong>Node information</strong> section. It shows CPU and memory usage graphs for the node.
-              </li>
+    <h3>What you have learned</h3>
+    <p>You can apply predictive analytics to proactively plan scaling and budget decisions.</p>
 
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='pods-list']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">View the <strong>Pods</strong> list.</span>
-                The <strong>Pods</strong> list shows all pods running on this node, including the workload and namespace each pod belongs to.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child td a[data-testid*='pod-link']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any pod name.</span>
-                Click any pod name in the list to navigate to that pod's detail page. As on other detail pages, this page includes:
-                <ul>
-                  <li>Information about the pod</li>
-                  <li>CPU and memory usage graphs</li>
-                  <li>A list of objects that are in the pod</li>
-                </ul>
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child td a[data-testid*='container-link']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any container name.</span>
-                Click any container name in the <strong>Containers</strong> list to navigate to view the container's detail page.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='container-information']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">View <strong>Container information</strong>.</span>
-                The <strong>Container information</strong> section shows the cluster, node, pod, workload, and namespace that the container belongs to.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='container-overview']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">View <strong>Container optimization</strong>.</span>
-                Notice in the <strong>Container optimization</strong> section, there are recommendations for sizing CPU and memory requests and limits.             
-              </li>
-              
-              <li class="interactive" 
-                  data-reftarget="a[data-testid*='namespace-link']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the namespace name.</span>
-                Click the namespace name in the container information section to open the namespace's detail page.
-              </li>
-              
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='workloads-list']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">View the list of workloads.</span>
-                The namespace detail page shows a list of all workloads running in this namespace. Each workload has a link to its detail page.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child td a[data-testid*='workload-link']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any workload name.</span>
-                Click any workload name to open that workload's detail page.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='workload-overview']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">View the <strong>Statefulset information</strong>.</span>
-                The <strong>Statefulsete information</strong> includes any outliers in CPU or memory usage, as well as the cluster and namespace the workload belongs to. In the <strong>Workloads optimization</strong> section following, you can view CPU and memory usage graphs for the workload.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="a[data-testid*='namespace-link']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the namespace name.</span>
-                Click the namespace name in the workload information section to navigate to that namespace's detail page.
-              </li>
-            </ul>
-        </span>
-
-        <h3>What you have learned</h3>
-        <p>You can now navigate to the various objects in your infrastructure, from clusters to containers.</p>
-
-        <h2>Section: Search and browsing</h2>
-
-        <h3>What you will learn</h3>
-        <p>Use various means to search for and find any Kubernetes object.</p>
-
-        <span id="navigate-to-k8s-search" 
-            class="interactive" 
-            data-targetaction="sequence" 
-            data-reftarget="span#navigate-to-k8s-search"
-            data-requirements="navmenu-open" 
-            data-objectives="opened-k8s-app">
-            <ul>
-              <li class="interactive" 
-                  data-reftarget="a[href*='/a/grafana-k8s-app']"
-                  data-targetaction='highlight'
-                  data-requirements="navmenu-open,exists-reftarget">
-                <span class="interactive-comment">Click <strong>Kubernetes</strong> in the menu.</span>
-                Click <strong>Kubernetes</strong> in the main menu to open the Kubernetes Overview page.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="a[href*='/search']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click <strong>Search</strong> in the menu.</span>
-                Click <strong>Search</strong> in the main menu to open the search page where you can also enter a name of any Kubernetes object.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="input[placeholder*='Search']"
-                  data-targetaction='formfill' 
-                  data-targetvalue='nginx'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Enter any object's name.</span>
-                Use the search bar to enter the name of a namespace, workload, node, pod, or container that you know exists in your cluster.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="a[data-testid*='search-result']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any search result.</span>
-                Click any search result to open the page for that object.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="a[href*='/nodes']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click <strong>Nodes</strong> on the menu.</span>
-                Click <strong>Nodes</strong> on the main menu to go to the list of nodes. You can navigate to the main pages in Kubernetes Monitoring using the main menu.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='page-navigation-menu']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the caret beside the <strong>Nodes</strong> page title.</span>
-                Click the arrow icon beside the page title to open another navigation menu.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="a[href*='/alerting']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click <strong>Alerts</strong> in the menu.</span>
-                Click <strong>Alerts</strong> in the menu to open the <strong>Alerts</strong>. Here you can view and manage Kubernetes-specific  alerts.
-              </li>
-              
-              </ul>
-        </span>
-
-        <h3>What you have learned</h3>
-        <p>You can now:</p>
-        <ul>
-          <li>Use the main menu to navigate to different pages</li>
-          <li>Use the top title menu to access navigation options</li>
-          <li>Use search to find any Kubernetes object</li>
-        </ul>
-
-        <h2>Section: Namespaces and workloads-list</h2>
-
-        <h3>What you will learn</h3>
-        <p>Use tabs on detail pages to view CPU, memory, and network performance for namespaces and workloads.</p>
-
-        <span id="analyze-performance" 
-              class='interactive' 
-              data-targetaction='sequence' 
-              data-reftarget="span#analyze-performance"
-              data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
-              data-objectives="viewed-performance-tabs">
-            <ul>
-              <li class="interactive" 
-                  data-reftarget="a[href*='/namespaces']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click <strong>Namespaces</strong> in the menu.</span>
-                Click <strong>Namespaces</strong> in the main menu to open the list of all namespaces in your environment.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child a"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any namespace name.</span>
-                Click any namespace name in the list to open its detail page.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='cpu-tab']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the <strong>CPU</strong> tab.</span>
-                Click the <strong>CPU</strong> tab to see detailed CPU analysis.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='cpu-usage'] i[data-testid*='info-icon']"
-                  data-targetaction='hover'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Hover over the i icon in the Usage panel.</span>
-                Hover over the information icon in the <strong>Overview: Usage (vCPU cores)</strong> panel to read how CPU usage is calculated.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="i[data-testid*='info-icon']"
-                  data-targetaction='hover'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Hover over i icons in other panels.</span>
-                Optionally, hover over the information icons in other panels to understand the data shown in the graphs.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='memory-tab']" 
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the <strong>Memory</strong> tab.</span>
-                Click the <strong>Memory</strong> tab to see memory utilization patterns.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='network-tab']" 
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the <strong>Network</strong> tab.</span>
-                Click the <strong>Network</strong> tab to understand bandwidth usage and potential network saturation.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="a[href*='/workloads']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click <strong>Workloads</strong> in the menu.</span>
-                Click <strong>Workloads</strong> in the main menu to open the list of all workloads in your environment.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child a"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any workload name.</span>
-                Click any workload name in the list to open its detail page.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='cpu-tab']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the <strong>CPU</strong> tab.</span>
-                Click the <strong>CPU</strong> tab to view the workload's CPU performance metrics.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='memory-tab']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the <strong>Memory</strong> tab.</span>
-                Click the <strong>Memory</strong> tab to view the workload's memory usage and allocation patterns.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='network-tab']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click the <strong>Network</strong> tab.</span>
-                Click the <strong>Network</strong> tab to view the workload's network performance and bandwidth usage.
-              </li>
-              
-            </ul>
-        </span>
-
-        <h3>What you have learned</h3>
-        <p>You can now use the CPU, Memory, and Network tabs to view performance in namespaces and workloads.</p>
-
-        <h2>Section: Predictive capabilities</h2>
-
-        <h3>What you will learn</h3>
-        <p>Use machine learning features to predict future resource usage and detect anomalies.</p>
-
-        <span id="use-ml-predictions" 
-              class='interactive' 
-              data-targetaction='sequence' 
-              data-reftarget="span#use-ml-predictions"
-              data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
-              data-objectives="used-ml-predictions">
-            <ul>
-              
-              <li class="interactive" 
-                  data-reftarget="a[href*='/workloads']"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click <strong>Workloads</strong> in the menu.</span>
-                Click <strong>Workloads</strong> in the main menu to open the list of all workloads.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="table tbody tr:first-child a"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Click any workload name.</span>
-                Click any workload name in the list to open its detail page.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="div[data-testid*='time-picker'] button"
-                  data-targetaction='highlight'
-                  data-requirements="exists-reftarget">
-                <span class="interactive-comment">Change time range to last 7 days.</span>
-                Click the time range filter and select <strong>Last 7 days</strong>. This allows the prediction to use more data for greater accuracy.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='predict-cpu']"
-                  data-targetaction='button'
-                  data-requirements="exists-reftarget"
-                  data-skippable="true">
-                <span class="interactive-comment">Click <strong>Predict CPU usage</strong>.</span>
-                In the <strong>CPU usage</strong> panel of the <strong>Workload optimization</strong> section, click the <strong>Predict CPU usage</strong> button to see future CPU usage predictions. To close the popup, click the X in the upper right corner.
-              </li>
-
-              <li class="interactive" 
-                  data-reftarget="button[data-testid*='predict-mem']" 
-                  data-targetaction='button'
-                  data-requirements="exists-reftarget"
-                  data-skippable="true">
-                <span class="interactive-comment">Forecast memory requirementsClick <strong>Predict Mem Usage</strong>.</span>
-                To forecast memory usage, click <strong>Predict Mem Usage</strong> in the Workload memory panel. To close the popup, click the X in the upper right corner.
-              </li>
-
-            </ul>
-        </span>
-
-        <h3>What you have learned</h3>
-        <p>You can view predictions to understand potential future resource usage.</p>
-
-        <h2>Done!</h2>
-        <p>You've learned how to use Grafana Cloud's Kubernetes Monitoring application! You can now:</p>
-        
-        <ul>
-          <li>Navigate the Overview page with time range and cluster filtering</li>
-          <li>Search for and drill down through Kubernetes objects</li>
-          <li>Analyze performance using specialized CPU, Memory, and Network tabs</li>
-          <li>Investigate alerts and use troubleshooting tools</li>
-          <li>Optimize costs using efficiency and savings analysis</li>
-          <li>Use ML predictions for capacity planning and outlier detection</li>
-        </ul>
-        
-        <p>These workflows help you monitor, troubleshoot, and optimize any Kubernetes cluster connected to Grafana Cloud.</p>
-        
-    </body>
+    <h2>🎉 Done!</h2>
+    <p>Great job! You now know how to:</p>
+    <ul>
+      <li>Open Kubernetes Monitoring directly from the Observability navigation</li>
+      <li>Follow drilldowns from clusters all the way to container optimization data</li>
+      <li>Search for objects and pivot between dashboards, lists, and alerts</li>
+      <li>Compare CPU, memory, and network performance for namespaces and workloads</li>
+      <li>Use machine learning predictions to anticipate capacity needs</li>
+    </ul>
+    <p>With these workflows, you can monitor, troubleshoot, and optimize any Kubernetes cluster connected to Grafana Cloud.</p>
+  </body>
 </html>
