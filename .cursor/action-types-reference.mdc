@@ -108,6 +108,47 @@ alwaysApply: true
 </li>
 ```
 
+### hover
+**Purpose**: Trigger hover states on elements to reveal UI that appears only on hover (e.g., Tailwind `group-hover:` classes, CSS `:hover` states)
+**Target**: CSS selector for element to hover over
+**Show**: Highlights the element without triggering hover
+**Do**: Dispatches mouse events (`mouseenter`, `mouseover`, `mousemove`) and maintains hover state for 2 seconds
+**Use when**: UI elements are hidden until hover, or CSS hover states need to be triggered
+
+```html
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'></span>
+  <span class="interactive" data-targetaction="button" data-reftarget="Dashboard"></span>
+  Hover over service row and click Dashboard button
+</li>
+```
+
+### guided
+**Purpose**: Provides a middle ground between fully automated "Do it" actions and manual user execution. The system highlights elements and displays instructions, then **waits for the user to manually perform the action** before proceeding.
+**Target**: Not used (child spans define actions)
+**Structure**: Container with `<span class="interactive">` child actions
+**Execution**: Highlights each step, waits for user to manually perform action, then moves to next
+**Supported Actions**: `hover`, `button`, `highlight` (formfill and navigate not yet supported)
+**Use when**: Actions depend on CSS `:hover` states that can't be programmatically triggered, or you want users to learn by doing
+
+```html
+<div class="interactive" data-targetaction="guided">
+  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="wb-list-item"]:contains("adaptive-logs-api")'>
+    <span class="interactive-comment">Hover over the service row to reveal action buttons</span>
+  </span>
+  <span class="interactive" data-targetaction="button" data-reftarget="button.css-8mjxyo">
+    <span class="interactive-comment">Click the revealed button to proceed</span>
+  </span>
+  Inspect service details
+</div>
+```
+
+**Configuration Options**:
+- `data-step-timeout`: Control timeout per step (default: 30 seconds, range: 5000-120000ms)
+- `data-skippable`: Allow users to skip if they can't complete it
+
+**Section Integration**: When "Do Section" encounters a guided step, the section pauses and waits for the user to manually complete the guided interaction before resuming.
+
 ## Requirements System
 
 ### Common Requirements
@@ -147,7 +188,12 @@ User wants to navigate:
 User wants to teach workflow:
   - Linear steps with checkpoints → use "sequence" action
   - Atomic multi-action → use "multistep" action
+  - User performs manually → use "guided" action
   - Just explanation → use "highlight" with data-doit="false"
+
+User needs to reveal hover-hidden UI:
+  - Hover then click → use "multistep" with hover + button/highlight
+  - User performs hover manually → use "guided" with hover action
 ```
 
 ### Requirements Selection Logic
@@ -168,7 +214,7 @@ For data source actions:
 For plugin actions:
   - Add: has-plugin:plugin-id
 
-For sequential tutorials:
+For sequential guides:
   - Add: section-completed:previous-section-id
 ```
 
@@ -310,13 +356,13 @@ Common objective patterns:
 5. **Structure progressively** from simple to complex
 
 ### Error Prevention
-1. **Test selectors** before using in tutorials
+1. **Test selectors** before using in guides
 2. **Include fallback requirements** for edge cases
 3. **Make steps skippable** when permissions might vary
 4. **Provide clear error messages** in hints
 5. **Use objectives** to handle already-completed states
 
-## Common Tutorial Patterns
+## Common Guide Patterns
 
 ### Onboarding Tour
 ```html
@@ -459,6 +505,47 @@ Common objective patterns:
 </li>
 ```
 
+### hover
+**Purpose**: Trigger hover states on elements to reveal UI that appears only on hover (e.g., Tailwind `group-hover:` classes, CSS `:hover` states)
+**Target**: CSS selector for element to hover over
+**Show**: Highlights the element without triggering hover
+**Do**: Dispatches mouse events (`mouseenter`, `mouseover`, `mousemove`) and maintains hover state for 2 seconds
+**Use when**: UI elements are hidden until hover, or CSS hover states need to be triggered
+
+```html
+<li class="interactive" data-targetaction="multistep">
+  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))'></span>
+  <span class="interactive" data-targetaction="button" data-reftarget="Dashboard"></span>
+  Hover over service row and click Dashboard button
+</li>
+```
+
+### guided
+**Purpose**: Provides a middle ground between fully automated "Do it" actions and manual user execution. The system highlights elements and displays instructions, then **waits for the user to manually perform the action** before proceeding.
+**Target**: Not used (child spans define actions)
+**Structure**: Container with `<span class="interactive">` child actions
+**Execution**: Highlights each step, waits for user to manually perform action, then moves to next
+**Supported Actions**: `hover`, `button`, `highlight` (formfill and navigate not yet supported)
+**Use when**: Actions depend on CSS `:hover` states that can't be programmatically triggered, or you want users to learn by doing
+
+```html
+<div class="interactive" data-targetaction="guided">
+  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="wb-list-item"]:contains("adaptive-logs-api")'>
+    <span class="interactive-comment">Hover over the service row to reveal action buttons</span>
+  </span>
+  <span class="interactive" data-targetaction="button" data-reftarget="button.css-8mjxyo">
+    <span class="interactive-comment">Click the revealed button to proceed</span>
+  </span>
+  Inspect service details
+</div>
+```
+
+**Configuration Options**:
+- `data-step-timeout`: Control timeout per step (default: 30 seconds, range: 5000-120000ms)
+- `data-skippable`: Allow users to skip if they can't complete it
+
+**Section Integration**: When "Do Section" encounters a guided step, the section pauses and waits for the user to manually complete the guided interaction before resuming.
+
 ## Requirements System
 
 ### Common Requirements
@@ -498,7 +585,12 @@ User wants to navigate:
 User wants to teach workflow:
   - Linear steps with checkpoints → use "sequence" action
   - Atomic multi-action → use "multistep" action
+  - User performs manually → use "guided" action
   - Just explanation → use "highlight" with data-doit="false"
+
+User needs to reveal hover-hidden UI:
+  - Hover then click → use "multistep" with hover + button/highlight
+  - User performs hover manually → use "guided" with hover action
 ```
 
 ### Requirements Selection Logic
@@ -519,7 +611,7 @@ For data source actions:
 For plugin actions:
   - Add: has-plugin:plugin-id
 
-For sequential tutorials:
+For sequential guides:
   - Add: section-completed:previous-section-id
 ```
 
@@ -661,13 +753,13 @@ Common objective patterns:
 5. **Structure progressively** from simple to complex
 
 ### Error Prevention
-1. **Test selectors** before using in tutorials
+1. **Test selectors** before using in guides
 2. **Include fallback requirements** for edge cases
 3. **Make steps skippable** when permissions might vary
 4. **Provide clear error messages** in hints
 5. **Use objectives** to handle already-completed states
 
-## Common Tutorial Patterns
+## Common Guide Patterns
 
 ### Onboarding Tour
 ```html
