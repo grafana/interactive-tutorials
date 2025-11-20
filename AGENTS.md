@@ -5,42 +5,42 @@ description: Overview of this repository.
 
 # AI Interactive Reference Documentation
 
-This folder contains structured reference documentation specifically designed for AI systems to understand and generate interactive Grafana tutorials.
+This folder contains structured reference documentation specifically designed for AI systems to understand and generate interactive Grafana guides.
 
 ## Quick Start for AI
 
 ### 1. System Understanding
-Start with [System Architecture](system-architecture.mdc) to understand the overall framework.
+Start with [System Architecture](.cursor/system-architecture.mdc) to understand the overall framework.
 
 ### 2. Action Types
-Review [Action Types Reference](action-types-reference.mdc) for all supported interactive actions.
+Review [Action Types Reference](.cursor/action-types-reference.mdc) for all supported interactive actions.
 
 ### 3. Requirements
-Use [Requirements Quick Reference](requirements-quick-reference.mdc) for conditions and auto-completion.
+Use [Requirements Quick Reference](.cursor/requirements-quick-reference.mdc) for conditions and auto-completion.
 
 ### 4. Common Patterns
-Reference [Common Workflows](common-workflows.mdc) and [Tutorial Patterns](tutorial-patterns.mdc) for standard structures.
+Reference [Common Workflows](.cursor/common-workflows.mdc) and [Guide Patterns](guide-patterns.mdc) for standard structures.
 
 ### 5. Selectors
-Use [Selector Library](selector-library.mdc) for stable, tested UI element selectors.
+Use [Selector Library](.cursor/selector-library.mdc) for stable, tested UI element selectors.
 
 ### 5a. Complex Selectors and Hover (NEW)
-Review [Complex Selectors and Hover](complex-selectors-and-hover.mdc) for advanced targeting with `:has()`, `:contains()`, and hover interactions.
+Review [Complex Selectors and Hover](.cursor/complex-selectors-and-hover.mdc) for advanced targeting with `:has()`, `:contains()`, and hover interactions.
 
 ### 6. Edge Cases
-Check [Edge Cases and Troubleshooting](edge-cases-and-troubleshooting.mdc) for handling complex scenarios.
+Check [Edge Cases and Troubleshooting](.cursor/edge-cases-and-troubleshooting.mdc) for handling complex scenarios.
 
 ### 7. Complete Example
-Study [Complete Example Tutorial](complete-example-tutorial.mdc) for comprehensive implementation.
+Study [Complete Example Guide](.cursor/complete-example-guide.mdc) for comprehensive implementation.
 
 ### 8. Best Practices
-Study [best-practices.mdc](best-practices.mdc) to understand how we 
+Study [best-practices.mdc](.cursor/best-practices.mdc) to understand how we 
 can help authors of interactive guides accomplish more, more quickly.
 
 ### 9. Commands
 
 Study all files in the `.cursor/commands` directory for commands that can be provided to 
-Cursor to assist in editing.
+Cursor or other agent to assist in editing.
 
 ## File Organization
 
@@ -50,13 +50,13 @@ Cursor to assist in editing.
 - **requirements-quick-reference.mdc** - Requirements and objectives system with common patterns
 
 ### Practical Guides
-- **tutorial-patterns.mdc** - Standard tutorial structures and content organization
+- **guide-patterns.mdc** - Standard guide structures and content organization
 - **common-workflows.mdc** - Reusable workflow templates for common tasks
 - **selector-library.mdc** - Stable selectors for Grafana UI elements
 
 ### Advanced Topics
 - **edge-cases-and-troubleshooting.mdc** - Handling complex scenarios and error cases
-- **complete-example-tutorial.mdc** - Full tutorial demonstrating all features
+- **complete-example-guide.mdc** - Full guide demonstrating all features
 
 ## AI Generation Guidelines
 
@@ -148,10 +148,10 @@ Sequential dependency → section-completed:id
 </li>
 ```
 
-This documentation provides everything needed to understand and generate high-quality interactive Grafana tutorials.
+This documentation provides everything needed to understand and generate high-quality interactive Grafana guides.
 # AI Interactive Reference Documentation
 
-This folder contains structured reference documentation specifically designed for AI systems to understand and generate interactive Grafana tutorials.
+This folder contains structured reference documentation specifically designed for AI systems to understand and generate interactive Grafana guides.
 
 ## Quick Start for AI
 
@@ -165,7 +165,7 @@ Review [Action Types Reference](action-types-reference.mdc) for all supported in
 Use [Requirements Quick Reference](requirements-quick-reference.mdc) for conditions and auto-completion.
 
 ### 4. Common Patterns
-Reference [Common Workflows](common-workflows.mdc) and [Tutorial Patterns](tutorial-patterns.mdc) for standard structures.
+Reference [Common Workflows](common-workflows.mdc) and [Guide Patterns](guide-patterns.mdc) for standard structures.
 
 ### 5. Selectors
 Use [Selector Library](selector-library.mdc) for stable, tested UI element selectors.
@@ -174,7 +174,7 @@ Use [Selector Library](selector-library.mdc) for stable, tested UI element selec
 Check [Edge Cases and Troubleshooting](edge-cases-and-troubleshooting.mdc) for handling complex scenarios.
 
 ### 7. Complete Example
-Study [Complete Example Tutorial](complete-example-tutorial.mdc) for comprehensive implementation.
+Study [Complete Example Guide](complete-example-guide.mdc) for comprehensive implementation.
 
 ## File Organization
 
@@ -184,13 +184,13 @@ Study [Complete Example Tutorial](complete-example-tutorial.mdc) for comprehensi
 - **requirements-quick-reference.mdc** - Requirements and objectives system with common patterns
 
 ### Practical Guides
-- **tutorial-patterns.mdc** - Standard tutorial structures and content organization
+- **guide-patterns.mdc** - Standard guide structures and content organization
 - **common-workflows.mdc** - Reusable workflow templates for common tasks
 - **selector-library.mdc** - Stable selectors for Grafana UI elements
 
 ### Advanced Topics
 - **edge-cases-and-troubleshooting.mdc** - Handling complex scenarios and error cases
-- **complete-example-tutorial.mdc** - Full tutorial demonstrating all features
+- **complete-example-guide.mdc** - Full guide demonstrating all features
 
 ## AI Generation Guidelines
 
@@ -282,4 +282,4 @@ Sequential dependency → section-completed:id
 </li>
 ```
 
-This documentation provides everything needed to understand and generate high-quality interactive Grafana tutorials.
+This documentation provides everything needed to understand and generate high-quality interactive Grafana guides.
