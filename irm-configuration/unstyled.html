@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Grafana IRM Setup and Configuration</title>
+</head>
+<body>
+  <h1>Grafana IRM Setup and Configuration</h1>
+
+  <p>This tutorial guides you through the process of setting up Grafana IRM for on-call notifications, including on-call schedules, escalation chains, and integrations.</p>
+
+  <p>For a more detailed walkthrough, including a summary of the value and components of IRM, please see the <a href="https://grafana.com/docs/learning-journeys/grafana-irm-configuration/">Configure Grafana IRM Learning Journey</a>.</p>
+
+  <h2>Section 1: Create an On-call Schedule</h2>
+  <p>
+    In this milestone, you create a basic schedule that uses a single rotation with team members taking turns to be on-call. This schedule lets you route alerts sent to your escalation chain based on the current on-call assignment.
+  </p>
+  <p>
+    Schedules provide a structured way to manage team on-call coverage and automate shift handoffs. When used in escalation chains IRM resolves who is on-call for a schedule and sends alert notifications to the appropriate users.
+  </p>
+
+  <li class="interactive"
+      id="create-schedule"
+      data-targetaction="guided"
+      data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-irm-app/schedules"]'
+      data-requirements="navmenu-open,exists-reftarget"
+      data-step-timeout="45000">
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-irm-app/schedules"]'
+          data-requirements="navmenu-open,exists-reftarget">
+      <span class="interactive-comment">
+        Navigate to <strong>Schedules</strong> in the IRM navigation menu.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="new-schedule-button"]'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Click to create a new schedule.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="create-web-schedule-button"]'>
+      <span class="interactive-comment">
+        Select <strong>Set up on-call rotation schedule</strong>.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="schedule-name"]'>
+      <span class="interactive-comment">
+        Enter a name for the schedule (for example, <code>Production SRE</code>).
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="save-schedule-button"]'>
+      <span class="interactive-comment">
+        Click <strong>Create Schedule</strong>.
+      </span>
+    </span>
+    Create a new, empty on-call schedule.
+  </li>
+
+  <li class="interactive"
+      data-targetaction="guided"
+      data-step-timeout="45000">
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='div[data-testid="schedule-rotations"] button:first-of-type'
+          data-requirements="exists-reftarget"
+          data-skippable="true">
+      <span class="interactive-comment">
+        Click to create a new rotation. If this button is disabled, you can skip and proceed to the next step.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="add-user-select"]'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Click to add users to this rotation. Select at least one user.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="save-rotation-button"]'>
+      <span class="interactive-comment">
+        Create the rotation.
+      </span>
+    </span>
+    Create an on-call rotation for the schedule.
+  </li>
+
+  <h2>Section 2: Create an Escalation Chain</h2>
+  <p>
+    In this milestone, you create a basic escalation chain as the next step of your alert flow.
+  </p>
+  <p>
+    Escalation chains define a sequence of notification steps for Alert groups: <strong>who</strong> gets notified, <strong>when</strong> they get notified, and what to do if an Alert group remains unacknowledged.<br>
+    A well-designed escalation chain ensures timely attention from the right people while avoiding unnecessary noise.
+  </p>
+
+  <li class="interactive"
+      id="create-escalation-chain"
+      data-targetaction="guided"
+      data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-irm-app/escalations"]'
+      data-requirements="navmenu-open,exists-reftarget"
+      data-step-timeout="45000">
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-irm-app/escalations"]'
+          data-requirements="navmenu-open,exists-reftarget">
+      <span class="interactive-comment">
+        Navigate to <strong>Escalation chains</strong> in the IRM navigation menu.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="new-escalation-chain-button"]'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Click to create a new escalation chain.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="escalation-chain-name-input"]'>
+      <span class="interactive-comment">
+        Enter a descriptive name for the escalation chain (for example, <code>Production - Default</code>).
+      </span>
+      <span class="interactive"
+            data-targetaction="button"
+            data-reftarget='[data-pathfinder="save-escalation-chain-button"]'>
+        <span class="interactive-comment">
+          Click to create the escalation chain.
+        </span>
+      </span>
+    </span>
+    Create a new escalation chain.
+  </li>
+
+  <li class="interactive"
+      data-targetaction="guided"
+      data-step-timeout="45000"
+      data-skippable="true">
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="timeline-item-1"]'>
+      <span class="interactive-comment">
+        Click to add your first escalation step.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="escalation-step-option-notifyusersfromon-callschedule"]'>
+      <span class="interactive-comment">
+        Add a notification step to notify users from the on-call schedule.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="notify-schedule-select"]'>
+      <span class="interactive-comment">
+        Select the on-call schedule you previously created.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="timeline-item-2"]'>
+      <span class="interactive-comment">
+        Add a second step to the escalation chain.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="escalation-step-option-wait"]'>
+      <span class="interactive-comment">
+        Add a wait step, and configure a wait time of 5 minutes.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="timeline-item-3"]'>
+      <span class="interactive-comment">
+        Finally, add a step to notify users in case of escalation.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="escalation-step-option-notifyusers"]'>
+      <span class="interactive-comment">
+        Select the user(s) you want to escalate to.
+      </span>
+    </span>
+    Configure steps for your escalation chain.
+  </li>
+
+  <h2>Section 3: Connect Grafana Alerting as an Integration</h2>
+  <p>
+    In this milestone, you connect the Grafana Alerting integration for IRM. This integration is the foundation of your IRM setup. It allows you to send Grafana Cloud alert rules to IRM for automatic grouping, routing, escalation, and notification.
+  </p>
+
+  <li class="interactive"
+      id="create-escalation-chain"
+      data-targetaction="guided"
+      data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-irm-app/integrations"]'
+      data-requirements="navmenu-open,exists-reftarget"
+      data-step-timeout="45000">
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-irm-app/integrations"]'
+          data-requirements="navmenu-open,exists-reftarget">
+      <span class="interactive-comment">
+        Navigate to <strong>Integrations</strong> in the IRM navigation menu.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="add-integration-button"]'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Click to create a new integration.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="integration-grafanaalerting"]'>
+      <span class="interactive-comment">
+        Select <strong>Grafana Alerting</strong> from the list.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="integration-name-input"]'>
+      <span class="interactive-comment">
+        Enter a descriptive name (for example, <code>Production SRE alerts</code>).
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='div[data-testid="data-testid radio-button"]:nth-match(2)'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Select to create a new contact point for this integration.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="new-contact-point-input"]'>
+      <span class="interactive-comment">
+        Enter a descriptive contact point name (for example, <code>Production IRM</code>).
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="save-integration-button"]'>
+      <span class="interactive-comment">
+        Click <strong>Create Integration</strong>.
+      </span>
+    </span>
+    Create a new Grafana Alerting integration.
+  </li>
+
+  <li class="interactive"
+      id="create-escalation-chain"
+      data-targetaction="guided"
+      data-step-timeout="45000">
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="route-heading-0"]'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Select the first route.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-testid="escalation-chain-select"]'>
+      <span class="interactive-comment">
+        Select the dropdown to choose an escalation chain.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='[data-pathfinder="escalation-chain-option-0"]'>
+      <span class="interactive-comment">
+        Select your escalation chain.
+      </span>
+    </span>
+    Associate the integration with your escalation chain.
+  </li>
+
+  <li class="interactive"
+      id="create-escalation-chain"
+      data-targetaction="guided"
+      data-step-timeout="45000"
+      data-skippable="true">
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="send-demo-alert-button"]'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Click to send a demo alert.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="button"
+          data-reftarget='[data-pathfinder="submit-send-alert-button"]'
+          data-requirements="exists-reftarget">
+      <span class="interactive-comment">
+        Confirm with <strong>Send alert</strong>.
+      </span>
+    </span>
+    <span class="interactive"
+          data-targetaction="highlight"
+          data-reftarget='a[data-testid="data-testid Nav menu item"][href="/a/grafana-irm-app/alert-groups"]'
+          data-requirements="navmenu-open,exists-reftarget">
+      <span class="interactive-comment">
+        View your demo alert from the  <strong>Alert groups</strong> page.
+      </span>
+    </span>
+    Test your integration by sending a demo alert.
+  </li>
+
+  <h2>🎉 Congratulations! You've Configured Grafana IRM</h2>
+  <p>You have successfully set up Grafana IRM, complete with integrations, escalation chains, and schedules. Your system is now ready to efficiently manage and route alerts to the appropriate team members.</p>
+</body>
+</html>
