@@ -1,0 +1,193 @@
+{
+  "id": "explore-drilldowns-101",
+  "title": "Explore Drilldowns (JSON)",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Explore Drilldowns\n\nQuickly find related metrics, without needing to write a PromQL query."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section: Drilldown Metrics\n\nWhat you'll learn in this section:\n\n- Select your Prometheus data source, and optionally filter metrics by labels.\n- Explore metric preview charts, and use the drilldown workflow to pivot between metrics and related signals.\n- Explore all available metrics from your connected Prometheus data sources, and switch between those data sources.\n- Focus on metrics by filtering for specific label values.\n- View detailed metric data and its relationships with other metrics and logs.\n- See correlated metrics that share common labels or patterns with a metric to discover more data for troubleshooting and performance analysis.\n- View metric anomalies correlated with log events from the same time period and source to identify root causes and error patterns."
+    },
+    {
+      "type": "section",
+      "id": "drilldown-metrics",
+      "title": "Drilldown Metrics",
+      "requirements": ["navmenu-open", "has-datasource:prometheus"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "tooltip": "Click to access the Metrics drilldown panels.",
+          "content": "Click the **Metrics** section from the main menu to open the Metrics Drilldown app. Here you can explore all available metrics from your connected Prometheus data sources."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[id=\"ds\"]",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Here is your current **Prometheus data source**. Select different data sources if you have multiple configured.",
+          "content": "Notice the **Data source** menu at the top, which shows the Prometheus data source that's currently selected. Select different data sources if you have multiple configured."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder=\"Filter by label values\"]",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Filter metrics by label values (such as `job = \"my-service\"`).",
+          "content": "**Optional step:** Use filters to narrow down metrics by specific label values. You can focus on metrics from particular services, instances, or any other labels in your environment. For example, to see only metrics from a specific application, you might filter by `job = \"my-service\"`. To focus on local metrics, you might filter by `instance = \"localhost\"`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"metrics-list\"] div[data-testid=\"with-usage-data-preview-panel\"]:first-child",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Each metric panel has a preview chart and a *Select* button.",
+          "content": "View the first metric panel. Each metric panel provides immediate insight into the metric's behavior, and includes:\n\n- **Metric name**, clickable title for identification\n- **Preview chart** showing recent data trends and patterns over time\n- **Legend information** displaying aggregation details (avg, sum, and so on)\n- **Select button** for jumping to a detailed drilldown exploration"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"metrics-list\"] div[data-testid=\"with-usage-data-preview-panel\"]:first-child button[data-testid*=\"select-action\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to load detailed metric data for analysis.",
+          "content": "Click **Select** on any metric that interests you. This action loads detailed metric data and its relationships with other metrics and logs. The system automatically finds related signals based on shared labels and contextual connections."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid Tab Related metrics\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to see correlated metrics that share common labels or patterns with your selected metric.",
+          "content": "Click the **Related metrics** tab to discover more data for troubleshooting and performance analysis. You can view the broader context of data, including correlated measurements from the same services, hosts, or applications."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid Tab Related logs\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "**Note:** To use this feature, select a label to filter that is present in both metrics and logs.",
+          "content": "To bridge the gap between metrics and logs, click the **Related logs** tab. Notice that it correlates metric anomalies with log events from the same time period and source. This lets you quickly identify root causes, error patterns, and contextual information that you might not find with only metrics."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section: Drilldown Logs\n\nWhat you'll learn in this section:\n\n- Switch from your current Loki data source to other log data sources.\n- Optionally, filter to narrow down logs by specific label values.\n- Find and view log volume over time with different log levels.\n- Find and view detailed log exploration for a specific service.\n- Open and view a graph of the volume and distribution of your log data over time, broken down by log levels.\n- Open and view log entries with timestamps, levels, and formatted messages.\n- Access common log analysis operations.\n- Discover common structural patterns in your log lines."
+    },
+    {
+      "type": "section",
+      "id": "drilldown-logs",
+      "title": "Drilldown Logs",
+      "requirements": ["navmenu-open", "has-datasource:loki"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-lokiexplore-app/explore']",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Click **Logs** to access the log drilldown.",
+          "content": "Click **Logs** in the main menu to open the Logs Drilldown app. Then you can explore and analyze log data from your connected Loki data sources using powerful correlation capabilities."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[data-testid*=\"Data source\"]",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Click to switch from your current Loki data source to other log data sources (if you have multiple sources configured).",
+          "content": "Notice the **Data source** menu at the top shows your current Loki data source. Select different data sources if you have multiple log sources configured in your environment."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder=\"Filter by label values\"]",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "Use this field to filter logs by **label values** (such as `service_name=\"my-app\"`).",
+          "content": "**Optional step:** Use filters to narrow down logs by specific label values. This lets you focus on logs from particular services, instances, or any other labels in your log data. For example, to see only logs from a specific service, you might filter by `service_name=\"webapp\"`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"uplot-main-div\"]:first-of-type",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "This panel shows log volume over time with different log levels (debug, info, and so on).",
+          "content": "Notice the metrics panel above the logs. This chart shows the volume and distribution of your log data over time, broken down by log levels (debug, info, warn, error). The legend on the right shows the total count for each level, which helps you view the overall health and activity patterns of your services."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid button-select-service\"]:first-of-type",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to open a detailed log exploration view for the selected service.",
+          "content": "Click **Show logs** on any service to view detailed log exploration for that specific service. This action takes you to a focused view where you can analyze individual log entries, search through messages, and correlate with metrics data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid*=\"data-testid Panel header\"]:first-of-type",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "This panel shows log volume over time with different log levels (debug, info, and so on).",
+          "content": "View the log volume panel which displays metrics about your log data. This chart shows the volume and distribution of your log data over time, broken down by log levels (debug, info, warn, error). The legend on the right displays the total count for each level, to help you quickly understand the overall activity patterns and health of your services."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid*=\"Panel header Logs\"]",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "This area contains the actual log entries with timestamps, levels, and formatted messages.",
+          "content": "Look at the structure of the actual log entries area below the volume chart. This section displays individual log entries in chronological order, each showing:\n\n- **Timestamp**: when the log event occurred\n- **Log level**: (debug, info, warn, error) with color coding\n- **Structured message**: with syntax highlighting for key-value pairs\n- **Menu button**: (three dots) for additional log entry actions"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label=\"Log menu\"]:first-of-type",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "tooltip": "Click to access log-specific actions like copying, filtering, and context viewing.",
+          "content": "Click the menu icon(three dots) next to any log entry to access additional actions. You can access common log analysis operations by copying the log line, viewing context, or adding filters based on that specific log entry."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid tab-labels\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to show all labels stored in Loki for this service, along with their counts.",
+          "content": "Click the **Labels** tab to explore the labels (key-value pairs) associated with your log data stored in Loki. This view shows you all the available labels for the current service. This helps you understand the dimensional data structure and discover additional filtering possibilities for your log queries."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid tab-fields\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to display structured metadata and extracted attributes from log lines.",
+          "content": "Click the **Fields** tab to analyze structured metadata and other extracted attributes from your log lines. The system automatically parses structured logs (JSON, logfmt, etc.) and presents field statistics, top values, and data distributions. This makes it easy to understand patterns in your application data and identify trends or outliers."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid tab-patterns\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to view common structural patterns in your log messages.",
+          "content": "Click the **Patterns** tab to discover common structural patterns in your log lines. You can view groups of log message formats together, which makes it easier to identify recurring templates, spot anomalies, and understand the typical log output patterns from your applications without manual parsing or regex creation."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎉 Done!\n\nYou've learned how to navigate both the Metrics and Logs Drilldowns! You now have the following skills:\n\n### Metrics Drilldown skills:\n\n- Select your Prometheus data source.\n- Filter metrics by labels (optional).\n- Explore metric preview charts.\n- Use the drilldown workflow to pivot between metrics and related signals.\n\n### Logs Drilldown skills:\n\n- Navigate and query Loki log data sources.\n- Use LogQL syntax for advanced log filtering.\n- Analyze log entries and extract structured data.\n- Correlate logs with metrics for comprehensive troubleshooting.\n- Discover patterns and analyze fields in structured logs.\n\nThese workflows work with any Prometheus metrics and Loki logs in your environment, and provide a complete observability experience for both metrics and logs correlation."
+    }
+  ]
+}
+
