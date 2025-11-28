@@ -1,0 +1,711 @@
+{
+  "id": "rca-demo-ops",
+  "title": "RCA Demo",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# RCA Demo\n\nThis interactive guide walks through an end-to-end RCA (Root Cause Analysis) demo using Grafana's RCA workbench and related views. It follows the flow from an alert to investigation across services and databases, and wraps up with impact analysis.\n\n- Navigate from an alert to the RCA workbench\n- Investigate anomalies in services and databases\n- Use KPI drawers and trace/log pivots for context\n- Assess blast radius and business impact\n- [Optional] Explore Workbench AI and incident flows"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 1: Start from an Alert\n\nOpen the alert context used by this demo."
+    },
+    {
+      "type": "section",
+      "id": "start-from-alert",
+      "title": "Start from an Alert",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/rca-demo-alert/slack-rca-demo-alert",
+          "verify": "on-page:/d/rca-demo-alert/slack-rca-demo-alert",
+          "showMe": false,
+          "completeEarly": true,
+          "content": "Open the RCA demo alert dashboard."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 2: Jump to Investigation\n\nThe **Search Product Latency** alert fired—users are experiencing slow product searches. This SLO-based alert includes a direct link to the RCA Workbench, scoped to \"productcatalogservice\" and connected services. In production, you'd receive this in Slack and use the link to jump straight into an investigation."
+    },
+    {
+      "type": "section",
+      "id": "go-to-rca-workbench",
+      "title": "Jump to Investigation",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"data-testid panel content\"] div[role=\"button\"]:has(span:contains(\"1\"))",
+          "requirements": ["exists-reftarget"],
+          "completeEarly": true,
+          "tooltip": "Click the annotation marker to open the RCA Workbench with pre-configured time range and filters.",
+          "content": "Click the annotation to start investigating."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 3: Get Familiar with the RCA Workbench\n\nYou're now viewing a **timeline of insights** for \"productcatalogservice\" and connected services. Insights appear as ticks — red for errors, yellow for warnings, blue for changes. Notice the blue change followed by cascading red errors? That's your first clue."
+    },
+    {
+      "type": "section",
+      "id": "rca-orientation",
+      "title": "Get Familiar with the RCA Workbench",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Sort insights by Time to see the chronological sequence.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div.text-xs:has(span:contains('Sort By'))",
+              "tooltip": "Click to open the sort options."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role=\"menu\"] button[role=\"menuitem\"]:has(span:contains(\"Time\"))",
+              "tooltip": "Select **Time** to sort insights chronologically—this helps you trace the sequence of what went wrong."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.h-full.w-full.overflow-y-scroll.block",
+          "requirements": ["exists-reftarget"],
+          "showOnly": true,
+          "tooltip": "**Timeline**: shows insights and their state over time for the queried services.",
+          "content": "Examine the timeline visualization. Insights correspond to things that have gone wrong or are otherwise of interest."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Graph']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "**Graph tab**: shows service topology and blast radius.",
+          "content": "Inspect the Graph tab control."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Timeline']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "**Timeline tab**: returns to the timeline view.",
+          "content": "Inspect the Timeline tab control."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 4: Investigate the Initial Change\n\nNote the **blue notification** at the front of the timeline, before the red errors cascaded. Let's drill into it — a feature flag change called \"productCatalogReadFromPostgres\" was turned on. This occurred *before* the productcatalog service (our alert trigger) started failing and cascading to connected services."
+    },
+    {
+      "type": "section",
+      "id": "initial-change",
+      "title": "Investigate the Initial Change",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Expand the flagd service to reveal the FeatureFlagStateChange insight.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('flagd'))",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "Click to expand the **flagd** service."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('amend'))",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "Click to expand the nested item."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "Click to expand **FeatureFlagStateChange**—this is the blue insight that started everything."
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Hover to reveal and view the insight details.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))",
+              "tooltip": "Hover over the **FeatureFlagStateChange** row to reveal the insight icon."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)",
+              "tooltip": "Hover over the **insight icon** to see details about the \"productCatalogReadFromPostgres\" flag change."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 5: Investigate Frontend Impact\n\n*Skip this if you don't want to learn about front end observability.*\n\nThe frontend service shows a massive red blob — heavily impacted with error buildups and **anomalies** (OOTB detection of metrics falling outside expected range). Let's drill into the \"GetProduct\" endpoint anomaly — critical for an ecommerce platform where users can't buy products if they can't view them."
+    },
+    {
+      "type": "section",
+      "id": "frontend-investigation",
+      "title": "Investigate Frontend Impact",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to expand the **frontend** service.",
+          "content": "Expand the frontend service."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('anomaly'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to expand the **anomaly** section to see detected anomalies.",
+          "content": "Expand the anomaly section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalogService/GetProduct'])",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to view the anomaly details. You'll see a **green line** (actual latency) with a **pale yellow band** (normal range). Yellow bars indicate anomalous spikes outside the expected range.",
+          "content": "View the GetProduct endpoint anomaly."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Widespread latency anomalies confirm customers are feeling the impact."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 6 (Optional): Quantify User Impact\n\n*Skip this if you skipped Section 5.*\n\nWe've found backend anomalies, but what about actual user impact? The **KPI Drawer** integrates Frontend Observability, letting us investigate browser behavior without leaving the RCA Workbench. Every service has a KPI drawer, dynamically populated based on what the knowledge graph discovered — this one includes frontend observability."
+    },
+    {
+      "type": "section",
+      "id": "user-impact",
+      "title": "Quantify User Impact",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Navigate through entities to open the Frontend Observability KPI Drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend'))",
+              "tooltip": "Hover over the **frontend** service to reveal the Entity icon."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')) button:nth-of-type(3)",
+              "tooltip": "Click the **Entity icon** to explore connected entities."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role='dialog'] div[role='group'] div:contains('Service')",
+              "tooltip": "Click to expand the **Service** section. The frontend here is actually just an API gateway—we need to navigate to the actual frontend client."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='entity-list-item']:has(p:contains('frontendproxy'))",
+              "tooltip": "Click on the **frontendproxy** row to drill deeper."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role='dialog'] div[role='group'] div:contains('Frontend')",
+              "tooltip": "Click to expand the **Frontend** entity types."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client'))",
+              "tooltip": "Hover over the **frontend-client** entity to reveal action buttons."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) button:nth-of-type(3)",
+              "tooltip": "Click the **KPI/dashboard button** to open the KPI Drawer with Frontend Observability."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Drawer close']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "After reviewing the data, close the drawer to continue.",
+          "content": "Close the KPI drawer."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Here we see the impact on users. 1,267 errors vs 906 page loads significantly degrades user experience. We have errors on the home, cart, and checkout pages. Core web vitals are stable, but users are frustrated and *revenue is being lost*."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 7 (Optional): Track with Grafana IRM\n\n**Grafana IRM** provides a central hub to track findings, participants, and progress. In production, you can declare incidents directly from Slack. This creates an incident in Grafana IRM and opens a dedicated Slack channel. For this demo, we have a **pre-created incident** tracking our investigation with issue details and alert groups."
+    },
+    {
+      "type": "section",
+      "id": "declare-incident",
+      "title": "Track with Grafana IRM",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-irm-app/incidents']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "tooltip": "**Incidents**: central hub for tracking and managing incidents.",
+          "content": "Open the IRM Incidents page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "td.title a[href=\"/a/grafana-irm-app/incidents/1\"]:contains(\"Day in the Life Demo\")",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to view the pre-created incident tracking for this investigation. In production, this would have been created from the Slack alert.",
+          "content": "View the demo incident details."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-asserts-app/assertions\"]",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "tooltip": "Return to the RCA Workbench to continue investigating.",
+          "content": "Navigate back to RCA Workbench."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**IRM benefits:** Centralized tracking, participant management, Slack integration, seamless handoffs—all context in one place."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 8: Investigate the Database\n\nThe \"productcatalog-postgres\" service shows yellow warnings. There are few insights here, but the Knowledge Graph detects even small anomalies that relate to bigger problems. Out of the box PostgreSQL alerts show **PostgreSQLHighConnections** firing intermittently."
+    },
+    {
+      "type": "section",
+      "id": "investigate-db",
+      "title": "Investigate the Database",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to expand the **productcatalog-postgres** service.",
+          "content": "Expand the productcatalog-postgres service."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('failure'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to expand the **failure** section to see what went wrong.",
+          "content": "Expand the failure section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('PostgreSQLHighConnections'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to view the **PostgreSQLHighConnections** insight details.",
+          "content": "View the PostgreSQLHighConnections insight."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))",
+          "requirements": ["exists-reftarget"],
+          "showOnly": true,
+          "tooltip": "The chart shows significant spikes in database connections: unusual behavior worth investigating further.",
+          "content": "Observe the connection spike pattern."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Finding:** Significant connection spikes throughout the incident. This is unusual and likely contributing to degradation."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 9: Investigate the Product Catalog Service\n\nThe \"productcatalogservice\" is at the center of this incident. Grafana combines **application and infrastructure signals** in one view: no context switching required. Hovering reveals: latency anomalies (5 endpoints), Kubernetes pod crash looping, and /ListProducts endpoint errors. Let's check if crashes are frequent or a one-off."
+    },
+    {
+      "type": "section",
+      "id": "investigate-service",
+      "title": "Investigate the Product Catalog Service",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to expand the **productcatalogservice**.",
+          "content": "Expand the productcatalogservice."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('failure'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to expand the **failure** section.",
+          "content": "Expand the failure section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p[data-original='KubePodCrashLooping'])",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click to view the **KubePodCrashLooping** insight—this shows the pod is repeatedly crashing.",
+          "content": "View the KubePodCrashLooping insight."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])",
+          "requirements": ["exists-reftarget"],
+          "showOnly": true,
+          "tooltip": "The timeline shows the pod crashed repeatedly throughout the incident—not a one-off.",
+          "content": "Observe the crash looping pattern."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Findings:** High endpoint latencies, /ListProducts errors, and pod crash-looping—all from **out of the box insights** visible without switching contexts."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 10: Find the Root Cause\n\nThe **KPI Drawer** for productcatalogservice is dynamically populated with relevant dashboards—Properties, Service Overview (App O11y), Kubernetes, Traces, and Logs. The RCA Workbench ties together all observability signals without dashboard hunting or context switching.\n\nWhat we see is that there were errors and latency on the /ListProducts endpoint and that all of the errors show too many clients connecting to the database. Stack traces show null pointer exceptions and crashes with database connection failures. The ultimate root cause is that switching a feature flag introduced a bug causing null pointer exceptions and preventing database connections."
+    },
+    {
+      "type": "section",
+      "id": "service-kpi-drawer",
+      "title": "Find the Root Cause",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Hover and click to open the KPI drawer for productcatalogservice.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1)",
+              "tooltip": "Hover over the **productcatalogservice** row to reveal the KPI button."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1) button:nth-of-type(4)",
+              "tooltip": "Click the **KPI/dashboard button** (grid icon) to open the KPI drawer and see detailed metrics."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Properties']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "View service properties: Go v3.7.5, Kubernetes deployment, cluster/namespace—all auto-discovered.",
+          "content": "Open the Properties tab to see important infrastructure and application details."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Service overview']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Application Observability dashboard shows errors and latency spikes on the \"/ListProducts\" endpoint.",
+          "content": "Open the Service overview tab to understand the impact at the application level."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Kubernetes']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Kubernetes dashboard shows memory consumption is low (well below 200MiB limit) — rules out out of memory as the crash cause.",
+          "content": "Open the Kubernetes tab for a comprehensive overview of the Kubernetes workload."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Traces']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Traces tab shows error patterns and lets us investigate individual failing requests.",
+          "content": "Open the Traces tab to dig into what is causing the crash looping."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Errors rate']",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "tooltip": "Click on the **Errors rate** chart to focus on the time region where errors occurred.",
+          "content": "Click the Errors rate chart to focus the time region. Skip this step if the error chart is already focused."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Comparison']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "**Comparison** analyzes span attributes to find statistically significant differences between errored and successful traces. Watch for \"/ListProducts\".",
+          "content": "Open the Comparison tab (bottom area)."
+        },
+        {
+          "type": "multistep",
+          "content": "Open the Errored traces tab and select the first trace.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Errored traces']",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "Click to see the list of traces with errors."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role=\"grid\"] div[role=\"row\"][aria-rowindex=\"2\"] div.cell-link",
+              "tooltip": "Click on the first trace to open it in Explore — look for \"PQ: sorry too many clients already\" in the error details."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:has(span:contains('productcatalogservice'))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Select the most downstream \"productcatalogservice\" span to see the database connection error.",
+          "content": "In the Service & Operation tree, select the bottom item."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Logs']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Close Explore and return to the KPI Drawer, then open the **Logs** tab to see the crash stack trace.",
+          "content": "Open the Logs tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Wrap lines']",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "tooltip": "Enable line wrapping so the stack trace is readable.",
+          "content": "Enable log line wrapping. Skip this step if already enabled."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid*=\"Panel header Logs\"]",
+          "requirements": ["exists-reftarget"],
+          "showOnly": true,
+          "hint": "Scroll to reveal the stack trace if not visible",
+          "tooltip": "Scroll to find the first **level=error** log entry — this shows \"too many clients\" and the panic stack trace.",
+          "content": "As you can see the error logs indicate the Postgres database is being bombarded with connection attempts."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Drawer close']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Close the drawer to return to the RCA Workbench timeline.",
+          "content": "Close the KPI drawer."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**We're able to determine the root cause:** Null pointer exceptions from switching on a feature flag caused crashes and blocked database connections. Note how we can see our infrastructure, application and logs all in one drawer."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 11: Confirm Database Impact\n\nWe found the service bug — now let's verify the impact on the database. The KPI Drawer auto-discovered that we're using PostgreSQL and populated postgres-specific dashboards. We'll see: auto-discovered properties, active connections spiking/dropping (matching service crashes), and \"too many clients\" errors confirming the connection overload."
+    },
+    {
+      "type": "section",
+      "id": "db-kpi-drawer",
+      "title": "Confirm Database Impact",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Hover and click to open the database KPI drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1)",
+              "tooltip": "Hover over the **productcatalog-postgres** service to reveal the KPI button."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1) button:nth-of-type(4)",
+              "tooltip": "Click the **KPI/dashboard button** to open the database drawer—notice the postgres-specific tabs."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Properties']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "View properties: Grafana auto-discovered this is PostgreSQL with version, cluster, and namespace details.",
+          "content": "Open the Properties tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab PostgreSQL Database']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "The **Postgres Overview** dashboard shows active connections spiking and dropping—matching the service crash pattern.",
+          "content": "Open the Postgres Overview tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Logs']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Database logs will show \"too many clients\" errors, confirming the connection overload from the database's perspective.",
+          "content": "Open the Logs tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Drawer close']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Close the drawer to return to the RCA Workbench timeline.",
+          "content": "Close the KPI drawer."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "We've confirmed that the database logs show \"too many clients\" errors. Connection spikes sync with service crashes: the buggy service is overwhelming the database."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 12: Putting it all together\n\n**Investigation recap:**\n\n1. A **feature flag** \"productCatalogReadFromPostgres\" was toggled (blue change insight)\n2. **The PostgreSQL database** experienced anomalous connection surges\n3. **Error thresholds were breached** on productcatalog, frontend, and recommendation services (\"/ListProducts\" endpoints)\n4. **Frontend** service showed high error rates impacting user experience\n5. **productcatalog** service began crash-looping\n\n**What happened:** A feature flag was enabled, introducing a bug that left database connections open. We hit a connection limit and Postgres started reporting \"too many clients\" errors. A lack of error handling led to a null pointer exception, crash, and Kubernetes restart loop.\n\n**Resolution:** Fix connection handling to close connections and add error handling.\n\n**Impact:** Users can't browse/purchase, leading to revenue loss and degradation of the customer experience."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 13: Visualize the Blast Radius\n\nThe **Graph tab** shows a topology visualization of how services connect, using the same knowledge graph data powering the timeline. It's a real-time view with no manual diagramming required."
+    },
+    {
+      "type": "section",
+      "id": "blast-radius",
+      "title": "Visualize the Blast Radius",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Graph']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "**Graph tab**: shows service topology, dependencies, and which services are impacted (colored by insight status).",
+          "content": "Switch to the Graph tab."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Blast radius:** The database was at the center, and this affected our productcatalogservice and recommendation/checkout services. Colored indicators show a cascading impact through the entire product browsing and checkout flow. The timeline shows *when*, the graph shows *what's connected*."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 14: Quantify Business Impact\n\nHaving found the technical root cause, let's examine the business question: **How much revenue did we lose?** The RCA Workbench is **extensible**: we can attach custom dashboards to entity types so your curated KPIs appear automatically. For this demo, a **Business** dashboard is attached to the checkout services, showing revenue and abandonment metrics."
+    },
+    {
+      "type": "section",
+      "id": "business-impact",
+      "title": "Quantify Business Impact",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Timeline']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Switch back to the timeline to locate the checkoutservice.",
+          "content": "Switch back to the Timeline tab."
+        },
+        {
+          "type": "guided",
+          "content": "Hover and click to open the checkoutservice KPI drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1)",
+              "tooltip": "Hover over the **checkoutservice** to reveal the KPI button."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1) button:nth-of-type(4)",
+              "tooltip": "Click the **KPI button** to open the drawer—notice the **Business** tab for custom metrics."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Business']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "The **Business** tab is a custom dashboard automatically attached to checkout services—showing revenue and order metrics.",
+          "content": "Open the Business tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Drawer close']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Close the drawer to return to the timeline.",
+          "content": "Close the KPI drawer."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Business impact:** We lost $407k in revenue and took 32.4% fewer orders. At the peak, there was 100% purchase abandonment.\n\n**Extensibility in action:** Custom dashboards appear automatically in the investigation flow combining out of the box insights with your business metrics in one workflow."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 15 (Optional): AI-Powered Investigation\n\n**⚠️ Experimental:** Workbench AI is experimental feature!\n\n**What it does:** Workbench AI can automatically perform all the steps we just did: analyzing services, chronological sequence, KPI signals, and forming a hypothesis. Instantaneous. We didn't lead with this so you'd experience the RCA Workbench magic first and understand what's happening under the hood."
+    },
+    {
+      "type": "section",
+      "id": "workbench-ai",
+      "title": "AI-Powered Investigation",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Workbench AI (Preview)']",
+          "requirements": ["exists-reftarget"],
+          "hint": "Generation of an AI analysis may take a few moments.",
+          "tooltip": "**Workbench AI** will analyze all services, insights, and signals to generate a probable impact chain and hypothesis—matching our manual findings.",
+          "content": "Click Workbench AI to generate automated analysis."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎉 Done!\n\nYou have walked through the RCA workbench and related analysis flows:\n\n- Navigated from an alert to the RCA workbench\n- Explored anomalies in services and databases\n- Used KPI drawers and trace/log pivots for context\n- Assessed blast radius and business impact\n- Located AI-assisted analysis and incident flows"
+    }
+  ]
+}
+
