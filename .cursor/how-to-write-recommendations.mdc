@@ -1,0 +1,36 @@
+---
+alwaysApply: true
+---
+
+This repo contains a file called @index.json which gates recommendations of guides in this
+repository.  When new guides come in, we'll need some guidelines on how to recommend them.
+
+Consult these rules to assist users in how to write recommender rules for @index.json. That file
+is also a source of good examples on how valid recommender rules are written.
+
+A recommender rule is a single JSON object that is inserted into @index.json.
+
+- ALWAYS use "type": "docs-page"; all guides in this repo should be listed as "type": "docs-page"
+- ALWAYS include "title", "description", and "url".  You should always read the guide, and make
+default suggestions for title and description based on what is in the guide.
+- For URL, ALWAYS use the URL `https://github.com/grafana/interactive-tutorials/tree/main/DIRECTORY_NAME`
+where `DIRECTORY_NAME` is the location in this project of where the guide resides.
+- ASK THE USER whether the guide pertains to things that are cloud, or both cloud & OSS.
+  - If the guide is BOTH, no special rule is needed.
+  - If the guide is "Cloud" meaning it should only be targeted to Grafana Cloud, add `{ "targetPlatform": "cloud" }`
+  as a match clause.
+- ASK the user which app states or URLs the guide should be suggested for. You may consult this list of
+app states to make suggestions:  https://github.com/grafana/grafana-pathfinder-app/blob/main/product-knowledge/app-states.mdc.  For example, if the guide deals with SLO or Service Center, that app states list indicates that functionality lives behind URLs like `/a/grafana-slo-app/services`, so you 
+would suggest the URL to use to be that one.
+  - The user should specify a URL for recommendation; entries cannot be valid without one
+  - The user may specify more than one URL
+  - All URLs specified become part of the match block, e.g. `{ "urlPrefix": "SPECIFIED URL" }`
+- ASK the user if the guide modifies resources or causes users to create new things. These are "mutating guides"
+and that means that they cannot be run on environments like Play, where users don't have access to change things.
+  - If the user indicates the guide does create new things (or you can infer from reading the guide) then
+  add a match rule: 
+
+  ```
+   { "not": { "source": "play.grafana.org" } }
+  ```
+- ALWAYS ensure your JSON is pretty-printed and follows conventions in index.json.
