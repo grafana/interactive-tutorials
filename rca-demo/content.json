@@ -1,0 +1,595 @@
+{
+  "id": "rca-demo",
+  "title": "RCA Demo (JSON)",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# RCA Demo\n\nThis interactive guide walks through an end-to-end RCA (Root Cause Analysis) demo using Grafana's RCA workbench and related views. It follows the flow from an alert to investigation across services and databases, and wraps up with impact analysis.\n\n- Navigate from an alert to the RCA workbench\n- Investigate anomalies in services and databases\n- Use KPI drawers and trace/log pivots for context\n- Assess blast radius and business impact\n- [Optional] Explore Workbench AI and incident flows"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 1: Start from an Alert\n\nOpen the alert context used by this demo."
+    },
+    {
+      "type": "section",
+      "id": "start-from-alert",
+      "title": "Start from an Alert",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/rca-demo-alert/slack-rca-demo-alert",
+          "verify": "on-page:/d/rca-demo-alert/slack-rca-demo-alert",
+          "showMe": false,
+          "content": "Open the RCA demo alert dashboard (in a new tab)."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 2: Go to the RCA Workbench\n\nJump directly to the RCA workbench timeframe and entity-based view for this incident."
+    },
+    {
+      "type": "section",
+      "id": "go-to-rca-workbench",
+      "title": "Go to the RCA Workbench",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-asserts-app/assertions?start=1759222872683&end=1759228903317&search=productcatalogservice%20connected%20services&view=BY_ENTITY",
+          "verify": "on-page:/a/grafana-asserts-app/assertions",
+          "showMe": false,
+          "content": "Open the RCA workbench at the prepared time range and filter."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 3: Orient to the RCA Workbench\n\nGet familiar with key UI areas. These are show-only highlights to orient you without changing state."
+    },
+    {
+      "type": "section",
+      "id": "rca-orientation",
+      "title": "Orient to the RCA Workbench",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.h-full.w-full.overflow-y-scroll.block",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "**Timeline**: shows anomalies and state over time for selected entities.",
+          "content": "Examine the timeline visualization."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Graph']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "**Graph tab**: pivots to a service graph to understand relationships and blast radius.",
+          "content": "Inspect the Graph tab control."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Timeline']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "**Timeline tab**: returns to the timeline-centric view.",
+          "content": "Inspect the Timeline tab control."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 4: Investigate the Initial Change\n\nLook at the first insight (e.g., a feature flag change) associated with the incident."
+    },
+    {
+      "type": "section",
+      "id": "initial-change",
+      "title": "Investigate the Initial Change",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "First, fully expand the service entry named **flagd**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('flagd'))",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('amend'))",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Hover over the **FeatureFlagStateChange** entry, and then hover over the insight icon to reveal the insight.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange'))",
+              "tooltip": "Hover over the **FeatureFlagStateChange** entry to reveal the insight icon."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-type(1)",
+              "tooltip": "Hover over the insights icon to reveal the insights."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 5: What's going on with the Frontend Service\n\nDrill into the frontend service to understand anomalies around the `/Product` endpoint."
+    },
+    {
+      "type": "section",
+      "id": "frontend-investigation",
+      "title": "Frontend Service Investigation",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend'))",
+          "requirements": ["exists-reftarget"],
+          "content": "Expand the service entry named **frontend**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('anomaly'))",
+          "requirements": ["exists-reftarget"],
+          "content": "Expand the section named **anomaly**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalogService/GetProduct'])",
+          "requirements": ["exists-reftarget"],
+          "content": "Click on the endpoint that ends with **/GetProduct**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 6 (Optional): How are users impacted?\n\nExplore user impact by navigating to the *Frontend* entity and its KPIs."
+    },
+    {
+      "type": "section",
+      "id": "user-impact",
+      "title": "User Impact Analysis",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Explore the frontend using the KPI drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend'))",
+              "tooltip": "Hover over the **frontend** service to reveal the Entity icon."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')) button:nth-of-type(3)",
+              "tooltip": "Click the **Entity icon**."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[role='dialog'] button[type='button']:has(div:contains('Service'))",
+              "tooltip": "Click to expand the **Service** section."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='entity-list-item']:has(p:contains('frontendproxy'))",
+              "tooltip": "Click on the **frontendproxy** entry."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[role='dialog'] button[type='button']:has(div:contains('Frontend'))",
+              "tooltip": "Click to expand the **Frontend** section."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client'))",
+              "tooltip": "Hover over the **frontend-client** entity to reveal action buttons."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) button:nth-of-type(3)",
+              "tooltip": "Click the **dashboard button** (grid icon) to open Frontend observability."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Drawer close']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click the **Close** icon to close the drawer.",
+          "content": "Close the KPI drawer when you are done."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 7 (Optional): Declare an Incident\n\nAt this point, we might want to declare an incident using Grafana IRM.\n\nWe won't do this now, but know that it's available from the IRM menu."
+    },
+    {
+      "type": "section",
+      "id": "declare-incident",
+      "title": "Declare an Incident",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-irm-app/incidents']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "**Incidents**: view, create, and manage incidents.",
+          "content": "An incident can be created from the IRM menu."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 8: Investigate the Database\n\nLet's see what's going on with the *productcatalog-postgres* service."
+    },
+    {
+      "type": "section",
+      "id": "investigate-db",
+      "title": "Investigate the Database",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))",
+          "requirements": ["exists-reftarget"],
+          "content": "Expand the service entry named **productcatalog-postgres**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('failure'))",
+          "requirements": ["exists-reftarget"],
+          "content": "Expand the section named **failure**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('PostgreSQLHighConnections'))",
+          "requirements": ["exists-reftarget"],
+          "content": "Expand the section named **PostgreSQLHighConnections**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "This insight shows connection spikes on the PostgreSQL database."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 9: Investigate the Product Catalog Service\n\nDrill into *productcatalogservice* failures and pod state."
+    },
+    {
+      "type": "section",
+      "id": "investigate-service",
+      "title": "Investigate the Product Catalog Service",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))",
+          "requirements": ["exists-reftarget"],
+          "content": "Expand the service entry named **productcatalogservice**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('failure'))",
+          "requirements": ["exists-reftarget"],
+          "content": "Expand the section named **failure**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p[data-original='KubePodCrashLooping'])",
+          "requirements": ["exists-reftarget"],
+          "content": "Click on **KubePodCrashLooping**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "Hover over the timeline to see more details."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 10: Use the KPI Drawer (Service)\n\nOpen the KPI drawer for *productcatalogservice* and traverse tabs for deeper context."
+    },
+    {
+      "type": "section",
+      "id": "service-kpi-drawer",
+      "title": "Use the KPI Drawer (Service)",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Explore the properties available in the KPI drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))",
+              "tooltip": "Hover over the **productcatalogservice** service to reveal the KPI icon."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')) button:nth-of-type(4)",
+              "tooltip": "Click the **KPI icon**."
+            },
+            {
+              "action": "hover",
+              "reftarget": "button[data-testid='data-testid Tab Properties']",
+              "tooltip": "Click the **Properties** tab."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Service overview']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Service overview** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Kubernetes']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Kubernetes** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Traces']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Traces** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='75903a26-8a1b-4df1-b56a-daa3a11c5b8a']",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "content": "Click the **errors/s** chart to focus the time region."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Comparison']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Comparison** tab (bottom area)."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Errored traces']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Errored Traces** tab and select the first trace."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:has(span:contains('productcatalogservice'))",
+          "requirements": ["exists-reftarget"],
+          "content": "In the **Service & Operation** tree, select the bottom item."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Logs']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Logs** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Wrap lines']",
+          "requirements": ["exists-reftarget"],
+          "content": "Enable **log line wrapping**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:contains('panic')",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "hint": "Scroll to reveal the stack trace if not visible",
+          "tooltip": "Scroll to find the **stack trace** for error context.",
+          "content": "Observe the stack trace details."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 11: Use the KPI Drawer (Database)\n\nOpen the KPI drawer for *productcatalog-postgres* and review key tabs."
+    },
+    {
+      "type": "section",
+      "id": "db-kpi-drawer",
+      "title": "Use the KPI Drawer (Database)",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Hover and click to open the database KPI drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))",
+              "tooltip": "Hover over the **productcatalog-postgres** service to reveal the KPI icon."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')) button:nth-of-type(4)",
+              "tooltip": "Click the **KPI icon**."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Properties']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Properties** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab PostgreSQL Database']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **PostgreSQL Database** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Logs']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Logs** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Drawer close']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click the **Close** icon to close the drawer.",
+          "content": "Close the KPI drawer when you are done."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 12: Putting it all together\n\nTODO: Narrative wrap-up on hypothesis, evidence gathered, and likely root cause."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 13: What's the blast radius?\n\nUse the Graph view to see impacted dependencies."
+    },
+    {
+      "type": "section",
+      "id": "blast-radius",
+      "title": "Blast Radius Analysis",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Graph']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "**Graph tab**: pivots to a service graph to understand relationships and blast radius.",
+          "content": "Switch to the **Graph** tab."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 14: Was the business impacted?\n\nReturn to the Timeline and check business KPIs for *checkoutservice*."
+    },
+    {
+      "type": "section",
+      "id": "business-impact",
+      "title": "Business Impact Analysis",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Timeline']",
+          "requirements": ["exists-reftarget"],
+          "content": "Switch back to the **Timeline** tab."
+        },
+        {
+          "type": "guided",
+          "content": "Hover over the **checkoutservice** service to reveal the KPI icon, then click it.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
+              "tooltip": "Hover over the **checkoutservice** service to reveal the KPI icon."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice')) button:nth-of-type(4)",
+              "tooltip": "Click the **KPI icon**."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Business']",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the **Business** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Drawer close']",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click the **Close** icon to close the drawer.",
+          "content": "Close the KPI drawer when you are done."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 15 (Optional): Using AI to speed up the investigation\n\nGenerate a workbench AI analysis (if available in your environment)."
+    },
+    {
+      "type": "section",
+      "id": "workbench-ai",
+      "title": "Workbench AI Analysis",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Workbench AI (Preview)']",
+          "requirements": ["exists-reftarget"],
+          "hint": "Generation of an AI analysis may take a few moments.",
+          "tooltip": "**Workbench AI** provides an automated narrative analysis across signals and entities.",
+          "content": "Begin a Workbench AI analysis."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎉 Done!\n\nYou have walked through the RCA workbench and related analysis flows:\n\n- Navigated from an alert to the RCA workbench\n- Explored anomalies in services and databases\n- Used KPI drawers and trace/log pivots for context\n- Assessed blast radius and business impact\n- Located AI-assisted analysis and incident flows"
+    }
+  ]
+}
+

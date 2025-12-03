@@ -1,0 +1,227 @@
+{
+  "id": "alerting-101",
+  "title": "Grafana Alerting 101 (JSON)",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Grafana alerting 101\n\nWelcome to your Grafana Alerting journey! In this interactive tutorial, we'll guide you through creating and testing your first alert in Grafana. By the end, you'll know how to:\n\n- Navigate to the Alerting section in Grafana\n- Create a contact point to receive notifications\n- Build your first alert rule\n- Trigger and receive an alert notification"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 1: Create a contact point\n\nAlerts need somewhere to go! Let's configure a **contact point** to tell Grafana how to notify you when an alert fires."
+    },
+    {
+      "type": "section",
+      "id": "setup-contactpoint",
+      "title": "Create a contact point",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+          "content": "Click **Alerting** in the left-hand menu to manage alerting."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/alerting/notifications']",
+          "content": "Go to **Contact points** in the Alerting section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[aria-label='add contact point']",
+          "content": "Click **Add contact point**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='name']",
+          "targetvalue": "email-alerts",
+          "content": "Name your contact point **email-alerts**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='contact-point-type-items.0.']",
+          "targetvalue": "Email",
+          "content": "Select **Email** as the notification method."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[id='items.0.settings.addresses']",
+          "targetvalue": "your@email.com",
+          "content": "Enter your email address so Grafana can send alerts to you."
+        },
+        {
+          "type": "multistep",
+          "content": "Click **Test** and then **Send test notification**. You should receive a test email.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Test"
+            },
+            {
+              "action": "button",
+              "reftarget": "Send test notification"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[type='submit']",
+          "content": "Click **Save contact point** to finish."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 2: Create an alert rule\n\nNow that Grafana knows where to send alerts, let's define **when** an alert should fire.\n\n### Create an alert query\n\nWe'll start by creating an alert query. This is a PromQL query that will be used to determine what data to alert on."
+    },
+    {
+      "type": "section",
+      "id": "create-alert",
+      "title": "Create an alert query",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+          "content": "Navigate to the **Alert rules** page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='alerting/new/alerting']",
+          "content": "Click **New alert rule**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='name']",
+          "targetvalue": "High CPU Usage",
+          "content": "Name your alert rule **High CPU Usage**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "targetvalue": "prometheus",
+          "content": "Select your **prometheus** data source."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "avg(node_cpu_seconds_total{mode='system'})",
+          "content": "Enter a PromQL query like:\n\n```promql\navg(node_cpu_seconds_total{mode='system'})\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[type='number']",
+          "targetvalue": "0.5",
+          "content": "Set a threshold of **0.5** to trigger when average CPU usage is above 50%."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid alert-rule preview-button']",
+          "content": "Click **Preview** to see the alert rule in action."
+        },
+        {
+          "type": "multistep",
+          "content": "Click the **New folder** button, then create an **Alerts** folder to store the alert rule.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "New folder"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid alert-rule name-folder-name-field']",
+              "targetvalue": "Alerts"
+            },
+            {
+              "action": "button",
+              "reftarget": "Create"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Define an evaluation group\n\nNow that we have an alert query, we need to define an evaluation group. This is allows you to define how often the alert rule should be evaluated."
+    },
+    {
+      "type": "section",
+      "id": "define-evaluation-group",
+      "title": "Define an evaluation group",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click the **New evaluation group** button, then create a new evaluation group named **Default** with a **10s** interval.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "New evaluation group"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid alert-rule new-evaluation-group-name']",
+              "targetvalue": "Default"
+            },
+            {
+              "action": "button",
+              "reftarget": "10s"
+            },
+            {
+              "action": "button",
+              "reftarget": "Create"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='eval-for-input']",
+          "targetvalue": "0s",
+          "content": "Enter **0s** as the evaluation groups Pending period."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Configure the notifications\n\nNow that we have an evaluation group, we need to configure how the alert rule should be notified."
+    },
+    {
+      "type": "section",
+      "id": "define-notification-policy",
+      "title": "Configure the notifications",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='contact-point-picker'] div[data-testid='input-wrapper']",
+          "targetvalue": "email-alerts",
+          "doIt": false,
+          "content": "Choose **email-alerts** as the notification method."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save** to save the alert rule."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎉 Congratulations!\n\nYou now have a new alert rule that will notify you via email when the average CPU usage is above 50%.\n\nWell done! You now know how to:\n\n- ✅ Create a contact point (notification destination)\n- ✅ Send a test alert and confirm delivery\n- ✅ Build and configure an alert rule based on a PromQL query"
+    }
+  ]
+}
+

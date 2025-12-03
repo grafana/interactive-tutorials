@@ -1,0 +1,165 @@
+{
+  "id": "logql-101",
+  "title": "LogQL 101 - Interactive Tutorial (JSON)",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Welcome to LogQL 101! 📝\n\nWelcome to your hands-on introduction to LogQL - Grafana Loki's powerful query language for logs! This interactive guide will teach you how to search, filter, and analyze logs like a pro.\n\nLogQL is inspired by PromQL (Prometheus Query Language) and provides a simple yet powerful way to query and aggregate log data. Let's get started!"
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎯 What You'll Learn\n\n- 🔍 **Basic log queries** - Search and filter logs\n- 🏷️ **Label selectors** - Filter by metadata\n- 📊 **Log aggregations** - Count and summarize log data\n- ⚡ **Advanced patterns** - Parse and extract values from logs"
+    },
+    {
+      "type": "markdown",
+      "content": "## 🚀 Let's Get Started\n\nIn this tutorial, you'll learn how to craft powerful LogQL queries to extract insights from your log data. We'll start with simple queries and progressively build up to more advanced use cases."
+    },
+    {
+      "type": "markdown",
+      "content": "## 📚 Select Your Data Source\n\nBefore we can query logs, we need to select a Loki data source. The data source picker allows you to choose which Loki instance to query against."
+    },
+    {
+      "type": "section",
+      "id": "select-datasource",
+      "title": "Select Your Data Source",
+      "blocks": [
+        {
+          "type": "multistep",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "The **data source picker** allows you to select which Loki data source to query. In Grafana, you can have multiple Loki instances configured (e.g., production logs, development logs, different regions). The **Loki Demo Kit (loki_nginx)** data source contains sample logs that we'll use for this tutorial. Selecting this data source will connect you to the specific Loki instance where you can explore and query logs.",
+          "content": "Click on the **data source picker**, then select the **Loki Demo Kit (loki_nginx)** data source.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "input[data-testid=\"data-testid Select a data source\"]"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:has(span:contains(\"loki_nginx\"))"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## ✍️ Write Your First LogQL Query\n\nNow that we have our data source selected and Code mode enabled, let's write our first LogQL query! Every LogQL query starts with a label selector enclosed in curly braces."
+    },
+    {
+      "type": "section",
+      "id": "first-query",
+      "title": "Write Your First LogQL Query",
+      "requirements": ["section-completed:select-datasource"],
+      "hint": "Learn to write basic LogQL queries using label selectors",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"QueryEditorModeToggle\"] label[for^=\"option-code-radiogroup\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "The **Code mode** allows you to write LogQL queries directly as text, giving you full control over the query syntax. This is perfect for learning LogQL's powerful query language.",
+          "content": "Switch to **Code** mode by clicking the raw query toggle to write LogQL directly."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "{service_name=\"nginx_access_log\"}",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Always start a LogQL query with a label selector. They always appear within curly braces.",
+          "content": "Write your first query by typing `{service_name=\"nginx_access_log\"}` into the query field.\n\nThis query selects all log lines from the Nginx access log service. Label selectors use the format `{label_name=\"value\"}` to filter logs by specific attributes. Add as many label selectors as you can to filter your results down faster!"
+        },
+        {
+          "type": "interactive",
+          "action": "click",
+          "reftarget": "button[aria-label=\"Run query\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "The **Run query** button executes your LogQL query and displays the results. This is how you see the actual log data that matches your query criteria.",
+          "content": "Click the **Run query** button to execute your LogQL query and see the results."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"data-testid panel content\"]",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "tooltip": "The **panel content** area displays the results of your LogQL query. This is where you can see the actual log data that matches your query criteria.",
+          "content": "Notice the **panel content** area where your query results are displayed. You can see that the query returned 1000 log lines, which is the default limit. Let's try to narrow down our search further."
+        },
+        {
+          "type": "markdown",
+          "content": "The `|=` operator is a filter expression used to filter log lines by the presence of a specific string. Let's use it to try to find HTTP 500 errors in the logs."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Let's refine our query by adding more specific filters. We're adding a **host** label selector to filter by a specific server, and using the **line filter** `|= \"500\"` to only show log entries containing \"500\" (HTTP 500 errors).",
+          "content": "Type a more specific query: `{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"` to filter for 500 errors from a specific host."
+        },
+        {
+          "type": "interactive",
+          "action": "click",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Now let's execute this refined query to see the filtered results.",
+          "content": "Click the **Run query** button to execute the refined query and see the filtered results."
+        },
+        {
+          "type": "markdown",
+          "content": "Oops! We meant to filter for HTTP 500 errors, but the query returns lines that have \"500\" anywhere in the body. We'll have to be more specific."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"apfelstrudel\"} |= \"500\" != \"200\"",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Let's combine both approaches! We'll use **|= \"500\"** to include lines containing \"500\" and **!= \"200\"** to exclude lines containing \"200\". This gives us a more precise filter for HTTP 500 errors.",
+          "content": "Type a combined query: `{service_name=\"nginx_access_log\", host=\"apfelstrudel\"} |= \"500\" != \"200\"` to filter for lines containing \"500\" but not \"200\"."
+        },
+        {
+          "type": "interactive",
+          "action": "click",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Now let's execute this combined query to see the filtered results that contain \"500\" but not \"200\".",
+          "content": "Click the **Run query** button to execute the query and see the filtered error logs."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Well, that narrows it down further-- we're now only seeing lines that have a \"500\" and do not have \"200\". But there's still a better way to write this query."
+    },
+    {
+      "type": "section",
+      "id": "json-query",
+      "title": "Use JSON parsing for precise filtering",
+      "requirements": ["section-completed:first-query"],
+      "hint": "Learn to use JSON parsing for more precise log filtering",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Here's a much better approach! We'll use the **| json** parser to extract structured data from the log lines, then filter by the **status** field directly. This is more precise than string matching.",
+          "content": "Type a better query: `{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"` to parse JSON and filter by the status field."
+        },
+        {
+          "type": "interactive",
+          "action": "click",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Now let's execute this JSON-based query to see the precise HTTP 500 error logs.",
+          "content": "Click the **Run query** button to execute the JSON parsing query and see the filtered results."
+        }
+      ]
+    }
+  ]
+}
+
