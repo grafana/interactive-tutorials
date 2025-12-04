@@ -11,8 +11,8 @@ Developer Advocacy. It is designed to work with Cursor's AI assistant.
 <img src="docs/img/icon.png" alt="Interactive Learning Icon" width="80" style="height:auto;" />
 
 2. Make sure you're on the Drilldown page, check the Recommendations tab.
-3. Follow the _Interactive Tutorial: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
-an interactive tutorial like that!
+3. Follow the _Interactive Guide: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
+an interactive guide like that!
 4. Notice the structure: it's built in sections, of individual steps, with each step having a "Show Me" and "Do It" option.
 
 ## Quick Start: Let's Build a new Interactive Guide
