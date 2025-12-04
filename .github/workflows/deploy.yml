@@ -1,0 +1,36 @@
+name: Deploy to CDN
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy to GCS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Login to GCS
+        uses: grafana/shared-workflows/actions/login-to-gcs@main
+        id: login-to-gcs
+        with:
+          environment: dev
+
+      - name: Push files to GCS
+        uses: grafana/shared-workflows/actions/push-to-gcs@push-to-gcs/v0.3.0
+        with:
+          bucket: interactive-learning-dev
+          path: .
+          environment: dev
+          service_account: github-interactive-learning
+          glob: "**/*"
