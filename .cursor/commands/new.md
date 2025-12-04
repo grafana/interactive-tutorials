@@ -1,6 +1,6 @@
 ## Command: /new
 
-This command will create a new interactive tutorial.  To do this, you will:
+This command will create a new interactive guide.  To do this, you will:
 
 1. Prompt the user to give you the name of the tutorial
 2. Create a directory for that tutorial under the root, using dashed-names as

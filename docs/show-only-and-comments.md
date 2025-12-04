@@ -1,6 +1,6 @@
 ### Show-only actions and interactive comments
 
-This guide covers two recently added features that enhance the interactive tutorial experience: **show-only mode** with `data-doit='false'` and **contextual comment boxes** with `<span class="interactive-comment">`.
+This guide covers two recently added features that enhance the interactive guide experience: **show-only mode** with `data-doit='false'` and **contextual comment boxes** with `<span class="interactive-comment">`.
 
 ## Show-only mode with `data-doit='false'`
 
