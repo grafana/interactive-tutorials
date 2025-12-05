@@ -36,7 +36,8 @@ jobs:
         uses: grafana/shared-workflows/actions/login-to-gcs@main
         id: login-to-gcs
         with:
-          environment: ${{ github.event.inputs.environment }}
+          # login-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
+          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
 
       - name: Prepare tutorial files
         run: |
