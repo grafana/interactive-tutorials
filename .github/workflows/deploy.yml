@@ -23,11 +23,31 @@ jobs:
         with:
           environment: dev
 
+      - name: Prepare tutorial files
+        run: |
+          mkdir -p dist
+          
+          # Copy index.json
+          cp index.json dist/
+          
+          # Copy all directories containing unstyled.html (these are tutorials)
+          find . -name "unstyled.html" -type f | while read -r file; do
+            dir=$(dirname "$file")
+            # Skip if in current directory or excluded folders
+            if [[ "$dir" != "." && "$dir" != "./docs"* ]]; then
+              mkdir -p "dist/$dir"
+              cp "$dir"/*.html "dist/$dir/" 2>/dev/null || true
+              cp "$dir"/*.json "dist/$dir/" 2>/dev/null || true
+            fi
+          done
+          
+          echo "Files to deploy:"
+          find dist -type f | head -50
+
       - name: Push files to GCS
         uses: grafana/shared-workflows/actions/push-to-gcs@push-to-gcs/v0.3.0
         with:
           bucket: interactive-learning-dev
-          path: .
+          path: dist
           environment: dev
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
-          glob: "[!.]*/**"
