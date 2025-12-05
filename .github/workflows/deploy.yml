@@ -65,5 +65,6 @@ jobs:
         with:
           bucket: interactive-learning-${{ github.event.inputs.environment }}
           path: guides
-          environment: ${{ github.event.inputs.environment }}
+          # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
+          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
