@@ -1,7 +1,21 @@
 name: Deploy to CDN
 
+run-name: Deploy ${{ inputs.branch }} to ${{ inputs.environment }} by @${{ github.actor }}
+
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to deploy from
+        default: main
+      environment:
+        description: Environment to deploy to
+        required: true
+        type: choice
+        options:
+          - 'dev'
+          - 'ops'
+          - 'prod'
 
 permissions:
   contents: read
@@ -15,13 +29,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
+          ref: ${{ github.event.inputs.branch }}
           persist-credentials: false
 
       - name: Login to GCS
         uses: grafana/shared-workflows/actions/login-to-gcs@main
         id: login-to-gcs
         with:
-          environment: dev
+          environment: ${{ github.event.inputs.environment }}
 
       - name: Prepare tutorial files
         run: |
@@ -47,7 +62,7 @@ jobs:
       - name: Push files to GCS
         uses: grafana/shared-workflows/actions/push-to-gcs@push-to-gcs/v0.3.0
         with:
-          bucket: interactive-learning-dev
+          bucket: interactive-learning-${{ github.event.inputs.environment }}
           path: guides
-          environment: dev
+          environment: ${{ github.event.inputs.environment }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
