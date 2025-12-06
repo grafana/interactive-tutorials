@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory usage</title>
+  </head>
+  <body>
+    <h1>Explore memory usage in Kubernetes Monitoring</h1>
+
+    <p>
+      Travel through the Kubernetes Monitoring application to explore memory usage and any associated issues, 
+      starting at the namespace level.
+    </p>
+
+    <h3>What you will learn</h3>
+    <ul>
+      <li>
+        Navigate from namespaces through the Kubernetes hierarchy to individual
+        containers.
+      </li>
+      <li>Review key panels to understand memory usage.</li>
+      <li>what should be here?</li>
+    </ul>
+
+    <span
+      id="namespace-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#namespace-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Namespace memory details</h3>
+      <ul>
+        <li
+          class="interactive"
+          data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app/navigation/namespace']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Click <strong>Namespaces</strong> in the main menu to view the list of
+          namespaces in your environment.<br /><br />
+        </li>
+
+        <li
+          class="interactive"
+          data-reftarget="a[data-testid='data-testid Data link']:nth-match(1)"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Select the first namespace in the list to open its detail view.
+        </li>
+
+        <li
+          class="interactive"
+          data-reftarget="a[data-testid='data-testid Tab Memory']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          This is the namespace detail page showing an overview of the CPU and memory usage in the namespace.<br /><br />
+          Click the <strong>Memory</strong> tab to view more detail about 
+          memory usage in the namespace.
+        </li>
+
+        <li
+        class="interactive"
+        data-reftarget="section[data-testid='data-testid Panel header Scheduling: Containers with Memory requests set (p95)'] > div[data-testid='data-testid panel content']"
+        data-targetaction="highlight"
+        data-requirements="exists-reftarget"
+        data-doit="false"
+        >
+          Notice the panel titled <strong>Scheduling: Containers with Memory requests set </strong>. 
+          If all memory requests are set for all containers in this namespace, then the percentage would be 100%.<br /><br />
+          When memory requests are not set, this creates a significant operational risk that affects scheduling efficiency, pod stability, cluster capacity planning, and cost optimization. Always set requests based on observed usage patterns.
+        </li>   
+
+        <li
+        class="interactive"
+        data-reftarget="section[data-testid='data-testid Panel header Alignment: usage/requests (p95)'] > div[data-testid='data-testid panel content']"
+        data-targetaction="highlight"
+        data-requirements="exists-reftarget"
+        data-doit="false"
+        >
+          Notice the<strong>Alignment: usage/requests</strong> panel.<br /><br />
+          If all memory requests are set for all containers in this namespace, total memory usage should fall between the 60-90% range of requests.
+        </li>
+
+        <li
+        class="interactive"
+        data-reftarget="div[data-testid='uplot-main-div']:nth-match(5)"
+        data-targetaction="highlight"
+        data-requirements="exists-reftarget"
+        data-doit="false"
+      >
+        The <strong>Distribution: Workload usage</strong> panel helps visualise which workloads are contributing the most to the overall namespace memory usage.
+      </li>
+        <li
+        class="interactive"
+        data-reftarget="div[data-testid='uplot-main-div']:nth-match(6)"
+        data-targetaction="highlight"
+        data-requirements="exists-reftarget"
+        data-doit="false"
+      >
+        Focus on the <strong>Alignment: usage/requests</strong> panel.<br /><br />
+        Each workload should see approximately 60-90% memory usage. 
+        Workloads that fall outside of this range could be considered as incorrectly sized, or they have containers with memory requests and limits that are not well configured.
+    </li>
+    </ul>
+</span>
+
+    <span
+      id="workload-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#workload-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Workload memory details</h3>
+      <ul>
+        <li
+          class="interactive"
+          data-reftarget="div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']:nth-match(1)"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Scroll down the list of workloads in this namespace.
+          Click the first workload in the list to see details about the workload.
+        </li>
+
+        <li
+          class="interactive"
+          data-reftarget="section[data-testid='data-testid Panel header Alignment: Pod Usage/Requests (%)'] > div[data-testid='data-testid panel content']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+          data-doit="false"
+        >
+          This is the workload detail page.   <br /><br />
+        Review the Alignment graph for Pod memory usage compared to requests.<br /><br />
+          Determine if Pods are running over or too close to their CPU requests.
+        </li>
+        </ul>
+    </span>
+
+    <span
+      id="pod-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#pod-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Pod memory details</h3>
+        <li
+          class="interactive"
+          data-reftarget="div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']:nth-match(1)"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Select the first Pod in the Pods list.
+        </li>
+        <li
+          class="interactive"
+          data-reftarget="section[data-testid*='Alignment: Container Usage/Requests']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Notice the Alignment: usage/requests panel.<br /><br />
+          Ideally, each container should have around 60-90% memory usage. 
+          Containers that fall outside of this range could be have memory that is incorrectly configured. 
+        </li>
+        </ul>
+    </span>
+    <span
+      id="container-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#container-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+        <h3>Container memory details</h3>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[role='row'][aria-rowindex='2'] div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']"
+          data-requirements="exists-reftarget"
+        >
+          Click the first container in the list of containers in this Pod to view container details.
+        </li>
+
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="canvas:nth-of-type(2):nth-match(2)"
+          data-requirements="exists-reftarget"
+          data-scroll="true"
+        >
+          At the Container detail page, scroll to the <strong>"Memory sizing limits</strong> section. <br /><br />
+          The number on the left side of the guage is the currently set memory sizing limits. 
+          The number on the right is the recommended memory sizing limits. 
+          You can use the recommendation to adjust your memory limits for this container.
+          <br /><br />
+           Without memory limits, a container can consume all available memory on the node, potentially causing:
+           <ul>
+             <li>Node-wide OOM events, which can kill other workloads or system components.</li>
+             <li>Pod eviction when the node runs low on memory.</li>
+             <li>Resource starvation for other pods on the node, degrading cluster performance.</li>
+           </ul>
+        </li>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="canvas:nth-of-type(2):nth-match(4)"
+          data-requirements="exists-reftarget"
+          data-scroll="true"
+        >
+          Next, focus on the <strong>"Memory requests sizing</strong> panel. <br /><br />
+          The number on the left side of the guage is the currently set memory requests. 
+          The number on the right is the recommended setting for memory requests. 
+          You can use the recommendation to adjust your memory requests for this container.<br /><br />
+          When requests are too high, it can cause:
+          <ul>
+            <li>Wasted capacity: Kubernetes reserves more memory than actually needed, leaving nodes artificially "full" even when memory sits unused.</li>
+            <li>Scheduling failures: Pods can't be scheduled even when nodes have available memory, because the scheduler sees insufficient requestable capacity.</li>
+            <li>Higher costs: You need more nodes to run the same workload due to over-reservation.</li>
+          </ul>
+          <br />
+          When requests are too low, it can cause:
+          <ul>
+            <li>Pod evictions: Under memory pressure, Kubernetes evicts pods exceeding their requests first—your pod becomes a target even when running normally.</li>
+            <li>Unpredictable performance: The kubelet may throttle or kill processes on memory-pressured nodes, causing instability.</li>
+            <li>Wrong QoS class: Without appropriate limits, pods drop into BestEffort (first to be evicted) instead of Burstable or Guaranteed.</li>
+          </ul>
+        </li>
+      </ul>
+    </span>
+
+    <h3>What you have learned</h3>
+    <p>You have learned how to:</p>
+    <ul>
+      <li>
+        Navigate from namespaces to individual containers to look at memory usage, requests, and limits.
+      </li>
+      <li>
+        Review container memory usage, limits, requests, and recommendations.
+      </li>
+      <li>
+        Turn insights and memory request recommendations into improved resource sizing and reliability.
+      </li>
+    </ul>
+  </body>
+</html>
