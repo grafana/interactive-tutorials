@@ -3,7 +3,7 @@ alwaysApply: true
 description: help is available on writing good guides through best practices for authorship.
 ---
 
-## Best Practices
+# Best Practices
 
 The following best practices are oriented around the idea of defensive 
 design. Interactive guides are written to make it easy for beginners
@@ -21,9 +21,9 @@ language, not discourse & concepts. Rely on links for concepts.
 
 ### Include requirements wherever possible
 
-* Every DOM interaction needs exists-reftarget
-* Navigation elements need navmenu-open
-* Page-specific actions need on-page:/path
+* Every DOM interaction needs `exists-reftarget`
+* Navigation elements need `navmenu-open`
+* Page-specific actions need `on-page:/path`
 * Be aware of what roles a given feature needs; Admin features need `is-admin` or appropriate role requirements
 
 ### Connect Requirements and Objectives
@@ -41,18 +41,18 @@ to the top of the section to block starting step 1.
 ### Use Stable Selectors
 
 * Prefer `data-testid` attributes over CSS classes
-* Use button[data-testid='save'] not .btn-primary
+* Use `button[data-testid='save']` not `.btn-primary`
 * Include fallback selectors for critical elements
 
 ### Handle Edge Cases Gracefully
 
-Make admin-only steps data-skippable="true" with helpful hints
-Use data-objectives to auto-complete already-done steps
-Provide alternative workflows for different user permissions
+Make admin-only steps `skippable: true` with helpful hints.
+Use `objectives` to auto-complete already-done steps.
+Provide alternative workflows for different user permissions.
 
 ### Verify State Changes
 
-* Use data-verify for actions that change state
+* Use `verify` for actions that change state
 * Include verification after save/create operations
 * Check for expected outcomes after navigation
 
@@ -65,15 +65,15 @@ Provide alternative workflows for different user permissions
 ### Structure for Resilience
 
 * Break complex workflows into logical sections
-* Use sequence for multi-step processes with dependencies
-* Use multistep for related actions that should happen together
+* Use sequence (section blocks) for multi-step processes with dependencies
+* Use `multistep` for related actions that should happen together
 * Include section completion requirements for dependencies
 
 ### Content Quality
 
-* Keep interactive comments under 250 characters
-* Use `<strong>` for UI elements, `<code>` for technical terms
-* For content between `<span class="interactive-comment"></span>`, keep to one short sentence. Do not use the name of the element being highlighted by the system. For example, instead of `<span class="interactive-comment">The <strong>Logs</span> menu opens the Logs page</span>`, use `<span class="interactive-comment">Click to open the Logs page.</span>`
+* Keep interactive comments (`tooltip`) under 250 characters
+* Use Markdown for formatting UI elements and technical terms
+* For content in `tooltip`, keep to one short sentence. Do not use the name of the element being highlighted by the system. For example, instead of "The **Logs** menu opens the Logs page", use "Click to open the Logs page."
 * Use user-centric words like those in the following list:
   * Instead of visualization or card, use panel
   * Instead of menu item, use the name of the menu item. For example, instead of "Click the Logs menu item", write "Click Logs."
@@ -81,44 +81,40 @@ Provide alternative workflows for different user permissions
   * Instead of dropdown, use menu. For example, instead of "the Data source dropdown", write "the Data source menu"
   * Instead of interface, use page, section, or panel.
   * Avoid using button. For example, instead of "Click the Select button", write "Click Select."
-  * Only bold titles or names of items on the GUI. For example, do not use "Click the `<strong>Logs tab</strong>`." Instead, write "Click the `<strong>Logs</strong>` tab."
+  * Only bold titles or names of items on the GUI. For example, do not use "Click the **Logs tab**." Instead, write "Click the **Logs** tab."
   * Do not use integration or plugin. Find another way to describe what you mean.
-  * Instead of "`<strong>menu button</strong>` (three dots)", use "log menu icon (three dots)".
+  * Instead of "**menu button** (three dots)", use "log menu icon (three dots)".
   * Always include "What you will learn" before each section, and "What you have learned" after each section.
   * If an item is to be clicked, only use "Click". Do not use obscure terms like "navigate to", "examine", or "check out".
 
 * Write user-centric descriptions that match mental models
 * Include context about why each step matters
 
-```html
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>(TUTORIAL NAME GOES HERE))</title>
-    </head>
-    <body>
-
-        <h1>(TUTORIAL NAME GOES HERE)</h1>
-
-        <p>What you will learn: A brief description of your guide</p>
-
-        <h2>Section: Heading Name</h2>
-
-        <span id="guide-name-root"
-              class="interactive"
-              data-targetaction="sequence"
-              data-reftarget="span#guide-name-root"
-              data-requirements="navmenu-open">
-          <ul>
-            <li class="interactive"
-                data-reftarget="FILL ME OUT"
-                data-targetaction='FILL ME OUT'>
-               Step 1: User does a thing
-            </li>
-        </ul>
-    </body>
-</html>
+```json
+{
+  "id": "guide-id",
+  "title": "TUTORIAL NAME GOES HERE",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# TUTORIAL NAME GOES HERE\n\nWhat you will learn: A brief description of your guide"
+    },
+    {
+      "type": "section",
+      "id": "section-id",
+      "title": "Section: Heading Name",
+      "requirements": ["navmenu-open"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "FILL ME OUT",
+          "reftarget": "FILL ME OUT",
+          "content": "Step 1: User does a thing"
+        }
+      ]
+    }
+  ]
+}
 ```
 
 5. Finally, encourage the user to go edit this file, and remind them of the

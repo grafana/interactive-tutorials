@@ -4,60 +4,65 @@ alwaysApply: true
 
 # Interactive Guide Patterns for AI Generation
 
-The term "guide" is preferred over "guide" throughout this documentation.
+The term "guide" is preferred over "tutorial" throughout this documentation.
 
 ## Guide Structure Patterns
 
 ### Complete Guide Template
-```html
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>{Guide Title}</title>
-</head>
-<body>
-  <h1>{Guide Title}</h1>
-  
-  <p>{Introduction explaining what user will learn}</p>
-  <ul>
-    <li>{Learning objective 1}</li>
-    <li>{Learning objective 2}</li>
-    <li>{Learning objective 3}</li>
-  </ul>
-  
-  {Section 1}
-  {Section 2}
-  {Section N}
-  
-  <h2>🎉 Congratulations!</h2>
-  <p>{Summary of what was accomplished}</p>
-  <ul>
-    <li>✅ {Achievement 1}</li>
-    <li>✅ {Achievement 2}</li>
-    <li>✅ {Achievement 3}</li>
-  </ul>
-  
-  <p><strong>Next:</strong> {Link to next guide or suggested actions}</p>
-</body>
-</html>
+```json
+{
+  "id": "unique-guide-id",
+  "title": "Guide Title",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Guide Title\n\nIntroduction explaining what user will learn.\n\n- Learning objective 1\n- Learning objective 2\n- Learning objective 3"
+    },
+    {
+      "type": "section",
+      "id": "section-1",
+      "title": "Section 1 Title",
+      "blocks": [
+        // Section 1 steps
+      ]
+    },
+    {
+      "type": "section",
+      "id": "section-2",
+      "title": "Section 2 Title",
+      "blocks": [
+        // Section 2 steps
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎉 Congratulations!\n\nSummary of what was accomplished.\n\n- ✅ Achievement 1\n- ✅ Achievement 2\n- ✅ Achievement 3\n\n**Next:** Link to next guide or suggested actions"
+    }
+  ]
+}
 ```
 
 ### Section Structure Pattern
-```html
-<h2>Section {N}: {Section Title}</h2>
-<p>{Section description and context}</p>
-
-<span id="{section-id}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#{section-id}"
-      {data-requirements="{section-requirements}"}
-      {data-objectives="{section-objectives}"}
-      {data-hint="{section-description}"}>
-  <ul>
-    {Interactive steps}
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "section-id",
+  "title": "Section Title",
+  "requirements": ["section-requirements"],
+  "objectives": ["section-objectives"],
+  "tooltip": "section-description",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Section description and context"
+    },
+    {
+      "type": "interactive",
+      "action": "...",
+      "content": "Step 1"
+    }
+  ]
+}
 ```
 
 ## Common Guide Types
@@ -67,35 +72,31 @@ The term "guide" is preferred over "guide" throughout this documentation.
 **Pattern**: Show-only highlights with rich comments
 **Sections**: Navigation, Dashboard basics, Key features
 
-```html
-<span id="grafana-tour" class="interactive" data-targetaction="sequence" data-reftarget="span#grafana-tour">
-  <ul>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[data-testid='Nav menu item'][href='/']"
-        data-requirements="navmenu-open"
-        data-doit="false">
-      <span class="interactive-comment">
-        The <strong>Home</strong> page is your Grafana dashboard hub. 
-        It shows <em>recent dashboards</em>, <em>starred favorites</em>, 
-        and <em>quick access</em> to common tasks.
-      </span>
-      Start with the Home page
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[data-testid='Nav menu item'][href='/dashboards']"
-        data-doit="false">
-      <span class="interactive-comment">
-        <strong>Dashboards</strong> are collections of panels displaying your data. 
-        Create <code>time series</code>, <code>stats</code>, <code>tables</code> 
-        and more to visualize your <em>monitoring data</em>.
-      </span>
-      Explore the Dashboards section
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "grafana-tour",
+  "title": "Grafana Tour",
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[data-testid='Nav menu item'][href='/']",
+      "requirements": ["navmenu-open"],
+      "doIt": false,
+      "tooltip": "The Home page is your Grafana dashboard hub. It shows recent dashboards, starred favorites, and quick access to common tasks.",
+      "content": "Start with the Home page"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[data-testid='Nav menu item'][href='/dashboards']",
+      "doIt": false,
+      "tooltip": "Dashboards are collections of panels displaying your data. Create time series, stats, tables and more to visualize your monitoring data.",
+      "content": "Explore the Dashboards section"
+    }
+  ]
+}
 ```
 
 ### 2. Setup/Configuration Guide
@@ -103,72 +104,86 @@ The term "guide" is preferred over "guide" throughout this documentation.
 **Pattern**: Sections with verification and objectives
 **Sections**: Prerequisites, Configuration, Testing, Usage
 
-```html
-<h2>Section 1: Set Up Data Source</h2>
-<span id="setup-datasource" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-datasource"
-      data-requirements="is-admin"
-      data-objectives="has-datasource:prometheus">
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/connections/datasources"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/connections">
-      Navigate to data sources
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add new data source"
-        data-requirements="exists-reftarget">
-      Add new data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[href='/connections/datasources/prometheus']"
-        data-requirements="exists-reftarget">
-      Select Prometheus
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='basic-settings-name']"
-        data-targetvalue="prometheus-datasource"
-        data-requirements="exists-reftarget">
-      Name the data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='connection-url']"
-        data-targetvalue="http://prometheus:9090"
-        data-requirements="exists-reftarget">
-      Set server URL
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save & test"
-        data-requirements="exists-reftarget"
-        data-verify="has-datasource:prometheus-datasource">
-      Save and test connection
-    </li>
-  </ul>
-</span>
-
-<h2>Section 2: Create Dashboard</h2>
-<span id="create-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-dashboard"
-      data-requirements="section-completed:setup-datasource"
-      data-objectives="has-dashboard-named:Monitoring Dashboard">
-  <!-- Dashboard creation steps -->
-</span>
+```json
+{
+  "id": "setup-guide",
+  "title": "Setup Guide",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "## Section 1: Set Up Data Source"
+    },
+    {
+      "type": "section",
+      "id": "setup-datasource",
+      "title": "Set Up Data Source",
+      "requirements": ["is-admin"],
+      "objectives": ["has-datasource:prometheus"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "requirements": ["navmenu-open"],
+          "verify": "on-page:/connections",
+          "content": "Navigate to data sources"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add new data source",
+          "requirements": ["exists-reftarget"],
+          "content": "Add new data source"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/datasources/prometheus']",
+          "requirements": ["exists-reftarget"],
+          "content": "Select Prometheus"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='basic-settings-name']",
+          "targetvalue": "prometheus-datasource",
+          "requirements": ["exists-reftarget"],
+          "content": "Name the data source"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='connection-url']",
+          "targetvalue": "http://prometheus:9090",
+          "requirements": ["exists-reftarget"],
+          "content": "Set server URL"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save & test",
+          "requirements": ["exists-reftarget"],
+          "verify": "has-datasource:prometheus-datasource",
+          "content": "Save and test connection"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 2: Create Dashboard"
+    },
+    {
+      "type": "section",
+      "id": "create-dashboard",
+      "title": "Create Dashboard",
+      "requirements": ["section-completed:setup-datasource"],
+      "objectives": ["has-dashboard-named:Monitoring Dashboard"],
+      "blocks": [
+        // Dashboard creation steps
+      ]
+    }
+  ]
+}
 ```
 
 ### 3. Feature Deep-Dive Guide
@@ -176,33 +191,42 @@ The term "guide" is preferred over "guide" throughout this documentation.
 **Pattern**: Mix of education (show-only) and practice (regular actions)
 **Sections**: Concept intro, Basic usage, Advanced features
 
-```html
-<h2>Understanding Grafana Alerting</h2>
-
-<!-- Educational introduction -->
-<span id="learn-alerting" class="interactive" data-targetaction="sequence" data-reftarget="span#learn-alerting">
-  <ul>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="div[data-testid='alert-rules-list']"
-        data-requirements="on-page:/alerting"
-        data-doit="false">
-      <span class="interactive-comment">
-        <strong>Alert rules</strong> continuously monitor your metrics. 
-        When conditions like <code>CPU > 80%</code> are met, they trigger 
-        <em>notifications</em> to keep your team informed.
-      </span>
-      Explore the alert rules interface
-    </li>
-  </ul>
-</span>
-
-<!-- Hands-on practice -->
-<span id="create-alert" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-alert"
-      data-requirements="section-completed:learn-alerting,has-datasource:prometheus">
-  <!-- Actual alert creation steps -->
-</span>
+```json
+{
+  "id": "feature-guide",
+  "title": "Understanding Grafana Alerting",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "## Understanding Grafana Alerting"
+    },
+    {
+      "type": "section",
+      "id": "learn-alerting",
+      "title": "Learn Alerting",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='alert-rules-list']",
+          "requirements": ["on-page:/alerting"],
+          "doIt": false,
+          "tooltip": "Alert rules continuously monitor your metrics. When conditions like CPU > 80% are met, they trigger notifications to keep your team informed.",
+          "content": "Explore the alert rules interface"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-alert",
+      "title": "Create Alert",
+      "requirements": ["section-completed:learn-alerting", "has-datasource:prometheus"],
+      "blocks": [
+        // Actual alert creation steps
+      ]
+    }
+  ]
+}
 ```
 
 ### 4. Workflow Guide
@@ -210,144 +234,206 @@ The term "guide" is preferred over "guide" throughout this documentation.
 **Pattern**: Sequential sections building toward final goal
 **Sections**: Setup, Configuration, Implementation, Validation
 
-```html
-<h1>Complete Monitoring Setup</h1>
-
-<!-- Section 1: Data Source -->
-<span id="setup-monitoring-data" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-datasource:type:prometheus">
-  <!-- Data source setup -->
-</span>
-
-<!-- Section 2: Dashboard -->
-<span id="create-monitoring-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:setup-monitoring-data"
-      data-objectives="has-dashboard-named:System Monitoring">
-  <!-- Dashboard creation -->
-</span>
-
-<!-- Section 3: Alerting -->
-<span id="setup-monitoring-alerts" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:create-monitoring-dashboard"
-      data-objectives="exists-reftarget">  <!-- Check for alert rules -->
-  <!-- Alert setup -->
-</span>
+```json
+{
+  "id": "workflow-guide",
+  "title": "Complete Monitoring Setup",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Complete Monitoring Setup"
+    },
+    {
+      "type": "section",
+      "id": "setup-monitoring-data",
+      "title": "Setup Monitoring Data",
+      "objectives": ["has-datasource:type:prometheus"],
+      "blocks": [
+        // Data source setup
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-monitoring-dashboard",
+      "title": "Create Monitoring Dashboard",
+      "requirements": ["section-completed:setup-monitoring-data"],
+      "objectives": ["has-dashboard-named:System Monitoring"],
+      "blocks": [
+        // Dashboard creation
+      ]
+    },
+    {
+      "type": "section",
+      "id": "setup-monitoring-alerts",
+      "title": "Setup Monitoring Alerts",
+      "requirements": ["section-completed:create-monitoring-dashboard"],
+      "objectives": ["exists-reftarget"], // Check for alert rules
+      "blocks": [
+        // Alert setup
+      ]
+    }
+  ]
+}
 ```
 
 ## Content Writing Patterns
 
 ### Step Description Patterns
-```html
-<!-- Action-focused descriptions -->
-<li class="interactive" data-targetaction="button" data-reftarget="Save">
-  Save your dashboard changes
-</li>
+```json
+// Action-focused descriptions
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save",
+  "content": "Save your dashboard changes"
+}
 
-<!-- Context-rich descriptions -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="input[id='url']" data-targetvalue="http://prometheus:9090">
-  Set the Prometheus server URL to connect to your metrics
-</li>
+// Context-rich descriptions
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[id='url']",
+  "targetvalue": "http://prometheus:9090",
+  "content": "Set the Prometheus server URL to connect to your metrics"
+}
 
-<!-- Educational descriptions -->
-<li class="interactive" data-targetaction="highlight" data-reftarget="div[data-testid='panel']" data-doit="false">
-  <span class="interactive-comment">
-    This <strong>panel</strong> displays your metrics in real-time...
-  </span>
-  Examine how panels display your monitoring data
-</li>
+// Educational descriptions
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='panel']",
+  "doIt": false,
+  "tooltip": "This panel displays your metrics in real-time...",
+  "content": "Examine how panels display your monitoring data"
+}
 ```
 
 ### Section Introduction Patterns
-```html
-<!-- Goal-oriented -->
-<h2>Section 1: Configure Prometheus Data Source</h2>
-<p>In this section, we'll connect Grafana to your Prometheus server so you can query and visualize your metrics.</p>
+```json
+// Goal-oriented
+{
+  "type": "markdown",
+  "content": "## Section 1: Configure Prometheus Data Source\n\nIn this section, we'll connect Grafana to your Prometheus server so you can query and visualize your metrics."
+}
 
-<!-- Context-setting -->
-<h2>Section 2: Create Your First Dashboard</h2>
-<p>Now that your data source is configured, let's create a dashboard to display your Prometheus metrics in meaningful visualizations.</p>
+// Context-setting
+{
+  "type": "markdown",
+  "content": "## Section 2: Create Your First Dashboard\n\nNow that your data source is configured, let's create a dashboard to display your Prometheus metrics in meaningful visualizations."
+}
 
-<!-- Problem-solving -->
-<h2>Section 3: Set Up Alerting</h2>
-<p>Dashboards show you what happened, but alerts tell you when something is happening. Let's create alert rules to monitor your system proactively.</p>
+// Problem-solving
+{
+  "type": "markdown",
+  "content": "## Section 3: Set Up Alerting\n\nDashboards show you what happened, but alerts tell you when something is happening. Let's create alert rules to monitor your system proactively."
+}
 ```
 
 ## Advanced Patterns
 
 ### Conditional Workflows
-```html
-<!-- Different paths based on user state -->
-<span id="admin-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="is-admin"
-      data-hint="Admin-specific setup process">
-  <!-- Admin workflow -->
-</span>
+```json
+// Different paths based on user state
+{
+  "type": "section",
+  "id": "admin-setup",
+  "title": "Admin Setup",
+  "requirements": ["is-admin"],
+  "tooltip": "Admin-specific setup process",
+  "blocks": [
+    // Admin workflow
+  ]
+}
 
-<span id="user-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="has-role:viewer"
-      data-hint="Non-admin workflow">
-  <!-- Limited user workflow -->
-</span>
+{
+  "type": "section",
+  "id": "user-setup",
+  "title": "User Setup",
+  "requirements": ["has-role:viewer"],
+  "tooltip": "Non-admin workflow",
+  "blocks": [
+    // Limited user workflow
+  ]
+}
 ```
 
 ### Progressive Complexity
-```html
-<!-- Basic level -->
-<span id="basic-query" class="interactive" data-targetaction="sequence">
-  <li class="interactive" data-targetaction="formfill" data-reftarget="textarea" data-targetvalue="up">
-    Enter basic "up" query
-  </li>
-</span>
+```json
+// Basic level
+{
+  "type": "section",
+  "id": "basic-query",
+  "title": "Basic Query",
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea",
+      "targetvalue": "up",
+      "content": "Enter basic 'up' query"
+    }
+  ]
+}
 
-<!-- Intermediate level -->
-<span id="intermediate-query" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:basic-query">
-  <li class="interactive" data-targetaction="formfill" data-reftarget="textarea" data-targetvalue="rate(http_requests_total[5m])">
-    Enter rate calculation query
-  </li>
-</span>
+// Intermediate level
+{
+  "type": "section",
+  "id": "intermediate-query",
+  "title": "Intermediate Query",
+  "requirements": ["section-completed:basic-query"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea",
+      "targetvalue": "rate(http_requests_total[5m])",
+      "content": "Enter rate calculation query"
+    }
+  ]
+}
 
-<!-- Advanced level -->
-<span id="advanced-query" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:intermediate-query,has-feature:expressions">
-  <li class="interactive" data-targetaction="formfill" data-reftarget="textarea" data-targetvalue="sum(rate(http_requests_total[5m])) by (status)">
-    Enter aggregated rate query
-  </li>
-</span>
+// Advanced level
+{
+  "type": "section",
+  "id": "advanced-query",
+  "title": "Advanced Query",
+  "requirements": ["section-completed:intermediate-query", "has-feature:expressions"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea",
+      "targetvalue": "sum(rate(http_requests_total[5m])) by (status)",
+      "content": "Enter aggregated rate query"
+    }
+  ]
+}
 ```
 
 ### Error Recovery Workflows
-```html
-<!-- Primary workflow -->
-<span id="primary-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-datasource:prometheus">
-  <!-- Normal setup steps -->
-</span>
+```json
+// Primary workflow
+{
+  "type": "section",
+  "id": "primary-setup",
+  "title": "Primary Setup",
+  "objectives": ["has-datasource:prometheus"],
+  "blocks": [
+    // Normal setup steps
+  ]
+}
 
-<!-- Alternative workflow -->
-<span id="alternative-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:primary-setup"
-      data-skippable="true">
-  <!-- Alternative if primary fails -->
-</span>
+// Alternative workflow
+{
+  "type": "section",
+  "id": "alternative-setup",
+  "title": "Alternative Setup",
+  "requirements": ["section-completed:primary-setup"],
+  "skippable": true,
+  "blocks": [
+    // Alternative if primary fails
+  ]
+}
 ```
 
 ## AI Generation Decision Trees
@@ -359,8 +445,8 @@ User request analysis:
   "Click [element_description]" → highlight action  
   "Enter [value]" → formfill action
   "Go to [page]" → navigate action
-  "Do [multiple things]" → sequence or multistep
-  "Show [element]" → highlight with data-doit="false"
+  "Do [multiple things]" → sequence (as section) or multistep
+  "Show [element]" → highlight with doIt: false
 ```
 
 ### Choose Requirements
@@ -380,225 +466,214 @@ Action context analysis:
 Content complexity analysis:
   Single action → individual step
   Related actions → multistep
-  Multiple checkpoints → sequence
+  Multiple checkpoints → section
   Educational content → show-only with comments
-  Complex workflow → sequence with mixed step types
+  Complex workflow → section with mixed step types
 ```
 
 ## Common Guide Scenarios
 
 ### Scenario: "Show me how to create a dashboard"
-```html
-<span id="create-dashboard-guide" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-dashboard-guide"
-      data-requirements="has-datasources"
-      data-objectives="has-dashboard-named:My First Dashboard">
-  
-  <h2>Create Your First Dashboard</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/dashboard/new"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/dashboard/new">
-      Navigate to create new dashboard
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add visualization"
-        data-requirements="exists-reftarget">
-      Add your first visualization
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="prometheus-datasource"
-        data-requirements="has-datasource:prometheus">
-      Select your data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='query-editor']"
-        data-targetvalue="up"
-        data-requirements="exists-reftarget">
-      Enter a basic query
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='Panel editor option pane field input Title']"
-        data-targetvalue="System Status"
-        data-requirements="exists-reftarget">
-      Set panel title
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save dashboard"
-        data-requirements="exists-reftarget"
-        data-verify="has-dashboard-named:My First Dashboard">
-      Save the dashboard
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "create-dashboard-guide",
+  "title": "Create Your First Dashboard",
+  "requirements": ["has-datasources"],
+  "objectives": ["has-dashboard-named:My First Dashboard"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/dashboard/new",
+      "requirements": ["navmenu-open"],
+      "verify": "on-page:/dashboard/new",
+      "content": "Navigate to create new dashboard"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add visualization",
+      "requirements": ["exists-reftarget"],
+      "content": "Add your first visualization"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "prometheus-datasource",
+      "requirements": ["has-datasource:prometheus"],
+      "content": "Select your data source"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "up",
+      "requirements": ["exists-reftarget"],
+      "content": "Enter a basic query"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='Panel editor option pane field input Title']",
+      "targetvalue": "System Status",
+      "requirements": ["exists-reftarget"],
+      "content": "Set panel title"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save dashboard",
+      "requirements": ["exists-reftarget"],
+      "verify": "has-dashboard-named:My First Dashboard",
+      "content": "Save the dashboard"
+    }
+  ]
+}
 ```
 
 ### Scenario: "Set up Prometheus monitoring"
-```html
-<h1>Prometheus + Grafana Setup</h1>
-
-<!-- Section 1: Data Source -->
-<span id="setup-prometheus-datasource" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-prometheus-datasource"
-      data-requirements="is-admin"
-      data-objectives="has-datasource:type:prometheus">
-  
-  <h2>Configure Prometheus Data Source</h2>
-  <!-- Data source setup steps -->
-</span>
-
-<!-- Section 2: Basic Dashboard -->
-<span id="create-prometheus-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-prometheus-dashboard"
-      data-requirements="section-completed:setup-prometheus-datasource">
-  
-  <h2>Create Prometheus Dashboard</h2>
-  <!-- Dashboard creation steps -->
-</span>
-
-<!-- Section 3: Alerting -->
-<span id="setup-prometheus-alerts" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-prometheus-alerts"
-      data-requirements="section-completed:create-prometheus-dashboard">
-  
-  <h2>Configure Prometheus Alerts</h2>
-  <!-- Alert setup steps -->
-</span>
+```json
+{
+  "id": "prometheus-setup",
+  "title": "Prometheus + Grafana Setup",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Prometheus + Grafana Setup"
+    },
+    {
+      "type": "section",
+      "id": "setup-prometheus-datasource",
+      "title": "Configure Prometheus Data Source",
+      "requirements": ["is-admin"],
+      "objectives": ["has-datasource:type:prometheus"],
+      "blocks": [
+        // Data source setup steps
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-prometheus-dashboard",
+      "title": "Create Prometheus Dashboard",
+      "requirements": ["section-completed:setup-prometheus-datasource"],
+      "blocks": [
+        // Dashboard creation steps
+      ]
+    },
+    {
+      "type": "section",
+      "id": "setup-prometheus-alerts",
+      "title": "Configure Prometheus Alerts",
+      "requirements": ["section-completed:create-prometheus-dashboard"],
+      "blocks": [
+        // Alert setup steps
+      ]
+    }
+  ]
+}
 ```
 
 ### Scenario: "Explain this interface element"
-```html
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='query-editor-container']"
-    data-requirements="on-page:/explore"
-    data-doit="false">
-  
-  <span class="interactive-comment">
-    The <strong>query editor</strong> is where you write queries in your data source's 
-    native language. For Prometheus, use <code>PromQL</code>. For Loki, use <code>LogQL</code>. 
-    The editor provides <em>syntax highlighting</em> and <em>auto-completion</em> to help you write effective queries.
-  </span>
-  
-  Learn about the query editor interface
-</li>
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='query-editor-container']",
+  "requirements": ["on-page:/explore"],
+  "doIt": false,
+  "tooltip": "The query editor is where you write queries in your data source's native language. For Prometheus, use PromQL. For Loki, use LogQL. The editor provides syntax highlighting and auto-completion to help you write effective queries.",
+  "content": "Learn about the query editor interface"
+}
 ```
 
 ## Interactive Comment Guidelines
 
 ### Content Structure Template
-```html
-<span class="interactive-comment">
-  The <strong>{UI_ELEMENT_NAME}</strong> {what_it_does}. 
-  {why_its_important_or_context}. {specific_features_or_capabilities} 
-  {user_benefit_or_outcome}.
-</span>
+```json
+{
+  "tooltip": "The UI_ELEMENT_NAME purpose/function explanation. Context about why it's important. Use it for technical_features to user_benefit_or_outcome."
+}
 ```
 
 ### Applied Examples
 
 #### Feature Explanation
-```html
-<span class="interactive-comment">
-  The <strong>visualization picker</strong> lets you choose how to display your data. 
-  Different chart types tell different stories about your metrics. 
-  Choose <code>time series</code> for trends, <code>stat panels</code> for current values, 
-  and <code>tables</code> for detailed breakdowns.
-</span>
+```json
+{
+  "tooltip": "The visualization picker lets you choose how to display your data. Different chart types tell different stories about your metrics. Choose time series for trends, stat panels for current values, and tables for detailed breakdowns."
+}
 ```
 
 #### Process Guidance
-```html
-<span class="interactive-comment">
-  <strong>Save & test</strong> validates your data source configuration and saves it. 
-  A <code>green success message</code> confirms everything works correctly, 
-  while <code>red error messages</code> help you troubleshoot connection issues.
-</span>
+```json
+{
+  "tooltip": "Save & test validates your data source configuration and saves it. A green success message confirms everything works correctly, while red error messages help you troubleshoot connection issues."
+}
 ```
 
 #### Context Building
-```html
-<span class="interactive-comment">
-  This <strong>metrics panel</strong> shows your application's performance in real-time. 
-  The <code>time series chart</code> reveals trends and patterns, helping you 
-  identify <em>performance bottlenecks</em> and <em>capacity planning needs</em>.
-</span>
+```json
+{
+  "tooltip": "This metrics panel shows your application's performance in real-time. The time series chart reveals trends and patterns, helping you identify performance bottlenecks and capacity planning needs."
+}
 ```
 
 ## Error Handling Patterns
 
 ### Graceful Degradation
-```html
-<!-- Primary action with fallback -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Quick setup"
-    data-requirements="has-plugin:setup-wizard"
-    data-skippable="true"
-    data-hint="Uses setup wizard if available, can skip if not installed">
-  Use quick setup wizard (skip if not available)
-</li>
+```json
+// Primary action with fallback
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Quick setup",
+  "requirements": ["has-plugin:setup-wizard"],
+  "skippable": true,
+  "tooltip": "Uses setup wizard if available, can skip if not installed",
+  "content": "Use quick setup wizard (skip if not available)"
+}
 
-<!-- Manual fallback -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/connections/datasources/new"
-    data-requirements="is-admin">
-  Or set up data source manually
-</li>
+// Manual fallback
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/connections/datasources/new",
+  "requirements": ["is-admin"],
+  "content": "Or set up data source manually"
+}
 ```
 
 ### Permission-Aware Guides
-```html
-<!-- Admin path -->
-<span id="admin-plugin-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="is-admin">
-  <h3>Install Plugin (Admin)</h3>
-  <!-- Admin-specific steps -->
-</span>
+```json
+// Admin path
+{
+  "type": "section",
+  "id": "admin-plugin-setup",
+  "title": "Install Plugin (Admin)",
+  "requirements": ["is-admin"],
+  "blocks": [
+    // Admin-specific steps
+  ]
+}
 
-<!-- Non-admin alternative -->
-<span id="user-plugin-info" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="has-role:viewer">
-  <h3>Request Plugin Installation</h3>
-  <ul>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="div[data-testid='plugin-catalog']"
-        data-doit="false">
-      <span class="interactive-comment">
-        You can browse available plugins here, but <strong>installation requires admin privileges</strong>. 
-        Contact your <code>Grafana administrator</code> to request plugin installations.
-      </span>
-      Browse available plugins (view-only)
-    </li>
-  </ul>
-</span>
+// Non-admin alternative
+{
+  "type": "section",
+  "id": "user-plugin-info",
+  "title": "Request Plugin Installation",
+  "requirements": ["has-role:viewer"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "div[data-testid='plugin-catalog']",
+      "doIt": false,
+      "tooltip": "You can browse available plugins here, but installation requires admin privileges. Contact your Grafana administrator to request plugin installations.",
+      "content": "Browse available plugins (view-only)"
+    }
+  ]
+}
 ```
 
 ## Quality Guidelines for AI
@@ -615,7 +690,7 @@ Content complexity analysis:
 - [ ] All DOM interactions include `exists-reftarget`
 - [ ] Navigation interactions include `navmenu-open`
 - [ ] Page-specific actions include `on-page:/path`
-- [ ] State-changing actions include `data-verify`
+- [ ] State-changing actions include `verify`
 - [ ] Admin actions include appropriate permission requirements
 - [ ] Sections have unique, stable IDs
 
@@ -629,705 +704,46 @@ Content complexity analysis:
 ## Maintenance Patterns
 
 ### Version Compatibility
-```html
-<!-- Version-specific features -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="New scene"
-    data-requirements="min-version:9.0.0,exists-reftarget"
-    data-skippable="true"
-    data-hint="Scenes feature requires Grafana 9.0+">
-  Use new scenes feature (skip if older version)
-</li>
+```json
+// Version-specific features
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "New scene",
+  "requirements": ["min-version:9.0.0", "exists-reftarget"],
+  "skippable": true,
+  "tooltip": "Scenes feature requires Grafana 9.0+",
+  "content": "Use new scenes feature (skip if older version)"
+}
 
-<!-- Fallback for older versions -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="exists-reftarget">
-  Create dashboard using standard interface
-</li>
+// Fallback for older versions
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Create dashboard",
+  "requirements": ["exists-reftarget"],
+  "content": "Create dashboard using standard interface"
+}
 ```
 
 ### Environment Adaptation
-```html
-<!-- Cloud-specific -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/cloud-setup"
-    data-requirements="in-environment:cloud"
-    data-skippable="true">
-  Access cloud-specific setup
-</li>
-
-<!-- On-premise alternative -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/admin/settings"
-    data-requirements="is-admin,in-environment:production">
-  Configure on-premise settings
-</li>
-```# Interactive Guide Patterns for AI Generation
-
-## Guide Structure Patterns
-
-### Complete Guide Template
-```html
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>{Guide Title}</title>
-</head>
-<body>
-  <h1>{Guide Title}</h1>
-  
-  <p>{Introduction explaining what user will learn}</p>
-  <ul>
-    <li>{Learning objective 1}</li>
-    <li>{Learning objective 2}</li>
-    <li>{Learning objective 3}</li>
-  </ul>
-  
-  {Section 1}
-  {Section 2}
-  {Section N}
-  
-  <h2>🎉 Congratulations!</h2>
-  <p>{Summary of what was accomplished}</p>
-  <ul>
-    <li>✅ {Achievement 1}</li>
-    <li>✅ {Achievement 2}</li>
-    <li>✅ {Achievement 3}</li>
-  </ul>
-  
-  <p><strong>Next:</strong> {Link to next guide or suggested actions}</p>
-</body>
-</html>
-```
-
-### Section Structure Pattern
-```html
-<h2>Section {N}: {Section Title}</h2>
-<p>{Section description and context}</p>
-
-<span id="{section-id}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#{section-id}"
-      {data-requirements="{section-requirements}"}
-      {data-objectives="{section-objectives}"}
-      {data-hint="{section-description}"}>
-  <ul>
-    {Interactive steps}
-  </ul>
-</span>
-```
-
-## Common Guide Types
-
-### 1. Product Tour / Onboarding
-**Goal**: Familiarize users with Grafana interface
-**Pattern**: Show-only highlights with rich comments
-**Sections**: Navigation, Dashboard basics, Key features
-
-```html
-<span id="grafana-tour" class="interactive" data-targetaction="sequence" data-reftarget="span#grafana-tour">
-  <ul>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[data-testid='Nav menu item'][href='/']"
-        data-requirements="navmenu-open"
-        data-doit="false">
-      <span class="interactive-comment">
-        The <strong>Home</strong> page is your Grafana dashboard hub. 
-        It shows <em>recent dashboards</em>, <em>starred favorites</em>, 
-        and <em>quick access</em> to common tasks.
-      </span>
-      Start with the Home page
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[data-testid='Nav menu item'][href='/dashboards']"
-        data-doit="false">
-      <span class="interactive-comment">
-        <strong>Dashboards</strong> are collections of panels displaying your data. 
-        Create <code>time series</code>, <code>stats</code>, <code>tables</code> 
-        and more to visualize your <em>monitoring data</em>.
-      </span>
-      Explore the Dashboards section
-    </li>
-  </ul>
-</span>
-```
-
-### 2. Setup/Configuration Guide
-**Goal**: Configure a specific feature or integration
-**Pattern**: Sections with verification and objectives
-**Sections**: Prerequisites, Configuration, Testing, Usage
-
-```html
-<h2>Section 1: Set Up Data Source</h2>
-<span id="setup-datasource" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-datasource"
-      data-requirements="is-admin"
-      data-objectives="has-datasource:prometheus">
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/connections/datasources"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/connections">
-      Navigate to data sources
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add new data source"
-        data-requirements="exists-reftarget">
-      Add new data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[href='/connections/datasources/prometheus']"
-        data-requirements="exists-reftarget">
-      Select Prometheus
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='basic-settings-name']"
-        data-targetvalue="prometheus-datasource"
-        data-requirements="exists-reftarget">
-      Name the data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='connection-url']"
-        data-targetvalue="http://prometheus:9090"
-        data-requirements="exists-reftarget">
-      Set server URL
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save & test"
-        data-requirements="exists-reftarget"
-        data-verify="has-datasource:prometheus-datasource">
-      Save and test connection
-    </li>
-  </ul>
-</span>
-
-<h2>Section 2: Create Dashboard</h2>
-<span id="create-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-dashboard"
-      data-requirements="section-completed:setup-datasource"
-      data-objectives="has-dashboard-named:Monitoring Dashboard">
-  <!-- Dashboard creation steps -->
-</span>
-```
-
-### 3. Feature Deep-Dive Guide
-**Goal**: Teach specific Grafana feature in depth
-**Pattern**: Mix of education (show-only) and practice (regular actions)
-**Sections**: Concept intro, Basic usage, Advanced features
-
-```html
-<h2>Understanding Grafana Alerting</h2>
-
-<!-- Educational introduction -->
-<span id="learn-alerting" class="interactive" data-targetaction="sequence" data-reftarget="span#learn-alerting">
-  <ul>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="div[data-testid='alert-rules-list']"
-        data-requirements="on-page:/alerting"
-        data-doit="false">
-      <span class="interactive-comment">
-        <strong>Alert rules</strong> continuously monitor your metrics. 
-        When conditions like <code>CPU > 80%</code> are met, they trigger 
-        <em>notifications</em> to keep your team informed.
-      </span>
-      Explore the alert rules interface
-    </li>
-  </ul>
-</span>
-
-<!-- Hands-on practice -->
-<span id="create-alert" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-alert"
-      data-requirements="section-completed:learn-alerting,has-datasource:prometheus">
-  <!-- Actual alert creation steps -->
-</span>
-```
-
-### 4. Workflow Guide
-**Goal**: Complete a real-world task end-to-end
-**Pattern**: Sequential sections building toward final goal
-**Sections**: Setup, Configuration, Implementation, Validation
-
-```html
-<h1>Complete Monitoring Setup</h1>
-
-<!-- Section 1: Data Source -->
-<span id="setup-monitoring-data" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-datasource:type:prometheus">
-  <!-- Data source setup -->
-</span>
-
-<!-- Section 2: Dashboard -->
-<span id="create-monitoring-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:setup-monitoring-data"
-      data-objectives="has-dashboard-named:System Monitoring">
-  <!-- Dashboard creation -->
-</span>
-
-<!-- Section 3: Alerting -->
-<span id="setup-monitoring-alerts" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:create-monitoring-dashboard"
-      data-objectives="exists-reftarget">  <!-- Check for alert rules -->
-  <!-- Alert setup -->
-</span>
-```
-
-## Content Writing Patterns
-
-### Step Description Patterns
-```html
-<!-- Action-focused descriptions -->
-<li class="interactive" data-targetaction="button" data-reftarget="Save">
-  Save your dashboard changes
-</li>
-
-<!-- Context-rich descriptions -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="input[id='url']" data-targetvalue="http://prometheus:9090">
-  Set the Prometheus server URL to connect to your metrics
-</li>
-
-<!-- Educational descriptions -->
-<li class="interactive" data-targetaction="highlight" data-reftarget="div[data-testid='panel']" data-doit="false">
-  <span class="interactive-comment">
-    This <strong>panel</strong> displays your metrics in real-time...
-  </span>
-  Examine how panels display your monitoring data
-</li>
-```
-
-### Section Introduction Patterns
-```html
-<!-- Goal-oriented -->
-<h2>Section 1: Configure Prometheus Data Source</h2>
-<p>In this section, we'll connect Grafana to your Prometheus server so you can query and visualize your metrics.</p>
-
-<!-- Context-setting -->
-<h2>Section 2: Create Your First Dashboard</h2>
-<p>Now that your data source is configured, let's create a dashboard to display your Prometheus metrics in meaningful visualizations.</p>
-
-<!-- Problem-solving -->
-<h2>Section 3: Set Up Alerting</h2>
-<p>Dashboards show you what happened, but alerts tell you when something is happening. Let's create alert rules to monitor your system proactively.</p>
-```
-
-## Advanced Patterns
-
-### Conditional Workflows
-```html
-<!-- Different paths based on user state -->
-<span id="admin-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="is-admin"
-      data-hint="Admin-specific setup process">
-  <!-- Admin workflow -->
-</span>
-
-<span id="user-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="has-role:viewer"
-      data-hint="Non-admin workflow">
-  <!-- Limited user workflow -->
-</span>
-```
-
-### Progressive Complexity
-```html
-<!-- Basic level -->
-<span id="basic-query" class="interactive" data-targetaction="sequence">
-  <li class="interactive" data-targetaction="formfill" data-reftarget="textarea" data-targetvalue="up">
-    Enter basic "up" query
-  </li>
-</span>
-
-<!-- Intermediate level -->
-<span id="intermediate-query" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:basic-query">
-  <li class="interactive" data-targetaction="formfill" data-reftarget="textarea" data-targetvalue="rate(http_requests_total[5m])">
-    Enter rate calculation query
-  </li>
-</span>
-
-<!-- Advanced level -->
-<span id="advanced-query" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:intermediate-query,has-feature:expressions">
-  <li class="interactive" data-targetaction="formfill" data-reftarget="textarea" data-targetvalue="sum(rate(http_requests_total[5m])) by (status)">
-    Enter aggregated rate query
-  </li>
-</span>
-```
-
-### Error Recovery Workflows
-```html
-<!-- Primary workflow -->
-<span id="primary-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-datasource:prometheus">
-  <!-- Normal setup steps -->
-</span>
-
-<!-- Alternative workflow -->
-<span id="alternative-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:primary-setup"
-      data-skippable="true">
-  <!-- Alternative if primary fails -->
-</span>
-```
-
-## AI Generation Decision Trees
-
-### Choose Action Type
-```
-User request analysis:
-  "Click [button_text]" → button action
-  "Click [element_description]" → highlight action  
-  "Enter [value]" → formfill action
-  "Go to [page]" → navigate action
-  "Do [multiple things]" → sequence or multistep
-  "Show [element]" → highlight with data-doit="false"
-```
-
-### Choose Requirements
-```
-Action context analysis:
-  DOM interaction → add "exists-reftarget"
-  Navigation menu → add "navmenu-open"
-  Specific page → add "on-page:/path"
-  Admin feature → add "is-admin"
-  Data source needed → add "has-datasource:type"
-  Plugin needed → add "has-plugin:id"
-  Previous section → add "section-completed:id"
-```
-
-### Choose Structure
-```
-Content complexity analysis:
-  Single action → individual step
-  Related actions → multistep
-  Multiple checkpoints → sequence
-  Educational content → show-only with comments
-  Complex workflow → sequence with mixed step types
-```
-
-## Common Guide Scenarios
-
-### Scenario: "Show me how to create a dashboard"
-```html
-<span id="create-dashboard-guide" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-dashboard-guide"
-      data-requirements="has-datasources"
-      data-objectives="has-dashboard-named:My First Dashboard">
-  
-  <h2>Create Your First Dashboard</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/dashboard/new"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/dashboard/new">
-      Navigate to create new dashboard
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add visualization"
-        data-requirements="exists-reftarget">
-      Add your first visualization
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="prometheus-datasource"
-        data-requirements="has-datasource:prometheus">
-      Select your data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='query-editor']"
-        data-targetvalue="up"
-        data-requirements="exists-reftarget">
-      Enter a basic query
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='Panel editor option pane field input Title']"
-        data-targetvalue="System Status"
-        data-requirements="exists-reftarget">
-      Set panel title
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save dashboard"
-        data-requirements="exists-reftarget"
-        data-verify="has-dashboard-named:My First Dashboard">
-      Save the dashboard
-    </li>
-  </ul>
-</span>
-```
-
-### Scenario: "Set up Prometheus monitoring"
-```html
-<h1>Prometheus + Grafana Setup</h1>
-
-<!-- Section 1: Data Source -->
-<span id="setup-prometheus-datasource" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-prometheus-datasource"
-      data-requirements="is-admin"
-      data-objectives="has-datasource:type:prometheus">
-  
-  <h2>Configure Prometheus Data Source</h2>
-  <!-- Data source setup steps -->
-</span>
-
-<!-- Section 2: Basic Dashboard -->
-<span id="create-prometheus-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-prometheus-dashboard"
-      data-requirements="section-completed:setup-prometheus-datasource">
-  
-  <h2>Create Prometheus Dashboard</h2>
-  <!-- Dashboard creation steps -->
-</span>
-
-<!-- Section 3: Alerting -->
-<span id="setup-prometheus-alerts" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-prometheus-alerts"
-      data-requirements="section-completed:create-prometheus-dashboard">
-  
-  <h2>Configure Prometheus Alerts</h2>
-  <!-- Alert setup steps -->
-</span>
-```
-
-### Scenario: "Explain this interface element"
-```html
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='query-editor-container']"
-    data-requirements="on-page:/explore"
-    data-doit="false">
-  
-  <span class="interactive-comment">
-    The <strong>query editor</strong> is where you write queries in your data source's 
-    native language. For Prometheus, use <code>PromQL</code>. For Loki, use <code>LogQL</code>. 
-    The editor provides <em>syntax highlighting</em> and <em>auto-completion</em> to help you write effective queries.
-  </span>
-  
-  Learn about the query editor interface
-</li>
-```
-
-## Interactive Comment Guidelines
-
-### Content Structure Template
-```html
-<span class="interactive-comment">
-  The <strong>{UI_ELEMENT_NAME}</strong> {what_it_does}. 
-  {why_its_important_or_context}. {specific_features_or_capabilities} 
-  {user_benefit_or_outcome}.
-</span>
-```
-
-### Applied Examples
-
-#### Feature Explanation
-```html
-<span class="interactive-comment">
-  The <strong>visualization picker</strong> lets you choose how to display your data. 
-  Different chart types tell different stories about your metrics. 
-  Choose <code>time series</code> for trends, <code>stat panels</code> for current values, 
-  and <code>tables</code> for detailed breakdowns.
-</span>
-```
-
-#### Process Guidance
-```html
-<span class="interactive-comment">
-  <strong>Save & test</strong> validates your data source configuration and saves it. 
-  A <code>green success message</code> confirms everything works correctly, 
-  while <code>red error messages</code> help you troubleshoot connection issues.
-</span>
-```
-
-#### Context Building
-```html
-<span class="interactive-comment">
-  This <strong>metrics panel</strong> shows your application's performance in real-time. 
-  The <code>time series chart</code> reveals trends and patterns, helping you 
-  identify <em>performance bottlenecks</em> and <em>capacity planning needs</em>.
-</span>
-```
-
-## Error Handling Patterns
-
-### Graceful Degradation
-```html
-<!-- Primary action with fallback -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Quick setup"
-    data-requirements="has-plugin:setup-wizard"
-    data-skippable="true"
-    data-hint="Uses setup wizard if available, can skip if not installed">
-  Use quick setup wizard (skip if not available)
-</li>
-
-<!-- Manual fallback -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/connections/datasources/new"
-    data-requirements="is-admin">
-  Or set up data source manually
-</li>
-```
-
-### Permission-Aware Guides
-```html
-<!-- Admin path -->
-<span id="admin-plugin-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="is-admin">
-  <h3>Install Plugin (Admin)</h3>
-  <!-- Admin-specific steps -->
-</span>
-
-<!-- Non-admin alternative -->
-<span id="user-plugin-info" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="has-role:viewer">
-  <h3>Request Plugin Installation</h3>
-  <ul>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="div[data-testid='plugin-catalog']"
-        data-doit="false">
-      <span class="interactive-comment">
-        You can browse available plugins here, but <strong>installation requires admin privileges</strong>. 
-        Contact your <code>Grafana administrator</code> to request plugin installations.
-      </span>
-      Browse available plugins (view-only)
-    </li>
-  </ul>
-</span>
-```
-
-## Quality Guidelines for AI
-
-### Content Quality Checklist
-- [ ] Guide has clear learning objectives
-- [ ] Steps progress logically toward goal
-- [ ] Requirements are appropriate for each action
-- [ ] Error cases are handled gracefully
-- [ ] Interactive comments add educational value
-- [ ] Section structure supports resumable progress
-
-### Technical Quality Checklist
-- [ ] All DOM interactions include `exists-reftarget`
-- [ ] Navigation interactions include `navmenu-open`
-- [ ] Page-specific actions include `on-page:/path`
-- [ ] State-changing actions include `data-verify`
-- [ ] Admin actions include appropriate permission requirements
-- [ ] Sections have unique, stable IDs
-
-### User Experience Checklist
-- [ ] Steps can be completed by intended user audience
-- [ ] Error messages are helpful and actionable
-- [ ] Guide works across different Grafana setups
-- [ ] Progress can be resumed after interruption
-- [ ] Alternative paths provided for different user states
-
-## Maintenance Patterns
-
-### Version Compatibility
-```html
-<!-- Version-specific features -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="New scene"
-    data-requirements="min-version:9.0.0,exists-reftarget"
-    data-skippable="true"
-    data-hint="Scenes feature requires Grafana 9.0+">
-  Use new scenes feature (skip if older version)
-</li>
-
-<!-- Fallback for older versions -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="exists-reftarget">
-  Create dashboard using standard interface
-</li>
-```
-
-### Environment Adaptation
-```html
-<!-- Cloud-specific -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/cloud-setup"
-    data-requirements="in-environment:cloud"
-    data-skippable="true">
-  Access cloud-specific setup
-</li>
-
-<!-- On-premise alternative -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/admin/settings"
-    data-requirements="is-admin,in-environment:production">
-  Configure on-premise settings
-</li>
+```json
+// Cloud-specific
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/a/cloud-setup",
+  "requirements": ["in-environment:cloud"],
+  "skippable": true,
+  "content": "Access cloud-specific setup"
+}
+
+// On-premise alternative
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/admin/settings",
+  "requirements": ["is-admin", "in-environment:production"],
+  "content": "Configure on-premise settings"
+}
 ```
