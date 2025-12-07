@@ -20,16 +20,17 @@
         containers.
       </li>
       <li>Review key panels to understand CPU usage.</li>
-      <li>Review throttling, restarts, and termination trends at the container level.</li>
+      <li>Locate panels that show throttling, restarts, and termination trends at the container level.</li>
     </ul>
 
     <span
-      id="explore-cpu"
+      id="namespace-cpu-detail"
       class="interactive"
       data-targetaction="sequence"
-      data-reftarget="span#explore-cpu"
+      data-reftarget="span#namespace-cpu-detail"
       data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
     >
+      <h3>Namespace CPU details</h3>
       <ul>
         <li
           class="interactive"
@@ -68,16 +69,26 @@
           data-requirements="exists-reftarget"
           data-doit="false"
         >
-          Notice how many containers in the
-          <strong>Scheduling: Containers with CPU requests set</strong> panel
-          have requests configured. Pods without CPU requests get
-          <strong>BestEffort</strong> QoS and are evicted first when nodes
+          Notice how many containers in the panel titled <strong>Scheduling: Containers with CPU requests set</strong> panel
+          have requests configured. Pods without CPU requests are assigned a
+          <strong>BestEffort</strong> quality of service, and they are evicted first when nodes
           reclaim CPU.<br /><br />
           Review how requests compare to actual CPU usage for workloads in the
           namespace. Ideally, each workload should have approximately 60-90% CPU
           usage.
         </li>
+      </ul>
+    </span>
 
+    <span
+      id="workload-cpu-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#workload-cpu-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Workload CPU details</h3>
+      <ul>
         <li
           class="interactive"
           data-reftarget="div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']:nth-match(1)"
@@ -97,7 +108,18 @@
           Review the Alignment graph for Pod CPU usage compared to requests.<br /><br />
           Determine if Pods are running over or too close to their CPU requests.
         </li>
+      </ul>
+    </span>
 
+    <span
+      id="pod-cpu-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#pod-cpu-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Pod CPU details</h3>
+      <ul>
         <li
           class="interactive"
           data-reftarget="div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']:nth-match(1)"
@@ -118,7 +140,18 @@
           If usage is between 80-100%, containers are using a healthy amount of CPU.
           If usage is less than 50%, containers are over-provisioned.
         </li>
+      </ul>
+    </span>
 
+    <span
+      id="container-cpu-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#container-cpu-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Container CPU details</h3>
+      <ul>
         <li
           class="interactive"
           data-targetaction="highlight"
@@ -205,7 +238,6 @@
             <li><strong>Actionable data:</strong> Use the restart tally to correlate with logs and metrics for faster remediation.</li>
           </ul>
         </li>
-
       </ul>
     </span>
 
