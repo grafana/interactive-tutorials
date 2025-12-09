@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CPU usage in Namespaces</title>
+  </head>
+  <body>
+    <h1>Explore CPU usage in Kubernetes Monitoring</h1>
+
+    <p>
+        Namespaces often map to teams, projects, environments (dev, staging, prod), or business units. 
+        When you Monitor CPU usage by namespace, you learn the usage patterns of each group. 
+        Then you can plan for capacity and forecast for scaling the cluster or reallocating resources.
+      </p>
+
+    <h3>What you will learn</h3>
+    <ul>
+      <li>
+        Navigate from namespaces through the Kubernetes hierarchy to individual
+        containers within a namespace.
+      </li>
+      <li>Review key panels to understand CPU usage.</li>
+      <li>Locate panels that show throttling, restarts, and termination trends at the container level.</li>
+    </ul>
+
+    <span
+      id="namespace-cpu-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#namespace-cpu-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Namespace CPU details</h3>
+      <ul>
+        <li
+          class="interactive"
+          data-reftarget="a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app/navigation/namespace']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Click <strong>Namespaces</strong> in the main menu to view the list of
+          namespaces in your environment.<br /><br />
+        </li>
+
+        <li
+          class="interactive"
+          data-reftarget="a[data-testid='data-testid Data link']:nth-match(1)"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Select the first namespace in the list to open its detail view.
+        </li>
+
+        <li
+          class="interactive"
+          data-reftarget="a[data-testid='data-testid Tab CPU']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          This is an overview of the CPU and memory usage in the namespace.<br /><br />
+          Click the <strong>CPU</strong> tab to view more detail about the CPU
+          usage in the namespace.
+        </li>
+
+        <li
+          class="interactive"
+          data-reftarget="div[data-testid='uplot-main-div']:nth-match(6)"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+          data-doit="false
+                  Notice how many containers in the <strong>Scheduling: Containers with CPU requests set</strong> panel
+          have requeget. Pods without CPU requests are assigneQoSng>Beort</strong> quality of service, and they are evicted first when nodes
+          reclaim CPU.<br /><br />
+          Review how requests compare to actual CPU usage for workloads in the
+          namespace. Ideally, each workload should have approximately 60-90% CPU
+          usage.
+        </li>
+      </ul>
+    </span>
+
+    <span
+      id="workload-cpu-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#workload-cpu-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Workload CPU details</h3>
+      <ul>
+        <li
+          class="interactive"
+          data-reftarget="div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']:nth-match(1)"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Open the first workload in the list to see details about the workload.
+        </li>
+
+        <li
+          class="interactive"
+          data-reftarget="section[data-testid='data-testid Panel header Alignment: Pod Usage/Requests (%)'] > div[data-testid='data-testid panel content']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+          data-doit="false"
+        >
+          Review the Alignment graph for Pod CPU usage compared to requests.<br /><br />
+          Determine if Pods are running over or too close to their CPU requests.
+        </li>
+      </ul>
+    </span>
+
+    <span
+      id="pod-cpu-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#pod-cpu-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Pod CPU details</h3>
+      <ul>
+        <li
+          class="interactive"
+          data-reftarget="div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']:nth-match(1)"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+        >
+          Select the first Pod in the Pods list.
+        </li>
+        <li
+          class="interactive"
+          data-reftarget="section[data-testid*='Alignment: Container Usage/Requests']"
+          data-targetaction="highlight"
+          data-requirements="exists-reftarget"
+          data-doit="false"
+        >
+          Notice the Alignment: Container Usage/Requests (%) panel, compare actual container CPU usage against the CPU requests.<br /><br />
+          If usage exceeds 100%, containers in the Pod are using more CPU than requested. This can cause CPU throttling, leading to performance degradation. Consider increasing the CPU requests in the Pod specification.<br /><br />
+          If usage is between 80-100%, containers are using a healthy amount of CPU.
+          If usage is less than 50%, containers are over-provisioned.
+        </li>
+      </ul>
+    </span>
+
+    <span
+      id="container-cpu-detail"
+      class="interactive"
+      data-targetaction="sequence"
+      data-reftarget="span#container-cpu-detail"
+      data-requirements="navmenu-open,on-page:/a/grafana-k8s-app"
+    >
+      <h3>Container CPU details</h3>
+      <ul>
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="div[role='row'][aria-rowindex='2'] div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']"
+          data-requirements="exists-reftarget"
+        >
+          Click the first container in the list to view container details.
+        </li>
+
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="canvas:nth-of-type(2):nth-match(3)"
+          data-requirements="exists-reftarget"
+          data-scroll="true"
+        >
+          At the Container detail page, scroll to the <strong>"CPU requests sizing</strong> section. <br /><br />
+          Notice on either side of the gauge, there are two numbers. The number on the left is the currently set CPU requests. The number on the right is the recommended CPU requests. You can use the recommendation to adjust your CPU requests for this container.
+        </li>
+
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="section[data-testid='data-testid Panel header CPU throttling']"
+          data-scroll="true"
+          data-requirements="exists-reftarget"
+        >
+          Scroll further to view the <strong>CPU throttling</strong> panel.<br /><br />
+          This panel shows how much time your container is being artificially slowed down because it's trying to use more CPU than its configured limits allow.
+
+          Why it matters:
+
+          <ul>
+            <li>Performance impact: High throttling means your application is running slower than it could, directly affecting user experience.</li>
+            <li>Right-sizing: Helps you identify if CPU limits are too restrictive. You might need to increase them.</li>
+            <li>Cost optimization: If throttling is zero or very low, you might have over-provisioned CPU limits and can reduce costs.</li>
+            <li>Application behavior: Sudden throttling spikes can correlate with slow response times or timeout errors.</li>
+          </ul>
+        </li>
+
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="section[data-testid='data-testid Panel header Last terminated reason'] > div[data-testid='data-testid panel content']"
+          data-scroll="true"
+          data-requirements="exists-reftarget"
+        >
+          Notice the <strong>Last terminated reason</strong> panel.<br /><br />
+          This view tells you exactly why Kubernetes last stopped the container, giving you clues to resolve instability.
+          <ul>
+            <li><strong>Root cause:</strong> Last termination reason points to the underlying trigger (OOMKilled, CrashLoopBackOff, and so on).</li>
+            <li><strong>Resilience:</strong> Helps you fix recurring issues before they cascade into bigger outages.</li>
+            <li><strong>Alerting:</strong> Use these reasons to fine-tune alerts and spot regressions faster.</li>
+          </ul>
+        </li>
+
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="section[data-testid='data-testid Panel header Container restart history'] > div[data-testid='data-testid panel content']"
+          data-scroll="true"
+          data-requirements="exists-reftarget"
+        >
+          Review the <strong>Container restart history</strong> panel.<br /><br />
+          This timeline shows how often the container has restarted, helping you detect flapping workloads.
+          <ul>
+            <li><strong>Stability check:</strong> Frequent restarts indicate crashing code, resource starvation, or readiness issues.</li>
+            <li><strong>Trend insight:</strong> Recent spikes can pinpoint deployments or config changes that destabilized the service.</li>
+            <li><strong>Mitigation planning:</strong> Correlate restarts with logs and metrics to prioritize fixes and improve uptime.</li>
+          </ul>
+        </li>
+
+        <li
+          class="interactive"
+          data-targetaction="highlight"
+          data-reftarget="section[data-testid='data-testid Panel header Container restarts'] > div[data-testid='data-testid panel content']"
+          data-scroll="true"
+          data-requirements="exists-reftarget"
+        >
+          Examine the <strong>Container restarts</strong> panel for a point-in-time view of restart counts.<br /><br />
+          <ul>
+            <li><strong>Health indicator:</strong> High restart counts signal unstable workloads that need investigation.</li>
+            <li><strong>Operational visibility:</strong> Provides a quick glance at which containers are repeatedly crashing.</li>
+            <li><strong>Actionable data:</strong> Use the restart tally to correlate with logs and metrics for faster remediation.</li>
+          </ul>
+        </li>
+      </ul>
+    </span>
+
+    <h3>What you have learned</h3>
+    <p>You have learned how to:</p>
+    <ul>
+      <li>
+        Navigate from namespaces to individual containers to look at CPU usage.
+      </li>
+      <li>
+        Interpret container CPU usage, throttling, restart history, and termination reasons.
+      </li>
+      <li>
+        Turn insights and CPU request recommendations into improved resource sizing and workload reliability.
+      </li>
+    </ul>
+  </body>
+</html>
