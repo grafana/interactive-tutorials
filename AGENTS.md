@@ -108,47 +108,6 @@ Plugin needed → has-plugin:id
 Sequential dependency → section-completed:id
 ```
 
-### Common Patterns
-```html
-<!-- Basic step -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save"
-    data-requirements="exists-reftarget">
-  Save changes
-</li>
-
-<!-- Section -->
-<span id="setup" class="interactive" data-targetaction="sequence" data-reftarget="span#setup">
-  <ul>{steps}</ul>
-</span>
-
-<!-- Show-only -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="selector"
-    data-doit="false">
-  <span class="interactive-comment">{explanation}</span>
-  {description}
-</li>
-
-<!-- Hover then click -->
-<li class="interactive" data-targetaction="multistep">
-  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="item"]:has(p:contains("name"))'></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Action"></span>
-  {description}
-</li>
-
-<!-- Complex selector targeting -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("servicename"))'
-    data-requirements="exists-reftarget">
-  {description}
-</li>
-```
-
-This documentation provides everything needed to understand and generate high-quality interactive Grafana guides.
 # AI Interactive Reference Documentation
 
 This folder contains structured reference documentation specifically designed for AI systems to understand and generate interactive Grafana guides.
@@ -241,45 +200,3 @@ Data source needed → has-datasource:type
 Plugin needed → has-plugin:id
 Sequential dependency → section-completed:id
 ```
-
-### Common Patterns
-```html
-<!-- Basic step -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save"
-    data-requirements="exists-reftarget">
-  Save changes
-</li>
-
-<!-- Section -->
-<span id="setup" class="interactive" data-targetaction="sequence" data-reftarget="span#setup">
-  <ul>{steps}</ul>
-</span>
-
-<!-- Show-only -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="selector"
-    data-doit="false">
-  <span class="interactive-comment">{explanation}</span>
-  {description}
-</li>
-
-<!-- Hover then click -->
-<li class="interactive" data-targetaction="multistep">
-  <span class="interactive" data-targetaction="hover" data-reftarget='div[data-cy="item"]:has(p:contains("name"))'></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Action"></span>
-  {description}
-</li>
-
-<!-- Complex selector targeting -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget='div[data-cy="wb-list-item"]:has(p:contains("servicename"))'
-    data-requirements="exists-reftarget">
-  {description}
-</li>
-```
-
-This documentation provides everything needed to understand and generate high-quality interactive Grafana guides.

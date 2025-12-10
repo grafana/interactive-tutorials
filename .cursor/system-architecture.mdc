@@ -1,13 +1,13 @@
 # Interactive Tutorial System Architecture
 
 ## Overview
-The interactive tutorial system is a React-based framework for creating guided, executable documentation within Grafana. It transforms static HTML documentation into interactive experiences with real Grafana UI manipulation.
+The interactive tutorial system is a React-based framework for creating guided, executable documentation within Grafana. It transforms structured JSON documentation into interactive experiences with real Grafana UI manipulation.
 
 ## Core Components
 
-### HTML Processing Pipeline
-1. **HTML Input**: Raw HTML with interactive attributes
-2. **HTML Parser** (`html-parser.ts`): Converts HTML to React component data
+### Content Processing Pipeline
+1. **JSON Input**: Structured JSON with interactive properties
+2. **Content Parser**: Converts JSON structure to React component data
 3. **Content Renderer** (`content-renderer.tsx`): Renders React components
 4. **Interactive Components**: Execute real actions in Grafana UI
 
@@ -105,7 +105,7 @@ ContentRenderer
 ### Adding New Action Types
 1. Create action handler class implementing standard interface
 2. Add action type to `executeInteractiveAction` switch statement
-3. Update HTML parser to recognize new action attributes
+3. Update content parser to recognize new action types
 4. Add React component if specialized rendering needed
 
 ### Adding New Requirements
@@ -115,7 +115,7 @@ ContentRenderer
 4. Test with existing interactive elements
 
 ### Adding New UI Features
-1. Extend HTML parser to recognize new attributes
+1. Extend content schema to support new features
 2. Add React component props for new features
 3. Implement rendering logic in content renderer
 4. Add CSS styling in appropriate style files
@@ -140,7 +140,7 @@ ContentRenderer
 - **Inline Styles**: Uses CSS custom properties instead of inline styles
 - **Script Execution**: No dynamic script execution in tutorial content
 - **External Resources**: External URLs opened with security attributes
-- **HTML Sanitization**: Interactive comments support limited, safe HTML subset
+- **Markdown Content**: Uses safe Markdown rendering for text content
 
 ### User Safety
 - **Action Validation**: All actions validated before execution

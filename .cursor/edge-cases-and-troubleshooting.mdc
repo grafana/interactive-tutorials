@@ -12,42 +12,46 @@ alwaysApply: true
 **Cause**: Interactive action executes before DOM element is rendered
 **Solution**: Include appropriate requirements and verification
 
-```html
-<!-- Bad: No existence check -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard">
-  Save dashboard
-</li>
+```json
+// Bad: No existence check
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save dashboard",
+  "content": "Save dashboard"
+}
 
-<!-- Good: Includes existence check -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="exists-reftarget,on-page:/dashboard/edit">
-  Save dashboard
-</li>
+// Good: Includes existence check
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save dashboard",
+  "requirements": ["exists-reftarget", "on-page:/dashboard/edit"],
+  "content": "Save dashboard"
+}
 ```
 
 #### Problem: Navigation Menu Not Open
 **Cause**: Trying to interact with navigation elements when menu is closed
 **Solution**: Always include `navmenu-open` requirement for nav interactions
 
-```html
-<!-- Bad: Navigation element without menu requirement -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="a[href='/connections']">
-  Click Connections
-</li>
+```json
+// Bad: Navigation element without menu requirement
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[href='/connections']",
+  "content": "Click Connections"
+}
 
-<!-- Good: Includes navigation requirement -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="a[href='/connections']"
-    data-requirements="navmenu-open,exists-reftarget">
-  Click Connections
-</li>
+// Good: Includes navigation requirement
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[href='/connections']",
+  "requirements": ["navmenu-open", "exists-reftarget"],
+  "content": "Click Connections"
+}
 ```
 
 ### Permission and Access Issues
@@ -56,101 +60,107 @@ alwaysApply: true
 **Cause**: Guide requires admin permissions but user doesn't have them
 **Solution**: Make admin steps skippable or provide alternative paths
 
-```html
-<!-- Option 1: Make skippable -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/admin/plugins"
-    data-requirements="is-admin"
-    data-skippable="true"
-    data-hint="Admin access required - skip if you don't have permissions">
-  Access plugin management (admin only)
-</li>
+```json
+// Option 1: Make skippable
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/admin/plugins",
+  "requirements": ["is-admin"],
+  "skippable": true,
+  "tooltip": "Admin access required - skip if you don't have permissions",
+  "content": "Access plugin management (admin only)"
+}
 
-<!-- Option 2: Provide alternative -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='plugin-catalog']"
-    data-requirements="has-role:viewer"
-    data-doit="false">
-  <span class="interactive-comment">
-    You can browse plugins here, but <strong>installation requires admin privileges</strong>. 
-    Contact your administrator to request plugin installations.
-  </span>
-  Browse available plugins (view-only)
-</li>
+// Option 2: Provide alternative
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='plugin-catalog']",
+  "requirements": ["has-role:viewer"],
+  "doIt": false,
+  "tooltip": "You can browse plugins here, but installation requires admin privileges. Contact your administrator to request plugin installations.",
+  "content": "Browse available plugins (view-only)"
+}
 ```
 
 #### Problem: Data Source Dependencies
 **Cause**: Guide assumes specific data source exists
 **Solution**: Use objectives for auto-completion or include setup sections
 
-```html
-<!-- Option 1: Auto-complete if exists -->
-<span id="setup-prometheus" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-datasource:type:prometheus"
-      data-hint="Skips if Prometheus already configured">
-  <!-- Setup steps only run if Prometheus not configured -->
-</span>
+```json
+// Option 1: Auto-complete if exists
+{
+  "type": "section",
+  "id": "setup-prometheus",
+  "title": "Setup Prometheus",
+  "objectives": ["has-datasource:type:prometheus"],
+  "tooltip": "Skips if Prometheus already configured",
+  "blocks": [
+    // Setup steps only run if Prometheus not configured
+  ]
+}
 
-<!-- Option 2: Check before dependent actions -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="up"
-    data-requirements="has-datasource:prometheus,exists-reftarget">
-  Enter Prometheus query
-</li>
+// Option 2: Check before dependent actions
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "up",
+  "requirements": ["has-datasource:prometheus", "exists-reftarget"],
+  "content": "Enter Prometheus query"
+}
 ```
 
 ### Form Interaction Issues
 
 #### Problem: React Controlled Inputs
 **Cause**: React controlled inputs don't update with simple value assignment
-**Solution**: System handles this automatically, but verify with `data-verify`
+**Solution**: System handles this automatically, but verify with `verify`
 
-```html
-<!-- Good: Includes verification -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[data-testid='dashboard-title']"
-    data-targetvalue="My Dashboard"
-    data-requirements="exists-reftarget"
-    data-verify="has-dashboard-named:My Dashboard">
-  Set dashboard title
-</li>
+```json
+// Good: Includes verification
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[data-testid='dashboard-title']",
+  "targetvalue": "My Dashboard",
+  "requirements": ["exists-reftarget"],
+  "verify": "has-dashboard-named:My Dashboard",
+  "content": "Set dashboard title"
+}
 ```
 
 #### Problem: ARIA Combobox Complexity
 **Cause**: ARIA comboboxes require special tokenization and event handling
 **Solution**: Use formfill action - system handles tokenization automatically
 
-```html
-<!-- Complex query tokenization handled automatically -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[role='combobox'][aria-autocomplete='list']"
-    data-targetvalue='job="prometheus" level="error"'
-    data-requirements="exists-reftarget,on-page:/explore">
-  Filter logs by job and level
-</li>
+```json
+// Complex query tokenization handled automatically
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[role='combobox'][aria-autocomplete='list']",
+  "targetvalue": "job=\"prometheus\" level=\"error\"",
+  "requirements": ["exists-reftarget", "on-page:/explore"],
+  "content": "Filter logs by job and level"
+}
 ```
 
 #### Problem: Monaco Editor Special Handling
 **Cause**: Monaco editors need special event handling for React integration
 **Solution**: System detects Monaco editors automatically
 
-```html
-<!-- Monaco editor automatically detected by CSS classes -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea.inputarea.monaco-mouse-cursor-text"
-    data-targetvalue="rate(http_requests_total[5m])"
-    data-requirements="exists-reftarget">
-  Enter PromQL query
-</li>
+```json
+// Monaco editor automatically detected by CSS classes
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+  "targetvalue": "rate(http_requests_total[5m])",
+  "requirements": ["exists-reftarget"],
+  "content": "Enter PromQL query"
+}
 ```
 
 ### Navigation and Routing Issues
@@ -159,37 +169,40 @@ alwaysApply: true
 **Cause**: Navigation completes but target page content not yet loaded
 **Solution**: Use verification to confirm page content is ready
 
-```html
-<!-- Good: Verifies navigation completed -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/dashboard/new"
-    data-requirements="has-datasources"
-    data-verify="on-page:/dashboard/new,exists-reftarget">
-  Navigate to create dashboard
-</li>
+```json
+// Good: Verifies navigation completed
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/dashboard/new",
+  "requirements": ["has-datasources"],
+  "verify": "on-page:/dashboard/new,exists-reftarget",
+  "content": "Navigate to create dashboard"
+}
 
-<!-- Follow-up action waits for page content -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Add visualization"
-    data-requirements="exists-reftarget,on-page:/dashboard/new">
-  Add your first panel
-</li>
+// Follow-up action waits for page content
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Add visualization",
+  "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+  "content": "Add your first panel"
+}
 ```
 
 #### Problem: External URL Handling
 **Cause**: External URLs might be blocked by browser security
 **Solution**: Use navigate action - system opens in new tab safely
 
-```html
-<!-- External URLs handled automatically -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="https://grafana.com/docs/"
-    data-hint="Opens documentation in new tab">
-  View Grafana documentation
-</li>
+```json
+// External URLs handled automatically
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "https://grafana.com/docs/",
+  "tooltip": "Opens documentation in new tab",
+  "content": "View Grafana documentation"
+}
 ```
 
 ## Troubleshooting Patterns
@@ -197,37 +210,40 @@ alwaysApply: true
 ### Debugging Failed Requirements
 
 #### Network/API Issues
-```html
-<!-- Include fallback for network failures -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Test connection"
-    data-requirements="exists-reftarget"
-    data-skippable="true"
-    data-hint="Skip if network connectivity issues">
-  Test data source connection (skip if network issues)
-</li>
+```json
+// Include fallback for network failures
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Test connection",
+  "requirements": ["exists-reftarget"],
+  "skippable": true,
+  "tooltip": "Skip if network connectivity issues",
+  "content": "Test data source connection (skip if network issues)"
+}
 ```
 
 #### Plugin Availability Issues
-```html
-<!-- Handle missing plugins gracefully -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/custom-plugin/"
-    data-requirements="has-plugin:custom-plugin"
-    data-skippable="true"
-    data-hint="Requires custom plugin - skip if not installed">
-  Use custom plugin features
-</li>
+```json
+// Handle missing plugins gracefully
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/a/custom-plugin/",
+  "requirements": ["has-plugin:custom-plugin"],
+  "skippable": true,
+  "tooltip": "Requires custom plugin - skip if not installed",
+  "content": "Use custom plugin features"
+}
 
-<!-- Alternative without plugin -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/dashboards"
-    data-hint="Standard dashboards work without additional plugins">
-  Use standard Grafana dashboards instead
-</li>
+// Alternative without plugin
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/dashboards",
+  "tooltip": "Standard dashboards work without additional plugins",
+  "content": "Use standard Grafana dashboards instead"
+}
 ```
 
 ### Selector Reliability Issues
@@ -236,49 +252,54 @@ alwaysApply: true
 **Cause**: Grafana UI updates change DOM structure or attributes
 **Solution**: Use multiple fallback selectors and stable attributes
 
-```html
-<!-- Primary selector with fallbacks -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="exists-reftarget">
-  Save dashboard
-</li>
+```json
+// Primary selector with fallbacks
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save dashboard",
+  "requirements": ["exists-reftarget"],
+  "content": "Save dashboard"
+}
 
-<!-- If button text changes, use attribute selector -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save-dashboard']"
-    data-requirements="exists-reftarget">
-  Save dashboard using stable selector
-</li>
+// If button text changes, use attribute selector
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save-dashboard']",
+  "requirements": ["exists-reftarget"],
+  "content": "Save dashboard using stable selector"
+}
 ```
 
 #### Problem: Multiple Element Matches
 **Cause**: Selector matches multiple elements when only one intended
 **Solution**: Use more specific selectors or pseudo-selectors
 
-```html
-<!-- Bad: Might match multiple panels -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='panel']">
-  Edit panel
-</li>
+```json
+// Bad: Might match multiple panels
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='panel']",
+  "content": "Edit panel"
+}
 
-<!-- Good: Targets specific panel -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='panel']:first-of-type">
-  Edit the first panel
-</li>
+// Good: Targets specific panel
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='panel']:first-of-type",
+  "content": "Edit the first panel"
+}
 
-<!-- Better: Use unique identifier if available -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-panel-id='panel-1']">
-  Edit panel 1
-</li>
+// Better: Use unique identifier if available
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-panel-id='panel-1']",
+  "content": "Edit panel 1"
+}
 ```
 
 ### Sequential Flow Issues
@@ -287,30 +308,34 @@ alwaysApply: true
 **Cause**: User completes steps manually outside guide flow
 **Solution**: Use objectives to handle already-completed states
 
-```html
-<!-- Auto-complete if already done -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[id='datasource-name']"
-    data-targetvalue="prometheus"
-    data-objectives="has-datasource:prometheus"
-    data-requirements="exists-reftarget">
-  Name your data source
-</li>
+```json
+// Auto-complete if already done
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[id='datasource-name']",
+  "targetvalue": "prometheus",
+  "objectives": ["has-datasource:prometheus"],
+  "requirements": ["exists-reftarget"],
+  "content": "Name your data source"
+}
 ```
 
 #### Problem: Section Dependencies
 **Cause**: User tries to do section 2 before completing section 1
 **Solution**: Use section-completed requirements
 
-```html
-<span id="section-2" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:section-1"
-      data-hint="Complete the previous section first">
-  <!-- Section 2 content -->
-</span>
+```json
+{
+  "type": "section",
+  "id": "section-2",
+  "title": "Section 2",
+  "requirements": ["section-completed:section-1"],
+  "tooltip": "Complete the previous section first",
+  "blocks": [
+    // Section 2 content
+  ]
+}
 ```
 
 ### Performance and Scalability Issues
@@ -319,44 +344,52 @@ alwaysApply: true
 **Cause**: Complex requirements causing performance issues
 **Solution**: Group related requirements and use caching
 
-```html
-<!-- Good: Grouped related requirements -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="has-datasources,has-role:editor,on-page:/dashboards"
-    data-hint="Groups related checks efficiently">
-  Create new dashboard
-</li>
+```json
+// Good: Grouped related requirements
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Create dashboard",
+  "requirements": ["has-datasources", "has-role:editor", "on-page:/dashboards"],
+  "tooltip": "Groups related checks efficiently",
+  "content": "Create new dashboard"
+}
 
-<!-- Bad: Separate similar checks -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="has-datasource:prometheus">
-  Step 1
-</li>
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="has-datasource:prometheus">
-  Step 2 (redundant check)
-</li>
+// Bad: Separate similar checks
+// Step 1
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Create dashboard",
+  "requirements": ["has-datasource:prometheus"],
+  "content": "Step 1"
+}
+// Step 2 (redundant check)
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save dashboard",
+  "requirements": ["has-datasource:prometheus"],
+  "content": "Step 2"
+}
 ```
 
 #### Problem: Expensive State Checks
 **Cause**: Requirements that make expensive API calls
 **Solution**: Use objectives for expensive checks that auto-complete
 
-```html
-<!-- Use objective for expensive dashboard search -->
-<span id="create-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-dashboard-named:Monitoring Dashboard"
-      data-hint="Skips creation if dashboard already exists">
-  <!-- Creation steps -->
-</span>
+```json
+// Use objective for expensive dashboard search
+{
+  "type": "section",
+  "id": "create-dashboard",
+  "title": "Create Dashboard",
+  "objectives": ["has-dashboard-named:Monitoring Dashboard"],
+  "tooltip": "Skips creation if dashboard already exists",
+  "blocks": [
+    // Creation steps
+  ]
+}
 ```
 
 ## Error Recovery Strategies
@@ -364,100 +397,99 @@ alwaysApply: true
 ### Graceful Degradation Patterns
 
 #### Network Connectivity Issues
-```html
-<!-- Primary action with network dependency -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Test connection"
-    data-requirements="exists-reftarget"
-    data-skippable="true"
-    data-hint="Skip if experiencing network connectivity issues">
-  Test data source connection
-</li>
+```json
+// Primary action with network dependency
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Test connection",
+  "requirements": ["exists-reftarget"],
+  "skippable": true,
+  "tooltip": "Skip if experiencing network connectivity issues",
+  "content": "Test data source connection"
+}
 
-<!-- Offline alternative -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='connection-status']"
-    data-doit="false">
-  <span class="interactive-comment">
-    If connection testing fails, check your <strong>network connectivity</strong> 
-    and <strong>firewall settings</strong>. You can still configure the data source 
-    and test the connection later.
-  </span>
-  Review connection status information
-</li>
+// Offline alternative
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='connection-status']",
+  "doIt": false,
+  "tooltip": "If connection testing fails, check your network connectivity and firewall settings. You can still configure the data source and test the connection later.",
+  "content": "Review connection status information"
+}
 ```
 
 #### Missing Feature Fallbacks
-```html
-<!-- Modern feature with fallback -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Use query library"
-    data-requirements="has-feature:queryLibrary,exists-reftarget"
-    data-skippable="true"
-    data-hint="Query library feature - skip if not available">
-  Use query library (if available)
-</li>
+```json
+// Modern feature with fallback
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Use query library",
+  "requirements": ["has-feature:queryLibrary", "exists-reftarget"],
+  "skippable": true,
+  "tooltip": "Query library feature - skip if not available",
+  "content": "Use query library (if available)"
+}
 
-<!-- Traditional approach -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="rate(http_requests_total[5m])"
-    data-requirements="exists-reftarget">
-  Or enter query manually in editor
-</li>
+// Traditional approach
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "rate(http_requests_total[5m])",
+  "requirements": ["exists-reftarget"],
+  "content": "Or enter query manually in editor"
+}
 ```
 
 ### Error Message Patterns
 
 #### Helpful Error Messages
-```html
-<!-- Clear explanation with context -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create alert"
-    data-requirements="has-datasource:prometheus,has-permission:alerting:write"
-    data-hint="Requires Prometheus data source and alerting permissions to create alert rules">
-  Create monitoring alert
-</li>
+```json
+// Clear explanation with context
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Create alert",
+  "requirements": ["has-datasource:prometheus", "has-permission:alerting:write"],
+  "tooltip": "Requires Prometheus data source and alerting permissions to create alert rules",
+  "content": "Create monitoring alert"
+}
 
-<!-- Specific guidance for resolution -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/admin/plugins"
-    data-requirements="is-admin"
-    data-skippable="true"
-    data-hint="Plugin management requires admin role - contact your administrator if you need plugin access">
-  Manage plugins (admin required)
-</li>
+// Specific guidance for resolution
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/admin/plugins",
+  "requirements": ["is-admin"],
+  "skippable": true,
+  "tooltip": "Plugin management requires admin role - contact your administrator if you need plugin access",
+  "content": "Manage plugins (admin required)"
+}
 ```
 
 #### Progressive Error Handling
-```html
-<!-- Try automatic fix first -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="a[href='/connections']"
-    data-requirements="navmenu-open,exists-reftarget">
-  <!-- System will auto-fix navigation if closed -->
-  Click Connections in navigation
-</li>
+```json
+// Try automatic fix first
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[href='/connections']",
+  "requirements": ["navmenu-open", "exists-reftarget"],
+  "content": "Click Connections in navigation"
+}
 
-<!-- Manual alternative if auto-fix fails -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="#mega-menu-toggle"
-    data-requirements="exists-reftarget"
-    data-hint="Manual navigation toggle if auto-fix didn't work">
-  <span class="interactive-comment">
-    If the navigation menu didn't open automatically, click the <strong>menu toggle</strong> 
-    button to open it manually.
-  </span>
-  Manually open navigation menu if needed
-</li>
+// Manual alternative if auto-fix fails
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "#mega-menu-toggle",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "If the navigation menu didn't open automatically, click the menu toggle button to open it manually.",
+  "content": "Manually open navigation menu if needed"
+}
 ```
 
 ## Browser and Environment Issues
@@ -465,54 +497,54 @@ alwaysApply: true
 ### Cross-Browser Compatibility
 
 #### Safari-Specific Issues
-```html
-<!-- Safari has different button text handling -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save"
-    data-requirements="exists-reftarget"
-    data-hint="Uses exact text matching for cross-browser compatibility">
-  Save changes
-</li>
+```json
+// Safari has different button text handling
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "Uses exact text matching for cross-browser compatibility",
+  "content": "Save changes"
+}
 
-<!-- Fallback with selector -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save-button']"
-    data-requirements="exists-reftarget">
-  Save using attribute selector
-</li>
+// Fallback with selector
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save-button']",
+  "requirements": ["exists-reftarget"],
+  "content": "Save using attribute selector"
+}
 ```
 
 #### Mobile and Tablet Considerations
-```html
-<!-- Touch-friendly interactions -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='mobile-menu']"
-    data-requirements="exists-reftarget"
-    data-hint="Mobile navigation might use different menu structure">
-  Access mobile navigation menu
-</li>
+```json
+// Touch-friendly interactions
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='mobile-menu']",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "Mobile navigation might use different menu structure",
+  "content": "Access mobile navigation menu"
+}
 ```
 
 ### Theme and Styling Issues
 
 #### Dark vs Light Theme
-```html
-<!-- Theme-agnostic selectors -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='theme-toggle']"
-    data-requirements="exists-reftarget"
-    data-doit="false">
-  <span class="interactive-comment">
-    The <strong>theme toggle</strong> switches between light and dark modes. 
-    All interactive guides work in both themes using <code>stable selectors</code> 
-    that don't depend on theme-specific styling.
-  </span>
-  Notice the theme toggle option
-</li>
+```json
+// Theme-agnostic selectors
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='theme-toggle']",
+  "requirements": ["exists-reftarget"],
+  "doIt": false,
+  "tooltip": "The theme toggle switches between light and dark modes. All interactive guides work in both themes using stable selectors that don't depend on theme-specific styling.",
+  "content": "Notice the theme toggle option"
+}
 ```
 
 ## Version Compatibility Issues
@@ -520,50 +552,54 @@ alwaysApply: true
 ### Grafana Version Differences
 
 #### Version-Specific Features
-```html
-<!-- Modern Grafana features -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="New scene"
-    data-requirements="min-version:9.0.0,exists-reftarget"
-    data-skippable="true"
-    data-hint="Scenes feature requires Grafana 9.0+">
-  Use new scenes feature
-</li>
+```json
+// Modern Grafana features
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "New scene",
+  "requirements": ["min-version:9.0.0", "exists-reftarget"],
+  "skippable": true,
+  "tooltip": "Scenes feature requires Grafana 9.0+",
+  "content": "Use new scenes feature"
+}
 
-<!-- Fallback for older versions -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="exists-reftarget">
-  Create dashboard using standard interface
-</li>
+// Fallback for older versions
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Create dashboard",
+  "requirements": ["exists-reftarget"],
+  "content": "Create dashboard using standard interface"
+}
 ```
 
 #### API Compatibility
-```html
-<!-- Check for API availability -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Query library"
-    data-requirements="has-feature:queryLibrary,min-version:8.5.0,exists-reftarget"
-    data-skippable="true"
-    data-hint="Query library requires specific Grafana version and feature toggle">
-  Access query library
-</li>
+```json
+// Check for API availability
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Query library",
+  "requirements": ["has-feature:queryLibrary", "min-version:8.5.0", "exists-reftarget"],
+  "skippable": true,
+  "tooltip": "Query library requires specific Grafana version and feature toggle",
+  "content": "Access query library"
+}
 ```
 
 ### Plugin Compatibility
-```html
-<!-- Plugin version dependencies -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/plugin-app/"
-    data-requirements="has-plugin:plugin-id,min-version:9.0.0"
-    data-skippable="true"
-    data-hint="Plugin requires compatible Grafana version">
-  Use plugin features
-</li>
+```json
+// Plugin version dependencies
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/a/plugin-app/",
+  "requirements": ["has-plugin:plugin-id", "min-version:9.0.0"],
+  "skippable": true,
+  "tooltip": "Plugin requires compatible Grafana version",
+  "content": "Use plugin features"
+}
 ```
 
 ## Complex Workflow Edge Cases
@@ -574,39 +610,47 @@ alwaysApply: true
 **Cause**: One action in multistep fails, leaving partial state
 **Solution**: Include requirements for each internal action
 
-```html
-<li class="interactive" data-targetaction="multistep" data-requirements="on-page:/dashboard/new">
-  <!-- Each span can have its own requirements -->
-  <span class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add visualization"
-        data-requirements="exists-reftarget"></span>
-  <span class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="prometheus-datasource"
-        data-requirements="has-datasource:prometheus"></span>
-  <span class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='query-editor']"
-        data-targetvalue="up"
-        data-requirements="exists-reftarget"></span>
-  Add visualization, select data source, enter query
-</li>
+```json
+{
+  "type": "multistep",
+  "requirements": ["on-page:/dashboard/new"],
+  "content": "Add visualization, select data source, enter query",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "Add visualization",
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "action": "button",
+      "reftarget": "prometheus-datasource",
+      "requirements": ["has-datasource:prometheus"]
+    },
+    {
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "up",
+      "requirements": ["exists-reftarget"]
+    }
+  ]
+}
 ```
 
 #### Problem: Section Execution Interruption
 **Cause**: User cancels section execution or browser/tab closes
 **Solution**: System provides resume functionality automatically
 
-```html
-<!-- Section automatically resumes from last completed step -->
-<span id="long-workflow" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-reftarget="span#long-workflow"
-      data-hint="Progress saved automatically - can resume if interrupted">
-  <!-- Steps will resume from where user left off -->
-</span>
+```json
+// Section automatically resumes from last completed step
+{
+  "type": "section",
+  "id": "long-workflow",
+  "title": "Long Workflow",
+  "tooltip": "Progress saved automatically - can resume if interrupted",
+  "blocks": [
+    // Steps will resume from where user left off
+  ]
+}
 ```
 
 ### State Synchronization Issues
@@ -615,30 +659,33 @@ alwaysApply: true
 **Cause**: User makes changes outside guide that affect requirements
 **Solution**: Use live requirement monitoring and reactive checks
 
-```html
-<!-- Requirements automatically recheck when DOM changes -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Edit panel"
-    data-requirements="exists-reftarget,on-page:/dashboard"
-    data-hint="Requirements automatically recheck if user navigates">
-  Edit the panel
-</li>
+```json
+// Requirements automatically recheck when DOM changes
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Edit panel",
+  "requirements": ["exists-reftarget", "on-page:/dashboard"],
+  "tooltip": "Requirements automatically recheck if user navigates",
+  "content": "Edit the panel"
+}
 ```
 
 #### Problem: Concurrent User Actions
 **Cause**: User performs actions while guide is running
 **Solution**: Use section blocking and cancellation
 
-```html
-<!-- Section blocks other interactions during execution -->
-<span id="atomic-workflow" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-reftarget="span#atomic-workflow"
-      data-hint="Blocks other interactions during execution for consistency">
-  <!-- Steps execute without interference -->
-</span>
+```json
+// Section blocks other interactions during execution
+{
+  "type": "section",
+  "id": "atomic-workflow",
+  "title": "Atomic Workflow",
+  "tooltip": "Blocks other interactions during execution for consistency",
+  "blocks": [
+    // Steps execute without interference
+  ]
+}
 ```
 
 ## Data Consistency Issues
@@ -649,127 +696,138 @@ alwaysApply: true
 **Cause**: Data source settings change after guide creation
 **Solution**: Use type-based requirements instead of name-based
 
-```html
-<!-- Bad: Relies on specific name -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="my-prometheus"
-    data-requirements="has-datasource:my-prometheus">
-  Select my prometheus data source
-</li>
+```json
+// Bad: Relies on specific name
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "my-prometheus",
+  "requirements": ["has-datasource:my-prometheus"],
+  "content": "Select my prometheus data source"
+}
 
-<!-- Good: Uses type for flexibility -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="prometheus"
-    data-requirements="has-datasource:type:prometheus"
-    data-hint="Works with any Prometheus data source">
-  Select any Prometheus data source
-</li>
+// Good: Uses type for flexibility
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "prometheus",
+  "requirements": ["has-datasource:type:prometheus"],
+  "tooltip": "Works with any Prometheus data source",
+  "content": "Select any Prometheus data source"
+}
 ```
 
 #### Problem: Missing Test Data
 **Cause**: Guide assumes specific metrics/logs exist
 **Solution**: Use generic queries that work with minimal data
 
-```html
-<!-- Good: Uses universal Prometheus metric -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="up"
-    data-requirements="has-datasource:prometheus,exists-reftarget"
-    data-hint="'up' metric exists on all Prometheus instances">
-  Enter universal monitoring query
-</li>
+```json
+// Good: Uses universal Prometheus metric
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "up",
+  "requirements": ["has-datasource:prometheus", "exists-reftarget"],
+  "tooltip": "'up' metric exists on all Prometheus instances",
+  "content": "Enter universal monitoring query"
+}
 
-<!-- Avoid: Specific application metrics -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="my_custom_app_requests_total"
-    data-hint="Might not exist in all environments">
-  Enter application-specific query
-</li>
+// Avoid: Specific application metrics
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "my_custom_app_requests_total",
+  "tooltip": "Might not exist in all environments",
+  "content": "Enter application-specific query"
+}
 ```
 
 ## Accessibility and Usability Edge Cases
 
 ### Screen Reader Compatibility
-```html
-<!-- Include helpful hints for screen readers -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save']"
-    data-requirements="exists-reftarget"
-    data-hint="Save button - preserves your dashboard configuration">
-  Save your dashboard
-</li>
+```json
+// Include helpful hints for screen readers
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save']",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "Save button - preserves your dashboard configuration",
+  "content": "Save your dashboard"
+}
 
-<!-- Use ARIA attributes in selectors when available -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[aria-label='Dashboard title']"
-    data-targetvalue="My Dashboard"
-    data-requirements="exists-reftarget">
-  Set dashboard title
-</li>
+// Use ARIA attributes in selectors when available
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[aria-label='Dashboard title']",
+  "targetvalue": "My Dashboard",
+  "requirements": ["exists-reftarget"],
+  "content": "Set dashboard title"
+}
 ```
 
 ### Keyboard Navigation
-```html
-<!-- Ensure interactive elements are keyboard accessible -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save'][tabindex='0']"
-    data-requirements="exists-reftarget"
-    data-hint="Accessible via keyboard navigation">
-  Save dashboard (keyboard accessible)
-</li>
+```json
+// Ensure interactive elements are keyboard accessible
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save'][tabindex='0']",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "Accessible via keyboard navigation",
+  "content": "Save dashboard (keyboard accessible)"
+}
 ```
 
 ## Testing and Validation Edge Cases
 
 ### Automated Testing Considerations
-```html
-<!-- Include test-friendly attributes -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="exists-reftarget"
-    data-hint="Uses button text for reliable automated testing">
-  Save dashboard
-</li>
+```json
+// Include test-friendly attributes
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save dashboard",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "Uses button text for reliable automated testing",
+  "content": "Save dashboard"
+}
 
-<!-- Alternative with test ID -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save-dashboard-btn']"
-    data-requirements="exists-reftarget">
-  Save dashboard using test ID
-</li>
+// Alternative with test ID
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save-dashboard-btn']",
+  "requirements": ["exists-reftarget"],
+  "content": "Save dashboard using test ID"
+}
 ```
 
 ### Load Testing Considerations
-```html
-<!-- Handle high-latency environments -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Load dashboard"
-    data-requirements="exists-reftarget"
-    data-hint="May take longer in high-latency environments">
-  Load dashboard (may take time)
-</li>
+```json
+// Handle high-latency environments
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Load dashboard",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "May take longer in high-latency environments",
+  "content": "Load dashboard (may take time)"
+}
 
-<!-- Include verification for slow operations -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save & test"
-    data-requirements="exists-reftarget"
-    data-verify="has-datasource:prometheus"
-    data-hint="Verification confirms operation completed successfully">
-  Save and test (with verification)
-</li>
+// Include verification for slow operations
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save & test",
+  "requirements": ["exists-reftarget"],
+  "verify": "has-datasource:prometheus",
+  "tooltip": "Verification confirms operation completed successfully",
+  "content": "Save and test (with verification)"
+}
 ```
 
 ## Debugging Tools and Techniques
@@ -856,916 +914,43 @@ window.location.reload();
 ```
 
 #### Skip Problematic Steps
-```html
-<!-- Make problematic steps skippable -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Problematic action"
-    data-requirements="complex-requirement"
-    data-skippable="true"
-    data-hint="Skip if experiencing issues">
-  Perform action (skippable if problems)
-</li>
+```json
+// Make problematic steps skippable
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Problematic action",
+  "requirements": ["complex-requirement"],
+  "skippable": true,
+  "tooltip": "Skip if experiencing issues",
+  "content": "Perform action (skippable if problems)"
+}
 ```
 
 #### Provide Manual Alternatives
-```html
-<!-- Automated approach -->
-<li class="interactive" 
-    data-targetaction="multistep" 
-    data-skippable="true">
-  <span class="interactive" data-targetaction="navigate" data-reftarget="/setup"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Auto configure"></span>
-  Use automatic configuration
-</li>
-
-<!-- Manual fallback -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/manual-setup">
-  Or configure manually step-by-step
-</li>
-```# Edge Cases and Troubleshooting for AI
-
-## Common Edge Cases
-
-### DOM Timing Issues
-
-#### Problem: Element Not Found
-**Cause**: Interactive action executes before DOM element is rendered
-**Solution**: Include appropriate requirements and verification
-
-```html
-<!-- Bad: No existence check -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard">
-  Save dashboard
-</li>
-
-<!-- Good: Includes existence check -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="exists-reftarget,on-page:/dashboard/edit">
-  Save dashboard
-</li>
-```
-
-#### Problem: Navigation Menu Not Open
-**Cause**: Trying to interact with navigation elements when menu is closed
-**Solution**: Always include `navmenu-open` requirement for nav interactions
-
-```html
-<!-- Bad: Navigation element without menu requirement -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="a[href='/connections']">
-  Click Connections
-</li>
-
-<!-- Good: Includes navigation requirement -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="a[href='/connections']"
-    data-requirements="navmenu-open,exists-reftarget">
-  Click Connections
-</li>
-```
-
-### Permission and Access Issues
-
-#### Problem: Admin Actions for Non-Admin Users
-**Cause**: Guide requires admin permissions but user doesn't have them
-**Solution**: Make admin steps skippable or provide alternative paths
-
-```html
-<!-- Option 1: Make skippable -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/admin/plugins"
-    data-requirements="is-admin"
-    data-skippable="true"
-    data-hint="Admin access required - skip if you don't have permissions">
-  Access plugin management (admin only)
-</li>
-
-<!-- Option 2: Provide alternative -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='plugin-catalog']"
-    data-requirements="has-role:viewer"
-    data-doit="false">
-  <span class="interactive-comment">
-    You can browse plugins here, but <strong>installation requires admin privileges</strong>. 
-    Contact your administrator to request plugin installations.
-  </span>
-  Browse available plugins (view-only)
-</li>
-```
-
-#### Problem: Data Source Dependencies
-**Cause**: Guide assumes specific data source exists
-**Solution**: Use objectives for auto-completion or include setup sections
-
-```html
-<!-- Option 1: Auto-complete if exists -->
-<span id="setup-prometheus" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-datasource:type:prometheus"
-      data-hint="Skips if Prometheus already configured">
-  <!-- Setup steps only run if Prometheus not configured -->
-</span>
-
-<!-- Option 2: Check before dependent actions -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="up"
-    data-requirements="has-datasource:prometheus,exists-reftarget">
-  Enter Prometheus query
-</li>
-```
-
-### Form Interaction Issues
-
-#### Problem: React Controlled Inputs
-**Cause**: React controlled inputs don't update with simple value assignment
-**Solution**: System handles this automatically, but verify with `data-verify`
-
-```html
-<!-- Good: Includes verification -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[data-testid='dashboard-title']"
-    data-targetvalue="My Dashboard"
-    data-requirements="exists-reftarget"
-    data-verify="has-dashboard-named:My Dashboard">
-  Set dashboard title
-</li>
-```
-
-#### Problem: ARIA Combobox Complexity
-**Cause**: ARIA comboboxes require special tokenization and event handling
-**Solution**: Use formfill action - system handles tokenization automatically
-
-```html
-<!-- Complex query tokenization handled automatically -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[role='combobox'][aria-autocomplete='list']"
-    data-targetvalue='job="prometheus" level="error"'
-    data-requirements="exists-reftarget,on-page:/explore">
-  Filter logs by job and level
-</li>
-```
-
-#### Problem: Monaco Editor Special Handling
-**Cause**: Monaco editors need special event handling for React integration
-**Solution**: System detects Monaco editors automatically
-
-```html
-<!-- Monaco editor automatically detected by CSS classes -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea.inputarea.monaco-mouse-cursor-text"
-    data-targetvalue="rate(http_requests_total[5m])"
-    data-requirements="exists-reftarget">
-  Enter PromQL query
-</li>
-```
-
-### Navigation and Routing Issues
-
-#### Problem: SPA Navigation Timing
-**Cause**: Navigation completes but target page content not yet loaded
-**Solution**: Use verification to confirm page content is ready
-
-```html
-<!-- Good: Verifies navigation completed -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/dashboard/new"
-    data-requirements="has-datasources"
-    data-verify="on-page:/dashboard/new,exists-reftarget">
-  Navigate to create dashboard
-</li>
-
-<!-- Follow-up action waits for page content -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Add visualization"
-    data-requirements="exists-reftarget,on-page:/dashboard/new">
-  Add your first panel
-</li>
-```
-
-#### Problem: External URL Handling
-**Cause**: External URLs might be blocked by browser security
-**Solution**: Use navigate action - system opens in new tab safely
-
-```html
-<!-- External URLs handled automatically -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="https://grafana.com/docs/"
-    data-hint="Opens documentation in new tab">
-  View Grafana documentation
-</li>
-```
-
-## Troubleshooting Patterns
-
-### Debugging Failed Requirements
-
-#### Network/API Issues
-```html
-<!-- Include fallback for network failures -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Test connection"
-    data-requirements="exists-reftarget"
-    data-skippable="true"
-    data-hint="Skip if network connectivity issues">
-  Test data source connection (skip if network issues)
-</li>
-```
-
-#### Plugin Availability Issues
-```html
-<!-- Handle missing plugins gracefully -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/custom-plugin/"
-    data-requirements="has-plugin:custom-plugin"
-    data-skippable="true"
-    data-hint="Requires custom plugin - skip if not installed">
-  Use custom plugin features
-</li>
-
-<!-- Alternative without plugin -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/dashboards"
-    data-hint="Standard dashboards work without additional plugins">
-  Use standard Grafana dashboards instead
-</li>
-```
-
-### Selector Reliability Issues
-
-#### Problem: Element Selector Changes
-**Cause**: Grafana UI updates change DOM structure or attributes
-**Solution**: Use multiple fallback selectors and stable attributes
-
-```html
-<!-- Primary selector with fallbacks -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="exists-reftarget">
-  Save dashboard
-</li>
-
-<!-- If button text changes, use attribute selector -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save-dashboard']"
-    data-requirements="exists-reftarget">
-  Save dashboard using stable selector
-</li>
-```
-
-#### Problem: Multiple Element Matches
-**Cause**: Selector matches multiple elements when only one intended
-**Solution**: Use more specific selectors or pseudo-selectors
-
-```html
-<!-- Bad: Might match multiple panels -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='panel']">
-  Edit panel
-</li>
-
-<!-- Good: Targets specific panel -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='panel']:first-of-type">
-  Edit the first panel
-</li>
-
-<!-- Better: Use unique identifier if available -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-panel-id='panel-1']">
-  Edit panel 1
-</li>
-```
-
-### Sequential Flow Issues
-
-#### Problem: Steps Out of Order
-**Cause**: User completes steps manually outside guide flow
-**Solution**: Use objectives to handle already-completed states
-
-```html
-<!-- Auto-complete if already done -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[id='datasource-name']"
-    data-targetvalue="prometheus"
-    data-objectives="has-datasource:prometheus"
-    data-requirements="exists-reftarget">
-  Name your data source
-</li>
-```
-
-#### Problem: Section Dependencies
-**Cause**: User tries to do section 2 before completing section 1
-**Solution**: Use section-completed requirements
-
-```html
-<span id="section-2" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="section-completed:section-1"
-      data-hint="Complete the previous section first">
-  <!-- Section 2 content -->
-</span>
-```
-
-### Performance and Scalability Issues
-
-#### Problem: Too Many Requirements Checks
-**Cause**: Complex requirements causing performance issues
-**Solution**: Group related requirements and use caching
-
-```html
-<!-- Good: Grouped related requirements -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="has-datasources,has-role:editor,on-page:/dashboards"
-    data-hint="Groups related checks efficiently">
-  Create new dashboard
-</li>
-
-<!-- Bad: Separate similar checks -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="has-datasource:prometheus">
-  Step 1
-</li>
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="has-datasource:prometheus">
-  Step 2 (redundant check)
-</li>
-```
-
-#### Problem: Expensive State Checks
-**Cause**: Requirements that make expensive API calls
-**Solution**: Use objectives for expensive checks that auto-complete
-
-```html
-<!-- Use objective for expensive dashboard search -->
-<span id="create-dashboard" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-objectives="has-dashboard-named:Monitoring Dashboard"
-      data-hint="Skips creation if dashboard already exists">
-  <!-- Creation steps -->
-</span>
-```
-
-## Error Recovery Strategies
-
-### Graceful Degradation Patterns
-
-#### Network Connectivity Issues
-```html
-<!-- Primary action with network dependency -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Test connection"
-    data-requirements="exists-reftarget"
-    data-skippable="true"
-    data-hint="Skip if experiencing network connectivity issues">
-  Test data source connection
-</li>
-
-<!-- Offline alternative -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='connection-status']"
-    data-doit="false">
-  <span class="interactive-comment">
-    If connection testing fails, check your <strong>network connectivity</strong> 
-    and <strong>firewall settings</strong>. You can still configure the data source 
-    and test the connection later.
-  </span>
-  Review connection status information
-</li>
-```
-
-#### Missing Feature Fallbacks
-```html
-<!-- Modern feature with fallback -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Use query library"
-    data-requirements="has-feature:queryLibrary,exists-reftarget"
-    data-skippable="true"
-    data-hint="Query library feature - skip if not available">
-  Use query library (if available)
-</li>
-
-<!-- Traditional approach -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="rate(http_requests_total[5m])"
-    data-requirements="exists-reftarget">
-  Or enter query manually in editor
-</li>
-```
-
-### Error Message Patterns
-
-#### Helpful Error Messages
-```html
-<!-- Clear explanation with context -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create alert"
-    data-requirements="has-datasource:prometheus,has-permission:alerting:write"
-    data-hint="Requires Prometheus data source and alerting permissions to create alert rules">
-  Create monitoring alert
-</li>
-
-<!-- Specific guidance for resolution -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/admin/plugins"
-    data-requirements="is-admin"
-    data-skippable="true"
-    data-hint="Plugin management requires admin role - contact your administrator if you need plugin access">
-  Manage plugins (admin required)
-</li>
-```
-
-#### Progressive Error Handling
-```html
-<!-- Try automatic fix first -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="a[href='/connections']"
-    data-requirements="navmenu-open,exists-reftarget">
-  <!-- System will auto-fix navigation if closed -->
-  Click Connections in navigation
-</li>
-
-<!-- Manual alternative if auto-fix fails -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="#mega-menu-toggle"
-    data-requirements="exists-reftarget"
-    data-hint="Manual navigation toggle if auto-fix didn't work">
-  <span class="interactive-comment">
-    If the navigation menu didn't open automatically, click the <strong>menu toggle</strong> 
-    button to open it manually.
-  </span>
-  Manually open navigation menu if needed
-</li>
-```
-
-## Browser and Environment Issues
-
-### Cross-Browser Compatibility
-
-#### Safari-Specific Issues
-```html
-<!-- Safari has different button text handling -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save"
-    data-requirements="exists-reftarget"
-    data-hint="Uses exact text matching for cross-browser compatibility">
-  Save changes
-</li>
-
-<!-- Fallback with selector -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save-button']"
-    data-requirements="exists-reftarget">
-  Save using attribute selector
-</li>
-```
-
-#### Mobile and Tablet Considerations
-```html
-<!-- Touch-friendly interactions -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='mobile-menu']"
-    data-requirements="exists-reftarget"
-    data-hint="Mobile navigation might use different menu structure">
-  Access mobile navigation menu
-</li>
-```
-
-### Theme and Styling Issues
-
-#### Dark vs Light Theme
-```html
-<!-- Theme-agnostic selectors -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='theme-toggle']"
-    data-requirements="exists-reftarget"
-    data-doit="false">
-  <span class="interactive-comment">
-    The <strong>theme toggle</strong> switches between light and dark modes. 
-    All interactive guides work in both themes using <code>stable selectors</code> 
-    that don't depend on theme-specific styling.
-  </span>
-  Notice the theme toggle option
-</li>
-```
-
-## Version Compatibility Issues
-
-### Grafana Version Differences
-
-#### Version-Specific Features
-```html
-<!-- Modern Grafana features -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="New scene"
-    data-requirements="min-version:9.0.0,exists-reftarget"
-    data-skippable="true"
-    data-hint="Scenes feature requires Grafana 9.0+">
-  Use new scenes feature
-</li>
-
-<!-- Fallback for older versions -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Create dashboard"
-    data-requirements="exists-reftarget">
-  Create dashboard using standard interface
-</li>
-```
-
-#### API Compatibility
-```html
-<!-- Check for API availability -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Query library"
-    data-requirements="has-feature:queryLibrary,min-version:8.5.0,exists-reftarget"
-    data-skippable="true"
-    data-hint="Query library requires specific Grafana version and feature toggle">
-  Access query library
-</li>
-```
-
-### Plugin Compatibility
-```html
-<!-- Plugin version dependencies -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/plugin-app/"
-    data-requirements="has-plugin:plugin-id,min-version:9.0.0"
-    data-skippable="true"
-    data-hint="Plugin requires compatible Grafana version">
-  Use plugin features
-</li>
-```
-
-## Complex Workflow Edge Cases
-
-### Multi-Step Failures
-
-#### Problem: Mid-Sequence Failures
-**Cause**: One action in multistep fails, leaving partial state
-**Solution**: Include requirements for each internal action
-
-```html
-<li class="interactive" data-targetaction="multistep" data-requirements="on-page:/dashboard/new">
-  <!-- Each span can have its own requirements -->
-  <span class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add visualization"
-        data-requirements="exists-reftarget"></span>
-  <span class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="prometheus-datasource"
-        data-requirements="has-datasource:prometheus"></span>
-  <span class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='query-editor']"
-        data-targetvalue="up"
-        data-requirements="exists-reftarget"></span>
-  Add visualization, select data source, enter query
-</li>
-```
-
-#### Problem: Section Execution Interruption
-**Cause**: User cancels section execution or browser/tab closes
-**Solution**: System provides resume functionality automatically
-
-```html
-<!-- Section automatically resumes from last completed step -->
-<span id="long-workflow" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-reftarget="span#long-workflow"
-      data-hint="Progress saved automatically - can resume if interrupted">
-  <!-- Steps will resume from where user left off -->
-</span>
-```
-
-### State Synchronization Issues
-
-#### Problem: External State Changes
-**Cause**: User makes changes outside guide that affect requirements
-**Solution**: Use live requirement monitoring and reactive checks
-
-```html
-<!-- Requirements automatically recheck when DOM changes -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Edit panel"
-    data-requirements="exists-reftarget,on-page:/dashboard"
-    data-hint="Requirements automatically recheck if user navigates">
-  Edit the panel
-</li>
-```
-
-#### Problem: Concurrent User Actions
-**Cause**: User performs actions while guide is running
-**Solution**: Use section blocking and cancellation
-
-```html
-<!-- Section blocks other interactions during execution -->
-<span id="atomic-workflow" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-reftarget="span#atomic-workflow"
-      data-hint="Blocks other interactions during execution for consistency">
-  <!-- Steps execute without interference -->
-</span>
-```
-
-## Data Consistency Issues
-
-### Data Source State Issues
-
-#### Problem: Data Source Configuration Drift
-**Cause**: Data source settings change after guide creation
-**Solution**: Use type-based requirements instead of name-based
-
-```html
-<!-- Bad: Relies on specific name -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="my-prometheus"
-    data-requirements="has-datasource:my-prometheus">
-  Select my prometheus data source
-</li>
-
-<!-- Good: Uses type for flexibility -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="prometheus"
-    data-requirements="has-datasource:type:prometheus"
-    data-hint="Works with any Prometheus data source">
-  Select any Prometheus data source
-</li>
-```
-
-#### Problem: Missing Test Data
-**Cause**: Guide assumes specific metrics/logs exist
-**Solution**: Use generic queries that work with minimal data
-
-```html
-<!-- Good: Uses universal Prometheus metric -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="up"
-    data-requirements="has-datasource:prometheus,exists-reftarget"
-    data-hint="'up' metric exists on all Prometheus instances">
-  Enter universal monitoring query
-</li>
-
-<!-- Avoid: Specific application metrics -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="my_custom_app_requests_total"
-    data-hint="Might not exist in all environments">
-  Enter application-specific query
-</li>
-```
-
-## Accessibility and Usability Edge Cases
-
-### Screen Reader Compatibility
-```html
-<!-- Include helpful hints for screen readers -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save']"
-    data-requirements="exists-reftarget"
-    data-hint="Save button - preserves your dashboard configuration">
-  Save your dashboard
-</li>
-
-<!-- Use ARIA attributes in selectors when available -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[aria-label='Dashboard title']"
-    data-targetvalue="My Dashboard"
-    data-requirements="exists-reftarget">
-  Set dashboard title
-</li>
-```
-
-### Keyboard Navigation
-```html
-<!-- Ensure interactive elements are keyboard accessible -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save'][tabindex='0']"
-    data-requirements="exists-reftarget"
-    data-hint="Accessible via keyboard navigation">
-  Save dashboard (keyboard accessible)
-</li>
-```
-
-## Testing and Validation Edge Cases
-
-### Automated Testing Considerations
-```html
-<!-- Include test-friendly attributes -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save dashboard"
-    data-requirements="exists-reftarget"
-    data-hint="Uses button text for reliable automated testing">
-  Save dashboard
-</li>
-
-<!-- Alternative with test ID -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="button[data-testid='save-dashboard-btn']"
-    data-requirements="exists-reftarget">
-  Save dashboard using test ID
-</li>
-```
-
-### Load Testing Considerations
-```html
-<!-- Handle high-latency environments -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Load dashboard"
-    data-requirements="exists-reftarget"
-    data-hint="May take longer in high-latency environments">
-  Load dashboard (may take time)
-</li>
-
-<!-- Include verification for slow operations -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Save & test"
-    data-requirements="exists-reftarget"
-    data-verify="has-datasource:prometheus"
-    data-hint="Verification confirms operation completed successfully">
-  Save and test (with verification)
-</li>
-```
-
-## Debugging Tools and Techniques
-
-### Browser Console Debugging
-```javascript
-// Check if selector works
-document.querySelector("button[data-testid='save']");
-
-// Test requirement checking
-const testRequirement = async (req) => {
-  const checker = await import('./requirements-checker.utils');
-  const result = await checker.checkRequirements({
-    requirements: req,
-    targetAction: 'button',
-    refTarget: 'test'
-  });
-  console.log(result);
-};
-
-// Test specific requirements
-testRequirement('has-datasource:prometheus');
-testRequirement('is-admin');
-
-// Check current user state
-console.log('User:', window.grafanaBootData?.user);
-console.log('Features:', window.grafanaBootData?.settings?.featureToggles);
-```
-
-### Development Mode Features
-```javascript
-// Enable debug logging
-localStorage.setItem('grafana-docs-debug', 'true');
-
-// Check interactive element state
-const manager = window.SequentialRequirementsManager?.getInstance();
-if (manager) {
-  manager.logCurrentState();
+```json
+// Automated approach
+{
+  "type": "multistep",
+  "skippable": true,
+  "content": "Use automatic configuration",
+  "steps": [
+    {
+      "action": "navigate",
+      "reftarget": "/setup"
+    },
+    {
+      "action": "button",
+      "reftarget": "Auto configure"
+    }
+  ]
 }
 
-// Monitor requirement changes
-document.addEventListener('interactive-action-completed', (e) => {
-  console.log('Action completed:', e.detail);
-});
-```
-
-### Common Debug Scenarios
-
-#### "Requirements never pass"
-1. Check browser console for error messages
-2. Verify requirement syntax exactly matches reference
-3. Test individual requirements in isolation
-4. Check if required data/state actually exists
-
-#### "Element not found"
-1. Verify selector in browser console
-2. Check if element exists in current page state
-3. Ensure navigation requirements are met
-4. Try alternative selectors
-
-#### "Action doesn't execute"
-1. Check if requirements are met
-2. Verify element is clickable/interactable
-3. Check browser console for JavaScript errors
-4. Test action manually to verify it's possible
-
-#### "Guide gets stuck"
-1. Check for JavaScript errors in console
-2. Verify network connectivity for API-dependent requirements
-3. Clear localStorage to reset section progress
-4. Check if user permissions changed
-
-### Recovery Procedures
-
-#### Reset Guide State
-```javascript
-// Clear all guide progress
-Object.keys(localStorage)
-  .filter(key => key.startsWith('docsPlugin:completedSteps:'))
-  .forEach(key => localStorage.removeItem(key));
-
-// Reload page to restart
-window.location.reload();
-```
-
-#### Skip Problematic Steps
-```html
-<!-- Make problematic steps skippable -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Problematic action"
-    data-requirements="complex-requirement"
-    data-skippable="true"
-    data-hint="Skip if experiencing issues">
-  Perform action (skippable if problems)
-</li>
-```
-
-#### Provide Manual Alternatives
-```html
-<!-- Automated approach -->
-<li class="interactive" 
-    data-targetaction="multistep" 
-    data-skippable="true">
-  <span class="interactive" data-targetaction="navigate" data-reftarget="/setup"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Auto configure"></span>
-  Use automatic configuration
-</li>
-
-<!-- Manual fallback -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/manual-setup">
-  Or configure manually step-by-step
-</li>
+// Manual fallback
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/manual-setup",
+  "content": "Or configure manually step-by-step"
+}
 ```

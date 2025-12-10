@@ -4,10 +4,10 @@ alwaysApply: true
 # Requirements and Objectives Quick Reference for AI
 
 ## Syntax Rules
-- **Requirements**: `data-requirements="req1,req2,req3"` (ALL must pass)
-- **Objectives**: `data-objectives="obj1,obj2,obj3"` (ALL must pass, auto-completes when met)
+- **Requirements**: `requirements: ["req1", "req2", "req3"]` (ALL must pass)
+- **Objectives**: `objectives: ["obj1", "obj2", "obj3"]` (ALL must pass, auto-completes when met)
 - **Priority**: Objectives always win over requirements
-- **Verification**: `data-verify="condition"` (checked after action execution)
+- **Verification**: `verify: "condition"` (checked after action execution)
 
 ## Essential Requirements (Use These Frequently)
 
@@ -35,28 +35,28 @@ alwaysApply: true
 ## Common Requirement Combinations
 
 ### Navigation Actions
-```html
-data-requirements="navmenu-open,exists-reftarget"
+```json
+"requirements": ["navmenu-open", "exists-reftarget"]
 ```
 
 ### Admin Actions
-```html
-data-requirements="is-admin,navmenu-open,exists-reftarget"
+```json
+"requirements": ["is-admin", "navmenu-open", "exists-reftarget"]
 ```
 
 ### Data Source Actions
-```html
-data-requirements="has-datasource:prometheus,on-page:/explore,exists-reftarget"
+```json
+"requirements": ["has-datasource:prometheus", "on-page:/explore", "exists-reftarget"]
 ```
 
 ### Dashboard Actions
-```html
-data-requirements="has-datasources,on-page:/dashboard,exists-reftarget"
+```json
+"requirements": ["has-datasources", "on-page:/dashboard", "exists-reftarget"]
 ```
 
 ### Plugin Actions
-```html
-data-requirements="has-plugin:plugin-id,is-admin,exists-reftarget"
+```json
+"requirements": ["has-plugin:plugin-id", "is-admin", "exists-reftarget"]
 ```
 
 ## Objectives Patterns
@@ -314,77 +314,94 @@ data-objectives="has-dashboard-named:My Dashboard"
 ```
 
 ### Section-Level Auto-Completion
-```html
-<!-- Entire section skipped if objective met -->
-<span id="setup-prometheus" 
-      data-targetaction="sequence" 
-      data-objectives="has-datasource:type:prometheus">
-  <!-- All child steps marked complete if Prometheus exists -->
-</span>
+```json
+// Entire section skipped if objective met
+{
+  "type": "section",
+  "id": "setup-prometheus",
+  "title": "Setup Prometheus",
+  "objectives": ["has-datasource:type:prometheus"],
+  "blocks": [
+    // All child steps marked complete if Prometheus exists
+  ]
+}
 ```
 
 ## AI Generation Templates
 
 ### Basic Step Template
-```html
-<li class="interactive" 
-    data-targetaction="{ACTION_TYPE}" 
-    data-reftarget="{TARGET_REFERENCE}"
-    {data-targetvalue="{VALUE}" if formfill}
-    data-requirements="{REQUIREMENTS_LIST}"
-    {data-objectives="{OBJECTIVES_LIST}" if applicable}
-    {data-verify="{VERIFICATION_CONDITION}" if state-changing}
-    {data-hint="{USER_HELPFUL_DESCRIPTION}"}
-    {data-skippable="true" if permissions might fail}
-    {data-doit="false" if educational only}>
-  
-  {Interactive comment if complex UI element}
-  Human-readable step description
-</li>
+```json
+{
+  "type": "interactive",
+  "action": "ACTION_TYPE",
+  "reftarget": "TARGET_REFERENCE",
+  "targetvalue": "VALUE_FOR_FORMFILL",
+  "requirements": ["REQUIREMENTS_LIST"],
+  "objectives": ["OBJECTIVES_LIST"],
+  "verify": "VERIFICATION_CONDITION",
+  "tooltip": "USER_HELPFUL_DESCRIPTION",
+  "skippable": true,
+  "doIt": false,
+  "content": "Human-readable step description"
+}
 ```
 
 ### Section Template
-```html
-<span id="{unique-section-id}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#{unique-section-id}"
-      {data-requirements="{SECTION_REQUIREMENTS}"}
-      {data-objectives="{SECTION_OBJECTIVES}"}
-      {data-hint="{SECTION_DESCRIPTION}"}>
-  
-  <h3>{Section Title}</h3>
-  <p>{Section description explaining goals}</p>
-  
-  <ul>
-    {Child interactive steps}
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "unique-section-id",
+  "title": "Section Title",
+  "requirements": ["SECTION_REQUIREMENTS"],
+  "objectives": ["SECTION_OBJECTIVES"],
+  "tooltip": "SECTION_DESCRIPTION",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Section description explaining goals"
+    },
+    {
+      "type": "interactive",
+      "action": "..."
+    }
+  ]
+}
 ```
 
 ### Multi-step Template
-```html
-<li class="interactive" 
-    data-targetaction="multistep"
-    {data-requirements="{OVERALL_REQUIREMENTS}"}
-    {data-objectives="{OVERALL_OBJECTIVES}"}
-    {data-hint="{WHAT_THIS_ACCOMPLISHES}"}>
-  
-  {Internal action spans - not rendered visually}
-  <span class="interactive" data-targetaction="{TYPE}" data-reftarget="{TARGET}" {data-requirements="{REQ}"}></span>
-  <span class="interactive" data-targetaction="{TYPE}" data-reftarget="{TARGET}" {data-requirements="{REQ}"}></span>
-  
-  {User-visible description of what happens}
-</li>
+```json
+{
+  "type": "multistep",
+  "requirements": ["OVERALL_REQUIREMENTS"],
+  "objectives": ["OVERALL_OBJECTIVES"],
+  "tooltip": "WHAT_THIS_ACCOMPLISHES",
+  "content": "User-visible description of what happens",
+  "steps": [
+    {
+      "action": "TYPE",
+      "reftarget": "TARGET",
+      "requirements": ["REQ"]
+    },
+    {
+      "action": "TYPE",
+      "reftarget": "TARGET",
+      "requirements": ["REQ"]
+    }
+  ]
+}
 ```
 
 ### Interactive Comment Template
-```html
-<span class="interactive-comment">
-  The <strong>{UI_ELEMENT_NAME}</strong> {purpose/function explanation}. 
-  {Context about why it's important}. Use it for <code>{technical_features}</code> 
-  to {user_benefit_or_goal}.
-</span>
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "SELECTOR",
+  "doIt": false,
+  "requirements": ["exists-reftarget"],
+  "tooltip": "The UI_ELEMENT_NAME purpose/function explanation. Context about why it's important. Use it for technical_features to user_benefit_or_goal.",
+  "content": "Learn about UI_ELEMENT_NAME"
+}
 ```
 
 ## Stable Selector Library
@@ -438,7 +455,7 @@ Prometheus Type: a[href='/connections/datasources/prometheus']
 - `on-page:/path` - Shows message about navigating to correct page
 
 ### Skippable Requirements
-- Use `data-skippable="true"` when requirements might legitimately fail
+- Use `skippable: true` when requirements might legitimately fail
 - Common for admin-only features, plugin-dependent features
 - Shows "Skip" button when requirements not met
 
@@ -449,7 +466,7 @@ Prometheus Type: a[href='/connections/datasources/prometheus']
 ❌ **Slow**: `.class1 .class2 .class3`, `div > div > button`, `[class*='partial']`
 
 ### Requirement Optimization
-- **Group related requirements**: `navmenu-open,exists-reftarget` 
+- **Group related requirements**: `navmenu-open`, `exists-reftarget`
 - **Use specific requirements**: `has-datasource:prometheus` vs `has-datasources`
 - **Cache expensive checks**: Use objectives for expensive state checks
 - **Avoid redundant checks**: Don't duplicate requirements across steps
@@ -459,8 +476,8 @@ Prometheus Type: a[href='/connections/datasources/prometheus']
 ### For Every Interactive Element
 - [ ] Includes appropriate requirements for action type
 - [ ] Uses stable, testable selectors
-- [ ] Has helpful hint text for users
-- [ ] Includes verification for state-changing actions
+- [ ] Has helpful hint text for users (`tooltip`)
+- [ ] Includes verification for state-changing actions (`verify`)
 - [ ] Handles error cases gracefully
 
 ### For Sections

@@ -31,7 +31,7 @@ alwaysApply: true
 ## Core Navigation Selectors
 
 ### Main Navigation Menu
-```html
+```
 <!-- Navigation menu items (most stable pattern) -->
 Home: a[data-testid='data-testid Nav menu item'][href='/']
 Dashboards: a[data-testid='data-testid Nav menu item'][href='/dashboards']
@@ -52,7 +52,7 @@ Explore: a[href='/explore']
 ```
 
 ### Admin Subsections
-```html
+```
 <!-- Admin navigation items -->
 Users: a[data-testid='data-testid Nav menu item'][href='/admin/users']
 Teams: a[data-testid='data-testid Nav menu item'][href='/admin/teams']
@@ -67,7 +67,7 @@ Plugins: a[href='/admin/plugins']
 ```
 
 ### Alerting Subsections
-```html
+```
 <!-- Alerting navigation items -->
 Alert Rules: a[data-testid='data-testid Nav menu item'][href='/alerting/list']
 Contact Points: a[data-testid='data-testid Nav menu item'][href='/alerting/notifications']
@@ -83,7 +83,7 @@ Contact Points: a[href='/alerting/notifications']
 ## Dashboard and Panel Selectors
 
 ### Dashboard Management
-```html
+```
 <!-- Dashboard actions -->
 New Dashboard: button[data-testid='new-dashboard']
 Save Dashboard: button[data-testid='save-dashboard']
@@ -103,7 +103,7 @@ Dashboard Settings: "Settings", "Dashboard settings"
 ```
 
 ### Panel Management
-```html
+```
 <!-- Panel actions -->
 Add Panel: button[data-testid='add-panel']
 Add Visualization: button[data-testid='add-visualization']
@@ -122,7 +122,7 @@ Panel Title: input[aria-label*='title'], input[placeholder*='title']
 ```
 
 ### Visualization and Query Editor
-```html
+```
 <!-- Query editor -->
 Query Editor: textarea[data-testid='query-editor']
 Monaco Editor: textarea.inputarea.monaco-mouse-cursor-text
@@ -150,7 +150,7 @@ Run Query: "Run query", "Refresh", "Execute"
 ## Data Source Configuration Selectors
 
 ### General Data Source Fields
-```html
+```
 <!-- Standard configuration fields -->
 Data Source Name: input[id='basic-settings-name']
 Connection URL: input[id='connection-url']
@@ -180,7 +180,7 @@ Save & Test: "Save & test", "Save and test", "Test connection"
 ```
 
 ### Prometheus Specific
-```html
+```
 <!-- Prometheus data source selection -->
 Prometheus Type: a[href='/connections/datasources/prometheus']
 
@@ -197,7 +197,7 @@ Query Timeout: "60s"
 ```
 
 ### Loki Specific
-```html
+```
 <!-- Loki data source selection -->
 Loki Type: a[href='/connections/datasources/loki']
 
@@ -213,7 +213,7 @@ Timeout: "60s"
 ```
 
 ### InfluxDB Specific
-```html
+```
 <!-- InfluxDB data source selection -->
 InfluxDB Type: a[href='/connections/datasources/influxdb']
 
@@ -232,7 +232,7 @@ User: "admin"
 ## Form Element Patterns
 
 ### Input Field Types
-```html
+```
 <!-- Text inputs -->
 Text Input by ID: input[id='{field-id}']
 Text Input by TestID: input[data-testid='{field-testid}']
@@ -264,52 +264,57 @@ Color Picker: input[type='color']
 ```
 
 ### Form Interaction Patterns
-```html
-<!-- Simple text entry -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[id='dashboard-name']"
-    data-targetvalue="My Dashboard">
-  Set dashboard name
-</li>
+```json
+// Simple text entry
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[id='dashboard-name']",
+  "targetvalue": "My Dashboard",
+  "content": "Set dashboard name"
+}
 
-<!-- Checkbox selection -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[type='checkbox'][id='enable-alerts']"
-    data-targetvalue="true">
-  Enable alerting
-</li>
+// Checkbox selection
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[type='checkbox'][id='enable-alerts']",
+  "targetvalue": "true",
+  "content": "Enable alerting"
+}
 
-<!-- Dropdown selection -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="select[data-testid='refresh-interval']"
-    data-targetvalue="5s">
-  Set refresh interval
-</li>
+// Dropdown selection
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "select[data-testid='refresh-interval']",
+  "targetvalue": "5s",
+  "content": "Set refresh interval"
+}
 
-<!-- Complex query entry -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea.inputarea"
-    data-targetvalue="rate(http_requests_total[5m])">
-  Enter PromQL query
-</li>
+// Complex query entry
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea.inputarea",
+  "targetvalue": "rate(http_requests_total[5m])",
+  "content": "Enter PromQL query"
+}
 
-<!-- ARIA combobox (label filters) -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[role='combobox'][aria-autocomplete='list']"
-    data-targetvalue='job="prometheus"'>
-  Filter by job label
-</li>
+// ARIA combobox (label filters)
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[role='combobox'][aria-autocomplete='list']",
+  "targetvalue": "job=\"prometheus\"",
+  "content": "Filter by job label"
+}
 ```
 
 ## Button Text Library
 
 ### Common Button Patterns
-```html
+```
 <!-- Primary actions -->
 Save: "Save", "Save dashboard", "Save changes"
 Create: "Create", "Create dashboard", "Create new"
@@ -344,7 +349,7 @@ Configure: "Configure", "Configuration"
 ```
 
 ### Context-Specific Buttons
-```html
+```
 <!-- Dashboard context -->
 "Add panel" - when on dashboard edit page
 "Save dashboard" - when editing dashboard
@@ -371,7 +376,7 @@ Configure: "Configure", "Configuration"
 ## Specialized Component Selectors
 
 ### Time and Date Controls
-```html
+```
 <!-- Time range picker -->
 Time Range Button: button[data-testid='time-range-picker']
 Absolute Time: button[data-testid='absolute-time']
@@ -389,7 +394,7 @@ To Time: input[data-testid='time-to']
 ```
 
 ### Search and Filter Elements
-```html
+```
 <!-- Global search -->
 Global Search: input[data-testid='search-input']
 Search Button: button[data-testid='search-button']
@@ -408,7 +413,7 @@ Data Source Filter: select[data-testid='data-source-filter']
 ```
 
 ### Modal and Dialog Selectors
-```html
+```
 <!-- Modal containers -->
 Modal Dialog: div[role='dialog']
 Modal Header: div[data-testid='modal-header']
@@ -428,7 +433,7 @@ Confirm Save: button[data-testid='confirm-save']
 ## Advanced Selector Patterns
 
 ### Pseudo-Selector Usage
-```html
+```
 <!-- First/last element selection -->
 First Panel: div[data-testid='panel-container']:first-of-type
 Last Panel: div[data-testid='panel-container']:last-of-type
@@ -447,7 +452,7 @@ Checked Checkbox: input[type='checkbox']:checked
 ```
 
 ### Attribute Combination Patterns
-```html
+```
 <!-- Multiple stable attributes -->
 Active Nav Item: a[data-testid='nav-item'][aria-current='page']
 Enabled Button: button[data-testid='action-btn']:not([disabled])
@@ -464,7 +469,7 @@ Delete Button: button[data-testid='delete-btn'][aria-label*='delete']
 ```
 
 ### Hierarchical Selection
-```html
+```
 <!-- Scoped to containers -->
 Nav Menu Link: nav[data-testid='navigation'] a[href='/dashboards']
 Panel Editor Button: div[data-testid='panel-editor'] button[data-testid='save']
@@ -479,7 +484,7 @@ Alert Form: form[data-testid='alert-form'] input[data-testid='rule-name']
 ## Query Editor Specific Selectors
 
 ### Query Editor Components
-```html
+```
 <!-- Main query editor -->
 Query Editor: textarea[data-testid='query-editor']
 Monaco Query Editor: textarea.inputarea.monaco-mouse-cursor-text
@@ -503,7 +508,7 @@ Relative Time: input[data-testid='relative-time']
 ```
 
 ### Data Source Specific Query Elements
-```html
+```
 <!-- Prometheus query editor -->
 PromQL Editor: textarea[data-testid='prometheus-query-editor']
 Prometheus Metrics Browser: button[data-testid='metrics-browser']
@@ -523,7 +528,7 @@ Field Select: select[data-testid='field-select']
 ## Plugin and App Selectors
 
 ### Plugin Management
-```html
+```
 <!-- Plugin catalog -->
 Plugin Catalog: div[data-testid='plugin-catalog']
 Plugin Search: input[data-testid='plugin-search']
@@ -544,7 +549,7 @@ Plugin Author: span[data-testid='plugin-author']
 ```
 
 ### Common App Plugin Selectors
-```html
+```
 <!-- Synthetic Monitoring -->
 Synthetic Monitoring: a[href='/a/grafana-synthetic-monitoring-app/']
 SM Checks: div[data-testid='synthetic-monitoring-checks']
@@ -564,7 +569,7 @@ Create Job: button[data-testid='create-ml-job']
 ## Alerting System Selectors
 
 ### Alert Rule Management
-```html
+```
 <!-- Alert rule list -->
 Alert Rules List: div[data-testid='alert-rules-list']
 Alert Rule Row: div[data-testid='alert-rule-row']
@@ -584,7 +589,7 @@ Delete Rule: button[data-testid='delete-alert-rule']
 ```
 
 ### Contact Points and Notifications
-```html
+```
 <!-- Contact points -->
 Contact Points List: div[data-testid='contact-points-list']
 New Contact Point: button[data-testid='new-contact-point']
@@ -601,7 +606,7 @@ Webhook URL: input[data-testid='webhook-url']
 ## User and Team Management Selectors
 
 ### User Management
-```html
+```
 <!-- User list -->
 Users List: table[data-testid='users-table']
 User Row: tr[data-testid='user-row']
@@ -621,7 +626,7 @@ Reset Password: button[data-testid='reset-password']
 ```
 
 ### Team Management
-```html
+```
 <!-- Team list -->
 Teams List: div[data-testid='teams-list']
 Team Card: div[data-testid='team-card']
@@ -641,7 +646,7 @@ Add Member: button[data-testid='add-team-member']
 ## Performance-Optimized Selectors
 
 ### Fast Selectors (Prefer These)
-```html
+```
 <!-- ID-based (fastest) -->
 #unique-element-id
 
@@ -657,7 +662,7 @@ div[role='dialog']
 ```
 
 ### Moderate Performance Selectors
-```html
+```
 <!-- Multiple attributes (still fast) -->
 input[type='text'][data-testid='field']
 button[data-testid='action'][aria-label='Save']
@@ -670,7 +675,7 @@ input[data-testid='field']:nth-of-type(2)
 ```
 
 ### Avoid These (Slow) Selectors
-```html
+```
 <!-- Complex nesting -->
 .container .row .col .panel .header .title
 
@@ -778,7 +783,7 @@ measureSelector(".complex .nested .selector"); // Avoid if > 5ms
 ## Core Navigation Selectors
 
 ### Main Navigation Menu
-```html
+```
 <!-- Navigation menu items (most stable pattern) -->
 Home: a[data-testid='data-testid Nav menu item'][href='/']
 Dashboards: a[data-testid='data-testid Nav menu item'][href='/dashboards']
@@ -799,7 +804,7 @@ Explore: a[href='/explore']
 ```
 
 ### Admin Subsections
-```html
+```
 <!-- Admin navigation items -->
 Users: a[data-testid='data-testid Nav menu item'][href='/admin/users']
 Teams: a[data-testid='data-testid Nav menu item'][href='/admin/teams']
@@ -814,7 +819,7 @@ Plugins: a[href='/admin/plugins']
 ```
 
 ### Alerting Subsections
-```html
+```
 <!-- Alerting navigation items -->
 Alert Rules: a[data-testid='data-testid Nav menu item'][href='/alerting/list']
 Contact Points: a[data-testid='data-testid Nav menu item'][href='/alerting/notifications']
@@ -830,7 +835,7 @@ Contact Points: a[href='/alerting/notifications']
 ## Dashboard and Panel Selectors
 
 ### Dashboard Management
-```html
+```
 <!-- Dashboard actions -->
 New Dashboard: button[data-testid='new-dashboard']
 Save Dashboard: button[data-testid='save-dashboard']
@@ -850,7 +855,7 @@ Dashboard Settings: "Settings", "Dashboard settings"
 ```
 
 ### Panel Management
-```html
+```
 <!-- Panel actions -->
 Add Panel: button[data-testid='add-panel']
 Add Visualization: button[data-testid='add-visualization']
@@ -869,7 +874,7 @@ Panel Title: input[aria-label*='title'], input[placeholder*='title']
 ```
 
 ### Visualization and Query Editor
-```html
+```
 <!-- Query editor -->
 Query Editor: textarea[data-testid='query-editor']
 Monaco Editor: textarea.inputarea.monaco-mouse-cursor-text
@@ -897,7 +902,7 @@ Run Query: "Run query", "Refresh", "Execute"
 ## Data Source Configuration Selectors
 
 ### General Data Source Fields
-```html
+```
 <!-- Standard configuration fields -->
 Data Source Name: input[id='basic-settings-name']
 Connection URL: input[id='connection-url']
@@ -927,7 +932,7 @@ Save & Test: "Save & test", "Save and test", "Test connection"
 ```
 
 ### Prometheus Specific
-```html
+```
 <!-- Prometheus data source selection -->
 Prometheus Type: a[href='/connections/datasources/prometheus']
 
@@ -944,7 +949,7 @@ Query Timeout: "60s"
 ```
 
 ### Loki Specific
-```html
+```
 <!-- Loki data source selection -->
 Loki Type: a[href='/connections/datasources/loki']
 
@@ -960,7 +965,7 @@ Timeout: "60s"
 ```
 
 ### InfluxDB Specific
-```html
+```
 <!-- InfluxDB data source selection -->
 InfluxDB Type: a[href='/connections/datasources/influxdb']
 
@@ -979,7 +984,7 @@ User: "admin"
 ## Form Element Patterns
 
 ### Input Field Types
-```html
+```
 <!-- Text inputs -->
 Text Input by ID: input[id='{field-id}']
 Text Input by TestID: input[data-testid='{field-testid}']
@@ -1011,52 +1016,57 @@ Color Picker: input[type='color']
 ```
 
 ### Form Interaction Patterns
-```html
-<!-- Simple text entry -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[id='dashboard-name']"
-    data-targetvalue="My Dashboard">
-  Set dashboard name
-</li>
+```json
+// Simple text entry
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[id='dashboard-name']",
+  "targetvalue": "My Dashboard",
+  "content": "Set dashboard name"
+}
 
-<!-- Checkbox selection -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[type='checkbox'][id='enable-alerts']"
-    data-targetvalue="true">
-  Enable alerting
-</li>
+// Checkbox selection
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[type='checkbox'][id='enable-alerts']",
+  "targetvalue": "true",
+  "content": "Enable alerting"
+}
 
-<!-- Dropdown selection -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="select[data-testid='refresh-interval']"
-    data-targetvalue="5s">
-  Set refresh interval
-</li>
+// Dropdown selection
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "select[data-testid='refresh-interval']",
+  "targetvalue": "5s",
+  "content": "Set refresh interval"
+}
 
-<!-- Complex query entry -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea.inputarea"
-    data-targetvalue="rate(http_requests_total[5m])">
-  Enter PromQL query
-</li>
+// Complex query entry
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea.inputarea",
+  "targetvalue": "rate(http_requests_total[5m])",
+  "content": "Enter PromQL query"
+}
 
-<!-- ARIA combobox (label filters) -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="input[role='combobox'][aria-autocomplete='list']"
-    data-targetvalue='job="prometheus"'>
-  Filter by job label
-</li>
+// ARIA combobox (label filters)
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[role='combobox'][aria-autocomplete='list']",
+  "targetvalue": "job=\"prometheus\"",
+  "content": "Filter by job label"
+}
 ```
 
 ## Button Text Library
 
 ### Common Button Patterns
-```html
+```
 <!-- Primary actions -->
 Save: "Save", "Save dashboard", "Save changes"
 Create: "Create", "Create dashboard", "Create new"
@@ -1091,7 +1101,7 @@ Configure: "Configure", "Configuration"
 ```
 
 ### Context-Specific Buttons
-```html
+```
 <!-- Dashboard context -->
 "Add panel" - when on dashboard edit page
 "Save dashboard" - when editing dashboard
@@ -1118,7 +1128,7 @@ Configure: "Configure", "Configuration"
 ## Specialized Component Selectors
 
 ### Time and Date Controls
-```html
+```
 <!-- Time range picker -->
 Time Range Button: button[data-testid='time-range-picker']
 Absolute Time: button[data-testid='absolute-time']
@@ -1136,7 +1146,7 @@ To Time: input[data-testid='time-to']
 ```
 
 ### Search and Filter Elements
-```html
+```
 <!-- Global search -->
 Global Search: input[data-testid='search-input']
 Search Button: button[data-testid='search-button']
@@ -1155,7 +1165,7 @@ Data Source Filter: select[data-testid='data-source-filter']
 ```
 
 ### Modal and Dialog Selectors
-```html
+```
 <!-- Modal containers -->
 Modal Dialog: div[role='dialog']
 Modal Header: div[data-testid='modal-header']
@@ -1175,7 +1185,7 @@ Confirm Save: button[data-testid='confirm-save']
 ## Advanced Selector Patterns
 
 ### Pseudo-Selector Usage
-```html
+```
 <!-- First/last element selection -->
 First Panel: div[data-testid='panel-container']:first-of-type
 Last Panel: div[data-testid='panel-container']:last-of-type
@@ -1194,7 +1204,7 @@ Checked Checkbox: input[type='checkbox']:checked
 ```
 
 ### Attribute Combination Patterns
-```html
+```
 <!-- Multiple stable attributes -->
 Active Nav Item: a[data-testid='nav-item'][aria-current='page']
 Enabled Button: button[data-testid='action-btn']:not([disabled])
@@ -1211,7 +1221,7 @@ Delete Button: button[data-testid='delete-btn'][aria-label*='delete']
 ```
 
 ### Hierarchical Selection
-```html
+```
 <!-- Scoped to containers -->
 Nav Menu Link: nav[data-testid='navigation'] a[href='/dashboards']
 Panel Editor Button: div[data-testid='panel-editor'] button[data-testid='save']
@@ -1226,7 +1236,7 @@ Alert Form: form[data-testid='alert-form'] input[data-testid='rule-name']
 ## Query Editor Specific Selectors
 
 ### Query Editor Components
-```html
+```
 <!-- Main query editor -->
 Query Editor: textarea[data-testid='query-editor']
 Monaco Query Editor: textarea.inputarea.monaco-mouse-cursor-text
@@ -1250,7 +1260,7 @@ Relative Time: input[data-testid='relative-time']
 ```
 
 ### Data Source Specific Query Elements
-```html
+```
 <!-- Prometheus query editor -->
 PromQL Editor: textarea[data-testid='prometheus-query-editor']
 Prometheus Metrics Browser: button[data-testid='metrics-browser']
@@ -1270,7 +1280,7 @@ Field Select: select[data-testid='field-select']
 ## Plugin and App Selectors
 
 ### Plugin Management
-```html
+```
 <!-- Plugin catalog -->
 Plugin Catalog: div[data-testid='plugin-catalog']
 Plugin Search: input[data-testid='plugin-search']
@@ -1291,7 +1301,7 @@ Plugin Author: span[data-testid='plugin-author']
 ```
 
 ### Common App Plugin Selectors
-```html
+```
 <!-- Synthetic Monitoring -->
 Synthetic Monitoring: a[href='/a/grafana-synthetic-monitoring-app/']
 SM Checks: div[data-testid='synthetic-monitoring-checks']
@@ -1311,7 +1321,7 @@ Create Job: button[data-testid='create-ml-job']
 ## Alerting System Selectors
 
 ### Alert Rule Management
-```html
+```
 <!-- Alert rule list -->
 Alert Rules List: div[data-testid='alert-rules-list']
 Alert Rule Row: div[data-testid='alert-rule-row']
@@ -1331,7 +1341,7 @@ Delete Rule: button[data-testid='delete-alert-rule']
 ```
 
 ### Contact Points and Notifications
-```html
+```
 <!-- Contact points -->
 Contact Points List: div[data-testid='contact-points-list']
 New Contact Point: button[data-testid='new-contact-point']
@@ -1348,7 +1358,7 @@ Webhook URL: input[data-testid='webhook-url']
 ## User and Team Management Selectors
 
 ### User Management
-```html
+```
 <!-- User list -->
 Users List: table[data-testid='users-table']
 User Row: tr[data-testid='user-row']
@@ -1368,7 +1378,7 @@ Reset Password: button[data-testid='reset-password']
 ```
 
 ### Team Management
-```html
+```
 <!-- Team list -->
 Teams List: div[data-testid='teams-list']
 Team Card: div[data-testid='team-card']
@@ -1388,7 +1398,7 @@ Add Member: button[data-testid='add-team-member']
 ## Performance-Optimized Selectors
 
 ### Fast Selectors (Prefer These)
-```html
+```
 <!-- ID-based (fastest) -->
 #unique-element-id
 
@@ -1404,7 +1414,7 @@ div[role='dialog']
 ```
 
 ### Moderate Performance Selectors
-```html
+```
 <!-- Multiple attributes (still fast) -->
 input[type='text'][data-testid='field']
 button[data-testid='action'][aria-label='Save']
@@ -1417,7 +1427,7 @@ input[data-testid='field']:nth-of-type(2)
 ```
 
 ### Avoid These (Slow) Selectors
-```html
+```
 <!-- Complex nesting -->
 .container .row .col .panel .header .title
 

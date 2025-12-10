@@ -7,615 +7,925 @@ alwaysApply: true
 ## Standard Workflow Templates
 
 ### Data Source Setup Workflow
-```html
-<span id="setup-{datasource-type}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-{datasource-type}"
-      data-requirements="is-admin"
-      data-objectives="has-datasource:type:{datasource-type}">
-  
-  <h2>Set Up {DataSource} Data Source</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/connections/datasources"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/connections">
-      Navigate to data source management
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add new data source"
-        data-requirements="exists-reftarget">
-      Click Add new data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[href='/connections/datasources/{datasource-type}']"
-        data-requirements="exists-reftarget">
-      Select {DataSource} from the list
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='basic-settings-name']"
-        data-targetvalue="{datasource-name}"
-        data-requirements="exists-reftarget">
-      Name your data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='connection-url']"
-        data-targetvalue="{connection-url}"
-        data-requirements="exists-reftarget">
-      Set the server URL
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save & test"
-        data-requirements="exists-reftarget"
-        data-verify="has-datasource:{datasource-name}">
-      Save and test the connection
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "setup-{datasource-type}",
+  "title": "Set Up {DataSource} Data Source",
+  "requirements": ["is-admin"],
+  "objectives": ["has-datasource:type:{datasource-type}"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/connections/datasources",
+      "requirements": ["navmenu-open"],
+      "verify": "on-page:/connections",
+      "content": "Navigate to data source management"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add new data source",
+      "requirements": ["exists-reftarget"],
+      "content": "Click Add new data source"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href='/connections/datasources/{datasource-type}']",
+      "requirements": ["exists-reftarget"],
+      "content": "Select {DataSource} from the list"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='basic-settings-name']",
+      "targetvalue": "{datasource-name}",
+      "requirements": ["exists-reftarget"],
+      "content": "Name your data source"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='connection-url']",
+      "targetvalue": "{connection-url}",
+      "requirements": ["exists-reftarget"],
+      "content": "Set the server URL"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save & test",
+      "requirements": ["exists-reftarget"],
+      "verify": "has-datasource:{datasource-name}",
+      "content": "Save and test the connection"
+    }
+  ]
+}
 ```
 
 ### Dashboard Creation Workflow
-```html
-<span id="create-dashboard-{purpose}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-dashboard-{purpose}"
-      data-requirements="has-datasources"
-      data-objectives="has-dashboard-named:{dashboard-title}">
-  
-  <h2>Create {Purpose} Dashboard</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/dashboard/new"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/dashboard/new">
-      Navigate to create new dashboard
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add visualization"
-        data-requirements="exists-reftarget">
-      Add your first panel
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="{datasource-name}"
-        data-requirements="has-datasource:{datasource-name}"
-        data-hint="Select the data source you configured earlier">
-      Select your data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='query-editor']"
-        data-targetvalue="{example-query}"
-        data-requirements="exists-reftarget">
-      Enter your query
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='Panel editor option pane field input Title']"
-        data-targetvalue="{panel-title}"
-        data-requirements="exists-reftarget">
-      Set panel title
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save dashboard"
-        data-requirements="exists-reftarget"
-        data-verify="has-dashboard-named:{dashboard-title}">
-      Save your dashboard
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "create-dashboard-{purpose}",
+  "title": "Create {Purpose} Dashboard",
+  "requirements": ["has-datasources"],
+  "objectives": ["has-dashboard-named:{dashboard-title}"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/dashboard/new",
+      "requirements": ["navmenu-open"],
+      "verify": "on-page:/dashboard/new",
+      "content": "Navigate to create new dashboard"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add visualization",
+      "requirements": ["exists-reftarget"],
+      "content": "Add your first panel"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "{datasource-name}",
+      "requirements": ["has-datasource:{datasource-name}"],
+      "tooltip": "Select the data source you configured earlier",
+      "content": "Select your data source"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "{example-query}",
+      "requirements": ["exists-reftarget"],
+      "content": "Enter your query"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='Panel editor option pane field input Title']",
+      "targetvalue": "{panel-title}",
+      "requirements": ["exists-reftarget"],
+      "content": "Set panel title"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save dashboard",
+      "requirements": ["exists-reftarget"],
+      "verify": "has-dashboard-named:{dashboard-title}",
+      "content": "Save your dashboard"
+    }
+  ]
+}
 ```
 
 ### Plugin Installation Workflow
-```html
-<span id="install-plugin-{plugin-id}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#install-plugin-{plugin-id}"
-      data-requirements="is-admin"
-      data-objectives="has-plugin:{plugin-id}">
-  
-  <h2>Install {Plugin Name} Plugin</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/admin/plugins"
-        data-requirements="navmenu-open,is-admin"
-        data-verify="on-page:/admin/plugins">
-      Navigate to plugin management
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='plugin-search']"
-        data-targetvalue="{search-term}"
-        data-requirements="exists-reftarget">
-      Search for the plugin
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[href='/admin/plugins/{plugin-id}']"
-        data-requirements="exists-reftarget">
-      Find the plugin in search results
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Install"
-        data-requirements="exists-reftarget"
-        data-verify="has-plugin:{plugin-id}">
-      Install the plugin
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "install-plugin-{plugin-id}",
+  "title": "Install {Plugin Name} Plugin",
+  "requirements": ["is-admin"],
+  "objectives": ["has-plugin:{plugin-id}"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/admin/plugins",
+      "requirements": ["navmenu-open", "is-admin"],
+      "verify": "on-page:/admin/plugins",
+      "content": "Navigate to plugin management"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='plugin-search']",
+      "targetvalue": "{search-term}",
+      "requirements": ["exists-reftarget"],
+      "content": "Search for the plugin"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href='/admin/plugins/{plugin-id}']",
+      "requirements": ["exists-reftarget"],
+      "content": "Find the plugin in search results"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Install",
+      "requirements": ["exists-reftarget"],
+      "verify": "has-plugin:{plugin-id}",
+      "content": "Install the plugin"
+    }
+  ]
+}
 ```
 
 ### Alert Rule Creation Workflow
-```html
-<span id="create-alert-rule-{metric}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-alert-rule-{metric}"
-      data-requirements="has-datasource:prometheus,has-permission:alerting:write">
-  
-  <h2>Create {Metric} Alert Rule</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/alerting/new"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/alerting/new">
-      Navigate to create alert rule
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='alert-rule-name']"
-        data-targetvalue="{alert-rule-name}"
-        data-requirements="exists-reftarget">
-      Name your alert rule
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="{datasource-name}"
-        data-requirements="has-datasource:{datasource-name}">
-      Select data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='alert-query-editor']"
-        data-targetvalue="{alert-query}"
-        data-requirements="exists-reftarget">
-      Enter alert query
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='alert-threshold']"
-        data-targetvalue="{threshold-value}"
-        data-requirements="exists-reftarget">
-      Set alert threshold
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save rule"
-        data-requirements="exists-reftarget">
-      Save the alert rule
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "create-alert-rule-{metric}",
+  "title": "Create {Metric} Alert Rule",
+  "requirements": ["has-datasource:prometheus", "has-permission:alerting:write"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/alerting/new",
+      "requirements": ["navmenu-open"],
+      "verify": "on-page:/alerting/new",
+      "content": "Navigate to create alert rule"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='alert-rule-name']",
+      "targetvalue": "{alert-rule-name}",
+      "requirements": ["exists-reftarget"],
+      "content": "Name your alert rule"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "{datasource-name}",
+      "requirements": ["has-datasource:{datasource-name}"],
+      "content": "Select data source"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='alert-query-editor']",
+      "targetvalue": "{alert-query}",
+      "requirements": ["exists-reftarget"],
+      "content": "Enter alert query"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='alert-threshold']",
+      "targetvalue": "{threshold-value}",
+      "requirements": ["exists-reftarget"],
+      "content": "Set alert threshold"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save rule",
+      "requirements": ["exists-reftarget"],
+      "content": "Save the alert rule"
+    }
+  ]
+}
 ```
 
 ## Data Source Specific Patterns
 
 ### Prometheus Setup
-```html
-<span id="setup-prometheus" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#setup-prometheus" data-objectives="has-datasource:type:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Go to data sources</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add new data source">Add data source</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="a[href='/connections/datasources/prometheus']">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='basic-settings-name']" data-targetvalue="prometheus">Name it</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='connection-url']" data-targetvalue="http://prometheus:9090">Set URL</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Save & test" data-verify="has-datasource:prometheus">Save and test</li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "setup-prometheus",
+  "title": "Setup Prometheus",
+  "objectives": ["has-datasource:type:prometheus"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/connections/datasources",
+      "content": "Go to data sources"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add new data source",
+      "content": "Add data source"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href='/connections/datasources/prometheus']",
+      "content": "Select Prometheus"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='basic-settings-name']",
+      "targetvalue": "prometheus",
+      "content": "Name it"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='connection-url']",
+      "targetvalue": "http://prometheus:9090",
+      "content": "Set URL"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save & test",
+      "verify": "has-datasource:prometheus",
+      "content": "Save and test"
+    }
+  ]
+}
 ```
 
 ### Loki Setup  
-```html
-<span id="setup-loki" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#setup-loki" data-objectives="has-datasource:type:loki">
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Go to data sources</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add new data source">Add data source</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="a[href='/connections/datasources/loki']">Select Loki</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='basic-settings-name']" data-targetvalue="loki">Name it</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='connection-url']" data-targetvalue="http://loki:3100">Set URL</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Save & test" data-verify="has-datasource:loki">Save and test</li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "setup-loki",
+  "title": "Setup Loki",
+  "objectives": ["has-datasource:type:loki"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/connections/datasources",
+      "content": "Go to data sources"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add new data source",
+      "content": "Add data source"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href='/connections/datasources/loki']",
+      "content": "Select Loki"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='basic-settings-name']",
+      "targetvalue": "loki",
+      "content": "Name it"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='connection-url']",
+      "targetvalue": "http://loki:3100",
+      "content": "Set URL"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save & test",
+      "verify": "has-datasource:loki",
+      "content": "Save and test"
+    }
+  ]
+}
 ```
 
 ### InfluxDB Setup
-```html
-<span id="setup-influxdb" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#setup-influxdb" data-objectives="has-datasource:type:influxdb">
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Go to data sources</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add new data source">Add data source</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="a[href='/connections/datasources/influxdb']">Select InfluxDB</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='basic-settings-name']" data-targetvalue="influxdb">Name it</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='connection-url']" data-targetvalue="http://influxdb:8086">Set URL</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='influxdb-database']" data-targetvalue="mydb">Set database</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Save & test" data-verify="has-datasource:influxdb">Save and test</li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "setup-influxdb",
+  "title": "Setup InfluxDB",
+  "objectives": ["has-datasource:type:influxdb"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/connections/datasources",
+      "content": "Go to data sources"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add new data source",
+      "content": "Add data source"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href='/connections/datasources/influxdb']",
+      "content": "Select InfluxDB"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='basic-settings-name']",
+      "targetvalue": "influxdb",
+      "content": "Name it"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='connection-url']",
+      "targetvalue": "http://influxdb:8086",
+      "content": "Set URL"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='influxdb-database']",
+      "targetvalue": "mydb",
+      "content": "Set database"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save & test",
+      "verify": "has-datasource:influxdb",
+      "content": "Save and test"
+    }
+  ]
+}
 ```
 
 ## Visualization Creation Patterns
 
 ### Time Series Panel
-```html
-<span id="create-timeseries-panel" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-timeseries-panel" data-requirements="on-page:/dashboard,has-datasource:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add visualization">Add panel</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="prometheus">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="rate(http_requests_total[5m])">Enter rate query</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="div[aria-label='Plugin visualization item Time series']">Select time series</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='Panel editor option pane field input Title']" data-targetvalue="Request Rate">Set title</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Apply">Apply changes</li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "create-timeseries-panel",
+  "title": "Create Time Series Panel",
+  "requirements": ["on-page:/dashboard", "has-datasource:prometheus"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add visualization",
+      "content": "Add panel"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "prometheus",
+      "content": "Select Prometheus"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "rate(http_requests_total[5m])",
+      "content": "Enter rate query"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "div[aria-label='Plugin visualization item Time series']",
+      "content": "Select time series"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='Panel editor option pane field input Title']",
+      "targetvalue": "Request Rate",
+      "content": "Set title"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Apply",
+      "content": "Apply changes"
+    }
+  ]
+}
 ```
 
 ### Stat Panel
-```html
-<span id="create-stat-panel" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-stat-panel" data-requirements="on-page:/dashboard,has-datasource:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add visualization">Add panel</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="prometheus">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="up">Enter up query</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="div[aria-label='Plugin visualization item Stat']">Select stat visualization</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='Panel editor option pane field input Title']" data-targetvalue="Services Up">Set title</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Apply">Apply changes</li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "create-stat-panel",
+  "title": "Create Stat Panel",
+  "requirements": ["on-page:/dashboard", "has-datasource:prometheus"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add visualization",
+      "content": "Add panel"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "prometheus",
+      "content": "Select Prometheus"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "up",
+      "content": "Enter up query"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "div[aria-label='Plugin visualization item Stat']",
+      "content": "Select stat visualization"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='Panel editor option pane field input Title']",
+      "targetvalue": "Services Up",
+      "content": "Set title"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Apply",
+      "content": "Apply changes"
+    }
+  ]
+}
 ```
 
 ### Table Panel
-```html
-<span id="create-table-panel" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-table-panel" data-requirements="on-page:/dashboard,has-datasource:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add visualization">Add panel</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="prometheus">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="up">Enter up query</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="div[aria-label='Plugin visualization item Table']">Select table visualization</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='Panel editor option pane field input Title']" data-targetvalue="Target Status">Set title</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Apply">Apply changes</li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "create-table-panel",
+  "title": "Create Table Panel",
+  "requirements": ["on-page:/dashboard", "has-datasource:prometheus"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add visualization",
+      "content": "Add panel"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "prometheus",
+      "content": "Select Prometheus"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "up",
+      "content": "Enter up query"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "div[aria-label='Plugin visualization item Table']",
+      "content": "Select table visualization"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='Panel editor option pane field input Title']",
+      "targetvalue": "Target Status",
+      "content": "Set title"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Apply",
+      "content": "Apply changes"
+    }
+  ]
+}
 ```
 
 ## Query Pattern Library
 
 ### Prometheus Queries
-```html
-<!-- Basic availability -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="up">
-  Check which targets are up
-</li>
+```json
+// Basic availability
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "up",
+  "content": "Check which targets are up"
+}
 
-<!-- Request rate -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="rate(http_requests_total[5m])">
-  Calculate request rate over 5 minutes
-</li>
+// Request rate
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "rate(http_requests_total[5m])",
+  "content": "Calculate request rate over 5 minutes"
+}
 
-<!-- CPU usage -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="100 - (avg(rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)">
-  Calculate CPU usage percentage
-</li>
+// CPU usage
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "100 - (avg(rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)",
+  "content": "Calculate CPU usage percentage"
+}
 
-<!-- Memory usage -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100">
-  Calculate memory usage percentage
-</li>
+// Memory usage
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+  "content": "Calculate memory usage percentage"
+}
 
-<!-- Disk usage -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes)">
-  Calculate disk usage percentage
-</li>
+// Disk usage
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes)",
+  "content": "Calculate disk usage percentage"
+}
 ```
 
 ### Loki Queries
-```html
-<!-- Basic log query -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='{job="grafana"}'>
-  Query Grafana service logs
-</li>
+```json
+// Basic log query
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "{job='grafana'}",
+  "content": "Query Grafana service logs"
+}
 
-<!-- Error logs -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='{job="grafana"} |= "error"'>
-  Filter for error messages
-</li>
+// Error logs
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "{job='grafana'} |= 'error'",
+  "content": "Filter for error messages"
+}
 
-<!-- Rate calculation -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='rate({job="grafana"}[5m])'>
-  Calculate log rate
-</li>
+// Rate calculation
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "rate({job='grafana'}[5m])",
+  "content": "Calculate log rate"
+}
 
-<!-- JSON parsing -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='{job="grafana"} | json | level="error"'>
-  Parse JSON logs and filter by level
-</li>
+// JSON parsing
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "targetvalue": "{job='grafana'} | json | level='error'",
+  "content": "Parse JSON logs and filter by level"
+}
 ```
 
 ## Educational Pattern Library
 
 ### Interface Explanation Pattern
-```html
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="{ui-element-selector}"
-    data-requirements="exists-reftarget"
-    data-doit="false">
-  
-  <span class="interactive-comment">
-    This <strong>{UI_ELEMENT_NAME}</strong> {what_it_does}. 
-    {why_its_important}. {specific_capabilities_or_features}.
-  </span>
-  
-  Learn about the {UI_ELEMENT_NAME}
-</li>
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "{ui-element-selector}",
+  "requirements": ["exists-reftarget"],
+  "doIt": false,
+  "tooltip": "This {UI_ELEMENT_NAME} {what_it_does}. {why_its_important}. {specific_capabilities_or_features}.",
+  "content": "Learn about the {UI_ELEMENT_NAME}"
+}
 ```
 
 ### Feature Introduction Pattern
-```html
-<span id="learn-{feature-name}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#learn-{feature-name}"
-      data-requirements="on-page:/{feature-page}">
-  
-  <h3>Understanding {Feature Name}</h3>
-  
-  <ul>
-    <!-- Show key interface elements -->
-    <li class="interactive" data-targetaction="highlight" data-reftarget="{main-interface}" data-doit="false">
-      <span class="interactive-comment">{Feature overview explanation}</span>
-      Explore the main {feature} interface
-    </li>
-    
-    <!-- Show important controls -->
-    <li class="interactive" data-targetaction="highlight" data-reftarget="{control-element}" data-doit="false">
-      <span class="interactive-comment">{Control explanation}</span>
-      Notice the {control name} controls
-    </li>
-    
-    <!-- Show example usage -->
-    <li class="interactive" data-targetaction="highlight" data-reftarget="{example-element}" data-doit="false">
-      <span class="interactive-comment">{Example explanation}</span>
-      See how {feature} displays information
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "section",
+  "id": "learn-{feature-name}",
+  "title": "Understanding {Feature Name}",
+  "requirements": ["on-page:/{feature-page}"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "{main-interface}",
+      "doIt": false,
+      "tooltip": "{Feature overview explanation}",
+      "content": "Explore the main {feature} interface"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "{control-element}",
+      "doIt": false,
+      "tooltip": "{Control explanation}",
+      "content": "Notice the {control name} controls"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "{example-element}",
+      "doIt": false,
+      "tooltip": "{Example explanation}",
+      "content": "See how {feature} displays information"
+    }
+  ]
+}
 ```
 
 ### Concept-to-Practice Pattern
-```html
-<!-- 1. Explain the concept -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='query-editor']"
-    data-doit="false">
-  <span class="interactive-comment">
-    The <strong>query editor</strong> is where you write {query language} queries...
-  </span>
-  Learn about writing queries
-</li>
-
-<!-- 2. Show an example -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="{example-query}"
-    data-doit="false">
-  <span class="interactive-comment">
-    This <code>{example-query}</code> query {what it does and why}...
-  </span>
-  See how a {query type} query looks
-</li>
-
-<!-- 3. Practice -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="{practice-query}">
-  Now enter your own {query type} query
-</li>
-
-<!-- 4. Execute and observe -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Run query">
-  Run the query to see results
-</li>
+```json
+{
+  "type": "section",
+  "id": "concept-practice",
+  "title": "Concept to Practice",
+  "blocks": [
+    // 1. Explain the concept
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "div[data-testid='query-editor']",
+      "doIt": false,
+      "tooltip": "The query editor is where you write {query language} queries...",
+      "content": "Learn about writing queries"
+    },
+    // 2. Show an example
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "{example-query}",
+      "doIt": false,
+      "tooltip": "This {example-query} query {what it does and why}...",
+      "content": "See how a {query type} query looks"
+    },
+    // 3. Practice
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[data-testid='query-editor']",
+      "targetvalue": "{practice-query}",
+      "content": "Now enter your own {query type} query"
+    },
+    // 4. Execute and observe
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Run query",
+      "content": "Run the query to see results"
+    }
+  ]
+}
 ```
 
 ## Multi-Step Patterns
 
 ### Quick Multi-Actions
-```html
-<!-- Add visualization with data source -->
-<li class="interactive" data-targetaction="multistep" data-requirements="on-page:/dashboard/new">
-  <span class="interactive" data-targetaction="button" data-reftarget="Add visualization"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="{datasource-name}"></span>
-  Add visualization and select {datasource} data source
-</li>
+```json
+// Add visualization with data source
+{
+  "type": "multistep",
+  "requirements": ["on-page:/dashboard/new"],
+  "content": "Add visualization and select {datasource} data source",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "Add visualization"
+    },
+    {
+      "action": "button",
+      "reftarget": "{datasource-name}"
+    }
+  ]
+}
 
-<!-- Navigate and configure -->
-<li class="interactive" data-targetaction="multistep" data-requirements="is-admin">
-  <span class="interactive" data-targetaction="navigate" data-reftarget="/admin/plugins"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[type='search']" data-targetvalue="{plugin-name}"></span>
-  Go to plugins and search for {plugin name}
-</li>
+// Navigate and configure
+{
+  "type": "multistep",
+  "requirements": ["is-admin"],
+  "content": "Go to plugins and search for {plugin name}",
+  "steps": [
+    {
+      "action": "navigate",
+      "reftarget": "/admin/plugins"
+    },
+    {
+      "action": "formfill",
+      "reftarget": "input[type='search']",
+      "targetvalue": "{plugin-name}"
+    }
+  ]
+}
 
-<!-- Form sequence -->
-<li class="interactive" data-targetaction="multistep" data-requirements="on-page:/connections/new">
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="{name}"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='url']" data-targetvalue="{url}"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Test connection"></span>
-  Fill name and URL, then test connection
-</li>
+// Form sequence
+{
+  "type": "multistep",
+  "requirements": ["on-page:/connections/new"],
+  "content": "Fill name and URL, then test connection",
+  "steps": [
+    {
+      "action": "formfill",
+      "reftarget": "input[id='name']",
+      "targetvalue": "{name}"
+    },
+    {
+      "action": "formfill",
+      "reftarget": "input[id='url']",
+      "targetvalue": "{url}"
+    },
+    {
+      "action": "button",
+      "reftarget": "Test connection"
+    }
+  ]
+}
 ```
 
 ## Permission-Aware Patterns
 
 ### Admin vs User Workflows
-```html
-<!-- Admin workflow -->
-<span id="admin-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="is-admin"
-      data-hint="Full setup process for administrators">
-  <h3>Complete Setup (Admin)</h3>
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/admin/plugins">Install plugins</li>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Configure data sources</li>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/admin/users">Manage users</li>
-  </ul>
-</span>
+```json
+// Admin workflow
+{
+  "type": "section",
+  "id": "admin-setup",
+  "title": "Complete Setup (Admin)",
+  "requirements": ["is-admin"],
+  "tooltip": "Full setup process for administrators",
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/admin/plugins",
+      "content": "Install plugins"
+    },
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/connections/datasources",
+      "content": "Configure data sources"
+    },
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/admin/users",
+      "content": "Manage users"
+    }
+  ]
+}
 
-<!-- User workflow -->
-<span id="user-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="has-role:viewer"
-      data-hint="Limited setup for regular users">
-  <h3>User Setup (Non-Admin)</h3>
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/dashboards">Browse dashboards</li>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/explore">Try data exploration</li>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="button[data-testid='contact-admin']"
-        data-doit="false">
-      <span class="interactive-comment">
-        Contact your <strong>administrator</strong> to request additional permissions 
-        for creating dashboards, configuring data sources, or installing plugins.
-      </span>
-      Know how to request additional access
-    </li>
-  </ul>
-</span>
+// User workflow
+{
+  "type": "section",
+  "id": "user-setup",
+  "title": "User Setup (Non-Admin)",
+  "requirements": ["has-role:viewer"],
+  "tooltip": "Limited setup for regular users",
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/dashboards",
+      "content": "Browse dashboards"
+    },
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/explore",
+      "content": "Try data exploration"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "button[data-testid='contact-admin']",
+      "doIt": false,
+      "tooltip": "Contact your administrator to request additional permissions for creating dashboards, configuring data sources, or installing plugins.",
+      "content": "Know how to request additional access"
+    }
+  ]
+}
 ```
 
 ### Skippable Feature Patterns
-```html
-<!-- Optional advanced features -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='advanced-query']"
-    data-targetvalue="complex_query_expression"
-    data-requirements="has-feature:expressions,min-version:9.0.0"
-    data-skippable="true"
-    data-hint="Advanced feature - skip if not available">
-  Use advanced query expressions (skip if not supported)
-</li>
+```json
+// Optional advanced features
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "textarea[data-testid='advanced-query']",
+  "targetvalue": "complex_query_expression",
+  "requirements": ["has-feature:expressions", "min-version:9.0.0"],
+  "skippable": true,
+  "tooltip": "Advanced feature - skip if not available",
+  "content": "Use advanced query expressions (skip if not supported)"
+}
 
-<!-- Plugin-dependent features -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/custom-app"
-    data-requirements="has-plugin:custom-app"
-    data-skippable="true"
-    data-hint="Requires custom app plugin">
-  Open custom application (skip if plugin not installed)
-</li>
+// Plugin-dependent features
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/a/custom-app",
+  "requirements": ["has-plugin:custom-app"],
+  "skippable": true,
+  "tooltip": "Requires custom app plugin",
+  "content": "Open custom application (skip if plugin not installed)"
+}
 ```
 
 ## Error Recovery Patterns
 
 ### Primary + Fallback Pattern
-```html
-<!-- Try automated approach first -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Auto setup"
-    data-requirements="has-plugin:setup-wizard,exists-reftarget"
-    data-skippable="true"
-    data-hint="Automated setup if wizard available">
-  Use automatic setup wizard
-</li>
+```json
+// Try automated approach first
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Auto setup",
+  "requirements": ["has-plugin:setup-wizard", "exists-reftarget"],
+  "skippable": true,
+  "tooltip": "Automated setup if wizard available",
+  "content": "Use automatic setup wizard"
+}
 
-<!-- Manual fallback -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/connections/datasources/new"
-    data-requirements="is-admin">
-  Or configure data source manually
-</li>
+// Manual fallback
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/connections/datasources/new",
+  "requirements": ["is-admin"],
+  "content": "Or configure data source manually"
+}
 ```
 
 ### Validation and Retry Pattern
-```html
-<!-- Action with verification -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Test connection"
-    data-requirements="exists-reftarget"
-    data-verify="has-datasource:{name}">
-  Test the data source connection
-</li>
+```json
+// Action with verification
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Test connection",
+  "requirements": ["exists-reftarget"],
+  "verify": "has-datasource:{name}",
+  "content": "Test the data source connection"
+}
 
-<!-- Retry if failed -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="input[id='connection-url']"
-    data-requirements="exists-reftarget"
-    data-hint="Check connection settings if test failed">
-  <span class="interactive-comment">
-    If the connection test failed, verify your <strong>URL</strong> and 
-    <strong>authentication settings</strong>. Common issues include 
-    <code>incorrect port numbers</code>, <code>network connectivity</code>, 
-    or <code>authentication credentials</code>.
-  </span>
-  Review connection settings if test failed
-</li>
+// Retry if failed
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "input[id='connection-url']",
+  "requirements": ["exists-reftarget"],
+  "tooltip": "If the connection test failed, verify your URL and authentication settings. Common issues include incorrect port numbers, network connectivity, or authentication credentials.",
+  "content": "Review connection settings if test failed"
+}
 ```
 
 ## AI Content Generation Guidelines
@@ -663,797 +973,123 @@ alwaysApply: true
 #### Interactive Comments
 - **Educational**: Explain what elements do and why they matter
 - **Contextual**: Provide information that helps users understand
-- **Formatted**: Use `<strong>` for UI elements, `<code>` for technical terms
+- **Formatted**: Use Markdown for UI elements and technical terms
 - **Concise**: Keep under 250 characters for good UX
 
 #### Error Prevention
 - **Comprehensive requirements**: Include all necessary preconditions
 - **Helpful hints**: Explain what will happen and why
 - **Graceful failures**: Provide skippable options for edge cases
-- **Clear verification**: Use `data-verify` for state-changing actions
+- **Clear verification**: Use `verify` for state-changing actions
 
 ### Common Mistakes to Avoid
 
 ❌ **Missing Requirements**
-```html
-<!-- Bad: No requirements for DOM interaction -->
-<li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='save']">
+```json
+// Bad: No requirements for DOM interaction
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save']"
+}
 ```
 ✅ **Good: Includes necessary requirements**
-```html
-<li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='save']" data-requirements="exists-reftarget,on-page:/dashboard">
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save']",
+  "requirements": ["exists-reftarget", "on-page:/dashboard"]
+}
 ```
 
 ❌ **Unclear Selectors**
-```html
-<!-- Bad: Brittle CSS class selector -->
-<li class="interactive" data-targetaction="highlight" data-reftarget=".btn-primary.save-button">
+```json
+// Bad: Brittle CSS class selector
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": ".btn-primary.save-button"
+}
 ```
 ✅ **Good: Stable attribute-based selector**
-```html
-<li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='save-dashboard']">
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button[data-testid='save-dashboard']"
+}
 ```
 
 ❌ **Missing Context**
-```html
-<!-- Bad: No explanation of what will happen -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="input" data-targetvalue="value">
+```json
+// Bad: No explanation of what will happen
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input",
+  "targetvalue": "value"
+}
 ```
 ✅ **Good: Clear context and purpose**
-```html
-<li class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="prometheus" data-hint="Sets a descriptive name for easy identification">
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[id='name']",
+  "targetvalue": "prometheus",
+  "tooltip": "Sets a descriptive name for easy identification"
+}
 ```
 
 ❌ **Overly Complex Steps**
-```html
-<!-- Bad: Too many actions in one step -->
-<li class="interactive" data-targetaction="multistep">
-  <span class="interactive" data-targetaction="navigate" data-reftarget="/admin"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Users"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Add user"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="john"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='email']" data-targetvalue="john@example.com"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Create"></span>
-  Navigate to admin, go to users, add user, fill details, create user
-</li>
+```json
+// Bad: Too many actions in one step
+{
+  "type": "multistep",
+  "content": "Navigate to admin, go to users, add user, fill details, create user",
+  "steps": [
+    {"action": "navigate", "reftarget": "/admin"},
+    {"action": "button", "reftarget": "Users"},
+    {"action": "button", "reftarget": "Add user"},
+    {"action": "formfill", "reftarget": "input[id='name']", "targetvalue": "john"},
+    {"action": "formfill", "reftarget": "input[id='email']", "targetvalue": "john@example.com"},
+    {"action": "button", "reftarget": "Create"}
+  ]
+}
 ```
 ✅ **Good: Broken into logical sections**
-```html
-<span id="user-management" class="interactive" data-targetaction="sequence" data-reftarget="span#user-management">
-  <li class="interactive" data-targetaction="navigate" data-reftarget="/admin/users">Navigate to user management</li>
-  <li class="interactive" data-targetaction="button" data-reftarget="Add user">Start adding new user</li>
-  <li class="interactive" data-targetaction="multistep">
-    <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="john"></span>
-    <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='email']" data-targetvalue="john@example.com"></span>
-    Fill user details
-  </li>
-  <li class="interactive" data-targetaction="button" data-reftarget="Create user">Create the user account</li>
-</span>
-```# Common Interactive Workflow Patterns for AI
-
-## Standard Workflow Templates
-
-### Data Source Setup Workflow
-```html
-<span id="setup-{datasource-type}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#setup-{datasource-type}"
-      data-requirements="is-admin"
-      data-objectives="has-datasource:type:{datasource-type}">
-  
-  <h2>Set Up {DataSource} Data Source</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/connections/datasources"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/connections">
-      Navigate to data source management
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add new data source"
-        data-requirements="exists-reftarget">
-      Click Add new data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[href='/connections/datasources/{datasource-type}']"
-        data-requirements="exists-reftarget">
-      Select {DataSource} from the list
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='basic-settings-name']"
-        data-targetvalue="{datasource-name}"
-        data-requirements="exists-reftarget">
-      Name your data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[id='connection-url']"
-        data-targetvalue="{connection-url}"
-        data-requirements="exists-reftarget">
-      Set the server URL
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save & test"
-        data-requirements="exists-reftarget"
-        data-verify="has-datasource:{datasource-name}">
-      Save and test the connection
-    </li>
-  </ul>
-</span>
-```
-
-### Dashboard Creation Workflow
-```html
-<span id="create-dashboard-{purpose}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-dashboard-{purpose}"
-      data-requirements="has-datasources"
-      data-objectives="has-dashboard-named:{dashboard-title}">
-  
-  <h2>Create {Purpose} Dashboard</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/dashboard/new"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/dashboard/new">
-      Navigate to create new dashboard
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Add visualization"
-        data-requirements="exists-reftarget">
-      Add your first panel
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="{datasource-name}"
-        data-requirements="has-datasource:{datasource-name}"
-        data-hint="Select the data source you configured earlier">
-      Select your data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='query-editor']"
-        data-targetvalue="{example-query}"
-        data-requirements="exists-reftarget">
-      Enter your query
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='Panel editor option pane field input Title']"
-        data-targetvalue="{panel-title}"
-        data-requirements="exists-reftarget">
-      Set panel title
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save dashboard"
-        data-requirements="exists-reftarget"
-        data-verify="has-dashboard-named:{dashboard-title}">
-      Save your dashboard
-    </li>
-  </ul>
-</span>
-```
-
-### Plugin Installation Workflow
-```html
-<span id="install-plugin-{plugin-id}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#install-plugin-{plugin-id}"
-      data-requirements="is-admin"
-      data-objectives="has-plugin:{plugin-id}">
-  
-  <h2>Install {Plugin Name} Plugin</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/admin/plugins"
-        data-requirements="navmenu-open,is-admin"
-        data-verify="on-page:/admin/plugins">
-      Navigate to plugin management
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='plugin-search']"
-        data-targetvalue="{search-term}"
-        data-requirements="exists-reftarget">
-      Search for the plugin
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="a[href='/admin/plugins/{plugin-id}']"
-        data-requirements="exists-reftarget">
-      Find the plugin in search results
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Install"
-        data-requirements="exists-reftarget"
-        data-verify="has-plugin:{plugin-id}">
-      Install the plugin
-    </li>
-  </ul>
-</span>
-```
-
-### Alert Rule Creation Workflow
-```html
-<span id="create-alert-rule-{metric}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#create-alert-rule-{metric}"
-      data-requirements="has-datasource:prometheus,has-permission:alerting:write">
-  
-  <h2>Create {Metric} Alert Rule</h2>
-  
-  <ul>
-    <li class="interactive" 
-        data-targetaction="navigate" 
-        data-reftarget="/alerting/new"
-        data-requirements="navmenu-open"
-        data-verify="on-page:/alerting/new">
-      Navigate to create alert rule
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='alert-rule-name']"
-        data-targetvalue="{alert-rule-name}"
-        data-requirements="exists-reftarget">
-      Name your alert rule
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="{datasource-name}"
-        data-requirements="has-datasource:{datasource-name}">
-      Select data source
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="textarea[data-testid='alert-query-editor']"
-        data-targetvalue="{alert-query}"
-        data-requirements="exists-reftarget">
-      Enter alert query
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="formfill" 
-        data-reftarget="input[data-testid='alert-threshold']"
-        data-targetvalue="{threshold-value}"
-        data-requirements="exists-reftarget">
-      Set alert threshold
-    </li>
-    
-    <li class="interactive" 
-        data-targetaction="button" 
-        data-reftarget="Save rule"
-        data-requirements="exists-reftarget">
-      Save the alert rule
-    </li>
-  </ul>
-</span>
-```
-
-## Data Source Specific Patterns
-
-### Prometheus Setup
-```html
-<span id="setup-prometheus" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#setup-prometheus" data-objectives="has-datasource:type:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Go to data sources</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add new data source">Add data source</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="a[href='/connections/datasources/prometheus']">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='basic-settings-name']" data-targetvalue="prometheus">Name it</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='connection-url']" data-targetvalue="http://prometheus:9090">Set URL</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Save & test" data-verify="has-datasource:prometheus">Save and test</li>
-  </ul>
-</span>
-```
-
-### Loki Setup  
-```html
-<span id="setup-loki" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#setup-loki" data-objectives="has-datasource:type:loki">
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Go to data sources</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add new data source">Add data source</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="a[href='/connections/datasources/loki']">Select Loki</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='basic-settings-name']" data-targetvalue="loki">Name it</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='connection-url']" data-targetvalue="http://loki:3100">Set URL</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Save & test" data-verify="has-datasource:loki">Save and test</li>
-  </ul>
-</span>
-```
-
-### InfluxDB Setup
-```html
-<span id="setup-influxdb" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#setup-influxdb" data-objectives="has-datasource:type:influxdb">
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Go to data sources</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add new data source">Add data source</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="a[href='/connections/datasources/influxdb']">Select InfluxDB</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='basic-settings-name']" data-targetvalue="influxdb">Name it</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='connection-url']" data-targetvalue="http://influxdb:8086">Set URL</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[id='influxdb-database']" data-targetvalue="mydb">Set database</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Save & test" data-verify="has-datasource:influxdb">Save and test</li>
-  </ul>
-</span>
-```
-
-## Visualization Creation Patterns
-
-### Time Series Panel
-```html
-<span id="create-timeseries-panel" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-timeseries-panel" data-requirements="on-page:/dashboard,has-datasource:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add visualization">Add panel</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="prometheus">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="rate(http_requests_total[5m])">Enter rate query</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="div[aria-label='Plugin visualization item Time series']">Select time series</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='Panel editor option pane field input Title']" data-targetvalue="Request Rate">Set title</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Apply">Apply changes</li>
-  </ul>
-</span>
-```
-
-### Stat Panel
-```html
-<span id="create-stat-panel" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-stat-panel" data-requirements="on-page:/dashboard,has-datasource:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add visualization">Add panel</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="prometheus">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="up">Enter up query</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="div[aria-label='Plugin visualization item Stat']">Select stat visualization</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='Panel editor option pane field input Title']" data-targetvalue="Services Up">Set title</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Apply">Apply changes</li>
-  </ul>
-</span>
-```
-
-### Table Panel
-```html
-<span id="create-table-panel" class="interactive" data-targetaction="sequence" 
-      data-reftarget="span#create-table-panel" data-requirements="on-page:/dashboard,has-datasource:prometheus">
-  <ul>
-    <li class="interactive" data-targetaction="button" data-reftarget="Add visualization">Add panel</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="prometheus">Select Prometheus</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="up">Enter up query</li>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="div[aria-label='Plugin visualization item Table']">Select table visualization</li>
-    <li class="interactive" data-targetaction="formfill" data-reftarget="input[data-testid='Panel editor option pane field input Title']" data-targetvalue="Target Status">Set title</li>
-    <li class="interactive" data-targetaction="button" data-reftarget="Apply">Apply changes</li>
-  </ul>
-</span>
-```
-
-## Query Pattern Library
-
-### Prometheus Queries
-```html
-<!-- Basic availability -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="up">
-  Check which targets are up
-</li>
-
-<!-- Request rate -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="rate(http_requests_total[5m])">
-  Calculate request rate over 5 minutes
-</li>
-
-<!-- CPU usage -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="100 - (avg(rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)">
-  Calculate CPU usage percentage
-</li>
-
-<!-- Memory usage -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100">
-  Calculate memory usage percentage
-</li>
-
-<!-- Disk usage -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue="100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes)">
-  Calculate disk usage percentage
-</li>
-```
-
-### Loki Queries
-```html
-<!-- Basic log query -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='{job="grafana"}'>
-  Query Grafana service logs
-</li>
-
-<!-- Error logs -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='{job="grafana"} |= "error"'>
-  Filter for error messages
-</li>
-
-<!-- Rate calculation -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='rate({job="grafana"}[5m])'>
-  Calculate log rate
-</li>
-
-<!-- JSON parsing -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="textarea[data-testid='query-editor']" data-targetvalue='{job="grafana"} | json | level="error"'>
-  Parse JSON logs and filter by level
-</li>
-```
-
-## Educational Pattern Library
-
-### Interface Explanation Pattern
-```html
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="{ui-element-selector}"
-    data-requirements="exists-reftarget"
-    data-doit="false">
-  
-  <span class="interactive-comment">
-    This <strong>{UI_ELEMENT_NAME}</strong> {what_it_does}. 
-    {why_its_important}. {specific_capabilities_or_features}.
-  </span>
-  
-  Learn about the {UI_ELEMENT_NAME}
-</li>
-```
-
-### Feature Introduction Pattern
-```html
-<span id="learn-{feature-name}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#learn-{feature-name}"
-      data-requirements="on-page:/{feature-page}">
-  
-  <h3>Understanding {Feature Name}</h3>
-  
-  <ul>
-    <!-- Show key interface elements -->
-    <li class="interactive" data-targetaction="highlight" data-reftarget="{main-interface}" data-doit="false">
-      <span class="interactive-comment">{Feature overview explanation}</span>
-      Explore the main {feature} interface
-    </li>
-    
-    <!-- Show important controls -->
-    <li class="interactive" data-targetaction="highlight" data-reftarget="{control-element}" data-doit="false">
-      <span class="interactive-comment">{Control explanation}</span>
-      Notice the {control name} controls
-    </li>
-    
-    <!-- Show example usage -->
-    <li class="interactive" data-targetaction="highlight" data-reftarget="{example-element}" data-doit="false">
-      <span class="interactive-comment">{Example explanation}</span>
-      See how {feature} displays information
-    </li>
-  </ul>
-</span>
-```
-
-### Concept-to-Practice Pattern
-```html
-<!-- 1. Explain the concept -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="div[data-testid='query-editor']"
-    data-doit="false">
-  <span class="interactive-comment">
-    The <strong>query editor</strong> is where you write {query language} queries...
-  </span>
-  Learn about writing queries
-</li>
-
-<!-- 2. Show an example -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="{example-query}"
-    data-doit="false">
-  <span class="interactive-comment">
-    This <code>{example-query}</code> query {what it does and why}...
-  </span>
-  See how a {query type} query looks
-</li>
-
-<!-- 3. Practice -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='query-editor']"
-    data-targetvalue="{practice-query}">
-  Now enter your own {query type} query
-</li>
-
-<!-- 4. Execute and observe -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Run query">
-  Run the query to see results
-</li>
-```
-
-## Multi-Step Patterns
-
-### Quick Multi-Actions
-```html
-<!-- Add visualization with data source -->
-<li class="interactive" data-targetaction="multistep" data-requirements="on-page:/dashboard/new">
-  <span class="interactive" data-targetaction="button" data-reftarget="Add visualization"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="{datasource-name}"></span>
-  Add visualization and select {datasource} data source
-</li>
-
-<!-- Navigate and configure -->
-<li class="interactive" data-targetaction="multistep" data-requirements="is-admin">
-  <span class="interactive" data-targetaction="navigate" data-reftarget="/admin/plugins"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[type='search']" data-targetvalue="{plugin-name}"></span>
-  Go to plugins and search for {plugin name}
-</li>
-
-<!-- Form sequence -->
-<li class="interactive" data-targetaction="multistep" data-requirements="on-page:/connections/new">
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="{name}"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='url']" data-targetvalue="{url}"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Test connection"></span>
-  Fill name and URL, then test connection
-</li>
-```
-
-## Permission-Aware Patterns
-
-### Admin vs User Workflows
-```html
-<!-- Admin workflow -->
-<span id="admin-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="is-admin"
-      data-hint="Full setup process for administrators">
-  <h3>Complete Setup (Admin)</h3>
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/admin/plugins">Install plugins</li>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/connections/datasources">Configure data sources</li>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/admin/users">Manage users</li>
-  </ul>
-</span>
-
-<!-- User workflow -->
-<span id="user-setup" 
-      class="interactive" 
-      data-targetaction="sequence"
-      data-requirements="has-role:viewer"
-      data-hint="Limited setup for regular users">
-  <h3>User Setup (Non-Admin)</h3>
-  <ul>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/dashboards">Browse dashboards</li>
-    <li class="interactive" data-targetaction="navigate" data-reftarget="/explore">Try data exploration</li>
-    <li class="interactive" 
-        data-targetaction="highlight" 
-        data-reftarget="button[data-testid='contact-admin']"
-        data-doit="false">
-      <span class="interactive-comment">
-        Contact your <strong>administrator</strong> to request additional permissions 
-        for creating dashboards, configuring data sources, or installing plugins.
-      </span>
-      Know how to request additional access
-    </li>
-  </ul>
-</span>
-```
-
-### Skippable Feature Patterns
-```html
-<!-- Optional advanced features -->
-<li class="interactive" 
-    data-targetaction="formfill" 
-    data-reftarget="textarea[data-testid='advanced-query']"
-    data-targetvalue="complex_query_expression"
-    data-requirements="has-feature:expressions,min-version:9.0.0"
-    data-skippable="true"
-    data-hint="Advanced feature - skip if not available">
-  Use advanced query expressions (skip if not supported)
-</li>
-
-<!-- Plugin-dependent features -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/a/custom-app"
-    data-requirements="has-plugin:custom-app"
-    data-skippable="true"
-    data-hint="Requires custom app plugin">
-  Open custom application (skip if plugin not installed)
-</li>
-```
-
-## Error Recovery Patterns
-
-### Primary + Fallback Pattern
-```html
-<!-- Try automated approach first -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Auto setup"
-    data-requirements="has-plugin:setup-wizard,exists-reftarget"
-    data-skippable="true"
-    data-hint="Automated setup if wizard available">
-  Use automatic setup wizard
-</li>
-
-<!-- Manual fallback -->
-<li class="interactive" 
-    data-targetaction="navigate" 
-    data-reftarget="/connections/datasources/new"
-    data-requirements="is-admin">
-  Or configure data source manually
-</li>
-```
-
-### Validation and Retry Pattern
-```html
-<!-- Action with verification -->
-<li class="interactive" 
-    data-targetaction="button" 
-    data-reftarget="Test connection"
-    data-requirements="exists-reftarget"
-    data-verify="has-datasource:{name}">
-  Test the data source connection
-</li>
-
-<!-- Retry if failed -->
-<li class="interactive" 
-    data-targetaction="highlight" 
-    data-reftarget="input[id='connection-url']"
-    data-requirements="exists-reftarget"
-    data-hint="Check connection settings if test failed">
-  <span class="interactive-comment">
-    If the connection test failed, verify your <strong>URL</strong> and 
-    <strong>authentication settings</strong>. Common issues include 
-    <code>incorrect port numbers</code>, <code>network connectivity</code>, 
-    or <code>authentication credentials</code>.
-  </span>
-  Review connection settings if test failed
-</li>
-```
-
-## AI Content Generation Guidelines
-
-### Step-by-Step Generation Process
-
-1. **Analyze User Request**
-   - Identify the main goal/outcome
-   - Determine required Grafana features
-   - Assess user permission requirements
-   - Plan logical step progression
-
-2. **Choose Guide Structure**
-   - Single workflow → one section
-   - Complex workflow → multiple sections  
-   - Educational content → mix show-only and regular steps
-   - Quick actions → multistep elements
-
-3. **Generate Requirements**
-   - Always include `exists-reftarget` for DOM actions
-   - Add `navmenu-open` for navigation elements
-   - Include page requirements for page-specific actions
-   - Add permission requirements for admin features
-   - Include data/plugin requirements for dependent features
-
-4. **Add Objectives Where Appropriate**
-   - Use for expensive setup steps that might already be done
-   - Include for navigation when user might already be on target page
-   - Add for state checks that auto-complete workflows
-
-5. **Write Helpful Content**
-   - Clear step descriptions that match user mental model
-   - Interactive comments for complex UI elements
-   - Hints that provide context and guidance
-   - Error handling for edge cases
-
-### Content Quality Rules
-
-#### Step Descriptions
-- **Action-focused**: "Click Save button" not "The save button can be clicked"
-- **User-centric**: "Save your dashboard" not "Execute save action"
-- **Context-aware**: "Enter Prometheus server URL" not "Enter URL"
-- **Goal-oriented**: "Create monitoring dashboard" not "Fill out form"
-
-#### Interactive Comments
-- **Educational**: Explain what elements do and why they matter
-- **Contextual**: Provide information that helps users understand
-- **Formatted**: Use `<strong>` for UI elements, `<code>` for technical terms
-- **Concise**: Keep under 250 characters for good UX
-
-#### Error Prevention
-- **Comprehensive requirements**: Include all necessary preconditions
-- **Helpful hints**: Explain what will happen and why
-- **Graceful failures**: Provide skippable options for edge cases
-- **Clear verification**: Use `data-verify` for state-changing actions
-
-### Common Mistakes to Avoid
-
-❌ **Missing Requirements**
-```html
-<!-- Bad: No requirements for DOM interaction -->
-<li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='save']">
-```
-✅ **Good: Includes necessary requirements**
-```html
-<li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='save']" data-requirements="exists-reftarget,on-page:/dashboard">
-```
-
-❌ **Unclear Selectors**
-```html
-<!-- Bad: Brittle CSS class selector -->
-<li class="interactive" data-targetaction="highlight" data-reftarget=".btn-primary.save-button">
-```
-✅ **Good: Stable attribute-based selector**
-```html
-<li class="interactive" data-targetaction="highlight" data-reftarget="button[data-testid='save-dashboard']">
-```
-
-❌ **Missing Context**
-```html
-<!-- Bad: No explanation of what will happen -->
-<li class="interactive" data-targetaction="formfill" data-reftarget="input" data-targetvalue="value">
-```
-✅ **Good: Clear context and purpose**
-```html
-<li class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="prometheus" data-hint="Sets a descriptive name for easy identification">
-```
-
-❌ **Overly Complex Steps**
-```html
-<!-- Bad: Too many actions in one step -->
-<li class="interactive" data-targetaction="multistep">
-  <span class="interactive" data-targetaction="navigate" data-reftarget="/admin"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Users"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Add user"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="john"></span>
-  <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='email']" data-targetvalue="john@example.com"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="Create"></span>
-  Navigate to admin, go to users, add user, fill details, create user
-</li>
-```
-✅ **Good: Broken into logical sections**
-```html
-<span id="user-management" class="interactive" data-targetaction="sequence" data-reftarget="span#user-management">
-  <li class="interactive" data-targetaction="navigate" data-reftarget="/admin/users">Navigate to user management</li>
-  <li class="interactive" data-targetaction="button" data-reftarget="Add user">Start adding new user</li>
-  <li class="interactive" data-targetaction="multistep">
-    <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='name']" data-targetvalue="john"></span>
-    <span class="interactive" data-targetaction="formfill" data-reftarget="input[id='email']" data-targetvalue="john@example.com"></span>
-    Fill user details
-  </li>
-  <li class="interactive" data-targetaction="button" data-reftarget="Create user">Create the user account</li>
-</span>
+```json
+{
+  "type": "section",
+  "id": "user-management",
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/admin/users",
+      "content": "Navigate to user management"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add user",
+      "content": "Start adding new user"
+    },
+    {
+      "type": "multistep",
+      "content": "Fill user details",
+      "steps": [
+        {"action": "formfill", "reftarget": "input[id='name']", "targetvalue": "john"},
+        {"action": "formfill", "reftarget": "input[id='email']", "targetvalue": "john@example.com"}
+      ]
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Create user",
+      "content": "Create the user account"
+    }
+  ]
+}
 ```
