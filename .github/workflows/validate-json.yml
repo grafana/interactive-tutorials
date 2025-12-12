@@ -1,4 +1,4 @@
-name: Validate JSON
+name: Validate JSON Files
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  validate-json:
+  validate-recommender-rules:
+    name: Validate Recommender Rules (index.json)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,4 +47,77 @@ jobs:
         else
           echo "❌ JSON validation failed!"
           exit 1
+        fi
+
+  validate-guides:
+    name: Validate Interactive Guides (content.json)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      with:
+        persist-credentials: false
+        submodules: false
+
+    - name: Checkout pathfinder-app CLI
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      with:
+        repository: grafana/grafana-pathfinder-app
+        ref: main
+        path: pathfinder-app
+        persist-credentials: false
+
+    - name: Setup Node.js
+      uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: pathfinder-app/package-lock.json
+
+    - name: Install dependencies
+      working-directory: pathfinder-app
+      run: npm ci
+
+    - name: Build CLI
+      working-directory: pathfinder-app
+      run: npm run build:cli
+
+    - name: Validate guides
+      run: |
+        echo "🔍 Finding and validating content.json files..."
+        echo ""
+        
+        PASSED=0
+        FAILED=0
+        
+        # Find and iterate through each content.json file
+        while IFS= read -r file; do
+          if [ -n "$file" ]; then
+            echo "📄 Validating: $file"
+            
+            if node pathfinder-app/dist/cli/cli/index.js validate --strict "$file"; then
+              PASSED=$((PASSED + 1))
+            else
+              echo "❌ Validation failed for: $file"
+              echo ""
+              FAILED=$((FAILED + 1))
+            fi
+          fi
+        done < <(find . -name "content.json" -type f -not -path "./pathfinder-app/*")
+        
+        echo ""
+        echo "📊 Validation Summary:"
+        echo "  ✅ Passed: $PASSED"
+        echo "  ❌ Failed: $FAILED"
+        
+        if [ $FAILED -gt 0 ]; then
+          echo ""
+          echo "❌ $FAILED guide(s) failed validation!"
+          exit 1
+        else
+          echo ""
+          echo "🎉 All $PASSED guide(s) validated successfully!"
         fi
