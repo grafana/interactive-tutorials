@@ -50,6 +50,57 @@ Make admin-only steps `skippable: true` with helpful hints.
 Use `objectives` to auto-complete already-done steps.
 Provide alternative workflows for different user permissions.
 
+### Don't Put Markdown Titles in Guides
+
+Don't begin your interactive guides with a markdown block which contains
+a title, such as:
+
+{
+  "type": "markdown",
+  "content": "## My Cool Guide"
+}
+
+This is because Pathfinder will already render the guide's title in an
+enclosing box, and so if you start with things like this, it will end
+up duplicating the title twice (once in the surrounding frame, again 
+in the content). The `title` of the guide as declared at the top will 
+always be displayed.
+
+### Use Interactive Sections, not just Markdown blocks
+
+Rather than doing this:
+
+```json
+{ 
+  "type": "markdown",
+  "content": "## My Section"
+},
+{
+  "type": "markdown",
+  "content": "I have things to say"
+}
+```
+
+You can accomplish the same better by using guide sections like so:
+
+```json
+{
+  "type": "section",
+  "id": "something-unique",
+  "title": "My Section",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "I have things to say"
+    }
+  ]
+}
+```
+
+This is better because it gives the Pathfinder app better control over
+visual rendering, and allows the content to be enhanced with closeable
+sections, etc.
+
 ### Verify State Changes
 
 * Use `verify` for actions that change state
@@ -68,6 +119,13 @@ Provide alternative workflows for different user permissions.
 * Use sequence (section blocks) for multi-step processes with dependencies
 * Use `multistep` for related actions that should happen together
 * Include section completion requirements for dependencies
+
+### Editorial Quality
+
+* Always check for typos
+* Always check for consistent use of title case
+* Be on the lookout for excess jargon; try to stay focused to known
+Grafana technical terms.
 
 ### Content Quality
 
