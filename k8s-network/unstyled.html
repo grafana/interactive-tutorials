@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Network diagnostics in Kubernetes</title>
+  </head>
+  <body>
+    <h1>Network diagnostics in Kubernetes Monitoring</h1>
+
+    <p>
+      Network performance directly impacts application responsiveness, reliability, and user experience. 
+      When applications are slow or experience connectivity issues, network metrics help you quickly determine 
+      whether the network is the bottleneck or if issues lie elsewhere.
+    </p>
+
+    <h3>What you will learn</h3>
+    <ul>
+      <li>Navigate to the Network tab and understand network bandwidth and saturation metrics.</li>
+      <li>Identify network performance issues like high traffic, packet loss, and saturation.</li>
+      <li>Use the pod and interface breakdown views to pinpoint which workloads are consuming bandwidth or experiencing problems.</li>
+      <li>Apply diagnostic workflows to troubleshoot common network scenarios.</li>
+    </ul>
+
+    <h2>Key concepts</h2>
+    
+    <h3>Network Bandwidth</h3>
+    <p>
+      Network bandwidth shows how much data is flowing in and out of your workloads:
+    </p>
+    <ul>
+      <li><strong>Rx (Receive)</strong>: Incoming traffic - data coming into the namespace/pod</li>
+      <li><strong>Tx (Transmit)</strong>: Outgoing traffic - data going out of the namespace/pod</li>
+    </ul>
+
+    <h3>Network Saturation</h3>
+    <p>
+      Network saturation indicates whether your network is overwhelmed by showing dropped packets. 
+      Zero dropped packets is ideal - any non-zero value indicates network stress that can cause 
+      application timeouts, retries, and performance degradation.
+    </p>
+
+    <h2>Diagnostic scenarios</h2>
+
+    <h3>Scenario 1: Application is slow</h3>
+    <ol>
+      <li>Check namespace Network Bandwidth - is traffic unusually high?</li>
+      <li>Check Network Saturation - are packets being dropped?</li>
+      <li>Review Network Bandwidth by pod - is one pod consuming excessive bandwidth?</li>
+      <li>If saturation is high, increase network limits or optimize data transfer</li>
+      <li>If saturation is zero, the issue is likely application-level, not network</li>
+    </ol>
+
+    <h3>Scenario 2: Intermittent connectivity issues</h3>
+    <ol>
+      <li>Look for periodic drops in bandwidth (indicates flapping)</li>
+      <li>Check for saturation spikes (temporary overload)</li>
+      <li>Review by interface view - is a specific interface failing?</li>
+      <li>Investigate pod restarts, network policy changes, or infrastructure issues</li>
+    </ol>
+
+    <h3>Scenario 3: High network costs</h3>
+    <ol>
+      <li>Check total bandwidth over time to identify trends</li>
+      <li>Use by pod breakdown to find data-intensive services</li>
+      <li>Compare Rx vs Tx - are you sending/receiving more than expected?</li>
+      <li>Optimize data transfers, implement caching, or review service mesh overhead</li>
+    </ol>
+
+    <h2>What you will learn</h2>
+    <p>By the end of this guide, you will be able to:</p>
+    <ul>
+      <li>Navigate to network metrics at the namespace and pod level</li>
+      <li>Interpret Network Bandwidth panels to understand traffic patterns and identify anomalies</li>
+      <li>Use Network Saturation panels to detect packet loss and network capacity issues</li>
+      <li>Drill down from namespace to pod to interface to isolate network problems</li>
+      <li>Apply diagnostic workflows to troubleshoot common network performance scenarios</li>
+      <li>Distinguish between network-level issues and application-level problems</li>
+    </ul>
+  </body>
+</html>
+
