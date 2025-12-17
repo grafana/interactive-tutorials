@@ -1,0 +1,216 @@
+{
+  "id": "using-grafana-dashboards",
+  "title": "Using Grafana: Dashboards",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Introduction\n\nGrafana is open source visualization and analytics software that lets you query, visualize, alert on, and explore your data—metrics, logs, traces, and more—no matter where that data is stored.\n\nGrafana uses a plugin system for connecting to the sources of that data.  You can use these plugins to retrieve data from sources like SQL databases, logging systems, time series databases, even API services and many more!\n\nThere's also a plugin system for letting you visualize that data.  Grafana has the most common visualizations built-in, so you can see time series data, tables, bar graphs, and so on immediately.  But other visualization plugins are available for more specific or unusual ways of representing information.\n\nThe fundamental core of Grafana is a *dashboard*. Let's look at one now."
+    },
+    {
+      "type": "section",
+      "id": "open-weather-dashboard",
+      "title": "Opening a dashboard",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-demodashboards-app']",
+          "content": "We'll use one of the demo dashboards that Grafana includes.\nTo open one, first select \"Demo Data Dashboards\" under \"More apps\" in the navigation menu.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='install-weather']",
+          "content": "If the Demo Data Dashboards are not installed, a Grafana administrator will need to click the \"Install Dashboards\" button to add the demo dashboards to your environment.  If they are already installed, you can skip this step.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='view-weather']",
+          "content": "We'll use the Weather Demo dashboard to explore Grafana.  Click \"Go to dashboards\" in the \"Weather Demo\" section.\n\n[FIXME] Verify that the dashboard is available before letting them complete this step",
+          "requirements": [
+            "has-dashboard-named:Overview [Celsius]"
+          ],
+          "skippable": true,
+          "hint": "You may already be in the right place"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-85330",
+      "title": "Grafana layout",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "There are a few tools that are always available anywhere in Grafana."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "ul[aria-label='Navigation']",
+          "content": "The navigation menu is on the left side of the screen.  This lets you access the various features of Grafana.",
+          "tooltip": "Navigation menu",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "nav[aria-label='Breadcrumbs']",
+          "content": "The top left shows your current location in Grafana.  You can use the list of links here to move back to a previous location as you click through different dashboards and applications in Grafana.",
+          "tooltip": "Current location",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"data-testid Nav toolbar\"]",
+          "content": "The navigation toolbar at the top of the dashboard lets you manage dashboard functions like editing, exporting data, or sharing dashboards with your team.",
+          "tooltip": "Navigation toolbar",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Mark as favorite']",
+          "content": "If you use a dashboard frequently, you can click the star button to mark it as a favorite.",
+          "tooltip": "Mark as favorite",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards?starred']",
+          "content": "Starred dashboards appear under \"Starred\" in the navigation menu.",
+          "tooltip": "Starred dashboards",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Command palette trigger']",
+          "content": "You can search for dashboards, applications, and settings from the search bar.  Think of this as a shortcut when you know exactly what you're looking for; you don't need to use the navigation menu to get there... just start typing!",
+          "tooltip": "Search bar",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main",
+          "content": "Dashboards are the main focus of Grafana.  They take up the center section of the screen.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Close menu']",
+          "content": "Start by closing the navigation menu to make more room for the dashboard.  It's always available to reopen in the context menu at the upper left of Grafana.",
+          "tooltip": "Close navigation menu",
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-25951",
+      "title": "Panels",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "In Grafana, a [*dashboard*](https://grafana.com/docs/grafana/latest/fundamentals/dashboards-overview/) is a set of one or more panels, arranged in rows, that gives you an at‑a‑glance view of related information.\n\nDashboards contain *panels* that show your data. These are the \"building blocks\" of a dashboard. They can be resized and moved around the dashboard so your data is presented in a logical and beautiful way.\n\nEach panel can query data from one (or more) *data sources*. This means that you can show data from multiple different places in a single panel. (We'll look more at data sources in a future tutorial.)\n\nFor now, let's see what panels can do."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[title=\"London\"]:nth-match(1)",
+          "content": "The first panel on this page is a [_stat panel_](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/visualizations/stat/).  Stat panels show a single value for each query, representing a single value in time.  These are useful for showing things like the current state of a service or the most recent value from a metric.  (They can optionally have trend lines to give some historical data as well.)",
+          "tooltip": "Stat panel",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='uplot-main-div']:nth-match(2)",
+          "content": "Next to the stat panel is a [_time series_](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/visualizations/time-series/) panel.  Time series panels show values over time, and can show multiple data sets in a single graph.",
+          "tooltip": "Time series panel",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header ']:contains('OpenStreetMap contributors')",
+          "content": "Grafana isn't limited to showing numerical data.  The world map on this dashboard is the [_geomap_ panel](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/visualizations/geomap/).  Geomaps can show map data such as the locations of aircraft or data centers, and can use icons, colors, and size to give more information about what is being represented.\n\n[Jay] this one needed a more advance selector it could be generated after a few record clicks but we will look at the selector alogirthm and see if we an improve this",
+          "tooltip": "Geomap panel",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "These are just a few examples of panels that are preinstalled with Grafana. But there are [more than 100 available visualization panels](https://grafana.com/grafana/plugins/panel-plugins/) that can be added to customize your dashboards."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-65596",
+      "title": "Finding relevant information",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "All dashboards in Grafana have a built-in time range selector.  This lets you change the view of your data to the most relevant time.\n\nTry changing the time range to \"Last 30 minutes\".",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid TimePicker Open Button']",
+              "tooltip": "Open the time range picker"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "label:contains('Last 30 minutes')",
+              "tooltip": "Change the time range to \"Last 30 minutes\""
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Dashboards can also have [_variables_](https://grafana.com/docs/grafana/latest/visualizations/dashboards/variables/).  Variables let you filter the information on the dashboard to what is most relevant to you.\n\nUse the \"Location\" variable to add New York to the dashboard.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "input[data-testid='data-testid Dashboard template variables Variable Value DropDown value link text London-input']",
+              "tooltip": "Open the \"Location\" variable dropdown"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Select option']:contains('New_York')",
+              "tooltip": "Click \"New York\""
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Panels can be placed into _rows_ in dashboards. This lets you hide and display information quickly."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid dashboard-row-title-Forecast for today + 1 days']",
+          "content": "Click the \"Forecast for today + 1 days\" row to collapse it.",
+          "tooltip": "Row"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "# Conclusion\n\nGrafana provides you with tools to visualize data in meaningful ways and lets you filter to show the most relevant data.\n\nIn this tutorial, we've seen how to navigate Grafana and how to open a dashboard.  We looked at several built-in visualization panel options.  We also saw how to filter data based on time and other variables."
+    }
+  ],
+  "match": {
+    "urlPrefix": [],
+    "tags": []
+  }
+}
