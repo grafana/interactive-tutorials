@@ -1,149 +1,152 @@
-# Interactive Tutorial System Architecture
+# Interactive Guide System Architecture
 
 ## Overview
-The interactive tutorial system is a React-based framework for creating guided, executable documentation within Grafana. It transforms structured JSON documentation into interactive experiences with real Grafana UI manipulation.
 
-## Core Components
+The interactive guide system is a React-based framework for creating guided, executable documentation within Grafana. It transforms structured **JSON guides** into interactive experiences with real Grafana UI manipulation.
 
-### Content Processing Pipeline
-1. **JSON Input**: Structured JSON with interactive properties
-2. **Content Parser**: Converts JSON structure to React component data
-3. **Content Renderer** (`content-renderer.tsx`): Renders React components
-4. **Interactive Components**: Execute real actions in Grafana UI
+> **Documentation**: See [docs/json-guide-format.md](../docs/json-guide-format.md) for the complete JSON format reference.
 
-### Component Hierarchy
+## Content Pipeline
+
+```
+JSON Guide File
+    ↓
+JSON Parser (json-parser.ts)
+    ↓
+Block Tree (typed JsonBlock[])
+    ↓
+Content Renderer (content-renderer.tsx)
+    ↓
+React Components
+    ↓
+Interactive UI with Grafana Integration
+```
+
+## Block Type Hierarchy
+
+```
+JsonBlock (union type)
+├── Content Blocks
+│   ├── markdown - Formatted text content
+│   ├── image - Embedded images
+│   └── video - YouTube/native video
+│
+├── Interactive Blocks
+│   ├── interactive - Single action (highlight, button, formfill, navigate, hover)
+│   ├── multistep - Automated multi-action sequence
+│   └── guided - User-performed sequence with detection
+│
+├── Structural Blocks
+│   ├── section - Grouped steps with "Do Section"
+│   ├── conditional - Runtime condition branching
+│   └── assistant - AI customization wrapper
+│
+└── Assessment Blocks
+    ├── quiz - Knowledge check with choices
+    └── input - Collect user response as variable
+```
+
+## Component Hierarchy
+
 ```
 ContentRenderer
-├── InteractiveSection (sequence container)
-│   ├── InteractiveStep (individual actions)
-│   └── InteractiveMultiStep (bundled actions)
-├── InteractiveStep (standalone)
-└── InteractiveMultiStep (standalone)
+├── MarkdownBlock
+├── ImageBlock
+├── VideoBlock
+├── InteractiveSection
+│   ├── InteractiveStep
+│   ├── InteractiveMultiStep
+│   ├── InteractiveGuided
+│   └── QuizBlock / InputBlock
+├── ConditionalBlock
+│   └── (renders whenTrue or whenFalse blocks)
+└── AssistantBlock
+    └── (wraps child blocks with AI customization)
 ```
 
-### State Management
+## State Management
+
 - **SequentialRequirementsManager**: Global singleton managing step eligibility
 - **InteractiveStateManager**: Handles action execution state
 - **Local Component State**: Individual step completion and UI state
+- **Variable Storage**: Input block responses stored for `{{variable}}` substitution
 - **Persistence**: Section completion stored in localStorage
 
-### Action Execution System
-- **Action Handlers**: Specialized classes for each action type
-  - `FocusHandler`: highlight actions (click + visual feedback)
-  - `ButtonHandler`: button actions (text-based button finding)
-  - `FormFillHandler`: formfill actions (complex form interaction)
-  - `NavigateHandler`: navigate actions (internal/external navigation)
-- **Sequence Manager**: Coordinates multi-step execution
-- **Navigation Manager**: Handles UI visibility and highlighting
+## Action Execution System
 
-## Data Flow
+### Action Handlers
 
-### Requirements Checking Flow
-1. **Step Eligibility**: SequentialRequirementsManager determines if step can be checked
-2. **Objectives Check**: If objectives met, auto-complete step
-3. **Requirements Check**: If eligible and objectives not met, check requirements
-4. **State Update**: Update step state and notify manager
-5. **UI Update**: Render appropriate button states and messages
+| Handler           | Action Type  | Purpose                              |
+|-------------------|--------------|--------------------------------------|
+| `FocusHandler`    | `highlight`  | Click + visual feedback              |
+| `ButtonHandler`   | `button`     | Text-based button finding            |
+| `FormFillHandler` | `formfill`   | Complex form interaction             |
+| `NavigateHandler` | `navigate`   | Internal/external navigation         |
+| `HoverHandler`    | `hover`      | Trigger hover states                 |
+| `GuidedHandler`   | `guided`     | User-performed action detection      |
 
-### Action Execution Flow
+### Execution Flow
+
 1. **Pre-Check**: Verify requirements before execution
 2. **Show Phase**: Highlight target element (if applicable)
 3. **Do Phase**: Execute actual action
-4. **Post-Verify**: Check post-conditions if specified
-5. **Completion**: Mark step complete and trigger dependent step checks
+4. **Post-Verify**: Check post-conditions if specified (`verify` property)
+5. **Completion**: Mark step complete, trigger dependent step checks
+
+## Requirements System
+
+### Checking Flow
+
+1. **Objectives Check**: If objectives met → auto-complete step
+2. **Step Eligibility**: SequentialRequirementsManager determines if step can execute
+3. **Requirements Check**: Validate all requirements pass
+4. **State Update**: Update step state and notify manager
+5. **UI Update**: Render appropriate button states and messages
+
+### Requirement Categories
+
+- **DOM**: `exists-reftarget`, `navmenu-open`
+- **Page**: `on-page:/path`
+- **User**: `is-admin`, `is-editor`, `has-role:X`, `has-permission:X`
+- **Data**: `has-datasources`, `has-datasource:X`, `has-plugin:X`
+- **Flow**: `section-completed:id`, `var-name:value`
+- **System**: `has-feature:X`, `min-version:X`, `in-environment:X`
 
 ## Key Design Patterns
 
-### Functional Programming Approach
-- **Pure Functions**: Requirements checking uses pure functions when possible
-- **Immutable State**: State updates use immutable patterns
-- **Composed Utilities**: Small, focused functions composed for complex behavior
-- **Separation of Concerns**: Business logic separated from UI rendering
-
 ### Hook-Based Architecture
-- **useInteractiveElements**: Core hook providing all interactive functionality
+
+- **useInteractiveElements**: Core hook for interactive functionality
 - **useRequirementsChecker**: Individual step requirements validation
 - **useStepChecker**: Unified requirements and objectives checking
 - **useSequentialRequirements**: Global sequential step management
 
-### Error Handling Philosophy
+### Error Handling
+
 - **Fail-Fast**: Invalid configurations cause immediate, clear errors
-- **Graceful Degradation**: System continues working when individual components fail
-- **User-Friendly Messages**: Technical errors converted to actionable user guidance
-- **Recovery Options**: Automatic fixes provided where technically possible
-
-## Configuration System
-
-### Interactive Configuration (`INTERACTIVE_CONFIG`)
-- **Timing Delays**: Configurable delays for different action types
-- **Retry Logic**: Maximum retry counts and delay intervals
-- **Performance Tuning**: Debounce intervals and timeout values
-- **Visual Feedback**: Animation durations and visual effect timings
-
-### Requirements System
-- **Built-in Checks**: Core system requirements (navigation, DOM elements)
-- **Extensible Checks**: New requirement types can be added easily
-- **API Integration**: Checks integrate with Grafana APIs for real state
-- **Caching Strategy**: Results cached to prevent excessive API calls
+- **Graceful Degradation**: System continues when individual components fail
+- **User-Friendly Messages**: Technical errors converted to actionable guidance
+- **Recovery Options**: Automatic fixes (e.g., `navmenu-open` "Fix this" button)
 
 ## Integration Points
 
-### Grafana Integration
-- **LocationService**: Internal navigation using Grafana's routing
-- **DataSourceService**: Data source checking and management
-- **Permission System**: User role and permission validation
-- **Theme System**: Visual styling adapts to Grafana themes
+### Grafana Services
 
-### External Dependencies
-- **@grafana/ui**: UI components for consistent styling
-- **@grafana/runtime**: Core Grafana services and utilities
-- **@grafana/data**: Data structures and type definitions
-- **React**: Component framework and state management
+- **LocationService**: Internal navigation
+- **DataSourceService**: Data source checking
+- **Permission System**: User role validation
+- **Theme System**: Visual styling adaptation
 
-## Extension Points
+## Performance
 
-### Adding New Action Types
-1. Create action handler class implementing standard interface
-2. Add action type to `executeInteractiveAction` switch statement
-3. Update content parser to recognize new action types
-4. Add React component if specialized rendering needed
-
-### Adding New Requirements
-1. Add requirement check function to `requirements-checker.utils.ts`
-2. Add routing in `routeUnifiedCheck` function
-3. Add user-friendly error message in `requirement-explanations.ts`
-4. Test with existing interactive elements
-
-### Adding New UI Features
-1. Extend content schema to support new features
-2. Add React component props for new features
-3. Implement rendering logic in content renderer
-4. Add CSS styling in appropriate style files
-
-## Performance Characteristics
-
-### Scalability
-- **Large Tutorials**: System handles 50+ interactive steps efficiently
-- **Complex Requirements**: Multiple requirement checks run in parallel
-- **DOM Monitoring**: Selective monitoring prevents performance degradation
-- **Memory Management**: Proper cleanup prevents memory leaks
-
-### Optimization Strategies
 - **Lazy Loading**: Requirements checked only when steps become eligible
-- **Debounced Updates**: Rapid changes batched to prevent excessive processing
-- **Selective Re-checking**: Only relevant steps re-evaluated on state changes
-- **Caching**: API results and DOM queries cached appropriately
+- **Debounced Updates**: Rapid changes batched
+- **Caching**: API results and DOM queries cached
+- **Scalability**: Handles 50+ interactive steps efficiently
 
-## Security Considerations
+## Security
 
-### Content Security Policy (CSP)
-- **Inline Styles**: Uses CSS custom properties instead of inline styles
-- **Script Execution**: No dynamic script execution in tutorial content
-- **External Resources**: External URLs opened with security attributes
-- **Markdown Content**: Uses safe Markdown rendering for text content
-
-### User Safety
+- **Safe Markdown**: No dynamic script execution in content
 - **Action Validation**: All actions validated before execution
 - **Permission Checking**: User permissions verified before privileged actions
-- **State Isolation**: Tutorial execution doesn't interfere with user work
-- **Graceful Failure**: Failed actions don't leave system in broken state
+- **State Isolation**: Guide execution doesn't interfere with user work

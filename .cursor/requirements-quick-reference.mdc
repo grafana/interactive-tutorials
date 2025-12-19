@@ -1,495 +1,78 @@
 ---
 alwaysApply: true
 ---
-# Requirements and Objectives Quick Reference for AI
+# Requirements Quick Reference for AI
 
-## Syntax Rules
-- **Requirements**: `requirements: ["req1", "req2", "req3"]` (ALL must pass)
-- **Objectives**: `objectives: ["obj1", "obj2", "obj3"]` (ALL must pass, auto-completes when met)
-- **Priority**: Objectives always win over requirements
-- **Verification**: `verify: "condition"` (checked after action execution)
+> **Full documentation**: See [docs/requirements-reference.md](../docs/requirements-reference.md)
 
-## Essential Requirements (Use These Frequently)
+## Syntax
 
-### DOM and Navigation
-- `exists-reftarget` - **ALWAYS include for DOM actions** (highlight, formfill)
-- `navmenu-open` - **Include for navigation menu interactions** (auto-fixable)
-- `on-page:/path` - **Include for page-specific actions**
+Requirements are JSON arrays. All must pass:
+```json
+"requirements": ["navmenu-open", "exists-reftarget", "on-page:/dashboards"]
+```
 
-### User and Permissions
-- `is-admin` - Grafana admin required
-- `has-role:editor` - Editor permissions or higher
-- `has-role:viewer` - Any logged-in user
-- `has-permission:resource:action` - Specific permission
+## Essential Requirements
 
-### Data and Content
-- `has-datasources` - At least one data source exists
-- `has-datasource:name` - Specific data source by name
-- `has-datasource:type:prometheus` - Prometheus-type data source
-- `has-plugin:plugin-id` - Plugin installed and enabled
-- `has-dashboard-named:title` - Dashboard with specific title
+| Requirement          | When to Use                                     |
+|----------------------|-------------------------------------------------|
+| `exists-reftarget`   | **Always** for DOM actions (highlight, formfill)|
+| `navmenu-open`       | Navigation menu interactions                    |
+| `on-page:/path`      | Page-specific actions                           |
+| `is-admin`           | Admin-only features                             |
+| `has-datasource:X`   | Data source dependent actions                   |
+| `has-plugin:id`      | Plugin dependent features                       |
 
-### Guide Flow
-- `section-completed:section-id` - Previous section must be complete
+## Common Combinations
 
-## Common Requirement Combinations
-
-### Navigation Actions
+**Navigation elements:**
 ```json
 "requirements": ["navmenu-open", "exists-reftarget"]
 ```
 
-### Admin Actions
+**Dashboard page actions:**
 ```json
-"requirements": ["is-admin", "navmenu-open", "exists-reftarget"]
+"requirements": ["on-page:/dashboard", "exists-reftarget"]
 ```
 
-### Data Source Actions
+**Admin actions:**
 ```json
-"requirements": ["has-datasource:prometheus", "on-page:/explore", "exists-reftarget"]
+"requirements": ["is-admin", "on-page:/admin", "exists-reftarget"]
 ```
 
-### Dashboard Actions
+**Data source actions:**
 ```json
-"requirements": ["has-datasources", "on-page:/dashboard", "exists-reftarget"]
+"requirements": ["has-datasource:prometheus", "exists-reftarget"]
 ```
 
-### Plugin Actions
+## Objectives (Auto-Completion)
+
+Same syntax, different behavior—auto-completes when met:
 ```json
-"requirements": ["has-plugin:plugin-id", "is-admin", "exists-reftarget"]
+"objectives": ["has-datasource:prometheus"]
 ```
 
-## Objectives Patterns
-
-### Auto-Complete When Already Done
-```html
-<!-- Skip data source setup if already configured -->
-data-objectives="has-datasource:type:prometheus"
-
-<!-- Skip navigation if already on target page -->
-data-objectives="on-page:/dashboard/new"
-
-<!-- Skip plugin installation if already installed -->
-data-objectives="has-plugin:grafana-clock-panel"
-
-<!-- Skip dashboard creation if already exists -->
-data-objectives="has-dashboard-named:My Dashboard"
-```
-
-### Section-Level Auto-Completion
-```html
-<!-- Entire section skipped if objective met -->
-<span id="setup-prometheus" 
-      data-targetaction="sequence" 
-      data-objectives="has-datasource:type:prometheus">
-  <!-- All child steps marked complete if Prometheus exists -->
-</span>
-```
-
-## AI Generation Templates
-
-### Basic Step Template
-```html
-<li class="interactive" 
-    data-targetaction="{ACTION_TYPE}" 
-    data-reftarget="{TARGET_REFERENCE}"
-    {data-targetvalue="{VALUE}" if formfill}
-    data-requirements="{REQUIREMENTS_LIST}"
-    {data-objectives="{OBJECTIVES_LIST}" if applicable}
-    {data-verify="{VERIFICATION_CONDITION}" if state-changing}
-    {data-hint="{USER_HELPFUL_DESCRIPTION}"}
-    {data-skippable="true" if permissions might fail}
-    {data-doit="false" if educational only}>
-  
-  {Interactive comment if complex UI element}
-  Human-readable step description
-</li>
-```
-
-### Section Template
-```html
-<span id="{unique-section-id}" 
-      class="interactive" 
-      data-targetaction="sequence" 
-      data-reftarget="span#{unique-section-id}"
-      {data-requirements="{SECTION_REQUIREMENTS}"}
-      {data-objectives="{SECTION_OBJECTIVES}"}
-      {data-hint="{SECTION_DESCRIPTION}"}>
-  
-  <h3>{Section Title}</h3>
-  <p>{Section description explaining goals}</p>
-  
-  <ul>
-    {Child interactive steps}
-  </ul>
-</span>
-```
-
-### Multi-step Template
-```html
-<li class="interactive" 
-    data-targetaction="multistep"
-    {data-requirements="{OVERALL_REQUIREMENTS}"}
-    {data-objectives="{OVERALL_OBJECTIVES}"}
-    {data-hint="{WHAT_THIS_ACCOMPLISHES}"}>
-  
-  {Internal action spans - not rendered visually}
-  <span class="interactive" data-targetaction="{TYPE}" data-reftarget="{TARGET}" {data-requirements="{REQ}"}></span>
-  <span class="interactive" data-targetaction="{TYPE}" data-reftarget="{TARGET}" {data-requirements="{REQ}"}></span>
-  
-  {User-visible description of what happens}
-</li>
-```
-
-### Interactive Comment Template
-```html
-<span class="interactive-comment">
-  The <strong>{UI_ELEMENT_NAME}</strong> {purpose/function explanation}. 
-  {Context about why it's important}. Use it for <code>{technical_features}</code> 
-  to {user_benefit_or_goal}.
-</span>
-```
-
-## Stable Selector Library
-
-### Navigation Selectors
-```
-Home: a[data-testid='data-testid Nav menu item'][href='/']
-Dashboards: a[data-testid='data-testid Nav menu item'][href='/dashboards']
-Explore: a[data-testid='data-testid Nav menu item'][href='/explore']
-Alerting: a[data-testid='data-testid Nav menu item'][href='/alerting']
-Connections: a[data-testid='data-testid Nav menu item'][href='/connections']
-Admin: a[data-testid='data-testid Nav menu item'][href='/admin']
-Plugins: a[data-testid='data-testid Nav menu item'][href='/admin/plugins']
-```
-
-### Dashboard Selectors
-```
-Add Panel: button[data-testid='add-panel'] OR "Add panel"
-Save Dashboard: button[data-testid='save-dashboard'] OR "Save" OR "Save dashboard"
-Dashboard Title: input[data-testid='dashboard-title-input']
-Panel Edit: button[data-testid='panel-edit']
-Panel Title: input[data-testid='Panel editor option pane field input Title']
-```
-
-### Query Editor Selectors
-```
-Query Editor: textarea[data-testid='query-editor'] OR textarea.inputarea
-Code Mode: div[data-testid="QueryEditorModeToggle"] label[for^="option-code-radiogroup"]
-Run Query: button[data-testid='run-query'] OR "Run query" OR "Refresh"
-Visualization Picker: button[data-testid='toggle-viz-picker']
-```
-
-### Data Source Selectors
-```
-Add Data Source: "Add new data source"
-Data Source Name: input[id='basic-settings-name']
-Connection URL: input[id='connection-url']
-Save & Test: "Save & test"
-Prometheus Type: a[href='/connections/datasources/prometheus']
-```
-
-## Error Handling Patterns
-
-### Auto-Fixable Requirements
-- `navmenu-open` - Shows "Fix this" button that opens navigation
-- Navigation expansion - Can auto-expand parent navigation sections
-
-### User-Fixable Requirements  
-- `is-admin` - Shows message about needing admin login
-- `has-datasource:name` - Shows message about configuring data source
-- `on-page:/path` - Shows message about navigating to correct page
-
-### Skippable Requirements
-- Use `data-skippable="true"` when requirements might legitimately fail
-- Common for admin-only features, plugin-dependent features
-- Shows "Skip" button when requirements not met
-
-## Performance Guidelines
-
-### Efficient Selectors
-✅ **Fast**: `#id`, `button[data-testid='name']`, `a[href='/path']`
-❌ **Slow**: `.class1 .class2 .class3`, `div > div > button`, `[class*='partial']`
-
-### Requirement Optimization
-- **Group related requirements**: `navmenu-open,exists-reftarget` 
-- **Use specific requirements**: `has-datasource:prometheus` vs `has-datasources`
-- **Cache expensive checks**: Use objectives for expensive state checks
-- **Avoid redundant checks**: Don't duplicate requirements across steps
-
-## Quality Assurance Checklist
-
-### For Every Interactive Element
-- [ ] Includes appropriate requirements for action type
-- [ ] Uses stable, testable selectors
-- [ ] Has helpful hint text for users
-- [ ] Includes verification for state-changing actions
-- [ ] Handles error cases gracefully
-
-### For Sections
-- [ ] Has unique, stable ID
-- [ ] Includes section-level requirements/objectives
-- [ ] Child steps have logical progression
-- [ ] Error handling allows graceful failure
-- [ ] Progress can be resumed across sessions
-
-### For Complex Workflows
-- [ ] Requirements checked at appropriate granularity
-- [ ] Multi-steps are truly atomic operations
-- [ ] Error messages are specific and actionable
-- [ ] Alternative paths provided for different user states
-- [ ] Performance impact is reasonable# Requirements and Objectives Quick Reference for AI
-
-## Syntax Rules
-- **Requirements**: `data-requirements="req1,req2,req3"` (ALL must pass)
-- **Objectives**: `data-objectives="obj1,obj2,obj3"` (ALL must pass, auto-completes when met)
-- **Priority**: Objectives always win over requirements
-- **Verification**: `data-verify="condition"` (checked after action execution)
-
-## Essential Requirements (Use These Frequently)
-
-### DOM and Navigation
-- `exists-reftarget` - **ALWAYS include for DOM actions** (highlight, formfill)
-- `navmenu-open` - **Include for navigation menu interactions** (auto-fixable)
-- `on-page:/path` - **Include for page-specific actions**
-
-### User and Permissions
-- `is-admin` - Grafana admin required
-- `has-role:editor` - Editor permissions or higher
-- `has-role:viewer` - Any logged-in user
-- `has-permission:resource:action` - Specific permission
-
-### Data and Content
-- `has-datasources` - At least one data source exists
-- `has-datasource:name` - Specific data source by name
-- `has-datasource:type:prometheus` - Prometheus-type data source
-- `has-plugin:plugin-id` - Plugin installed and enabled
-- `has-dashboard-named:title` - Dashboard with specific title
-
-### Guide Flow
-- `section-completed:section-id` - Previous section must be complete
-
-## Common Requirement Combinations
-
-### Navigation Actions
-```html
-data-requirements="navmenu-open,exists-reftarget"
-```
-
-### Admin Actions
-```html
-data-requirements="is-admin,navmenu-open,exists-reftarget"
-```
-
-### Data Source Actions
-```html
-data-requirements="has-datasource:prometheus,on-page:/explore,exists-reftarget"
-```
-
-### Dashboard Actions
-```html
-data-requirements="has-datasources,on-page:/dashboard,exists-reftarget"
-```
-
-### Plugin Actions
-```html
-data-requirements="has-plugin:plugin-id,is-admin,exists-reftarget"
-```
-
-## Objectives Patterns
-
-### Auto-Complete When Already Done
-```html
-<!-- Skip data source setup if already configured -->
-data-objectives="has-datasource:type:prometheus"
-
-<!-- Skip navigation if already on target page -->
-data-objectives="on-page:/dashboard/new"
-
-<!-- Skip plugin installation if already installed -->
-data-objectives="has-plugin:grafana-clock-panel"
-
-<!-- Skip dashboard creation if already exists -->
-data-objectives="has-dashboard-named:My Dashboard"
-```
-
-### Section-Level Auto-Completion
-```json
-// Entire section skipped if objective met
-{
-  "type": "section",
-  "id": "setup-prometheus",
-  "title": "Setup Prometheus",
-  "objectives": ["has-datasource:type:prometheus"],
-  "blocks": [
-    // All child steps marked complete if Prometheus exists
-  ]
-}
-```
-
-## AI Generation Templates
-
-### Basic Step Template
-```json
-{
-  "type": "interactive",
-  "action": "ACTION_TYPE",
-  "reftarget": "TARGET_REFERENCE",
-  "targetvalue": "VALUE_FOR_FORMFILL",
-  "requirements": ["REQUIREMENTS_LIST"],
-  "objectives": ["OBJECTIVES_LIST"],
-  "verify": "VERIFICATION_CONDITION",
-  "tooltip": "USER_HELPFUL_DESCRIPTION",
-  "skippable": true,
-  "doIt": false,
-  "content": "Human-readable step description"
-}
-```
-
-### Section Template
-```json
-{
-  "type": "section",
-  "id": "unique-section-id",
-  "title": "Section Title",
-  "requirements": ["SECTION_REQUIREMENTS"],
-  "objectives": ["SECTION_OBJECTIVES"],
-  "tooltip": "SECTION_DESCRIPTION",
-  "blocks": [
-    {
-      "type": "markdown",
-      "content": "Section description explaining goals"
-    },
-    {
-      "type": "interactive",
-      "action": "..."
-    }
-  ]
-}
-```
-
-### Multi-step Template
-```json
-{
-  "type": "multistep",
-  "requirements": ["OVERALL_REQUIREMENTS"],
-  "objectives": ["OVERALL_OBJECTIVES"],
-  "tooltip": "WHAT_THIS_ACCOMPLISHES",
-  "content": "User-visible description of what happens",
-  "steps": [
-    {
-      "action": "TYPE",
-      "reftarget": "TARGET",
-      "requirements": ["REQ"]
-    },
-    {
-      "action": "TYPE",
-      "reftarget": "TARGET",
-      "requirements": ["REQ"]
-    }
-  ]
-}
-```
-
-### Interactive Comment Template
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "SELECTOR",
-  "doIt": false,
-  "requirements": ["exists-reftarget"],
-  "tooltip": "The UI_ELEMENT_NAME purpose/function explanation. Context about why it's important. Use it for technical_features to user_benefit_or_goal.",
-  "content": "Learn about UI_ELEMENT_NAME"
-}
-```
-
-## Stable Selector Library
-
-### Navigation Selectors
-```
-Home: a[data-testid='data-testid Nav menu item'][href='/']
-Dashboards: a[data-testid='data-testid Nav menu item'][href='/dashboards']
-Explore: a[data-testid='data-testid Nav menu item'][href='/explore']
-Alerting: a[data-testid='data-testid Nav menu item'][href='/alerting']
-Connections: a[data-testid='data-testid Nav menu item'][href='/connections']
-Admin: a[data-testid='data-testid Nav menu item'][href='/admin']
-Plugins: a[data-testid='data-testid Nav menu item'][href='/admin/plugins']
-```
-
-### Dashboard Selectors
-```
-Add Panel: button[data-testid='add-panel'] OR "Add panel"
-Save Dashboard: button[data-testid='save-dashboard'] OR "Save" OR "Save dashboard"
-Dashboard Title: input[data-testid='dashboard-title-input']
-Panel Edit: button[data-testid='panel-edit']
-Panel Title: input[data-testid='Panel editor option pane field input Title']
-```
-
-### Query Editor Selectors
-```
-Query Editor: textarea[data-testid='query-editor'] OR textarea.inputarea
-Code Mode: div[data-testid="QueryEditorModeToggle"] label[for^="option-code-radiogroup"]
-Run Query: button[data-testid='run-query'] OR "Run query" OR "Refresh"
-Visualization Picker: button[data-testid='toggle-viz-picker']
-```
-
-### Data Source Selectors
-```
-Add Data Source: "Add new data source"
-Data Source Name: input[id='basic-settings-name']
-Connection URL: input[id='connection-url']
-Save & Test: "Save & test"
-Prometheus Type: a[href='/connections/datasources/prometheus']
-```
-
-## Error Handling Patterns
-
-### Auto-Fixable Requirements
-- `navmenu-open` - Shows "Fix this" button that opens navigation
-- Navigation expansion - Can auto-expand parent navigation sections
-
-### User-Fixable Requirements  
-- `is-admin` - Shows message about needing admin login
-- `has-datasource:name` - Shows message about configuring data source
-- `on-page:/path` - Shows message about navigating to correct page
-
-### Skippable Requirements
-- Use `skippable: true` when requirements might legitimately fail
-- Common for admin-only features, plugin-dependent features
-- Shows "Skip" button when requirements not met
-
-## Performance Guidelines
-
-### Efficient Selectors
-✅ **Fast**: `#id`, `button[data-testid='name']`, `a[href='/path']`
-❌ **Slow**: `.class1 .class2 .class3`, `div > div > button`, `[class*='partial']`
-
-### Requirement Optimization
-- **Group related requirements**: `navmenu-open`, `exists-reftarget`
-- **Use specific requirements**: `has-datasource:prometheus` vs `has-datasources`
-- **Cache expensive checks**: Use objectives for expensive state checks
-- **Avoid redundant checks**: Don't duplicate requirements across steps
-
-## Quality Assurance Checklist
-
-### For Every Interactive Element
-- [ ] Includes appropriate requirements for action type
-- [ ] Uses stable, testable selectors
-- [ ] Has helpful hint text for users (`tooltip`)
-- [ ] Includes verification for state-changing actions (`verify`)
-- [ ] Handles error cases gracefully
-
-### For Sections
-- [ ] Has unique, stable ID
-- [ ] Includes section-level requirements/objectives
-- [ ] Child steps have logical progression
-- [ ] Error handling allows graceful failure
-- [ ] Progress can be resumed across sessions
-
-### For Complex Workflows
-- [ ] Requirements checked at appropriate granularity
-- [ ] Multi-steps are truly atomic operations
-- [ ] Error messages are specific and actionable
-- [ ] Alternative paths provided for different user states
-- [ ] Performance impact is reasonable
+Use for:
+- Skip data source setup if exists
+- Skip navigation if already on page
+- Skip plugin installation if installed
+
+## All Requirement Types
+
+### Fixed (no arguments)
+- `exists-reftarget`, `navmenu-open`, `form-valid`
+- `is-admin`, `is-editor`, `is-logged-in`
+- `has-datasources`, `dashboard-exists`
+
+### Parameterized (require argument)
+- `on-page:/path`
+- `has-datasource:name`
+- `has-plugin:id`
+- `has-role:role`
+- `has-permission:permission`
+- `has-feature:toggle`
+- `has-dashboard-named:title`
+- `min-version:x.y.z`
+- `in-environment:env`
+- `section-completed:id`
+- `var-name:value`
