@@ -1,84 +1,107 @@
 ---
 alwaysApply: true
-description: Overview of this repository.
+description: Overview of this repository and guide authoring documentation.
 ---
 
-# AI Interactive Reference Documentation
+# Interactive Guides Documentation
 
-This folder contains structured reference documentation specifically designed for AI systems to understand and generate interactive Grafana guides.
+This repository contains interactive Grafana guides in JSON format, along with comprehensive documentation for AI systems to generate and assist with guide authoring.
+
+## Documentation Structure
+
+### Primary Documentation (`docs/`)
+
+Comprehensive reference documentation:
+
+| Document | Purpose |
+|----------|---------|
+| [json-guide-format.md](docs/json-guide-format.md) | Root structure and block overview |
+| [interactive-types.md](docs/interactive-types.md) | All block and action types |
+| [json-block-properties.md](docs/json-block-properties.md) | Complete property reference |
+| [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
+| [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
+
+### AI Quick References (`.cursor/`)
+
+Slim references for AI assistance:
+
+| File | Purpose |
+|------|---------|
+| [ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) | **Start here** - Quick reference with links |
+| [action-types-reference.mdc](.cursor/action-types-reference.mdc) | Action type decision tree |
+| [requirements-quick-reference.mdc](.cursor/requirements-quick-reference.mdc) | Requirement patterns |
+| [selector-library.mdc](.cursor/selector-library.mdc) | Common selectors |
+| [best-practices.mdc](.cursor/best-practices.mdc) | Authoring best practices |
+
+### Patterns and Examples (`.cursor/`)
+
+| File | Purpose |
+|------|---------|
+| [common-workflows.mdc](.cursor/common-workflows.mdc) | Reusable workflow templates |
+| [tutorial-patterns.mdc](.cursor/tutorial-patterns.mdc) | Guide structure patterns |
+| [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) | Full guide example |
+| [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc) | Handling complex scenarios |
+
+### Commands (`.cursor/commands/`)
+
+Agent commands for common tasks:
+
+| Command | Purpose |
+|---------|---------|
+| [new.md](.cursor/commands/new.md) | Create new guide |
+| [lint.md](.cursor/commands/lint.md) | Validate guide JSON |
+| [check.md](.cursor/commands/check.md) | Check guide quality |
+| [attack.md](.cursor/commands/attack.md) | Find issues in guide |
 
 ## Quick Start for AI
 
-### 1. System Understanding
-Start with [System Architecture](.cursor/system-architecture.mdc) to understand the overall framework.
+1. **Read** [ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) for essential patterns
+2. **Reference** [docs/json-guide-format.md](docs/json-guide-format.md) for structure
+3. **Use** [docs/requirements-reference.md](docs/requirements-reference.md) for requirements
+4. **Follow** [best-practices.mdc](.cursor/best-practices.mdc) for quality
 
-### 2. Action Types
-Review [Action Types Reference](.cursor/action-types-reference.mdc) for all supported interactive actions.
+## JSON Guide Format
 
-### 3. Requirements
-Use [Requirements Quick Reference](.cursor/requirements-quick-reference.mdc) for conditions and auto-completion.
+All guides use JSON format exclusively:
 
-### 4. Common Patterns
-Reference [Common Workflows](.cursor/common-workflows.mdc) and [Guide Patterns](guide-patterns.mdc) for standard structures.
+```json
+{
+  "id": "guide-id",
+  "title": "Guide Title",
+  "blocks": [
+    { "type": "markdown", "content": "Introduction text" },
+    { "type": "section", "id": "section-1", "title": "First Section", "blocks": [] }
+  ]
+}
+```
 
-### 5. Selectors
-Use [Selector Library](.cursor/selector-library.mdc) for stable, tested UI element selectors.
+## Essential Rules
 
-### 5a. Complex Selectors and Hover (NEW)
-Review [Complex Selectors and Hover](.cursor/complex-selectors-and-hover.mdc) for advanced targeting with `:has()`, `:contains()`, and hover interactions.
-
-### 6. Edge Cases
-Check [Edge Cases and Troubleshooting](.cursor/edge-cases-and-troubleshooting.mdc) for handling complex scenarios.
-
-### 7. Complete Example
-Study [Complete Example Guide](.cursor/complete-example-guide.mdc) for comprehensive implementation.
-
-### 8. Best Practices
-Study [best-practices.mdc](.cursor/best-practices.mdc) to understand how we 
-can help authors of interactive guides accomplish more, more quickly.
-
-### 9. Commands
-
-Study all files in the `.cursor/commands` directory for commands that can be provided to 
-Cursor or other agent to assist in editing.
-
-## File Organization
-
-### Core References
-- **system-architecture.mdc** - Technical system overview and component relationships
-- **action-types-reference.mdc** - All interactive action types with syntax and behavior
-- **requirements-quick-reference.mdc** - Requirements and objectives system with common patterns
-
-### Practical Guides
-- **guide-patterns.mdc** - Standard guide structures and content organization
-- **common-workflows.mdc** - Reusable workflow templates for common tasks
-- **selector-library.mdc** - Stable selectors for Grafana UI elements
-
-### Advanced Topics
-- **edge-cases-and-troubleshooting.mdc** - Handling complex scenarios and error cases
-- **complete-example-guide.mdc** - Full guide demonstrating all features
-
-## AI Generation Guidelines
-
-### Essential Rules
 1. **Always include `exists-reftarget`** for DOM interactions
 2. **Use `navmenu-open`** for navigation menu elements
 3. **Include page requirements** for page-specific actions
-4. **Add verification** for state-changing actions
-5. **Provide helpful hints** for user guidance
+4. **Use stable selectors** - prefer `data-testid` over CSS classes
+5. **Add tooltips** for educational value
+6. **Make steps skippable** where appropriate
 
-### Quality Standards
-- **Stable Selectors**: Prefer `data-testid` and semantic attributes
-- **Clear Requirements**: Include all necessary preconditions
-- **Educational Value**: Use interactive comments for complex elements
-- **Error Handling**: Make appropriate steps skippable
-- **Progressive Structure**: Build from simple to complex
+## Block Types
 
-### Content Structure
-- **Sections**: Use for multi-step workflows with checkpoints
-- **Multi-steps**: Use for atomic multi-action workflows
-- **Show-only**: Use for educational explanations
-- **Regular steps**: Use for individual user actions
+| Category | Types |
+|----------|-------|
+| Content | `markdown`, `image`, `video` |
+| Interactive | `interactive`, `multistep`, `guided` |
+| Structural | `section`, `conditional` |
+| Assessment | `quiz`, `input` |
+
+## Action Types
+
+| Action | Use Case |
+|--------|----------|
+| `highlight` | Click by CSS selector |
+| `button` | Click by button text |
+| `formfill` | Enter text in fields |
+| `navigate` | Change pages |
+| `hover` | Reveal hover-dependent UI |
 
 ## Quick Reference Cards
 
@@ -90,104 +113,8 @@ Fill form field → formfill action
 Navigate to page → navigate action
 Reveal hover-hidden UI → hover action
 Multiple related actions → multistep action
-Multi-step workflow → sequence action
-Explain interface → highlight with data-doit="false"
-Hover then click → multistep with hover + button/highlight
-Find by text content → use :contains("text") in selector
-Find by structure → use :has(child) in selector
-```
-
-### Requirements Selection
-```
-DOM interaction → exists-reftarget
-Navigation element → navmenu-open
-Page-specific → on-page:/path
-Admin feature → is-admin
-Data source needed → has-datasource:type
-Plugin needed → has-plugin:id
-Sequential dependency → section-completed:id
-```
-
-# AI Interactive Reference Documentation
-
-This folder contains structured reference documentation specifically designed for AI systems to understand and generate interactive Grafana guides.
-
-## Quick Start for AI
-
-### 1. System Understanding
-Start with [System Architecture](system-architecture.mdc) to understand the overall framework.
-
-### 2. Action Types
-Review [Action Types Reference](action-types-reference.mdc) for all supported interactive actions.
-
-### 3. Requirements
-Use [Requirements Quick Reference](requirements-quick-reference.mdc) for conditions and auto-completion.
-
-### 4. Common Patterns
-Reference [Common Workflows](common-workflows.mdc) and [Guide Patterns](guide-patterns.mdc) for standard structures.
-
-### 5. Selectors
-Use [Selector Library](selector-library.mdc) for stable, tested UI element selectors.
-
-### 6. Edge Cases
-Check [Edge Cases and Troubleshooting](edge-cases-and-troubleshooting.mdc) for handling complex scenarios.
-
-### 7. Complete Example
-Study [Complete Example Guide](complete-example-guide.mdc) for comprehensive implementation.
-
-## File Organization
-
-### Core References
-- **system-architecture.mdc** - Technical system overview and component relationships
-- **action-types-reference.mdc** - All interactive action types with syntax and behavior
-- **requirements-quick-reference.mdc** - Requirements and objectives system with common patterns
-
-### Practical Guides
-- **guide-patterns.mdc** - Standard guide structures and content organization
-- **common-workflows.mdc** - Reusable workflow templates for common tasks
-- **selector-library.mdc** - Stable selectors for Grafana UI elements
-
-### Advanced Topics
-- **edge-cases-and-troubleshooting.mdc** - Handling complex scenarios and error cases
-- **complete-example-guide.mdc** - Full guide demonstrating all features
-
-## AI Generation Guidelines
-
-### Essential Rules
-1. **Always include `exists-reftarget`** for DOM interactions
-2. **Use `navmenu-open`** for navigation menu elements
-3. **Include page requirements** for page-specific actions
-4. **Add verification** for state-changing actions
-5. **Provide helpful hints** for user guidance
-
-### Quality Standards
-- **Stable Selectors**: Prefer `data-testid` and semantic attributes
-- **Clear Requirements**: Include all necessary preconditions
-- **Educational Value**: Use interactive comments for complex elements
-- **Error Handling**: Make appropriate steps skippable
-- **Progressive Structure**: Build from simple to complex
-
-### Content Structure
-- **Sections**: Use for multi-step workflows with checkpoints
-- **Multi-steps**: Use for atomic multi-action workflows
-- **Show-only**: Use for educational explanations
-- **Regular steps**: Use for individual user actions
-
-## Quick Reference Cards
-
-### Action Selection
-```
-Click button with stable text → button action
-Click element with stable selector → highlight action
-Fill form field → formfill action
-Navigate to page → navigate action
-Reveal hover-hidden UI → hover action
-Multiple related actions → multistep action
-Multi-step workflow → sequence action
-Explain interface → highlight with data-doit="false"
-Hover then click → multistep with hover + button/highlight
-Find by text content → use :contains("text") in selector
-Find by structure → use :has(child) in selector
+User performs manually → guided action
+Explain interface → highlight with doIt: false
 ```
 
 ### Requirements Selection

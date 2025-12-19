@@ -1,491 +1,110 @@
 ---
 alwaysApply: true
 ---
-# Interactive Action Types Reference for AI
+# Action Types Quick Reference for AI
 
-## Action Type Definitions
+> **Full documentation**: See [docs/interactive-types.md](../docs/interactive-types.md) and [docs/json-block-properties.md](../docs/json-block-properties.md)
 
-### highlight
-**Purpose**: Click DOM elements using CSS selectors
-**Target**: CSS selector (prefer data-testid attributes)
-**Show**: Scrolls to element, highlights with visual feedback
-**Do**: Scrolls to element, then clicks
-**Requirements**: Always include `exists-reftarget`
+## Action Selection Decision Tree
 
-For regular clicks on buttons by selectors, use this type.
-For clicking on buttons _based on their inner text_ prefer `button` type.
-
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "a[data-testid='Nav menu item'][href='/dashboards']",
-  "requirements": ["navmenu-open", "exists-reftarget"],
-  "content": "Click Dashboards in navigation"
-}
-```
-
-### button  
-**Purpose**: Click buttons _using visible text_
-**Target**: Button text (exact or partial match)
-**Show**: Finds and highlights button by text
-**Do**: Finds and clicks button by text
-**Advantages**: More stable than CSS selectors
-
-The button type is **not to be used** if clicking buttons by DOM selector;
-only by text.  Prefer the use of `highlight` for clicking by DOM selectors.
-
-```json
-{
-  "type": "interactive",
-  "action": "button",
-  "reftarget": "Save & test",
-  "requirements": ["exists-reftarget"],
-  "content": "Save the data source"
-}
-```
-
-### formfill
-**Purpose**: Fill form inputs with values
-**Target**: CSS selector for form element
-**Value**: String value to set (required)
-**Supports**: text inputs, textareas, selects, checkboxes, Monaco editors, ARIA comboboxes
-**Show**: Highlights the form field
-**Do**: Sets value and fires appropriate events
-
-```json
-{
-  "type": "interactive",
-  "action": "formfill",
-  "reftarget": "input[id='connection-url']",
-  "targetvalue": "http://prometheus:9090",
-  "requirements": ["exists-reftarget"],
-  "content": "Set Prometheus URL"
-}
-```
-
-### navigate
-**Purpose**: Navigate to internal routes or external URLs
-**Target**: URL path or external URL
-**Show**: Indicates navigation intent
-**Do**: Uses locationService.push() for internal routes, opens external URLs in new tab
-**Internal**: `/dashboard/new`, `/admin/plugins`
-**External**: `https://grafana.com/docs/`
-
-```json
-{
-  "type": "interactive",
-  "action": "navigate",
-  "reftarget": "/dashboard/new",
-  "requirements": ["has-datasources"],
-  "verify": "on-page:/dashboard/new",
-  "content": "Create new dashboard"
-}
-```
-
-### section (previously sequence)
-**Purpose**: Group multiple steps with coordinated execution
-**Target**: Not used (defined by structure)
-**Structure**: JSON object with `type: "section"` and `blocks` array
-**Features**: Progress tracking, resumable execution, state persistence
-**Button**: Single "Do Section" button executes all child steps
-
-```json
-{
-  "type": "section",
-  "id": "setup-datasource",
-  "title": "Setup Data Source",
-  "objectives": ["has-datasource:prometheus"],
-  "blocks": [
-    {
-      "type": "interactive",
-      "action": "button",
-      "reftarget": "New",
-      "content": "Step 1"
-    },
-    {
-      "type": "interactive",
-      "action": "formfill",
-      "reftarget": "input[id='name']",
-      "targetvalue": "prometheus",
-      "content": "Step 2"
-    }
-  ]
-}
-```
-
-### multistep
-**Purpose**: Execute multiple actions as single atomic step
-**Target**: Not used (child steps define actions)
-**Structure**: JSON object with `type: "multistep"` and `steps` array
-**Execution**: Shows each action, then executes, in sequence
-**Button**: Single "Do it" button, no "Show me" button
-
-```json
-{
-  "type": "multistep",
-  "content": "Add visualization and select data source",
-  "steps": [
-    {
-      "action": "button",
-      "reftarget": "Add visualization"
-    },
-    {
-      "action": "button",
-      "reftarget": "prometheus-datasource"
-    }
-  ]
-}
-```
-
-### hover
-**Purpose**: Trigger hover states on elements to reveal UI that appears only on hover (e.g., Tailwind `group-hover:` classes, CSS `:hover` states)
-**Target**: CSS selector for element to hover over
-**Show**: Highlights the element without triggering hover
-**Do**: Dispatches mouse events (`mouseenter`, `mouseover`, `mousemove`) and maintains hover state for 2 seconds
-**Use when**: UI elements are hidden until hover, or CSS hover states need to be triggered
-
-```json
-{
-  "type": "multistep",
-  "content": "Hover over service row and click Dashboard button",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))"
-    },
-    {
-      "action": "button",
-      "reftarget": "Dashboard"
-    }
-  ]
-}
-```
-
-### guided
-**Purpose**: Provides a middle ground between fully automated "Do it" actions and manual user execution. The system highlights elements and displays instructions, then **waits for the user to manually perform the action** before proceeding.
-**Target**: Not used (child steps define actions)
-**Structure**: JSON object with `type: "guided"` and `steps` array
-**Execution**: Highlights each step, waits for user to manually perform action, then moves to next
-**Supported Actions**: `hover`, `button`, `highlight` (formfill and navigate not yet supported)
-**Use when**: Actions depend on CSS `:hover` states that can't be programmatically triggered, or you want users to learn by doing
-
-```json
-{
-  "type": "guided",
-  "content": "Inspect service details",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-cy='wb-list-item']:contains('adaptive-logs-api')",
-      "tooltip": "Hover over the service row to reveal action buttons"
-    },
-    {
-      "action": "button",
-      "reftarget": "button.css-8mjxyo",
-      "tooltip": "Click the revealed button to proceed"
-    }
-  ]
-}
-```
-
-**Configuration Options**:
-- `stepTimeout`: Control timeout per step (default: 30 seconds, range: 5000-120000ms)
-- `skippable`: Allow users to skip if they can't complete it
-
-**Section Integration**: When "Do Section" encounters a guided step, the section pauses and waits for the user to manually complete the guided interaction before resuming.
-
-## Requirements System
-
-### Common Requirements
-- `exists-reftarget` - Target element exists in DOM
-- `navmenu-open` - Navigation menu is open (auto-fixable)
-- `is-admin` - User has admin privileges  
-- `has-datasources` - At least one data source configured
-- `has-datasource:name` - Specific data source exists
-- `has-plugin:id` - Plugin installed and enabled
-- `on-page:/path` - User is on specific page
-- `section-completed:id` - Previous section completed
-
-### Objectives System
-- Same syntax as requirements
-- Auto-completes steps when conditions already met
-- Always takes priority over requirements
-- For sections: marks ALL child steps complete
-
-## AI Generation Guidelines
-
-### Action Selection Logic
 ```
 User wants to click something:
-  - Button with stable text → use "button" action
-  - Element with stable selector → use "highlight" action
-  - Multiple related clicks → use "multistep" action
+  └─ Button with stable text → action: "button", reftarget: "Button Text"
+  └─ Element with selector → action: "highlight", reftarget: "css-selector"
+  └─ Multiple related clicks → type: "multistep" with steps array
 
 User wants to fill form:
-  - Single field → use "formfill" action
-  - Multiple fields → use "section" with formfill steps
-  - Complex workflow → use "multistep" action
+  └─ Single field → action: "formfill", reftarget: "selector", targetvalue: "value"
+  └─ Validate input → add validateInput: true, formHint: "hint"
 
 User wants to navigate:
-  - Change pages → use "navigate" action
-  - Navigate then act → use "multistep" with navigate + action
+  └─ Change pages → action: "navigate", reftarget: "/path"
+  └─ With verification → add verify: "on-page:/path"
+
+User wants to reveal hidden UI:
+  └─ Hover then click → type: "multistep" with hover + button steps
+  └─ User performs manually → type: "guided" with hover + button steps
 
 User wants to teach workflow:
-  - Linear steps with checkpoints → use "section" action
-  - Atomic multi-action → use "multistep" action
-  - User performs manually → use "guided" action
-  - Just explanation → use "highlight" with doIt: false
-
-User needs to reveal hover-hidden UI:
-  - Hover then click → use "multistep" with hover + button/highlight
-  - User performs hover manually → use "guided" with hover action
+  └─ Linear steps → type: "section" with blocks array
+  └─ Just explanation → action: "highlight" with doIt: false
 ```
 
-### Requirements Selection Logic
-```
-For DOM interactions:
-  - Always include: exists-reftarget
-  - Navigation elements: add navmenu-open
-  - Page-specific elements: add on-page:/path
+## Quick Block Reference
 
-For admin actions:
-  - Add: is-admin or has-role:admin
-  - Or: has-permission:specific-permission
+| Block Type    | Purpose                              | Key Properties                    |
+|---------------|--------------------------------------|-----------------------------------|
+| `interactive` | Single action                        | action, reftarget, content        |
+| `section`     | Grouped steps with "Do Section"      | id, title, blocks                 |
+| `multistep`   | Automated multi-action               | content, steps                    |
+| `guided`      | User-performed with detection        | content, steps, stepTimeout       |
+| `conditional` | Show content based on conditions     | conditions, whenTrue, whenFalse   |
+| `quiz`        | Knowledge check                      | question, choices                 |
+| `input`       | Collect user response                | prompt, inputType, variableName   |
+| `markdown`    | Formatted text                       | content                           |
+| `image`       | Embedded image                       | src, alt                          |
+| `video`       | Embedded video                       | src, provider                     |
 
-For data source actions:
-  - General: has-datasources
-  - Specific: has-datasource:name or has-datasource:type:prometheus
+## Essential Requirements Pattern
 
-For plugin actions:
-  - Add: has-plugin:plugin-id
-
-For sequential guides:
-  - Add: section-completed:previous-section-id
-```
-
-### Objectives Usage Logic
-```
-Use objectives when:
-  - Step outcome might already be achieved
-  - Want to skip entire sections if setup already done
-  - Checking expensive conditions that auto-complete
-
-Common objective patterns:
-  - has-datasource:type:prometheus (skip data source setup if exists)
-  - on-page:/target (skip navigation if already there)
-  - has-plugin:plugin-id (skip installation if already installed)
-  - has-dashboard-named:title (skip creation if already exists)
-```
-
-## Content Structure Patterns
-
-### Basic Step Pattern
 ```json
 {
-  "type": "interactive",
-  "action": "ACTION_TYPE",
-  "reftarget": "TARGET_REFERENCE",
-  "targetvalue": "VALUE_FOR_FORMFILL",
-  "requirements": ["REQ1", "REQ2"],
-  "objectives": ["OBJ1"],
-  "verify": "POST_ACTION_VERIFICATION",
-  "tooltip": "USER_FRIENDLY_TOOLTIP",
-  "skippable": true,
-  "doIt": false,
-  "content": "Human-readable step description"
+  "requirements": ["exists-reftarget"]
 }
 ```
 
-### Section Pattern
-```json
-{
-  "type": "section",
-  "id": "unique-section-id",
-  "title": "Section Title",
-  "requirements": ["SECTION_REQUIREMENTS"],
-  "objectives": ["SECTION_OBJECTIVES"],
-  "tooltip": "SECTION_DESCRIPTION",
-  "blocks": [
-    {
-      "type": "markdown",
-      "content": "Section description explaining what will be accomplished."
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "..."
-    }
-  ]
-}
-```
+Add based on context:
+- Navigation elements: `"navmenu-open"`
+- Page-specific: `"on-page:/path"`
+- Admin actions: `"is-admin"`
+- Data source: `"has-datasource:type"`
 
-### Multi-step Pattern
-```json
-{
-  "type": "multistep",
-  "requirements": ["OVERALL_REQUIREMENTS"],
-  "objectives": ["OVERALL_OBJECTIVES"],
-  "tooltip": "WHAT_THIS_ACCOMPLISHES",
-  "content": "Human description of what these actions accomplish together",
-  "steps": [
-    {
-      "action": "ACTION_TYPE_1",
-      "reftarget": "TARGET_1",
-      "requirements": ["ACTION_1_REQUIREMENTS"]
-    },
-    {
-      "action": "ACTION_TYPE_2",
-      "reftarget": "TARGET_2",
-      "requirements": ["ACTION_2_REQUIREMENTS"]
-    }
-  ]
-}
-```
+## Common Patterns
 
-### Interactive Comment Pattern
+### Interactive Step
 ```json
 {
   "type": "interactive",
   "action": "highlight",
-  "reftarget": "SELECTOR",
-  "doIt": false,
-  "requirements": ["exists-reftarget"],
-  "tooltip": "The UI_ELEMENT_NAME [PURPOSE/FUNCTION]. [CONTEXT_EXPLANATION]. Use it for TECHNICAL_FEATURES to achieve USER_BENEFITS.",
-  "content": "Human-readable description for the step"
+  "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+  "requirements": ["navmenu-open", "exists-reftarget"],
+  "content": "Click Dashboards"
 }
 ```
 
-## Common Selector Patterns
-
-### Navigation Elements
-- `a[data-testid='data-testid Nav menu item'][href='/PATH']` - Navigation menu items
-- `#mega-menu-toggle` - Navigation menu toggle
-- `nav[data-testid='navigation-mega-menu']` - Navigation container
-
-### Dashboard Elements  
-- `button[data-testid='add-panel']` - Add panel button
-- `input[data-testid='dashboard-title-input']` - Dashboard title
-- `button[data-testid='save-dashboard']` - Save dashboard
-
-### Query Elements
-- `textarea[data-testid='query-editor']` - Query editor
-- `textarea.inputarea.monaco-mouse-cursor-text` - Monaco editor
-- `button[data-testid='run-query']` - Execute query
-
-### Data Source Elements
-- `input[id='basic-settings-name']` - Data source name
-- `input[id='connection-url']` - Connection URL
-- `button[data-testid='data-source-save-test']` - Save & test
-
-## AI Generation Rules
-
-### Mandatory Practices
-1. **Always include `exists-reftarget`** for DOM-dependent actions
-2. **Use `navmenu-open`** for navigation menu interactions
-3. **Include appropriate page requirements** (`on-page:/path`)
-4. **Add verification** (`verify`) for state-changing actions
-5. **Provide helpful hints** (`tooltip`) for user guidance
-
-### Selector Preferences
-1. **Prefer `button` action** for buttons with stable text
-2. **Use `data-testid` attributes** when available in selectors
-3. **Avoid CSS classes** unless they're semantic (like `interactive`)
-4. **Include element type** in selectors for specificity
-5. **Use pseudo-selectors** (`:first-of-type`) for precision
-
-### Content Organization
-1. **Use sections** for multi-step workflows
-2. **Use multisteps** for atomic multi-actions
-3. **Use show-only mode** for educational explanations
-4. **Include interactive comments** for complex UI elements
-5. **Structure progressively** from simple to complex
-
-### Error Prevention
-1. **Test selectors** before using in guides
-2. **Include fallback requirements** for edge cases
-3. **Make steps skippable** when permissions might vary
-4. **Provide clear error messages** in hints
-5. **Use objectives** to handle already-completed states
-
-## Common Guide Patterns
-
-### Onboarding Tour
+### Section with Steps
 ```json
 {
   "type": "section",
-  "id": "grafana-tour",
-  "title": "Grafana Tour",
-  "blocks": [
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "a[href='/']",
-      "doIt": false,
-      "tooltip": "Home page explanation",
-      "content": "Tour the home page"
-    }
-  ]
-}
-```
-
-### Setup Workflow
-```json
-{
-  "type": "section",
-  "id": "setup-monitoring",
-  "title": "Setup Monitoring",
+  "id": "section-id",
+  "title": "Section Title",
   "objectives": ["has-datasource:prometheus"],
   "blocks": [
-    {
-      "type": "interactive",
-      "action": "navigate",
-      "reftarget": "/connections",
-      "content": "Navigate to connections"
-    },
-    {
-      "type": "interactive",
-      "action": "button",
-      "reftarget": "Add new data source",
-      "content": "Add data source"
-    },
-    {
-      "type": "interactive",
-      "action": "formfill",
-      "reftarget": "input[id='name']",
-      "targetvalue": "prometheus",
-      "content": "Name it"
-    },
-    {
-      "type": "interactive",
-      "action": "button",
-      "reftarget": "Save & test",
-      "content": "Save and test"
-    }
+    { "type": "interactive", "action": "button", "reftarget": "New", "content": "Create" }
   ]
 }
 ```
 
-### Complex Interaction
+### Multistep (Automated)
 ```json
 {
   "type": "multistep",
-  "requirements": ["on-page:/dashboard/new"],
-  "content": "Create a panel with Prometheus data source and basic query",
+  "content": "Navigate and select",
   "steps": [
-    {
-      "action": "button",
-      "reftarget": "Add visualization"
-    },
-    {
-      "action": "button",
-      "reftarget": "prometheus-datasource"
-    },
-    {
-      "action": "formfill",
-      "reftarget": "textarea[data-testid='query-editor']",
-      "targetvalue": "up"
-    }
+    { "action": "button", "reftarget": "Add visualization" },
+    { "action": "button", "reftarget": "prometheus" }
   ]
+}
+```
+
+### Show-Only (Educational)
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='panel']",
+  "doIt": false,
+  "tooltip": "This panel shows metrics.",
+  "content": "Notice the metrics panel"
 }
 ```

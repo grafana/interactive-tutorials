@@ -528,3 +528,140 @@ This complete guide demonstrates all interactive features and best practices. Us
 - **Flexible Paths**: Alternatives for different user capabilities
 
 This example demonstrates the full power of the interactive guide system and serves as a comprehensive template for creating high-quality, educational Grafana guides.
+
+---
+
+## Additional Block Type Examples
+
+### Conditional Block Example
+
+Use conditional blocks to show different content based on environment or user state:
+
+```json
+{
+  "type": "conditional",
+  "conditions": ["has-datasource:prometheus"],
+  "description": "Show different onboarding based on Prometheus availability",
+  "whenTrue": [
+    {
+      "type": "markdown",
+      "content": "Great! You already have Prometheus configured. Let's explore some advanced queries."
+    },
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/explore",
+      "content": "Open Explore to run queries"
+    }
+  ],
+  "whenFalse": [
+    {
+      "type": "markdown",
+      "content": "You'll need to set up Prometheus first. Let's do that now."
+    },
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/connections/datasources/new",
+      "content": "Navigate to add a data source"
+    }
+  ]
+}
+```
+
+### Quiz Block Example
+
+Use quiz blocks to verify user understanding:
+
+```json
+{
+  "type": "quiz",
+  "question": "Which Prometheus query shows target health status?",
+  "completionMode": "correct-only",
+  "choices": [
+    { "id": "a", "text": "`up`", "correct": true },
+    { "id": "b", "text": "`rate(http_requests_total[5m])`", "hint": "This calculates request rate, not health." },
+    { "id": "c", "text": "`node_cpu_seconds_total`", "hint": "This is a raw CPU counter metric." },
+    { "id": "d", "text": "`process_start_time_seconds`", "hint": "This shows when processes started." }
+  ]
+}
+```
+
+### Input Block Example
+
+Use input blocks to collect user data that can be reused:
+
+```json
+{
+  "type": "input",
+  "prompt": "What would you like to name your dashboard?",
+  "inputType": "text",
+  "variableName": "dashboardName",
+  "placeholder": "e.g., System Monitoring",
+  "required": true,
+  "pattern": "^[a-zA-Z][a-zA-Z0-9 -]*$",
+  "validationMessage": "Name must start with a letter and contain only letters, numbers, spaces, and hyphens"
+}
+```
+
+Then reference the variable in subsequent blocks:
+
+```json
+{
+  "type": "markdown",
+  "content": "Your dashboard **{{dashboardName}}** is ready to configure!"
+}
+```
+
+### Guided Block Example
+
+Use guided blocks when users need to perform actions manually:
+
+```json
+{
+  "type": "guided",
+  "content": "Practice creating a panel by following these steps.",
+  "stepTimeout": 45000,
+  "completeEarly": true,
+  "skippable": true,
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "Add visualization",
+      "tooltip": "Click the **Add visualization** button to start"
+    },
+    {
+      "action": "hover",
+      "reftarget": "div[data-testid='visualization-suggestions']",
+      "tooltip": "Hover over the suggestions to see visualization options"
+    },
+    {
+      "action": "highlight",
+      "reftarget": "div[aria-label='Plugin visualization item Time series']",
+      "tooltip": "Select **Time series** for this panel"
+    }
+  ]
+}
+```
+
+### Image Block Example
+
+```json
+{
+  "type": "image",
+  "src": "https://grafana.com/static/img/grafana/dashboard-example.png",
+  "alt": "Example Grafana dashboard with multiple panels",
+  "width": 600
+}
+```
+
+### Video Block Example
+
+```json
+{
+  "type": "video",
+  "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+  "provider": "youtube",
+  "title": "Grafana Dashboard Tutorial"
+}
+```

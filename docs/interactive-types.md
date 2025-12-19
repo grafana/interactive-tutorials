@@ -1,13 +1,15 @@
-### Interactive types
+# Interactive Types Reference
 
-This guide explains the supported interactive types, when to use each, what `data-reftarget` expects, and how Show vs Do behaves.
+This guide explains the supported interactive types, when to use each, what `reftarget` expects, and how Show vs Do behaves.
 
 ## Concepts
 
 - **Show vs Do**: Every action runs in two modes. Show highlights the target without changing state; Do performs the action (click, fill, navigate) and marks the step completed.
-- **Targets**: Depending on the action, `data-reftarget` is either a CSS selector, button text, a URL/path, or a section container selector.
+- **Targets**: Depending on the action, `reftarget` is either a CSS selector, button text, a URL/path, or a section container selector.
 
-## Types
+---
+
+## Interactive Action Types
 
 ### highlight
 
@@ -17,14 +19,14 @@ This guide explains the supported interactive types, when to use each, what `dat
 - **Do**: Ensures visibility then clicks.
 - **Use when**: The target element is reliably selectable via a CSS selector (often `data-testid`-based).
 
-```html
-<li
-  class="interactive"
-  data-targetaction="highlight"
-  data-reftarget="a[data-testid='data-testid Nav menu item'][href='/dashboards']"
->
-  Open Dashboards
-</li>
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+  "requirements": ["navmenu-open", "exists-reftarget"],
+  "content": "Open Dashboards"
+}
 ```
 
 ### button
@@ -35,28 +37,50 @@ This guide explains the supported interactive types, when to use each, what `dat
 - **Do**: Clicks matching buttons.
 - **Use when**: The button text is stable; avoids brittle CSS.
 
-```html
-<li class="interactive" data-targetaction="button" data-reftarget="Save & test">Save the data source</li>
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save & test",
+  "requirements": ["exists-reftarget"],
+  "content": "Save the data source"
+}
 ```
 
 ### formfill
 
 - **Purpose**: Fill inputs, textareas (including Monaco), selects, and ARIA comboboxes.
 - **reftarget**: CSS selector for the input element.
-- **targetvalue**: String to set.
+- **targetvalue**: String to set (required).
 - **Show**: Highlights the field.
 - **Do**: Sets the value and fires the right events; ARIA comboboxes are handled token-by-token; Monaco editors use enhanced events.
 - **Use when**: Setting values in fields or editors.
 
-```html
-<li
-  class="interactive"
-  data-targetaction="formfill"
-  data-reftarget="input[id='connection-url']"
-  data-targetvalue="http://prometheus:9090"
->
-  Set URL
-</li>
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[id='connection-url']",
+  "targetvalue": "http://prometheus:9090",
+  "requirements": ["exists-reftarget"],
+  "content": "Set URL"
+}
+```
+
+**Formfill Validation:**
+
+Use `validateInput: true` to require the input to match a pattern:
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[data-testid='prometheus-url']",
+  "targetvalue": "^https?://",
+  "validateInput": true,
+  "formHint": "URL must start with http:// or https://",
+  "content": "Enter your Prometheus server URL."
+}
 ```
 
 ### navigate
@@ -67,103 +91,288 @@ This guide explains the supported interactive types, when to use each, what `dat
 - **Do**: Uses Grafana `locationService.push` for internal paths; opens new tab for external URLs.
 - **Use when**: The interaction is pure navigation.
 
-```html
-<li class="interactive" data-targetaction="navigate" data-reftarget="/dashboard/new">Create dashboard</li>
+```json
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/dashboard/new",
+  "verify": "on-page:/dashboard/new",
+  "content": "Create dashboard"
+}
 ```
 
-### sequence
+### hover
 
-- **Purpose**: Group and run a list of steps inside a container.
-- **reftarget**: Container selector (typically the section `<span>` with an `id`).
-- **Behavior**: Show highlights each step; Do performs each step with timing and completion management.
-- **Use when**: Teaching a linear set of steps as a single section with “Do Section”.
+- **Purpose**: Trigger hover states on elements to reveal UI that appears only on hover.
+- **reftarget**: CSS selector for element to hover over.
+- **Show**: Highlights the element without triggering hover.
+- **Do**: Dispatches mouse events (`mouseenter`, `mouseover`, `mousemove`) and maintains hover state.
+- **Use when**: UI elements are hidden until hover, or CSS hover states need to be triggered.
 
-```html
-<span id="setup-datasource" class="interactive" data-targetaction="sequence" data-reftarget="span#setup-datasource">
-  <ul>
-    <li class="interactive" data-targetaction="highlight" data-reftarget="a[href='/connections']">Open Connections</li>
-    <li
-      class="interactive"
-      data-targetaction="formfill"
-      data-reftarget="input[id='basic-settings-name']"
-      data-targetvalue="prometheus-datasource"
-    >
-      Name it
-    </li>
-  </ul>
-</span>
+```json
+{
+  "type": "interactive",
+  "action": "hover",
+  "reftarget": "div[data-testid='table-row']",
+  "requirements": ["exists-reftarget"],
+  "content": "Hover over the row to reveal action buttons"
+}
+```
+
+---
+
+## Structural Block Types
+
+### section
+
+- **Purpose**: Group multiple steps with coordinated execution.
+- **Structure**: JSON object with `type: "section"` and `blocks` array.
+- **Features**: Progress tracking, resumable execution, state persistence.
+- **Button**: Single "Do Section" button executes all child steps.
+
+```json
+{
+  "type": "section",
+  "id": "setup-datasource",
+  "title": "Set up data source",
+  "objectives": ["has-datasource:prometheus"],
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href='/connections']",
+      "content": "Open Connections"
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[id='basic-settings-name']",
+      "targetvalue": "prometheus-datasource",
+      "content": "Name it"
+    }
+  ]
+}
 ```
 
 ### multistep
 
-- **Purpose**: A single "step" that internally performs multiple actions in order.
-- **Definition**: A `<li class="interactive" data-targetaction="multistep">` with internal `<span class="interactive" ...>` actions.
-- **Behavior**: Handles its own Show/Do timing and requirement checks per internal action.
-- **Use when**: A user-facing instruction bundles multiple micro-actions that should run as one.
+- **Purpose**: Execute multiple actions as single atomic step.
+- **Structure**: JSON object with `type: "multistep"` and `steps` array.
+- **Execution**: Shows each action, then executes in sequence.
+- **Button**: Single "Do it" button executes all steps automatically.
 
-```html
-<li class="interactive" data-targetaction="multistep">
-  <span class="interactive" data-targetaction="button" data-reftarget="Add visualization"></span>
-  <span class="interactive" data-targetaction="button" data-reftarget="prometheus-datasource"></span>
-  Click Add visualization, then pick the data source.
-</li>
+```json
+{
+  "type": "multistep",
+  "content": "Click Add visualization, then pick the data source.",
+  "requirements": ["on-page:/dashboard/new"],
+  "steps": [
+    { "action": "button", "reftarget": "Add visualization" },
+    { "action": "button", "reftarget": "prometheus-datasource" }
+  ]
+}
 ```
 
 ### guided
 
-- **Purpose**: A middle ground between automated "Do it" actions and manual user execution. The system highlights elements and displays instructions, then **waits for the user to manually perform the action** before proceeding.
-- **Definition**: A `<li class="interactive" data-targetaction="guided">` with internal `<span class="interactive" ...>` actions that define the sequence.
-- **Behavior**: Highlights each action step and waits for user to complete it manually (hover for 500ms, or click). Each internal action can have an `<span class="interactive-comment">` child that appears as a tooltip.
-- **Supported actions**: `hover`, `button`, `highlight` (formfill and navigate not supported)
-- **Use when**: Actions depend on CSS `:hover` states that can't be programmatically triggered, or you want users to learn by doing rather than watching automation.
-- **Options**:
-  - `data-step-timeout`: How long to wait for user action before showing skip option (default: 30000ms)
-  - `data-skippable`: Whether users can skip the guided interaction (default: false)
+- **Purpose**: Highlights elements and waits for the user to perform actions manually.
+- **Structure**: JSON object with `type: "guided"` and `steps` array.
+- **Behavior**: System highlights each step and waits for user interaction before proceeding.
+- **Supported actions**: `hover`, `button`, `highlight` (formfill and navigate not yet supported).
+- **Use when**: Actions depend on CSS `:hover` states or you want users to learn by doing.
 
-```html
-<li class="interactive"
-    data-targetaction="guided"
-    data-step-timeout="45000"
-    data-skippable="true">
-  <span class="interactive" 
-        data-targetaction="hover"
-        data-reftarget='.gf-form:has([data-testid="data-testid prometheus type"]) label > svg[tabindex="0"]'
-        data-requirements="exists-reftarget">
-    <span class="interactive-comment">
-      The <strong>Performance</strong> section contains advanced settings. Hovering over the information icon reveals detailed explanations.
-    </span>
-  </span>
-  <span class="interactive"
-        data-targetaction="highlight"
-        data-reftarget='[data-testid="data-testid prometheus type"]'>
-    <span class="interactive-comment">
-      The <strong>Prometheus type</strong> dropdown lets you specify whether you're connecting to a standard Prometheus server or a compatible service.
-    </span>
-  </span>
-  <span class="interactive"
-        data-targetaction="button"
-        data-reftarget="Save & test">
-    <span class="interactive-comment">
-      Click <strong>Save & test</strong> to create your data source and verify the connection is working.
-    </span>
-  </span>
-  
-  Explore Prometheus configuration settings and save your data source.
-</li>
+```json
+{
+  "type": "guided",
+  "content": "Explore Prometheus configuration settings and save your data source.",
+  "stepTimeout": 45000,
+  "skippable": true,
+  "steps": [
+    {
+      "action": "hover",
+      "reftarget": ".gf-form:has([data-testid='prometheus-type']) label > svg",
+      "requirements": ["exists-reftarget"],
+      "tooltip": "The **Performance** section contains advanced settings."
+    },
+    {
+      "action": "highlight",
+      "reftarget": "[data-testid='prometheus-type']",
+      "tooltip": "The **Prometheus type** dropdown specifies your connection type."
+    },
+    {
+      "action": "button",
+      "reftarget": "Save & test",
+      "tooltip": "Click **Save & test** to create your data source."
+    }
+  ]
+}
 ```
 
-**Key differences from multistep**:
+**Key differences from multistep:**
 - **Multistep**: System performs all actions automatically
 - **Guided**: System highlights and waits for user to perform actions manually
 - **Hover support**: Real hover (triggers CSS `:hover` states), not simulated
-- **Learning**: Users learn by doing rather than watching automation
 
-## Choosing the right type
+### conditional
 
-- **Click by CSS selector**: highlight
-- **Click by button text**: button
-- **Enter text/select values**: formfill
-- **Route change**: navigate
-- **Teach a linear section**: sequence
-- **Bundle micro-steps into one**: multistep
-- **User manual interaction with highlights**: guided
+- **Purpose**: Shows different content based on runtime condition evaluation.
+- **Conditions**: Use requirement syntax (e.g., `has-datasource:prometheus`, `is-admin`).
+- **Behavior**: When ALL conditions pass, shows `whenTrue`; otherwise shows `whenFalse`.
+
+```json
+{
+  "type": "conditional",
+  "conditions": ["has-datasource:prometheus"],
+  "description": "Show Prometheus-specific content or fallback",
+  "whenTrue": [
+    {
+      "type": "markdown",
+      "content": "Great! You have Prometheus configured."
+    }
+  ],
+  "whenFalse": [
+    {
+      "type": "markdown",
+      "content": "You'll need to set up a Prometheus data source first."
+    }
+  ]
+}
+```
+
+---
+
+## Content Block Types
+
+### markdown
+
+- **Purpose**: Formatted text content.
+- **Features**: Headings, bold, italic, code blocks, lists, tables, links.
+
+```json
+{
+  "type": "markdown",
+  "content": "## Getting Started\n\nWelcome to **Grafana**!\n\n- Feature one\n- Feature two"
+}
+```
+
+### image
+
+- **Purpose**: Embed images with optional dimensions.
+
+```json
+{
+  "type": "image",
+  "src": "https://example.com/screenshot.png",
+  "alt": "Dashboard screenshot",
+  "width": 400
+}
+```
+
+### video
+
+- **Purpose**: Embed YouTube or native HTML5 video.
+
+```json
+{
+  "type": "video",
+  "src": "https://www.youtube.com/embed/VIDEO_ID",
+  "provider": "youtube",
+  "title": "Getting Started with Grafana"
+}
+```
+
+---
+
+## Assessment Block Types
+
+### quiz
+
+- **Purpose**: Knowledge assessment with single or multiple choice questions.
+
+```json
+{
+  "type": "quiz",
+  "question": "Which query language does Prometheus use?",
+  "completionMode": "correct-only",
+  "choices": [
+    { "id": "a", "text": "SQL", "hint": "SQL is for traditional databases." },
+    { "id": "b", "text": "PromQL", "correct": true },
+    { "id": "c", "text": "GraphQL", "hint": "GraphQL is an API query language." }
+  ]
+}
+```
+
+### input
+
+- **Purpose**: Collects user responses that can be stored as variables.
+- **Variable usage**: Reference with `{{variableName}}` in content or `var-name:value` in requirements.
+
+```json
+{
+  "type": "input",
+  "prompt": "What is the name of your Prometheus data source?",
+  "inputType": "text",
+  "variableName": "prometheusName",
+  "placeholder": "e.g., prometheus-main",
+  "required": true
+}
+```
+
+---
+
+## Show-Only Mode
+
+Use `doIt: false` to create educational steps that only highlight elements without requiring user action.
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='dashboard-panel']",
+  "content": "Notice the **metrics panel** displaying your data.",
+  "tooltip": "This panel shows real-time metrics from your Prometheus data source.",
+  "doIt": false
+}
+```
+
+When `doIt` is false:
+- Only the "Show me" button appears (no "Do it" button)
+- Step completes automatically after showing the element
+- No state changes occur in the application
+- Focus is on education rather than interaction
+
+**Button Visibility Control:**
+
+| Setting               | "Show me" Button | "Do it" Button | Use Case                      |
+|-----------------------|------------------|----------------|-------------------------------|
+| Default (both `true`) | ✅               | ✅             | Normal interactive step       |
+| `doIt: false`         | ✅               | ❌             | Educational highlight only    |
+| `showMe: false`       | ❌               | ✅             | Direct action without preview |
+
+---
+
+## Choosing the Right Type
+
+| Need                                    | Block Type / Action           |
+|-----------------------------------------|-------------------------------|
+| Click by CSS selector                   | `interactive` + `highlight`   |
+| Click by button text                    | `interactive` + `button`      |
+| Enter text/select values                | `interactive` + `formfill`    |
+| Route change                            | `interactive` + `navigate`    |
+| Hover to reveal hidden UI               | `interactive` + `hover`       |
+| Teach a linear section                  | `section`                     |
+| Bundle micro-steps into one (automated) | `multistep`                   |
+| User performs steps manually            | `guided`                      |
+| Show different content by condition     | `conditional`                 |
+| Test user knowledge                     | `quiz`                        |
+| Collect user input for variables        | `input`                       |
+| Just explanation (no action)            | `interactive` with `doIt: false` |
+
+---
+
+## See Also
+
+- [JSON Guide Format](json-guide-format.md) - Root structure and block overview
+- [JSON Block Properties](json-block-properties.md) - Complete property reference
+- [Requirements Reference](requirements-reference.md) - All supported requirements
+- [Selectors Reference](selectors-and-testids.md) - Stable selector patterns
