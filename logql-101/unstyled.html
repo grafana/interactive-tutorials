@@ -204,14 +204,21 @@
         data-reftarget="span#line-format">
     <ul>
       <li class="interactive" 
-          data-reftarget="textarea.inputarea"
-          data-targetaction="formfill" 
-          data-targetvalue='{service_name="nginx_access_log", host="appfelstrudel"} | json | status = "500" | line_format "{{.status}}"'
+          data-targetaction="multistep"
           data-requirements="exists-reftarget">
+        <span class="interactive" 
+              data-targetaction="highlight" 
+              data-reftarget="textarea.inputarea">
+        </span>
+        <span class="interactive" 
+              data-targetaction="formfill" 
+              data-reftarget="textarea.inputarea"
+              data-targetvalue='{service_name="nginx_access_log", host="appfelstrudel"} | json | status = "500" | line_format "{{.status}} {{.request_uri}}"}'>
+        </span>
         <span class="interactive-comment"><code>line_format</code> changes how each result line is displayed. It doesn't change which lines match — it just makes them easier to read.</span>
         Add <code>line_format</code> to make the results easier to scan:<br>
-        <code>{service_name="nginx_access_log", host="appfelstrudel"} | json | status = "500" | line_format "{{.status}}"</code><br>
-        (You can add more fields later, like <code>{{.method}}</code> or <code>{{.path}}</code>, if they exist in your logs.)
+        <code>{service_name="nginx_access_log", host="appfelstrudel"} | json | status = "500" | line_format "{{.status}} {{.request_uri}}"</code><br>
+        This shows the HTTP status and the requested URL for each matching log line.
       </li>
       <li class="interactive" 
           data-reftarget='button[data-testid="data-testid RefreshPicker run button"]'

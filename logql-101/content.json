@@ -205,13 +205,21 @@
       "title": "5. Format log lines with line_format",
       "blocks": [
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}}\"",
+          "type": "multistep",
           "requirements": ["exists-reftarget"],
           "tooltip": "`line_format` changes how each result line is displayed. It doesn't change which lines match — it just makes them easier to read.",
-          "content": "Add `line_format` to make the results easier to scan:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}}\"`\n\n(You can add more fields later, like `{{.method}}` or `{{.path}}`, if they exist in your logs.)"
+          "content": "Add `line_format` to make the results easier to scan:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\"`\n\nThis shows the HTTP status and the requested URL for each matching log line.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "textarea.inputarea"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\""
+            }
+          ]
         },
         {
           "type": "interactive",
