@@ -241,13 +241,21 @@
         data-reftarget="span#regex-last-resort">
     <ul>
       <li class="interactive" 
-          data-reftarget="textarea.inputarea"
-          data-targetaction="formfill" 
-          data-targetvalue='{service_name="nginx_access_log", host="appfelstrudel"} |~ "5[0-9]{2}"'
+          data-targetaction="multistep"
           data-requirements="exists-reftarget">
-        <span class="interactive-comment"><code>|~</code> filters log lines by a regular expression match (include). It's flexible, but can be slower than labels or parsing.</span>
-        Try a regex match to find 5xx status codes <em>anywhere</em> in the line:<br>
-        <code>{service_name="nginx_access_log", host="appfelstrudel"} |~ "5[0-9]{2}"</code>
+        <span class="interactive" 
+              data-targetaction="highlight" 
+              data-reftarget="textarea.inputarea">
+        </span>
+        <span class="interactive" 
+              data-targetaction="formfill" 
+              data-reftarget="textarea.inputarea"
+              data-targetvalue='{service_name="nginx_access_log", host="appfelstrudel"} | json | status = "500" |~ "id/[0-9]+/"'>
+        </span>
+        <span class="interactive-comment"><code>|~</code> filters log lines by a regular expression match. Here we combine JSON parsing with regex to find 500 errors on URIs with numeric IDs.</span>
+        Find HTTP 500 errors on URIs like <code>/id/1481024304/</code> using regex to match the numeric ID:<br>
+        <code>{service_name="nginx_access_log", host="appfelstrudel"} | json | status = "500" |~ "id/[0-9]+/"</code><br>
+        The pattern <code>[0-9]+</code> matches one or more digits.
       </li>
       <li class="interactive" 
           data-reftarget='button[data-testid="data-testid RefreshPicker run button"]'

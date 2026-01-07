@@ -241,13 +241,21 @@
       "title": "6. Use regex matching carefully",
       "blocks": [
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |~ \"5[0-9]{2}\"",
+          "type": "multistep",
           "requirements": ["exists-reftarget"],
-          "tooltip": "`|~` filters log lines by a regular expression match (include). It's flexible, but can be slower than labels or parsing.",
-          "content": "Try a regex match to find 5xx status codes *anywhere* in the line:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |~ \"5[0-9]{2}\"`"
+          "tooltip": "`|~` filters log lines by a regular expression match. Here we combine JSON parsing with regex to find 500 errors on URIs with numeric IDs.",
+          "content": "Find HTTP 500 errors on URIs like `/id/1481024304/` using regex to match the numeric ID:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" |~ \"id/[0-9]+/\"`\n\nThe pattern `[0-9]+` matches one or more digits.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "textarea.inputarea"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" |~ \"id/[0-9]+/\""
+            }
+          ]
         },
         {
           "type": "interactive",
