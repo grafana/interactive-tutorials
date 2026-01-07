@@ -16,38 +16,66 @@
     },
     {
       "type": "markdown",
-      "content": "## 📚 Select Your Data Source\n\nBefore we can query logs, we need to select a Loki data source. The data source picker allows you to choose which Loki instance to query against."
+      "content": "## 1. 📚 Select Your Data Source\n\nBefore we can query logs, we need to select a Loki data source. The data source picker allows you to choose which Loki instance to query against."
     },
     {
       "type": "section",
       "id": "select-datasource",
-      "title": "Select Your Data Source",
+      "title": "1. Select Your Data Source",
       "blocks": [
         {
-          "type": "multistep",
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid=\"data-testid Select a data source\"]",
           "requirements": ["exists-reftarget"],
-          "content": "Click on the **data source picker**, then select the **LokiNGINXLogs** data source.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "input[data-testid=\"data-testid Select a data source\"]"
-            },
-            {
-              "action": "button",
-              "reftarget": "LokiNGINXLogs"
-            }
-          ]
+          "tooltip": "This opens the data source picker so you can choose which Loki instance to query.",
+          "content": "Click the **data source picker**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "LokiNGINXLogs",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "This selects the Loki data source used for the rest of the tutorial.",
+          "content": "Select **LokiNGINXLogs**."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## ✍️ Write Your First LogQL Query\n\nNow that we have our data source selected and Code mode enabled, let's write our first LogQL query! Every LogQL query starts with a label selector enclosed in curly braces."
+      "content": "## 2. ⏱️ Set a Time Range (Recommended)\n\nLogQL queries always run over a **time range**. If your results look empty (or too noisy), the time range is one of the first things to check.\n\nFor this tutorial, set your time range to something like **Last 15 minutes** (or **Last 1 hour**) so you have enough data to explore.\n\n> Tip: Grafana also caps log results (often at **1000 lines**). Narrowing with labels and filters is the normal workflow."
+    },
+    {
+      "type": "section",
+      "id": "time-range",
+      "title": "2. Set the Time Range",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid TimePicker Open Button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "The **time range picker** controls which time window your query searches. LogQL results are always scoped to this range.",
+          "content": "Click the **time range picker** (the clock icon) to open the time selection menu."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#TimePickerContent label:contains(\"Last 15 minutes\")",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Selecting a recent time range ensures you have log data to work with. You can always adjust this later.",
+          "content": "Select **Last 15 minutes** from the quick ranges."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 3. ✍️ Write Your First LogQL Query\n\nNow that we have our data source selected and Code mode enabled, let's write our first LogQL query! Every LogQL query starts with a label selector enclosed in curly braces."
     },
     {
       "type": "section",
       "id": "first-query",
-      "title": "Write Your First LogQL Query",
+      "title": "3. Write Your First LogQL Query",
       "blocks": [
         {
           "type": "interactive",
@@ -112,10 +140,10 @@
           "type": "interactive",
           "action": "formfill",
           "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\", host=\"apfelstrudel\"} |= \"500\" != \"200\"",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\"",
           "requirements": ["exists-reftarget"],
           "tooltip": "Let's combine both approaches! We'll use **|= \"500\"** to include lines containing \"500\" and **!= \"200\"** to exclude lines containing \"200\". This gives us a more precise filter for HTTP 500 errors.",
-          "content": "Type a combined query: `{service_name=\"nginx_access_log\", host=\"apfelstrudel\"} |= \"500\" != \"200\"` to filter for lines containing \"500\" but not \"200\"."
+          "content": "Type a combined query: `{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\"` to filter for lines containing \"500\" but not \"200\"."
         },
         {
           "type": "interactive",
@@ -134,17 +162,28 @@
     {
       "type": "section",
       "id": "json-query",
-      "title": "Use JSON parsing for precise filtering",
-      "requirements": ["section-completed:first-query"],
+      "title": "4. Use JSON parsing for precise filtering",
       "blocks": [
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"",
+          "type": "markdown",
+          "content": "String filters (`|=`, `!=`) are quick, but they can match the wrong thing.\n\nIf your log lines are JSON, it's usually better to **parse** the JSON and filter by a specific field."
+        },
+        {
+          "type": "multistep",
           "requirements": ["exists-reftarget"],
           "tooltip": "Here's a much better approach! We'll use the **| json** parser to extract structured data from the log lines, then filter by the **status** field directly. This is more precise than string matching.",
-          "content": "Type a better query: `{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"` to parse JSON and filter by the status field."
+          "content": "Type a better query: `{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"` to parse JSON and filter by the status field.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "textarea.inputarea"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\""
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -155,6 +194,115 @@
           "content": "Click the **Run query** button to execute the JSON parsing query and see the filtered results."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 5. 🧹 Make Results Easier to Read (Line Formatting)\n\nOnce you've extracted fields (like `status`) you can format each log line to show just what you care about. This makes scanning results much easier."
+    },
+    {
+      "type": "section",
+      "id": "line-format",
+      "title": "5. Format log lines with line_format",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}}\"",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "`line_format` changes how each result line is displayed. It doesn't change which lines match — it just makes them easier to read.",
+          "content": "Add `line_format` to make the results easier to scan:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}}\"`\n\n(You can add more fields later, like `{{.method}}` or `{{.path}}`, if they exist in your logs.)"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Run the query again to see formatted output.",
+          "content": "Click **Run query** to see the formatted results."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 6. 🧩 Regex (Last Resort)\n\nRegular expressions are powerful, but they're usually the **most expensive** and hardest to maintain. Prefer **label selectors** and **JSON parsing** when you can.\n\nUse regex when logs are unstructured and you *can't* reliably parse fields."
+    },
+    {
+      "type": "section",
+      "id": "regex-last-resort",
+      "title": "6. Use regex matching carefully",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |~ \"5[0-9]{2}\"",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "`|~` filters log lines by a regular expression match (include). It's flexible, but can be slower than labels or parsing.",
+          "content": "Try a regex match to find 5xx status codes *anywhere* in the line:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |~ \"5[0-9]{2}\"`"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Run the regex query.",
+          "content": "Click **Run query** to execute the regex query."
+        },
+        {
+          "type": "markdown",
+          "content": "Regex also has an exclude form: `!~` (\"does not match\").\n\nFor example: `... !~ \"200\"` excludes lines that match the regex."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 7. 📈 Metrics from Logs (Quick Teaser)\n\nLogQL can also produce **time series** from logs. We'll keep this part short—this is just to show what's possible.\n\nA good starting point is counting how many log lines match a query over time."
+    },
+    {
+      "type": "section",
+      "id": "metrics-teaser",
+      "title": "7. Turn logs into a chart",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "count_over_time({service_name=\"nginx_access_log\"}[5m])",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "`count_over_time(<log query>[5m])` counts how many log lines matched within each rolling 5-minute window. This returns a time series you can graph.",
+          "content": "Type a simple metric query to count logs over time:\n\n`count_over_time({service_name=\"nginx_access_log\"}[5m])`"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Run the metric query to see a chart.",
+          "content": "Click **Run query** to see the count over time."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "sum by (host) (rate({service_name=\"nginx_access_log\"}[5m]))",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "`rate(...)` turns counts into \"per-second\" rate. `sum by (host)(...)` groups results by a label (here: host). This is a very common pattern for dashboards.",
+          "content": "Optional: get a per-host rate (logs/second) using `rate` and `sum by`:\n\n`sum by (host) (rate({service_name=\"nginx_access_log\"}[5m]))`"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Run the per-host rate query.",
+          "content": "Click **Run query** to see the per-host rate."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 8. ✅ Wrap-up\n\nYou now know a practical workflow for writing LogQL:\n\n1. **Start with labels** (fast, narrows data)\n2. Add **simple filters** (`|=`, `!=`) when needed\n3. Prefer **structured parsing** (`| json`) for precision\n4. Use **`line_format`** to make results readable\n5. Use **regex** (`|~`, `!~`) only when you can't parse\n6. Convert logs to **metrics** with `count_over_time` / `rate` for charts\n\nIf you'd like, the next tutorial can go deeper on metrics (more functions, grouping, and common dashboard patterns)."
     }
   ]
 }
