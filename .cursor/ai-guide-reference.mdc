@@ -1,0 +1,148 @@
+---
+alwaysApply: true
+---
+# AI Guide Reference
+
+Quick reference for AI generating interactive Grafana guides.
+
+## Documentation Map
+
+| Topic | Primary Reference |
+|-------|-------------------|
+| **Format Overview** | [docs/json-guide-format.md](../docs/json-guide-format.md) |
+| **Block Types** | [docs/interactive-types.md](../docs/interactive-types.md) |
+| **Properties** | [docs/json-block-properties.md](../docs/json-block-properties.md) |
+| **Requirements** | [docs/requirements-reference.md](../docs/requirements-reference.md) |
+| **Selectors** | [docs/selectors-and-testids.md](../docs/selectors-and-testids.md) |
+
+## JSON Guide Structure
+
+```json
+{
+  "id": "guide-id",
+  "title": "Guide Title",
+  "blocks": []
+}
+```
+
+## Block Type Quick Reference
+
+### Content Blocks
+- `markdown` - Formatted text (headings, lists, code)
+- `image` - Embedded image (src, alt, width)
+- `video` - YouTube or native video (src, provider)
+
+### Interactive Blocks
+- `interactive` - Single action: highlight, button, formfill, navigate, hover
+- `multistep` - Automated multi-action sequence
+- `guided` - User-performed sequence with detection
+
+### Structural Blocks
+- `section` - Grouped steps with "Do Section"
+- `conditional` - Runtime content branching
+
+### Assessment Blocks
+- `quiz` - Knowledge check with choices
+- `input` - Collect user response as variable
+
+## Essential Patterns
+
+### Navigation Element
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+  "requirements": ["navmenu-open", "exists-reftarget"],
+  "content": "Click Dashboards"
+}
+```
+
+### Button Click
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Save & test",
+  "requirements": ["exists-reftarget"],
+  "content": "Save the configuration"
+}
+```
+
+### Form Fill
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "input[id='basic-settings-name']",
+  "targetvalue": "my-value",
+  "requirements": ["exists-reftarget"],
+  "content": "Enter the name"
+}
+```
+
+### Section
+```json
+{
+  "type": "section",
+  "id": "setup",
+  "title": "Setup",
+  "objectives": ["has-datasource:prometheus"],
+  "blocks": []
+}
+```
+
+### Show-Only (Educational)
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "div[data-testid='panel']",
+  "doIt": false,
+  "tooltip": "This panel displays your metrics.",
+  "content": "Notice the metrics panel"
+}
+```
+
+### Conditional Content
+```json
+{
+  "type": "conditional",
+  "conditions": ["has-datasource:prometheus"],
+  "whenTrue": [{ "type": "markdown", "content": "Prometheus is ready!" }],
+  "whenFalse": [{ "type": "markdown", "content": "Set up Prometheus first." }]
+}
+```
+
+## Required Requirements by Context
+
+| Context | Requirements |
+|---------|-------------|
+| Any DOM action | `exists-reftarget` |
+| Navigation menu | `navmenu-open`, `exists-reftarget` |
+| Page-specific | `on-page:/path`, `exists-reftarget` |
+| Admin action | `is-admin`, `exists-reftarget` |
+| Data source | `has-datasource:name`, `exists-reftarget` |
+
+## Selector Best Practices
+
+✅ **Use**:
+- `data-testid` attributes
+- Button text with `action: "button"`
+- Semantic attributes (`href`, `aria-*`, `id`)
+
+❌ **Avoid**:
+- Auto-generated CSS classes (`.css-xyz123`)
+- Deep nesting (`div > div > div > button`)
+- Brittle partial matches
+
+## AI Quality Checklist
+
+Before generating a guide:
+- [ ] Include `exists-reftarget` for all DOM actions
+- [ ] Add `navmenu-open` for navigation elements
+- [ ] Use stable selectors (data-testid, button text)
+- [ ] Provide clear, action-focused content
+- [ ] Add tooltips for educational value
+- [ ] Use objectives for auto-completion
+- [ ] Make steps skippable where appropriate

@@ -1,808 +1,94 @@
 ---
 alwaysApply: true
-description: Complex selector support and hover interactions for interactive guides
 ---
+# Complex Selectors and Hover Reference
 
-# Complex Selectors and Hover Interactions Reference
+> **Full documentation**: See [docs/selectors-and-testids.md](../docs/selectors-and-testids.md)
 
-## Overview
+## Advanced Pseudo-Selectors
 
-The interactive guide system now supports advanced CSS selectors including `:has()` and `:contains()` pseudo-selectors, plus a dedicated `hover` action type for revealing hidden UI elements.
+### `:nth-match(n)` - Find nth element globally
 
-## Hover Action Type
+Unlike `:nth-child()` which looks within parent, `:nth-match()` finds the nth matching element in the entire document.
 
-### Purpose
-Trigger hover states on elements to reveal UI that appears only on hover (e.g., Tailwind `group-hover:` classes, CSS `:hover` states).
-
-### Syntax
 ```json
 {
-  "type": "interactive",
-  "action": "hover",
-  "reftarget": "{CSS_SELECTOR}",
-  "requirements": ["exists-reftarget"],
-  "content": "{Description of what to hover}"
+  "reftarget": "div[data-testid='uplot-main-div']:nth-match(3)"
 }
 ```
 
-### Behavior
-- **Show Mode**: Highlights the element without triggering hover
-- **Do Mode**: Dispatches mouse events (`mouseenter`, `mouseover`, `mousemove`)
-- **Duration**: Maintains hover state for 2 seconds (configurable)
-- **Cleanup**: Natural mouse movement cleans up hover state
+### `:contains('text')` - Find by text content
 
-### Common Use Cases
-
-#### Hover-Revealed Action Buttons
 ```json
-// Buttons that appear on row hover
+{
+  "reftarget": "div:contains('checkoutservice')"
+}
+```
+
+### `:has(selector)` - Find parent containing child
+
+```json
+{
+  "reftarget": "div[data-cy='service-card']:has(p:contains('auth'))"
+}
+```
+
+### Combined selectors
+
+```json
+{
+  "reftarget": "div[data-cy='item']:has(h3:contains('Service')) button[data-action='configure']"
+}
+```
+
+## Hover-Dependent UI Patterns
+
+### Multistep (Automated)
+
+```json
 {
   "type": "multistep",
-  "content": "Edit user details",
+  "content": "Hover and click the action button",
+  "steps": [
+    {
+      "action": "hover",
+      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))"
+    },
+    {
+      "action": "button",
+      "reftarget": "Dashboard"
+    }
+  ]
+}
+```
+
+### Guided (User Performs)
+
+```json
+{
+  "type": "guided",
+  "content": "Manually hover to reveal buttons",
+  "stepTimeout": 30000,
   "steps": [
     {
       "action": "hover",
       "reftarget": "tr[data-row-id='user-123']",
-      "requirements": ["exists-reftarget"]
+      "tooltip": "Hover over the row"
     },
     {
       "action": "button",
       "reftarget": "Edit",
-      "requirements": ["exists-reftarget"]
+      "tooltip": "Click the Edit button"
     }
   ]
 }
 ```
 
-#### Hover-Revealed Menus
-```json
-// Dropdown menus on navigation hover
-{
-  "type": "multistep",
-  "content": "Access preferences from settings menu",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "nav[role='navigation'] > div:contains('Settings')",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "Preferences",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-#### Service List Hover Actions
-```json
-// Application Observability workload list
-{
-  "type": "multistep",
-  "content": "Open checkout service dashboard",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "Dashboard",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-### Best Practices for Hover
-
-1. **Always use multistep** for hover-then-click patterns
-2. **Include exists-reftarget** for both hover and subsequent actions
-3. **Use complex selectors** to target specific items in lists
-4. **Test timing** - default 2s works for most cases
-5. **Sequence matters** - hover must come before clicking revealed elements
-
-## Complex Selector Engine
-
-### `:contains()` Pseudo-Selector
-
-Finds elements containing specific text content (jQuery-style selector).
-
-#### Basic Usage
-```json
-// Find by text content
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div:contains('checkoutservice')",
-  "requirements": ["exists-reftarget"],
-  "content": "Highlight checkout service"
-}
-
-// Case-sensitive matching
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "p:contains('ERROR')",
-  "requirements": ["exists-reftarget"],
-  "content": "Find error messages"
-}
-
-// Partial text matching
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "span:contains('Running')",
-  "requirements": ["exists-reftarget"],
-  "content": "Find running status indicators"
-}
-```
-
-#### Combined with Attributes
-```json
-// Most reliable: Attribute + text content
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-cy='service-card']:contains('frontend')",
-  "requirements": ["exists-reftarget"],
-  "content": "Find frontend service card"
-}
-
-// Dashboard list item by title
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "a[data-testid='dashboard-link']:contains('Production Metrics')",
-  "requirements": ["exists-reftarget"],
-  "content": "Find production dashboard"
-}
-```
-
-### `:has()` Pseudo-Selector
-
-Finds elements that contain specific descendant elements.
-
-#### Basic Usage
-```json
-// Find containers with specific children
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-cy='service-card']:has(p)",
-  "requirements": ["exists-reftarget"],
-  "content": "Highlight service cards with descriptions"
-}
-
-// Find panels with alerts
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-testid='panel']:has(svg[data-icon='alert'])",
-  "requirements": ["exists-reftarget"],
-  "content": "Find panels with alert icons"
-}
-
-// Find forms with errors
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "form:has(span[role='alert'])",
-  "requirements": ["exists-reftarget"],
-  "content": "Highlight forms with validation errors"
-}
-```
-
-#### Advanced Targeting
-```json
-// Find rows with specific buttons
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "tr:has(button[data-action='delete'])",
-  "requirements": ["exists-reftarget"],
-  "content": "Find deletable rows"
-}
-
-// Find sections with interactive elements
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "section:has(button[data-testid='configure'])",
-  "requirements": ["exists-reftarget"],
-  "content": "Find configurable sections"
-}
-```
-
-### Combined Complex Selectors
-
-The most powerful feature: combining `:has()` and `:contains()` for precise targeting.
-
-#### Service/Workload Lists
-```json
-// Find specific service by name
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
-  "requirements": ["exists-reftarget"],
-  "content": "Highlight checkout service item"
-}
-
-// Find service with specific status
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-service]:has(span:contains('Running')):has(span:contains('Healthy'))",
-  "requirements": ["exists-reftarget"],
-  "content": "Find healthy running services"
-}
-```
-
-#### Dashboard and Panel Selection
-```json
-// Find dashboard by title
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-testid='dashboard-card']:has(h3:contains('Production'))",
-  "requirements": ["exists-reftarget"],
-  "content": "Find production dashboard"
-}
-
-// Find panel by title
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-testid='panel']:has(h2:contains('CPU Usage'))",
-  "requirements": ["exists-reftarget"],
-  "content": "Find CPU usage panel"
-}
-```
-
-#### Form Error Handling
-```json
-// Find forms with specific errors
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "form:has(div:contains('Invalid credentials'))",
-  "requirements": ["exists-reftarget"],
-  "content": "Highlight login form with error"
-}
-
-// Find required fields with errors
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-field]:has(span:contains('required'))",
-  "requirements": ["exists-reftarget"],
-  "content": "Find required field errors"
-}
-```
-
-#### Hover + Complex Selector Patterns
-```json
-// Hover over specific service to reveal buttons
-{
-  "type": "multistep",
-  "content": "View checkout service dashboard",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "Dashboard",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-
-// Hover over dashboard card to reveal actions
-{
-  "type": "multistep",
-  "content": "Star the Kubernetes dashboard",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-testid='dashboard-card']:has(h3:contains('Kubernetes'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "Star",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-## Browser Compatibility
-
-### Native Support
-- **:has()**: Chrome 105+, Safari 17.2+, Firefox 140+
-- **:contains()**: Not supported natively (jQuery extension)
-
-### Automatic Fallback
-The system provides transparent JavaScript fallbacks:
-
-```typescript
-// Automatically handled by querySelectorAllEnhanced()
-// No manual intervention needed
-```
-
-**When Native Fails:**
-- System parses selector to identify complex pseudo-selectors
-- Executes equivalent JavaScript-based DOM traversal
-- Returns results in same format as native queries
-- Logs fallback usage for debugging (in dev mode)
-
-### No Configuration Required
-```json
-// Just use complex selectors - system handles compatibility
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div:has(p:contains('text'))"
-}
-```
-
-## Performance Optimization
-
-### Efficient Selector Strategies
-
-#### Good Selectors (Fast)
-```
-// Specific base with complex refinement
-div[data-cy="service-item"]:has(p:contains("checkout"))
-div[data-testid="card"]:contains("Production")
-section[id="services"]:has(button:contains("Configure"))
-```
-
-#### Poor Selectors (Slow)
-```
-// Too generic - searches entire DOM
-div:contains("service")
-div:has(button)
-
-// Overly complex nesting
-div:has(ul:has(li:has(span:contains("text"))))
-```
-
-### Performance Guidelines
-
-1. **Narrow Scope First**: Use specific attributes before complex selectors
-   - Good: `div[data-cy="item"]:contains("text")`
-   - Bad: `div:contains("text")`
-
-2. **Limit Nesting**: Keep `:has()` nesting to 2 levels maximum
-   - Good: `div:has(p:contains("text"))`
-   - Avoid: `div:has(ul:has(li:has(span:contains("text"))))`
-
-3. **Test Performance**: Complex selectors may be slower on large DOMs
-   ```javascript
-   // Test selector performance in console
-   console.time('selector');
-   document.querySelectorAll('div[data-cy="item"]:has(p:contains("test"))');
-   console.timeEnd('selector');
-   ```
-
-4. **Cache When Possible**: System caches results within action execution
-
-## Real-World Examples
-
-### Application Observability Workload List
-
-```json
-// Navigate to specific service
-{
-  "type": "section",
-  "id": "inspect-checkout-service",
-  "blocks": [
-    {
-      "type": "multistep",
-      "content": "Open checkout service dashboard",
-      "steps": [
-        {
-          "action": "hover",
-          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
-          "requirements": ["exists-reftarget"]
-        },
-        {
-          "action": "button",
-          "reftarget": "Dashboard",
-          "requirements": ["exists-reftarget"]
-        }
-      ]
-    }
-  ]
-}
-```
-
-### Kubernetes Workload Management
-
-```json
-// Interact with specific pod
-{
-  "type": "multistep",
-  "content": "View nginx pod logs",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "tr[data-resource='pod']:has(td:contains('nginx-deployment'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "View logs",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-### Dashboard Management
-
-```json
-// Star specific dashboard
-{
-  "type": "multistep",
-  "content": "Favorite the production metrics dashboard",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-testid='dashboard-card']:has(h3:contains('Production Metrics'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "Mark \"Production Metrics\" as favorite",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-### Alert Rules by Name
-
-```json
-// Edit specific alert rule
-{
-  "type": "multistep",
-  "content": "Edit the high CPU alert rule",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-testid='alert-rule-row']:has(span:contains('High CPU Alert'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "Edit",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-## Complex Selector Reference
-
-### `:contains()` Pseudo-Selector
-
-**Syntax**: `element:contains("text")`  
-**Matches**: Elements whose text content includes the specified string  
-**Case-Sensitive**: Yes  
-**Partial Match**: Yes
-
-#### Examples
-```
-// Service names
-div:contains("checkoutservice")
-
-// Status indicators
-span:contains("Running")
-
-// Error messages
-p:contains("ERROR")
-
-// Dashboard titles
-h2:contains("Production")
-
-// Button labels
-button:contains("Configure")
-```
-
-### `:has()` Pseudo-Selector
-
-**Syntax**: `parent:has(child_selector)`  
-**Matches**: Elements that contain descendants matching the child selector  
-**Nesting**: Supports multiple levels (but limit to 2 for performance)
-
-#### Examples
-```
-// Cards with descriptions
-div[data-cy="card"]:has(p)
-
-// Services with alerts
-div[data-service]:has(svg[data-icon="alert"])
-
-// Panels with queries
-div[data-panel]:has(textarea[data-testid="query-editor"])
-
-// Forms with errors
-form:has(span[role="alert"])
-
-// Lists with checkboxes
-ul:has(input[type="checkbox"])
-```
-
-### Combined Selectors
-
-**Syntax**: `parent:has(child:contains("text"))`  
-**Power**: Most precise targeting for dynamic content
-
-#### Examples
-```
-// Specific service item
-div[data-cy="wb-list-item"]:has(p:contains("checkoutservice"))
-
-// Dashboard with status
-div[data-testid="dashboard-card"]:has(span:contains("Active"))
-
-// Alert rule by name
-tr[data-alert-rule]:has(td:contains("High Memory"))
-
-// User row by email
-tr[data-user]:has(td:contains("admin@example.com"))
-
-// Panel by title
-div[data-panel-id]:has(h2:contains("CPU Usage"))
-```
-
-### Nested Complex Selectors
-
-**Use Sparingly**: Performance impact increases with nesting depth
-
-```
-// Good: One level of complexity
-div[data-service]:has(span:contains("Running"))
-
-// Acceptable: Two levels of complexity
-div[data-service]:has(div[data-status]:contains("Healthy"))
-
-// Avoid: Three+ levels of complexity
-div:has(ul:has(li:has(span:contains("text"))))
-```
-
-## AI Generation Guidelines
-
-### When to Use Hover
-
-Use `hover` action when:
-- ✅ UI elements only appear on hover (Tailwind `group-hover:`, CSS `:hover`)
-- ✅ Action buttons are hidden until mouse interaction
-- ✅ Menus expand on hover
-- ✅ Tooltips contain clickable elements
-- ✅ Table rows reveal actions on hover
-
-Don't use `hover` when:
-- ❌ Elements are always visible
-- ❌ Click alone reveals elements (use `highlight` instead)
-- ❌ Elements appear on focus (use `highlight` with keyboard support)
-
-### When to Use Complex Selectors
-
-Use `:contains()` when:
-- ✅ Targeting elements by their text content
-- ✅ No stable `data-testid` or `id` available
-- ✅ Content is dynamic but text is predictable
-- ✅ Selecting from lists by item name
-
-Use `:has()` when:
-- ✅ Targeting parents by their children
-- ✅ Finding containers with specific content
-- ✅ Filtering by nested structure
-- ✅ Identifying elements by their composition
-
-Use combined selectors when:
-- ✅ Both text content and structure matter
-- ✅ Maximum precision needed (e.g., specific service in a list)
-- ✅ Multiple similar elements need differentiation
-- ✅ Stable attributes exist but aren't unique enough
-
-### Selector Decision Tree
-
-```
-Need to target element:
-├─ Has unique data-testid or id?
-│  └─ Use: button[data-testid="save"]
-├─ Is a button with stable text?
-│  └─ Use: data-targetaction="button" with text
-├─ Has stable attribute + needs text filter?
-│  └─ Use: div[data-cy="item"]:contains("specific-name")
-├─ Parent has stable attribute, child has text?
-│  └─ Use: div[data-cy="item"]:has(p:contains("text"))
-└─ Only text content is stable?
-   └─ Use: div:contains("text") (less preferred)
-```
-
-## Common Patterns
-
-### Service List Interactions
-
-```json
-// Pattern: Find service, hover to reveal, click action
-{
-  "type": "multistep",
-  "content": "{{ACTION_DESCRIPTION}}",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('{{SERVICE_NAME}}'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "{{ACTION_BUTTON}}",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-### Table Row Actions
-
-```json
-// Pattern: Find row by content, hover, click action
-{
-  "type": "multistep",
-  "content": "{{ACTION_DESCRIPTION}}",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "tr:has(td:contains('{{ROW_IDENTIFIER}}'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "{{ACTION_BUTTON}}",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-### Card-Based UIs
-
-```json
-// Pattern: Find card by title, hover, click action
-{
-  "type": "multistep",
-  "content": "{{ACTION_DESCRIPTION}}",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-card]:has(h3:contains('{{CARD_TITLE}}'))",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "action": "button",
-      "reftarget": "{{ACTION_BUTTON}}",
-      "requirements": ["exists-reftarget"]
-    }
-  ]
-}
-```
-
-## Migration Examples
-
-### Before: Limited Targeting
-
-```json
-// Old approach: Less precise
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-cy='wb-list-item']:first-of-type",
-  "content": "Highlight first service (might not be the right one)"
-}
-```
-
-### After: Precise Targeting
-
-```json
-// New approach: Exact targeting
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
-  "requirements": ["exists-reftarget"],
-  "content": "Highlight checkout service (exact match)"
-}
-```
-
-### After: Hover Support
-
-```json
-// New: Full hover interaction support
-{
-  "type": "multistep",
-  "content": "Edit item",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "div[data-cy='item']"
-    },
-    {
-      "action": "button",
-      "reftarget": "Edit"
-    }
-  ]
-}
-```
-
-## Troubleshooting
-
-### Selector Not Working
-
-1. **Test in Browser Console**:
-   ```javascript
-   document.querySelectorAll('div:has(p:contains("text"))');
-   ```
-
-2. **Check Fallback Usage**:
-   - Open browser DevTools console
-   - Look for "Using fallback selector" messages
-   - Verify element actually contains the text
-
-3. **Verify Text Content**:
-   ```javascript
-   // Check exact text content
-   document.querySelectorAll('div[data-cy="item"]').forEach(el => {
-     console.log(el.textContent);
-   });
-   ```
-
-### Hover Not Revealing Elements
-
-1. **Check CSS**: Verify element uses `:hover` or `group-hover:`
-2. **Increase Duration**: May need longer than 2s for complex animations
-3. **Test Manually**: Confirm manual hover reveals the element
-4. **Check Z-Index**: Ensure revealed elements are properly layered
-
-### Performance Issues
-
-1. **Add Scope**: Narrow selector to specific container
-2. **Reduce Nesting**: Limit `:has()` depth to 2 levels
-3. **Use Attributes**: Add stable attributes for faster targeting
-4. **Test Alternatives**: Try different selector approaches
-
-## Best Practices Summary
-
-### Hover Actions
-- ✅ Always use `multistep` for hover-then-click patterns
-- ✅ Include `exists-reftarget` requirement
-- ✅ Test hover timing (default 2s usually sufficient)
-- ✅ Use complex selectors for precise hover targets
-- ❌ Don't use hover for always-visible elements
-
-### Complex Selectors
-- ✅ Prefer `div[data-attr]:contains("text")` over `div:contains("text")`
-- ✅ Use `:has()` for parent-child relationships
-- ✅ Combine `:has()` and `:contains()` for maximum precision
-- ✅ Test in target browsers
-- ❌ Don't nest more than 2 levels deep
-- ❌ Don't use overly generic base selectors
-
-### Requirements
-- ✅ Always include `exists-reftarget` for complex selectors
-- ✅ Add `on-page:/path` for page-specific elements
-- ✅ Include appropriate page requirements
-- ❌ Don't assume elements exist without checking
-
-This enhanced functionality makes interactive guides significantly more powerful and precise, especially for dynamic interfaces like Application Observability, Kubernetes monitoring, and dashboard management.
+## When to Use Guided vs Multistep
+
+| Scenario                          | Use           |
+|-----------------------------------|---------------|
+| CSS `:hover` must trigger         | `guided`      |
+| User should learn by doing        | `guided`      |
+| Automation is reliable            | `multistep`   |
+| Speed is important                | `multistep`   |
