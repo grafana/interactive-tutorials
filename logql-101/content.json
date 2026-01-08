@@ -233,7 +233,7 @@
     },
     {
       "type": "markdown",
-      "content": "## 6. 🧩 Regex (Last Resort)\n\nRegular expressions are powerful, but they're usually the **most expensive** and hardest to maintain. Prefer **label selectors** and **JSON parsing** when you can.\n\nUse regex when logs are unstructured and you *can't* reliably parse fields."
+      "content": "## 6. 🧩 Regex (Last Resort)\n\nRegular expressions are powerful, but they're usually the **most expensive** and hardest to maintain. Prefer **label selectors** and **JSON parsing** when you can.\n\nWhen you do need regex, use **field filters** (`field =~ \"pattern\"`) after parsing—they're more precise than **line filters** (`|~ \"pattern\"`) which match anywhere in the log line."
     },
     {
       "type": "section",
@@ -243,8 +243,8 @@
         {
           "type": "multistep",
           "requirements": ["exists-reftarget"],
-          "tooltip": "`|~` filters log lines by a regular expression match. Here we combine JSON parsing with regex to find 500 errors on URIs with numeric IDs.",
-          "content": "Find HTTP 500 errors on URIs like `/id/1481024304/` using regex to match the numeric ID:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" |~ \"id/[0-9]+/\"`\n\nThe pattern `[0-9]+` matches one or more digits.",
+          "tooltip": "After JSON parsing, use `=~` to regex match a **specific field**. This is more precise than `|~` which matches anywhere in the log line.",
+          "content": "Find HTTP 500 errors on URIs like `/id/480195034` using regex on the `request_uri` field:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.status}} {{.request_uri}}\"`\n\n**Important:** The `=~` field filter must match the **entire value**, so we use `.*` anchors. This is different from `|~` line filters which match substrings.",
           "steps": [
             {
               "action": "highlight",
@@ -253,7 +253,7 @@
             {
               "action": "formfill",
               "reftarget": "textarea.inputarea",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" |~ \"id/[0-9]+/\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.status}} {{.request_uri}}\""
             }
           ]
         },
@@ -267,13 +267,13 @@
         },
         {
           "type": "markdown",
-          "content": "Regex also has an exclude form: `!~` (\"does not match\").\n\nFor example: `... !~ \"200\"` excludes lines that match the regex."
+          "content": "Regex also has an exclude form: `!~` (\"does not match\").\n\nFor example: `| request_uri !~ \"/admin\"` excludes lines where the URI matches `/admin`.\n\n**Tip:** Use `|~` and `!~` for line filters (match anywhere), and `=~` and `!~` after a field name for field-specific matches."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## 7. 📈 Metrics from Logs (Quick Teaser)\n\nLogQL can also produce **time series** from logs. We'll keep this part short—this is just to show what's possible.\n\nA good starting point is counting how many log lines match a query over time."
+      "content": "## 7. 📈 Metrics from Logs (Quick Teaser)\n\nLogQL can also produce **time series** from logs. We'll keep this part short—this is just to show what's possible.\n\nLet's turn our filtered error query into a chart by counting matches over time."
     },
     {
       "type": "section",
@@ -284,35 +284,39 @@
           "type": "interactive",
           "action": "formfill",
           "reftarget": "textarea.inputarea",
-          "targetvalue": "count_over_time({service_name=\"nginx_access_log\"}[5m])",
+          "targetvalue": "count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])",
           "requirements": ["exists-reftarget"],
-          "tooltip": "`count_over_time(<log query>[5m])` counts how many log lines matched within each rolling 5-minute window. This returns a time series you can graph.",
-          "content": "Type a simple metric query to count logs over time:\n\n`count_over_time({service_name=\"nginx_access_log\"}[5m])`"
+          "tooltip": "`count_over_time(<log query>[1h])` counts how many log lines matched within each rolling 1-hour window. This turns your log query into a time series.",
+          "content": "Type a metric query to count 500 errors over time:\n\n`count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])`"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
           "requirements": ["exists-reftarget"],
-          "tooltip": "Run the metric query to see a chart.",
-          "content": "Click **Run query** to see the count over time."
+          "tooltip": "Run the metric query to see what happens.",
+          "content": "Click **Run query** to execute this metric query."
+        },
+        {
+          "type": "markdown",
+          "content": "**Oops!** You likely got an error: `maximum number of series (500) reached`.\n\n**Why?** After `| json` parsing, each unique combination of extracted fields (like different `request_uri`, `remote_addr`, `request_id`, etc.) becomes a separate time series. With thousands of unique values, you quickly hit Loki's series limit.\n\n**The fix:** Wrap the query in `sum()` to aggregate all series into a single total."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "textarea.inputarea",
-          "targetvalue": "sum by (host) (rate({service_name=\"nginx_access_log\"}[5m]))",
+          "targetvalue": "sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))",
           "requirements": ["exists-reftarget"],
-          "tooltip": "`rate(...)` turns counts into \"per-second\" rate. `sum by (host)(...)` groups results by a label (here: host). This is a very common pattern for dashboards.",
-          "content": "Optional: get a per-host rate (logs/second) using `rate` and `sum by`:\n\n`sum by (host) (rate({service_name=\"nginx_access_log\"}[5m]))`"
+          "tooltip": "`sum()` aggregates all matching series into a single total, avoiding the cardinality limit.",
+          "content": "Fix the query by wrapping it in `sum()`:\n\n`sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))`"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
           "requirements": ["exists-reftarget"],
-          "tooltip": "Run the per-host rate query.",
-          "content": "Click **Run query** to see the per-host rate."
+          "tooltip": "Run the fixed metric query to see a clean chart.",
+          "content": "Click **Run query** — you should now see a single line showing total 500 errors over time."
         }
       ]
     },
