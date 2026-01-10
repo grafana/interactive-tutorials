@@ -21,7 +21,7 @@
           "requirements": ["on-page:/explore", "has-datasource:loki", "exists-reftarget"],
           "reftarget": "input[data-testid=\"data-testid Select a data source\"]",
           "tooltip": "Select the data source used by this guide.",
-          "content": "Select **LokiNGINXLogs** in the Data source menu.",
+          "content": "Select **LokiNGINXLogs** in the Data source menu. This datasource contains logs from an Nginx web server and we'll be using it for the rest of this tutorial.",
           "steps": [
             {
               "action": "highlight",
@@ -57,14 +57,14 @@
           "reftarget": "div[data-testid=\"QueryEditorModeToggle\"] input[id^=\"option-code-radiogroup\"]",
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "tooltip": "Use Code mode to type LogQL directly.",
-          "content": "Select **Code** mode."
+          "content": "There are two modes to write LogQL queries: Builder and Code. Use Code mode to type LogQL directly."
         },
         {
           "type": "multistep",
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "reftarget": "textarea.inputarea",
           "tooltip": "Run the query to see matching log lines.",
-          "content": "Type a label selector query:\n\n`{service_name=\"nginx_access_log\"}`",
+          "content": "In Loki, the most basic query is a label selector. You can read more about labels [here](https://grafana.com/docs/loki/latest/get-started/labels/). For now, type a label selector query:\n\n`{service_name=\"nginx_access_log\"}`",
           "steps": [
             {
               "action": "highlight",
@@ -78,12 +78,16 @@
           ]
         },
         {
+          "type": "markdown",
+          "content": "This query means, \"Show me all logs within this time range that have the service name `nginx_access_log`.\""
+        },
+        {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "tooltip": "This runs your query using the current time range and data source selection.",
-          "content": "Click **Run query** (play icon)."
+          "content": "Click **Run query** to execute the query and view the results."
         },
         {
           "type": "interactive",
@@ -92,7 +96,51 @@
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "doIt": false,
           "tooltip": "This area shows the results for your last query.",
-          "content": "Notice the results area. If you see many lines, that’s normal—start with labels, then narrow with filters."
+          "content": "Notice the results area. These are results Loki found that match your query."
+        },
+        {
+          "type": "markdown",
+          "content": "By default, Loki returns 1000 results. That can be a lot of data to look through if you're looking for something specific."
+        },
+        {
+          "type": "multistep",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
+          "tooltip": "Click on a log line to see its details and labels.",
+          "content": "Click on the first log line to expand it and view its details.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Log line\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "This shows the original log line as it was ingested.",
+          "content": "This is the **Log line** section. Here you can see the original log line exactly as it was ingested into Loki."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Indexed label\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Indexed labels are key-value pairs attached to log streams.",
+          "content": "This is the **Indexed labels** section. These are indexed metadata used for filtering logs in your queries."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Structured\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Structured metadata provides additional context without affecting stream identity.",
+          "content": "This is the **Structured metadata** section. This contains additional fields that aren't part of the log stream's identity."
         }
       ]
     },
