@@ -18,6 +18,9 @@ an interactive guide like that!
 
 ## Quick Start: Let's Build a new Interactive Guide
 
+Big picture, here's what you need to do: run a stack with the plugin, enable dev mode, and then
+go use the Block Editor under dev tools to create your new content. Sections below step you through how to do each of those things.
+
 ### For Grafana Employees
 
 The fastest way to get started:
@@ -144,7 +147,7 @@ David Allen to get it merged.
 For complete reference documentation:
 
 - **This repo**: See [.cursor/ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) for AI-assisted authoring
-- **Pathfinder Plugin Docs**: See [grafana-pathfinder-app/docs](https://github.com/grafana/grafana-pathfinder-app/tree/main/docs) on GitHub
+- **Pathfinder Plugin Docs**: See [interactive learning plugin docs](https://grafana.com/docs/plugins/grafana-pathfinder-app/latest/)
 
 Primary documentation files in this repo:
 
