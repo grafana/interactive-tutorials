@@ -1,0 +1,338 @@
+{
+  "id": "traceql-primer",
+  "title": "A TraceQL Primer",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# A TraceQL Primer\n\nWelcome to your TraceQL journey! In this interactive tutorial, you'll learn:\n\n- How to navigate to the Explore page\n- How to select the Tempo data source\n- How to use the TraceQL query editor\n- How to write and execute basic TraceQL queries\n- How to explore trace results and view individual spans\n- How to analyze trace details using the waterfall visualization\n\nBy the end of this tutorial, you'll be able to query and investigate distributed traces using TraceQL!"
+    },
+    {
+      "type": "section",
+      "id": "navigate-to-explore",
+      "title": "Navigate to Explore",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The Explore page is where you can run ad-hoc queries and investigate your data. Let's start by opening it.\n\nIt's perfect for running ad-hoc queries, investigating traces with TraceQL, analyzing logs with LogQL, and exploring metrics with PromQL - all without needing to create a dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "content": "Click **Explore** in the navigation menu."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "select-tempo",
+      "title": "Select the Tempo Data Source",
+      "requirements": ["section-completed:navigate-to-explore", "has-datasource:tempo"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "**Tempo** is Grafana's distributed tracing data source. It stores and queries traces from your applications, helping you understand request flows across microservices and identify performance bottlenecks. We'll select it as our data source to query traces using TraceQL."
+        },
+        {
+          "type": "multistep",
+          "requirements": ["exists-reftarget"],
+          "content": "Open the data source picker and select **Tempo**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "input#data-source-picker"
+            },
+            {
+              "action": "button",
+              "reftarget": "Tempo"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "select-traceql-tab",
+      "title": "Select the TraceQL Tab",
+      "requirements": ["section-completed:select-tempo"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Tempo's query editor has multiple query modes. TraceQL is a powerful query language designed specifically for querying traces."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"data-testid radio-button\"] label:contains(\"TraceQL\")",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "**TraceQL** (Trace Query Language) is a powerful query language inspired by PromQL and LogQL. It lets you filter, aggregate, and analyze traces using familiar syntax with curly braces `{}` for filtering and pipes `|` for transformations.",
+          "content": "Click the **TraceQL** tab to switch to the TraceQL query editor."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "first-traceql-query",
+      "title": "Enter Your First TraceQL Query",
+      "requirements": ["section-completed:select-traceql-tab"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Let's start with the simplest TraceQL query: `{}`. This query returns all traces, similar to how `{}` works in PromQL and LogQL."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[aria-label=\"Editor content;Press Alt+F1 for Accessibility Options.\"]",
+          "targetvalue": "{ }",
+          "requirements": ["exists-reftarget"],
+          "content": "Enter the following query into the query editor: `{}`. This query will return any traces where any of the spans match the span selector. In this case, the span selector is empty, so this matches any spans in any traces."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click the **Run Query** button to execute your query and see the results.",
+          "content": "Click the **Run Query** button to execute your query and see the results."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "observe-results",
+      "title": "Observe the Results",
+      "requirements": ["section-completed:first-traceql-query"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The results table shows you the traces that match your query. In this case, because we've entered `{}`, this matches any spans in any traces stored in Tempo (i.e., any traces match the query!). Each trace shows the TraceID, the Start time of the root span, the root Service the root span belongs to, the name of the root span, and the duration of the root span. We can take a look at the returned matching spans for each trace by expanding the trace."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[title=\"Toggle Row Expanded\"]:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the **Expand** button to expand the first trace."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Data link\"]:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the first **Span** link to visualize the trace in the trace visualization panel."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[role=\"switch\"]:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the first **span** in the trace to expand it and view its intrinsics and attributes."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"AccordianKeyValues--header\"]:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the **Span attributes** to view the span attributes for the first span. These attributes are specific to the span and are set by the application and the instrumentation library, showing the context of the span itself and the work that it represents."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"AccordianKeyValues--header\"]:nth-match(2)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the **Resource attributes** to view the attributes for the first span. Resource attributes are attributes that are set by the infrastructure and are used to identify the resource that the span is associated with (such as the version of the service, the host it ran on, the OS type and version, etc.)."
+        },
+        {
+          "type": "multistep",
+          "requirements": ["exists-reftarget"],
+          "content": "Finally close the trace visualization panel by selecting the ellipses at the top right of the panel, and then selecting the **Close** button.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label=\"Show more items\"]:nth-match(2)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label=\"Close split pane\"]:nth-match(3)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "useful-traceql-query",
+      "title": "Write a Useful TraceQL Query",
+      "requirements": ["section-completed:observe-results"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The query we just wrote will find all traces and spans, which is not very useful. The `{}` is a span selector, essentially a filter that informs Grafana Tempo which traces and spans to return that match that filter. For example, let's find spans that belong to the `frontend` service. We can do this by writing a span selector that uses the `resource.service.name` resource attribute to tell Tempo to return only spans in traces which were generated by the `frontend` service."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[aria-label=\"Editor content;Press Alt+F1 for Accessibility Options.\"]",
+          "targetvalue": "{ resource.service.name = \"frontend\" }",
+          "requirements": ["exists-reftarget"],
+          "content": "Enter the following query into the query editor:\n\n`{ resource.service.name = \"frontend\" }`\n\nThis query will return any traces where any of the spans were generated by the `frontend` service."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click the **Run Query** button to execute your query and see the results.",
+          "content": "Click the **Run Query** button to execute your query and see the results."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[title=\"Toggle Row Expanded\"]:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the **Expand** button to expand the first trace. This shows the matching spans that exist in the trace (note that there may be one or two, or more)."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[aria-label=\"table header\"]:nth-match(3)",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "The matching spans have a **resource.service.name** attribute value of **frontend**. You can visualize this trace again by selecting the **Span ID** or the **Trace ID** for this trace (if you do so, remember to close the trace visualization panel before continuing!)."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "query-options",
+      "title": "Understand Query Options",
+      "requirements": ["section-completed:useful-traceql-query"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Something you may have noticed is that we only saw a set of twenty matching traces returned in the list from our query. This is because Tempo will return the first twenty matching traces it finds that include spans matching the span selector. We can change this by using the **Search Options** available as part of the query editor."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:contains(\"Search Options\")",
+          "requirements": ["exists-reftarget"],
+          "content": "Expanding the **Search Options** section will show you the available options. You can change the number of traces returned by Tempo by altering the **Limit** value. You can alter the maximum number of matching spans returned for each trace by altering the **Span Limit** value. You can also alter the format of the results returned by toggling between **Traces** and **Spans** under the **Table Format** section. Also note the **Metrics Options** section. For now, we'll update the returned traces and spans per trace to 50 and 10, respectively."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid=\"autosize-input\"]:nth-match(1)",
+          "targetvalue": "50",
+          "requirements": ["exists-reftarget"],
+          "content": "Enter **50** for the **Limit** value."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid=\"autosize-input\"]:nth-match(2)",
+          "targetvalue": "10",
+          "requirements": ["exists-reftarget"],
+          "content": "Enter **10** for the **Span Limit** value."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[aria-label=\"Editor content;Press Alt+F1 for Accessibility Options.\"]",
+          "targetvalue": "{ span:kind = server } | count() > 3",
+          "requirements": ["exists-reftarget"],
+          "content": "Enter the following query into the query editor:\n\n`{ span:kind = server } | count() > 3`\n\nThis query:\n- Uses `span:kind` which is a span intrinsic. This looks for any span which has a span kind of **server**, which denotes a span as receiving a request from an upstream client (which would make it a distributed trace).\n- Uses the pipe symbol (`|`) to pipe the results of the first query into the second query.\n- Uses the `count()` function to count the number of spans that match the characteristics of the span selector. In this case, we only want to return traces where four or more spans have the **server** span kind. This essentially denotes a distributed trace that has at least calls to four or more services."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "tooltip": "Click the **Run Query** button to execute your query and see the results.",
+          "content": "Click the **Run Query** button to execute your query and see the results."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[title=\"Toggle Row Expanded\"]:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the **Expand** button to expand the first trace. Note the **count()** and `span:kind` values in the columns for the returned spans. This shows us the matches from our query."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Data link\"]:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the first **Span** link in the first trace to visualize the trace in the trace visualization panel. The link will open the trace at the span you selected. Note that this trace shows a detailed hierarchy of services calling other services."
+        },
+        {
+          "type": "multistep",
+          "requirements": ["exists-reftarget"],
+          "content": "Finally close the trace visualization panel by selecting the ellipses at the top right of the panel, and then selecting the **Close** button.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label=\"Show more items\"]:nth-match(2)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label=\"Close split pane\"]:nth-match(3)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "traceql-metrics-query",
+      "title": "Try a TraceQL Metrics Query",
+      "requirements": ["section-completed:query-options"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "TraceQL doesn't just allow you to find interesting traces and return them as a table of matching traces. It also includes a powerful set of metrics functions that can be used to aggregate the results of a query. You can use these functions to convert the results to time-series data, that can then be visualized as graphs, heatmaps, tables or any other type of visualization that Grafana supports for time-series data. Much like the way our last query used pipelining to filter the span selectors into the `count()` function, we can also pipeline results into metrics functions to aggregate the results. Let's try a simple metrics query to count the number of traces that match our query."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[aria-label=\"Editor content;Press Alt+F1 for Accessibility Options.\"]",
+          "targetvalue": "{ span:kind = server && resource.service.name !~ \"frontend|flagd\" } | count_over_time() by (resource.service.name, span:name)",
+          "requirements": ["exists-reftarget"],
+          "content": "Enter the following query into the query editor:\n\n`{ span:kind = server && resource.service.name !~ \"frontend|flagd\" } | count_over_time() by (resource.service.name, span:name)`\n\nThis query:\n- Uses the `span:kind` intrinsic to match on any span in any of our traces that are of kind **server**.\n- Uses the `resource.service.name` attribute to match on any span in any of our traces that are not from the **frontend** or **flagd** services, using the negated regex operator (`!~`).\n- Pipes the results into the `count_over_time()` function, which counts the number of spans in each time window\n- Groups the results by the service name and span name (i.e., the number of spans for each service and span name)\n- Converts the results to time-series data"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the **Run Query** button or enter **Shift+Enter** to execute your query and see the results."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains(\"Bars\"):nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "The time-series is rendered by default as a line graph showing the count of the spans aggregated by service and span name, for all spans that are of kind **server**. You can change the visualization to a different type of graph by selecting the format you want in the top-right. Try now by selecting **Bars**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains(\"Points\"):nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "You can select any of the other visualization formats to see how the data is rendered in a different way. Now try selecting **Points**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎉 Congratulations!\n\nExcellent work! You've successfully queried and explored traces using TraceQL. You now know:\n\n- ✅ How to navigate to the Explore page\n- ✅ How to select the Tempo data source\n- ✅ How to switch to the TraceQL query editor\n- ✅ How to write and execute a basic TraceQL query\n- ✅ How to select a trace and span in the results list to visualize a trace\n- ✅ How to expand a span in a visualized trace to see its intrinsics and attributes\n- ✅ How to build a TraceQL query with span selectors for specific span characteristics\n- ✅ How to change the search options to return more or less traces and spans\n- ✅ How to build a TraceQL query with pipelining and functions to aggregate the results\n- ✅ How to run a TraceQL metrics query to count the number of spans in each time window\n- ✅ How to change the visualization of the metrics query results"
+    },
+    {
+      "type": "markdown",
+      "content": "### What's Next?\n\nNow that you've run your first TraceQL query, here are some next steps:\n\n- **Filter by duration** - Use `{duration > 1s}` to find slow traces\n- **Filter by status** - Try `{span:status=error}` to find failed requests\n- **Combine filters** - Use `{service.name=\"api\" && status=error}` for complex queries\n- **Explore span attributes** - Query specific span attributes like `{span.http.method=\"POST\"}`\n\n**You're now ready to explore your distributed traces!** TraceQL gives you powerful querying capabilities to understand your application's behavior."
+    }
+  ]
+}
+
