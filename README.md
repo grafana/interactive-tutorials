@@ -22,10 +22,10 @@ an interactive guide like that!
 
 The fastest way to get started:
 
-1. Go to [learn.grafana-ops.net](https://learn.grafana-ops.net)
+1. Go to [pathfinder.grafana-dev.net](https://pathfinder.grafana-dev.net)
 2. Log in with your Grafana credentials
 3. Navigate to the plugin configuration with `?dev=true`:
-   `https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true`
+   `https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true`
 4. Enable "Dev Mode" checkbox and save
 5. Click the `?` help icon to open the Pathfinder sidebar
 6. Use the **Block Editor** (in the dev tools section) to create your guide
@@ -36,7 +36,7 @@ The fastest way to get started:
 
 ### Alternative: Run the Plugin Locally
 
-If you don't have access to learn.grafana-ops.net (e.g., open source contributors), you can run the Pathfinder plugin locally:
+If you don't have access to pathfinder.grafana-dev.net (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can run the Pathfinder plugin locally:
 
 * **Make sure you have Cursor** (it's worth it). [Download it](https://cursor.com/downloads).
 * Clone this repo to your machine. Also clone the [interactive learning plugin](https://github.com/grafana/grafana-pathfinder-app)
