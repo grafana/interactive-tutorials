@@ -1,7 +1,8 @@
 # Interactive Learning Tutorials
 
 This repository contains interactive learning tutorials for Grafana, designed by
-Developer Advocacy. It is designed to work with Cursor's AI assistant.
+Developer Advocacy. It includes JSON guide content and is designed to work with
+the Block Editor and Cursor's AI assistant.
 
 ## First: Understand What We're Building!
 
@@ -17,74 +18,109 @@ an interactive guide like that!
 
 ## Quick Start: Let's Build a new Interactive Guide
 
-**[This video is a complete 10-minute guide to the development process for guides](https://www.youtube.com/watch?v=zMXf1enyPN0)**.  The instructions below will recap the key parts.
+Big picture, here's what you need to do: run a stack with the plugin, enable dev mode, and then
+go use the Block Editor under dev tools to create your new content. Sections below step you through how to do each of those things.
 
-### Set up the Interactive Learning Plugin Locally
+### For Grafana Employees
 
-* **Make sure you have Cursor** (it's worth it). [Download it](https://cursor.com/downloads).
-* Clone this repo to your machine.  Also clone the [interactive learning plugin](https://github.com/grafana/grafana-pathfinder-app)
-* Start the plugin repo.  [full instructions are here](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/LOCAL_DEV.md) but the short version is: `npm install` then `npm run build && npm run server` and go to http://localhost:3000/
-* Once you've logged into your running version of Grafana, go to the Interactive Learning Plugin settings page, and set the
+The fastest way to get started:
+
+1. Go to [pathfinder.grafana-dev.net](https://pathfinder.grafana-dev.net)
+2. Log in with your Grafana credentials
+3. Navigate to the plugin configuration with `?dev=true`:
+   [https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true](https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true)
+4. Enable "Dev Mode" checkbox and save.  **This must be done or the editor will not appear**.
+
+![Dev Mode Checkbox](docs/img/dev-mode.png)
+
+5. Click the `?` help icon to open the Pathfinder sidebar
+6. Click the "Debug" icon at the top of the sidebar to access dev tools.
+
+![Dev Tools](docs/img/dev-tools.jpg)
+
+6. Use the **Block Editor** (in the dev tools section) to create your guide
+
+![Block Editor](docs/img/block-editor.jpg)
+
+*The Block Editor is the main way to write new guides, it provides a visual interface for composing guides from blocks.*
+
+### If you can't access stack above: Run the Plugin Locally
+
+If you don't have access to pathfinder.grafana-dev.net (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can run the Pathfinder plugin locally:
+
+* **Cursor is recommended but not required** (but we think it's worth it). [Download it](https://cursor.com/downloads).
+* Clone this repo to your machine. Also clone the [interactive learning plugin](https://github.com/grafana/grafana-pathfinder-app)
+* Start the plugin repo. [Full instructions are here](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/LOCAL_DEV.md) but the short version is: `npm install` then `npm run build && npm run server` and go to http://localhost:3000/
+* Now follow the same instructions as above: go to the Interactive Learning Plugin settings page, and set the
 end of the URL to include `?dev=true`. The full URL should be roughly `{instance}/plugins/grafana-pathfinder-app?dev=true`
-* **Click the `?` help icon** (as shown earlier in step 1) to open the sidebar where you'll find the dev mode settings:
+* All other instructions are the same.
 
-<img src="docs/img/dev-mode.png" alt="Dev Mode" width="50%" height="50%" />
+### Writing Your Guide with the Block Editor
 
-* **The checkbox will not appear unless `dev=true` is in the URL**. Select that and save plugin settings
+Interactive guides are JSON documents. See [explore-drilldowns-101/content.json](explore-drilldowns-101/content.json) for a complete example.
 
-### Create a Draft HTML Guide
+The **Block Editor** is the recommended way to create guides:
 
-Interactive guides are just HTML documents, with a few extra special attributes that tell the plugin how
-to interact.  So writing a guide is just making an HTML file. There are a lot of examples in this repo; see 
-any `unstyled.html` file in one of the sub-directories.
+1. Open the Block Editor from the Pathfinder sidebar (dev mode must be enabled)
+2. Click "Add Block" to add content blocks (markdown, interactive, section, etc.)
+3. Use the **Record** feature on sections to capture your interactions automatically
+4. Preview your guide with the Preview toggle
+5. Export via "Copy JSON" or create a GitHub PR directly from the editor
 
-#### Option 1: Start from Scratch
+**Alternative: Cursor-assisted authoring**
 
-In cursor, use Agent mode and just type in `/new My First Guide`.  This will create a directory and an HTML
-file for you in the right format, which you can just go edit.
-
-#### Option 2: Start from Existing Instructions
-
-You can use [the importer app](https://pathfinder-importer.vercel.app/) to upload 
-a file you may have already written. This tool uses AI to help you reformat your doc into a basic
-HTML interactive guide. 
-
-In the "Enhance" tab there is a function called "Content Advisor" that can give basic 
-feedback about whether your doc is a good candidate for an interactive guide. In general we're looking for clear step-by-step
-instructions.
+This repository includes Cursor AI prompts and commands for guide authoring.
+In Cursor, you can use `/new My Guide Name` to scaffold a new guide directory.
+See the `.cursor/` folder for available commands and prompts.
 
 ### Iterate & Develop
 
-As you build your guide, you'll want to see it in the plugin, and test to make sure it works.
+The Block Editor auto-saves your work to localStorage, so you can iterate without losing progress.
 
-We recommend hosting your local HTML file on a local server; we use the [Live Server extension](https://marketplace.cursorapi.com/items/?itemName=ritwickdey.LiveServer) in Cursor to do this. Install this extension, click "Go Live" in the extreme bottom right of Cursor, and
-local files will be hosted on http://localhost:5000 or different port.
+To test your guide:
 
-You can then use the Tutorial tester to iterate. Simply put the URL to your `unstyled.html` draft guide into the box.
+1. Use the **Preview** mode in the Block Editor to see how it renders
+2. Alternatively, export the JSON and use the **Tutorial Tester** to load it by URL
+
+The Tutorial Tester accepts:
+- A local file URL (if using [Live Server extension](https://marketplace.cursorapi.com/items/?itemName=ritwickdey.LiveServer))
+- A GitHub raw URL (push to a branch first)
+- Pasted JSON content
 
 ![Test Tutorial](docs/img/test-tutorial.png)
 
-**NOTE**: The tutorial tester will not appear unless you are in dev mode.
-
-If you don't have the Live Server extension or don't want to host the file locally, you can push to a branch of this
-repo, and use Tutorial Tester >> Github to load from Github. We like Live server because it's faster and lets us iterate
-without `git push`.
+**NOTE**: Tutorial Tester and Block Editor only appear when dev mode is enabled.
 
 ### DOM Selectors
 
-Writing interactive guides usually boils down to writing lists of steps and their accompanying text, which is 
-straightforward. We draw your attention to the `data-reftarget` attributes in the HTML, which contain DOM selectors.
-**These are absolutely critical to get right**, because they tell the plugin which buttons, input boxes, etc. are being
-targeted by the interactive features.
+Interactive guides target UI elements using CSS selectors stored in the `reftarget` field. The Block Editor provides two ways to capture these selectors automatically:
+
+**Record Mode** (for sections)
+
+1. Click the **Record** button (red circle icon) on any section block
+2. Navigate and interact with Grafana normally - clicks, inputs, and form fills are captured
+3. A red banner appears showing your step count; hover over elements to see the DOM path
+4. Press **Stop** or **Escape** when finished
+5. Recorded steps are automatically added as interactive blocks with selectors filled in
+
+**Element Picker** (for individual blocks)
+
+1. When editing an interactive, multistep, or guided block, click the **Pick Element** button (crosshair icon)
+2. Click any element on the page to capture its selector
+3. The selector is automatically inserted into the form
+
+Both methods use intelligent selector generation that prefers stable `data-testid` attributes, falls back to semantic attributes (`href`, `aria-label`, `id`), and warns about fragile selectors.
+
+For advanced selector patterns and manual writing, see [docs/selectors-and-testids.md](docs/selectors-and-testids.md).
 
 ### Interactive Action Types: Asking Cursor for Help
 
-What kinds of interactive steps can you make?  See [docs/interactive-types.md] for a full list, or 
-just ask Cursor.  A good way to get started is to read one of the existing guides, highlight bits and
-add it to the model context, and ask cursor "How does this part work?"
+What kinds of interactive steps can you make? See [docs/interactive-types.md](docs/interactive-types.md) for a full list, or
+just ask Cursor. A good way to get started is to read one of the existing guides, highlight bits and
+add it to the model context, and ask Cursor "How does this part work?"
 
-Cursor knows quite a lot about what's in this repo!  Use `Ask` mode and ask it 
-questions about how different interactive elements work. Cursor will use the `docs` 
+Cursor knows quite a lot about what's in this repo! Use `Ask` mode and ask it
+questions about how different interactive elements work. Cursor will use the `docs`
 folder in this repo to answer your questions.
 
 Here's an example of Cursor in Ask mode, explaining a feature:
@@ -98,15 +134,27 @@ Here's an example of Cursor in Ask mode, explaining a feature:
 
 ## Getting Your Tutorial Into The Plugin
 
-Once you're finished with a draft, we need to add it to the recommender. This will 
+Once you're finished with a draft, we need to add it to the recommender. This will
 ensure that the right users get the content recommended to them when using Grafana.
 
 1. Open a PR to this repo with your new guide! Ping Jay Clifford, Tom Glenn, or
 David Allen to get it merged.
 2. We'll wire it into the recommender for you.
-3. MAKE SURE TO INCLUDE IN YOUR PR:  When should users see your guide? What are they looking at in the UI when it appears as a recommendation? Who should see your guide? Admins only?  Commercial stacks?  Free stacks? "Everybody" is an acceptable answer.  This determines how it will appear.
+3. MAKE SURE TO INCLUDE IN YOUR PR: When should users see your guide? What are they looking at in the UI when it appears as a recommendation? Who should see your guide? Admins only? Commercial stacks? Free stacks? "Everybody" is an acceptable answer. This determines how it will appear.
 
 ## Full Reference Documentation
 
-For complete AI reference documentation, see `.cursor/README.mdc`.  This contains
-a full reference guide to all of the things that can be done, and how to use them.
+For complete reference documentation:
+
+- **This repo**: See [.cursor/ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) for AI-assisted authoring
+- **Pathfinder Plugin Docs**: See [interactive learning plugin docs](https://grafana.com/docs/plugins/grafana-pathfinder-app/latest/)
+
+Primary documentation files in this repo:
+
+| Topic | File |
+|-------|------|
+| Guide Format | [docs/json-guide-format.md](docs/json-guide-format.md) |
+| Block Types | [docs/interactive-types.md](docs/interactive-types.md) |
+| Properties | [docs/json-block-properties.md](docs/json-block-properties.md) |
+| Requirements | [docs/requirements-reference.md](docs/requirements-reference.md) |
+| Selectors | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) |
