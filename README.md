@@ -90,10 +90,25 @@ The Tutorial Tester accepts:
 
 ### DOM Selectors
 
-Writing interactive guides usually boils down to writing lists of steps and their accompanying text, which is
-straightforward. The `reftarget` field in your JSON blocks contains DOM selectors.
-**These are critical to get right**, because they tell the plugin which buttons, input boxes, etc. are being
-targeted by the interactive features.
+Interactive guides target UI elements using CSS selectors stored in the `reftarget` field. The Block Editor provides two ways to capture these selectors automatically:
+
+**Record Mode** (for sections)
+
+1. Click the **Record** button (red circle icon) on any section block
+2. Navigate and interact with Grafana normally - clicks, inputs, and form fills are captured
+3. A red banner appears showing your step count; hover over elements to see the DOM path
+4. Press **Stop** or **Escape** when finished
+5. Recorded steps are automatically added as interactive blocks with selectors filled in
+
+**Element Picker** (for individual blocks)
+
+1. When editing an interactive, multistep, or guided block, click the **Pick Element** button (crosshair icon)
+2. Click any element on the page to capture its selector
+3. The selector is automatically inserted into the form
+
+Both methods use intelligent selector generation that prefers stable `data-testid` attributes, falls back to semantic attributes (`href`, `aria-label`, `id`), and warns about fragile selectors.
+
+For advanced selector patterns and manual writing, see [docs/selectors-and-testids.md](docs/selectors-and-testids.md).
 
 ### Interactive Action Types: Asking Cursor for Help
 
