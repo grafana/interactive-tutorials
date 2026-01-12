@@ -37,24 +37,20 @@ The fastest way to get started:
 
 6. Use the **Block Editor** (in the dev tools section) to create your guide
 
-![Block Editor](docs/img/block-editor.png)
+![Block Editor](docs/img/block-editor.jpg)
 
-*The Block Editor provides a visual interface for composing guides from blocks.*
+*The Block Editor is the main way to write new guides, it provides a visual interface for composing guides from blocks.*
 
-### Alternative: Run the Plugin Locally
+### If you can't access stack above: Run the Plugin Locally
 
 If you don't have access to pathfinder.grafana-dev.net (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can run the Pathfinder plugin locally:
 
-* **Make sure you have Cursor** (it's worth it). [Download it](https://cursor.com/downloads).
+* **Cursor is recommended but not required** (but we think it's worth it). [Download it](https://cursor.com/downloads).
 * Clone this repo to your machine. Also clone the [interactive learning plugin](https://github.com/grafana/grafana-pathfinder-app)
 * Start the plugin repo. [Full instructions are here](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/LOCAL_DEV.md) but the short version is: `npm install` then `npm run build && npm run server` and go to http://localhost:3000/
-* Once you've logged into your running version of Grafana, go to the Interactive Learning Plugin settings page, and set the
+* Now follow the same instructions as above: go to the Interactive Learning Plugin settings page, and set the
 end of the URL to include `?dev=true`. The full URL should be roughly `{instance}/plugins/grafana-pathfinder-app?dev=true`
-* **Click the `?` help icon** (as shown earlier in step 1) to open the sidebar where you'll find the dev mode settings:
-
-<img src="docs/img/dev-mode.png" alt="Dev Mode" width="50%" height="50%" />
-
-* **The checkbox will not appear unless `dev=true` is in the URL**. Select that and save plugin settings
+* All other instructions are the same.
 
 ### Writing Your Guide with the Block Editor
 
