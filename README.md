@@ -25,9 +25,16 @@ The fastest way to get started:
 1. Go to [pathfinder.grafana-dev.net](https://pathfinder.grafana-dev.net)
 2. Log in with your Grafana credentials
 3. Navigate to the plugin configuration with `?dev=true`:
-   `https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true`
-4. Enable "Dev Mode" checkbox and save
+   [https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true](https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true)
+4. Enable "Dev Mode" checkbox and save.  **This must be done or the editor will not appear**.
+
+![Dev Mode Checkbox](docs/img/dev-mode.png)
+
 5. Click the `?` help icon to open the Pathfinder sidebar
+6. Click the "Debug" icon at the top of the sidebar to access dev tools.
+
+![Dev Tools](docs/img/dev-tools.jpg)
+
 6. Use the **Block Editor** (in the dev tools section) to create your guide
 
 ![Block Editor](docs/img/block-editor.png)
