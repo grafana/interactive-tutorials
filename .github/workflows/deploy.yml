@@ -46,19 +46,23 @@ jobs:
           # Copy index.json
           cp index.json guides/
           
-          # Copy all directories containing unstyled.html (these are tutorials)
-          find . -name "unstyled.html" -type f | while read -r file; do
-            dir=$(dirname "$file")
-            # Skip if in current directory or excluded folders
-            if [[ "$dir" != "." && "$dir" != "./docs"* ]]; then
+          # Copy all tutorial directories (containing unstyled.html OR content.json)
+          # must sort and read -r unique to avoid duplicates
+          find . \( -name "unstyled.html" -o -name "content.json" \) -type f \
+            | sed 's|/[^/]*$||' \
+            | sort -u \
+            | while read -r dir; do
+            # Skip excluded folders
+            if [[ "$dir" != "." && "$dir" != "./docs"* && "$dir" != "./shared"* ]]; then
               mkdir -p "guides/$dir"
+              # Copy both files; if one is missing, error gets ignored and it's fine.
               cp "$dir"/*.html "guides/$dir/" 2>/dev/null || true
               cp "$dir"/*.json "guides/$dir/" 2>/dev/null || true
             fi
           done
-          
+
           echo "Files to deploy:"
-          find guides -type f | head -50
+          find guides -type f
 
       - name: Push files to GCS
         uses: grafana/shared-workflows/actions/push-to-gcs@push-to-gcs/v0.3.0
