@@ -1,0 +1,245 @@
+{
+  "id": "understanding-data-sources",
+  "title": "Understanding Data Sources",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Understanding Data Sources\n\nWhen looking at dashboards in Grafana, you may have wondered how the data gets there.  It's not stored in Grafana itself; Grafana runs queries to get the data that it shows.\n\nEvery visualization in Grafana gets its data from a **data source**. Data sources are the bridge between Grafana and your actual data, whether that's metrics from Prometheus, logs from Loki, records in a SQL database, or even data from cloud services like AWS CloudWatch.\n\nIn this tutorial, you'll learn:\n\n- Where to find and manage data sources in Grafana\n- The different types of data sources available\n- How to examine a data source's configuration\n- How to test that a data source connection is working\n- How data sources connect to the panels you see in dashboards"
+    },
+    {
+      "type": "section",
+      "id": "finding-data-sources",
+      "title": "Finding Data Sources",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Data sources are managed in the **Connections** area of Grafana. Click **Connections** in the navigation menu to get started.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/datasources']",
+          "content": "Click **Data sources** to see all the data sources configured in your Grafana instance.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[aria-label='Sort']",
+          "content": "[NEED SELECTOR] This is the **data sources list**. Each row represents a configured connection to an external data store. You can see the data source name, type, and URL at a glance.",
+          "tooltip": "Your configured data sources appear here",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/datasources/new']",
+          "content": "The **Add new data source** button lets administrators add new connections. We won't add one now, but you'll use this when you're ready to connect Grafana to your own data.",
+          "tooltip": "Add new data source (requires admin permissions)",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "data-source-types",
+      "title": "Types of Data Sources",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Grafana supports a wide variety of data sources. Let's explore the catalog to see what's available."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid data-source-add-button']",
+          "content": "Navigate to the data source catalog to see all available types.",
+          "requirements": [
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Data sources fall into several categories:\n\n**Time Series Databases** — Purpose-built for metrics over time\n- *Prometheus* — The most popular choice for cloud-native monitoring\n- *InfluxDB* — High-performance time series database\n- *Graphite* — Classic metrics collection and graphing\n\n**Logging Systems** — For searching and analyzing logs\n- *Loki* — Grafana's own log aggregation system\n- *Elasticsearch* — Distributed search and analytics\n\n**SQL Databases** — Query traditional relational databases\n- *MySQL*, *PostgreSQL*, *Microsoft SQL Server*\n- Great for business data and application databases\n\n**Cloud Monitoring** — Connect to cloud provider metrics\n- *AWS CloudWatch*, *Azure Monitor*, *Google Cloud Monitoring*\n- Access your cloud infrastructure metrics directly\n\n**Built-in Sources** — Available without external setup\n- *TestData* — Generate sample data for learning and testing"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='input-wrapper']:nth-match(1)",
+          "content": "[NEED SELECTOR] You can use the search box to find specific data source types.  This will look for data source plugins that have been installed on your Grafana instance, so if you don't see a data source that you need it might not be installed.  (You can see the [full list of available data sources](https://grafana.com/grafana/plugins/data-source-plugins/) on the Grafana website.)",
+          "tooltip": "Search for data source types",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='input-wrapper']:nth-match(1)",
+          "targetvalue": "mysql",
+          "content": "[NEED SELECTOR] Try searching for \"MySQL\" to see how quickly you can find what you need."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "exploring-configuration",
+      "title": "Exploring a Data Source Configuration",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Let's examine how a data source is configured. We'll look at **Prometheus**, the most popular data source for cloud-native monitoring."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/datasources']",
+          "content": "Return to the data sources list.",
+          "requirements": [
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='input-wrapper']:nth-match(1)",
+          "targetvalue": "prometheus",
+          "content": "[NEED SELECTOR] Search for a **Prometheus** data source to view its configuration.",
+          "requirements": [
+            "exists-reftarget",
+            "has-datasource:prometheus"
+          ],
+          "skippable": true,
+          "hint": "If you don't have a Prometheus data source configured, you can skip this section or ask an administrator to add one"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "li:nth-match(1)",
+          "content": "[NEED SELECTOR - first li in the ul for data sources] The **Name** field identifies this data source throughout Grafana. When you create a panel, you'll select data sources by this name. Choose descriptive names like \"Production Prometheus\" or \"Staging MySQL\" to keep things clear.",
+          "tooltip": "Data source name — used when selecting data sources in panels",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/datasources/edit/grafanacloud-usage']",
+          "content": "[NEED SELECTOR - first li in the ul of data sources] Open a Prometheus data source to see its settings."
+        },
+        {
+          "type": "markdown",
+          "content": "### Connection Settings\n\nMost data sources require connection details to reach your data. This will look different for each type of data source.\n\nThese settings tell Grafana how to connect to your data source and retrieve your metrics data."
+        },
+        {
+          "type": "multistep",
+          "content": "For example, to connect to Prometheus, Grafana needs to know where to find your Prometheus server and the credentials to be able to run queries.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#connection-url",
+              "tooltip": "Prometheus URL"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#auth-method-select",
+              "tooltip": "Credentials to connect"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "testing-connections",
+      "title": "Testing Data Source Connections",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Before using a data source, you should verify that Grafana can connect to it successfully. This helps catch configuration errors early."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Data source settings page name input field']",
+          "content": "[NEED SELECTOR - test button] Click **Test** to verify the data source connection. Grafana will attempt to connect and report whether it succeeded.",
+          "tooltip": "Tests the connection and saves any changes",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "### Understanding Test Results\n\n**Success** — A green message indicates Grafana connected successfully. Your data source is ready to use!\n\n**Failure** — A red message means something went wrong. Common issues include:\n\n- **Network errors** — The URL might be wrong, or a firewall is blocking the connection\n- **Authentication errors** — Check your username, password, or API key\n- **Timeout errors** — The data source might be slow or overloaded\n- **TLS/SSL errors** — Certificate issues when using HTTPS\n\nThe error message usually hints at what's wrong. When in doubt, double-check the URL and credentials."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Now that you understand data sources, let's see how they work when running queries."
+        },
+        {
+          "type": "markdown",
+          "content": "When you create or edit a panel, you'll see a **data source selector** that lets you choose which data source to query. Each panel can use a different data source, and some panels can even combine data from multiple sources!\n\nThis flexibility is one of Grafana's superpowers: you can build dashboards that bring together metrics from Prometheus, logs from Loki, and business data from PostgreSQL—all in one view."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "content": "The **Explore** feature is a great way to test queries against your data sources before building dashboards. You can run queries and see the results without building a dashboard to experiment with your data.\n\nNavigate to the Explore view by clicking it in the navigation bar.",
+          "tooltip": "Explore — ad-hoc querying and data exploration",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "[FIXME: How to hide data source picker after highlighting?] To use Explore, first select your data source and then build your query.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "input[data-testid='data-testid Select a data source']",
+              "tooltip": "Data source selector"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:data-testid('query-editor-rows')",
+              "tooltip": "Query builder"
+            }
+          ]
+        }
+      ],
+      "id": "data-sources-and-queries",
+      "title": "Data Sources and Queries"
+    },
+    {
+      "type": "markdown",
+      "content": "# Conclusion\n\nYou've learned the fundamentals of Grafana data sources:\n\n- **Data sources** connect Grafana to where your data lives\n- Grafana supports **many types** of data sources: time series databases, logging systems, SQL databases, cloud monitoring, and more\n- Each data source has **configuration settings** including name, URL, and authentication\n- Always **test connections** to verify your configuration before building dashboards\n- **Panels query data sources** to display information in your dashboards"
+    }
+  ],
+  "match": {
+    "urlPrefix": [],
+    "tags": []
+  }
+}
