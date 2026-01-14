@@ -18,8 +18,6 @@
       "blocks": [
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "has-datasource:loki", "exists-reftarget"],
-          "reftarget": "input[data-testid=\"data-testid Select a data source\"]",
           "tooltip": "Select the data source used by this guide.",
           "content": "Select **LokiNGINXLogs** in the Data source menu. This datasource contains logs from an Nginx web server and we'll be using it for the rest of this tutorial.",
           "steps": [
@@ -36,8 +34,6 @@
         ,
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "button[data-testid=\"data-testid TimePicker Open Button\"]",
           "tooltip": "Log results are always scoped to the selected time range. Pick a range intentionally so you know what time window your query is searching.",
           "content": "Open the time range menu (clock icon), then select **Last 15 minutes**.",
           "steps": [
@@ -61,8 +57,6 @@
         },
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "Run the query to see matching log lines.",
           "content": "In Loki, the most basic query is a label selector. You can read more about labels [here](https://grafana.com/docs/loki/latest/get-started/labels/). For now, type a label selector query:\n\n`{service_name=\"nginx_access_log\"}`",
           "steps": [
@@ -104,8 +98,6 @@
         },
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
           "tooltip": "Click on a log line to see its details and labels.",
           "content": "Click on the first log line to expand it and view its details.",
           "steps": [
@@ -172,8 +164,6 @@
       "blocks": [
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "Line filters match text anywhere in each log line.",
           "content": "Add a label and a simple line filter, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"`",
           "steps": [
@@ -198,8 +188,6 @@
         },
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "Combining include and exclude filters can reduce noise.",
           "content": "Exclude a common success code, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\"`",
           "steps": [
@@ -236,8 +224,6 @@
       "blocks": [
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "Parsing structured logs lets you filter by fields instead of raw text.",
           "content": "Parse JSON and filter by the `status` field, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"`",
           "steps": [
@@ -274,8 +260,6 @@
       "blocks": [
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "Formatting changes how results display without changing which lines match.",
           "content": "Add `line_format` and run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\"`",
           "steps": [
@@ -312,8 +296,6 @@
       "blocks": [
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "Regex on a specific field is more precise than regex on the full line.",
           "content": "Match only URIs that include an ID segment, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.status}} {{.request_uri}}\"`",
           "steps": [
@@ -354,8 +336,6 @@
       "blocks": [
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "This turns a log query into a time series by counting matches over time.",
           "content": "Count HTTP 500s over time, then run the query:\n\n`count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])`",
           "steps": [
@@ -380,8 +360,6 @@
         },
         {
           "type": "multistep",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "reftarget": "textarea.inputarea",
           "tooltip": "Aggregating reduces series count by combining many series into one.",
           "content": "Wrap the query with `sum()` and run it:\n\n`sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))`",
           "steps": [
