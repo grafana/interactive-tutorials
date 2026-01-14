@@ -453,7 +453,11 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 6: Turn logs into a chart 📈\n\nWhat you will learn in this section:\n\n- How to count matching log lines over time\n- How to avoid common series limit errors"
+      "content": "## Section 6: Turn logs into a chart 📈\n\nSo far you've been filtering and reading individual log lines. But sometimes you need to see the bigger picture—how often are errors happening? Is the rate increasing? Turning logs into metrics lets you spot trends, create dashboards, and set up alerts based on log data.\n\nWhat you will learn in this section:\n\n- How to count matching log lines over time\n- How to avoid common series limit errors"
+    },
+    {
+      "type": "markdown",
+      "content": "`count_over_time` is a LogQL function that counts how many log lines match your query within each time window. The syntax wraps your log query and adds a time range in square brackets:\n\n`count_over_time( {your_log_query} [time_window] )`\n\nThe `[time_window]` (like `[1h]` or `[5m]`) defines how wide each bucket is. Loki counts matching lines in each bucket and returns the result as a time series you can graph."
     },
     {
       "type": "section",
@@ -464,7 +468,7 @@
         {
           "type": "multistep",
           "tooltip": "This turns a log query into a time series by counting matches over time.",
-          "content": "Count HTTP 500s over time, then run the query:\n\n`count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])`",
+          "content": "Use `count_over_time` to count the number of HTTP 500s over time. Notice how we wrap our existing log query and add `[1h]` to define 1-hour buckets:\n\n`count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])`",
           "steps": [
             {
               "action": "highlight",
@@ -482,8 +486,17 @@
           ]
         },
         {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:contains(\"maximum number of series\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "This error occurs when your query produces too many unique time series.",
+          "content": "Oops! You've hit a **series limit error**. This happens because `| json` parsing creates many unique label combinations, and each combination becomes a separate series. Loki limits how many series a single query can return."
+        },
+        {
           "type": "markdown",
-          "content": "If you hit a series limit error, it’s usually because parsing creates many unique series. To fix it, aggregate everything into a single series with `sum()`."
+          "content": "To fix this, we need to aggregate the results into fewer series. Wrapping the query with `sum()` combines all the series into one."
         },
         {
           "type": "multistep",
@@ -506,6 +519,10 @@
           ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now you have a time series chart showing HTTP 500 errors over time. This same pattern—wrap with `count_over_time`, aggregate with `sum()`—works for any log query you want to visualize as a metric. You can add this to dashboards or use it as the basis for alerts."
     },
     {
       "type": "markdown",
