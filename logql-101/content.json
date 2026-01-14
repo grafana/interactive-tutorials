@@ -35,7 +35,7 @@
         {
           "type": "multistep",
           "tooltip": "Log results are always scoped to the selected time range. Pick a range intentionally so you know what time window your query is searching.",
-          "content": "Open the time range menu (clock icon), then select **Last 24 hours**.",
+          "content": "Open the time range menu (clock icon), then select **Last 7 days**.",
           "steps": [
             {
               "action": "highlight",
@@ -43,7 +43,7 @@
             },
             {
               "action": "highlight",
-              "reftarget": "#TimePickerContent label:contains(\"Last 24 hours\")"
+              "reftarget": "#TimePickerContent label:contains(\"Last 7 days\")"
             }
           ]
         },
@@ -389,18 +389,18 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 5: Use regex carefully 🧵\n\nWhat you will learn in this section:\n\n- How to apply regex to a specific parsed field\n- When to avoid regex"
+      "content": "## Section 5: Use regex for complex patterns 🧵\n\nSometimes exact matches aren't enough. When you need to match patterns—like URIs containing numeric IDs, or values that vary in format—regex gives you the flexibility to express those rules. In LogQL, you can apply regex to specific parsed fields using `=~` (match) or `!~` (exclude), keeping your queries precise.\n\nWhat you will learn in this section:\n\n- How to apply regex to a specific parsed field\n- When regex is the right tool for the job"
     },
     {
       "type": "section",
       "id": "regex-last-resort",
-      "title": "Use regex carefully",
+      "title": "Use regex for complex patterns",
       "requirements": ["on-page:/explore", "has-datasource:loki"],
       "blocks": [
         {
           "type": "multistep",
           "tooltip": "Regex on a specific field is more precise than regex on the full line.",
-          "content": "Match only URIs that include an ID segment, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.status}} {{.request_uri}}\"`",
+          "content": "Match only URIs that include an ID segment, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
           "steps": [
             {
               "action": "highlight",
@@ -409,7 +409,7 @@
             {
               "action": "formfill",
               "reftarget": "textarea.inputarea",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.status}} {{.request_uri}}\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\""
             },
             {
               "action": "highlight",
@@ -418,14 +418,38 @@
           ]
         },
         {
-          "type": "markdown",
-          "content": "Tip: `!~` is the exclude form. For example: `| request_uri !~ \"/admin\"`."
+          "type": "multistep",
+          "tooltip": "Regex can also match patterns in field values, not just URIs.",
+          "content": "What if you want to catch all server errors, not just 500? Using `status =~ \"5..\"` matches 500, 502, 503, and any other 5xx code in one pattern. Update your query to use this pattern:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status =~ \"5..\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "textarea.inputarea"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status =~ \"5..\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\""
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "### What you have learned\n\n- How to apply regex to a specific parsed field\n- Why regex should be a last resort"
+      "content": "**Tip:** Just like `=~` matches a regex pattern, `!~` excludes lines that match. For example, `| request_uri !~ \"/admin\"` filters out any requests to admin pages."
+    },
+    {
+      "type": "markdown",
+      "content": "**Performance note:** Regex is more expensive to evaluate than exact matches. At scale, prefer `=` and `!=` when they can do the job—save regex for patterns that truly need it."
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\n- How to apply regex to a specific parsed field\n- Why exact matches are preferred when possible (regex is more expensive at scale)"
     },
     {
       "type": "markdown",
