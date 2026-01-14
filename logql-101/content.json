@@ -225,12 +225,12 @@
               "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
             }
           ]
-        },
-        {
-          "type": "markdown",
-          "content": "Well, that narrows it down further-- we're now only seeing lines that have a \"500\" and do not have \"200\". But it's still just looking for those numbers anywhere in the log line. There's still a better way to write this query."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Well, that narrows it down further-- we're now only seeing lines that have a \"500\" and do not have \"200\". But it's still just looking for those numbers anywhere in the log line. There's still a better way to write this query."
     },
     {
       "type": "markdown",
@@ -253,7 +253,7 @@
         {
           "type": "multistep",
           "tooltip": "Parsing structured logs lets you filter by fields instead of raw text.",
-          "content": "Parse JSON and filter by the `status` field, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"`",
+          "content": "Parse JSON and filter by the `status` field:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"`",
           "steps": [
             {
               "action": "highlight",
@@ -263,14 +263,45 @@
               "action": "formfill",
               "reftarget": "textarea.inputarea",
               "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\""
-            },
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
             }
           ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "This runs your query using the current time range and data source selection.",
+          "content": "Click **Run query** to execute the query and view the results."
+        },
+        {
+          "type": "multistep",
+          "tooltip": "Click on a log line to see its details and parsed fields.",
+          "content": "Click on the first log line to expand it and view its details.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Parsed field\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Parsed fields show values extracted by your query pipeline.",
+          "content": "Notice the **Parsed field** section. This contains fields extracted from the log line by your query. Click the label to expand it."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Parsed fields** are values extracted from each log line at query time (during the pipeline stages).\n\nBecause these logs are JSON, `| json` automatically parses the JSON object and populates fields from its keys. Those parsed fields are what let you filter precisely (like `status = \"500\"`) and format output (like `{{.request_uri}}`) without relying on fragile text matching."
+    },
+    {
+      "type": "markdown",
+      "content": "But what if you want to see specific fields for *all* log lines without clicking each one? In the next section, you'll learn how to format the output so the fields you care about are always visible."
     },
     {
       "type": "markdown",
