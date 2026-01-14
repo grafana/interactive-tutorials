@@ -309,7 +309,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 4: Format output with line_format 🧹\n\nWhat you will learn in this section:\n\n- How to format each log line for easier scanning"
+      "content": "## Section 4: Format output with line_format 🧹\n\nCompared to line filters, using `| json` is a better fit here because these Nginx logs are structured. But now we're hitting a different problem: even when you filter correctly, the output can still be too cluttered to quickly understand what's happening.\n\nNext we'll make the results more meaningful by displaying only what we need.\n\nWhat you will learn in this section:\n\n- How to format each log line for easier scanning"
     },
     {
       "type": "section",
@@ -336,12 +336,52 @@
               "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
             }
           ]
+        },
+        {
+          "type": "multistep",
+          "tooltip": "Click on a log line to see its details and parsed fields.",
+          "content": "Click on the first log line to expand it and view its details.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Parsed field\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Parsed fields can be used in your line_format template.",
+          "content": "Look at the **Parsed fields** section. Any of these fields can be added to your `line_format` template using `{{.fieldname}}` syntax. Let's add `request_method` to see the HTTP method alongside each result."
+        },
+        {
+          "type": "multistep",
+          "tooltip": "Add more fields to make the formatted output more informative.",
+          "content": "Update the query to include `request_method`:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\""
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Compared to line filters, using `| json` is a better fit here because these Nginx logs are structured. But now we’re hitting a different problem: even when you filter correctly, the output can still be too cluttered to quickly understand what’s happening.\n\nNext we’ll make the results more meaningful by displaying only what we need."
+      "content": "Now you see only the information relevant to you. You can still click into any log line to view the full log or other parsed fields when needed."
     },
     {
       "type": "markdown",
