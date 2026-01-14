@@ -168,8 +168,24 @@
       "blocks": [
         {
           "type": "multistep",
+          "tooltip": "More label selectors = more precise queries.",
+          "content": "Start by adding another label selector to narrow the search:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}`\n\nAdding more than one label selector helps get you more precise. The more precise your query is, the fewer results it returns, and the faster and more cheaply your query runs.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "textarea.inputarea"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}"
+            }
+          ]
+        },
+        {
+          "type": "multistep",
           "tooltip": "Line filters match text anywhere in each log line.",
-          "content": "Add a label and a simple line filter, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"`",
+          "content": "Now add a simple line filter, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"`",
           "steps": [
             {
               "action": "highlight",
@@ -188,7 +204,7 @@
         },
         {
           "type": "markdown",
-          "content": "Uh-oh, this is noisier than expected. `|= \"500\"` matches any log line containing that text, not “HTTP status is 500”. Next we’ll make it more precise."
+          "content": "Uh-oh, this is noisier than expected. `|= \"500\"` matches any log line containing that text, not even if it's not the HTTP status code. Next we’ll make it more precise."
         },
         {
           "type": "multistep",
@@ -212,7 +228,7 @@
         },
         {
           "type": "markdown",
-          "content": "Well, that narrows it down further-- we're now only seeing lines that have a \"500\" and do not have \"200\". But there's still a better way to write this query."
+          "content": "Well, that narrows it down further-- we're now only seeing lines that have a \"500\" and do not have \"200\". But it's still just looking for those numbers anywhere in the log line. There's still a better way to write this query."
         }
       ]
     },
