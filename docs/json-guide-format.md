@@ -22,12 +22,13 @@ Every JSON guide has three required fields and one optional field:
 }
 ```
 
-| Field    | Type        | Required | Description                             |
-|----------|-------------|----------|-----------------------------------------|
-| `id`     | string      | ✅       | Unique identifier for the guide         |
-| `title`  | string      | ✅       | Display title shown in the UI           |
-| `blocks` | JsonBlock[] | ✅       | Array of content and interactive blocks |
-| `match`  | object      | ❌       | Metadata for recommendation matching    |
+| Field     | Type        | Required | Description                                        |
+|-----------|-------------|----------|----------------------------------------------------|
+| `id`      | string      | ✅       | Unique identifier for the guide                    |
+| `title`   | string      | ✅       | Display title shown in the UI                      |
+| `version` | string      | ✅       | Version with major, minor, and patch number: x.y.z |
+| `blocks`  | JsonBlock[] | ✅       | Array of content and interactive blocks            |
+| `match`   | object      | ❌       | Metadata for recommendation matching               |
 
 ## Block Types Overview
 
