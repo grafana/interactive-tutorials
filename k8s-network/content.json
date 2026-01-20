@@ -1,0 +1,198 @@
+{
+  "id": "k8s-network",
+  "title": "Network diagnostics in Kubernetes Monitoring",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Diagnose network issues in Kubernetes Monitoring\n\nNetwork performance directly impacts application responsiveness, reliability, and user experience. When applications are slow or experience connectivity issues, network metrics can help you determine whether the network is the bottleneck or if issues lie elsewhere.\n\n### What you will learn\n\n- Navigate to the Network tab and understand network bandwidth and saturation metrics.\n- Identify network performance issues like high traffic, packet loss, and saturation.\n- Use the pod and interface breakdown views to pinpoint which workloads are consuming bandwidth or experiencing problems.\n- Apply diagnostic workflows to troubleshoot common network scenarios."
+    },
+    {
+      "type": "section",
+      "id": "namespace-network-overview",
+      "title": "Namespace network overview",
+      "requirements": ["navmenu-open", "on-page:/a/grafana-k8s-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app/navigation/namespace']",
+          "requirements": ["exists-reftarget"],
+          "content": "Click **Namespaces** in the main menu to view the list of namespaces in your environment."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Data link']:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "Select the first namespace in the list to open its detail view."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Network']",
+          "requirements": ["exists-reftarget"],
+          "content": "Click the **Network** tab to view network performance metrics for this namespace.\n\nThe Network tab provides visibility into network bandwidth usage and saturation (packet loss) across your namespace."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "network-bandwidth-panel",
+      "title": "Understanding Network Bandwidth",
+      "requirements": ["navmenu-open", "on-page:/a/grafana-k8s-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Bandwidth']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "The **Network Bandwidth** panel shows how much data is flowing in and out of your namespace over time.\n\n- **Rx (white/gray line)**: Receiving traffic - data coming into the namespace\n- **Tx (blue line)**: Transmitting traffic - data going out of the namespace\n\nThe table below the graph shows Min, 90th percentile, and Max values to help you understand traffic patterns."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Bandwidth'] div[data-testid='data-testid panel content']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "**How to interpret the patterns:**\n\n- **Steady traffic**: Indicates consistent workload behavior\n- **Regular spikes**: Often normal. Spikes could be scheduled jobs, health checks, or metrics collection\n- **Sudden sustained increase**: May indicate new load, deployments (image pulls), or potential issues\n- **Unexpected drops**: Could signal pod crashes, network partitions, or configuration problems\n- **Asymmetric Rx/Tx**: Large differences are normal for certain workloads like log shipping or data ingestion"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "network-saturation-panel",
+      "title": "Understanding Network Saturation",
+      "requirements": ["navmenu-open", "on-page:/a/grafana-k8s-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Saturation']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "The **Network Saturation** panel shows whether your network is being overwhelmed by displaying dropped packets.\n\n- **Rx dropped packets**: Incoming packets that couldn't be processed\n- **Tx dropped packets**: Outgoing packets that couldn't be sent\n\nMeasured in packets per second (p/s)."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Saturation'] div[data-testid='data-testid panel content']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "**Why this matters:**\n\n- **Zero is ideal**: No dropped packets means the network has sufficient capacity\n- **Non-zero values**: Indicate network saturation - the network cannot handle current traffic volume\n- **User impact**: Dropped packets cause application timeouts, retries, slow performance, and failed requests\n- **Root cause indicator**: Helps determine if network capacity is the bottleneck\n\n**Action**: If you see dropped packets, consider increasing network limits, optimizing traffic patterns, or implementing network QoS policies."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "network-by-pod",
+      "title": "Network Bandwidth by pod",
+      "requirements": ["navmenu-open", "on-page:/a/grafana-k8s-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Bandwidth by pod']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "The **Network Bandwidth by pod** panel breaks down network traffic by individual pods.\n\nThis stacked visualization shows:\n- Which pods are consuming the most bandwidth\n- How each pod contributes to total namespace traffic\n- Traffic patterns for specific workloads over time"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Bandwidth by pod'] div[data-testid='data-testid panel content']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "**Use this panel to:**\n\n- **Identify noisy neighbors**: Find which pods consume excessive bandwidth\n- **Troubleshoot performance**: Correlate high traffic pods with application slowness\n- **Capacity planning**: Understand which services need network resources\n- **Detect anomalies**: Spot pods with unusual traffic patterns\n- **Resource allocation**: Determine if specific pods need network limits or QoS\n\nClick on pod names in the legend to view individual pod traffic or review the table below for Min/90th percentile/Max statistics per pod."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "saturation-by-pod",
+      "title": "Network Saturation by pod",
+      "requirements": ["navmenu-open", "on-page:/a/grafana-k8s-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Saturation by pod']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "The **Network Saturation by pod** panel shows packet loss for each individual pod.\n\nThis helps you pinpoint exactly which pod is experiencing network congestion rather than just knowing the namespace has issues."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Saturation by pod'] div[data-testid='data-testid panel content']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "**Diagnostic workflow:**\n\n1. If you see dropped packets in the namespace-level saturation panel, check this panel to identify which specific pod is affected\n2. Compare dropped packets against bandwidth - high bandwidth + dropped packets = capacity issue\n3. Zero dropped packets across all pods = healthy network configuration\n\n**Common scenarios:**\n- **One pod dropping packets**: That pod's network limits may be too restrictive\n- **Multiple pods dropping packets**: Namespace or node-level network saturation\n- **Intermittent drops**: May indicate temporary bursts exceeding capacity"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "pod-network-detail",
+      "title": "Pod-level network details",
+      "requirements": ["navmenu-open", "on-page:/a/grafana-k8s-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='gridcell'][aria-colindex='1'] a[data-testid='data-testid Data link']:nth-match(1)",
+          "requirements": ["exists-reftarget"],
+          "content": "To investigate a specific pod's network performance, select the first pod in the list.\n\nThis drills down to pod-level details where you can see network metrics for individual containers and interfaces."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Network']",
+          "requirements": ["exists-reftarget"],
+          "content": "Click the **Network** tab to view the pod's network performance.\n\nAt the pod level, you'll see the same four panels but specific to this pod:\n- Network Bandwidth (pod level)\n- Network Saturation (pod level)\n- Network Bandwidth by interface (eth0, etc.)\n- Network Saturation by interface"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Bandwidth']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "Review the pod's **Network Bandwidth** to understand its traffic patterns.\n\n**Traffic scale matters:**\n- Traffic in **KiB/s** or **B/s**: Low-bandwidth workload (monitoring agents, sidecars)\n- Traffic in **MiB/s**: Moderate workload (typical application traffic)\n- Traffic in **GiB/s**: High-bandwidth workload (data processing, large file transfers)\n\n**Pattern recognition:**\n- **Minimal baseline with periodic spikes**: Often metrics reporting, log shipping, or health checks\n- **Sustained high traffic**: Data-intensive operations\n- **Regular spike pattern**: Scheduled operations or batch jobs"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "network-by-interface",
+      "title": "Network by interface",
+      "requirements": ["navmenu-open", "on-page:/a/grafana-k8s-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Bandwidth by interface']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "The **Network Bandwidth by interface** panel shows traffic broken down by network interface (typically eth0).\n\n**When this is useful:**\n- Pods with multiple network interfaces (service mesh, CNI plugins)\n- Identifying if a specific interface has issues\n- Troubleshooting network plugin or CNI problems\n- Understanding traffic routing through different interfaces"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Network Saturation by interface']",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "content": "The **Network Saturation by interface** panel shows dropped packets per network interface.\n\n**Diagnostic value:**\n- Identifies if packet loss is interface-specific\n- Helps isolate hardware or driver issues\n- Useful for troubleshooting CNI plugin configuration\n- Can reveal if one interface is overloaded while others are healthy"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Common diagnostic scenarios\n\n### Scenario 1: Application is slow\n\n**Workflow:**\n1. Check namespace Network Bandwidth - is traffic unusually high?\n2. Check Network Saturation - are packets being dropped?\n3. Review Network Bandwidth by pod - is one pod consuming excessive bandwidth?\n4. If saturation is high, increase network limits or optimize data transfer\n5. If saturation is zero, the issue is likely application-level, not network\n\n### Scenario 2: Intermittent connectivity issues\n\n**Workflow:**\n1. Look for periodic drops in bandwidth (indicates flapping)\n2. Check for saturation spikes (temporary overload)\n3. Review by interface view - is a specific interface failing?\n4. Investigate pod restarts, network policy changes, or infrastructure issues\n\n### Scenario 3: High network costs\n\n**Workflow:**\n1. Check total bandwidth over time to identify trends\n2. Use by pod breakdown to find data-intensive services\n3. Compare Rx vs Tx - are you sending/receiving more than expected?\n4. Optimize data transfers, implement caching, or review service mesh overhead\n\n### Scenario 4: New deployment causing issues\n\n**Workflow:**\n1. Check for bandwidth spike during deployment (image pulls, init containers)\n2. Compare traffic before/after deployment\n3. Check if saturation occurred (did deployment cause network stress?)\n4. Consider staggering deployments, pre-pulling images, or increasing capacity"
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\nYou have learned how to:\n\n- Navigate to network metrics at the namespace and pod level.\n- Interpret Network Bandwidth panels to understand traffic patterns and identify anomalies.\n- Use Network Saturation panels to detect packet loss and network capacity issues.\n- Drill down from namespace to pod to interface to isolate network problems.\n- Apply diagnostic workflows to troubleshoot common network performance scenarios.\n- Distinguish between network-level issues and application-level problems.\n\n**Next steps:**\n- Establish baseline patterns for your namespaces and pods\n- Set up alerts for non-zero dropped packets\n- Correlate network metrics with CPU, memory, and application metrics\n- Document normal traffic patterns for capacity planning"
+    }
+  ]
+}
+
