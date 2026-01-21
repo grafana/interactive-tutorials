@@ -11,7 +11,7 @@ the Block Editor; assisted by Cursor's AI assistant (if you use it).
 3. Click the `?` icon (help menu for Grafana) in the upper right → Debug icon ([it looks like this](docs/img/dev-tools.jpg)) → Block Editor ([looks like this](docs/img/block-editor.jpg))
 4. Start building.
 
-*Not a Grafana employee? [Run locally](#run-the-plugin-locally)*
+*Not a Grafana employee? See the run locally section below*.
 
 ## Stuck?
 
@@ -46,16 +46,14 @@ The Block Editor auto-saves your work to localStorage, so you can iterate withou
 To test your guide:
 
 1. Use the **Preview** mode in the Block Editor to see how it renders
-2. Alternatively, export the JSON and use the **Tutorial Tester** to load it by URL
+2. Alternatively, export the JSON and use the **URL Tester** in debug tools to load it by URL
 
-The Tutorial Tester accepts:
+The URL Tester accepts:
 - A local file URL (if using [Live Server extension](https://marketplace.cursorapi.com/items/?itemName=ritwickdey.LiveServer))
 - A GitHub raw URL (push to a branch first)
 - Pasted JSON content
 
-![Test Tutorial](docs/img/test-tutorial.png)
-
-**NOTE**: Tutorial Tester and Block Editor only appear when dev mode is enabled.
+**NOTE**: URL Tester and Block Editor only appear when dev mode is enabled.
 
 **Need help with selectors?** The Block Editor captures them automatically via Record mode. For advanced patterns, see [Selectors Reference](docs/selectors-and-testids.md).
 
