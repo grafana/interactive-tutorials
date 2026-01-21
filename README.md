@@ -2,7 +2,7 @@
 
 This repository contains interactive learning tutorials for Grafana, designed by
 Developer Advocacy. It includes JSON guide content and is designed to work with
-the Block Editor and Cursor's AI assistant.
+the Block Editor; assisted by Cursor's AI assistant (if you use it).
 
 ## First: Understand What We're Building!
 
@@ -25,10 +25,10 @@ go use the Block Editor under dev tools to create your new content. Sections bel
 
 The fastest way to get started:
 
-1. Go to [pathfinder.grafana-dev.net](https://pathfinder.grafana-dev.net)
-2. Log in with your Grafana credentials
+1. Go to [learn.grafana-ops.net/login](https://learn.grafana-ops.net/login)
+2. Log in with Okta SAML
 3. Navigate to the plugin configuration with `?dev=true`:
-   [https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true](https://pathfinder.grafana-dev.net/plugins/grafana-pathfinder-app?dev=true)
+   [https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true](https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true)
 4. Enable "Dev Mode" checkbox and save.  **This must be done or the editor will not appear**.
 
 ![Dev Mode Checkbox](docs/img/dev-mode.png)
@@ -46,9 +46,8 @@ The fastest way to get started:
 
 ### If you can't access stack above: Run the Plugin Locally
 
-If you don't have access to pathfinder.grafana-dev.net (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can run the Pathfinder plugin locally:
+If you don't have access to `learn.grafana-ops.net/login` (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can still run the Pathfinder plugin locally:
 
-* **Cursor is recommended but not required** (but we think it's worth it). [Download it](https://cursor.com/downloads).
 * Clone this repo to your machine. Also clone the [interactive learning plugin](https://github.com/grafana/grafana-pathfinder-app)
 * Start the plugin repo. [Full instructions are here](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/LOCAL_DEV.md) but the short version is: `npm install` then `npm run build && npm run server` and go to http://localhost:3000/
 * Now follow the same instructions as above: go to the Interactive Learning Plugin settings page, and set the
@@ -66,12 +65,6 @@ The **Block Editor** is the recommended way to create guides:
 3. Use the **Record** feature on sections to capture your interactions automatically
 4. Preview your guide with the Preview toggle
 5. Export via "Copy JSON" or create a GitHub PR directly from the editor
-
-**Alternative: Cursor-assisted authoring**
-
-This repository includes Cursor AI prompts and commands for guide authoring.
-In Cursor, you can use `/new My Guide Name` to scaffold a new guide directory.
-See the `.cursor/` folder for available commands and prompts.
 
 ### Iterate & Develop
 
@@ -114,6 +107,8 @@ Both methods use intelligent selector generation that prefers stable `data-testi
 For advanced selector patterns and manual writing, see [docs/selectors-and-testids.md](docs/selectors-and-testids.md).
 
 ### Interactive Action Types: Asking Cursor for Help
+
+> **Cursor is recommended but not required** (but we think it's worth it). [Download it](https://cursor.com/downloads).
 
 What kinds of interactive steps can you make? See [docs/interactive-types.md](docs/interactive-types.md) for a full list, or
 just ask Cursor. A good way to get started is to read one of the existing guides, highlight bits and
