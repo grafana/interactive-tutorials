@@ -4,47 +4,20 @@ This repository contains interactive learning tutorials for Grafana, designed by
 Developer Advocacy. It includes JSON guide content and is designed to work with
 the Block Editor; assisted by Cursor's AI assistant (if you use it).
 
-## First: Understand What We're Building!
+## TL;DR for Grafana Employees
 
-0. Go to [Drilldown section of Grafana Play](https://play.grafana.org/drilldown)
-1. Click the `?` help icon in the upper right hand corner of the screen, to open the interactive learning plugin
+1. Go to [https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true](https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true)
+2. Log in with Okta SAML. Find the "Dev Mode" checkbox; enable it ([it looks like this](docs/img/dev-mode.png)) and save
+3. Click the `?` icon (help menu for Grafana) in the upper right → Debug icon ([it looks like this](docs/img/dev-tools.jpg)) → Block Editor ([looks like this](docs/img/block-editor.jpg))
+4. Start building.
 
-<img src="docs/img/icon.png" alt="Interactive Learning Icon" width="80" style="height:auto;" />
+*Not a Grafana employee? [Run locally](#run-the-plugin-locally)*
 
-2. Make sure you're on the Drilldown page, check the Recommendations tab.
-3. Follow the _Interactive Guide: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
-an interactive guide like that!
-4. Notice the structure: it's built in sections, of individual steps, with each step having a "Show Me" and "Do It" option.
+## Stuck?
 
-## Quick Start: Let's Build a new Interactive Guide
+Ping Tom Glenn, David Allen, or Simon Prickett, all of whom have done this before on `#proj-grafana-pathfinder`
 
-Big picture, here's what you need to do: run a stack with the plugin, enable dev mode, and then
-go use the Block Editor under dev tools to create your new content. Sections below step you through how to do each of those things.
-
-### For Grafana Employees
-
-The fastest way to get started:
-
-1. Go to [learn.grafana-ops.net/login](https://learn.grafana-ops.net/login)
-2. Log in with Okta SAML
-3. Navigate to the plugin configuration with `?dev=true`:
-   [https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true](https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true)
-4. Enable "Dev Mode" checkbox and save.  **This must be done or the editor will not appear**.
-
-![Dev Mode Checkbox](docs/img/dev-mode.png)
-
-5. Click the `?` help icon to open the Pathfinder sidebar
-6. Click the "Debug" icon at the top of the sidebar to access dev tools.
-
-![Dev Tools](docs/img/dev-tools.jpg)
-
-6. Use the **Block Editor** (in the dev tools section) to create your guide
-
-![Block Editor](docs/img/block-editor.jpg)
-
-*The Block Editor is the main way to write new guides, it provides a visual interface for composing guides from blocks.*
-
-### If you can't access stack above: Run the Plugin Locally
+## If you can't access stack above: Run the Plugin Locally
 
 If you don't have access to `learn.grafana-ops.net/login` (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can still run the Pathfinder plugin locally:
 
@@ -84,9 +57,7 @@ The Tutorial Tester accepts:
 
 **NOTE**: Tutorial Tester and Block Editor only appear when dev mode is enabled.
 
-### DOM Selectors
-
-Interactive guides target UI elements using CSS selectors stored in the `reftarget` field. The Block Editor provides two ways to capture these selectors automatically:
+**Need help with selectors?** The Block Editor captures them automatically via Record mode. For advanced patterns, see [Selectors Reference](docs/selectors-and-testids.md).
 
 **Record Mode** (for sections)
 
@@ -106,36 +77,29 @@ Both methods use intelligent selector generation that prefers stable `data-testi
 
 For advanced selector patterns and manual writing, see [docs/selectors-and-testids.md](docs/selectors-and-testids.md).
 
-### Interactive Action Types: Asking Cursor for Help
+### Need Help? Ask Cursor
 
-> **Cursor is recommended but not required** (but we think it's worth it). [Download it](https://cursor.com/downloads).
+Cursor knows this repo well. Use Ask mode to query how interactive elements work—it reads the `docs/` folder automatically.
 
-What kinds of interactive steps can you make? See [docs/interactive-types.md](docs/interactive-types.md) for a full list, or
-just ask Cursor. A good way to get started is to read one of the existing guides, highlight bits and
-add it to the model context, and ask Cursor "How does this part work?"
+[Download Cursor](https://cursor.com/downloads) | [Interactive Types Reference](docs/interactive-types.md)
 
-Cursor knows quite a lot about what's in this repo! Use `Ask` mode and ask it
-questions about how different interactive elements work. Cursor will use the `docs`
-folder in this repo to answer your questions.
+## Demo: Understand What We're Building!
 
-Here's an example of Cursor in Ask mode, explaining a feature:
+1. Go to [Drilldown section of Grafana Play](https://play.grafana.org/drilldown)
+2. Clicking the `?` help icon in the upper right hand corner of the screen, toggles the interactive learning plugin on/off.
 
-![Cursor Explain](docs/img/cursor-explain.png)
+<img src="docs/img/icon.png" alt="Interactive Learning Icon" width="40" style="height:auto;" />
 
-## Ask Us Questions!
-
-* Talk to Tom Glenn, David Allen, or Simon Prickett, all of whom have done this before. They will help.
-* They can be reached by email (if they have shared with you) or internal on Grafana's slack in `#proj-grafana-pathfinder`
+3. Make sure you're on the Drilldown page, check the Recommendations tab.
+4. Follow the _Interactive Guide: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
+an interactive guide like that!
+5. Notice the structure: it's built in sections, of individual steps, with each step having a "Show Me" and "Do It" option.
 
 ## Getting Your Tutorial Into The Plugin
 
-Once you're finished with a draft, we need to add it to the recommender. This will
-ensure that the right users get the content recommended to them when using Grafana.
-
-1. Open a PR to this repo with your new guide! Ping Jay Clifford, Tom Glenn, or
-David Allen to get it merged.
-2. We'll wire it into the recommender for you.
-3. MAKE SURE TO INCLUDE IN YOUR PR: When should users see your guide? What are they looking at in the UI when it appears as a recommendation? Who should see your guide? Admins only? Commercial stacks? Free stacks? "Everybody" is an acceptable answer. This determines how it will appear.
+1. **Submit**: Open a PR to this repo, ping reviewers
+2. **Include**: several sentences describing when/where/who should see
+your guide, so we can include it in the recommender.
 
 ## Full Reference Documentation
 
