@@ -55,8 +55,16 @@
       "content": "Perform the following instructions on your infrastructure:\n1. Open the Grafana Alloy configuration file.\n\n   The default configuration file location for Alloy is:\n\n     - Linux: `/etc/alloy/config.alloy`\n     - macOS: `$(brew --prefix)/etc/alloy/config.alloy`\n     - Windows: `%ProgramFiles%\\GrafanaLabs\\Alloy\\config.alloy`\n1. Copy the following code block and paste it at the end of the `config.alloy` file.\n\n   ```alloy\n   remotecfg {\n      url = \"<SERVICE_URL>\"\n      basic_auth {\n           username      = \"<USERNAME>\"\n           password      = \"<PASSWORD>\"\n       }\n\n       id             = constants.hostname\n       attributes     = {\"cluster\" = \"dev\", \"namespace\" = \"otlp-dev\"}\n       poll_frequency = \"5m\"\n   }\n   ```\n\n1. Update the following fields of the code block:\n\n   | Code block field | Enter  |\n   |---|---|\n   | `url` | The Fleet Management service URL |\n   | `username` | The instance ID |\n   | `password` | The access token you created in the previous milestone |\n1. If you installed Grafana Alloy on a Kubernetes platform and didn't use the Kubernetes Monitoring Helm chart v2.1 or later, then enter:\n\n   ```\n   attributes = {\"cluster\" = \"dev\", \"namespace\" = \"otlp-dev\", \"platform\" = \"kubernetes\"}\n   ```\n1. Save your changes to the Alloy configuration file.\n1. Add the following environment variables to the Grafana Alloy service environment variables file:\n\n   ```\n   GCLOUD_RW_API_KEY = \"<Enter-access-policy-token>\"\n   ```\n\n   For macOS only: \n   ```\n   GCLOUD_FM_LOG_PATH = $PWD/alloy.log \n   ```\n\n   Refer to [Configure Grafana Alloy on Kubernetes](/docs/grafana-cloud/send-data/alloy/configure/kubernetes/), [Configure Grafana Alloy on macOS](/docs/grafana-cloud/send-data/alloy/configure/macos/), or [Configure Grafana Alloy on Windows](/docs/grafana-cloud/send-data/alloy/configure/windows/), for more information on how to set environment variables on your operating system.\n1. Save your changes to the environment variables file.\n1. Restart the Grafana Alloy service."
     },
     {
-      "type": "pathfinder/ignore",
-      "content": "Return to your Grafana instance and perform the following steps:"
+      "type": "conditional",
+      "conditions": ["renderer:website"],
+      "description": "Instruct user to return to Grafana but only on the website.",
+      "whenTrue": [
+        {
+          "type": "markdown",
+          "content": "Return to your Grafana instance and perform the following steps:"
+        }
+      ],
+      "whenFalse": []
     },
     {
       "type": "section",
