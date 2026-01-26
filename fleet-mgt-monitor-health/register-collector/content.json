@@ -1,0 +1,78 @@
+{
+  "id": "register-a-collector-with-grafana-fleet-management",
+  "title": "Register a collector with Grafana Fleet Management",
+  "blocks": [
+    {
+      "type": "video",
+      "provider": "youtube",
+      "title": "Register a collector",
+      "src": "https://www.youtube.com/embed/PrjTxzc27Ns",
+      "start": 217,
+      "end": 385
+    },
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll register a collector in Fleet Management by adding the `remotecfg` code block to the Grafana Alloy configuration file.\n\nYou can set attributes for a collector in both the `remotecfg` block of the configuration file and in the Fleet Management user interface. Attributes typically describe the collector's purpose or environment, such as `role`, `environment`, `cluster`, or `team`. These attributes help you filter the collector inventory and assign specific configurations to collectors based on their characteristics."
+    },
+    {
+      "type": "markdown",
+      "content": "To register a collector with Grafana Cloud Fleet Management, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "content": "Navigate to **Connections > Collector > Fleet Management**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab API']",
+          "content": "Click the **API** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "pre:nth-of-type(1):nth-match(1)",
+          "content": "In the first Base URL field, make note of the Fleet Management service URL."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "pre:nth-of-type(1):contains('35611')",
+          "content": "In the **API Authentication** section, make note of the **Instance ID**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Perform the following instructions on your infrastructure:\n1. Open the Grafana Alloy configuration file.\n\n   The default configuration file location for Alloy is:\n\n     - Linux: `/etc/alloy/config.alloy`\n     - macOS: `$(brew --prefix)/etc/alloy/config.alloy`\n     - Windows: `%ProgramFiles%\\GrafanaLabs\\Alloy\\config.alloy`\n1. Copy the following code block and paste it at the end of the `config.alloy` file.\n\n   ```alloy\n   remotecfg {\n      url = \"<SERVICE_URL>\"\n      basic_auth {\n           username      = \"<USERNAME>\"\n           password      = \"<PASSWORD>\"\n       }\n\n       id             = constants.hostname\n       attributes     = {\"cluster\" = \"dev\", \"namespace\" = \"otlp-dev\"}\n       poll_frequency = \"5m\"\n   }\n   ```\n\n1. Update the following fields of the code block:\n\n   | Code block field | Enter  |\n   |---|---|\n   | `url` | The Fleet Management service URL |\n   | `username` | The instance ID |\n   | `password` | The access token you created in the previous milestone |\n1. If you installed Grafana Alloy on a Kubernetes platform and didn't use the Kubernetes Monitoring Helm chart v2.1 or later, then enter:\n\n   ```\n   attributes = {\"cluster\" = \"dev\", \"namespace\" = \"otlp-dev\", \"platform\" = \"kubernetes\"}\n   ```\n1. Save your changes to the Alloy configuration file.\n1. Add the following environment variables to the Grafana Alloy service environment variables file:\n\n   ```\n   GCLOUD_RW_API_KEY = \"<Enter-access-policy-token>\"\n   ```\n\n   For macOS only: \n   ```\n   GCLOUD_FM_LOG_PATH = $PWD/alloy.log \n   ```\n\n   Refer to [Configure Grafana Alloy on Kubernetes](/docs/grafana-cloud/send-data/alloy/configure/kubernetes/), [Configure Grafana Alloy on macOS](/docs/grafana-cloud/send-data/alloy/configure/macos/), or [Configure Grafana Alloy on Windows](/docs/grafana-cloud/send-data/alloy/configure/windows/), for more information on how to set environment variables on your operating system.\n1. Save your changes to the environment variables file.\n1. Restart the Grafana Alloy service."
+    },
+    {
+      "type": "pathfinder/ignore",
+      "content": "Return to your Grafana instance and perform the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "content": "Navigate to **Connections > Collector > Fleet Management**.\n\nThe collector you just registered should be listed."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll learn how to view the health status of a collector."
+    }
+  ]
+}
