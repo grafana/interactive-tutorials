@@ -101,6 +101,18 @@ This is better because it gives the Pathfinder app better control over
 visual rendering, and allows the content to be enhanced with closeable
 sections, etc.
 
+### Ensure a Guide is Focusing on the Right Product Area
+
+If your guide focuses on a given product area (like Explore Metrics) - in general it will be 
+recommended when the user is in that state. But users can have many guide tabs open at once,
+and they can navigate away to other pages.  As such, the **first action** in an interactive guide
+usually needs to assume the user is on a particular page.
+
+Two ways you can do this (both are valid) is to express an `on-page:/wherever` requirement at the 
+top of the guide so that nav can be "fixed for the user" if they navigate away.  A second way you
+can do this is to include a navigate or highlight action as the first step of the guide.  "Make 
+sure you're on the Explore page" that will block other actions first.
+
 ### Verify State Changes
 
 * Use `verify` for actions that change state
@@ -119,6 +131,56 @@ sections, etc.
 * Use sequence (section blocks) for multi-step processes with dependencies
 * Use `multistep` for related actions that should happen together
 * Include section completion requirements for dependencies
+
+### Avoid the Following Interactive Guide Code Smells
+
+#### Avoid "Focus before Formfill"
+
+Highlighting an input field doesn't show up in the Grafana UI when clicking "Do It".  
+
+```
+  {
+    "action": "highlight",
+    "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+    "tooltip": "Parsing structured logs lets you filter by fields instead of raw text."
+  },
+```
+
+In this example, the reftarget is a textarea, but the same idea applies to other form fields. 
+If all you want to do is show the user where a form field is, you may specify `"doIt": false` so
+that only the "Show me" button appears; but allowing `doIt` + a form target + `highlight` is not
+a useful pattern for the user.
+
+#### Avoid `multistep` singletons. 
+
+If you use the `multistep` type, then there should be more than 
+one step. If there is only one step, you're always better off; faster 
+execution, less plugin chrome, easier to debug.
+
+E.g. don't do this:
+
+```
+  {
+    "type": "multistep",
+    "content": "Click the button",
+    "steps": [
+      {
+        "action": "highlight",
+        "reftarget": "button[id='foo']"
+      }
+    ]
+  },
+```
+
+Do this instead:
+
+```
+  {
+    "type": "highlight",
+    "content": "Click the button",
+    "reftarget": "button[id='foo']"
+  },
+```
 
 ## Schema Validity
 
