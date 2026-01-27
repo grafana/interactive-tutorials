@@ -314,6 +314,50 @@ Include images from the source markdown — the JSON also renders the LJ on the 
 
 **Important:** Since the `content.json` is used to render the Learning Journey on the Grafana website, images from the markdown source **must** be included in the JSON.
 
+### Video Block
+
+Include videos from the source markdown — typically YouTube embeds using the `docs/video` shortcode.
+
+```json
+{
+  "type": "video",
+  "src": "https://www.youtube.com/embed/VIDEO_ID",
+  "provider": "youtube",
+  "title": "Video Title"
+}
+```
+
+**Properties:**
+| Property | Required | Description |
+|----------|----------|-------------|
+| `type` | Yes | Always `"video"` |
+| `src` | Yes | Video URL (use embed URL for YouTube) |
+| `provider` | No | `"youtube"` (default) or `"native"` for HTML5 video |
+| `title` | No | Video title for accessibility |
+
+**Hugo shortcode to JSON conversion:**
+
+The website uses `{{< docs/video >}}` shortcodes with these attributes:
+```markdown
+{{< docs/video id="VIDEO_ID" start="00" end="57" align="right" >}}
+Content wrapped by video...
+{{< /docs/video >}}
+```
+
+Convert to JSON video block:
+```json
+{
+  "type": "video",
+  "src": "https://www.youtube.com/embed/VIDEO_ID?start=0&end=57",
+  "provider": "youtube",
+  "title": "Descriptive title based on context"
+}
+```
+
+**Note:** The `start` and `end` parameters from the shortcode become URL query parameters in the embed URL.
+
+**Important:** Like images, videos from the markdown source **must** be included in the JSON for proper website rendering.
+
 ---
 
 ## Finding Selectors
@@ -544,7 +588,7 @@ Maintain a tracking file for selectors that need dev team fixes:
 | `content.json` | `interactive-tutorials` repo | Website rendering + Pathfinder interactivity |
 
 - Keep them **aligned in meaning and steps**
-- JSON **must include images** from the markdown (used for website rendering)
+- JSON **must include images and videos** from the markdown (used for website rendering)
 - JSON content can be slightly more concise (no Hugo shortcodes)
 - **Never** drift on the actual instructions
 
