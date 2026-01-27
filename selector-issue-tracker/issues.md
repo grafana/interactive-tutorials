@@ -26,3 +26,66 @@ input[data-testid='data-testid Dashboard template variables Variable Value DropD
 **Priority:** Medium
 
 ---
+
+### Panel menu - Dynamic metric name in selector
+
+**Learning Journey:** drilldown-metrics  
+**Milestone:** open-metrics-explore  
+**Step:** Click the Menu icon on a metric visualization
+
+**Current selector:**
+```css
+button[data-testid='data-testid Panel menu asserts:resource:threshold']
+```
+
+**Problem:** Selector contains specific metric name `asserts:resource:threshold` which varies by user/environment
+
+**Suggested fix:** Add a stable `data-testid` to panel menu buttons that doesn't include the metric name, OR use wildcard pattern `button[data-testid*='Panel menu']:not([data-testid*='item'])`
+
+**Workaround:** Works for testing but will fail for users with different metrics
+
+**Priority:** High
+
+---
+
+### Explore Add button - Position-based selector
+
+**Learning Journey:** drilldown-metrics  
+**Milestone:** add-metric-dashboard  
+**Step:** Click Add > Add to dashboard
+
+**Current selector:**
+```css
+div[data-testid='data-testid Explore'] button:nth-match(4)
+```
+
+**Problem:** Position-based selector (4th button) is fragile and will break if toolbar buttons are added/removed/reordered
+
+**Suggested fix:** Add `data-testid` to the Add button in Explore toolbar (e.g., `data-testid="explore-add-button"`)
+
+**Workaround:** None - selector may break with UI changes
+
+**Priority:** High
+
+---
+
+### Add to dashboard menu item - Non-standard CSS selector
+
+**Learning Journey:** drilldown-metrics  
+**Milestone:** add-metric-dashboard  
+**Step:** Click "Add to dashboard" menu option
+
+**Current selector:**
+```css
+[role='menuitem']:contains('Add to dashboard')
+```
+
+**Problem:** `:contains()` is a jQuery selector, not standard CSS. May not work in all browser/Pathfinder contexts.
+
+**Suggested fix:** Add `data-testid` to menu items (e.g., `data-testid="menu-item-add-to-dashboard"`)
+
+**Workaround:** Test thoroughly - works in some contexts but not guaranteed
+
+**Priority:** Medium
+
+---
