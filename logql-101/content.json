@@ -65,20 +65,13 @@
           "content": "There are two modes to write LogQL queries: Builder and Code. Use Code mode to type LogQL directly."
         },
         {
-          "type": "multistep",
-          "content": "In Loki, the most basic query is a label selector. You can read more about labels [here](https://grafana.com/docs/loki/latest/get-started/labels/). For now, type a label selector query:\n\n`{service_name=\"nginx_access_log\"}`",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Run the query to see matching log lines."
-            },
-            {
-              "action": "formfill",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\"}"
-            }
-          ]
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "{service_name=\"nginx_access_log\"}",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Run the query to see matching log lines.",
+          "content": "In Loki, the most basic query is a label selector. You can read more about labels [here](https://grafana.com/docs/loki/latest/get-started/labels/). For now, type a label selector query:\n\n`{service_name=\"nginx_access_log\"}`"
         },
         {
           "type": "markdown",
@@ -107,16 +100,13 @@
           "content": "There's a lot going on here, and it can be difficult to look through the raw log line to find what you're looking for. Let's break it down."
         },
         {
-          "type": "multistep",
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
           "skippable": false,
-          "content": "Click on the first log line to expand it and view its details.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
-              "tooltip": "Click on a log line to see its details and labels."
-            }
-          ]
+          "tooltip": "Click on a log line to see its details and labels.",
+          "content": "Click on the first log line to expand it and view its details."
         },
         {
           "type": "interactive",
@@ -181,34 +171,23 @@
       "requirements": ["on-page:/explore", "has-datasource:loki"],
       "blocks": [
         {
-          "type": "multistep",
-          "content": "Start by adding another label selector to narrow the search:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}`\n\nAdding more than one label selector helps get you more precise. The more precise your query is, the fewer results it returns, and the faster and more cheaply your query runs.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "More label selectors = more precise queries."
-            },
-            {
-              "action": "formfill",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}"
-            }
-          ]
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "More label selectors = more precise queries.",
+          "content": "Start by adding another label selector to narrow the search:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}`\n\nAdding more than one label selector helps get you more precise. The more precise your query is, the fewer results it returns, and the faster and more cheaply your query runs."
         },
         {
           "type": "multistep",
           "content": "Now add a simple line filter, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Line filters match text anywhere in each log line."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"",
+              "tooltip": "Line filters match text anywhere in each log line."
             },
             {
               "action": "highlight",
@@ -225,14 +204,10 @@
           "content": "Exclude a common success code, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\"`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Combining include and exclude filters can reduce noise."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\"",
+              "tooltip": "Combining include and exclude filters can reduce noise."
             },
             {
               "action": "highlight",
@@ -265,20 +240,13 @@
       "requirements": ["on-page:/explore", "has-datasource:loki"],
       "blocks": [
         {
-          "type": "multistep",
-          "content": "Parse JSON and filter by the `status` field:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"`",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Parsing structured logs lets you filter by fields instead of raw text."
-            },
-            {
-              "action": "formfill",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\""
-            }
-          ]
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Parsing structured logs lets you filter by fields instead of raw text.",
+          "content": "Parse JSON and filter by the `status` field:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"`"
         },
         {
           "type": "interactive",
@@ -289,15 +257,12 @@
           "content": "Click **Run query** to execute the query and view the results."
         },
         {
-          "type": "multistep",
-          "content": "Click on the first log line to expand it and view its details.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
-              "tooltip": "Click on a log line to see its details and parsed fields."
-            }
-          ]
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Click on a log line to see its details and parsed fields.",
+          "content": "Click on the first log line to expand it and view its details."
         },
         {
           "type": "interactive",
@@ -336,14 +301,10 @@
           "content": "Add `line_format` and run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\"`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Formatting changes how results display without changing which lines match."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\"",
+              "tooltip": "Formatting changes how results display without changing which lines match."
             },
             {
               "action": "highlight",
@@ -352,15 +313,12 @@
           ]
         },
         {
-          "type": "multistep",
-          "content": "Click on the first log line to expand it and view its details.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
-              "tooltip": "Click on a log line to see its details and parsed fields."
-            }
-          ]
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Click on a log line to see its details and parsed fields.",
+          "content": "Click on the first log line to expand it and view its details."
         },
         {
           "type": "interactive",
@@ -377,14 +335,10 @@
           "content": "Update the query to include `request_method`:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Add more fields to make the formatted output more informative."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"",
+              "tooltip": "Add more fields to make the formatted output more informative."
             },
             {
               "action": "highlight",
@@ -417,14 +371,10 @@
           "content": "Match only URIs that include an ID segment, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Regex on a specific field is more precise than regex on the full line."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"",
+              "tooltip": "Regex on a specific field is more precise than regex on the full line."
             },
             {
               "action": "highlight",
@@ -437,14 +387,10 @@
           "content": "What if you want to catch all server errors, not just 500? Using `status =~ \"5..\"` matches 500, 502, 503, and any other 5xx code in one pattern. Update your query to use this pattern:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status =~ \"5..\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Regex can also match patterns in field values, not just URIs."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status =~ \"5..\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\""
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status =~ \"5..\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"",
+              "tooltip": "Regex can also match patterns in field values, not just URIs."
             },
             {
               "action": "highlight",
@@ -485,14 +431,10 @@
           "content": "Use `count_over_time` to count the number of HTTP 500s over time. Notice how we wrap our existing log query and add `[1h]` to define 1-hour buckets:\n\n`count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "This turns a log query into a time series by counting matches over time."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])"
+              "targetvalue": "count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])",
+              "tooltip": "This turns a log query into a time series by counting matches over time."
             },
             {
               "action": "highlight",
@@ -518,14 +460,10 @@
           "content": "Wrap the query with `sum()` and run it:\n\n`sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))`",
           "steps": [
             {
-              "action": "highlight",
-              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "tooltip": "Aggregating reduces series count by combining many series into one."
-            },
-            {
               "action": "formfill",
               "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
-              "targetvalue": "sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))"
+              "targetvalue": "sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))",
+              "tooltip": "Aggregating reduces series count by combining many series into one."
             },
             {
               "action": "highlight",
