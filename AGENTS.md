@@ -31,6 +31,7 @@ Slim references for AI assistance:
 | [action-types-reference.mdc](.cursor/action-types-reference.mdc) | Action type decision tree |
 | [requirements-quick-reference.mdc](.cursor/requirements-quick-reference.mdc) | Requirement patterns |
 | [selector-library.mdc](.cursor/selector-library.mdc) | Common selectors |
+| [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | Reviewing PRs of Guides |
 | [best-practices.mdc](.cursor/best-practices.mdc) | Authoring best practices |
 
 ### Patterns and Examples (`.cursor/`)
