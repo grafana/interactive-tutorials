@@ -1,0 +1,27 @@
+{
+  "id": "drilldown-traces-view-details-trace-span",
+  "title": "Investigate a span",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you navigate to the details of a trace span, which provides the following insights:\n\n- Identify which segments of a span are on the critical path of the overall trace workflow.\n- Spans often contain events or exceptions that help you identify the root cause of failures.\n- Spans provide success or failure status.\n- By analyzing the duration of individual spans, you can pinpoint slow operations or services contributing to latency.\n- Span attributes, such as database queries or external API calls, reveal how resources are used and where inefficiencies exist.\n- Spans show how different services and components interact, helping you identify problematic dependencies or cascading failures.\n- Spans include timestamps for key events, allowing you to reconstruct the sequence of operations and understand the context of an issue."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "svg[data-testid='icon-arrow-down']",
+      "content": "To see the details of a span, in the **Service & Operation** view, expand the span to access additional information and insights.",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "The image below provides the following insights:\n\n- The `select-articles` span within the `article-service` shows an exception with the message: `error: k6.HD6HfG16NBuktkygK`. This indicates a runtime error caused by a division by zero (`panic: runtime error: can't divide by 0`).\n- The stack trace and exception type (`error.type: k6_1586a00a6af`) provide additional context for debugging the issue.\n- The `select-articles` span took 579.69ms, with 258.9ms attributed to the exception. This suggests the error significantly impacted the span's duration.\n- The span attributes indicate the issue occurred in a PostgreSQL database (`net.peer.name: postgres.local`), which may point to a problematic query or data inconsistency.\n- The events within the span show timestamps for when the exception occurred and other related activities, helping to reconstruct the sequence of events.\n\nThe insights from the image indicate that the `select-articles` span is the primary contributor to the latency issue due to a runtime error caused by a division by zero, which affected the span's duration. This issue occurred in the PostgreSQL database, pointing to a potentially problematic query or data inconsistency."
+    },
+    {
+      "type": "image",
+      "src": "/media/docs/learning-journey/traces-drilldown/view-trace-span-details.png",
+      "alt": "Expanded span showing attributes, events, and exception details"
+    }
+  ]
+}

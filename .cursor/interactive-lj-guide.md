@@ -52,11 +52,14 @@ Create a workspace in Cursor that includes all three repos:
 
 > **CRITICAL: Always keep JSON content aligned with the markdown source.**
 
-The markdown (`index.md`) is the source of truth. When creating `pathfinder.json`:
+The markdown (`index.md`) is the source of truth. When creating `content.json`:
 
-1. Match the content text to what's in the markdown
-2. Find the correct selector for that UI element
-3. **Never** change the content text to match a selector you found
+1. **Include ALL content** from the source markdown — intro text, bullet lists, insights, images, videos, closing paragraphs
+2. Match the content text to what's in the markdown
+3. Find the correct selector for UI elements
+4. **Never** change the content text to match a selector you found
+
+> ⚠️ **IMPORTANT:** If a milestone requires a `content.json` (because it has interactive steps), you **MUST** bring over ALL content from the source `index.md`. The JSON is used to render the Learning Journey on the website — missing content means missing content for users.
 
 If a selector doesn't exist for an element described in the markdown, either:
 - Record a new selector
@@ -132,15 +135,18 @@ git checkout -b interactive-lj-{lj-name}
 
 ### 4. Initial Scaffolding (AI-assisted)
 
-1. Read the milestone's `index.md` from the website repo to understand the steps
-2. Check `interactive-tutorials` repo for existing selectors in `shared/snippets/`
-3. Create `content.json` directly in `interactive-tutorials/{lj-name}-lj/{milestone}/`
-4. Use known-good selectors or TODO placeholders
-5. Keep content aligned with markdown source
+1. Read the milestone's `index.md` from the website repo
+2. **Copy ALL content** — intro, bullet lists, insights, images, videos, closing text
+3. Check `interactive-tutorials` repo for existing selectors in `shared/snippets/`
+4. Create `content.json` directly in `interactive-tutorials/{lj-name}-lj/{milestone}/`
+5. Convert actionable steps to interactive blocks; keep explanatory content as markdown blocks
+6. Use known-good selectors or TODO placeholders
 
 **Skip milestones with no Grafana UI interactions:**
 - If a milestone only involves terminal commands, external configuration, or reading information — don't create a `content.json` for it
 - Only create content for milestones where users interact with the Grafana Cloud UI
+
+> ⚠️ **Remember:** If you create a JSON, you must include ALL content from the source markdown. The JSON renders the milestone on the website.
 
 ### 5. Recording Selectors (Manual)
 
@@ -588,9 +594,15 @@ Maintain a tracking file for selectors that need dev team fixes:
 | `content.json` | `interactive-tutorials` repo | Website rendering + Pathfinder interactivity |
 
 - Keep them **aligned in meaning and steps**
-- JSON **must include images and videos** from the markdown (used for website rendering)
+- JSON **must include ALL content** from the markdown:
+  - Introductory paragraphs and explanations
+  - Bullet lists (benefits, insights, etc.)
+  - Images and videos
+  - Closing/transitional paragraphs
 - JSON content can be slightly more concise (no Hugo shortcodes)
 - **Never** drift on the actual instructions
+
+> ⚠️ The `content.json` is used to render the Learning Journey on the Grafana website. If you create a JSON for a milestone, it **replaces** the markdown rendering. Missing content = missing content for users.
 
 ---
 
