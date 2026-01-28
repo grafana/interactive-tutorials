@@ -1,153 +1,211 @@
-# Selector Issue Tracker
+# Selector Issues
 
-> Track selectors that need dev team fixes (missing testIDs, tiny highlight areas, etc.)
-> 
-> **Workflow:** Add issues here → Create GitHub issues from this file → Remove when fixed
+This file tracks CSS selectors that need engineering attention (e.g., missing `data-testid` attributes, tiny highlight areas).
 
 ---
 
-## Open Issues
+## Drilldown Metrics LJ
 
-### Issue 1: OS Distribution Dropdown - Tiny Highlight Area
+### Data source selector dropdown - Tiny highlight area
 
-**Title:** Unable to record OS distribution dropdown in Linux Server integration
+**Learning Journey:** drilldown-metrics  
+**Milestone:** search-metrics  
+**Step:** Select the data source you want to query
 
-**Instance:** Grafana Cloud (any stack)
-
-**Page URL:** `/connections/add-new-connection/linux-node`
-
-**Steps to record:**
-1. Navigate to Connections > Add new connection
-2. Search for "Linux Server" and click the tile
-3. Try to record clicking the OS distribution dropdown (Debian/RedHat)
-
-**Observed behavior:**
-Recording produces selector `div[data-testid='collector-os-selection'] input` which highlights only a tiny area (the hidden input element) instead of the full dropdown component. The "Show me" highlight is barely visible to users.
-
-**Interactive JSON:**
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-testid='collector-os-selection'] input",
-  "content": "Select the **operating system** that matches your Linux distribution.",
-  "tooltip": "Select your Linux distribution (Debian for Ubuntu/Debian, RedHat for RHEL/Fedora/CentOS).",
-  "requirements": ["exists-reftarget"],
-  "doIt": false
-}
+**Current selector:**
+```css
+input[data-testid='data-testid Dashboard template variables Variable Value DropDown value link text grafanacloud-prom-input']
 ```
 
-**Console logs:** N/A
+**Problem:** Highlight area is tiny (only highlights the input element, not the full dropdown)
 
-**Severity:** Medium - Affects user experience but guide still functions
+**Suggested fix:** Add `data-testid` to the parent dropdown container element
 
-**Additional context:**
-- Learning Journey: `linux-server-integration`
-- Milestone: `select-platform`
-- The parent `div[data-testid='collector-os-selection']` exists but targeting it doesn't highlight the clickable dropdown area properly
-- **Suggested fix:** Add a `data-testid` to the visible/clickable dropdown element itself, not just the wrapper div
+**Workaround:** Mark as "Show me" only (`doIt: false`)
+
+**Priority:** Medium
 
 ---
 
-### Issue 2: Architecture Dropdown - Tiny Highlight Area
+### Panel menu - Dynamic metric name in selector
 
-**Title:** Unable to record Architecture dropdown in Linux Server integration
+**Learning Journey:** drilldown-metrics  
+**Milestone:** open-metrics-explore  
+**Step:** Click the Menu icon on a metric visualization
 
-**Instance:** Grafana Cloud (any stack)
-
-**Page URL:** `/connections/add-new-connection/linux-node`
-
-**Steps to record:**
-1. Navigate to Connections > Add new connection
-2. Search for "Linux Server" and click the tile
-3. Try to record clicking the Architecture dropdown (Amd64/Arm64)
-
-**Observed behavior:**
-Recording produces selector `div[data-testid='collector-arch-selection'] input` which highlights only a tiny area (the hidden input element) instead of the full dropdown component. The "Show me" highlight is barely visible to users.
-
-**Interactive JSON:**
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-testid='collector-arch-selection'] input",
-  "content": "Select the **architecture** that matches your system.",
-  "tooltip": "Select Amd64 for x86_64 systems or Arm64 for aarch64 systems.",
-  "requirements": ["exists-reftarget"],
-  "doIt": false
-}
+**Current selector:**
+```css
+button[data-testid='data-testid Panel menu asserts:resource:threshold']
 ```
 
-**Console logs:** N/A
+**Problem:** Selector contains specific metric name `asserts:resource:threshold` which varies by user/environment
 
-**Severity:** Medium - Affects user experience but guide still functions
+**Suggested fix:** Add a stable `data-testid` to panel menu buttons that doesn't include the metric name, OR use wildcard pattern `button[data-testid*='Panel menu']:not([data-testid*='item'])`
 
-**Additional context:**
-- Learning Journey: `linux-server-integration`
-- Milestone: `select-platform`
-- Same issue as OS dropdown - the testID is on wrapper div, not the clickable element
-- **Suggested fix:** Add a `data-testid` to the visible/clickable dropdown element itself
+**Workaround:** Works for testing but will fail for users with different metrics
+
+**Priority:** High
 
 ---
 
-### Issue 3: Linux Server Tile - Requires Index-Based Selector
+### Explore Add button - Position-based selector
 
-**Title:** Unable to record Linux Server tile without `:nth-match(1)`
+**Learning Journey:** drilldown-metrics  
+**Milestone:** add-metric-dashboard  
+**Step:** Click Add > Add to dashboard
 
-**Instance:** Grafana Cloud (any stack)
-
-**Page URL:** `/connections/add-new-connection`
-
-**Steps to record:**
-1. Navigate to Connections > Add new connection
-2. Search for "Linux Server"
-3. Try to record clicking the Linux Server tile
-
-**Observed behavior:**
-Recording produces selector `a[href='/connections/add-new-connection/linux-node']` but without `:nth-match(1)`, the page exhibits strange scrolling behavior (list scrolls up then down) and highlights the wrong element. This indicates multiple elements share the same `href`, requiring an index-based selector which is fragile.
-
-**Interactive JSON:**
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "a[href='/connections/add-new-connection/linux-node']:nth-match(1)",
-  "content": "Click on the **Linux Server** tile to select it.",
-  "requirements": ["exists-reftarget"]
-}
+**Current selector:**
+```css
+div[data-testid='data-testid Explore'] button:nth-match(4)
 ```
 
-**Console logs:** N/A
+**Problem:** Position-based selector (4th button) is fragile and will break if toolbar buttons are added/removed/reordered
 
-**Severity:** Low - Works with `:nth-match(1)` but fragile if tile order changes
+**Suggested fix:** Add `data-testid` to the Add button in Explore toolbar (e.g., `data-testid="explore-add-button"`)
 
-**Additional context:**
-- Learning Journey: `linux-server-integration`
-- Milestone: `select-platform`
-- Multiple `<a>` elements have `href='/connections/add-new-connection/linux-node'` on the page
-- **Suggested fix:** Add a unique `data-testid` to the integration tile, e.g., `data-testid="integration-tile-linux-node"`
+**Workaround:** None - selector may break with UI changes
+
+**Priority:** High
 
 ---
 
-## Resolved Issues
+### Add to dashboard menu item - Non-standard CSS selector
 
-_Move issues here once fixed, with the PR/commit that resolved them._
+**Learning Journey:** drilldown-metrics  
+**Milestone:** add-metric-dashboard  
+**Step:** Click "Add to dashboard" menu option
 
-| Issue | Resolution | PR/Commit | Date |
-|-------|------------|-----------|------|
-| _Example_ | _Added data-testid to dropdown_ | _#1234_ | _2026-01-15_ |
+**Current selector:**
+```css
+[role='menuitem']:contains('Add to dashboard')
+```
+
+**Problem:** `:contains()` is a jQuery selector, not standard CSS. May not work in all browser/Pathfinder contexts.
+
+**Suggested fix:** Add `data-testid` to menu items (e.g., `data-testid="menu-item-add-to-dashboard"`)
+
+**Workaround:** Test thoroughly - works in some contexts but not guaranteed
+
+**Priority:** Medium
 
 ---
 
-## Quick Reference: Issue Severity
+## Drilldown Logs LJ
 
-| Severity | When to use |
-|----------|-------------|
-| **Low** | Minor inconvenience - guide works, just not ideal |
-| **Medium** | Affects user experience but guide still functions |
-| **High** | Guide is broken or produces incorrect results |
-| **Critical** | Blocks publishing or causes errors |
+### Service dropdown - Tiny highlight area
+
+**Learning Journey:** drilldown-logs  
+**Milestone:** view-logs  
+**Step:** Select the service you want to view
+
+**Current selector:**
+```css
+input[data-testid='data-testid search-services-input']
+```
+
+**Problem:** Highlight area is tiny (only highlights the inner input element, not the full dropdown container)
+
+**Suggested fix:** Add `data-testid` to the dropdown container element
+
+**Workaround:** Mark as "Show me" only (`doIt: false`)
+
+**Priority:** Medium
 
 ---
 
-*Last updated: January 26, 2026*
+### Include button - No data-testid for i18n support
+
+**Learning Journey:** drilldown-logs  
+**Milestone:** labels-and-fields, log-patterns  
+**Step:** Click Include to filter by value/pattern
+
+**Current selector:**
+```css
+button:contains('Include')
+```
+
+**Problem:** `:contains()` relies on English button text. When Grafana UI is translated to other languages, this selector will break.
+
+**Suggested fix:** Add `data-testid` to Include buttons:
+- Labels tab Include button
+- Fields tab Include button
+- Patterns tab Include button
+
+**Workaround:** Only works for English UI
+
+**Priority:** Medium
+
+---
+
+### Panel menu Log volume - Dynamic log count
+
+**Learning Journey:** drilldown-logs  
+**Milestone:** open-logs-explore  
+**Step:** Click Menu icon on Log volume panel
+
+**Current selector:**
+```css
+button[data-testid*='Panel menu Log volume']
+```
+
+**Problem:** The full testid includes dynamic log count (e.g., `Panel menu Log volume (3K)`), which changes based on actual data.
+
+**Suggested fix:** Remove dynamic content from `data-testid` attributes
+
+**Workaround:** Using wildcard `*=` selector works across environments ✅
+
+**Priority:** Low (workaround works)
+
+---
+
+## Drilldown Traces LJ
+
+### Histogram by duration radio button - No stable selector
+
+**Learning Journey:** drilldown-traces  
+**Milestone:** view-distribution  
+**Step:** Select the Histogram by duration radio button
+
+**Current selector:**
+```css
+label:nth-of-type(1):nth-match(1)
+```
+
+**Selectors tried:**
+- `#radiogroup-list-47-0` - dynamic ID, breaks between sessions
+- `label:contains('Histogram by duration')` - element not found
+- `label:nth-of-type(1):nth-match(1-4)` - highlights wrong elements
+
+**Problem:** The radio button group in Traces Drilldown has no stable `data-testid` or accessible attributes. Positional selectors highlight wrong elements.
+
+**Suggested fix:** Add `data-testid` attributes to the radio button group and individual radio buttons in the Traces Drilldown UI.
+
+**Workaround:** None - cannot reliably target this element
+
+**Priority:** High
+
+---
+
+### Trace row in Slow traces tab - Dynamic data, no stable selector
+
+**Learning Journey:** drilldown-traces  
+**Milestone:** view-trace-details  
+**Step:** Click a trace name on the Slow traces tab
+
+**Selector tried:**
+```css
+section[data-testid='data-testid Panel header '] div:nth-match(144)
+```
+
+**Problem:** Trace rows are dynamically generated based on user data. The recorded selector:
+- Uses positional matching (`:nth-match(144)`) which is extremely fragile
+- Highlights the entire panel instead of the trace name
+- Changes based on which traces exist in the user's environment
+
+**Suggested fix:** Add `data-testid` attributes to trace row elements or trace name links in the Slow traces tab (e.g., `data-testid="trace-row"` or `data-testid="trace-name-link"`)
+
+**Workaround:** None - converted to markdown step
+
+**Priority:** High
+
+---
