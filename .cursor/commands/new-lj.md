@@ -97,9 +97,16 @@ interactive-tutorials/
 For each milestone with UI interactions:
 
 1. **Read the `index.md`** from the website repo
-2. **Extract the steps** the user needs to perform
+2. **Include ALL content** from the markdown:
+   - Introductory paragraphs and explanations
+   - Bullet lists (benefits, insights, what you'll learn)
+   - Step-by-step instructions (convert actionable steps to interactive blocks)
+   - Images and videos
+   - Closing/transitional paragraphs
 3. **Check for existing selectors** in `interactive-tutorials/shared/snippets/` and other LJs
 4. **Generate `content.json`** with this structure:
+
+> ⚠️ **CRITICAL:** The `content.json` renders the milestone on the website. If you create a JSON, you MUST include ALL content from the source `index.md`. Missing content = missing content for users.
 
 ```json
 {
@@ -108,7 +115,7 @@ For each milestone with UI interactions:
   "blocks": [
     {
       "type": "markdown",
-      "content": "Introductory text from the milestone."
+      "content": "Introductory paragraph from the milestone.\n\nBullet list of benefits:\n\n- First benefit or insight\n- Second benefit or insight\n- Third benefit or insight"
     },
     {
       "type": "interactive",
@@ -116,6 +123,19 @@ For each milestone with UI interactions:
       "reftarget": "TODO: find selector",
       "content": "Step description from markdown.",
       "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "Insights section with explanations:\n\n- First insight from the image/result\n- Second insight\n- Third insight"
+    },
+    {
+      "type": "image",
+      "src": "/media/docs/learning-journey/{path}/screenshot.png",
+      "alt": "Description of what the image shows"
+    },
+    {
+      "type": "markdown",
+      "content": "Closing paragraph transitioning to the next milestone."
     }
   ]
 }

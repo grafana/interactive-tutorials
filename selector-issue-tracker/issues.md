@@ -89,3 +89,123 @@ div[data-testid='data-testid Explore'] button:nth-match(4)
 **Priority:** Medium
 
 ---
+
+## Drilldown Logs LJ
+
+### Service dropdown - Tiny highlight area
+
+**Learning Journey:** drilldown-logs  
+**Milestone:** view-logs  
+**Step:** Select the service you want to view
+
+**Current selector:**
+```css
+input[data-testid='data-testid search-services-input']
+```
+
+**Problem:** Highlight area is tiny (only highlights the inner input element, not the full dropdown container)
+
+**Suggested fix:** Add `data-testid` to the dropdown container element
+
+**Workaround:** Mark as "Show me" only (`doIt: false`)
+
+**Priority:** Medium
+
+---
+
+### Include button - No data-testid for i18n support
+
+**Learning Journey:** drilldown-logs  
+**Milestone:** labels-and-fields, log-patterns  
+**Step:** Click Include to filter by value/pattern
+
+**Current selector:**
+```css
+button:contains('Include')
+```
+
+**Problem:** `:contains()` relies on English button text. When Grafana UI is translated to other languages, this selector will break.
+
+**Suggested fix:** Add `data-testid` to Include buttons:
+- Labels tab Include button
+- Fields tab Include button
+- Patterns tab Include button
+
+**Workaround:** Only works for English UI
+
+**Priority:** Medium
+
+---
+
+### Panel menu Log volume - Dynamic log count
+
+**Learning Journey:** drilldown-logs  
+**Milestone:** open-logs-explore  
+**Step:** Click Menu icon on Log volume panel
+
+**Current selector:**
+```css
+button[data-testid*='Panel menu Log volume']
+```
+
+**Problem:** The full testid includes dynamic log count (e.g., `Panel menu Log volume (3K)`), which changes based on actual data.
+
+**Suggested fix:** Remove dynamic content from `data-testid` attributes
+
+**Workaround:** Using wildcard `*=` selector works across environments ✅
+
+**Priority:** Low (workaround works)
+
+---
+
+## Drilldown Traces LJ
+
+### Histogram by duration radio button - No stable selector
+
+**Learning Journey:** drilldown-traces  
+**Milestone:** view-distribution  
+**Step:** Select the Histogram by duration radio button
+
+**Current selector:**
+```css
+label:nth-of-type(1):nth-match(1)
+```
+
+**Selectors tried:**
+- `#radiogroup-list-47-0` - dynamic ID, breaks between sessions
+- `label:contains('Histogram by duration')` - element not found
+- `label:nth-of-type(1):nth-match(1-4)` - highlights wrong elements
+
+**Problem:** The radio button group in Traces Drilldown has no stable `data-testid` or accessible attributes. Positional selectors highlight wrong elements.
+
+**Suggested fix:** Add `data-testid` attributes to the radio button group and individual radio buttons in the Traces Drilldown UI.
+
+**Workaround:** None - cannot reliably target this element
+
+**Priority:** High
+
+---
+
+### Trace row in Slow traces tab - Dynamic data, no stable selector
+
+**Learning Journey:** drilldown-traces  
+**Milestone:** view-trace-details  
+**Step:** Click a trace name on the Slow traces tab
+
+**Selector tried:**
+```css
+section[data-testid='data-testid Panel header '] div:nth-match(144)
+```
+
+**Problem:** Trace rows are dynamically generated based on user data. The recorded selector:
+- Uses positional matching (`:nth-match(144)`) which is extremely fragile
+- Highlights the entire panel instead of the trace name
+- Changes based on which traces exist in the user's environment
+
+**Suggested fix:** Add `data-testid` attributes to trace row elements or trace name links in the Slow traces tab (e.g., `data-testid="trace-row"` or `data-testid="trace-name-link"`)
+
+**Workaround:** None - converted to markdown step
+
+**Priority:** High
+
+---
