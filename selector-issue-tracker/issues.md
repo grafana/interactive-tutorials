@@ -157,3 +157,55 @@ button[data-testid*='Panel menu Log volume']
 **Priority:** Low (workaround works)
 
 ---
+
+## Drilldown Traces LJ
+
+### Histogram by duration radio button - No stable selector
+
+**Learning Journey:** drilldown-traces  
+**Milestone:** view-distribution  
+**Step:** Select the Histogram by duration radio button
+
+**Current selector:**
+```css
+label:nth-of-type(1):nth-match(1)
+```
+
+**Selectors tried:**
+- `#radiogroup-list-47-0` - dynamic ID, breaks between sessions
+- `label:contains('Histogram by duration')` - element not found
+- `label:nth-of-type(1):nth-match(1-4)` - highlights wrong elements
+
+**Problem:** The radio button group in Traces Drilldown has no stable `data-testid` or accessible attributes. Positional selectors highlight wrong elements.
+
+**Suggested fix:** Add `data-testid` attributes to the radio button group and individual radio buttons in the Traces Drilldown UI.
+
+**Workaround:** None - cannot reliably target this element
+
+**Priority:** High
+
+---
+
+### Trace row in Slow traces tab - Dynamic data, no stable selector
+
+**Learning Journey:** drilldown-traces  
+**Milestone:** view-trace-details  
+**Step:** Click a trace name on the Slow traces tab
+
+**Selector tried:**
+```css
+section[data-testid='data-testid Panel header '] div:nth-match(144)
+```
+
+**Problem:** Trace rows are dynamically generated based on user data. The recorded selector:
+- Uses positional matching (`:nth-match(144)`) which is extremely fragile
+- Highlights the entire panel instead of the trace name
+- Changes based on which traces exist in the user's environment
+
+**Suggested fix:** Add `data-testid` attributes to trace row elements or trace name links in the Slow traces tab (e.g., `data-testid="trace-row"` or `data-testid="trace-name-link"`)
+
+**Workaround:** None - converted to markdown step
+
+**Priority:** High
+
+---
