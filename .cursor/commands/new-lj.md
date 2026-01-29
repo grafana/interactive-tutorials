@@ -253,18 +253,72 @@ Ready to proceed? (Y/N): _
 find content/docs/learning-journeys -type d -name "[lj-folder-name]"
 ```
 
-Then read and display:
+**If LJ found:** Read and display:
 - LJ title and description from `_index.md`
 - List of milestones with their titles and weights
 - Identify which milestones have procedural steps (interactive candidates)
 
+**If LJ not found:**
+```
+❌ Learning Journey not found
+
+I couldn't find a Learning Journey matching "[user-provided-name]" in the 
+website repository.
+
+This could mean:
+- The folder name doesn't match (check for typos or dashes vs underscores)
+- The LJ hasn't been published to the website yet
+- The LJ is in a different location
+
+Let me search for similar names...
+```
+
+Then run a fuzzy search to help:
+```bash
+find content/docs/learning-journeys -type d -maxdepth 2 | grep -i "[partial-match]"
+```
+
+Show results if any are found:
+```
+Did you mean one of these?
+- visualization-metrics
+- visualize-logs
+- ...
+
+Please provide the correct folder name, or type 'abort' to exit: _
+```
+
+If no similar matches found:
+```
+I couldn't find any similar Learning Journeys. Please check:
+1. The LJ exists in the website repo
+2. You're using the folder name (not the display title)
+3. The spelling is correct
+
+Provide the correct folder name, or type 'abort' to exit: _
+```
+
+Wait for user response and retry search, or abort if requested.
+
 ### Expert Mode
 
 Run search, display summary:
+
+**If found:**
 ```
 ✅ Found LJ: [title]
    Path: content/docs/learning-journeys/[folder]/
    Milestones: [count] total, [count] with procedural steps
+```
+
+**If not found:**
+```
+❌ LJ not found: "[user-provided-name]"
+   Searched: content/docs/learning-journeys
+   
+   Similar matches: [list if any found, or "none"]
+   
+   Provide correct folder name or 'abort': _
 ```
 
 ---
