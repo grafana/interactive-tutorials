@@ -69,27 +69,6 @@ div[data-testid='data-testid Explore'] button:nth-match(4)
 
 ---
 
-### Add to dashboard menu item - Non-standard CSS selector
-
-**Learning Journey:** drilldown-metrics  
-**Milestone:** add-metric-dashboard  
-**Step:** Click "Add to dashboard" menu option
-
-**Current selector:**
-```css
-[role='menuitem']:contains('Add to dashboard')
-```
-
-**Problem:** `:contains()` is a jQuery selector, not standard CSS. May not work in all browser/Pathfinder contexts.
-
-**Suggested fix:** Add `data-testid` to menu items (e.g., `data-testid="menu-item-add-to-dashboard"`)
-
-**Workaround:** Test thoroughly - works in some contexts but not guaranteed
-
-**Priority:** Medium
-
----
-
 ## Drilldown Logs LJ
 
 ### Service dropdown - Tiny highlight area
