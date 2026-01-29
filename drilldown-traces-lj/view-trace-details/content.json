@@ -1,0 +1,36 @@
+{
+  "id": "drilldown-traces-view-trace-details",
+  "title": "Investigate a trace",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A trace typically consists of multiple spans, where each span represents a distinct unit of work, such as a specific operation within a service. Spans can also have child spans, representing nested operations or tasks.\n\nIn the following image, `shop-backend article-to-cart` is a trace that completes in 1.19 seconds. The trace contains a number of spans, for example, `authenticate`, `shop-backend place-articles`, and `shop-backend get article`. Each of those spans contain child spans."
+    },
+    {
+      "type": "image",
+      "src": "https://grafana.com/media/docs/learning-journey/traces-drilldown/trace-and-spans.png",
+      "alt": "Example of traces and spans showing shop-backend article-to-cart trace"
+    },
+    {
+      "type": "markdown",
+      "content": "Viewing the details of a trace allows you to gain insights into the performance and behavior of your system. For example:\n\n- Traces help pinpoint specific operations or services causing delays, such as slow database queries or external API calls.\n- You can visualize how different services and components interact, making it easier to identify problematic dependencies.\n- You can divide the total latency of a trace into individual spans so that you can better understand where time is spent.\n- Traces often include error information, helping you quickly identify and resolve issues.\n- By understanding the flow of requests, you can optimize resource usage and improve overall system performance."
+    },
+    {
+      "type": "markdown",
+      "content": "To view the details of a trace, click the trace name on the **Slow traces** tab."
+    },
+    {
+      "type": "markdown",
+      "content": "The image below provides the following insights:\n\n- The trace shows how the `shop-backend` service interacts with other services like `auth-service`, `cart-service`, and `article-service`. This helps identify which service contributes the most to the overall latency.\n- The `get-article` operation within the `shop-backend` service takes the longest time (1.02s), with significant delays in the `select-articles` (579.69ms) and `postgres` (503.49ms) spans. This indicates potential database query inefficiencies.\n- The trace highlights nested spans, such as `persist-cart` (353.04ms) within `cart-service`, showing how operations depend on each other.\n- The `authenticate` operation takes 71.77ms, with 38.59ms spent in the `auth-service`. This suggests a moderate overhead for authentication.\n- The visualization helps identify the critical path of the request, which is essential for optimizing the most impactful spans."
+    },
+    {
+      "type": "image",
+      "src": "https://grafana.com/media/docs/learning-journey/traces-drilldown/view-trace-details.png",
+      "alt": "Trace details showing the Service & Operation view with span waterfall"
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll investigate the details of a trace span to identify the root cause of latency."
+    }
+  ]
+}
