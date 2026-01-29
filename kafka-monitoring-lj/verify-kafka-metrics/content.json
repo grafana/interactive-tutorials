@@ -1,0 +1,68 @@
+{
+  "id": "kafka-monitoring-verify-kafka-metrics",
+  "title": "Verify Kafka metrics collection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "After configuring Grafana Alloy to collect Kafka metrics, you should confirm that the metrics are successfully being sent to Grafana Cloud. Using the Explore view, you can query for Kafka-specific metric names to verify the integration is working correctly.\n\nCommon Kafka metrics to check include message rates, byte rates, and request metrics. These metrics provide immediate confirmation that Alloy is successfully connecting to your Kafka brokers via JMX and forwarding the data to your Grafana Cloud stack.\n\nTo verify Kafka metrics collection, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "verify-metrics-steps",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "content": "In Grafana Cloud, click the menu icon and select **Explore**.",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/explore"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "content": "In the data source dropdown, select your Prometheus data source (typically named \"grafanacloud-[your-stack]-prom\").",
+          "reftarget": "TODO: Record selector for data source picker in Explore",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "content": "In the metrics browser or query field, search for Kafka metrics by typing `kafka_`.",
+          "reftarget": "TODO: Record selector for metrics search/query field",
+          "targetvalue": "kafka_",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Select a metric to verify, such as `kafka_server_brokertopicmetrics_messagesin_total` or `kafka_server_brokertopicmetrics_bytesin_total`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "content": "Click **Run query** to execute the query.",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Verify that data points appear in the graph and table views.\n\nCheck the labels to confirm they include your broker information (instance, job, topic).\n\nTry querying additional Kafka metrics to ensure comprehensive data collection."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Kafka metrics appear in Explore with recent timestamps and correct label values. The metrics update as new data arrives from your Kafka brokers, typically within 1-2 minutes of the first scrape.\n\nIn the next milestone, you install pre-built Kafka dashboards to visualize your metrics."
+    }
+  ]
+}
