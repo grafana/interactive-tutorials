@@ -8,17 +8,14 @@ JSON guides are structured documents that combine content blocks (markdown, imag
 
 ## Root Structure
 
-Every JSON guide has three required fields and one optional field:
+Every JSON guide has four required fields:
 
 ```json
 {
   "id": "my-guide-id",
   "title": "My Guide Title",
-  "blocks": [],
-  "match": {
-    "urlPrefix": ["/dashboards"],
-    "tags": ["beginner", "dashboards"]
-  }
+  "version": "1.0.0",
+  "blocks": []
 }
 ```
 
@@ -28,7 +25,6 @@ Every JSON guide has three required fields and one optional field:
 | `title`   | string      | ✅       | Display title shown in the UI                      |
 | `version` | string      | ✅       | Version with major, minor, and patch number: x.y.z |
 | `blocks`  | JsonBlock[] | ✅       | Array of content and interactive blocks            |
-| `match`   | object      | ❌       | Metadata for recommendation matching               |
 
 ## Block Types Overview
 
