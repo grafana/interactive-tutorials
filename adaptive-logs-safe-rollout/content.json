@@ -1,0 +1,124 @@
+{
+  "id": "adaptive-logs-safe-rollout",
+  "title": "Adaptive Logs — Safe rollout",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Adaptive Logs — Safe rollout\n\nLearn how to review Adaptive Logs recommendations, safely apply suggested drop rates, and create exemptions to preserve critical logs."
+    },
+    {
+      "type": "section",
+      "id": "open-adaptive-logs",
+      "title": "Open Adaptive Logs",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/cost-management/adaptive-logs",
+          "content": "Open the Adaptive Logs page",
+          "requirements": []
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "understand-recommendations",
+      "title": "Understand recommendations",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='adaptive-pattern-row']:first-child",
+          "content": "This row is a recommended pattern. It shows projected savings and a suggested drop rate.",
+          "tooltip": "Review the pattern and the suggested drop percentage before applying.",
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button[data-testid='usage-filter-never']",
+          "content": "Filter to 'Never queried' recommendations",
+          "requirements": []
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "apply-recommendations",
+      "title": "Apply recommendations safely",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button[data-testid='select-all-recommendations']",
+          "content": "Select recommended patterns"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button[data-testid='apply-drop-rates']",
+          "content": "Apply drop rates"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='toast-success']",
+          "content": "A success toast should appear when drop rates are applied",
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-exemption",
+      "title": "Create an exemption for error logs",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Create an exemption so error logs are never dropped.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "button[data-testid='open-exemptions']",
+              "tooltip": "Open the exemptions dialog"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[id='stream-selector']",
+              "targetvalue": "{level=\"error\"}",
+              "tooltip": "Enter the stream selector to exempt error logs"
+            },
+            {
+              "action": "button",
+              "reftarget": "button[data-testid='save-exemption']",
+              "tooltip": "Save the exemption"
+            }
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='exemption-row'][data-selector='{level=\"error\"}']",
+          "content": "The exemption row for `{level=\"error\"}` should now be visible",
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Summary\n\nYou reviewed recommendations, applied drop rates, and created an exemption to preserve critical error logs. When you’re ready, consider a staged roll-out: apply low-risk recommendations first (never-queried), observe ingestion changes for 24 hours, then expand."
+    }
+  ],
+  "match": {
+    "urlPrefix": [
+      "/cost-management/adaptive-logs"
+    ],
+    "tags": [
+      "adaptive-logs",
+      "cost-management",
+      "loki"
+    ]
+  }
+}
