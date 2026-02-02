@@ -4,6 +4,78 @@ This command automates the creation of interactive content (`content.json` files
 
 ---
 
+## AI Behavior Guidelines
+
+When executing this command, you MUST follow these principles:
+
+1. **Follow steps in order** — Do NOT skip or combine steps. Each step exists for a reason.
+
+2. **Test in Pathfinder, not just browser** — A selector that works in raw browser inspection may fail in Pathfinder's Block Editor. You MUST verify in the Block Editor.
+
+3. **Try alternatives before giving up** — When a selector fails:
+   - Try 2 alternative selector approaches
+   - If still failing, ask the user: "This selector isn't working after 2 attempts. Would you like me to file an issue at https://github.com/grafana/interactive-tutorials/issues?"
+   - Only file the issue if the user approves
+
+4. **Let the user handle git** — Do NOT run `git commit` or `git push`. Summarize changes and let the user decide when to commit.
+
+5. **Ask when uncertain** — If a step is ambiguous or you're unsure how to proceed, ask the user rather than guessing.
+
+6. **Re-read before critical steps** — Before Step 3 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 4 (Selector Discovery), re-read the "Selector Priority" table.
+
+7. **Reference the appendix** — Before scaffolding any LJ, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your LJ's UI elements.
+
+8. **ALWAYS use browser tools for selectors** — You MUST use Playwright to discover selectors by inspecting the actual DOM. NEVER guess selectors or copy them from the appendix without verifying they exist on the current page. The appendix shows patterns; browser inspection confirms reality.
+
+---
+
+## Do NOT (Anti-Patterns)
+
+These are common mistakes. Avoid them:
+
+- ❌ **Do NOT skip the welcome message** — It sets expectations for the session
+- ❌ **Do NOT combine multiple steps** — Each step has verification built in
+- ❌ **Do NOT create content.json without reading source markdown first** — You need context
+- ❌ **Do NOT use placeholder selectors** — Never leave `"[selector]"` or `"TODO"` in files
+- ❌ **Do NOT proceed to testing with empty selectors** — All selectors must be discovered first
+- ❌ **Do NOT file GitHub issues without asking** — Always get user permission
+- ❌ **Do NOT use `description` field** — The correct field is `content`
+- ❌ **Do NOT use `formvalue` field** — The correct field is `targetvalue`
+- ❌ **Do NOT guess at selectors** — ALWAYS use Playwright to inspect the actual DOM
+- ❌ **Do NOT copy appendix selectors without verification** — Appendix patterns are templates; you MUST verify each selector exists on the actual page using browser tools
+- ❌ **Do NOT skip browser inspection** — Even if a pattern looks familiar, always confirm with Playwright snapshot
+
+---
+
+## Lessons Learned
+
+Patterns discovered from building interactive content:
+
+### Selector Patterns
+
+| Don't Use | Use Instead | Why |
+|-----------|-------------|-----|
+| `input[placeholder="..."]` | `[aria-label="..."]` | Placeholder text may change; aria-label is more stable |
+| Generic classes (`.btn`) | `[data-testid="..."]` | Classes change frequently; test IDs are intentional |
+| `:nth-child()` selectors | Specific attributes | Position-based selectors break when UI reorders |
+
+### When Markdown Beats Interactive
+
+Some UI patterns are better documented as markdown instructions rather than automated:
+
+- **Conditional dialogs** — Buttons that only appear after user completes a real-world action (e.g., "Test connection" after installing software)
+- **Multi-path flows** — When user must choose between options (create new vs use existing)
+- **External actions** — Steps performed outside the browser (run CLI commands, install software)
+
+### Integration-Specific Notes
+
+For **integration setup flows** (Linux, Windows, macOS, MySQL, etc.):
+- The "Run Grafana Alloy" expand button works: `[data-testid="agent-config-button"]`
+- Token creation and "Test connection" buttons are conditional — use markdown
+- "Install" button for dashboards/alerts works: `action: "button"` with `reftarget: "Install"`
+
+---
+
 ## Welcome
 
 When a writer runs `/build-interactive-lj`, display this welcome:
@@ -205,6 +277,9 @@ Scaffold immediately without introduction.
 
 ### Scaffold
 
+> 💡 **Before scaffolding:** See "Appendix: Proven Patterns" for reusable JSON structures 
+> that match common Grafana UI elements (navigation, forms, buttons, etc.).
+
 For each milestone:
 1. Read `website/content/docs/learning-journeys/[slug]/[milestone]/index.md`
 2. Create `interactive-tutorials/[slug]-lj/[milestone]/content.json`
@@ -218,35 +293,59 @@ For each milestone:
 **IMPORTANT:** Use these exact field names or validation will fail:
 
 ```json
-// Interactive block (correct)
+// Highlight action (correct)
 {
   "type": "interactive",
   "action": "highlight",
-  "reftarget": "[selector]",
+  "reftarget": "[data-testid=\"my-element\"]",
   "content": "Click **Button** to do the thing.",  // NOT "description"
   "requirements": ["exists-reftarget"]
 }
 
-// Formfill block (correct)
+// Button action (correct) - uses button text, not CSS selector
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Install",  // The visible button text
+  "content": "Click **Install** to add the dashboards.",
+  "requirements": ["exists-reftarget"]
+}
+
+// Formfill action (correct)
 {
   "type": "interactive",
   "action": "formfill",
-  "reftarget": "[selector]",
+  "reftarget": "[aria-label=\"Search connections by name\"]",
   "targetvalue": "value to enter",  // NOT "formvalue"
   "content": "Enter the value.",
   "requirements": ["exists-reftarget"]
 }
 
-// Multistep block (correct)
+// Hover action (correct) - for revealing hover-dependent UI
+{
+  "type": "interactive",
+  "action": "hover",
+  "reftarget": "[data-testid=\"hover-target\"]",
+  "content": "Hover over this element to reveal options.",
+  "requirements": ["exists-reftarget"]
+}
+
+// Multistep block (correct) - for navigation sequences
 {
   "type": "multistep",
   "content": "Navigate to **X > Y > Z**.",
   "requirements": ["navmenu-open"],
   "steps": [
-    { "action": "highlight", "reftarget": "[selector-1]" },
-    { "action": "highlight", "reftarget": "[selector-2]" },
-    { "action": "highlight", "reftarget": "[selector-3]" }
+    { "action": "highlight", "reftarget": "[aria-label=\"Expand section: Connections\"]" },
+    { "action": "highlight", "reftarget": "a[href=\"/connections/add-new-connection\"]" }
   ]
+}
+
+// Guided block (correct) - user performs action manually, no "Do it" button
+{
+  "type": "guided",
+  "content": "Copy the installation command and run it on your server.",
+  "requirements": []
 }
 ```
 
@@ -255,21 +354,78 @@ For each milestone:
 - ❌ `formvalue` → ✅ `targetvalue`
 - ❌ `title` on interactive blocks (not needed)
 
-**Display:**
+### When to Use Markdown Instead of Interactive
+
+Some steps are better as plain `markdown` blocks rather than `interactive`:
+
+| Scenario | Why Markdown is Better |
+|----------|------------------------|
+| Steps inside dialogs that require prior user actions | Dialog may not exist yet; automation will fail |
+| External actions (run command on another machine) | Can't automate outside the browser |
+| Conditional UI (create new vs use existing) | Multiple paths; can't predict user's choice |
+| Complex multi-option flows | Better to explain options than force one path |
+| Steps after external verification | User must complete real-world action first |
+
+**Example from Windows integration:**
+The "Test Alloy connection" button only appears after the user has actually installed Alloy on their Windows machine. Since automation can't do that, the step is markdown:
+
+```json
+{
+  "type": "markdown",
+  "content": "After installing Alloy, click **Test Alloy connection** to verify the installation."
+}
 ```
-✅ Scaffold complete
 
-Created:
-- [slug]-lj/milestone-1/content.json
-- [slug]-lj/milestone-2/content.json
-...
+### Requirements Reference
 
-Next: selector discovery. What's your Grafana Cloud URL?
+| Requirement | When to Use |
+|-------------|-------------|
+| `exists-reftarget` | Any DOM interaction (highlight, formfill, button, hover) |
+| `navmenu-open` | Navigation menu elements (ensures menu is expanded) |
+| `on-page:/path` | Page-specific actions (checks current URL) |
+| `section-completed:id` | Sequential dependencies between sections |
+| `is-admin` | Admin-only features |
+| `has-datasource:type` | When a specific data source is needed |
+| `has-plugin:id` | When a specific plugin must be installed |
+
+### Verification Checklist (REQUIRED)
+
+Before proceeding to Step 4, verify EACH content.json file:
+
+- [ ] Every block has a `"type"` field
+- [ ] Instruction text uses `"content"` (NOT `"description"`)
+- [ ] Formfill actions use `"targetvalue"` (NOT `"formvalue"`)
+- [ ] Navigation steps use `"multistep"` blocks
+- [ ] Interactive blocks have `"requirements": ["exists-reftarget"]`
+- [ ] No placeholder text like `"[selector]"` or `"TODO"` exists
+
+**If any check fails, fix before continuing.**
+
+**Display (use this exact format):**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Step 3 complete: Scaffold
+
+Created [N] content.json files:
+├── [slug]-lj/milestone-1/content.json ([N] blocks)
+├── [slug]-lj/milestone-2/content.json ([N] blocks)
+└── ...
+
+Verification: All checks passed ✓
+
+⏳ Next: Step 4 - Selector Discovery
+   What's your Grafana Cloud URL?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
 
 ## Step 4: Selector Discovery
+
+### Re-Read Before Starting
+
+Before discovering selectors, re-read the "Selector Priority" table in Quick Reference.
+You MUST try selectors in this order: data-testid → aria-label → href → id → class
 
 ### Tutorial Mode Introduction
 
@@ -301,20 +457,54 @@ Discover immediately without introduction.
    - Extract the best available selector
    - Update the content.json
 
-**Display progress:**
+### Selector Decision Tree
+
+When you find an element, choose selector in this order:
+
+1. Has `data-testid`? → Use `[data-testid="..."]` 🟢
+2. Has `aria-label`? → Use `[aria-label="..."]` 🟢
+3. Is a link with href? → Use `a[href="..."]` 🟢
+4. Is a button with stable text? → Use `action: "button"` 🟡
+5. Has unique id? → Use `#id` 🟡
+6. None of above? → Try class-based, then ask user 🔴
+
+**Display progress (use this exact format):**
 ```
 Discovering selectors for [milestone-name]...
-- [element description]: [selector found]
-- [element description]: [selector found]
-...
+├── [element description] → [selector] 🟢
+├── [element description] → [selector] 🟡
+└── [element description] → FAILED ❌
+    Attempt 1: [selector tried] - [why it failed]
+    Attempt 2: [selector tried] - [why it failed]
 ```
 
-**On complete:**
-```
-✅ Selector discovery complete
+### Verification Checklist (REQUIRED)
 
-Found selectors for [N] interactive elements.
-Ready to test in Pathfinder?
+Before proceeding to Step 5, verify:
+
+- [ ] All interactive blocks have real selectors (no placeholders)
+- [ ] No `"[selector]"` or `"TODO"` strings remain
+- [ ] Selectors follow priority order (data-testid preferred)
+- [ ] Failed selectors are noted for user decision
+
+**Display (use this exact format):**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Step 4 complete: Selector Discovery
+
+Results by milestone:
+├── [milestone-1]: [N] selectors found
+├── [milestone-2]: [N] selectors found
+└── ...
+
+Selector quality:
+├── 🟢 High confidence: [N]
+├── 🟡 Medium confidence: [N]
+└── 🔴 Failed/needs review: [N]
+
+⏳ Next: Step 5 - Test in Pathfinder
+   Ready to test? (Y/n)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
@@ -350,65 +540,115 @@ Test immediately without introduction.
 3. Enter Block Editor / Dev Mode
 4. For each milestone:
    - Import the content.json
-   - Rapid-fire through all "Show me" clicks
-   - Report one summary per milestone
+   - Click each "Show me" button
+   - Click "Do it" where applicable
+   - Report results
 
-**On success:**
+**Display per milestone (use this exact format):**
 ```
-✅ Milestone: [name] - All [N] steps passed
+Testing: [milestone-name]
+├── Step 1: [description] ✅
+├── Step 2: [description] ✅
+├── Step 3: [description] ❌ FAILED
+│   Selector: [reftarget]
+│   Attempting fix...
+│   ├── Attempt 1: [new selector] ❌
+│   └── Attempt 2: [new selector] ✅ FIXED
+└── Step 4: [description] ✅
+
+Result: [N]/[N] passed
 ```
 
-**On failure:**
-```
-❌ Milestone: [name]
-   Step [N] failed: [description]
-   Selector: [reftarget]
-   [Screenshot]
-```
-
-**Handling failures:**
-1. Try to find correct selector with Playwright
-2. Update content.json
-3. Re-test
-4. If unfixable, note for GitHub issue
+**Handling failures (follow this exactly):**
+1. When a step fails, immediately try to find correct selector with Playwright
+2. Try up to 2 alternative selectors
+3. If fixed, update content.json and re-test that step
+4. If still failing after 2 attempts, ask user:
+   ```
+   Step [N] failed after 2 attempts.
+   Selector tried: [list selectors]
+   
+   Options:
+   1. Convert to markdown (remove interactivity)
+   2. File issue at https://github.com/grafana/interactive-tutorials/issues
+   3. Skip and continue
+   
+   Which would you prefer? (1/2/3)
+   ```
 
 ---
 
 ## Step 6: Report and Next Steps
 
-### Summary
+### Summary (use this exact format)
 
 ```
-## Build Interactive LJ: [slug]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎉 BUILD COMPLETE: [slug] Interactive LJ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### Results
-- Total milestones: [N]
-- Passed: [N]
-- Failed: [N]
+RESULTS
+├── Total milestones: [N]
+├── Fully interactive: [N] ✅
+├── Partial (some markdown): [N] 🟡
+└── Issues filed: [N] 📝
 
-### Files Created
-- [slug]-lj/milestone-1/content.json ✅
-- [slug]-lj/milestone-2/content.json ✅
-...
+FILES CREATED
+├── [slug]-lj/milestone-1/content.json ✅
+├── [slug]-lj/milestone-2/content.json ✅
+└── ...
 
-### Issues to File
-[List any selectors that couldn't be fixed]
+ISSUES FILED (if any)
+├── #[N]: [element] - [brief description]
+└── ...
 
-### Next Steps
-1. Review the content.json files
-2. git add [slug]-lj/
-3. Commit and create PR
+NEXT STEPS
+1. Review the content.json files in your editor
+2. Stage files: git add [slug]-lj/
+3. Commit with message: "Add interactive content for [slug] LJ"
+4. Push and create PR
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Slack-Ready Summary
+
+Offer to provide a copy-paste summary for Slack:
+
+```
+Would you like a Slack-ready summary? (Y/n)
+```
+
+If yes, display:
+```
+🎯 Interactive LJ complete: [slug]
+✅ [N]/[N] milestones interactive
+📝 [N] issues filed for broken selectors
+🔗 Ready for PR
 ```
 
 ### Filing GitHub Issues
 
-For broken selectors, file an issue at https://github.com/grafana/interactive-tutorials/issues
+For broken selectors that need Pathfinder team attention, file at:
+https://github.com/grafana/interactive-tutorials/issues
 
+Use this template:
 ```
 gh issue create \
   --repo grafana/interactive-tutorials \
   --title "[Selector] [element] in [LJ name]" \
-  --body "..."
+  --body "## Element
+[Description of the UI element]
+
+## Selectors Tried
+1. \`[selector-1]\` - [why it failed]
+2. \`[selector-2]\` - [why it failed]
+
+## Page URL
+[Grafana page where element appears]
+
+## Suggested Fix
+[If you have ideas, otherwise: Needs data-testid added]"
 ```
 
 ---
@@ -421,10 +661,288 @@ gh issue create \
 - Mapping: `grafana-recommender/internal/configs/`
 
 ### Block Types
-- `markdown` - Explanatory text
-- `interactive` - "Show me" / "Do it" actions
-  - `action: "highlight"` - Click element by selector
-  - `action: "button"` - Click button by text
-  - `action: "formfill"` - Enter text in field (use `targetvalue` for the value)
-  - `action: "navigate"` - Go to URL
-- `multistep` - Groups sequential navigation steps (shows "▶ Run N steps" button)
+
+| Type | Purpose | Has "Do it"? |
+|------|---------|--------------|
+| `markdown` | Explanatory text, instructions | No |
+| `interactive` | Automated actions with "Show me" / "Do it" | Yes |
+| `multistep` | Sequential navigation (shows "▶ Run N steps") | Yes |
+| `guided` | User performs manually, no automation | No |
+
+### Interactive Action Types
+
+| Action | Use Case | `reftarget` Value |
+|--------|----------|-------------------|
+| `highlight` | Click element by CSS selector | CSS selector |
+| `button` | Click button by visible text | Button text |
+| `formfill` | Enter text in field | CSS selector (+ `targetvalue`) |
+| `hover` | Reveal hover-dependent UI | CSS selector |
+| `navigate` | Change pages | URL path |
+
+### Selector Priority (Most to Least Stable)
+
+| Priority | Selector Type | Example |
+|----------|---------------|---------|
+| 1 | `data-testid` | `[data-testid="agent-config-button"]` |
+| 2 | `aria-label` | `[aria-label="Search connections by name"]` |
+| 3 | `href` (for links) | `a[href="/connections/add-new-connection"]` |
+| 4 | `id` | `#my-element` |
+| 5 | Stable class | `.specific-component-class` |
+
+**Avoid:** Generic classes (`.btn`, `.input`), positional selectors (`:nth-child`), text content
+
+---
+
+## Appendix: Proven Patterns
+
+Reusable JSON structures for common Grafana UI elements. These were validated through real testing.
+
+> ⚠️ **IMPORTANT:** These are **templates**, not copy-paste solutions. You MUST use Playwright 
+> browser tools to verify each selector exists on the actual page before using it. Selectors 
+> can change between Grafana versions.
+
+---
+
+### Navigation Patterns
+
+#### Multi-Level Menu Navigation
+
+Use `multistep` for any navigation through nested menus:
+
+```json
+{
+  "type": "multistep",
+  "content": "Navigate to **[Section] > [Subsection] > [Page]**.",
+  "requirements": ["navmenu-open"],
+  "steps": [
+    { "action": "highlight", "reftarget": "[aria-label=\"Expand section: [Section]\"]" },
+    { "action": "highlight", "reftarget": "[aria-label=\"Expand section: [Subsection]\"]" },
+    { "action": "highlight", "reftarget": "a[href=\"/[path]\"]" }
+  ]
+}
+```
+
+**Common navigation selectors:**
+
+| Destination | Selector |
+|-------------|----------|
+| Connections | `[aria-label="Expand section: Connections"]` |
+| Alerts & IRM | `[aria-label="Expand section: Alerts & IRM"]` |
+| Alerting | `[aria-label="Expand section: Alerting"]` |
+| Dashboards | `[aria-label="Expand section: Dashboards"]` |
+| Explore | `a[href="/explore"]` |
+| Alert rules | `a[href="/alerting/list"]` |
+| Add new connection | `a[href="/connections/add-new-connection"]` |
+
+---
+
+### Form Patterns
+
+#### Search/Filter Input
+
+ALWAYS use `aria-label` for search inputs, NOT `placeholder`:
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[aria-label=\"Search [description]\"]",
+  "targetvalue": "[search term]",
+  "content": "In the search box, type **[term]** to filter the results.",
+  "requirements": ["exists-reftarget"]
+}
+```
+
+**Why:** `placeholder` text can change; `aria-label` is more stable.
+
+#### Text Input Fields
+
+For labeled form fields:
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[aria-label=\"[Field label]\"]",
+  "targetvalue": "[value]",
+  "content": "Enter **[value]** in the [field name] field.",
+  "requirements": ["exists-reftarget"]
+}
+```
+
+---
+
+### Button Patterns
+
+#### Button by Text (Stable Text)
+
+When a button has consistent, visible text:
+
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "[Button Text]",
+  "content": "Click **[Button Text]** to [action].",
+  "requirements": ["exists-reftarget"]
+}
+```
+
+**Examples:** "Install", "Save", "Create", "Add", "Apply"
+
+#### Button by data-testid (Preferred)
+
+When a button has a `data-testid` attribute:
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "[data-testid=\"[testid-value]\"]",
+  "content": "Click **[Button name]** to [action].",
+  "requirements": ["exists-reftarget"]
+}
+```
+
+#### Icon-Only Button
+
+For buttons with only an icon (no text), use `aria-label`:
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "[aria-label=\"[Action description]\"]",
+  "content": "Click the **[icon name]** icon to [action].",
+  "requirements": ["exists-reftarget"]
+}
+```
+
+---
+
+### Link/Tile Patterns
+
+#### Card or Tile Selection
+
+For clickable cards/tiles with href:
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[href=\"/[path]\"]",
+  "content": "Click the **[Tile name]** tile to select it.",
+  "requirements": ["exists-reftarget"]
+}
+```
+
+---
+
+### When to Use Markdown
+
+Some UI elements cannot be reliably automated. Use `markdown` blocks instead:
+
+#### Conditional UI (Multiple Paths)
+
+When user must choose between options:
+
+```json
+{
+  "type": "markdown",
+  "content": "**Choose your option:**\n\n- **Option A**: [description]\n- **Option B**: [description]"
+}
+```
+
+**Why:** Can't predict user's choice.
+
+#### External Actions
+
+When user must do something outside the browser:
+
+```json
+{
+  "type": "markdown",
+  "content": "**On your machine:**\n\n1. [Step 1]\n2. [Step 2]\n3. [Step 3]"
+}
+```
+
+**Why:** Can't automate outside the browser.
+
+#### Conditional Buttons
+
+When a button only appears after user completes a prior action:
+
+```json
+{
+  "type": "markdown",
+  "content": "After [completing the action], click **[Button]** to continue."
+}
+```
+
+**Why:** Button may not exist when automation runs.
+
+#### Verification/Confirmation Steps
+
+When user needs to verify something worked:
+
+```json
+{
+  "type": "markdown",
+  "content": "If successful, you'll see: **[success message]**"
+}
+```
+
+---
+
+### Integration Setup Patterns
+
+These patterns are specific to integration/data source setup LJs (Linux, Windows, macOS, MySQL, etc.):
+
+#### Alloy Installation Expand Button
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "[data-testid=\"agent-config-button\"]",
+  "content": "Click **Run Grafana Alloy** to expand the installation options.",
+  "requirements": ["exists-reftarget"]
+}
+```
+
+#### Token Creation → Use Markdown
+
+Token dialogs have multiple paths (create new vs use existing):
+
+```json
+{
+  "type": "markdown",
+  "content": "**Create or select a token:**\n\n- **Create new token**: Click \"Create new token\", enter a name, then click \"Create token\".\n- **Use existing token**: Click \"Use an existing token\" and enter your token."
+}
+```
+
+#### Test Connection → Use Markdown
+
+Conditional on real-world installation:
+
+```json
+{
+  "type": "markdown",
+  "content": "After installation completes, click **Test connection** to verify."
+}
+```
+
+---
+
+### Quick Decision Guide
+
+| UI Element | Pattern to Use |
+|------------|----------------|
+| Navigate through menus | `multistep` with `navmenu-open` |
+| Search/filter input | `formfill` with `aria-label` |
+| Button with stable text | `button` action |
+| Button with data-testid | `highlight` with data-testid |
+| Clickable card/tile | `highlight` with `a[href="..."]` |
+| User chooses between options | `markdown` |
+| Action outside browser | `markdown` |
+| Button that may not exist yet | `markdown` |
