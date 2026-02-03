@@ -120,7 +120,53 @@ Install the Playwright browser for me
 
 ---
 
-## 4. GitHub CLI Setup
+## 4. Test Environment & Dev Mode Setup
+
+All interactive content testing happens in the shared test environment.
+
+### Test Environment URL
+
+```
+https://learn.grafana-ops.net
+```
+
+All Grafana employees have access via Okta SAML.
+
+### First-Time Setup: Enable Dev Mode (One-Time Only)
+
+Before you can use the Block Editor, you must enable dev mode:
+
+1. Go to: `https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true`
+2. Log in with Okta SAML
+3. Find the **"Dev Mode"** checkbox and **enable it**
+4. Click **Save**
+
+Once enabled, dev mode persists across sessions — you only need to do this once.
+
+### Accessing the Block Editor
+
+After dev mode is enabled:
+
+1. Go to `https://learn.grafana-ops.net`
+2. Click the **Help button (?)** in the upper right
+3. Click the **Debug icon** (looks like a bug or tools icon)
+4. Select **"Block Editor"**
+
+### Troubleshooting Dev Mode
+
+**"I don't see the Dev Mode checkbox"**
+- Make sure you're at the URL with `?dev=true` at the end
+- The checkbox only appears on the plugin configuration page
+
+**"I don't see the Debug icon / Block Editor"**
+- Dev mode may not be enabled — go back to step 1 of First-Time Setup
+- Try refreshing the page after enabling dev mode
+
+**Need help?** Ping Tom Glenn, David Allen, or Simon Prickett on `#proj-grafana-pathfinder`
+
+---
+
+## 5. GitHub CLI Setup
 
 GitHub CLI (`gh`) is used to file issues for broken selectors.
 
@@ -192,7 +238,7 @@ Should show:
 
 ---
 
-## 5. Verifying Your Setup
+## 6. Verifying Your Setup
 
 Run this checklist before using `/build-interactive-lj`:
 
@@ -220,7 +266,7 @@ gh auth status
 
 ---
 
-## 6. Common Issues
+## 7. Common Issues
 
 ### "Repository not found in workspace"
 
@@ -268,9 +314,26 @@ gh auth login
 2. Some selectors need adjustment for the Pathfinder context
 3. File an issue if consistently broken
 
+### "Can't log into the test environment through Playwright"
+
+**Cause:** Playwright opens a fresh browser with no session/cookies.
+
+**Fix:**
+1. Let Playwright navigate to `https://learn.grafana-ops.net`
+2. **Manually log in** through the Playwright-controlled browser window (Okta SAML)
+3. Tell the AI when you're logged in
+4. The session persists for the rest of that browser session
+
+### "Can't access Pathfinder Block Editor / Dev Mode"
+
+**Cause:** Dev mode not enabled for your user.
+
+**Fix:**
+See section 4 "Test Environment & Dev Mode Setup" above for first-time setup instructions.
+
 ---
 
-## 7. Getting Help
+## 8. Getting Help
 
 - **Slack:** `#proj-grafana-pathfinder`
 - **Issues:** https://github.com/grafana/interactive-tutorials/issues

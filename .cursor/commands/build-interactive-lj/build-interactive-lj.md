@@ -442,7 +442,7 @@ Created [N] content.json files:
 Verification: All checks passed ✓
 
 ⏳ Next: Step 4 - Selector Discovery
-   What's your Grafana Cloud URL?
+   Ready to open the test environment?
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -454,6 +454,28 @@ Verification: All checks passed ✓
 
 Before discovering selectors, re-read the "Selector Priority" table in Quick Reference.
 You MUST try selectors in this order: data-testid → aria-label → href → id → class
+
+### Authentication Setup (REQUIRED)
+
+All testing happens in the shared test environment: `https://learn.grafana-ops.net`
+
+Playwright opens a **fresh browser with no session**. Before discovering selectors:
+
+1. **Navigate to the test environment** using Playwright
+2. **User must manually log in** through the Playwright browser window (Okta SAML)
+3. **Wait for user confirmation** that they are logged in
+
+> ⚠️ **The AI cannot log the user in** — authentication requires manual user action 
+> in the Playwright-controlled browser window.
+
+**Display:**
+```
+I'll open the test environment. Please log in when the browser window appears.
+
+Opening: https://learn.grafana-ops.net
+
+Let me know when you're logged in. (Y/n)
+```
 
 ### Tutorial Mode Introduction
 
@@ -538,6 +560,30 @@ Selector quality:
 ---
 
 ## Step 5: Test in Pathfinder (Collaborative Testing)
+
+### Access the Block Editor
+
+Dev mode must be enabled before you can access the Block Editor. If this is the user's first time, direct them to SETUP.md section 4.
+
+**Display:**
+```
+Have you enabled Dev Mode before? (If not, see SETUP.md section 4 for first-time setup)
+
+Assuming dev mode is enabled, I'll navigate to the test environment.
+
+Opening: https://learn.grafana-ops.net
+
+Once the page loads:
+1. Click the Help button (?) in the upper right
+2. Click the Debug icon (tools/bug icon)
+3. Select "Block Editor"
+
+Let me know when you're in the Block Editor. (Y/n)
+```
+
+> ⚠️ **First-time users:** Must enable dev mode first at:
+> `https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true`
+> See SETUP.md section 4 for full instructions.
 
 ### IMPORTANT: Collaborative Workflow
 
