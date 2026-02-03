@@ -10,22 +10,26 @@ When executing this command, you MUST follow these principles:
 
 1. **Follow steps in order** — Do NOT skip or combine steps. Each step exists for a reason.
 
-2. **Test in Pathfinder, not just browser** — A selector that works in raw browser inspection may fail in Pathfinder's Block Editor. You MUST verify in the Block Editor.
+2. **Test ONE milestone at a time** — In Step 5, test only ONE milestone, report results, then STOP and ASK the user before testing the next milestone. Do NOT batch test all milestones at once.
 
-3. **Try alternatives before giving up** — When a selector fails:
+3. **ASK before fixing issues** — When you find a broken selector, STOP, explain the problem, describe the proposed fix, and ASK the user for permission before making changes. Do NOT automatically attempt fixes.
+
+4. **Test in Pathfinder, not just browser** — A selector that works in raw browser inspection may fail in Pathfinder's Block Editor. You MUST verify in the Block Editor.
+
+6. **Try alternatives before giving up** — When a selector fails (after user approves fix):
    - Try 2 alternative selector approaches
    - If still failing, ask the user: "This selector isn't working after 2 attempts. Would you like me to file an issue at https://github.com/grafana/interactive-tutorials/issues?"
    - Only file the issue if the user approves
 
-4. **Let the user handle git** — Do NOT run `git commit` or `git push`. Summarize changes and let the user decide when to commit.
+7. **Let the user handle git** — Do NOT run `git commit` or `git push`. Summarize changes and let the user decide when to commit.
 
-5. **Ask when uncertain** — If a step is ambiguous or you're unsure how to proceed, ask the user rather than guessing.
+8. **Ask when uncertain** — If a step is ambiguous or you're unsure how to proceed, ask the user rather than guessing.
 
-6. **Re-read before critical steps** — Before Step 3 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 4 (Selector Discovery), re-read the "Selector Priority" table.
+9. **Re-read before critical steps** — Before Step 3 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 4 (Selector Discovery), re-read the "Selector Priority" table.
 
-7. **Reference the appendix** — Before scaffolding any LJ, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your LJ's UI elements.
+10. **Reference the appendix** — Before scaffolding any LJ, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your LJ's UI elements.
 
-8. **ALWAYS use browser tools for selectors** — You MUST use Playwright to discover selectors by inspecting the actual DOM. NEVER guess selectors or copy them from the appendix without verifying they exist on the current page. The appendix shows patterns; browser inspection confirms reality.
+11. **ALWAYS use browser tools for selectors** — You MUST use Playwright to discover selectors by inspecting the actual DOM. NEVER guess selectors or copy them from the appendix without verifying they exist on the current page. The appendix shows patterns; browser inspection confirms reality.
 
 ---
 
@@ -33,6 +37,8 @@ When executing this command, you MUST follow these principles:
 
 These are common mistakes. Avoid them:
 
+- ❌ **Do NOT test all milestones at once** — Test ONE milestone, report results, then ASK the user before testing the next. This keeps the process manageable and easy to follow.
+- ❌ **Do NOT automatically fix broken selectors** — When you find an issue, STOP, explain the problem, describe your proposed fix, and ASK for permission before making changes. The user needs visibility into what's happening.
 - ❌ **Do NOT skip the welcome message** — It sets expectations for the session
 - ❌ **Do NOT combine multiple steps** — Each step has verification built in
 - ❌ **Do NOT create content.json without reading source markdown first** — You need context
@@ -509,63 +515,112 @@ Selector quality:
 
 ---
 
-## Step 5: Test in Pathfinder (Rapid-Fire Mode)
+## Step 5: Test in Pathfinder (One Milestone at a Time)
+
+### IMPORTANT: Test ONE milestone, then STOP and ASK
+
+Do NOT test all milestones in rapid succession. This is confusing and hard to follow.
+
+**You MUST follow this pattern:**
+1. Test ONE milestone completely
+2. Report results for that milestone
+3. **ASK the user** before proceeding to the next milestone
+4. Repeat until all milestones are tested
 
 ### Tutorial Mode Introduction
 
 ```
 **Step 5: Test in Pathfinder**
 
-I'll test every selector in Pathfinder's Block Editor:
-- Import each content.json
-- Click through all "Show me" buttons rapidly
-- Click "Do it" where applicable
-- Only stop and screenshot if something FAILS
+I'll test selectors ONE MILESTONE AT A TIME:
+- Import the content.json for a single milestone
+- Click through all "Show me" buttons in that milestone
+- Report results
+- ASK YOU before moving to the next milestone
 
-You'll see highlights in real-time. Watch for any that don't work.
+This way you can follow along and verify each milestone works.
 
-Ready to proceed? (Y/n)
+Ready to test the first milestone? (Y/n)
 ```
 
-Wait for confirmation, then test.
+Wait for confirmation, then test ONLY the first milestone.
 
 ### Expert Mode
 
-Test immediately without introduction.
+Same behavior — test one milestone, ask before proceeding.
 
-### Test
+### Test Procedure (Per Milestone)
 
-1. Navigate to Grafana
+**For EACH milestone (one at a time):**
+
+1. Navigate to Grafana (if not already there)
 2. Open Pathfinder (Help button or `?` key)
 3. Enter Block Editor / Dev Mode
-4. For each milestone:
-   - Import the content.json
-   - Click each "Show me" button
-   - Click "Do it" where applicable
-   - Report results
+4. Import the content.json for THIS milestone only
+5. Switch to Preview mode
+6. Click each "Show me" button to verify selectors
+7. **If a selector fails:** STOP and report the issue (see "When a Selector Fails" below)
+8. Report results for THIS milestone
+9. **STOP and ASK user to proceed to next milestone**
+
+---
+
+### When a Selector Fails
+
+**CRITICAL: Do NOT automatically attempt fixes.** When you find a broken selector:
+
+1. **STOP immediately**
+2. **Report the problem clearly:**
+   ```
+   ❌ SELECTOR ISSUE FOUND
+   
+   Block: [description of the interactive step]
+   Current selector: [the reftarget value]
+   Problem: [why it failed - element not found, wrong element, etc.]
+   
+   Proposed fix:
+   - I will use Playwright to inspect the DOM and find the correct selector
+   - Once found, I will update the content.json with: [new selector]
+   - Then re-import and re-test this specific block
+   
+   Proceed with fix? (Y/n)
+   ```
+3. **Wait for user approval** before making any changes
+4. After user approves, attempt the fix and report results
+5. If fix doesn't work after 2 attempts, ask user for guidance (see "Handling Persistent Failures")
+
+---
 
 **Display per milestone (use this exact format):**
 ```
-Testing: [milestone-name]
-├── Step 1: [description] ✅
-├── Step 2: [description] ✅
-├── Step 3: [description] ❌ FAILED
-│   Selector: [reftarget]
-│   Attempting fix...
-│   ├── Attempt 1: [new selector] ❌
-│   └── Attempt 2: [new selector] ✅ FIXED
-└── Step 4: [description] ✅
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Testing: [milestone-name] ([N] of [total])
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Result: [N]/[N] passed
+├── Block 1: [description] ✅
+├── Block 2: [description] ✅
+├── Block 3: [description] ❌ FAILED (awaiting approval to fix)
+└── Block 4: [description] (not yet tested)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**Handling failures (follow this exactly):**
-1. When a step fails, immediately try to find correct selector with Playwright
-2. Try up to 2 alternative selectors
-3. If fixed, update content.json and re-test that step
-4. If still failing after 2 attempts, ask user:
+**After EACH milestone (if all blocks pass), ALWAYS ask:**
+```
+✅ Milestone "[name]" complete.
+
+Ready to test the next milestone: "[next-name]"? (Y/n)
+```
+
+**Wait for user confirmation before proceeding to the next milestone.**
+
+---
+
+### Handling Persistent Failures
+
+When a step fails after 2 fix attempts, ask user:
    ```
-   Step [N] failed after 2 attempts.
+   Block [N] failed after 2 attempts.
    Selector tried: [list selectors]
    
    Options:
@@ -575,6 +630,25 @@ Result: [N]/[N] passed
    
    Which would you prefer? (1/2/3)
    ```
+
+### Final Summary (After ALL Milestones Tested)
+
+Only after all milestones have been tested and user has confirmed each one:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Step 5 Complete: All Milestones Tested
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Milestones tested: [N]/[N]
+├── [milestone-1]: ✅ All blocks passed
+├── [milestone-2]: ✅ All blocks passed
+├── [milestone-3]: 🟡 [N] blocks needed fixes
+└── [milestone-4]: ✅ All blocks passed
+
+Proceeding to Step 6: Final Summary...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
 ---
 
