@@ -27,6 +27,8 @@ This command automates the creation of interactive content (`content.json` files
 
 When executing this command, you MUST follow these principles:
 
+0. **Read the entire command file first** — Before displaying the welcome message, silently read through this entire command file to understand the full workflow. This prevents mistakes like confusing which URL to use in which step.
+
 1. **Follow steps in order** — Do NOT skip or combine steps. Each step exists for a reason.
 
 2. **Test ONE milestone at a time** — In Step 5, test only ONE milestone, report results, then STOP and ASK the user before testing the next milestone. Do NOT batch test all milestones at once.
@@ -457,24 +459,28 @@ You MUST try selectors in this order: data-testid → aria-label → href → id
 
 ### Authentication Setup (REQUIRED)
 
-All testing happens in the shared test environment: `https://learn.grafana-ops.net`
+Selector discovery happens by walking through the actual Grafana UI at: `https://learn.grafana-ops.net/`
+
+> ⚠️ **Important:** This is different from testing in Pathfinder (Step 5), which uses 
+> `https://learn.grafana-ops.net/?pathfinder-dev=true`
 
 Playwright opens a **fresh browser with no session**. Before discovering selectors:
 
-1. **Navigate to the test environment** using Playwright
+1. **Navigate to the test environment** using Playwright: `https://learn.grafana-ops.net/`
 2. **User must manually log in** through the Playwright browser window (Okta SAML)
 3. **Wait for user confirmation** that they are logged in
+4. **Walk through the UI flow** — navigate to pages where the LJ actions happen and inspect the DOM
 
 > ⚠️ **The AI cannot log the user in** — authentication requires manual user action 
 > in the Playwright-controlled browser window.
 
 **Display:**
 ```
-I'll open the test environment. Please log in when the browser window appears.
+I'll open the Grafana UI to discover selectors by walking through the actual pages.
 
-Opening: https://learn.grafana-ops.net
+Opening: https://learn.grafana-ops.net/
 
-Let me know when you're logged in. (Y/n)
+Please log in when the browser window appears. Let me know when you're logged in. (Y/n)
 ```
 
 ### Tutorial Mode Introduction
@@ -500,12 +506,15 @@ Discover immediately without introduction.
 
 ### Discover
 
-1. Navigate to the starting page for the LJ
+Walk through the actual Grafana UI at `https://learn.grafana-ops.net/` to find selectors:
+
+1. Navigate to the starting page for the LJ (e.g., Dashboards page for dashboard creation flows)
 2. For each interactive block with empty `reftarget`:
-   - Navigate to the relevant page
-   - Find the element using Playwright snapshot
-   - Extract the best available selector
-   - Update the content.json
+   - Navigate to the relevant page in Grafana
+   - Use Playwright snapshot to inspect the DOM
+   - Find the element and extract the best available selector
+   - Update the content.json with the discovered selector
+3. Continue through the entire UI flow, capturing selectors as you go
 
 ### Selector Decision Tree
 
@@ -563,20 +572,23 @@ Selector quality:
 
 ### Access the Block Editor
 
+Testing happens in **Pathfinder Dev Mode** at: `https://learn.grafana-ops.net/?pathfinder-dev=true`
+
+> ⚠️ **Important:** This is different from selector discovery (Step 4), which uses 
+> `https://learn.grafana-ops.net/` to walk through the actual UI.
+
 Dev mode must be enabled before you can access the Block Editor. If this is the user's first time, direct them to SETUP.md section 4.
 
 **Display:**
 ```
 Have you enabled Dev Mode before? (If not, see SETUP.md section 4 for first-time setup)
 
-Assuming dev mode is enabled, I'll navigate to the test environment.
+I'll navigate to Pathfinder in dev mode for testing.
 
-Opening: https://learn.grafana-ops.net
+Opening: https://learn.grafana-ops.net/?pathfinder-dev=true
 
-Once the page loads:
-1. Click the Help button (?) in the upper right
-2. Click the Debug icon (tools/bug icon)
-3. Select "Block Editor"
+Once the page loads, the Pathfinder sidebar should open automatically with Dev Tools visible.
+Click on "Interactive guide editor" to open the Block Editor.
 
 Let me know when you're in the Block Editor. (Y/n)
 ```
@@ -626,8 +638,8 @@ Same behavior — load milestone, user tests, fix issues as reported.
 
 **For EACH milestone (one at a time):**
 
-1. Navigate to Grafana (if not already there)
-2. Open Pathfinder and enter Block Editor / Dev Mode
+1. Navigate to `https://learn.grafana-ops.net/?pathfinder-dev=true` (if not already there)
+2. Open the Block Editor from the Pathfinder sidebar (Dev tools → Interactive guide editor)
 3. Import the content.json for THIS milestone only
 4. Switch to Preview mode
 5. **Tell user: "Ready for testing! Click through the Show me / Do it buttons."**
