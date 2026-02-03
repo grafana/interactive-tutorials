@@ -50,6 +50,8 @@ When executing this command, you MUST follow these principles:
 
 10. **ALWAYS use browser tools for selectors** — You MUST use Playwright to discover selectors by inspecting the actual DOM. NEVER guess selectors or copy them from the appendix without verifying they exist on the current page. The appendix shows patterns; browser inspection confirms reality.
 
+11. **PR descriptions in markdown code blocks** — When generating PR descriptions, ALWAYS wrap the entire description in a markdown code block (triple backticks with `markdown`) so the user can easily copy it. The user should not have to ask for this format.
+
 ---
 
 ## Do NOT (Anti-Patterns)
@@ -69,6 +71,7 @@ These are common mistakes. Avoid them:
 - ❌ **Do NOT guess at selectors** — ALWAYS use Playwright to inspect the actual DOM
 - ❌ **Do NOT copy appendix selectors without verification** — Appendix patterns are templates; you MUST verify each selector exists on the actual page using browser tools
 - ❌ **Do NOT skip browser inspection** — Even if a pattern looks familiar, always confirm with Playwright snapshot
+- ❌ **Do NOT provide PR descriptions as plain text** — ALWAYS wrap PR descriptions in markdown code blocks so the user can copy them easily
 
 ---
 
@@ -719,6 +722,43 @@ If yes, display:
 📝 [N] issues filed for broken selectors
 🔗 Ready for PR
 ```
+
+### PR Description
+
+When the user asks for a PR description, ALWAYS provide it in a markdown code block so they can copy it easily:
+
+````
+```markdown
+## Add interactive content for `[slug]` learning journey
+
+### Summary
+
+[Description of what this PR adds]
+
+### Changes
+
+| Milestone | File | Blocks | Description |
+|-----------|------|--------|-------------|
+| [name] | `[file]` | [N] | [description] |
+...
+
+### Interactive features
+
+- [Key features, selectors used, etc.]
+
+### Testing
+
+- ✅ JSON validation passed
+- ✅ All highlights working correctly
+- ✅ Show me buttons functional
+
+### Related
+
+- Learning journey: `/docs/learning-journeys/[slug]/`
+```
+````
+
+**IMPORTANT:** The user should NEVER have to ask "please provide in markdown" — always use the code block format by default.
 
 ### Filing GitHub Issues
 
