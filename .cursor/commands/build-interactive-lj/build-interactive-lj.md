@@ -27,7 +27,11 @@ This command automates the creation of interactive content (`content.json` files
 
 When executing this command, you MUST follow these principles:
 
-0. **Read the entire command file first** — Before displaying the welcome message, silently read through this entire command file to understand the full workflow. This prevents mistakes like confusing which URL to use in which step.
+0. **Read and internalize the command file** — Before displaying the welcome message, silently read through this entire command file. Then commit this critical rule to your working memory:
+
+   > **CRITICAL TESTING RULE:** During Step 5 (Test in Pathfinder), the AI's ONLY job is to import JSON into the Block Editor. The USER does ALL testing by clicking "Show me", "Do it", and interactive buttons themselves. The AI must NEVER click these buttons. Wait for user feedback, then fix issues based on what they report.
+
+   This rule exists because the user can test faster and catch visual/UX issues that automation misses.
 
 1. **Follow steps in order** — Do NOT skip or combine steps. Each step exists for a reason.
 
@@ -60,6 +64,7 @@ When executing this command, you MUST follow these principles:
 
 These are common mistakes. Avoid them:
 
+- ❌ **Do NOT click "Show me", "Do it", or interactive buttons** — The USER tests, not the AI. After importing JSON, say "Ready for testing" and WAIT. This is the #1 rule for Step 5.
 - ❌ **Do NOT test all milestones at once** — Test ONE milestone, report results, then ASK the user before testing the next. This keeps the process manageable and easy to follow.
 - ❌ **Do NOT automatically fix broken selectors** — When you find an issue, STOP, explain the problem, describe your proposed fix, and ASK for permission before making changes. The user needs visibility into what's happening.
 - ❌ **Do NOT skip the welcome message** — It sets expectations for the session
@@ -597,14 +602,20 @@ Let me know when you're in the Block Editor. (Y/n)
 > `https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true`
 > See SETUP.md section 4 for full instructions.
 
-### IMPORTANT: Collaborative Workflow
+### ⛔ CRITICAL: AI Must NOT Test
+
+> **THE AI MUST NEVER CLICK "Show me", "Do it", OR ANY INTERACTIVE BUTTONS.**
+> 
+> The user does ALL testing. The AI only imports JSON and waits for feedback.
 
 Testing is a **collaborative process** where AI and user work together:
 
-- **AI's job:** Load JSON into Pathfinder, switch to Preview mode
-- **User's job:** Click "Show me" / "Do it" buttons (user is faster at this)
+- **AI's job:** Load JSON into Pathfinder, switch to Preview mode, then **STOP AND WAIT**
+- **User's job:** Click "Show me" / "Do it" buttons (user is faster and catches visual issues)
 - **User reports:** "This doesn't work" if a selector fails
 - **AI fixes:** Inspect DOM, find correct selector, update JSON, reload
+
+**Why this rule exists:** Users can test faster and catch visual/UX problems that automated clicking misses. The AI clicking buttons wastes time and prevents the user from seeing the actual behavior.
 
 **You MUST follow this pattern:**
 1. Load ONE milestone's JSON into Pathfinder
@@ -642,10 +653,12 @@ Same behavior — load milestone, user tests, fix issues as reported.
 2. Open the Block Editor from the Pathfinder sidebar (Dev tools → Interactive guide editor)
 3. Import the content.json for THIS milestone only
 4. Switch to Preview mode
-5. **Tell user: "Ready for testing! Click through the Show me / Do it buttons."**
-6. **WAIT for user feedback** — do NOT click buttons yourself
+5. **Tell user: "Ready for testing! Please click through the Show me / Do it buttons and let me know what works and what doesn't."**
+6. **STOP. WAIT. Do nothing until the user responds.** — The AI must NOT click any buttons.
 7. If user reports "this doesn't work": help fix the selector (see below)
 8. After user confirms milestone passes, **ASK** before loading next milestone
+
+> ⚠️ **Reminder:** After step 5, the AI's job is done until the user provides feedback. Do not proceed, do not click buttons, do not test. Just wait.
 
 ---
 
