@@ -537,53 +537,57 @@ Selector quality:
 
 ---
 
-## Step 5: Test in Pathfinder (One Milestone at a Time)
+## Step 5: Test in Pathfinder (Collaborative Testing)
 
-### IMPORTANT: Test ONE milestone, then STOP and ASK
+### IMPORTANT: Collaborative Workflow
 
-Do NOT test all milestones in rapid succession. This is confusing and hard to follow.
+Testing is a **collaborative process** where AI and user work together:
+
+- **AI's job:** Load JSON into Pathfinder, switch to Preview mode
+- **User's job:** Click "Show me" / "Do it" buttons (user is faster at this)
+- **User reports:** "This doesn't work" if a selector fails
+- **AI fixes:** Inspect DOM, find correct selector, update JSON, reload
 
 **You MUST follow this pattern:**
-1. Test ONE milestone completely
-2. Report results for that milestone
-3. **ASK the user** before proceeding to the next milestone
-4. Repeat until all milestones are tested
+1. Load ONE milestone's JSON into Pathfinder
+2. Switch to Preview mode
+3. **Tell the user it's ready for testing**
+4. **WAIT** for user to report results (pass or "this doesn't work")
+5. If user reports a failure, help fix it
+6. After milestone passes, **ASK** before loading the next milestone
 
 ### Tutorial Mode Introduction
 
 ```
 **Step 5: Test in Pathfinder**
 
-I'll test selectors ONE MILESTONE AT A TIME:
-- Import the content.json for a single milestone
-- Click through all "Show me" buttons in that milestone
-- Report results
-- ASK YOU before moving to the next milestone
-
-This way you can follow along and verify each milestone works.
+We'll test collaboratively ONE MILESTONE AT A TIME:
+- I'll load the content.json and switch to Preview mode
+- YOU click through "Show me" / "Do it" buttons (you're quicker!)
+- Tell me if anything doesn't work
+- I'll help fix any issues
 
 Ready to test the first milestone? (Y/n)
 ```
 
-Wait for confirmation, then test ONLY the first milestone.
+Wait for confirmation, then load the first milestone.
 
 ### Expert Mode
 
-Same behavior — test one milestone, ask before proceeding.
+Same behavior — load milestone, user tests, fix issues as reported.
 
 ### Test Procedure (Per Milestone)
 
 **For EACH milestone (one at a time):**
 
 1. Navigate to Grafana (if not already there)
-2. Open Pathfinder (Help button or `?` key)
-3. Enter Block Editor / Dev Mode
-4. Import the content.json for THIS milestone only
-5. Switch to Preview mode
-6. Click each "Show me" button to verify selectors
-7. **If a selector fails:** STOP and report the issue (see "When a Selector Fails" below)
-8. Report results for THIS milestone
-9. **STOP and ASK user to proceed to next milestone**
+2. Open Pathfinder and enter Block Editor / Dev Mode
+3. Import the content.json for THIS milestone only
+4. Switch to Preview mode
+5. **Tell user: "Ready for testing! Click through the Show me / Do it buttons."**
+6. **WAIT for user feedback** — do NOT click buttons yourself
+7. If user reports "this doesn't work": help fix the selector (see below)
+8. After user confirms milestone passes, **ASK** before loading next milestone
 
 ---
 
