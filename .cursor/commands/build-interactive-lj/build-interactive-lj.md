@@ -4,6 +4,25 @@ This command automates the creation of interactive content (`content.json` files
 
 ---
 
+## Table of Contents
+
+- [AI Behavior Guidelines](#ai-behavior-guidelines)
+- [Do NOT (Anti-Patterns)](#do-not-anti-patterns)
+- [Lessons Learned](#lessons-learned)
+- [Welcome](#welcome)
+- [Ask: First Time?](#ask-first-time)
+- [Ask: Which Learning Journey?](#ask-which-learning-journey)
+- [Step 1: Environment Validation](#step-1-environment-validation)
+- [Step 2: Learning Journey Validation](#step-2-learning-journey-validation)
+- [Step 3: Scaffold Content Files](#step-3-scaffold-content-files)
+- [Step 4: Selector Discovery](#step-4-selector-discovery)
+- [Step 5: Test in Pathfinder](#step-5-test-in-pathfinder-one-milestone-at-a-time)
+- [Step 6: Report and Next Steps](#step-6-report-and-next-steps)
+- [Quick Reference](#quick-reference)
+- [Appendix: Proven Patterns](#appendix-proven-patterns)
+
+---
+
 ## AI Behavior Guidelines
 
 When executing this command, you MUST follow these principles:
@@ -16,20 +35,20 @@ When executing this command, you MUST follow these principles:
 
 4. **Test in Pathfinder, not just browser** — A selector that works in raw browser inspection may fail in Pathfinder's Block Editor. You MUST verify in the Block Editor.
 
-6. **Try alternatives before giving up** — When a selector fails (after user approves fix):
+5. **Try alternatives before giving up** — When a selector fails (after user approves fix):
    - Try 2 alternative selector approaches
    - If still failing, ask the user: "This selector isn't working after 2 attempts. Would you like me to file an issue at https://github.com/grafana/interactive-tutorials/issues?"
    - Only file the issue if the user approves
 
-7. **Let the user handle git** — Do NOT run `git commit` or `git push`. Summarize changes and let the user decide when to commit.
+6. **Let the user handle git** — Do NOT run `git commit` or `git push`. Summarize changes and let the user decide when to commit.
 
-8. **Ask when uncertain** — If a step is ambiguous or you're unsure how to proceed, ask the user rather than guessing.
+7. **Ask when uncertain** — If a step is ambiguous or you're unsure how to proceed, ask the user rather than guessing.
 
-9. **Re-read before critical steps** — Before Step 3 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 4 (Selector Discovery), re-read the "Selector Priority" table.
+8. **Re-read before critical steps** — Before Step 3 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 4 (Selector Discovery), re-read the "Selector Priority" table.
 
-10. **Reference the appendix** — Before scaffolding any LJ, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your LJ's UI elements.
+9. **Reference the appendix** — Before scaffolding any LJ, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your LJ's UI elements.
 
-11. **ALWAYS use browser tools for selectors** — You MUST use Playwright to discover selectors by inspecting the actual DOM. NEVER guess selectors or copy them from the appendix without verifying they exist on the current page. The appendix shows patterns; browser inspection confirms reality.
+10. **ALWAYS use browser tools for selectors** — You MUST use Playwright to discover selectors by inspecting the actual DOM. NEVER guess selectors or copy them from the appendix without verifying they exist on the current page. The appendix shows patterns; browser inspection confirms reality.
 
 ---
 
@@ -185,7 +204,7 @@ I'll check that your setup is ready:
 - Playwright browser automation working
 - GitHub CLI authenticated (for filing selector issues if needed)
 
-If anything fails, I'll point you to SETUP.md for instructions.
+If anything fails, I'll help you resolve the issue.
 
 Ready to proceed? (Y/n)
 ```
@@ -206,7 +225,7 @@ Check these and display results:
 - ✅/❌ Playwright MCP available
 - ✅/❌ GitHub CLI authenticated
 
-**On any failure:** Direct user to `SETUP.md` for that specific section.
+**On any failure:** Help the user resolve the issue before continuing.
 
 **On all pass:**
 ```
