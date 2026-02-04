@@ -1,0 +1,70 @@
+{
+  "id": "linux-server-integration-select-platform",
+  "title": "Select Linux distribution",
+  "blocks": [
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/embed/bCPjAVNMelk",
+      "provider": "youtube",
+      "title": "Select Linux distribution walkthrough",
+      "start": 0,
+      "end": 57
+    },
+    {
+      "type": "markdown",
+      "content": "Your first step on this journey is to select the Linux distribution and architecture you are using.\n\n**Did you know?** Grafana Cloud uses the values you select to generate the commands you use to install Grafana Alloy on your machine.\n\nTo select the distribution:"
+    },
+    {
+      "type": "multistep",
+      "content": "Click **Connections > Add new connection** in the left-side menu.",
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']"
+        }
+      ],
+      "requirements": ["navmenu-open"]
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[data-testid='search-input-input']",
+      "content": "Filter the connections by typing `Linux Server` in the search.",
+      "targetvalue": "Linux Server"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href='/connections/add-new-connection/linux-node']",
+      "content": "Click the **Linux Server** tile."
+    },
+    {
+      "type": "markdown",
+      "content": "Use the following table to select the operating system:\n\n| If you are running | Select |\n| --- | --- |\n| Debian | Debian |\n| Ubuntu | Debian |\n| Red Hat Enterprise Linux (RHEL) | RedHat |\n| Fedora | RedHat |\n| CentOS | RedHat |"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "div[data-testid='collector-os-selection'] input",
+      "content": "Select the **operating system** that matches your Linux distribution.",
+      "requirements": ["exists-reftarget"],
+      "doIt": false
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "div[data-testid='collector-arch-selection'] input",
+      "content": "Select the **architecture** that matches your system (Amd64 for x86_64, Arm64 for aarch64).",
+      "requirements": ["exists-reftarget"],
+      "doIt": false
+    },
+    {
+      "type": "markdown",
+      "content": "If you are unsure of the architecture, run `uname -m` in your Linux terminal. If it returns `x86_64`, select **Amd64**. If it returns `aarch64`, select **Arm64**. If the command returns anything else, your system isn't supported by Grafana Alloy."
+    }
+  ]
+}
