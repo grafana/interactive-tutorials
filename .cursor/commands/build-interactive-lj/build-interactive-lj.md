@@ -315,7 +315,22 @@ Scaffold immediately without introduction.
 > 💡 **Before scaffolding:** See "Appendix: Proven Patterns" for reusable JSON structures 
 > that match common Grafana UI elements (navigation, forms, buttons, etc.).
 
-For each milestone:
+### Which Milestones Need content.json?
+
+**Create content.json for milestones that have:**
+- Numbered steps telling users to click, navigate, or interact with the Grafana UI
+- Form inputs, button clicks, or menu navigation
+- Any action that can be highlighted with "Show me" or automated with "Do it"
+
+**Skip milestones that are:**
+- Purely conceptual/educational (e.g., "Why alerting matters")
+- Introduction or overview pages with no UI actions
+- Conclusion/outro pages (e.g., "Congratulations, you completed...")
+- External-only actions (e.g., "Run this command on your server")
+
+**Quick test:** If the milestone has no numbered steps that reference clicking something in Grafana, skip it.
+
+For each milestone that qualifies:
 1. Read `website/content/docs/learning-journeys/[slug]/[milestone]/index.md`
 2. Create `interactive-tutorials/[slug]-lj/[milestone]/content.json`
 3. Convert content using these rules:
