@@ -447,7 +447,7 @@ Before proceeding to Step 4, verify EACH content.json file:
 - [ ] Formfill actions use `"targetvalue"` (NOT `"formvalue"`)
 - [ ] Navigation steps use `"multistep"` blocks
 - [ ] Interactive blocks have `"requirements": ["exists-reftarget"]`
-- [ ] No placeholder text like `"[selector]"` or `"TODO"` exists
+- [ ] Interactive blocks have empty `"reftarget": ""` (selectors added in Step 4)
 
 **If any check fails, fix before continuing.**
 
