@@ -1,0 +1,59 @@
+{
+  "id": "infrastructure-alerting-build-your-query",
+  "title": "Build your alert query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The query is the foundation of your alert rule—it defines what data Grafana monitors. You'll use the query builder to construct a query that fetches the metric or log data you identified earlier."
+    },
+    {
+      "type": "multistep",
+      "content": "Navigate to **Alerts & IRM > Alerting > Alert rules** from the main menu.",
+      "requirements": ["navmenu-open"],
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']"
+        }
+      ]
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href=\"/alerting/new/alerting\"]",
+      "content": "Click **+ New alert rule** in the upper right to open the alert rule creation form.",
+      "requirements": ["exists-reftarget", "on-page:/alerting/list"]
+    },
+    {
+      "type": "markdown",
+      "content": "The alert rule creation form opens with sections for defining your query, conditions, evaluation behavior, and notifications."
+    },
+    {
+      "type": "markdown",
+      "content": "In the **Define query and alert condition** section, locate the query editor.\n\nThe default data source is pre-selected. Change it if needed to match where your data is stored:\n\n| If you're alerting on | Select |\n|-----------------------|--------|\n| Infrastructure metrics | Your Prometheus or Mimir data source |\n| Logs | Your Loki data source |"
+    },
+    {
+      "type": "markdown",
+      "content": "**Build your query** using the query builder:\n\n**For metrics (Prometheus/Mimir):**\n- Click **Metric** and select or search for your metric name\n- Add label filters to narrow the scope\n- Apply functions as needed (e.g., `rate()`, `avg by (instance)()`)\n\n**For logs (Loki):**\n- Enter a log query using LogQL\n- Use metric queries for rate-based alerts (e.g., `rate({job=\"myapp\"} |= \"error\" [5m])`)"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Run queries",
+      "content": "Click **Run queries** to preview the data your query returns.",
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "Verify that the results match what you expect to monitor. You should see data points for each dimension (host, service, etc.) you want to alert on.\n\nIf your query returns multiple time series (multi-dimensional), verify that each series is labeled distinctly."
+    }
+  ]
+}

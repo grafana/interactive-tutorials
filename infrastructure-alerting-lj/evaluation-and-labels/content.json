@@ -1,0 +1,45 @@
+{
+  "id": "infrastructure-alerting-evaluation-and-labels",
+  "title": "Set evaluation behavior and labels",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The evaluation behavior determines how often Grafana checks your alert condition and how long the condition must persist before firing. Labels help organize your alerts and drive notification routing."
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Select folder",
+      "content": "In the **Add folder and labels** section, click **Select folder** to choose or create a folder for your alert rule.\n\nFolders help organize alert rules by team, service, or purpose (e.g., `Infrastructure alerts` or `Application logs`).",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Add labels",
+      "content": "In the **Add folder and labels** section, click **Add labels** to add labels that identify and categorize your alert.",
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "Add labels to organize and route your alerts:\n\n- `severity`: `warning` or `critical`\n- `team`: `platform` or `database`\n- `type`: `metrics` or `logs`\n- `service`: `api-gateway` or `payment-service`"
+    },
+    {
+      "type": "markdown",
+      "content": "After selecting a folder, select or create an **Evaluation group** in the **Set evaluation behavior** section.\n\nEvaluation groups batch rules that share the same evaluation interval (e.g., `CPU and memory alerts` or `Error rate alerts`)."
+    },
+    {
+      "type": "markdown",
+      "content": "Set the **Evaluation interval**—how often Grafana runs your query and checks the condition.\n\nFor example, enter `1m` for critical alerts or `5m` for less urgent monitoring."
+    },
+    {
+      "type": "markdown",
+      "content": "Set the **Pending period** (also called \"for\" duration)—how long the condition must be true before the alert fires.\n\n| Alert type | Pending period | Why |\n|------------|----------------|-----|\n| Metrics (CPU spike) | `5m` | Filter brief spikes during deployments |\n| Logs (error burst) | `2m` | Catch sustained error patterns, not single errors |\n\n> **Tip:** A 5-minute pending period with a 1-minute evaluation means the condition must be true for 5 consecutive checks before firing."
+    },
+    {
+      "type": "markdown",
+      "content": "**Optionally**, in the **Add annotations** section, add context for responders:\n\n- **Summary**: Brief description (e.g., `CPU usage is high on {{ $labels.instance }}`)\n- **Description**: Detailed context or troubleshooting steps\n- **Runbook URL**: Link to documentation for responding to this alert"
+    }
+  ]
+}

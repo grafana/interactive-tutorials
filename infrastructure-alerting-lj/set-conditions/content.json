@@ -1,0 +1,33 @@
+{
+  "id": "infrastructure-alerting-set-conditions",
+  "title": "Set alert conditions",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The alert condition defines when your alert fires. You'll set a threshold that, when crossed, triggers the alert. For multi-dimensional queries, each series is evaluated independently—so one rule can generate alerts for multiple hosts or services."
+    },
+    {
+      "type": "markdown",
+      "content": "In the **Define query and alert condition** section, scroll to the **Expressions** area.\n\nGrafana automatically adds a **Reduce** expression and a **Threshold** expression to process your query results."
+    },
+    {
+      "type": "markdown",
+      "content": "Configure the **Reduce** expression:\n\n- **Function**: Select how to reduce the time series to a single value (e.g., `Last` for most recent value, or `Mean` for average over the evaluation window)\n- **Input**: Should reference your query (typically `A`)"
+    },
+    {
+      "type": "markdown",
+      "content": "Configure the **Threshold** expression:\n\n- **Input**: Should reference your Reduce expression (typically `B`)\n- **Condition**: Select the comparison operator:\n\n| If alerting on | Condition | Example |\n|----------------|-----------|--------|\n| High CPU | `IS ABOVE` | Fire when CPU > 80% |\n| Low disk space | `IS BELOW` | Fire when free space < 10GB |\n| Error rate | `IS ABOVE` | Fire when errors/min > 10 |\n\n- **Value**: Enter your threshold value"
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Preview alert rule condition",
+      "content": "Click **Preview alert rule condition** to test your condition against current data.",
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "The preview shows which series would currently fire (if any) based on your threshold. Use this to validate your threshold is appropriate.\n\n> **Tip:** A good threshold gives you time to respond before the situation becomes critical. If your normal CPU is 40-60%, alerting at 80% gives you warning."
+    }
+  ]
+}
