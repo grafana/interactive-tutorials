@@ -35,12 +35,13 @@ This comprehensive guide covers all supported requirements for interactive guide
 
 **Purpose**: Verifies the target element specified in `reftarget` exists on the page.
 
+> **Note**: This requirement is automatically applied by the plugin for all DOM interactions. You don't need to add it manually—it's included here for reference.
+
 ```json
 {
   "type": "interactive",
   "action": "button",
   "reftarget": "Save dashboard",
-  "requirements": ["exists-reftarget"],
   "content": "Save your dashboard changes."
 }
 ```
@@ -397,7 +398,7 @@ Requirements can be combined in arrays. **All requirements must pass** for the e
   "type": "interactive",
   "action": "button",
   "reftarget": "Delete user",
-  "requirements": ["is-admin", "on-page:/admin/users", "exists-reftarget"],
+  "requirements": ["is-admin", "on-page:/admin/users"],
   "content": "Remove the selected user."
 }
 ```
@@ -406,18 +407,20 @@ Requirements can be combined in arrays. **All requirements must pass** for the e
 
 **Navigation actions**:
 ```json
-"requirements": ["navmenu-open", "exists-reftarget"]
+"requirements": ["navmenu-open"]
 ```
 
 **Admin actions**:
 ```json
-"requirements": ["is-admin", "on-page:/admin", "exists-reftarget"]
+"requirements": ["is-admin", "on-page:/admin"]
 ```
 
 **Data source actions**:
 ```json
-"requirements": ["has-datasource:prometheus", "on-page:/explore", "exists-reftarget"]
+"requirements": ["has-datasource:prometheus", "on-page:/explore"]
 ```
+
+> **Note**: `exists-reftarget` is automatically applied to all DOM actions, so it doesn't need to be included in these combinations.
 
 ---
 
@@ -433,7 +436,6 @@ Objectives use the same syntax as requirements but serve a different purpose:
   "type": "interactive",
   "action": "button",
   "reftarget": "Install plugin",
-  "requirements": ["exists-reftarget"],
   "objectives": ["has-plugin:grafana-clock-panel"],
   "content": "Install the clock panel plugin."
 }
@@ -454,7 +456,7 @@ Objectives use the same syntax as requirements but serve a different purpose:
 
 ### Syntax Rules
 
-- Fixed types (`is-admin`, `is-logged-in`, `is-editor`, `exists-reftarget`, `navmenu-open`, `has-datasources`, `dashboard-exists`, `form-valid`) cannot have arguments
+- Fixed types (`is-admin`, `is-logged-in`, `is-editor`, `exists-reftarget` *(auto-applied)*, `navmenu-open`, `has-datasources`, `dashboard-exists`, `form-valid`) cannot have arguments
 - Parameterized types require an argument after the colon
 - Path arguments (e.g., `on-page:`) should start with `/`
 - Version arguments should be semver format (e.g., `11.0.0`)

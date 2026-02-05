@@ -24,7 +24,7 @@ This guide explains the supported interactive types, when to use each, what `ref
   "type": "interactive",
   "action": "highlight",
   "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
-  "requirements": ["navmenu-open", "exists-reftarget"],
+  "requirements": ["navmenu-open"],
   "content": "Open Dashboards"
 }
 ```
@@ -42,7 +42,6 @@ This guide explains the supported interactive types, when to use each, what `ref
   "type": "interactive",
   "action": "button",
   "reftarget": "Save & test",
-  "requirements": ["exists-reftarget"],
   "content": "Save the data source"
 }
 ```
@@ -62,7 +61,6 @@ This guide explains the supported interactive types, when to use each, what `ref
   "action": "formfill",
   "reftarget": "input[id='connection-url']",
   "targetvalue": "http://prometheus:9090",
-  "requirements": ["exists-reftarget"],
   "content": "Set URL"
 }
 ```
@@ -114,7 +112,6 @@ Use `validateInput: true` to require the input to match a pattern:
   "type": "interactive",
   "action": "hover",
   "reftarget": "div[data-testid='table-row']",
-  "requirements": ["exists-reftarget"],
   "content": "Hover over the row to reveal action buttons"
 }
 ```
@@ -191,7 +188,6 @@ Use `validateInput: true` to require the input to match a pattern:
     {
       "action": "hover",
       "reftarget": ".gf-form:has([data-testid='prometheus-type']) label > svg",
-      "requirements": ["exists-reftarget"],
       "tooltip": "The **Performance** section contains advanced settings."
     },
     {
