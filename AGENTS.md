@@ -78,12 +78,13 @@ All guides use JSON format exclusively:
 
 ## Essential Rules
 
-1. **Always include `exists-reftarget`** for DOM interactions
-2. **Use `navmenu-open`** for navigation menu elements
-3. **Include page requirements** for page-specific actions
-4. **Use stable selectors** - prefer `data-testid` over CSS classes
-5. **Add tooltips** for educational value
-6. **Make steps skippable** where appropriate
+1. **Use `navmenu-open`** for navigation menu elements
+2. **Include page requirements** for page-specific actions
+3. **Use stable selectors** - prefer `data-testid` over CSS classes
+4. **Add tooltips** for educational value
+5. **Make steps skippable** where appropriate
+
+> **Note**: `exists-reftarget` is automatically applied for all DOM interactions—you don't need to add it manually.
 
 ## Block Types
 
@@ -120,7 +121,6 @@ Explain interface → highlight with doIt: false
 
 ### Requirements Selection
 ```
-DOM interaction → exists-reftarget
 Navigation element → navmenu-open
 Page-specific → on-page:/path
 Admin feature → is-admin
