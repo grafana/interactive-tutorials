@@ -19,7 +19,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
-          "content": "Select Testing & Synthetics\n---",
+          "content": "Select Testing & Synthetics\n---\nThis is where you'll find the Testing & Synthetics section, which includes both k6 Performance Testing and Synthetic Monitoring.",
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
@@ -49,7 +49,11 @@
         {
           "type": "interactive",
           "action": "noop",
-          "content": "View the Config Section\n----\nThis is where you'll find"
+          "content": "View the Config Section\n----\nThis is where you'll manage your Synthetic Monitoring configuration settings, including access tokens, Terraform, and secrets."
+        },
+        {
+          "type": "markdown",
+          "content": "### Only Admin Users Can Create Secrets  \n\nBefore creating secrets, note that only users with the Grafana Admins role can create, edit, and delete secrets by default. Users with the Editor and Viewer roles can be granted access to create, edit, and delete secrets through role-based access control (RBAC) using a fixed role."
         }
       ]
     },
@@ -61,10 +65,6 @@
         "navmenu-open"
       ],
       "blocks": [
-        {
-          "type": "markdown",
-          "content": "Before creating secrets, note that only users with the Grafana Admins role can create, edit, and delete secrets by default. Users with the Editor and Viewer roles can be granted access to create, edit, and delete secrets through role-based access control (RBAC) using a fixed role."
-        },
         {
           "type": "interactive",
           "action": "highlight",
@@ -96,7 +96,7 @@
             {
               "action": "formfill",
               "reftarget": "#secret-value",
-              "targetvalue": "QuickPizza"
+              "targetvalue": "QuickPizza22"
             },
             {
               "action": "button",
@@ -113,11 +113,20 @@
               "targetvalue": "total"
             }
           ]
+        },
+        {
+          "type": "markdown",
+          "content": "### Using Secrets\n\nOnce you've created a secret, you can reference it in your scripted checks and scripted browser checks using the secrets object. Please note that currently secrets can only be accessed in scripted and browser checks, but support for more check types will be available in the future. "
         }
       ]
     },
     {
       "type": "section",
+      "id": "performace-multistep-guided",
+      "title": "Create A Check With A Synthetic Monitoring Secret",
+      "requirements": [
+        "navmenu-open"
+      ],
       "blocks": [
         {
           "type": "interactive",
@@ -142,12 +151,48 @@
               "reftarget": "div[data-testid='check-group-card-browser'] a:nth-match(1)"
             }
           ]
+        },
+        {
+          "type": "multistep",
+          "content": "Add the secret to browser check",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='checkEditor form job']",
+              "targetvalue": "Exam"
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Let's run the test",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Uptime"
+            },
+            {
+              "action": "button",
+              "reftarget": "Labels"
+            },
+            {
+              "action": "button",
+              "reftarget": "Execution"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "form[data-testid='checkEditor form'] label:nth-match(7)"
+            },
+            {
+              "action": "button",
+              "reftarget": "Alerting"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='checkEditor form submit']"
+            }
+          ]
         }
-      ],
-      "id": "performace-multistep-guided",
-      "title": "Create A Check With A Synthetic Monitoring Secret",
-      "requirements": [
-        "navmenu-open"
       ]
     },
     {
