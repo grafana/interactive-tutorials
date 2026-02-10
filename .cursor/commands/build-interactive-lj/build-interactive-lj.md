@@ -93,6 +93,32 @@ Patterns discovered from building interactive content:
 | `input[placeholder="..."]` | `[aria-label="..."]` | Placeholder text may change; aria-label is more stable |
 | Generic classes (`.btn`) | `[data-testid="..."]` | Classes change frequently; test IDs are intentional |
 | `:nth-child()` selectors | Specific attributes | Position-based selectors break when UI reorders |
+| `Alerts & IRM` (with `&`) | `Alerts &amp; IRM` (HTML-encoded) | Aria-labels with `&` are stored as `&amp;` in the DOM |
+
+### Selector Syntax Limitations
+
+> ⚠️ **Pathfinder uses standard CSS selectors, NOT Playwright-style selectors.**
+
+**These DON'T work in Pathfinder:**
+
+| ❌ Doesn't Work | ✅ Use Instead |
+|-----------------|----------------|
+| `label:has-text('Service')` | `label[for="service-option"]` or find a stable attribute |
+| `button:has-text('Submit')` | `action: "button"` with `reftarget: "Submit"` |
+| `div:has(> span.icon)` | Find a direct selector with `data-testid` or `aria-label` |
+| `text=Click here` | Not supported; use element selectors |
+
+**These DO work:**
+
+| ✅ Works | Example |
+|----------|---------|
+| Attribute selectors | `[data-testid="my-button"]` |
+| Attribute contains | `[aria-label*='section: Alerts']` |
+| Attribute starts with | `[class^="css-"]` (avoid if possible) |
+| Combinators | `div > button`, `ul li a` |
+| Standard pseudo-classes | `:first-child`, `:last-child` |
+
+**Key rule:** If you discover a selector using Playwright's `getByText()`, `getByRole()`, or `:has-text()`, you MUST convert it to a standard CSS selector before using it in content.json.
 
 ### When Markdown Beats Interactive
 
@@ -938,24 +964,42 @@ Use `multistep` for any navigation through nested menus:
   "content": "Navigate to **[Section] > [Subsection] > [Page]**.",
   "requirements": ["navmenu-open"],
   "steps": [
-    { "action": "highlight", "reftarget": "[aria-label=\"Expand section: [Section]\"]" },
-    { "action": "highlight", "reftarget": "[aria-label=\"Expand section: [Subsection]\"]" },
-    { "action": "highlight", "reftarget": "a[href=\"/[path]\"]" }
+    { "action": "highlight", "reftarget": "button[aria-label*='section: [Section]']" },
+    { "action": "highlight", "reftarget": "button[aria-label*='section: [Subsection]']" },
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/[path]']" }
   ]
 }
 ```
 
+> ⚠️ **Important: Use `aria-label*=` (contains) for expand buttons!**
+> 
+> The button's aria-label changes based on state:
+> - `"Expand section: Alerts &amp; IRM"` when closed
+> - `"Collapse section: Alerts &amp; IRM"` when open
+> 
+> Using `*=` (contains) matches both: `button[aria-label*='section: Alerts &amp; IRM']`
+> 
+> ⚠️ **Note:** The `&` in "Alerts & IRM" is stored as `&amp;` in the DOM. Always use `&amp;` in your selectors.
+
+**Expand buttons vs. Links:**
+
+| To Do This | Use This Selector |
+|------------|-------------------|
+| Expand/collapse a nav section | `button[aria-label*='section: Section Name']` |
+| Click a nav link (final step) | `a[data-testid='data-testid Nav menu item'][href='/path']` |
+
 **Common navigation selectors:**
 
-| Destination | Selector |
-|-------------|----------|
-| Connections | `[aria-label="Expand section: Connections"]` |
-| Alerts & IRM | `[aria-label="Expand section: Alerts & IRM"]` |
-| Alerting | `[aria-label="Expand section: Alerting"]` |
-| Dashboards | `[aria-label="Expand section: Dashboards"]` |
-| Explore | `a[href="/explore"]` |
-| Alert rules | `a[href="/alerting/list"]` |
-| Add new connection | `a[href="/connections/add-new-connection"]` |
+| Destination | Expand Button | Link |
+|-------------|---------------|------|
+| Connections | `button[aria-label*='section: Connections']` | — |
+| Alerts & IRM | `button[aria-label*='section: Alerts &amp; IRM']` | — |
+| Alerting | `button[aria-label*='section: Alerting']` | — |
+| Dashboards | `button[aria-label*='section: Dashboards']` | — |
+| Observability | `button[aria-label*='section: Observability']` | — |
+| Explore | — | `a[href="/explore"]` |
+| Alert rules | — | `a[data-testid='data-testid Nav menu item'][href='/alerting/list']` |
+| Add new connection | — | `a[href="/connections/add-new-connection"]` |
 
 ---
 
