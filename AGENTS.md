@@ -20,6 +20,7 @@ Comprehensive reference documentation:
 | [json-block-properties.md](docs/json-block-properties.md) | Complete property reference |
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
+| [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |
 
 ### AI Quick References (`.cursor/`)
 
@@ -90,9 +91,9 @@ All guides use JSON format exclusively:
 
 | Category | Types |
 |----------|-------|
-| Content | `markdown`, `image`, `video` |
+| Content | `markdown`, `html` (use sparingly), `image`, `video` |
 | Interactive | `interactive`, `multistep`, `guided` |
-| Structural | `section`, `conditional` |
+| Structural | `section`, `conditional`, `assistant` |
 | Assessment | `quiz`, `input` |
 
 ## Action Types
@@ -104,6 +105,7 @@ All guides use JSON format exclusively:
 | `formfill` | Enter text in fields |
 | `navigate` | Change pages |
 | `hover` | Reveal hover-dependent UI |
+| `noop` | Informational step (no DOM action) |
 
 ## Quick Reference Cards
 
@@ -114,9 +116,11 @@ Click element with stable selector → highlight action
 Fill form field → formfill action
 Navigate to page → navigate action
 Reveal hover-hidden UI → hover action
+Informational pause (no DOM action) → noop action
 Multiple related actions → multistep action
 User performs manually → guided action
 Explain interface → highlight with doIt: false
+AI-customizable content → assistant block
 ```
 
 ### Requirements Selection
@@ -124,7 +128,10 @@ Explain interface → highlight with doIt: false
 Navigation element → navmenu-open
 Page-specific → on-page:/path
 Admin feature → is-admin
-Data source needed → has-datasource:type
-Plugin needed → has-plugin:id
+Data source exists → has-datasource:type
+Data source connected → datasource-configured:type
+Plugin installed → has-plugin:id
+Plugin enabled → plugin-enabled:id
+Rendering context → renderer:pathfinder
 Sequential dependency → section-completed:id
 ```

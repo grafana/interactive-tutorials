@@ -28,6 +28,10 @@ User wants to reveal hidden UI:
 User wants to teach workflow:
   └─ Linear steps → type: "section" with blocks array
   └─ Just explanation → action: "highlight" with doIt: false
+
+User wants informational pause (no DOM action):
+  └─ No element to highlight → action: "noop" (reftarget optional)
+  └─ Highlight for context → action: "noop", reftarget: "selector"
 ```
 
 ## Quick Block Reference
@@ -39,11 +43,13 @@ User wants to teach workflow:
 | `multistep`   | Automated multi-action               | content, steps                    |
 | `guided`      | User-performed with detection        | content, steps, stepTimeout       |
 | `conditional` | Show content based on conditions     | conditions, whenTrue, whenFalse   |
+| `assistant`   | Wraps blocks with AI customization   | assistantType, blocks             |
 | `quiz`        | Knowledge check                      | question, choices                 |
 | `input`       | Collect user response                | prompt, inputType, variableName   |
 | `markdown`    | Formatted text                       | content                           |
+| `html`        | Raw HTML (use sparingly)             | content                           |
 | `image`       | Embedded image                       | src, alt                          |
-| `video`       | Embedded video                       | src, provider                     |
+| `video`       | Embedded video                       | src, provider, start, end         |
 
 ## Requirements Pattern
 
@@ -51,7 +57,10 @@ Add requirements based on context:
 - Navigation elements: `"navmenu-open"`
 - Page-specific: `"on-page:/path"`
 - Admin actions: `"is-admin"`
-- Data source: `"has-datasource:type"`
+- Data source exists: `"has-datasource:type"`
+- Data source connected: `"datasource-configured:type"`
+- Plugin enabled: `"plugin-enabled:id"`
+- Rendering context: `"renderer:pathfinder"`
 
 > **Note**: `exists-reftarget` is automatically applied for all DOM actions—you don't need to add it manually.
 

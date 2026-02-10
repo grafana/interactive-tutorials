@@ -14,13 +14,16 @@ Requirements are JSON arrays. All must pass:
 
 ## Essential Requirements
 
-| Requirement          | When to Use                                     |
-|----------------------|-------------------------------------------------|
-| `navmenu-open`       | Navigation menu interactions                    |
-| `on-page:/path`      | Page-specific actions                           |
-| `is-admin`           | Admin-only features                             |
-| `has-datasource:X`   | Data source dependent actions                   |
-| `has-plugin:id`      | Plugin dependent features                       |
+| Requirement                | When to Use                                     |
+|----------------------------|-------------------------------------------------|
+| `navmenu-open`             | Navigation menu interactions                    |
+| `on-page:/path`            | Page-specific actions                           |
+| `is-admin`                 | Admin-only features                             |
+| `has-datasource:X`         | Data source exists (does not check connectivity)|
+| `datasource-configured:X`  | Data source exists AND passes connection test   |
+| `has-plugin:id`            | Plugin is installed (may be disabled)           |
+| `plugin-enabled:id`        | Plugin is installed AND enabled                 |
+| `renderer:pathfinder`      | Content only for Pathfinder app context         |
 
 > **Note**: `exists-reftarget` is automatically applied by the plugin for all DOM interactions—you don't need to add it manually.
 
@@ -53,6 +56,8 @@ Same syntax, different behavior—auto-completes when met:
 "objectives": ["has-datasource:prometheus"]
 ```
 
+**Key behavior**: Objectives always win—if met, the step is auto-completed regardless of requirements state. All-or-nothing: when multiple objectives are specified, ALL must be met.
+
 Use for:
 - Skip data source setup if exists
 - Skip navigation if already on page
@@ -67,8 +72,10 @@ Use for:
 
 ### Parameterized (require argument)
 - `on-page:/path`
-- `has-datasource:name`
-- `has-plugin:id`
+- `has-datasource:name` - exists only, no connectivity check
+- `datasource-configured:name` - exists AND passes connection test
+- `has-plugin:id` - installed, may be disabled
+- `plugin-enabled:id` - installed AND enabled
 - `has-role:role`
 - `has-permission:permission`
 - `has-feature:toggle`
@@ -77,3 +84,4 @@ Use for:
 - `in-environment:env`
 - `section-completed:id`
 - `var-name:value`
+- `renderer:pathfinder` or `renderer:website`

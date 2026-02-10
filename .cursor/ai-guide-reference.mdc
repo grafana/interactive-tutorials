@@ -14,6 +14,7 @@ Quick reference for AI generating interactive Grafana guides.
 | **Properties** | [docs/json-block-properties.md](../docs/json-block-properties.md) |
 | **Requirements** | [docs/requirements-reference.md](../docs/requirements-reference.md) |
 | **Selectors** | [docs/selectors-and-testids.md](../docs/selectors-and-testids.md) |
+| **Guided Interactions** | [docs/guided-interactions.md](../docs/guided-interactions.md) |
 
 ## JSON Guide Structure
 
@@ -29,21 +30,23 @@ Quick reference for AI generating interactive Grafana guides.
 
 ### Content Blocks
 - `markdown` - Formatted text (headings, lists, code)
+- `html` - Raw HTML for migration/custom content (use sparingly)
 - `image` - Embedded image (src, alt, width)
-- `video` - YouTube or native video (src, provider)
+- `video` - YouTube or native video (src, provider, start, end)
 
 ### Interactive Blocks
-- `interactive` - Single action: highlight, button, formfill, navigate, hover
+- `interactive` - Single action: highlight, button, formfill, navigate, hover, noop
 - `multistep` - Automated multi-action sequence
-- `guided` - User-performed sequence with detection
+- `guided` - User-performed sequence with detection (see [guided-interactions.md](../docs/guided-interactions.md))
 
 ### Structural Blocks
 - `section` - Grouped steps with "Do Section"
-- `conditional` - Runtime content branching
+- `conditional` - Runtime content branching (inline or section display mode)
+- `assistant` - Wraps blocks with AI-powered customization
 
 ### Assessment Blocks
 - `quiz` - Knowledge check with choices
-- `input` - Collect user response as variable
+- `input` - Collect user response as variable (text, boolean, or datasource picker)
 
 ## Essential Patterns
 
@@ -119,7 +122,11 @@ Quick reference for AI generating interactive Grafana guides.
 | Navigation menu | `navmenu-open` |
 | Page-specific | `on-page:/path` |
 | Admin action | `is-admin` |
-| Data source | `has-datasource:name` |
+| Data source exists | `has-datasource:name` |
+| Data source connected | `datasource-configured:name` |
+| Plugin installed | `has-plugin:id` |
+| Plugin enabled | `plugin-enabled:id` |
+| Rendering context | `renderer:pathfinder` |
 
 > **Note**: `exists-reftarget` is automatically applied for all DOM actions—you don't need to add it manually.
 
