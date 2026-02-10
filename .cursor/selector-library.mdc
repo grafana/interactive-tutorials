@@ -1,5 +1,7 @@
 ---
-alwaysApply: true
+description: Catalog of stable CSS selectors for Grafana UI elements including navigation, editor, drilldown, data source, and form selectors.
+globs:
+  - "**/content.json"
 ---
 # Selector Library Quick Reference
 
@@ -9,8 +11,9 @@ alwaysApply: true
 
 1. `data-testid` attributes (most stable)
 2. Semantic attributes: `href`, `aria-*`, `id`, `role`
-3. Element + attribute: `button[type="submit"]`
-4. **Avoid**: Auto-generated CSS classes like `.css-8mjxyo`
+3. `:contains()` text matching (reliable for buttons/labels)
+4. `:has()` structural matching (match by descendants)
+5. **Avoid**: Auto-generated CSS classes like `.css-8mjxyo`
 
 ## Navigation Selectors
 
@@ -57,7 +60,19 @@ Query editor:      textarea.inputarea.monaco-mouse-cursor-text
 "reftarget": "div[data-cy='item']:has(p:contains('service'))"
 ```
 
+## Drilldown Selectors
+
+```
+Metrics drilldown app: a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']
+Select metric action:  button[data-testid="select-action_<metric_name>"]
+Related metrics tab:   button[data-testid="data-testid Tab Related metrics"]
+Related logs tab:      button[data-testid="data-testid Tab Related logs"]
+```
+
 ## Hover-Dependent UI
+
+**Show mode**: highlights element without triggering hover events.
+**Do mode**: dispatches mouseenter/mouseover/mousemove, triggers CSS `:hover` states. Maintains hover for 2 seconds.
 
 Use multistep or guided:
 ```json
@@ -69,3 +84,10 @@ Use multistep or guided:
   ]
 }
 ```
+
+## Performance Tips
+
+- Engine tries native `querySelector()` first, falls back to JS parsing
+- Use specific base selectors to narrow scope
+- Prefer `data-testid` for speed and stability
+- Test in target browsers when using `:has()` on older Firefox

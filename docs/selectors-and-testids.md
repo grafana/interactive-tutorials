@@ -4,12 +4,17 @@ This guide covers stable selectors and patterns for targeting Grafana UI element
 
 ## Selector Best Practices
 
-### Stability Priority
+### Selector Priority
 
-1. **`data-testid` attributes** - Most stable, maintained by Grafana
-2. **Semantic attributes** - `href`, `aria-*`, `id`, `role`
-3. **Element + attribute combos** - `button[type="submit"]`
-4. **Avoid** - Auto-generated CSS classes like `.css-8mjxyo`
+Follow this priority order when choosing selectors:
+
+1. **`data-testid` attributes** -- most stable, maintained by Grafana core
+2. **Semantic attributes** -- `href`, `aria-*`, `id`, `role`
+3. **`:contains()` text matching** -- reliable for buttons and labels
+4. **`:has()` structural matching** -- when you need to match by descendants
+5. **CSS class selectors** -- least stable; avoid auto-generated class names
+
+> Avoid selecting by auto-generated class names or deep DOM nesting. Use attributes (`data-testid`, `href`, `aria-*`, `id`) instead.
 
 ### Example
 
@@ -43,9 +48,18 @@ This guide covers stable selectors and patterns for targeting Grafana UI element
 
 | Component                   | Selector                                                                |
 |-----------------------------|-------------------------------------------------------------------------|
-| Query mode toggle (Code)    | `div[data-testid="QueryEditorModeToggle"] label[for^="option-code"]`    |
-| Visualization picker toggle | `button[data-testid="data-testid toggle-viz-picker"]`                   |
-| Panel title input           | `input[data-testid="data-testid Panel editor option pane field input Title"]` |
+| Query mode toggle (Code)    | `div[data-testid="QueryEditorModeToggle"] label[for^="option-code-radiogroup"]` |
+| Visualization picker toggle | `button[data-testid="data-testid toggle-viz-picker"]`                           |
+| Panel title input           | `input[data-testid="data-testid Panel editor option pane field input Title"]`   |
+
+### Drilldowns
+
+| Component             | Selector                                                                                       | Notes                   |
+|-----------------------|------------------------------------------------------------------------------------------------|-------------------------|
+| Metrics drilldown app | `a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']` | Opens app entrypoint    |
+| Select metric action  | `button[data-testid="select-action_<metric_name>"]`                                            | Replace `<metric_name>` |
+| Related metrics tab   | `button[data-testid="data-testid Tab Related metrics"]`                                        | Tab toggle              |
+| Related logs tab      | `button[data-testid="data-testid Tab Related logs"]`                                           | Tab toggle              |
 
 ### Data Source Elements
 
@@ -98,12 +112,28 @@ Finds the Nth occurrence of an element matching the selector **globally** (not w
 
 **Why use `:nth-match()` instead of `:nth-child()`?**
 
-| Selector             | Meaning                                             |
-|----------------------|-----------------------------------------------------|
-| `div:nth-child(3)`   | Element that is the 3rd child of its parent         |
-| `div:nth-match(3)`   | The 3rd div matching this selector in the document  |
+`:nth-child(3)` means "match this element only if it is the 3rd child of its parent." When charts live in separate parent containers, `:nth-child()` fails because each chart is the 1st child of its own parent.
 
-`:nth-child()` fails when matching elements are in different parents.
+```html
+<!-- Each chart is the 1st child of its own parent -- :nth-child(3) matches nothing -->
+<div class="parent1">
+  <div data-testid="uplot-main-div">First chart</div>
+</div>
+<div class="parent2">
+  <div data-testid="uplot-main-div">Second chart</div>
+</div>
+<div class="parent3">
+  <div data-testid="uplot-main-div">Third chart</div>
+</div>
+```
+
+**Quick reference:**
+
+| Selector             | Meaning                                                     | Use when                                       |
+|----------------------|-------------------------------------------------------------|------------------------------------------------|
+| `div:nth-child(3)`   | Element that is the 3rd child of its parent                 | You know the element's position in its parent  |
+| `div:nth-of-type(3)` | Element that is the 3rd `div` child of its parent           | You know the position among same-type siblings |
+| `div:nth-match(3)`   | The 3rd `div` matching this selector in the entire document | You want the Nth global occurrence             |
 
 ### `:contains()` Pseudo-Selector
 
@@ -159,7 +189,13 @@ The most powerful feature: combining `:has()` and `:contains()`.
 
 ## Hover-Dependent Selectors
 
-Some UI elements only appear on hover. Use with `hover` action or `guided` blocks.
+Some UI elements only appear when hovering over their parent containers (e.g., Tailwind's `group-hover:` or CSS `:hover` states). Use the `hover` action to reveal elements before interacting with them.
+
+### How Hover Actions Work
+
+**Show mode** (Show me): highlights the element that will be hovered; does not trigger hover events.
+
+**Do mode** (Do it): dispatches `mouseenter`, `mouseover`, `mousemove` events, triggering CSS `:hover` and Tailwind `group-hover:` classes. Maintains hover state for 2 seconds (configurable via `INTERACTIVE_CONFIG.delays.perceptual.hover`). Subsequent actions can then interact with revealed elements.
 
 ### Multistep with Hover
 
@@ -258,34 +294,41 @@ Some pseudo-classes are **not supported**. Use alternatives:
 
 ---
 
+## Performance Best Practices
+
+1. **Native first** -- the engine always tries the browser's native `querySelector()` before falling back to JavaScript parsing
+2. **Specific base selectors** -- narrow the search scope (e.g., `div[data-testid="panel"]:has(...)` rather than `div:has(...)`)
+3. **Prefer `data-testid`** -- fastest and most stable
+4. **Test in target browsers** -- especially when using `:has()` on older Firefox
+
+---
+
 ## Browser Compatibility
 
-### Native Support
+| Selector                         | Native support                            | Fallback                           |
+|----------------------------------|-------------------------------------------|------------------------------------|
+| `:has()`                         | Chrome 105+, Safari 17.2+, Firefox 140+   | Automatic JS fallback              |
+| `:contains()`                    | Not natively supported (jQuery extension) | Automatic JS fallback              |
+| `:nth-match()`                   | Custom implementation                     | Uses `querySelectorAll` internally |
+| `:nth-child()`, `:nth-of-type()` | All browsers                              | Standard CSS                       |
 
-- **`:has()`**: Chrome 105+, Safari 17.2+, Firefox 140+
-- **`:contains()`**: Not native (jQuery extension)
-- **`:nth-match()`**: Custom implementation
-
-### Automatic Fallback
-
-The selector engine automatically provides JavaScript fallbacks for older browsers.
+The selector engine automatically detects browser capabilities and provides JavaScript-based fallbacks when native support is missing.
 
 ---
 
 ## Troubleshooting
 
-### "No elements found"
+### "No elements found" with `:nth-match()`
 
-1. **Test the base selector** in browser DevTools:
-   ```javascript
-   document.querySelectorAll('div[data-testid="uplot-main-div"]').length
-   ```
+1. Verify the base selector finds elements: `document.querySelectorAll('div[data-testid="uplot-main-div"]').length` in the browser console
+2. Confirm enough matches exist (`:nth-match(3)` needs at least 3 elements)
+3. Ensure elements are loaded -- add `requirements: ["exists-reftarget"]` or `requirements: ["on-page:/dashboards"]`
 
-2. **Check element count** for `:nth-match()`:
-   - `:nth-match(3)` needs at least 3 elements
+### General Selector Issues
 
-3. **Check timing** - elements may not be loaded yet:
-   - Add requirements like `on-page:/dashboards`
+- **Invalid syntax** -- the engine handles malformed selectors gracefully and returns empty arrays
+- **Missing elements** -- check requirements to ensure the page state is correct before the step runs
+- **Browser compatibility** -- automatic fallback handles most cases; check the browser console for detailed logging
 
 ### Avoiding Brittle Selectors
 

@@ -49,8 +49,9 @@ jobs:
           # Copy shared folder (snippets, templates, etc.)
           cp -r shared guides/
           
-          # Copy all tutorial directories (containing unstyled.html OR content.json)
-          # must sort and read -r unique to avoid duplicates
+          # Copy all tutorial directories (containing content.json)
+          # LEGACY: unstyled.html files are also copied for backward compatibility,
+          # but the HTML format is deprecated. Only content.json is respected going forward.
           find . \( -name "unstyled.html" -o -name "content.json" \) -type f \
             | sed 's|/[^/]*$||' \
             | sort -u \
@@ -58,9 +59,10 @@ jobs:
             # Skip excluded folders
             if [[ "$dir" != "." && "$dir" != "./docs"* && "$dir" != "./shared"* ]]; then
               mkdir -p "guides/$dir"
-              # Copy both files; if one is missing, error gets ignored and it's fine.
-              cp "$dir"/*.html "guides/$dir/" 2>/dev/null || true
+              # Copy JSON files (primary format)
               cp "$dir"/*.json "guides/$dir/" 2>/dev/null || true
+              # LEGACY: Copy HTML files for backward compatibility only
+              cp "$dir"/*.html "guides/$dir/" 2>/dev/null || true
             fi
           done
 

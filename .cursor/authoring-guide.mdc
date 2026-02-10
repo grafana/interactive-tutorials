@@ -1,0 +1,274 @@
+---
+description: Reference for authoring, editing, or creating interactive guide content.json files. Includes block types, actions, requirements, selectors, best practices, and code smells.
+globs:
+  - "**/content.json"
+---
+
+# Interactive Guide Authoring Reference
+
+## Documentation Map
+
+| Topic | Reference |
+|-------|-----------|
+| Format & root structure | [docs/json-guide-format.md](../docs/json-guide-format.md) |
+| Block & action types | [docs/interactive-types.md](../docs/interactive-types.md) |
+| All block properties | [docs/json-block-properties.md](../docs/json-block-properties.md) |
+| Requirement types | [docs/requirements-reference.md](../docs/requirements-reference.md) |
+| Selectors & test IDs | [docs/selectors-and-testids.md](../docs/selectors-and-testids.md) |
+| Guided interactions | [docs/guided-interactions.md](../docs/guided-interactions.md) |
+| Selector catalog | [selector-library.mdc](selector-library.mdc) |
+| Workflow templates | [common-workflows.mdc](common-workflows.mdc) |
+| Guide patterns | [tutorial-patterns.mdc](tutorial-patterns.mdc) |
+| Full example guide | [complete-example-tutorial.mdc](complete-example-tutorial.mdc) |
+| Edge cases | [edge-cases-and-troubleshooting.mdc](edge-cases-and-troubleshooting.mdc) |
+
+## JSON Guide Root Structure
+
+```json
+{
+  "id": "guide-id",
+  "title": "Guide Title",
+  "blocks": []
+}
+```
+
+## Block Types
+
+| Block Type    | Category    | Purpose                              | Key Properties                    |
+|---------------|-------------|--------------------------------------|-----------------------------------|
+| `markdown`    | Content     | Formatted text (headings, lists)     | content                           |
+| `html`        | Content     | Raw HTML (use sparingly)             | content                           |
+| `image`       | Content     | Embedded image                       | src, alt, width                   |
+| `video`       | Content     | YouTube or native video              | src, provider, start, end         |
+| `interactive` | Interactive | Single action                        | action, reftarget, content        |
+| `multistep`   | Interactive | Automated multi-action sequence      | content, steps                    |
+| `guided`      | Interactive | User-performed with detection        | content, steps, stepTimeout       |
+| `section`     | Structural  | Grouped steps with "Do Section"      | id, title, blocks                 |
+| `conditional` | Structural  | Runtime condition branching           | conditions, whenTrue, whenFalse   |
+| `assistant`   | Structural  | Wraps blocks with AI customization   | assistantType, blocks             |
+| `quiz`        | Assessment  | Knowledge check with choices         | question, choices                 |
+| `input`       | Assessment  | Collect user response as variable    | prompt, inputType, variableName   |
+
+## Action Types & Decision Tree
+
+```
+Click something:
+  └─ Button with stable text     → action: "button",    reftarget: "Button Text"
+  └─ Element with CSS selector   → action: "highlight",  reftarget: "css-selector"
+  └─ Multiple related clicks     → type: "multistep"     with steps array
+
+Fill a form field:
+  └─ Single field                → action: "formfill",   reftarget + targetvalue
+  └─ With validation             → add validateInput: true, formHint: "hint"
+
+Navigate:
+  └─ Change page                 → action: "navigate",   reftarget: "/path"
+  └─ With verification           → add verify: "on-page:/path"
+
+Reveal hover-hidden UI:
+  └─ Automated hover+click       → type: "multistep"     with hover + button steps
+  └─ User performs manually      → type: "guided"        with hover + button steps
+
+Explain without action:
+  └─ Highlight for context       → action: "highlight",  doIt: false, tooltip: "..."
+  └─ No element needed           → action: "noop"        (reftarget optional)
+```
+
+## Requirements
+
+Requirements are JSON arrays; all must pass before the step runs:
+
+```json
+"requirements": ["navmenu-open", "on-page:/dashboards"]
+```
+
+### Essential Requirements
+
+| Requirement               | When to Use                                       |
+|---------------------------|---------------------------------------------------|
+| `navmenu-open`            | Navigation menu interactions                      |
+| `on-page:/path`           | Page-specific actions                             |
+| `is-admin`                | Admin-only features                               |
+| `has-datasource:X`        | Data source exists (no connectivity check)        |
+| `datasource-configured:X` | Data source exists AND passes connection test     |
+| `has-plugin:id`           | Plugin is installed (may be disabled)             |
+| `plugin-enabled:id`       | Plugin is installed AND enabled                   |
+| `renderer:pathfinder`     | Content only for Pathfinder app context           |
+| `section-completed:id`    | Previous section finished                         |
+
+> `exists-reftarget` is automatically applied for all DOM actions -- never add it manually.
+
+### All Requirement Types
+
+**Fixed** (no arguments): `exists-reftarget` *(auto)*, `navmenu-open`, `form-valid`, `is-admin`, `is-editor`, `is-logged-in`, `has-datasources`, `dashboard-exists`
+
+**Parameterized**: `on-page:/path`, `has-datasource:name`, `datasource-configured:name`, `has-plugin:id`, `plugin-enabled:id`, `has-role:role`, `has-permission:permission`, `has-feature:toggle`, `has-dashboard-named:title`, `min-version:x.y.z`, `in-environment:env`, `section-completed:id`, `var-name:value`, `renderer:pathfinder|website`
+
+### Objectives (Auto-Completion)
+
+Same syntax, different behavior -- auto-completes the step/section when met:
+
+```json
+"objectives": ["has-datasource:prometheus"]
+```
+
+Objectives always win: if met, the step is auto-completed regardless of requirements. All-or-nothing when multiple are specified.
+
+Use for: skip data source setup if exists, skip navigation if already on page, skip plugin installation if installed.
+
+## Selector Best Practices
+
+**Use**: `data-testid` attributes, button text via `action: "button"`, semantic attributes (`href`, `aria-*`, `id`).
+
+**Avoid**: auto-generated CSS classes (`.css-xyz123`), deep nesting (`div > div > div > button`), brittle partial matches.
+
+See [selector-library.mdc](selector-library.mdc) for the full catalog of stable Grafana selectors.
+
+### Advanced Pseudo-Selectors
+
+- `:nth-match(n)` -- find nth matching element globally (not within parent like `:nth-child`)
+- `:contains('text')` -- find element by text content
+- `:has(selector)` -- find parent containing a child matching selector
+
+Example: `"reftarget": "div[data-cy='item']:has(h3:contains('Service')) button[data-action='configure']"`
+
+## Hover Patterns
+
+**Show mode** (Show me): highlights element without triggering hover events.
+
+**Do mode** (Do it): dispatches `mouseenter`/`mouseover`/`mousemove`, triggers CSS `:hover` states. Maintains hover for 2 seconds.
+
+### Multistep (Automated)
+
+```json
+{
+  "type": "multistep",
+  "content": "Hover and click the action button",
+  "steps": [
+    { "action": "hover", "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))" },
+    { "action": "button", "reftarget": "Dashboard" }
+  ]
+}
+```
+
+### Guided (User Performs)
+
+```json
+{
+  "type": "guided",
+  "content": "Manually hover to reveal buttons",
+  "stepTimeout": 30000,
+  "steps": [
+    { "action": "hover", "reftarget": "tr[data-row-id='user-123']", "tooltip": "Hover over the row" },
+    { "action": "button", "reftarget": "Edit", "tooltip": "Click Edit" }
+  ]
+}
+```
+
+### Guided vs Multistep
+
+| Scenario                          | Use         |
+|-----------------------------------|-------------|
+| CSS `:hover` must trigger         | `guided`    |
+| User should learn by doing        | `guided`    |
+| Automation is reliable            | `multistep` |
+| Speed is important                | `multistep` |
+
+## Best Practices
+
+### Defensive Design
+
+Interactive guides target beginners. They cannot be allowed to fail. Complexity is bad; unmet requirements mean confusion. All practices orient around simple, clear, robust guides.
+
+### Keep Prose Very Brief
+
+Guides display in a right-hand sidebar. Long paragraphs scroll the display. Be direct, punchy, action-oriented. Link out for concepts.
+
+### Include Requirements Generously
+
+- Navigation elements need `navmenu-open`
+- Page-specific actions need `on-page:/path`
+- Admin features need `is-admin` or appropriate role
+- Promote blocking requirements to the top of a section (e.g., if step 5 requires admin, add `is-admin` at the section level)
+
+### Connect Requirements and Objectives
+
+If section 1's objective creates a data source, section 2 should require that data source exists.
+
+### Structure with Sections, Not Markdown Headers
+
+Use `section` blocks instead of markdown `##` headings. Sections give the app control over visual rendering, closeable sections, and progress tracking.
+
+### Don't Put Markdown Titles in Guides
+
+The guide's `title` is already rendered in the enclosing frame. Starting with `## My Guide` duplicates the title.
+
+### First Action: Ensure Correct Page
+
+Users can navigate away while a guide is open. The first action should use `on-page` requirement or a navigate/highlight action to anchor the user.
+
+### Verify State Changes
+
+Use `verify` for actions that change state (save, create, navigate).
+
+### Write Clear, Actionable Content
+
+- Action-focused: "Save your dashboard" not "The save button can be clicked"
+- User-centric: use "panel" not "visualization", "main menu" not "navigation menu", "Click **Logs**" not "Click the Logs menu item"
+- Only bold titles or names of GUI items. Not "Click the **Logs tab**" but "Click the **Logs** tab"
+- Don't use "button" -- say "Click **Select**" not "Click the **Select** button"
+- For items to be clicked, use "Click". Not "navigate to", "examine", or "check out"
+- Include "What you will learn" before each section and "What you have learned" after
+- Keep tooltips under 250 characters, one short sentence. Don't name the highlighted element in the tooltip
+
+### Handle Edge Cases Gracefully
+
+Make admin-only steps `skippable: true` with helpful hints. Use `objectives` to auto-complete already-done steps. Provide alternative workflows for different permissions.
+
+## Code Smells to Avoid
+
+### Multistep Singletons
+
+If a `multistep` has only one step, replace it with an `interactive` block. Single-step multisteps add overhead with no benefit.
+
+```json
+// BAD
+{ "type": "multistep", "content": "Click it", "steps": [{ "action": "highlight", "reftarget": "button[id='foo']" }] }
+
+// GOOD
+{ "type": "interactive", "action": "highlight", "content": "Click it", "reftarget": "button[id='foo']" }
+```
+
+### Focus Before Formfill
+
+Highlighting a form field with `doIt` enabled does nothing useful -- the highlight click on a textarea/input isn't visible. Either use `doIt: false` to just show it, or use `formfill` to fill it.
+
+### Missing Requirements
+
+Every interactive step that touches the DOM should have contextual requirements (page, permissions, data source). Don't rely on execution order alone.
+
+### Fragile Selectors
+
+Never use auto-generated CSS classes, bare `div`/`span`, or `nth-of-type` without a stable parent. Prefer `data-testid`, button text, or semantic attributes.
+
+## Quality Checklist
+
+Before finalizing a guide:
+
+- [ ] `navmenu-open` on all navigation element interactions
+- [ ] Stable selectors (`data-testid`, button text, semantic attributes)
+- [ ] Clear, action-focused step content
+- [ ] Tooltips for educational value (under 250 chars)
+- [ ] Objectives for auto-completion of already-done steps
+- [ ] Sections with unique IDs (not markdown headers)
+- [ ] No markdown title block duplicating the guide title
+- [ ] `verify` on state-changing actions
+- [ ] Skippable steps for optional/permission-gated actions
+- [ ] Requirements connected to objectives of prior sections
+- [ ] No multistep singletons
+- [ ] No focus-before-formfill pattern
+- [ ] User-centric language per style guide
+
+## Schema Validation
+
+CI runs strict schema checking via `.github/workflows/validate-json.yml`. You can script the equivalent locally to validate structure and syntax.

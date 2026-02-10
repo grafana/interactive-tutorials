@@ -1,43 +1,176 @@
 ---
-description: Review checklist for interactive guide PRs
+description: Protocol for reviewing pull requests that add or modify interactive guide content.json files.
 globs:
   - "**/content.json"
 ---
 
-# Guide PR Review Checklist
+# Guide PR Review Protocol
 
-When reviewing a PR that adds or modifies content.json files, verify:
+Self-contained review protocol for PRs that add or modify `content.json` guide files. For deep reference, see [docs/requirements-reference.md](../docs/requirements-reference.md), [docs/selectors-and-testids.md](../docs/selectors-and-testids.md), and [authoring-guide.mdc](authoring-guide.mdc).
 
-## Best Practices Knowledge
+## 1. Blocking Issues (Must Fix)
 
-- [ ] You have read @best-practices.mdc as background; a good PR review 
-that includes changes to a `content.json` file, (and in particular if the
-file is being added for the first time) will get feedback relative to these
-practices.
+These issues should block merge. Each is a reliability or correctness problem.
 
-## Ownership
-- [ ] If the guide is brand new, recommend to the PR author to update `.github/CODEOWNERS` with their
-handle as the owner for that guide.
-- [ ] If the guide is a revision on an existing file, recommend to PR author to review `.github/CODEOWNERS`
+### 1.1 Missing `navmenu-open` Requirement
 
-## Blocking Issues (must fix)
-- [ ] Navigation menu interactions have `navmenu-open` requirement  
-- [ ] No fragile selectors (nth-of-type, bare div/span, auto-generated classes)
-- [ ] No multistep blocks with only one step
-- [ ] No highlight actions targeting form fields with doIt enabled
-- [ ] After revisions, no entry in CODEOWNERS exists for the guide directory; advise user that
-repo owners can fix this for them if they don't know how.
+Any `reftarget` that selects a navigation menu element (e.g., `a[data-testid='data-testid Nav menu item']`) MUST include `"navmenu-open"` in its `requirements` array. Without it, the step fails when the menu is collapsed.
 
-## Required Structure
-- [ ] Uses section blocks instead of markdown headers for groupings
-- [ ] Each section has unique `id`
-- [ ] No duplicate markdown title at start (title is in metadata)
+**Look for**: `highlight` or `button` actions targeting `Nav menu item` selectors without `navmenu-open`.
 
-## Strongly Recommended
-- [ ] Sections include "What you will learn" intro
-- [ ] Tooltips under 250 characters
-- [ ] User-centric language per style guide
+### 1.2 Fragile Selectors
 
-## index.json (if modified)
-- [ ] Entry has matching `id` to content.json
-- [ ] `urlPrefix` matches where guide should appear
+Reject selectors that will break on UI updates:
+
+- Auto-generated CSS classes (`.css-8mjxyo`, `.emotion-*`)
+- Bare element selectors (`div`, `span`, `button` without attributes)
+- `nth-of-type` / `nth-child` without a stable parent
+- Deep nesting chains (`div > div > div > button`)
+
+**Preferred alternatives**: `data-testid`, `button` action with text, `aria-*`, `href`, `id` attributes.
+
+### 1.3 Multistep Singletons
+
+A `multistep` block with only one step in its `steps` array adds overhead with no benefit. Must be replaced with a plain `interactive` block.
+
+```json
+// REJECT: singleton multistep
+{ "type": "multistep", "content": "Click save", "steps": [{ "action": "button", "reftarget": "Save" }] }
+
+// ACCEPT: plain interactive
+{ "type": "interactive", "action": "button", "reftarget": "Save", "content": "Click save" }
+```
+
+### 1.4 Focus-Before-Formfill
+
+A `highlight` action targeting an input/textarea with `doIt` enabled (default) is a no-op -- clicking a form field doesn't produce visible UI feedback. Either:
+
+- Set `"doIt": false` to just point it out (show-only), or
+- Use `formfill` to actually fill the field.
+
+### 1.5 Missing Page Requirements
+
+Actions that target elements specific to a page should include `on-page:/path` in requirements. Without this, the step may run on the wrong page when users navigate away.
+
+### 1.6 Duplicate Markdown Title
+
+The guide's `title` property is rendered by the app frame. A leading markdown block like `"content": "## My Guide Title"` duplicates it. The first block should be introductory content, not a title.
+
+## 2. Structural Validation
+
+### 2.1 Root Structure
+
+Verify the guide has the required root properties:
+
+```json
+{ "id": "unique-guide-id", "title": "Guide Title", "blocks": [...] }
+```
+
+- `id` must be a unique, kebab-case string
+- `title` must be present and non-empty
+- `blocks` must be a non-empty array
+
+### 2.2 Section Structure
+
+- Groupings of steps MUST use `section` blocks, not markdown `##` headers
+- Every `section` MUST have a unique `id` property
+- Section `id` values must be stable kebab-case strings (not auto-generated)
+
+### 2.3 Unique IDs
+
+All `id` properties across the guide (sections, inputs) must be unique. Duplicate IDs break `section-completed:id` requirements and variable references.
+
+### 2.4 Block Type Validity
+
+Every block must have a valid `type`. Interactive blocks must have a valid `action`. Verify `reftarget` is present for all actions except `noop`.
+
+## 3. Content Quality
+
+### 3.1 Tooltip Quality
+
+- Tooltips must be under 250 characters
+- Should be one short sentence
+- Should NOT name the element being highlighted (the system already highlights it). E.g., instead of "The **Logs** menu opens the Logs page", write "Click to open the Logs page"
+
+### 3.2 User-Centric Language
+
+Check for these vocabulary preferences:
+
+| Avoid | Prefer |
+|-------|--------|
+| visualization, card | panel |
+| menu item | the name of the item (e.g., "Click **Logs**") |
+| navigation menu | main menu |
+| dropdown | menu |
+| button (as noun) | just the action (e.g., "Click **Select**") |
+| interface | page, section, or panel |
+| integration, plugin | describe functionally |
+
+### 3.3 Step Content
+
+- Step descriptions must be action-focused: "Save your dashboard" not "The save button can be clicked"
+- Include context about *why* each step matters
+- Only bold GUI item names/titles. Write "Click the **Logs** tab" not "Click the **Logs tab**"
+- Use "Click" for clickable items, not "navigate to", "examine", "check out"
+
+### 3.4 Section Bookends
+
+Sections should include "What you will learn" intro content and "What you have learned" summary where appropriate.
+
+### 3.5 Editorial Quality
+
+- Check for typos and consistent title case
+- Avoid excess jargon; stick to known Grafana technical terms
+- Keep prose brief -- guides display in a sidebar, long paragraphs cause scrolling
+
+## 4. Code Smell Detection
+
+Beyond the blocking issues above, look for these patterns:
+
+### 4.1 Missing Objectives
+
+Expensive setup sections (data source creation, plugin installation) should have `objectives` so they auto-complete if the resource already exists. E.g., a "Setup Prometheus" section should have `"objectives": ["has-datasource:type:prometheus"]`.
+
+### 4.2 Disconnected Requirements and Objectives
+
+If section 1 has objective `has-datasource:prometheus`, section 2's steps that need Prometheus should have `has-datasource:prometheus` in requirements. The chain should be logical.
+
+### 4.3 Missing `verify` on State Changes
+
+Actions that create resources (Save & test, Save dashboard, Create) should include a `verify` property to confirm the action succeeded.
+
+### 4.4 Admin Steps Without Skippable
+
+Steps requiring `is-admin` in a guide targeting mixed audiences should be `"skippable": true` or wrapped in a section with alternatives for non-admin users.
+
+### 4.5 No First-Action Page Anchor
+
+The first interactive action in a guide should establish the user's page context via `on-page` requirement, `navigate` action, or `highlight` action to the right page. Users may have multiple guide tabs open and navigate away.
+
+## 5. CODEOWNERS Check
+
+- **New guide**: recommend the PR author add their handle to `.github/CODEOWNERS` for the guide directory
+- **Existing guide**: check that a CODEOWNERS entry exists; if missing, advise the author that repo owners can add it
+
+## 6. index.json Entry Check
+
+If `index.json` is modified:
+
+- Entry `id` must match the guide's `content.json` `id`
+- `type` must be `"docs-page"`
+- `urlPrefix` must match where the guide should be recommended
+- `title` and `description` should be present and accurate
+- `url` must follow the pattern `https://github.com/grafana/interactive-tutorials/tree/main/DIRECTORY_NAME`
+
+If a **new** guide is added but `index.json` is not modified, note that an index entry will be needed for the guide to appear in recommendations.
+
+## 7. Deep Reference Links
+
+When you need more detail during review:
+
+- **Full requirement types**: [docs/requirements-reference.md](../docs/requirements-reference.md)
+- **Selector details**: [docs/selectors-and-testids.md](../docs/selectors-and-testids.md)
+- **Guided block specifics**: [docs/guided-interactions.md](../docs/guided-interactions.md)
+- **All block properties**: [docs/json-block-properties.md](../docs/json-block-properties.md)
+- **Authoring best practices**: [authoring-guide.mdc](authoring-guide.mdc)
+- **Edge cases**: [edge-cases-and-troubleshooting.mdc](edge-cases-and-troubleshooting.mdc)

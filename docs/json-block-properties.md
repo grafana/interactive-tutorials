@@ -20,8 +20,8 @@ The `interactive` block is used for single-action steps.
 | Property        | Type     | Required | Default | Description                                              |
 |-----------------|----------|----------|---------|----------------------------------------------------------|
 | `type`          | string   | ✅       | —       | Must be `"interactive"`                                  |
-| `action`        | string   | ✅       | —       | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover` |
-| `reftarget`     | string   | ✅       | —       | Target reference (CSS selector, button text, or URL)     |
+| `action`        | string   | ✅       | —       | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop` |
+| `reftarget`     | string   | ✅\*     | —       | Target reference (CSS selector, button text, or URL). \*Optional for `noop` actions |
 | `content`       | string   | ✅       | —       | User-visible description (supports markdown)             |
 
 ### Optional Properties
@@ -48,6 +48,13 @@ The `interactive` block is used for single-action steps.
 |-----------------|----------|---------|----------------------------------------------------------|
 | `completeEarly` | boolean  | `false` | Mark step complete before action finishes                |
 | `verify`        | string   | —       | Post-action verification (e.g., `"on-page:/path"`)       |
+
+### Rendering Properties
+
+| Property          | Type     | Default             | Description                                              |
+|-------------------|----------|---------------------|----------------------------------------------------------|
+| `lazyRender`      | boolean  | `false`             | Enable progressive scroll discovery for virtualized containers |
+| `scrollContainer` | string   | `".scrollbar-view"` | CSS selector for the scroll container when `lazyRender` is enabled |
 
 ### Formfill-Specific Properties
 
@@ -152,16 +159,19 @@ Steps used within `multistep` and `guided` blocks:
 }
 ```
 
-| Property        | Type     | Required | Default | Description                                   |
-|-----------------|----------|----------|---------|-----------------------------------------------|
-| `action`        | string   | ✅       | —       | Action type                                   |
-| `reftarget`     | string   | ✅       | —       | Target reference                              |
-| `targetvalue`   | string   | ❌       | —       | Value for formfill                            |
-| `requirements`  | string[] | ❌       | —       | Step-specific requirements                    |
-| `tooltip`       | string   | ❌       | —       | Tooltip during execution                      |
-| `skippable`     | boolean  | ❌       | `false` | Allow skipping (guided only)                  |
-| `validateInput` | boolean  | ❌       | `false` | Validate formfill input                       |
-| `formHint`      | string   | ❌       | —       | Hint for formfill validation                  |
+| Property          | Type     | Required | Default             | Description                                                        |
+|-------------------|----------|----------|---------------------|--------------------------------------------------------------------|
+| `action`          | string   | ✅       | —                   | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop` |
+| `reftarget`       | string   | ✅\*     | —                   | Target reference (\*optional for `noop`)                           |
+| `targetvalue`     | string   | ❌       | —                   | Value for formfill (supports regex patterns)                       |
+| `requirements`    | string[] | ❌       | —                   | Step-specific requirements                                         |
+| `tooltip`         | string   | ❌       | —                   | Tooltip during multistep execution                                 |
+| `description`     | string   | ❌       | —                   | Description shown in guided steps panel                            |
+| `skippable`       | boolean  | ❌       | `false`             | Allow skipping (guided only)                                       |
+| `validateInput`   | boolean  | ❌       | `false`             | Validate formfill input                                            |
+| `formHint`        | string   | ❌       | —                   | Hint for formfill validation                                       |
+| `lazyRender`      | boolean  | ❌       | `false`             | Enable progressive scroll discovery for virtualized containers     |
+| `scrollContainer` | string   | ❌       | `".scrollbar-view"` | CSS selector for the scroll container when `lazyRender` is enabled |
 
 ---
 
@@ -186,8 +196,8 @@ The `conditional` block shows different content based on conditions.
 | `whenFalse`              | JsonBlock[]               | ✅       | —          | Blocks shown when ANY condition fails         |
 | `description`            | string                    | ❌       | —          | Author note (not shown to users)              |
 | `display`                | `"inline"` \| `"section"` | ❌       | `"inline"` | Display mode for branch content               |
-| `whenTrueSectionConfig`  | object                    | ❌       | —          | Section config when display is "section"      |
-| `whenFalseSectionConfig` | object                    | ❌       | —          | Section config when display is "section"      |
+| `whenTrueSectionConfig`  | ConditionalSectionConfig  | ❌       | —          | Section config for the pass branch (when display is section) |
+| `whenFalseSectionConfig` | ConditionalSectionConfig  | ❌       | —          | Section config for the fail branch (when display is section) |
 
 **Section Config Properties:**
 
@@ -250,7 +260,7 @@ The `input` block collects user responses as variables.
 |---------------------|-------------------------|----------|---------|-----------------------------------------------|
 | `type`              | string                  | ✅       | —       | Must be `"input"`                             |
 | `prompt`            | string                  | ✅       | —       | Question/instruction (supports markdown)      |
-| `inputType`         | `"text"` \| `"boolean"` | ✅       | —       | Input type: text field or checkbox            |
+| `inputType`         | `"text"` \| `"boolean"` \| `"datasource"` | ✅ | — | Input type: text field, checkbox, or datasource picker |
 | `variableName`      | string                  | ✅       | —       | Identifier for storing response               |
 | `placeholder`       | string                  | ❌       | —       | Placeholder text (text input only)            |
 | `checkboxLabel`     | string                  | ❌       | —       | Label for checkbox (boolean only)             |
@@ -258,6 +268,7 @@ The `input` block collects user responses as variables.
 | `required`          | boolean                 | ❌       | `false` | Require response to proceed                   |
 | `pattern`           | string                  | ❌       | —       | Regex pattern for validation                  |
 | `validationMessage` | string                  | ❌       | —       | Message when validation fails                 |
+| `datasourceFilter`  | string                  | ❌       | —       | Filter datasources by type (e.g., `"prometheus"`). Only for `"datasource"` inputType |
 | `requirements`      | string[]                | ❌       | —       | Requirements for this input                   |
 | `skippable`         | boolean                 | ❌       | `false` | Allow skipping                                |
 
@@ -321,6 +332,26 @@ The `input` block collects user responses as variables.
 | `src`      | string                    | ✅       | —           | Video URL (embed URL for YouTube)             |
 | `provider` | `"youtube"` \| `"native"` | ❌       | `"youtube"` | Video provider                                |
 | `title`    | string                    | ❌       | —           | Video title for accessibility                 |
+| `start`    | number                    | ❌       | —           | Start time in seconds                         |
+| `end`      | number                    | ❌       | —           | End time in seconds                           |
+
+---
+
+## HTML Block Properties
+
+For raw HTML content. Use sparingly — prefer markdown for new content.
+
+```json
+{
+  "type": "html",
+  "content": "<div class='custom-box'><p>Custom HTML content</p></div>"
+}
+```
+
+| Property | Type   | Required | Description                                   |
+|----------|--------|----------|-----------------------------------------------|
+| `type`   | string | ✅       | Must be `"html"`                              |
+| `content`| string | ✅       | Raw HTML content (sanitized before rendering) |
 
 ---
 

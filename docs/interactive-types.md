@@ -116,6 +116,34 @@ Use `validateInput: true` to require the input to match a pattern:
 }
 ```
 
+### noop
+
+- **Purpose**: Informational step with no DOM action.
+- **reftarget**: Optional. If provided, highlights the element for context.
+- **Show**: Highlights the element (if reftarget provided), otherwise no visual effect.
+- **Do**: No action performed. Step completes immediately.
+- **Use when**: You need an informational pause between actions, or a step that only explains without interacting.
+
+```json
+{
+  "type": "interactive",
+  "action": "noop",
+  "content": "Now that you've saved your data source, let's create a dashboard to visualize the data."
+}
+```
+
+**With optional highlight:**
+
+```json
+{
+  "type": "interactive",
+  "action": "noop",
+  "reftarget": "div[data-testid='alert-banner']",
+  "content": "Notice the success banner confirming your data source is connected.",
+  "tooltip": "This confirms the connection test passed."
+}
+```
+
 ---
 
 ## Structural Block Types
@@ -177,6 +205,7 @@ Use `validateInput: true` to require the input to match a pattern:
 - **Behavior**: System highlights each step and waits for user interaction before proceeding.
 - **Supported actions**: `hover`, `button`, `highlight` (formfill and navigate not yet supported).
 - **Use when**: Actions depend on CSS `:hover` states or you want users to learn by doing.
+- **Detailed docs**: See [Guided Interactions](guided-interactions.md) for configuration, section integration, timeout behavior, and troubleshooting.
 
 ```json
 {
@@ -349,19 +378,20 @@ When `doIt` is false:
 
 ## Choosing the Right Type
 
-| Need                                    | Block Type / Action           |
-|-----------------------------------------|-------------------------------|
-| Click by CSS selector                   | `interactive` + `highlight`   |
-| Click by button text                    | `interactive` + `button`      |
-| Enter text/select values                | `interactive` + `formfill`    |
-| Route change                            | `interactive` + `navigate`    |
-| Hover to reveal hidden UI               | `interactive` + `hover`       |
-| Teach a linear section                  | `section`                     |
-| Bundle micro-steps into one (automated) | `multistep`                   |
-| User performs steps manually            | `guided`                      |
-| Show different content by condition     | `conditional`                 |
-| Test user knowledge                     | `quiz`                        |
-| Collect user input for variables        | `input`                       |
+| Need                                    | Block Type / Action              |
+|-----------------------------------------|----------------------------------|
+| Click by CSS selector                   | `interactive` + `highlight`      |
+| Click by button text                    | `interactive` + `button`         |
+| Enter text/select values                | `interactive` + `formfill`       |
+| Route change                            | `interactive` + `navigate`       |
+| Hover to reveal hidden UI               | `interactive` + `hover`          |
+| Informational pause (no DOM action)     | `interactive` + `noop`           |
+| Teach a linear section                  | `section`                        |
+| Bundle micro-steps into one (automated) | `multistep`                      |
+| User performs steps manually            | `guided`                         |
+| Show different content by condition     | `conditional`                    |
+| Test user knowledge                     | `quiz`                           |
+| Collect user input for variables        | `input`                          |
 | Just explanation (no action)            | `interactive` with `doIt: false` |
 
 ---
@@ -370,5 +400,6 @@ When `doIt` is false:
 
 - [JSON Guide Format](json-guide-format.md) - Root structure and block overview
 - [JSON Block Properties](json-block-properties.md) - Complete property reference
+- [Guided Interactions](guided-interactions.md) - Detailed guided block documentation
 - [Requirements Reference](requirements-reference.md) - All supported requirements
 - [Selectors Reference](selectors-and-testids.md) - Stable selector patterns
