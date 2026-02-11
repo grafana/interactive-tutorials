@@ -956,17 +956,16 @@ Reusable JSON structures for common Grafana UI elements. These were validated th
 
 #### Multi-Level Menu Navigation
 
-Use `multistep` with `data-testid` nav links for navigation through nested menus. This pattern works whether menu sections are expanded or collapsed:
+Use `multistep` with `data-testid` nav links for **2-level navigation** (parent → child). Multisteps highlight each step, then click, allowing the nav section to expand before the next step.
 
 ```json
 {
   "type": "multistep",
-  "content": "Navigate to **Alerts & IRM > Alerting > Alert rules** from the main menu.",
+  "content": "Navigate to **Drilldown > Logs** from the main menu.",
   "requirements": ["navmenu-open"],
   "steps": [
-    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']" },
-    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']" },
-    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']" }
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/drilldown']" },
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-lokiexplore-app/explore']" }
   ]
 }
 ```
@@ -975,7 +974,25 @@ Use `multistep` with `data-testid` nav links for navigation through nested menus
 > - Uses `data-testid` (stable, intentional test hook)
 > - Uses `href` (predictable routes)
 > - Works whether menu sections are expanded or collapsed
-> - Clicking the link auto-expands parent sections
+> - Multisteps are inherently highlight-only; Pathfinder handles the click timing
+
+> ⚠️ **Limitation: Nested collapsible sections have timing issues**
+> 
+> Most multi-level navigation works fine (e.g., **Alerts & IRM > Alerting > Alert rules**).
+> 
+> However, paths where a **middle section is itself collapsible with children** (e.g., **Administration > Plugins and data > Plugins**) have unreliable timing. The inner section may not expand fast enough.
+> 
+> **For deeply nested collapsible sections, use plain markdown instead:**
+> ```json
+> {
+>   "type": "markdown",
+>   "content": "Navigate to **Administration > Plugins and data > Plugins**."
+> }
+> ```
+
+> ❌ **Don't use expand button selectors** (`button[aria-label*='section:']`)
+> 
+> Expand buttons **toggle** state — they collapse if already expanded. This breaks navigation when the section is already in the "wrong" state. Always use link selectors instead.
 
 **Common navigation selectors:**
 
