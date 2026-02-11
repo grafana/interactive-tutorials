@@ -1,0 +1,677 @@
+---
+name: autogen-guide
+description: Generate interactive guide content.json files from source code. Analyzes React/TypeScript UI components to extract structure, selectors, field metadata, and conditional logic, then produces a Pathfinder guide JSON. Use when the user provides GitHub links to source code and wants to create a guide from it, or asks to auto-generate a guide from code.
+---
+
+# AutoGen Guide from Source Code
+
+Generate an interactive guide `content.json` by analyzing UI source code. This skill orchestrates a multi-phase pipeline where **each phase runs in a sub-agent that loads only the context it needs**. The orchestrator (you) manages the workflow, user interactions, and handoffs.
+
+**Do NOT read external reference files upfront.** Each phase's sub-agent loads its own references. Everything the orchestrator needs is inline below.
+
+---
+
+## Workflow Overview
+
+```
+Input (GitHub URLs)
+  │
+  ├─ Phase 1: Acquire & Scope ─── orchestrator (no external reads)
+  │    Output: source files fetched, scope confirmed by user
+  │
+  ├─ Phase 2: Extract & Assess ── sub-agent loads extraction-patterns.md + selector-strategies.md
+  │    Output: {guide_dir}/EXTRACTION_REPORT.md
+  │
+  ├─ Checkpoint: Plan ──────────── orchestrator builds plan, user confirms
+  │    Output: {guide_dir}/GUIDE_PLAN.md
+  │
+  ├─ Phase 3: Generate Guide ──── per-section sub-agents, each loads authoring-guide.mdc
+  │    │                            + receives source code context for its section
+  │    │  3.1 Create guide shell (orchestrator)
+  │    │  3.2 For each section → sub-agent generates section JSON
+  │    │  3.3 Assemble sections into content.json (orchestrator)
+  │    │  3.4 Generate SELECTOR_REPORT.md (orchestrator)
+  │    Output: {guide_dir}/content.json + SELECTOR_REPORT.md
+  │
+  └─ Phase 4: Review & Fix ────── sub-agent loads review-guide-pr.mdc
+       Output: fixed content.json + change report
+```
+
+---
+
+## Critical Rules
+
+These rules apply to ALL generated guides. They are passed to sub-agents in their prompts.
+
+1. **No markdown titles** -- the guide `title` renders in the app frame; a leading `## Title` duplicates it
+2. **`exists-reftarget` is auto-applied** -- never add it manually to requirements
+3. **`navmenu-open`** required for any step targeting navigation menu elements
+4. **`on-page:/path`** required for page-specific interactive actions
+5. **Tooltips** -- under 250 characters, one sentence, don't name the highlighted element
+6. **`verify`** on all state-changing actions (Save, Create, Test)
+7. **`doIt: false` for secrets** -- never automate filling passwords/tokens/keys
+8. **Section bookends** -- brief "what you'll do" intro markdown, "what you've done" summary markdown
+9. **Sections, not markdown headers** -- group steps with `section` blocks, each with a unique kebab-case `id`
+10. **Connect sections** -- if section 1's objective creates a resource, section 2 should require it
+11. **Action-focused content** -- "Save your configuration" not "The save button can be clicked"
+12. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
+13. **`skippable: true`** for conditional fields and permission-gated steps
+14. **No multistep singletons** -- a `multistep` with one step must be a plain `interactive` block
+15. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` or set `doIt: false`
+
+---
+
+## Golden Examples
+
+These examples show the target output quality for common UI patterns. Pass the relevant ones to each section's sub-agent.
+
+### Example A: Tab with conditional fields
+
+The most common section pattern. Tab click → fields → conditional fields with `skippable` + `hint`.
+
+```json
+{
+  "type": "section",
+  "id": "authentication-settings",
+  "title": "Authentication Settings",
+  "requirements": ["on-page:/connections/datasources/edit"],
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Choose how the datasource authenticates with your API. Most public APIs need no auth; private APIs typically use Bearer tokens or API keys."
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Authentication",
+      "content": "Click the **Authentication** tab.",
+      "tooltip": "Configure credentials for APIs that require authentication."
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Bearer Token",
+      "doIt": false,
+      "content": "**Bearer Token** sends a static token in the Authorization header.",
+      "tooltip": "Use for JWT-based APIs or personal access tokens.",
+      "skippable": true,
+      "hint": "Select the auth method that matches your API."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "[aria-label='bearer token']",
+      "doIt": false,
+      "content": "Paste your **Bearer token** here.",
+      "tooltip": "Stored encrypted. Sent as Authorization: Bearer <token> with every request.",
+      "skippable": true,
+      "hint": "Select Bearer Token auth first to reveal this field."
+    },
+    {
+      "type": "markdown",
+      "content": "Each auth method reveals its own credential fields when selected."
+    }
+  ]
+}
+```
+
+Key things: section bookends (intro + summary), tab-click before fields, `skippable: true` with `hint` on conditional fields, `doIt: false` on secrets, no `exists-reftarget`, concise tooltips that don't name the highlighted element.
+
+### Example B: Card grid selection
+
+When the UI uses clickable cards (not a dropdown) for choosing an option. Each card is a `button` action with `doIt: false`.
+
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Basic Authentication",
+  "doIt": false,
+  "content": "**Basic Authentication** encodes username and password in the Authorization header.",
+  "tooltip": "Sends credentials with every request. Use for simple APIs.",
+  "skippable": true,
+  "hint": "Click any auth card to see its fields."
+}
+```
+
+Key things: `action: "button"` with the card's visible text, `doIt: false` so the user makes the choice, `skippable` because only one card applies.
+
+### Example C: Toggle switches and field arrays
+
+Toggles get `doIt: false` with an explanatory tooltip. Field arrays (add/remove) get the "Add" button highlighted with `doIt: false`.
+
+```json
+[
+  {
+    "type": "interactive",
+    "action": "highlight",
+    "reftarget": "label:has(span:contains('Skip TLS Verify'))",
+    "doIt": false,
+    "content": "**Skip TLS Verify** disables certificate validation.",
+    "tooltip": "Not recommended for production. Only for dev with self-signed certs.",
+    "skippable": true,
+    "hint": "Scroll to TLS / SSL Settings within the Network tab."
+  },
+  {
+    "type": "interactive",
+    "action": "button",
+    "reftarget": "Add Custom HTTP Header",
+    "doIt": false,
+    "content": "Click **Add Custom HTTP Header** to add key-value headers sent with every request.",
+    "tooltip": "Common uses: API versioning, content type, request tracing.",
+    "skippable": true
+  }
+]
+```
+
+Key things: toggles always `doIt: false`, field array uses button action on "Add" text with `doIt: false` (don't try to interact with dynamic row items).
+
+### Example D: Tab navigation when tab has no stable selector
+
+When a tab has no `data-testid`, use `:contains()` pseudo-selector with `doIt: false` and a `hint`. If the tab text is unique, `action: "button"` with the tab text can work.
+
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Network",
+  "doIt": false,
+  "content": "Click the **Network** tab for timeout, TLS/SSL, and proxy settings.",
+  "tooltip": "Configure connection behavior and security certificates."
+}
+```
+
+Key things: `action: "button"` with the tab label text. If the text isn't unique on the page, use `"reftarget": "div[role='tab']:contains('Network')"` or similar structural selector. Always `doIt: false` when the selector is fragile.
+
+### Example E: noop for complex concepts
+
+When no single element can be targeted but the user needs context.
+
+```json
+{
+  "type": "interactive",
+  "action": "noop",
+  "content": "**Proxy Settings** offer three modes: **Default** (uses environment vars), **None** (direct), and **URL** (custom proxy). Select **URL** to see proxy fields.",
+  "skippable": true
+}
+```
+
+Key things: `noop` when there's no sensible element to highlight. Keep it brief. Use `skippable` if the information isn't essential to the guide flow.
+
+---
+
+## Phase 1: Acquire and Scope (Orchestrator)
+
+You handle this phase directly. No sub-agent needed -- it's mostly tool calls.
+
+### 1.1 Parse the Input
+
+The user provides GitHub references:
+- **File URL**: `https://github.com/org/repo/blob/main/src/ConfigEditor.tsx`
+- **Directory URL**: `https://github.com/org/repo/tree/main/src/editors/config/`
+- **Repo + path hint**: `https://github.com/org/repo` with "look at `src/editors/`"
+
+Extract: `owner`, `repo`, `branch`, `path(s)`.
+
+### 1.2 Fetch the Source Code
+
+Shallow-clone the repo:
+
+```bash
+git clone --depth 1 --single-branch --branch <branch> https://github.com/<owner>/<repo>.git /tmp/autogen-<repo>
+```
+
+Or for individual files, use the GitHub MCP tools (`get_file_contents`) or `gh` CLI.
+
+If the user has already cloned the repo or provides local file paths, use those directly.
+
+### 1.3 Assess Scope
+
+Scan the linked code for interactive UI components. Look for these component names:
+`Field`, `InlineField`, `FieldSet`, `Input`, `Select`, `Switch`, `Button`, `TextArea`, `SecretInput`, `RadioButtonGroup`, `Checkbox`, `Slider`, `Alert`
+
+Count them and present to the user:
+
+> "The linked directory contains 6 component files with ~45 interactive elements across 8 sections. This will produce a guide with approximately 8 sections and 30-40 steps. Should I proceed, narrow, or expand?"
+
+Scope guidelines:
+- **< 5 elements**: Too small. Suggest expanding.
+- **5-40 elements**: Good scope for one guide.
+- **40-80 elements**: Large. Consider splitting into multiple guides.
+- **> 80 elements**: Must split or narrow.
+
+### 1.4 Identify the Entry Point
+
+Look for:
+- The file the user linked directly
+- Default exports named `ConfigEditor`, `QueryEditor`, `SettingsPage`, or similar
+- The component registered in `module.ts` or `plugin.json`
+
+### 1.5 Map the Component Tree
+
+From the entry point:
+1. Read the entry file, identify local imports (skip `@grafana/*`, `react`, etc.)
+2. For each imported component, read its file (one level deep max)
+3. Note which file renders which sub-components
+
+Record the commit SHA for provenance:
+```bash
+git -C /tmp/autogen-<repo> rev-parse HEAD
+```
+
+### 1.6 Create the Guide Directory
+
+Create `{guide-id}/` in the workspace root. The `guide-id` should be kebab-case, derived from the component's purpose (e.g., `infinity-config-tour`).
+
+Proceed to Phase 2 after the user confirms scope.
+
+---
+
+## Phase 2: Extract & Assess (Sub-Agent)
+
+Launch a sub-agent using the Task tool. This sub-agent loads the extraction and selector reference files, analyzes the source code, and writes a structured report.
+
+### Sub-agent prompt template
+
+Fill in `{placeholders}` and pass as the Task prompt:
+
+```
+You are analyzing React/TypeScript UI source code to extract interactive elements for a Pathfinder guide.
+
+**Read these reference files first:**
+1. `.cursor/skills/autogen-guide/extraction-patterns.md` -- component patterns, props extraction, conditional logic, traversal strategy
+2. `.cursor/skills/autogen-guide/selector-strategies.md` -- selector grading (Green/Yellow/Red), quality report template
+
+**Source files to analyze** (read each one):
+{list_of_source_file_paths}
+
+**Entry point component**: {entry_point_file}
+
+**Your task:**
+1. For each source file, identify all interactive UI components (Field, Input, Select, Switch, Button, SecretInput, TextArea, etc.)
+2. Extract metadata for each: label, description, placeholder, type, options, required, default value, conditional rendering
+3. Grade each element's best selector as Green (data-testid/id), Yellow (aria-label/name/button text), or Red (structural only)
+4. Detect conditional rendering patterns (logical AND, ternary, switch/case, array map)
+5. Identify logical section groupings (FieldSet, tabs, sub-components)
+6. Check for plugin.json if present -- extract plugin ID and name
+
+**Write your results** to `{guide_dir}/EXTRACTION_REPORT.md` using this structure:
+
+## Extraction Report
+
+**Source**: {repo}@{sha} -- {path}
+**Entry point**: {entry_point}
+**Files analyzed**: N
+**Sections identified**: N (list names)
+**Interactive elements**: N
+
+### Selector Quality
+- N/N Green (data-testid or id)
+- N/N Yellow (aria-label, button text, name)
+- N/N Red (structural only)
+
+### Sections
+
+For each section:
+#### Section Name
+- Source: file.tsx (lines N–M)
+- Fields: (table with columns: Label, Type, Best Selector, Grade, Conditional?)
+- UI patterns: tab nav | card grid | toggles | field array | nested conditionals | none
+
+### Conditional Fields
+- field → depends on condition
+
+### Weak Selectors
+(table with: Element, File:Line, Best Available, Suggested Fix)
+
+**Return** a brief summary: sections found, element count, selector quality breakdown, and any concerns.
+```
+
+After the sub-agent completes, present the extraction report summary to the user.
+
+---
+
+## Checkpoint: Build the Guide Plan (Orchestrator)
+
+After the user sees the extraction report, build a structural plan. Read `{guide_dir}/EXTRACTION_REPORT.md` and produce `{guide_dir}/GUIDE_PLAN.md`:
+
+```markdown
+## Guide Plan
+
+**Guide ID**: {guide-id}
+**Title**: {Guide Title}
+**Guide type**: Product Tour | Setup Guide | Feature Deep-Dive | Workflow Guide
+**Target page**: /connections/datasources/edit (or wherever the guide operates)
+**Plugin ID**: {plugin-id} (if applicable)
+
+### Navigation Sequence
+How the user reaches the target page (e.g., Main menu → Connections → Data sources → [instance])
+
+### Sections
+
+#### 1. {Section Name}
+- Section ID: {kebab-case-id}
+- Source file: {path/to/component.tsx} (lines N–M)
+- Tab/navigation prerequisite: "Click the Authentication tab" (or none)
+- Fields: {count} (target 3–8 interactive steps)
+- Key fields: {list of field labels}
+- Conditional groups: {e.g., "Bearer Token fields shown when auth type = bearer"}
+- UI patterns: tab nav | card grid | toggles | field array | nested conditionals
+- Requirements: [on-page:/path]
+- Objectives: [] (if any)
+- Chains from: independent | section-completed:{previous-id} (only if dependent)
+
+#### 2. {Section Name}
+...
+
+### Section Chaining
+Only chain when section N creates something section N+1 depends on.
+Independent tabs/pages should NOT chain — use `on-page:/path` instead.
+
+### Notes
+- Conditional field handling strategy
+- Known weak selectors and how they'll be handled
+- Any sections that should be skippable
+- Step budget concerns (any sections that may exceed 8 steps)
+```
+
+**Present the plan to the user.** Let them adjust section order, add/remove sections, or change the navigation sequence before proceeding. Confirm the source file mapping is correct — Phase 3 will pass these code snippets to per-section sub-agents.
+
+---
+
+## Phase 3: Generate Guide (Per-Section Sub-Agents)
+
+Instead of one monolithic sub-agent, generate the guide **section by section**. This keeps each sub-agent's context small and focused, prevents quality degradation in later sections, and allows source code context to flow through.
+
+### 3.1 Orchestrator: Create the Guide Shell
+
+Write the initial `{guide_dir}/content.json` with root structure and intro markdown:
+
+```json
+{
+  "id": "{guide_id}",
+  "title": "{guide_title}",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "{brief intro — what the guide covers, no markdown title}"
+    }
+  ]
+}
+```
+
+### 3.2 For Each Section: Launch a Sub-Agent
+
+Iterate through the sections in GUIDE_PLAN.md. For each section, launch a sub-agent that generates just that section's JSON.
+
+**Step budget**: aim for **3–8 interactive steps per section**. If a section would need more than 10, split it into sub-sections in the plan first. A complete guide should have **25–50 interactive steps** total.
+
+#### Per-section sub-agent prompt template
+
+Fill in `{placeholders}` and launch via the Task tool:
+
+```
+You are generating ONE section of a Pathfinder interactive guide as a JSON object.
+
+**Read this reference file first:**
+1. `.cursor/authoring-guide.mdc` -- block types, action types, requirements, best practices
+
+**Section to generate:**
+- Section ID: {section_id}
+- Section title: {section_title}
+- Requirements: {section_requirements_array}
+- Objectives: {section_objectives_array_or_none}
+- Tab/navigation prerequisite: {tab_click_description_or_none}
+- Fields in this section (from extraction report):
+{extraction_data_for_this_section}
+
+**Source code context** (relevant JSX for this section):
+```tsx
+{source_code_snippet_for_this_section}
+```
+
+**Critical rules** (violations are blocking):
+1. No markdown titles -- the section `title` is rendered by the app
+2. `exists-reftarget` is auto-applied -- never add it manually
+3. `navmenu-open` required for navigation menu element interactions
+4. `on-page:/path` required for page-specific actions
+5. Tooltips under 250 characters, one sentence, don't name the highlighted element
+6. `verify` on state-changing actions (Save, Create, Test)
+7. `doIt: false` for secrets -- never automate passwords/tokens/keys
+8. Start with a brief intro markdown, end with a brief summary markdown
+9. `skippable: true` + `hint` for conditional and permission-gated steps
+10. Action-focused language -- "Save your configuration" not "The save button can be clicked"
+11. Bold only GUI names -- "Click **Save & test**" not "Click the **Save & test** button"
+12. No multistep singletons -- single-step multistep → plain interactive block
+13. No focus-before-formfill -- highlight on input with doIt:true → use formfill or doIt:false
+
+**Action decision tree:**
+- Select/dropdown → `highlight` with `doIt: false`, explain options in tooltip
+- Input with sensible default → `formfill` with targetvalue
+- Input without sensible default → `highlight` with `doIt: false`, tooltip explains
+- Switch/toggle → `highlight` with `doIt: false`, tooltip explains when to enable
+- Button with stable text → `action: "button"`, reftarget: "Button Text"
+- SecretInput → always `doIt: false`, never fill secrets
+- Red/Yellow selector for input → always `doIt: false`
+- Card grid (clickable cards) → `action: "button"` with card text, `doIt: false`, `skippable: true`
+- Field array (add/remove) → highlight "Add" button with `doIt: false`, explain the pattern
+- Collapsible section → add expand step before child fields
+- Tab with no data-testid → `action: "button"` with tab text, `doIt: false`
+
+**Step budget:** Generate 3–8 interactive steps for this section. If the section has more fields than that, prioritize the most important ones and mention the rest in the intro or summary markdown.
+
+**Golden example:**
+{paste the matching golden example from SKILL.md — choose the example that best matches this section's UI patterns}
+
+**Your task:**
+1. Return a single JSON object: `{"type": "section", "id": "{section_id}", ...}`
+2. First block: brief intro markdown (what the user will do in this section)
+3. If a tab click is needed, that's the first interactive step
+4. Generate steps for each field per the action decision tree
+5. Last block: brief summary markdown (what the user configured)
+6. Return ONLY the section JSON object — no wrapper, no root structure
+
+**Also return** a brief text summary: step count, any selectors you're uncertain about, any fields you omitted and why.
+```
+
+#### Building the source code context
+
+For each section, include the **relevant source code snippet** — the JSX that renders this section's UI. Extract this during Phase 2 or at orchestration time:
+
+1. Read the component file identified in the extraction report for this section
+2. Find the JSX fragment that renders this section's fields (search for the FieldSet, tab panel, or component boundary)
+3. Include 30–80 lines of the relevant JSX in the prompt (trim imports and unrelated code)
+4. If the section maps to a sub-component, include that sub-component's full JSX return
+
+This gives the sub-agent direct access to prop names, conditional rendering, and selector attributes — not just the extraction summary.
+
+#### Choosing which golden example to pass
+
+Match the section's UI patterns to the golden examples:
+
+| Section pattern | Golden example |
+|----------------|---------------|
+| Tab with form fields + conditionals | Example A |
+| Card/button grid for selection | Example B |
+| Toggle switches or field arrays | Example C |
+| Tab with no stable selector | Example D |
+| Complex concept needing noop | Example E |
+| Mix of patterns | Pass Examples A + the most relevant other |
+
+### 3.3 Orchestrator: Assemble the Guide
+
+After all section sub-agents complete:
+
+1. **Read each returned section JSON** and validate it parses correctly
+2. **Append each section** to `{guide_dir}/content.json`'s `blocks` array, in plan order
+3. **Add the closing summary markdown** as the final block:
+   ```json
+   {
+     "type": "markdown",
+     "content": "{summary of what the user explored/configured, list the key sections, suggest next steps}"
+   }
+   ```
+4. **Write the assembled file** to `{guide_dir}/content.json`
+5. **Spot-check**: read the first and last 30 lines to verify structure and bookends
+
+### 3.4 Orchestrator: Generate Selector Report
+
+After assembly, write `{guide_dir}/SELECTOR_REPORT.md` by collating sub-agent feedback:
+
+```markdown
+## Selector Quality Report
+
+**Generated from**: `{owner}/{repo}@{sha}`
+**Date**: {date}
+**Guide**: `{guide_id}/content.json`
+
+### Summary
+- **Total interactive steps**: N
+- **Green (data-testid/id)**: n (percent%)
+- **Yellow (aria-label/button text)**: n (percent%)
+- **Red (structural only)**: n (percent%)
+
+### Uncertain Selectors
+(list selectors that sub-agents flagged as uncertain)
+
+### Suggestions for Source Code Authors
+(list elements that would benefit from `data-testid` attributes)
+```
+
+### Section chaining guidance
+
+Not every section needs `section-completed:previous`. Use chaining only when a prior section **creates something** the next section depends on:
+
+| Relationship | Use `section-completed`? |
+|-------------|------------------------|
+| Section 1 creates a datasource, section 2 queries it | Yes |
+| Section 1 is "Authentication," section 2 is "Network" (independent tabs) | No |
+| Section 1 navigates to a page, section 2 uses elements on that page | No — use `on-page:/path` instead |
+| Section is optional / educational only | No |
+
+---
+
+## Phase 4: Review & Fix (Sub-Agent)
+
+Launch a sub-agent to review and fix the assembled guide.
+
+### Sub-agent prompt template
+
+```
+You are reviewing an auto-generated Pathfinder guide for quality and correctness.
+
+**Read this reference file first:**
+1. `.cursor/review-guide-pr.mdc` -- complete review protocol (sections 1-4 are blocking checks)
+
+**Then read the guide:**
+2. `{guide_dir}/content.json`
+
+**Apply every check from sections 1-4** of the review protocol against the guide JSON.
+
+**Additionally check for these auto-generation-specific issues:**
+{tailored_items}
+
+For each issue found, **fix it directly** in `{guide_dir}/content.json`.
+
+After fixing all issues, **return a report**:
+- List of issues found and how each was fixed
+- Any issues that couldn't be auto-fixed (need human decision)
+- Confirmation that the guide JSON is valid/parseable
+- Confirmation that all section IDs are unique
+- Confirmation that the requirements chain is logical
+- Step count per section (flag any section with 0 interactive steps or >10)
+```
+
+### Building the tailored review checklist
+
+Before launching the review sub-agent, build `{tailored_items}` systematically from the Phase 2 extraction report. Walk through each category and include the item if it applies:
+
+```
+**Conditional fields** (include if extraction found conditional rendering):
+- These fields are conditional: {list field labels and their conditions}
+- Verify each has `skippable: true` and `hint` text explaining the prerequisite
+- Verify the prerequisite step (e.g., auth method selection) appears before dependent fields
+
+**Yellow selectors** (include if Yellow-grade selectors were used):
+- These steps use Yellow selectors: {list step descriptions and selectors}
+- For inputs: verify `doIt: false`
+- For buttons: verify `action: "button"` with text match
+- Verify tooltips explain the interaction
+
+**Red selectors** (include if Red-grade selectors were used):
+- These steps use Red (fragile) selectors: {list step descriptions and selectors}
+- ALL must have `doIt: false`
+- ALL must have educational tooltips
+
+**Tab navigation** (include if the guide has tabbed UI):
+- Tabs in this guide: {list tab names}
+- Verify each tab section starts with an interactive step targeting the tab
+- Verify the tab-click step uses `action: "button"` with tab text or a stable selector
+- Tabs should NOT be targeted via markdown "Click the X tab" — use an interactive step
+
+**Secret fields** (include if SecretInput components were found):
+- These fields are secrets: {list labels}
+- ALL must have `doIt: false`
+- Tooltip should mention values are stored encrypted
+
+**Section chaining** (include always):
+- Verify `section-completed` is only used when section N creates something section N+1 depends on
+- Independent sections (e.g., different config tabs) should NOT chain
+- Every section should have `on-page:/path` if its elements are page-specific
+
+**Step budget** (include always):
+- Verify each section has 3–8 interactive steps
+- Flag sections with 0 or 1 interactive steps (too thin)
+- Flag sections with >10 interactive steps (should be split)
+```
+
+---
+
+## Final Delivery (Orchestrator)
+
+After Phase 4 completes:
+
+1. **Read the review report** -- check if any issues couldn't be auto-fixed
+2. **Validate JSON** -- ensure `{guide_dir}/content.json` parses correctly
+3. **Spot-check** -- read the first and last sections to verify bookends and structure
+4. **Present to the user** -- summarize what was generated:
+   - Guide location: `{guide_dir}/content.json`
+   - Sections: N (list names)
+   - Total interactive steps: N (average per section)
+   - Selector quality: N Green, N Yellow, N Red
+   - Any compromises, omitted fields, or known issues
+   - Review fixes applied
+5. **Note the index.json entry** -- remind the user that an `index.json` entry is needed for the guide to appear in recommendations
+6. **Note selector improvements** -- point the user to `SELECTOR_REPORT.md` for upstream `data-testid` suggestions
+
+---
+
+## Optional Inputs
+
+The user may provide additional context. Use it when available:
+
+| Input | How to Use |
+|-------|-----------|
+| **Guide type hint** | "config tour", "setup guide" → influences plan structure |
+| **Target page path** | `/connections/datasources/edit` → use in `on-page:` requirements |
+| **Plugin ID** | `yesoreyeram-infinity-datasource` → use in `plugin-enabled:` requirement |
+| **Audience** | "beginners", "admins" → adjust tone and skippable steps |
+
+---
+
+## Error Handling
+
+### Source code is not React/TypeScript
+Report immediately. This skill is designed for React/TSX UI components. For other frameworks, describe what you found and suggest manual guide authoring with the `/new` command.
+
+### No stable selectors found
+Generate the guide anyway with all `doIt: false` steps. Every step becomes educational (show-only). Include a prominent note in the extraction report. The guide is still valuable for learning the UI, even if it can't automate interactions.
+
+### Imports from external packages
+When a component imports from packages you can't read (e.g., `@company/shared-components`), note the gap. Use the component's props and surrounding context to infer what it renders. Flag uncertainty in the extraction report.
+
+### Very large codebase
+If the component tree exceeds 15 files or 3000 lines, stop expanding imports and work with what you have. Report the boundary. Suggest the user narrow scope or split into multiple guides.
+
+### Sub-agent failures
+If a sub-agent returns an error or incomplete result, read its output, diagnose the issue, and either retry with adjusted parameters or handle the phase manually as a fallback.
