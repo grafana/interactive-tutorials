@@ -976,17 +976,20 @@ Use `multistep` with `data-testid` nav links for **2-level navigation** (parent 
 > - Works whether menu sections are expanded or collapsed
 > - Multisteps are inherently highlight-only; Pathfinder handles the click timing
 
-> ⚠️ **Limitation: Nested collapsible sections have timing issues**
+> ✅ **Multi-level navigation works reliably**
 > 
-> Most multi-level navigation works fine (e.g., **Alerts & IRM > Alerting > Alert rules**).
+> Even deeply nested paths like **Administration > Plugins and data > Plugins** work with multisteps.
 > 
-> However, paths where a **middle section is itself collapsible with children** (e.g., **Administration > Plugins and data > Plugins**) have unreliable timing. The inner section may not expand fast enough.
-> 
-> **For deeply nested collapsible sections, use plain markdown instead:**
 > ```json
 > {
->   "type": "markdown",
->   "content": "Navigate to **Administration > Plugins and data > Plugins**."
+>   "type": "multistep",
+>   "content": "Navigate to **Administration > Plugins and data > Plugins**.",
+>   "steps": [
+>     { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin']" },
+>     { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/plugins']" },
+>     { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/plugins']" }
+>   ],
+>   "requirements": ["navmenu-open"]
 > }
 > ```
 
