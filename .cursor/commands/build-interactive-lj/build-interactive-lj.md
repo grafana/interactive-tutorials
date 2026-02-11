@@ -93,7 +93,7 @@ Patterns discovered from building interactive content:
 | `input[placeholder="..."]` | `[aria-label="..."]` | Placeholder text may change; aria-label is more stable |
 | Generic classes (`.btn`) | `[data-testid="..."]` | Classes change frequently; test IDs are intentional |
 | `:nth-child()` selectors | Specific attributes | Position-based selectors break when UI reorders |
-| `Alerts & IRM` (with `&`) | `Alerts &amp; IRM` (HTML-encoded) | Aria-labels with `&` are stored as `&amp;` in the DOM |
+| `button[aria-label*='section:']` for nav | `a[data-testid='data-testid Nav menu item'][href='/path']` | Nav links work whether sections are expanded/collapsed |
 
 ### Selector Syntax Limitations
 
@@ -956,50 +956,41 @@ Reusable JSON structures for common Grafana UI elements. These were validated th
 
 #### Multi-Level Menu Navigation
 
-Use `multistep` for any navigation through nested menus:
+Use `multistep` with `data-testid` nav links for navigation through nested menus. This pattern works whether menu sections are expanded or collapsed:
 
 ```json
 {
   "type": "multistep",
-  "content": "Navigate to **[Section] > [Subsection] > [Page]**.",
+  "content": "Navigate to **Alerts & IRM > Alerting > Alert rules** from the main menu.",
   "requirements": ["navmenu-open"],
   "steps": [
-    { "action": "highlight", "reftarget": "button[aria-label*='section: [Section]']" },
-    { "action": "highlight", "reftarget": "button[aria-label*='section: [Subsection]']" },
-    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/[path]']" }
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']" },
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']" },
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']" }
   ]
 }
 ```
 
-> ⚠️ **Important: Use `aria-label*=` (contains) for expand buttons!**
-> 
-> The button's aria-label changes based on state:
-> - `"Expand section: Alerts &amp; IRM"` when closed
-> - `"Collapse section: Alerts &amp; IRM"` when open
-> 
-> Using `*=` (contains) matches both: `button[aria-label*='section: Alerts &amp; IRM']`
-> 
-> ⚠️ **Note:** The `&` in "Alerts & IRM" is stored as `&amp;` in the DOM. Always use `&amp;` in your selectors.
-
-**Expand buttons vs. Links:**
-
-| To Do This | Use This Selector |
-|------------|-------------------|
-| Expand/collapse a nav section | `button[aria-label*='section: Section Name']` |
-| Click a nav link (final step) | `a[data-testid='data-testid Nav menu item'][href='/path']` |
+> ✅ **Why this pattern works:**
+> - Uses `data-testid` (stable, intentional test hook)
+> - Uses `href` (predictable routes)
+> - Works whether menu sections are expanded or collapsed
+> - Clicking the link auto-expands parent sections
 
 **Common navigation selectors:**
 
-| Destination | Expand Button | Link |
-|-------------|---------------|------|
-| Connections | `button[aria-label*='section: Connections']` | — |
-| Alerts & IRM | `button[aria-label*='section: Alerts &amp; IRM']` | — |
-| Alerting | `button[aria-label*='section: Alerting']` | — |
-| Dashboards | `button[aria-label*='section: Dashboards']` | — |
-| Observability | `button[aria-label*='section: Observability']` | — |
-| Explore | — | `a[href="/explore"]` |
-| Alert rules | — | `a[data-testid='data-testid Nav menu item'][href='/alerting/list']` |
-| Add new connection | — | `a[href="/connections/add-new-connection"]` |
+| Destination | href | Full Selector |
+|-------------|------|---------------|
+| Connections | `/connections` | `a[data-testid='data-testid Nav menu item'][href='/connections']` |
+| Alerts & IRM | `/alerts-and-incidents` | `a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']` |
+| Alerting | `/alerting` | `a[data-testid='data-testid Nav menu item'][href='/alerting']` |
+| Alert rules | `/alerting/list` | `a[data-testid='data-testid Nav menu item'][href='/alerting/list']` |
+| Dashboards | `/dashboards` | `a[data-testid='data-testid Nav menu item'][href='/dashboards']` |
+| Explore | `/explore` | `a[data-testid='data-testid Nav menu item'][href='/explore']` |
+| Add new connection | `/connections/add-new-connection` | `a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']` |
+| Data sources | `/connections/datasources` | `a[data-testid='data-testid Nav menu item'][href='/connections/datasources']` |
+| Observability | `/observability` | `a[data-testid='data-testid Nav menu item'][href='/observability']` |
+| Application (App O11y) | `/a/grafana-app-observability-app` | `a[data-testid='data-testid Nav menu item'][href='/a/grafana-app-observability-app']` |
 
 ---
 
