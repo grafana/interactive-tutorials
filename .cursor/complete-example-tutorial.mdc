@@ -78,14 +78,14 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "button",
           "reftarget": "Add new data source",
-          "requirements": ["exists-reftarget"],
+
           "content": "Click Add new data source"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/datasources/prometheus']",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "Prometheus is a powerful monitoring system that collects time-series metrics from your applications and infrastructure. It's perfect for tracking performance indicators, resource usage, and application health.",
           "content": "Select Prometheus from the data source types"
         },
@@ -94,7 +94,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "input[id='basic-settings-name']",
           "targetvalue": "prometheus-main",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "Descriptive names help identify data sources in large deployments",
           "content": "Set a descriptive name for the data source"
         },
@@ -103,7 +103,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "input[id='connection-url']",
           "targetvalue": "http://prometheus:9090",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "The Prometheus URL tells Grafana where to find your metrics server. Port 9090 is the standard Prometheus port. In production, this might be https://prometheus.company.com or an internal service address.",
           "content": "Enter the Prometheus server URL"
         },
@@ -111,7 +111,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "button",
           "reftarget": "Save & test",
-          "requirements": ["exists-reftarget"],
+
           "verify": "has-datasource:prometheus-main",
           "content": "Save and test the connection"
         }
@@ -146,7 +146,7 @@ This complete guide demonstrates all interactive features and best practices. Us
             {
               "action": "button",
               "reftarget": "Add visualization",
-              "requirements": ["exists-reftarget"]
+
             },
             {
               "action": "button",
@@ -160,25 +160,25 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "textarea[data-testid='query-editor']",
           "targetvalue": "up",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "The up query shows how many monitoring targets are healthy. This is a fundamental availability metric that tells you if your monitoring infrastructure is working correctly.",
           "content": "Enter the availability query"
         },
         {
           "type": "multistep",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "Changes to stat visualization for single-value display",
           "content": "Open visualization picker and select Stat",
           "steps": [
             {
               "action": "button",
               "reftarget": "button[data-testid='toggle-viz-picker']",
-              "requirements": ["exists-reftarget"]
+
             },
             {
               "action": "highlight",
               "reftarget": "div[aria-label='Plugin visualization item Stat']",
-              "requirements": ["exists-reftarget"]
+
             }
           ]
         },
@@ -187,21 +187,21 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "input[data-testid='Panel editor option pane field input Title']",
           "targetvalue": "Targets Up",
-          "requirements": ["exists-reftarget"],
+
           "content": "Set descriptive panel title"
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Apply",
-          "requirements": ["exists-reftarget"],
+
           "content": "Apply the panel configuration"
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Add panel",
-          "requirements": ["exists-reftarget", "on-page:/dashboard"],
+          "requirements": ["on-page:/dashboard"],
           "content": "Add a second panel for trend analysis"
         },
         {
@@ -213,7 +213,7 @@ This complete guide demonstrates all interactive features and best practices. Us
             {
               "action": "button",
               "reftarget": "Add visualization",
-              "requirements": ["exists-reftarget"]
+
             },
             {
               "action": "button",
@@ -224,7 +224,7 @@ This complete guide demonstrates all interactive features and best practices. Us
               "action": "formfill",
               "reftarget": "textarea[data-testid='query-editor']",
               "targetvalue": "100 - (avg(rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)",
-              "requirements": ["exists-reftarget"]
+
             }
           ]
         },
@@ -233,7 +233,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "input[data-testid='Panel editor option pane field input Title']",
           "targetvalue": "CPU Usage %",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "Time series visualizations are perfect for showing how metrics change over time. This CPU usage percentage calculation helps you understand resource utilization patterns and plan capacity accordingly.",
           "content": "Set time series panel title"
         },
@@ -241,7 +241,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "button",
           "reftarget": "Apply",
-          "requirements": ["exists-reftarget"],
+
           "content": "Apply the time series panel"
         },
         {
@@ -253,18 +253,18 @@ This complete guide demonstrates all interactive features and best practices. Us
             {
               "action": "button",
               "reftarget": "Save dashboard",
-              "requirements": ["exists-reftarget"]
+
             },
             {
               "action": "formfill",
               "reftarget": "input[aria-label='Save dashboard title field']",
               "targetvalue": "System Monitoring",
-              "requirements": ["exists-reftarget"]
+
             },
             {
               "action": "button",
               "reftarget": "Save",
-              "requirements": ["exists-reftarget"]
+
             }
           ]
         }
@@ -293,7 +293,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='alert-rule-form']",
-          "requirements": ["exists-reftarget"],
+
           "doIt": false,
           "tooltip": "The alert rule form lets you define monitoring conditions that trigger notifications. You'll specify query conditions, evaluation frequency, threshold values, and notification channels to create proactive monitoring that keeps your systems healthy.",
           "content": "Examine the alert rule configuration interface"
@@ -303,14 +303,14 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "input[data-testid='alert-rule-name']",
           "targetvalue": "High CPU Usage Alert",
-          "requirements": ["exists-reftarget"],
+
           "content": "Name your alert rule descriptively"
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "prometheus-main",
-          "requirements": ["has-datasource:prometheus-main", "exists-reftarget"],
+          "requirements": ["has-datasource:prometheus-main"],
           "content": "Select Prometheus as the alert data source"
         },
         {
@@ -318,7 +318,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "textarea[data-testid='alert-query-editor']",
           "targetvalue": "100 - (avg(rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100) > 80",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "This alert query triggers when CPU usage exceeds 80%. The rate() function calculates per-second CPU usage, and the condition > 80 defines our threshold for what constitutes 'high' CPU usage.",
           "content": "Enter CPU usage alert condition"
         },
@@ -327,7 +327,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "action": "formfill",
           "reftarget": "input[data-testid='evaluation-interval']",
           "targetvalue": "1m",
-          "requirements": ["exists-reftarget"],
+
           "tooltip": "How often Grafana checks this condition",
           "content": "Set evaluation interval to 1 minute"
         },
@@ -335,7 +335,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "button",
           "reftarget": "Save rule",
-          "requirements": ["exists-reftarget"],
+
           "content": "Save the alert rule"
         }
       ]
@@ -372,7 +372,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='query-editor-container']",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "requirements": ["on-page:/explore"],
           "doIt": false,
           "tooltip": "Explore is your data investigation playground. Write queries, test hypotheses, and analyze metrics without creating permanent dashboards. It's perfect for incident troubleshooting and data discovery.",
           "content": "Learn about the Explore interface"
@@ -420,7 +420,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[title*='System Monitoring']",
-          "requirements": ["has-dashboard-named:System Monitoring", "exists-reftarget"],
+          "requirements": ["has-dashboard-named:System Monitoring"],
           "doIt": false,
           "tooltip": "Your System Monitoring dashboard now appears in the dashboard list. The star icon lets you favorite it for quick access, and the menu button provides options for sharing, exporting, or managing permissions.",
           "content": "Find your newly created monitoring dashboard"
@@ -429,7 +429,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "button",
           "reftarget": "System Monitoring",
-          "requirements": ["has-dashboard-named:System Monitoring", "exists-reftarget"],
+          "requirements": ["has-dashboard-named:System Monitoring"],
           "verify": "on-page:/d/",
           "content": "Open your System Monitoring dashboard"
         },
@@ -437,7 +437,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='panel-container']:first-of-type",
-          "requirements": ["exists-reftarget"],
+
           "doIt": false,
           "tooltip": "Your Targets Up panel shows real-time availability data. The large number indicates how many monitoring targets are healthy. This gives you an instant overview of your infrastructure health.",
           "content": "Review your availability monitoring panel"
@@ -446,7 +446,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='time-range-picker']",
-          "requirements": ["exists-reftarget"],
+
           "doIt": false,
           "tooltip": "The time range picker controls what time period your dashboard displays. Try Last 1 hour for recent data, Last 24 hours for daily patterns, or Last 7 days for weekly trend analysis.",
           "content": "Notice the time range controls"
@@ -455,7 +455,7 @@ This complete guide demonstrates all interactive features and best practices. Us
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='refresh-button']",
-          "requirements": ["exists-reftarget"],
+
           "doIt": false,
           "tooltip": "The refresh button updates your dashboard with the latest data. You can also enable auto-refresh to keep your monitoring views current without manual intervention - perfect for live monitoring scenarios.",
           "content": "Learn about dashboard refresh options"

@@ -16,7 +16,7 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
   "blocks": [
     {
       "type": "markdown",
-      "content": "# Guide Title\n\nIntroduction explaining what user will learn.\n\n- Learning objective 1\n- Learning objective 2\n- Learning objective 3"
+      "content": "Introduction explaining what user will learn.\n\n- Learning objective 1\n- Learning objective 2\n- Learning objective 3"
     },
     {
       "type": "section",
@@ -36,7 +36,7 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
     },
     {
       "type": "markdown",
-      "content": "## 🎉 Congratulations!\n\nSummary of what was accomplished.\n\n- ✅ Achievement 1\n- ✅ Achievement 2\n- ✅ Achievement 3\n\n**Next:** Link to next guide or suggested actions"
+      "content": "You've completed this guide.\n\n- Achievement 1\n- Achievement 2\n- Achievement 3\n\n**Next:** Link to next guide or suggested actions"
     }
   ]
 }
@@ -111,7 +111,7 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
   "blocks": [
     {
       "type": "markdown",
-      "content": "## Section 1: Set Up Data Source"
+      "content": "This guide walks you through configuring a Prometheus data source and creating your first monitoring dashboard."
     },
     {
       "type": "section",
@@ -121,56 +121,55 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
       "objectives": ["has-datasource:prometheus"],
       "blocks": [
         {
+          "type": "markdown",
+          "content": "Connect Grafana to your Prometheus server so you can query and visualize metrics."
+        },
+        {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/connections/datasources",
           "requirements": ["navmenu-open"],
           "verify": "on-page:/connections",
-          "content": "Navigate to data sources"
+          "content": "Navigate to data sources."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Add new data source",
-          "requirements": ["exists-reftarget"],
-          "content": "Add new data source"
+          "content": "Click **Add new data source**."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/datasources/prometheus']",
-          "requirements": ["exists-reftarget"],
-          "content": "Select Prometheus"
+          "content": "Select **Prometheus** from the list."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[id='basic-settings-name']",
           "targetvalue": "prometheus-datasource",
-          "requirements": ["exists-reftarget"],
-          "content": "Name the data source"
+          "content": "Name the data source."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[id='connection-url']",
           "targetvalue": "http://prometheus:9090",
-          "requirements": ["exists-reftarget"],
-          "content": "Set server URL"
+          "content": "Set the server URL."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Save & test",
-          "requirements": ["exists-reftarget"],
           "verify": "has-datasource:prometheus-datasource",
-          "content": "Save and test connection"
+          "content": "Click **Save & test** to verify the connection."
+        },
+        {
+          "type": "markdown",
+          "content": "Your Prometheus data source is ready. Grafana can now query your metrics."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "content": "## Section 2: Create Dashboard"
     },
     {
       "type": "section",
@@ -198,7 +197,7 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
   "blocks": [
     {
       "type": "markdown",
-      "content": "## Understanding Grafana Alerting"
+      "content": "Grafana Alerting monitors your metrics and notifies you when conditions are met. This guide shows you how alert rules work and walks you through creating one."
     },
     {
       "type": "section",
@@ -241,7 +240,7 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
   "blocks": [
     {
       "type": "markdown",
-      "content": "# Complete Monitoring Setup"
+      "content": "Set up end-to-end monitoring: connect a data source, build a dashboard, and create alert rules."
     },
     {
       "type": "section",
@@ -267,7 +266,7 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
       "id": "setup-monitoring-alerts",
       "title": "Setup Monitoring Alerts",
       "requirements": ["section-completed:create-monitoring-dashboard"],
-      "objectives": ["exists-reftarget"], // Check for alert rules
+      "objectives": ["on-page:/alerting/list"],
       "blocks": [
         // Alert setup
       ]
@@ -309,23 +308,26 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
 ```
 
 ### Section Introduction Patterns
+
+Section intros are the first `markdown` block inside a `section`. They briefly explain what the user will do and why. Do not use markdown headings — the section's `title` property already provides the heading.
+
 ```json
-// Goal-oriented
+// Goal-oriented (first block inside a section)
 {
   "type": "markdown",
-  "content": "## Section 1: Configure Prometheus Data Source\n\nIn this section, we'll connect Grafana to your Prometheus server so you can query and visualize your metrics."
+  "content": "Connect Grafana to your Prometheus server so you can query and visualize your metrics."
 }
 
 // Context-setting
 {
   "type": "markdown",
-  "content": "## Section 2: Create Your First Dashboard\n\nNow that your data source is configured, let's create a dashboard to display your Prometheus metrics in meaningful visualizations."
+  "content": "Now that your data source is configured, create a dashboard to display your Prometheus metrics."
 }
 
 // Problem-solving
 {
   "type": "markdown",
-  "content": "## Section 3: Set Up Alerting\n\nDashboards show you what happened, but alerts tell you when something is happening. Let's create alert rules to monitor your system proactively."
+  "content": "Dashboards show you what happened, but alerts tell you when something *is* happening. Create alert rules to monitor your system proactively."
 }
 ```
 
@@ -452,7 +454,7 @@ User request analysis:
 ### Choose Requirements
 ```
 Action context analysis:
-  DOM interaction → add "exists-reftarget"
+  exists-reftarget is auto-applied — never add it manually
   Navigation menu → add "navmenu-open"
   Specific page → add "on-page:/path"
   Admin feature → add "is-admin"
@@ -494,8 +496,7 @@ Content complexity analysis:
       "type": "interactive",
       "action": "button",
       "reftarget": "Add visualization",
-      "requirements": ["exists-reftarget"],
-      "content": "Add your first visualization"
+      "content": "Add your first visualization."
     },
     {
       "type": "interactive",
@@ -509,22 +510,19 @@ Content complexity analysis:
       "action": "formfill",
       "reftarget": "textarea[data-testid='query-editor']",
       "targetvalue": "up",
-      "requirements": ["exists-reftarget"],
-      "content": "Enter a basic query"
+      "content": "Enter a basic query."
     },
     {
       "type": "interactive",
       "action": "formfill",
       "reftarget": "input[data-testid='Panel editor option pane field input Title']",
       "targetvalue": "System Status",
-      "requirements": ["exists-reftarget"],
-      "content": "Set panel title"
+      "content": "Set the panel title."
     },
     {
       "type": "interactive",
       "action": "button",
       "reftarget": "Save dashboard",
-      "requirements": ["exists-reftarget"],
       "verify": "has-dashboard-named:My First Dashboard",
       "content": "Save the dashboard"
     }
@@ -540,7 +538,7 @@ Content complexity analysis:
   "blocks": [
     {
       "type": "markdown",
-      "content": "# Prometheus + Grafana Setup"
+      "content": "Set up Prometheus as a data source, build a monitoring dashboard, and configure alerts."
     },
     {
       "type": "section",
@@ -687,7 +685,7 @@ Content complexity analysis:
 - [ ] Section structure supports resumable progress
 
 ### Technical Quality Checklist
-- [ ] All DOM interactions include `exists-reftarget`
+- [ ] `exists-reftarget` is NOT manually added (it's auto-applied)
 - [ ] Navigation interactions include `navmenu-open`
 - [ ] Page-specific actions include `on-page:/path`
 - [ ] State-changing actions include `verify`
@@ -710,7 +708,7 @@ Content complexity analysis:
   "type": "interactive",
   "action": "button",
   "reftarget": "New scene",
-  "requirements": ["min-version:9.0.0", "exists-reftarget"],
+  "requirements": ["min-version:9.0.0"],
   "skippable": true,
   "tooltip": "Scenes feature requires Grafana 9.0+",
   "content": "Use new scenes feature (skip if older version)"
@@ -721,8 +719,7 @@ Content complexity analysis:
   "type": "interactive",
   "action": "button",
   "reftarget": "Create dashboard",
-  "requirements": ["exists-reftarget"],
-  "content": "Create dashboard using standard interface"
+  "content": "Create dashboard using standard interface."
 }
 ```
 
