@@ -956,17 +956,16 @@ Reusable JSON structures for common Grafana UI elements. These were validated th
 
 #### Multi-Level Menu Navigation
 
-Use `multistep` with `data-testid` nav links for navigation through nested menus. This pattern works whether menu sections are expanded or collapsed:
+Use `multistep` with `data-testid` nav links for **2-level navigation** (parent → child). Multisteps highlight each step, then click, allowing the nav section to expand before the next step.
 
 ```json
 {
   "type": "multistep",
-  "content": "Navigate to **Alerts & IRM > Alerting > Alert rules** from the main menu.",
+  "content": "Navigate to **Drilldown > Logs** from the main menu.",
   "requirements": ["navmenu-open"],
   "steps": [
-    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']" },
-    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']" },
-    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']" }
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/drilldown']" },
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-lokiexplore-app/explore']" }
   ]
 }
 ```
@@ -975,7 +974,28 @@ Use `multistep` with `data-testid` nav links for navigation through nested menus
 > - Uses `data-testid` (stable, intentional test hook)
 > - Uses `href` (predictable routes)
 > - Works whether menu sections are expanded or collapsed
-> - Clicking the link auto-expands parent sections
+> - Multisteps are inherently highlight-only; Pathfinder handles the click timing
+
+> ✅ **Multi-level navigation works reliably**
+> 
+> Even deeply nested paths like **Administration > Plugins and data > Plugins** work with multisteps.
+> 
+> ```json
+> {
+>   "type": "multistep",
+>   "content": "Navigate to **Administration > Plugins and data > Plugins**.",
+>   "steps": [
+>     { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin']" },
+>     { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/plugins']" },
+>     { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/plugins']" }
+>   ],
+>   "requirements": ["navmenu-open"]
+> }
+> ```
+
+> ❌ **Don't use expand button selectors** (`button[aria-label*='section:']`)
+> 
+> Expand buttons **toggle** state — they collapse if already expanded. This breaks navigation when the section is already in the "wrong" state. Always use link selectors instead.
 
 **Common navigation selectors:**
 
