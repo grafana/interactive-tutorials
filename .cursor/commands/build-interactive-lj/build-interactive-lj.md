@@ -79,6 +79,9 @@ These are common mistakes. Avoid them:
 - ❌ **Do NOT copy appendix selectors without verification** — Appendix patterns are templates; you MUST verify each selector exists on the actual page using browser tools
 - ❌ **Do NOT skip browser inspection** — Even if a pattern looks familiar, always confirm with Playwright snapshot
 - ❌ **Do NOT provide PR descriptions as plain text** — ALWAYS wrap PR descriptions in markdown code blocks so the user can copy them easily
+- ❌ **Do NOT use position-based selectors** — `:first-of-type`, `:nth-child()`, `:nth-match()` break when data changes between users
+- ❌ **Do NOT use data-dependent selectors** — Selectors containing metric names, service names, or label values fail for users with different data; use `^=` (starts-with) patterns instead
+- ❌ **Do NOT use non-standard CSS** — `:contains()`, `:has-text()`, `:nth-match()` are Playwright/jQuery-only and don't work in Pathfinder
 
 ---
 
@@ -94,6 +97,41 @@ Patterns discovered from building interactive content:
 | Generic classes (`.btn`) | `[data-testid="..."]` | Classes change frequently; test IDs are intentional |
 | `:nth-child()` selectors | Specific attributes | Position-based selectors break when UI reorders |
 | `button[aria-label*='section:']` for nav | `a[data-testid='data-testid Nav menu item'][href='/path']` | Nav links work whether sections are expanded/collapsed |
+
+### Selector Stability Anti-Patterns
+
+These patterns cause selectors to work for one user but fail for another—even in the same environment:
+
+| Anti-Pattern | Example | Why It Fails | Fix |
+|--------------|---------|--------------|-----|
+| **Position-based** | `:first-of-type`, `:nth-child(4)` | Order depends on data; different users see different lists | Use `data-testid` or `aria-label` |
+| **Data-dependent values** | `[data-testid='select-action-asserts:resource:threshold']` | Only works with specific metrics/services/labels | Use `^=` starts-with: `[data-testid^='select-action-']` |
+| **Hardcoded dynamic IDs** | `label[for='option-traceql-xyz123']` | IDs may include random suffixes | Use `^=` starts-with: `label[for^='option-traceql-']` |
+| **Non-standard CSS** | `:contains()`, `:nth-match()`, `:has-text()` | Playwright/jQuery-only, not standard CSS | Find `data-testid` or `aria-label` instead |
+| **Exact label matches** | `a[aria-label='Select detected_level']` | Label text includes data-specific values | Use `^=` starts-with: `a[aria-label^='Select ']` |
+
+#### Stability Verification Checklist
+
+**Before committing a selector, ask:**
+
+1. **Does it contain a data value?** (metric name, service name, label value)
+   - ❌ `button[data-testid='select-action-asserts:resource:threshold']`
+   - ✅ `button[data-testid^='select-action-']`
+
+2. **Does it assume position in a list?** (`:first-of-type`, `:nth-child()`)
+   - ❌ `a[data-testid='button-select-service']:first-of-type`
+   - ✅ `a[data-testid^='data-testid button-select-service']`
+
+3. **Is it Playwright/jQuery-specific syntax?**
+   - ❌ `button:contains('Include')` or `input:nth-match(1)`
+   - ✅ `button[data-testid='data-testid button-filter-include']`
+
+4. **Does the ID have a random suffix?**
+   - ❌ `label[for='option-traceql-abc123']`
+   - ✅ `label[for^='option-traceql-']`
+
+> 💡 **Pro tip:** When you find multiple valid selectors for an element, always prefer:
+> `data-testid` (exact) > `data-testid` (starts-with) > `aria-label` > `href` > other attributes
 
 ### Selector Syntax Limitations
 
@@ -572,6 +610,19 @@ When you find an element, choose selector in this order:
 4. Is a button with stable text? → Use `action: "button"` 🟡
 5. Has unique id? → Use `#id` 🟡
 6. None of above? → Try class-based, then ask user 🔴
+
+### Stability Check (REQUIRED)
+
+After selecting a selector, verify it's stable:
+
+| Check | If Yes... |
+|-------|-----------|
+| Does the selector contain a data value (metric name, service name, label)? | Use `^=` starts-with pattern |
+| Does the selector use position (`:first-of-type`, `:nth-child`)? | Find a `data-testid` or `aria-label` instead |
+| Does the selector use `:contains()` or `:nth-match()`? | Convert to standard CSS with `data-testid` |
+| Does the `id` or `for` attribute have random characters? | Use `^=` starts-with pattern |
+
+> ⚠️ **Why this matters:** Selectors that work for you may fail for colleagues with different data. Always prefer patterns that work regardless of the specific data displayed.
 
 **Display progress (use this exact format):**
 ```
