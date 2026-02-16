@@ -8,12 +8,18 @@
     },
     {
       "type": "section",
+      "id": "naviage-to-testing-multistep-guided",
+      "title": "Navigate to Secrets Configuration",
+      "requirements": [
+        "on-page:/",
+        "navmenu-open"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
-          "content": "Select Testing & Synthetics\n---\nFrom the Grafana homepage, navigate to Testing & Synthetics. This section includes both k6 Performance Testing and Synthetic Monitoring.",
+          "content": "Select Testing & Synthetics\n---",
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
@@ -23,7 +29,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-synthetic-monitoring-app/home']",
-          "content": "Move To The Synthetic Section\n---\nSelect Synthetics to access Grafana Cloud Synthetic Monitoring, where you can proactively monitor critical user flows, websites, and APIs from locations worldwide using browser, HTTP, ping, and other check types.",
+          "content": "Move To The Synthetic Section\n---\nThis is where you can create, manage and view insights from your Synthetic Monitoring checks.",
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
@@ -44,18 +50,12 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Tab Secrets']",
-          "content": "Select Secrets\n---\nIn the Config section, you'll see tabs for Access Tokens, Terraform, and Secrets. This is where you'll manage all your sensitive credentials for synthetic monitoring checks.\nImportant: Only users with the Grafana Admin role can create, edit, and delete secrets by default. Users with Editor and Viewer roles can be granted access through role-based access control (RBAC) using a fixed role.",
+          "content": "Select Secrets\n---\nThis is where you'll manage sensitive credentials for synthetic monitoring checks here. By default, only Grafana Admins can create, edit, or delete secrets. Editor and Viewer roles can only be granted access to update secrets.",
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
           ]
         }
-      ],
-      "id": "naviage-to-testing-multistep-guided",
-      "title": "Navigate to Secrets Configuration",
-      "requirements": [
-        "on-page:/",
-        "navmenu-open"
       ]
     },
     {
@@ -97,7 +97,7 @@
         },
         {
           "type": "multistep",
-          "content": "Create QuickPizza Password Secret\n---\nLet's create a password for a username credential",
+          "content": "Create QuickPizza Password Secret\n---\nLet's create a secret for a password credential",
           "steps": [
             {
               "action": "button",
@@ -126,7 +126,7 @@
         },
         {
           "type": "markdown",
-          "content": "### Using Secrets\n\nOnce created, secrets can be referenced in **scripted checks** and **scripted browser checks** using the `secrets` object.\n\n**Note:** Currently, secrets are only supported in scripted and browser checks. Support for HTTP checks and other check types is coming soon."
+          "content": "### Using Secrets\n\nSecrets can be referenced in scripted checks and browser checks. \n\nNote: Other check types don't yet support secrets."
         }
       ]
     },
@@ -152,7 +152,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='action create check']",
-          "content": "Select Create A Check\n---\nClick Create a new check to start building a check that uses your secrets.",
+          "content": "Select Create A Check\n---\nLet's start building a check that uses your secrets.",
           "requirements": [
             "exists-reftarget"
           ]
@@ -186,12 +186,12 @@
           "type": "interactive",
           "action": "formfill",
           "reftarget": "div[data-testid='data-testid Code editor container']",
-          "content": "In the script editor:\n\nImport the secrets module at the top:\n\n`import secrets from 'k6/secrets';`\n\nReference your secrets in the script:\n\n`const username = secrets.get('QuickPizza Username');`\n`const password = secrets.get('QuickPizza Password');`\n\n(Optional) Add a log to see how secrets are redacted:\n\n`console.log(`Trying to log secret: ${username}`);`\nNotice that the example script already includes secret placeholders as comments. Uncomment these lines to use them.",
+          "content": "In the script editor:\n\nImport the secrets module at the top:\n\n`import secrets from 'k6/secrets';`\n\nReference your secrets in the script:\n\n`const username = secrets.get('QuickPizza Username');`\n`const password = secrets.get('QuickPizza Password');`\n\n(Optional) Add a log to see how secrets are redacted:\n\n`console.log('Trying to log secret: ${username}');`\n\nNote: the example script already includes secret placeholders as comments. Uncomment these lines to use them.",
           "targetvalue": "@@CLEAR@@"
         },
         {
           "type": "multistep",
-          "content": "Complete the test\n---\nWe will complete the test",
+          "content": "Complete the test\n---\nWe will walk through the remaining steps to complete the test",
           "steps": [
             {
               "action": "highlight",
@@ -215,10 +215,12 @@
     },
     {
       "type": "section",
+      "id": "guide-section-81179",
+      "title": "How To Edit & Delete Secrets",
       "blocks": [
         {
           "type": "multistep",
-          "content": "Navigate to Synthetic Config",
+          "content": "Navigate to Synthetic Config\n---\nThis is where you can manage all existing secrets",
           "steps": [
             {
               "action": "highlight",
@@ -238,7 +240,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='config-content'] button:nth-match(6)",
-          "content": "Edit Secret",
+          "content": "Edit Secret\n---\nYou can always update secrets by clicking the edit button",
           "requirements": [
             "exists-reftarget"
           ]
@@ -247,7 +249,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[aria-label='Delete quickpizza-password']",
-          "content": "Delete Quick Pizza Password Secrets",
+          "content": "Delete QuickPizza Password Secret\n---\nLet's delete the secret for QuickPizza password credential",
           "requirements": [
             "exists-reftarget"
           ]
@@ -256,14 +258,12 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[aria-label='Delete quickpizza-username']",
-          "content": "Delete Quick Pizza Username Secrets",
+          "content": "Delete QuickPizza Username Secret\n---\nLet's delete the secret for QuickPizza username credential",
           "requirements": [
             "exists-reftarget"
           ]
         }
-      ],
-      "id": "guide-section-81179",
-      "title": "How To Edit & Delete Secrets"
+      ]
     },
     {
       "type": "markdown",
