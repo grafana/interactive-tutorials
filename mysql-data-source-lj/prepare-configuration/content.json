@@ -1,0 +1,39 @@
+{
+  "id": "mysql-data-source-prepare",
+  "title": "Prepare MySQL database configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you prepare the MySQL database configuration required for monitoring. This includes creating a dedicated monitoring user account with the necessary permissions and gathering the connection details needed for Grafana.\n\nCreating a dedicated monitoring user with minimal required privileges follows security best practices and ensures that the monitoring system has only the access it needs to collect metrics and logs.\n\n**Prerequisites**:\n\n- Check if the MySQL server is up and running.\n- Make sure that your firewall is open for MySQL server (default port is `3306`).\n\nTo prepare your MySQL database configuration, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Connect to your MySQL server as an administrative user:\n\n```bash\nmysql -u root -p\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Create a dedicated monitoring user for Grafana.:\n\n```sql\nCREATE USER 'grafanaReader' IDENTIFIED BY 'password';\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Grant the necessary privileges for monitoring:\n\n```sql\nGRANT SELECT ON performance_schema.* TO 'grafanaReader';\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Exit the MySQL client:\n\n```sql\nEXIT;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Test the monitoring user connection:\n\n```bash\nmysql -u grafanaReader -p -e \"SHOW STATUS LIKE 'Uptime';\"\n```"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll add the MySQL data source to your Grafana Cloud instance."
+    }
+  ]
+}
