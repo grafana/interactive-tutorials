@@ -1,0 +1,90 @@
+{
+  "id": "understanding-the-four-golden-signals-of-observability",
+  "title": "Understanding the Four Golden Signals of Observability",
+  "blocks": [
+    {
+      "type": "section",
+      "id": "guide-section-77662",
+      "title": "Introduction",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "This guide will explain the **Four Golden Signals** of Observability **- Latency, Traffic, Errors and Saturation -** with conceptual explanations and examples of how they can be visualized in a dashboard.\n\n# Introduction\n\nIn modern software systems observability is essential to maintaining reliability and performance. One of the most influential frameworks for measuring system health and user experience is the **Four Golden Signals**, popularized by Google’s Site Reliability Engineering (SRE) practices and first published in the [Google SRE Book in 2017](https://sre.google/sre-book/).\n\nBefore that, system monitoring was often ad hoc, focusing on host-level metrics (CPU, memory, disk). As systems grew into **complex, distributed architectures**, Google engineers realized traditional monitoring wasn’t enough — they needed a **universal, user-centric framework**.\n\nThe Four Golden Signals evolved as a set of metrics to describe the health of *any* service from an end-user perspective.\n\nOver time, this model became foundational to modern Observability practices.\n\n"
+        },
+        {
+          "type": "markdown",
+          "content": "# The Four Golden Signals\n\nThe Signals are explained in the [SRE Book](https://sre.google/sre-book/monitoring-distributed-systems/#xref_monitoring_golden-signals) and can be summarized as following:\n\n## Latency\n\n### Definition\n\nThe time it takes to service a request. It’s important to distinguish between the latency of successful requests and the latency of failed requests. For example, an HTTP 500 error triggered due to loss of connection to a database or other critical backend might be served very quickly; however, as an HTTP 500 error indicates a failed request, factoring 500s into your overall latency might result in misleading calculations. On the other hand, a slow error is even worse than a fast error! Therefore, it’s important to track error latency, as opposed to just filtering out errors.\n\nIt usually includes:\n\n- Network time\n- Processing time\n- Dependencies (databases, APIs, caches)\n\n**Example metrics:**\n\n- HTTP request duration\n- gRPC latency\n- Trace span duration\n\n### What to look for\n\n- **Tail latency** (p95/p99) matters more than averages\n- Sudden spikes often indicate downstream issues\n- Gradual increases may point to resource contention or scaling problems\n\n### Why it matters\n\nHigh latency directly affects user experience. Monitoring latency helps identify performance bottlenecks or overloaded components.\n\n## Traffic\n\nA measure of how much demand is being placed on your system, measured in a high-level system-specific metric. For a web service, this measurement is usually HTTP requests per second, perhaps broken out by the nature of the requests (e.g., static versus dynamic content). For an audio streaming system, this measurement might focus on network I/O rate or concurrent sessions. For a key-value storage system, this measurement might be transactions and retrievals per second.\n\nTraffic reflects the **load on the system**, usually in terms of:\n\n- Requests per second\n- Queries per second\n- Events processed\n\n**Example metrics:**\n\n- HTTP requests/sec\n- Kafka messages/sec\n- Database queries/sec\n\n### What to look for\n\n- Expected daily or weekly patterns\n- Sudden drops (potential outages)\n- Unexpected spikes (possible abuse, bugs, or launches)\n\n### Why it matters\n\nTracking traffic helps understand normal load patterns, forecast scaling needs, and detect sudden spikes (potential DDoS attacks or runaway clients).\n\n## Errors\n\nThe rate of requests that fail, either explicitly (e.g., HTTP 500s), implicitly (for example, an HTTP 200 success response, but coupled with the wrong content), or by policy (for example, \"If you committed to one-second response times, any request over one second is an error\"). Where protocol response codes are insufficient to express all failure conditions, secondary (internal) protocols may be necessary to track partial failure modes. Monitoring these cases can be drastically different: catching HTTP 500s at your load balancer can do a decent job of catching all completely failed requests, while only end-to-end system tests can detect that you’re serving the wrong content.\n\nErrors represent **requests that fail or produce incorrect results**.\n\nThis includes:\n\n- Explicit failures (5xx, exceptions)\n- Logical failures (wrong responses, partial results)\n- Sometimes client-side errors, depending on context\n\n**Example metrics:**\n\n- HTTP 5xx rate\n- gRPC error codes\n- Application-level failure counters\n\n### **What to look for**\n\n- Rising error *rate*, not just count\n- Correlation with deploys or config changes\n- Error spikes without traffic changes (often regressions)\n\n### Why it matters\n\nAn increase in error rates can indicate system bugs, dependency issues, or deployment regressions.\n\n## Saturation\n\nHow \"full\" your service is. A measure of your system fraction, emphasizing the resources that are most constrained (e.g., in a memory-constrained system, show memory; in an I/O-constrained system, show I/O). Note that many systems degrade in performance before they achieve 100% utilization, so having a utilization target is essential.\nIn complex systems, saturation can be supplemented with higher-level load measurement: can your service properly handle double the traffic, handle only 10% more traffic, or handle even less traffic than it currently receives? For very simple services that have no parameters that alter the complexity of the request (e.g., \"Give me a nonce\" or \"I need a globally unique monotonic integer\") that rarely change configuration, a static value from a load test might be adequate. As discussed in the previous paragraph, however, most services need to use indirect signals like CPU utilization or network bandwidth that have a known upper bound. Latency increases are often a leading indicator of saturation. Measuring your 99th percentile response time over some small window (e.g., one minute) can give a very early signal of saturation.\nFinally, saturation is also concerned with predictions of impending saturation, such as \"It looks like your database will fill its hard drive in 4 hours.\"\n\nSaturation indicates **h**ow much capacity is left before performance degrades.\n\nThis can apply to:\n\n- CPU\n- Memory\n- Disk I/O\n- Queues\n- Thread pools\n- Connection pools\n\n**Example metrics:**\n\n- CPU usage per pod or node\n- Memory working set\n- Queue length or backlog\n- Thread pool exhaustion\n\n### **What to look for**\n\n- Sustained high utilization (not brief spikes)\n- Growing queues\n- Saturation increasing *before* latency or errors\n\n## Why it matters\n\nA saturated system cannot process additional load efficiently. Monitoring saturation prevents cascading failures by identifying resource limits."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/dashboards/f/grafana-demodashboards-quickpizza",
+          "content": "# QuickPizza Demo Dashboard\n\nLet's look at an example dashboard that uses those Golden Signals. Navigate to the Dashboards folder of the QuickPizza Demo:"
+        },
+        {
+          "type": "guided",
+          "content": "Open the Performance Stats Dashboard",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[href='/d/a581fb5a-df38-45d7-83cb-d10835930fa1/performance-stats']"
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "The first panel shows the first Golden Signal **Latency**.",
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "section[data-testid='data-testid Panel header Frontend Response Latency'] div:nth-match(7)"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "It uses the following promql query\n\n```promql\nhistogram_quantile(0.95,sum(rate(http_server_request_duration_seconds_bucket{service_name=\"quickpizza-public-api\"}[$__rate_interval])) by (le))\n```\n\nwhere:\n\n- `rate(<expr>[$__rate_interval])`: Calculates the per-second average rate of increase of the time series in the range vector. Breaks in monotonicity (such as counter resets due to target restarts) are automatically adjusted for. Also, the calculation extrapolates to the ends of the time range, allowing for missed scrapes or imperfect alignment of scrape cycles with the range's time period.\n- `sum by(le) (<expr>)`: Calculates sum over dimensions while preserving label `le`.\n- `histogram_quantile(0.95, <expr>)`: Calculates the φ-quantile (0 ≤ φ ≤ 1) from the buckets of a histogram. The samples are the counts of observations in each bucket. Each sample must have a label `le` where the label value denotes the inclusive upper bound of the bucket. (Samples without such a label are silently ignored.) The histogram metric type automatically provides time series with the `_bucket` suffix and the appropriate labels.\n\n"
+        },
+        {
+          "type": "guided",
+          "content": "The second panel illustrates the Golden Signal **Traffic** visualizing the requests per second for each microservice.",
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "section[data-testid='data-testid Panel header Request Volume']"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "It uses the following promql query:\n\n```promql\nsum(rate(quickpizza_server_http_request_duration_seconds_count{service_namespace=\"quickpizza\", service_name=~\"$component\"}[$__rate_interval])) by (service_name)\n```\n\nwhere:\n\n- `rate(<expr>[$__rate_interval])`: Calculates the per-second average rate of increase of the time series in the range vector. Breaks in monotonicity (such as counter resets due to target restarts) are automatically adjusted for. Also, the calculation extrapolates to the ends of the time range, allowing for missed scrapes or imperfect alignment of scrape cycles with the range's time period.\n- `sum by(service_name) (<expr>)`: Calculates sum over dimensions while preserving label `service_name`."
+        },
+        {
+          "type": "guided",
+          "content": "Underneath the first row in the Details there is a panel for the Golden Signal **Error**.",
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-testid='data-testid Layout container row Details for $component'] section:nth-match(3)"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "It uses the following promql query:\n\n```promql\n(sum(rate(quickpizza_server_http_request_duration_seconds_sum{service_name=\"$component\",status!~\"(2..|0)\"}[$__rate_interval])) / sum(rate(quickpizza_server_http_request_duration_seconds_sum{service_name=\"$component\"}[$__rate_interval]))) or vector(0)\n```\n\nwhere:\n- `rate(<expr>[$__rate_interval])`: Calculates the per-second average rate of increase of the time series in the range vector. Breaks in monotonicity (such as counter resets due to target restarts) are automatically adjusted for. Also, the calculation extrapolates to the ends of the time range, allowing for missed scrapes or imperfect alignment of scrape cycles with the range's time period.\n- `sum(<expr>)`: Calculates sum over the dimensions.\n- `or vector(0)`: Returns 0 instead of \"no data\" when the left-hand side produces no time series.\n\nThis query is very common for visualizing errors as it calculates the fraction of all requests not returning a `2xx` HTTP code (numerator) compared to all requests (denominator)."
+        },
+        {
+          "type": "markdown",
+          "content": "# Where is Saturation? The RED method\n\nThis example dashboard does not have a panel showing the saturation. This is because this dashboard uses the so-called [RED method](https://grafana.com/blog/the-red-method-how-to-instrument-your-services/) which has been introduced by Grafana's CTO Tom Wilkie first in 2015 on a meetup and then [iterated on it at the GrafanaCon EU in 2018](https://grafana.com/blog/the-red-method-how-to-instrument-your-services/). \n\nThe RED method focuses on service-level, request-centric monitoring philosophy:\n- Rate (the number of requests per second)\n- Errors (the number of those requests that are failing)\n- Duration (the amount of time those requests take)\n\nSo the RED method is just like the Four Golden Signals, but without Saturation and where Duration directly maps to Latency when comparing with the Four Golden Signals.\n\n# The USE Method\n\nThe USE method, which has been popularized by [Brendan Gregg](https://www.brendangregg.com/usemethod.html) focuses on Infrastructure and resource-level monitoring:\n- Utilization (% time that the resource was busy)\n- Saturation (amount of work resource has to do, often queue length)\n- Errors (count of error events)\n\nwhere Utilization indirectly maps to Traffic when comparing with the Four Golden Signals because load manifests as utilization. Similarly, Saturation also indirectly maps to Latency as latency increases as saturation rises.\n\nTom Wilkie recommended at the GrafanaCon EU in 2018  to use USE and RED methods together: “It’s like the RED Method is about caring about your users and how happy they are,” Tom said, “and the USE Method is about caring about your machines and how happy they are. It’s really just two different views on the same system. They’re complimentary.”"
+        }
+      ],
+      "id": "guide-section-70164",
+      "title": "The Four Golden Signals in Practice"
+    }
+  ]
+}

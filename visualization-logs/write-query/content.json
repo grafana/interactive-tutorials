@@ -1,0 +1,98 @@
+{
+  "id": "visualization-logs-write-query",
+  "title": "Write a LogQL query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now that you've defined the requirements for your visualization, it's time to write the query. A query is an expression that specifies the dataset used in the visualization.\n\nLogQL generates two types of queries:\n- **Log queries**: Select and return log lines\n- **Metric queries**: Wrap a log query in a function to extract and return metrics"
+    },
+    {
+      "type": "markdown",
+      "content": "## Elements of a LogQL query\n\nA LogQL query consists of the following basic elements, as shown in the query `count_over_time({namespace=\"game-2048\"} |= \"error\" [$__auto])`, which selects logs from the `game-app` namespace, filters for lines containing \"error\", and counts them over 5-minute intervals."
+    },
+    {
+      "type": "markdown",
+      "content": "### Log stream selector\n\nA log stream selector determines which log streams to include in a query's results. A log stream is a unique source of log entries, defined by a combination of labels and their values. The selector is written by wrapping the label matchers in curly braces.\n\nFor example, `{namespace = game-app}` is a log stream selector that uses a filter expression. This selector returns all logs associated with a game app that's being monitored.\n\nOther common examples of selectors include:\n- `service_name`: Identifies the application or service generating the logs\n- `pod`: Specifies the name of the pod where the log originated\n- `filename`: Denotes the source file of the logs"
+    },
+    {
+      "type": "markdown",
+      "content": "### Log pipeline (optional)\n\nA log pipeline can be appended to a log stream selector to further process and filter log streams. It is composed of a set of expressions. Each expression is executed in left to right sequence for each log line. If an expression filters out a log line, the pipeline will stop processing the current log line and start processing the next log line.\n\nFor example, `|= \"error\"` is the log pipeline, which uses a line filter expression to retrieve only those log lines that contain the word `error`. You can also use other expressions, such as parser expressions or line format expressions."
+    },
+    {
+      "type": "markdown",
+      "content": "### Operation (optional)\n\nAn operation creates a metric query. Metric queries extend log queries by applying a function to log query results. This powerful feature creates metrics from logs.\n\nFor example, the `count_over_time` operation calculates the number of error logs received for each time interval."
+    },
+    {
+      "type": "markdown",
+      "content": "## How to write a LogQL query\n\nTo write a LogQL query using the Query Builder, complete the following steps:"
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "[data-testid=\"data-testid Select label\"]",
+      "content": "Select a key-value pair from the **Label filter** drop-down list.\n\nFor example, select `namespace`, `=`, and `game-app`.",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "**Did you know?** If you are unsure of the label name, you can click **Label browser** and search for the label."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "[data-testid=\"label-browser-button\"]",
+      "content": "Click **Label browser** to explore available labels and values.",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Refresh",
+      "content": "Click **Refresh** located in the top-right corner of the dashboard.\n\nThe visualization should populate with data.",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "**Did you know?** At this stage, you can save the dashboard and share it with others. The current dashboard includes a Logs panel displaying all logs within the selected namespace. However, this view offers limited utility for troubleshooting.\n\nIn the next steps, you'll learn how to apply a filter expression and aggregation to the log data to monitor the count of error logs per time interval."
+    },
+    {
+      "type": "markdown",
+      "content": "To define a log pipeline expression, select a line filter operator.\n\nFor example, select **Line contains** and enter `error`. The system returns all error logs. All other log types (warning, info) aren't included in the Logs panel."
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Operations",
+      "content": "Click **+ Operations** and select a function.\n\nFor example, click **Range function > Count over time**.",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "[data-testid=\"data-testid visualization picker\"]",
+      "content": "From the **Visualization** drop-down list located in the upper-right of the page, select **Time series**.",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "**Did you know?** When you apply an operation to log data, you are creating a metrics LogQL query."
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Refresh",
+      "content": "Click **Refresh** located in the top-right corner of the dashboard.\n\nThe visualization updates to show a time series graph.",
+      "doIt": false,
+      "requirements": ["exists-reftarget"]
+    },
+    {
+      "type": "markdown",
+      "content": "## More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Understand labels](/docs/loki/latest/get-started/labels/)\n- [Log queries](/docs/loki/latest/query/log_queries/)\n- [Log label filters](/docs/grafana/latest/datasources/loki/query-editor/#label-filters)\n- [Metric queries](/docs/loki/latest/query/metric_queries/)\n- [Log operations](/docs/grafana/latest/datasources/loki/query-editor/#operations)"
+    }
+  ]
+}
