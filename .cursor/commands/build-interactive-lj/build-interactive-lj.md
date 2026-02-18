@@ -14,11 +14,11 @@ This command automates the creation of interactive content (`content.json` files
 - [Ask: Which Learning Path?](#ask-which-learning-path)
 - [Step 1: Environment Validation](#step-1-environment-validation)
 - [Step 2: Learning Path Validation](#step-2-learning-path-validation)
-- [Step 2.5: Create Recommender Mapping](#step-25-create-recommender-mapping-if-needed)
-- [Step 3: Scaffold Content Files](#step-3-scaffold-content-files)
-- [Step 4: Selector Discovery](#step-4-selector-discovery)
-- [Step 5: Test in Pathfinder](#step-5-test-in-pathfinder-one-milestone-at-a-time)
-- [Step 6: Report and Next Steps](#step-6-report-and-next-steps)
+- [Step 3: Create Recommender Mapping](#step-3-create-recommender-mapping-if-needed)
+- [Step 4: Scaffold Content Files](#step-4-scaffold-content-files)
+- [Step 5: Selector Discovery](#step-5-selector-discovery)
+- [Step 6: Test in Pathfinder](#step-6-test-in-pathfinder-one-milestone-at-a-time)
+- [Step 7: Report and Next Steps](#step-7-report-and-next-steps)
 - [Quick Reference](#quick-reference)
 - [Appendix: Proven Patterns](#appendix-proven-patterns)
 
@@ -30,13 +30,13 @@ When executing this command, you MUST follow these principles:
 
 0. **Read and internalize the command file** — Before displaying the welcome message, silently read through this entire command file. Then commit this critical rule to your working memory:
 
-   > **CRITICAL TESTING RULE:** During Step 5 (Test in Pathfinder), the AI's ONLY job is to import JSON into the Block Editor. The USER does ALL testing by clicking "Show me", "Do it", and interactive buttons themselves. The AI must NEVER click these buttons. Wait for user feedback, then fix issues based on what they report.
+   > **CRITICAL TESTING RULE:** During Step 6 (Test in Pathfinder), the AI's ONLY job is to import JSON into the Block Editor. The USER does ALL testing by clicking "Show me", "Do it", and interactive buttons themselves. The AI must NEVER click these buttons. Wait for user feedback, then fix issues based on what they report.
 
    This rule exists because the user can test faster and catch visual/UX issues that automation misses.
 
 1. **Follow steps in order** — Do NOT skip or combine steps. Each step exists for a reason.
 
-2. **Test ONE milestone at a time** — In Step 5, test only ONE milestone, report results, then STOP and ASK the user before testing the next milestone. Do NOT batch test all milestones at once.
+2. **Test ONE milestone at a time** — In Step 6, test only ONE milestone, report results, then STOP and ASK the user before testing the next milestone. Do NOT batch test all milestones at once.
 
 3. **ASK before fixing issues** — When you find a broken selector, STOP, explain the problem, describe the proposed fix, and ASK the user for permission before making changes. Do NOT automatically attempt fixes.
 
@@ -49,9 +49,9 @@ When executing this command, you MUST follow these principles:
 
 6. **Let the user handle git** — Do NOT run `git commit` or `git push`. Summarize changes and let the user decide when to commit.
 
-7. **Ask when uncertain** — If a step is ambiguous or you're unsure how to proceed, ask the user rather than guessing.
+7. **Be autonomous, not interrogative** — Analyze the learning path content and make intelligent decisions. Don't ask the user questions that can be inferred from context (e.g., which recommender file, URL patterns, platform). Just do the work and show them the result.
 
-8. **Re-read before critical steps** — Before Step 3 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 4 (Selector Discovery), re-read the "Selector Priority" table.
+8. **Re-read before critical steps** — Before Step 4 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 5 (Selector Discovery), re-read the "Selector Priority" table.
 
 9. **Reference the appendix** — Before scaffolding any learning path, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your learning path's UI elements.
 
@@ -356,96 +356,42 @@ Recommender mapping: ✅ Found / ❌ Not found
 
 ---
 
-## Step 2.5: Create Recommender Mapping (if needed)
+## Step 3: Create Recommender Mapping (if needed)
 
 ### When to Run This Step
 
 Only run this step if Step 2 reported: **Recommender mapping: ❌ Not found**
 
-If the mapping was found (✅), skip to Step 3.
+If the mapping was found (✅), skip to Step 4.
 
-### Tutorial Mode Introduction
+### Autonomous Mapping Creation
 
-```
-**Step 2.5: Create Recommender Mapping**
+**Automatically analyze the learning path and create the mapping without asking questions.**
 
-The learning path isn't mapped in the recommender yet, which means it won't 
-appear in Pathfinder automatically. I'll create a mapping rule so users can 
-discover this learning path.
+**Decision logic:**
 
-I'll need to determine:
-- Which recommender file to add it to (based on where users will be when they need this guide)
-- What URL patterns should trigger the recommendation
-- Whether it's for Cloud, OSS, or both
+1. **Recommender file** - Infer from the learning path's primary context:
+   - Data source setup/connection → `connections-cloud.json` or `connections-oss.json`
+   - Dashboard creation/visualization → `dashboards-cloud.json` or `dashboards-oss.json`
+   - Query/exploration → `explore-cloud.json` or `explore-oss.json`
+   - Alerting → `alerting-cloud.json` or `alerting-oss.json`
+   - Observability features → `observability-cloud.json` or `observability-oss.json`
 
-Ready to proceed? (Y/n)
-```
+2. **URL pattern** - Infer from the learning path content:
+   - If it mentions specific data source type → `/connections/datasources/[type]`
+   - If it's about dashboards → `/dashboards`
+   - If it's about exploration → `/explore`
+   - If it's about a specific app plugin → `/a/[plugin-id]`
+   - Default for dashboards → `/dashboards`
 
-Wait for confirmation, then create mapping.
-
-### Expert Mode
-
-Create mapping immediately without introduction.
-
-### Determine the Correct Recommender File
-
-Ask the user which context makes sense for this learning path:
-
-```
-Where should users see this learning path recommended?
-
-Common options:
-1. **Connections** - When configuring data sources or integrations
-2. **Explore** - When exploring/querying data
-3. **Dashboards** - When building dashboards
-4. **Alerting/IRM** - When setting up alerts
-5. **Observability** - When using observability features
-6. **Other** - Specify a different area
-
-Which area best fits "[learning-path-title]"? (1-6)
-```
-
-Wait for user response.
-
-### Determine URL Pattern
-
-Based on the learning path content, suggest URL patterns:
-
-```
-What URL pattern should trigger this recommendation?
-
-Suggested patterns based on the learning path:
-- `/explore` - Explore interface
-- `/connections/datasources/[datasource-type]` - Specific data source pages
-- `/dashboards` - Dashboard pages
-- `/alerting` - Alerting pages
-
-You can also specify custom patterns like:
-- `/connections/datasources/elasticsearch` (specific data source)
-- `/a/[plugin-id]` (specific app plugin)
-
-Enter the URL pattern (or press Enter to use suggestion): 
-```
-
-Wait for user input.
-
-### Determine Target Platform
-
-```
-Which Grafana platform(s) should see this recommendation?
-
-1. **Cloud only** - Grafana Cloud users
-2. **OSS only** - Self-hosted Grafana users
-3. **Both** - All users
-
-Select platform: (1-3)
-```
-
-Wait for user response.
+3. **Target platform** - Determine from the learning path:
+   - Mentions "Grafana Cloud" throughout → Cloud only
+   - Mentions "self-hosted" or "OSS" → OSS only
+   - Generic/works for both → Both platforms
 
 ### Create Mapping Entry
 
-Based on user responses, create the mapping JSON:
+Automatically create the mapping JSON:
 
 **For Cloud:**
 - File: `grafana-recommender/internal/configs/state_recommendations/[area]-cloud.json`
@@ -489,7 +435,7 @@ Based on user responses, create the mapping JSON:
 **Display:**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 2.5 complete: Recommender Mapping Created
+✅ Step 3 complete: Recommender Mapping Created
 
 Added mapping to:
 ├── grafana-recommender/internal/configs/state_recommendations/[file].json
@@ -500,7 +446,7 @@ Mapping details:
 ├── Platform: [cloud/oss/both]
 └── Context: [area]
 
-⏳ Next: Step 3 - Scaffold Content Files
+⏳ Next: Step 4 - Scaffold Content Files
    Ready to proceed? (Y/n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -514,12 +460,12 @@ Mapping details:
 
 ---
 
-## Step 3: Scaffold Content Files
+## Step 4: Scaffold Content Files
 
 ### Tutorial Mode Introduction
 
 ```
-**Step 3: Scaffold Content Files**
+**Step 4: Scaffold Content Files**
 
 I'll create the content.json structure for each milestone:
 - Read the source markdown from the website repo
@@ -697,7 +643,7 @@ Before proceeding to Step 4, verify EACH content.json file:
 **Display (use this exact format):**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 3 complete: Scaffold
+✅ Step 4 complete: Scaffold
 
 Created [N] content.json files:
 ├── [slug]-lj/milestone-1/content.json ([N] blocks)
@@ -706,14 +652,14 @@ Created [N] content.json files:
 
 Verification: All checks passed ✓
 
-⏳ Next: Step 4 - Selector Discovery
+⏳ Next: Step 5 - Selector Discovery
    Ready to open the test environment?
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
 
-## Step 4: Selector Discovery
+## Step 5: Selector Discovery
 
 ### Re-Read Before Starting
 
@@ -724,7 +670,7 @@ You MUST try selectors in this order: data-testid → aria-label → href → id
 
 Selector discovery happens by walking through the actual Grafana UI at: `https://learn.grafana-ops.net/`
 
-> ⚠️ **Important:** This is different from testing in Pathfinder (Step 5), which uses 
+> ⚠️ **Important:** This is different from testing in Pathfinder (Step 6), which uses 
 > `https://learn.grafana-ops.net/?pathfinder-dev=true`
 
 Playwright opens a **fresh browser with no session**. Before discovering selectors:
@@ -749,7 +695,7 @@ Please log in when the browser window appears. Let me know when you're logged in
 ### Tutorial Mode Introduction
 
 ```
-**Step 4: Selector Discovery**
+**Step 5: Selector Discovery**
 
 I'll use browser automation to find selectors for each interactive element:
 - Navigate to the relevant Grafana pages
@@ -825,7 +771,7 @@ Before proceeding to Step 5, verify:
 **Display (use this exact format):**
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 4 complete: Selector Discovery
+✅ Step 5 complete: Selector Discovery
 
 Results by milestone:
 ├── [milestone-1]: [N] selectors found
@@ -837,20 +783,20 @@ Selector quality:
 ├── 🟡 Medium confidence: [N]
 └── 🔴 Failed/needs review: [N]
 
-⏳ Next: Step 5 - Test in Pathfinder
+⏳ Next: Step 6 - Test in Pathfinder
    Ready to test? (Y/n)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
 
-## Step 5: Test in Pathfinder (Collaborative Testing)
+## Step 6: Test in Pathfinder (Collaborative Testing)
 
 ### Access the Block Editor
 
 Testing happens in **Pathfinder Dev Mode** at: `https://learn.grafana-ops.net/?pathfinder-dev=true`
 
-> ⚠️ **Important:** This is different from selector discovery (Step 4), which uses 
+> ⚠️ **Important:** This is different from selector discovery (Step 5), which uses 
 > `https://learn.grafana-ops.net/` to walk through the actual UI.
 
 Dev mode must be enabled before you can access the Block Editor. If this is the user's first time, direct them to SETUP.md section 4.
@@ -899,7 +845,7 @@ Testing is a **collaborative process** where AI and user work together:
 ### Tutorial Mode Introduction
 
 ```
-**Step 5: Test in Pathfinder**
+**Step 6: Test in Pathfinder**
 
 We'll test collaboratively ONE MILESTONE AT A TIME:
 - I'll load the content.json and switch to Preview mode
@@ -922,7 +868,12 @@ Same behavior — load milestone, user tests, fix issues as reported.
 
 1. Navigate to `https://learn.grafana-ops.net/?pathfinder-dev=true` (if not already there)
 2. Open the Block Editor from the Pathfinder sidebar (Dev tools → Interactive guide editor)
-3. Import the content.json for THIS milestone only
+3. **Load the JSON using "Edit JSON" method:**
+   - Click "Start new guide" to clear the editor (if needed)
+   - Click "Edit JSON" button
+   - Read the content.json file for this milestone
+   - Use browser automation to paste the JSON into the editor
+   - Save/apply the JSON
 4. Switch to Preview mode
 5. **Tell user: "Ready for testing! Please click through the Show me / Do it buttons and let me know what works and what doesn't."**
 6. **STOP. WAIT. Do nothing until the user responds.** — The AI must NOT click any buttons.
@@ -930,6 +881,8 @@ Same behavior — load milestone, user tests, fix issues as reported.
 8. After user confirms milestone passes, **ASK** before loading next milestone
 
 > ⚠️ **Reminder:** After step 5, the AI's job is done until the user provides feedback. Do not proceed, do not click buttons, do not test. Just wait.
+
+> 💡 **Technical note:** Use "Edit JSON" button instead of "Import JSON guide" to avoid file upload dialogs. The Edit JSON approach allows direct text input via browser automation.
 
 ---
 
@@ -1005,7 +958,7 @@ Only after all milestones have been tested and user has confirmed each one:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 5 Complete: All Milestones Tested
+✅ Step 6 Complete: All Milestones Tested
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Milestones tested: [N]/[N]
@@ -1014,13 +967,13 @@ Milestones tested: [N]/[N]
 ├── [milestone-3]: 🟡 [N] blocks needed fixes
 └── [milestone-4]: ✅ All blocks passed
 
-Proceeding to Step 6: Final Summary...
+Proceeding to Step 7: Final Summary...
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ---
 
-## Step 6: Report and Next Steps
+## Step 7: Report and Next Steps
 
 ### Summary (use this exact format)
 
