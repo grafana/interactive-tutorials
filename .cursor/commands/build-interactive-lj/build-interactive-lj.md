@@ -14,6 +14,7 @@ This command automates the creation of interactive content (`content.json` files
 - [Ask: Which Learning Path?](#ask-which-learning-path)
 - [Step 1: Environment Validation](#step-1-environment-validation)
 - [Step 2: Learning Path Validation](#step-2-learning-path-validation)
+- [Step 2.5: Create Recommender Mapping](#step-25-create-recommender-mapping-if-needed)
 - [Step 3: Scaffold Content Files](#step-3-scaffold-content-files)
 - [Step 4: Selector Discovery](#step-4-selector-discovery)
 - [Step 5: Test in Pathfinder](#step-5-test-in-pathfinder-one-milestone-at-a-time)
@@ -69,6 +70,7 @@ These are common mistakes. Avoid them:
 - ❌ **Do NOT automatically fix broken selectors** — When you find an issue, STOP, explain the problem, describe your proposed fix, and ASK for permission before making changes. The user needs visibility into what's happening.
 - ❌ **Do NOT skip the welcome message** — It sets expectations for the session
 - ❌ **Do NOT combine multiple steps** — Each step has verification built in
+- ❌ **Do NOT skip any milestones during scaffolding** — EVERY milestone needs a content.json, even conceptual/intro/conclusion pages. Use markdown blocks for non-interactive content.
 - ❌ **Do NOT create content.json without reading source markdown first** — You need context
 - ❌ **Do NOT use placeholder selectors** — Never leave `"[selector]"` or `"TODO"` in files
 - ❌ **Do NOT proceed to testing with empty selectors** — All selectors must be discovered first
@@ -192,7 +194,8 @@ Here's what our session will look like:
    automation, GitHub CLI). Takes about 30 seconds.
 
 2. **Find your learning journey** — I'll locate the source content and list 
-   all the milestones we'll be making interactive.
+   all the milestones we'll be making interactive. If needed, I'll also create 
+   a recommender mapping so the journey appears in Pathfinder.
 
 3. **Scaffold the files** — I'll create the content.json structure for each 
    milestone, converting your markdown steps into interactive blocks.
@@ -353,6 +356,164 @@ Recommender mapping: ✅ Found / ❌ Not found
 
 ---
 
+## Step 2.5: Create Recommender Mapping (if needed)
+
+### When to Run This Step
+
+Only run this step if Step 2 reported: **Recommender mapping: ❌ Not found**
+
+If the mapping was found (✅), skip to Step 3.
+
+### Tutorial Mode Introduction
+
+```
+**Step 2.5: Create Recommender Mapping**
+
+The learning path isn't mapped in the recommender yet, which means it won't 
+appear in Pathfinder automatically. I'll create a mapping rule so users can 
+discover this learning path.
+
+I'll need to determine:
+- Which recommender file to add it to (based on where users will be when they need this guide)
+- What URL patterns should trigger the recommendation
+- Whether it's for Cloud, OSS, or both
+
+Ready to proceed? (Y/n)
+```
+
+Wait for confirmation, then create mapping.
+
+### Expert Mode
+
+Create mapping immediately without introduction.
+
+### Determine the Correct Recommender File
+
+Ask the user which context makes sense for this learning path:
+
+```
+Where should users see this learning path recommended?
+
+Common options:
+1. **Connections** - When configuring data sources or integrations
+2. **Explore** - When exploring/querying data
+3. **Dashboards** - When building dashboards
+4. **Alerting/IRM** - When setting up alerts
+5. **Observability** - When using observability features
+6. **Other** - Specify a different area
+
+Which area best fits "[learning-path-title]"? (1-6)
+```
+
+Wait for user response.
+
+### Determine URL Pattern
+
+Based on the learning path content, suggest URL patterns:
+
+```
+What URL pattern should trigger this recommendation?
+
+Suggested patterns based on the learning path:
+- `/explore` - Explore interface
+- `/connections/datasources/[datasource-type]` - Specific data source pages
+- `/dashboards` - Dashboard pages
+- `/alerting` - Alerting pages
+
+You can also specify custom patterns like:
+- `/connections/datasources/elasticsearch` (specific data source)
+- `/a/[plugin-id]` (specific app plugin)
+
+Enter the URL pattern (or press Enter to use suggestion): 
+```
+
+Wait for user input.
+
+### Determine Target Platform
+
+```
+Which Grafana platform(s) should see this recommendation?
+
+1. **Cloud only** - Grafana Cloud users
+2. **OSS only** - Self-hosted Grafana users
+3. **Both** - All users
+
+Select platform: (1-3)
+```
+
+Wait for user response.
+
+### Create Mapping Entry
+
+Based on user responses, create the mapping JSON:
+
+**For Cloud:**
+- File: `grafana-recommender/internal/configs/state_recommendations/[area]-cloud.json`
+
+**For OSS:**
+- File: `grafana-recommender/internal/configs/state_recommendations/[area]-oss.json`
+
+**For Both:**
+- Add to both `-cloud.json` and `-oss.json` files
+
+**Mapping JSON structure:**
+
+```json
+{
+  "title": "[Learning path title from _index.md]",
+  "url": "https://grafana.com/docs/learning-paths/[slug]/",
+  "description": "Step-by-step guide: [Learning path title].",
+  "type": "learning-journey",
+  "match": {
+    "and": [
+      {
+        "urlPrefix": "[url-pattern]"
+      },
+      {
+        "targetPlatform": "cloud" // or "oss"
+      }
+    ]
+  }
+}
+```
+
+### Insert Mapping
+
+1. Read the target recommender file(s)
+2. Parse the JSON
+3. Find an appropriate location in the `rules` array (group with similar learning journeys)
+4. Insert the new mapping entry
+5. Write the updated JSON back to the file
+6. Validate JSON syntax
+
+**Display:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Step 2.5 complete: Recommender Mapping Created
+
+Added mapping to:
+├── grafana-recommender/internal/configs/state_recommendations/[file].json
+
+Mapping details:
+├── Title: [title]
+├── URL pattern: [pattern]
+├── Platform: [cloud/oss/both]
+└── Context: [area]
+
+⏳ Next: Step 3 - Scaffold Content Files
+   Ready to proceed? (Y/n)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Important Notes
+
+- **JSON formatting:** Maintain consistent indentation (2 spaces) and formatting
+- **Placement:** Insert learning-journey entries near other learning journeys in the file
+- **Validation:** After editing, validate JSON syntax before proceeding
+- **Multiple platforms:** If "Both" is selected, ensure entries are identical except for `targetPlatform`
+
+---
+
 ## Step 3: Scaffold Content Files
 
 ### Tutorial Mode Introduction
@@ -379,28 +540,46 @@ Scaffold immediately without introduction.
 > 💡 **Before scaffolding:** See "Appendix: Proven Patterns" for reusable JSON structures 
 > that match common Grafana UI elements (navigation, forms, buttons, etc.).
 
-### Which Milestones Need content.json?
+### CRITICAL: Scaffold ALL Milestones
 
-**Create content.json for milestones that have:**
-- Numbered steps telling users to click, navigate, or interact with the Grafana UI
-- Form inputs, button clicks, or menu navigation
-- Any action that can be highlighted with "Show me" or automated with "Do it"
+**You MUST create content.json for EVERY milestone in the learning path.**
 
-**Skip milestones that are:**
-- Purely conceptual/educational (e.g., "Why alerting matters")
-- Introduction or overview pages with no UI actions
-- Conclusion/outro pages (e.g., "Congratulations, you completed...")
-- External-only actions (e.g., "Run this command on your server")
+This includes:
+- ✅ Milestones with interactive UI steps (use `interactive` blocks)
+- ✅ Purely conceptual/educational milestones (use `markdown` blocks)
+- ✅ Introduction or overview pages (use `markdown` blocks)
+- ✅ Conclusion/outro pages (use `markdown` blocks)
+- ✅ External-only actions (use `markdown` or `guided` blocks)
 
-**Quick test:** If the milestone has no numbered steps that reference clicking something in Grafana, skip it.
+**Why scaffold everything?**
+- Pathfinder needs a content.json for every milestone to track progress through the learning path
+- Even non-interactive milestones need to be represented so users can mark them complete
+- Skipping milestones breaks the learning path flow
 
-For each milestone that qualifies:
+**For each milestone:**
 1. Read `website/content/docs/learning-paths/[slug]/[milestone]/index.md`
 2. Create `interactive-tutorials/[slug]-lj/[milestone]/content.json`
 3. Convert content using these rules:
-   - Numbered steps → `interactive` blocks with `action: "highlight"` and empty `reftarget`
-   - Explanatory text → `markdown` blocks
-   - Sequential navigation steps (e.g., "Navigate to X > Y > Z") → `multistep` blocks
+
+**For milestones WITH interactive UI steps:**
+- Numbered steps that reference Grafana UI → `interactive` blocks with `action: "highlight"` and empty `reftarget`
+- Sequential navigation steps (e.g., "Navigate to X > Y > Z") → `multistep` blocks
+- Explanatory text between steps → `markdown` blocks
+
+**For milestones WITHOUT interactive UI steps (conceptual/intro/conclusion):**
+- Convert ALL content to `markdown` blocks
+- Use a single markdown block with the full milestone content
+- Example structure:
+  ```json
+  {
+    "blocks": [
+      {
+        "type": "markdown",
+        "content": "[Full milestone content converted from markdown]"
+      }
+    ]
+  }
+  ```
 
 ### JSON Schema Requirements
 
