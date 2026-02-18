@@ -1,6 +1,6 @@
-# Build Interactive Learning Journey
+# Build Interactive Learning Path
 
-This command automates the creation of interactive content (`content.json` files) for learning journeys in Grafana Pathfinder.
+This command automates the creation of interactive content (`content.json` files) for learning paths in Grafana Pathfinder.
 
 ---
 
@@ -11,9 +11,9 @@ This command automates the creation of interactive content (`content.json` files
 - [Lessons Learned](#lessons-learned)
 - [Welcome](#welcome)
 - [Ask: First Time?](#ask-first-time)
-- [Ask: Which Learning Journey?](#ask-which-learning-journey)
+- [Ask: Which Learning Path?](#ask-which-learning-path)
 - [Step 1: Environment Validation](#step-1-environment-validation)
-- [Step 2: Learning Journey Validation](#step-2-learning-journey-validation)
+- [Step 2: Learning Path Validation](#step-2-learning-path-validation)
 - [Step 3: Scaffold Content Files](#step-3-scaffold-content-files)
 - [Step 4: Selector Discovery](#step-4-selector-discovery)
 - [Step 5: Test in Pathfinder](#step-5-test-in-pathfinder-one-milestone-at-a-time)
@@ -52,7 +52,7 @@ When executing this command, you MUST follow these principles:
 
 8. **Re-read before critical steps** — Before Step 3 (Scaffolding), re-read the "JSON Schema Requirements" section. Before Step 4 (Selector Discovery), re-read the "Selector Priority" table.
 
-9. **Reference the appendix** — Before scaffolding any LJ, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your LJ's UI elements.
+9. **Reference the appendix** — Before scaffolding any learning path, consult "Appendix: Proven Patterns" for reusable JSON structures. Apply patterns that match your learning path's UI elements.
 
 10. **ALWAYS use browser tools for selectors** — You MUST use Playwright to discover selectors by inspecting the actual DOM. NEVER guess selectors or copy them from the appendix without verifying they exist on the current page. The appendix shows patterns; browser inspection confirms reality.
 
@@ -168,7 +168,7 @@ Some UI patterns are better documented as markdown instructions rather than auto
 
 ### Integration-Specific Notes
 
-For **integration setup flows** (Linux, Windows, macOS, MySQL, etc.):
+For **integration setup learning paths** (Linux, Windows, macOS, MySQL, etc.):
 - The "Run Grafana Alloy" expand button works: `[data-testid="agent-config-button"]`
 - Token creation and "Test connection" buttons are conditional — use markdown
 - "Install" button for dashboards/alerts works: `action: "button"` with `reftarget: "Install"`
@@ -180,7 +180,7 @@ For **integration setup flows** (Linux, Windows, macOS, MySQL, etc.):
 When a writer runs `/build-interactive-lj`, display this welcome:
 
 ```
-👋 Welcome to the Interactive Learning Journey Builder!
+👋 Welcome to the Interactive Learning Path Builder!
 
 I'm here to help you create interactive content that powers the "Show me" and 
 "Do it" buttons in Grafana Pathfinder. By the end of our session, you'll have 
@@ -251,18 +251,18 @@ Wait for confirmation.
 
 ---
 
-## Ask: Which Learning Journey?
+## Ask: Which Learning Path?
 
 ```
-Which learning journey would you like to make interactive?
+Which learning path would you like to make interactive?
 
 Provide the slug (the folder name) from:
-website/content/docs/learning-journeys/
+website/content/docs/learning-paths/
 
 Examples: prometheus, github-data-source, mysql-data-source
 ```
 
-Wait for the user to provide the LJ slug, then proceed to Step 1.
+Wait for the user to provide the learning path slug, then proceed to Step 1.
 
 ---
 
@@ -308,14 +308,14 @@ Check these and display results:
 
 ---
 
-## Step 2: Learning Journey Validation
+## Step 2: Learning Path Validation
 
 ### Tutorial Mode Introduction
 
 ```
-**Step 2: Learning Journey Validation**
+**Step 2: Learning Path Validation**
 
-I'll locate the "[slug]" learning journey and:
+I'll locate the "[slug]" learning path and:
 - Find all milestones (the steps users complete)
 - Check if it's mapped in the recommender (so it appears in Pathfinder)
 
@@ -330,13 +330,13 @@ Validate immediately without introduction.
 
 ### Validate
 
-1. Find source: `website/content/docs/learning-journeys/[slug]/`
+1. Find source: `website/content/docs/learning-paths/[slug]/`
 2. List all milestones found
 3. Search `grafana-recommender` for mapping rules
 
 **Display:**
 ```
-Found learning journey: [title]
+Found learning path: [title]
 
 Milestones:
 1. [milestone-1-title] (milestone-1-slug)
@@ -348,7 +348,7 @@ Recommender mapping: ✅ Found / ❌ Not found
 
 **On success:**
 ```
-✅ Learning journey validated. Ready to scaffold [N] milestones.
+✅ Learning path validated. Ready to scaffold [N] milestones.
 ```
 
 ---
@@ -395,7 +395,7 @@ Scaffold immediately without introduction.
 **Quick test:** If the milestone has no numbered steps that reference clicking something in Grafana, skip it.
 
 For each milestone that qualifies:
-1. Read `website/content/docs/learning-journeys/[slug]/[milestone]/index.md`
+1. Read `website/content/docs/learning-paths/[slug]/[milestone]/index.md`
 2. Create `interactive-tutorials/[slug]-lj/[milestone]/content.json`
 3. Convert content using these rules:
    - Numbered steps → `interactive` blocks with `action: "highlight"` and empty `reftarget`
@@ -553,7 +553,7 @@ Playwright opens a **fresh browser with no session**. Before discovering selecto
 1. **Navigate to the test environment** using Playwright: `https://learn.grafana-ops.net/`
 2. **User must manually log in** through the Playwright browser window (Okta SAML)
 3. **Wait for user confirmation** that they are logged in
-4. **Walk through the UI flow** — navigate to pages where the LJ actions happen and inspect the DOM
+4. **Walk through the UI flow** — navigate to pages where the learning path actions happen and inspect the DOM
 
 > ⚠️ **The AI cannot log the user in** — authentication requires manual user action 
 > in the Playwright-controlled browser window.
@@ -592,7 +592,7 @@ Discover immediately without introduction.
 
 Walk through the actual Grafana UI at `https://learn.grafana-ops.net/` to find selectors:
 
-1. Navigate to the starting page for the LJ (e.g., Dashboards page for dashboard creation flows)
+1. Navigate to the starting page for the learning path (e.g., Dashboards page for dashboard creation flows)
 2. For each interactive block with empty `reftarget`:
    - Navigate to the relevant page in Grafana
    - Use Playwright snapshot to inspect the DOM
@@ -847,7 +847,7 @@ Proceeding to Step 6: Final Summary...
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🎉 BUILD COMPLETE: [slug] Interactive LJ
+🎉 BUILD COMPLETE: [slug] Interactive Learning Path
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 RESULTS
@@ -868,7 +868,7 @@ ISSUES FILED (if any)
 NEXT STEPS
 1. Review the content.json files in your editor
 2. Stage files: git add [slug]-lj/
-3. Commit with message: "Add interactive content for [slug] LJ"
+3. Commit with message: "Add interactive content for [slug] learning path"
 4. Push and create PR
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -884,7 +884,7 @@ Would you like a Slack-ready summary? (Y/n)
 
 If yes, display:
 ```
-🎯 Interactive LJ complete: [slug]
+🎯 Interactive learning path complete: [slug]
 ✅ [N]/[N] milestones interactive
 📝 [N] issues filed for broken selectors
 🔗 Ready for PR
@@ -896,7 +896,7 @@ When the user asks for a PR description, ALWAYS provide it in a markdown code bl
 
 ````
 ```markdown
-## Add interactive content for `[slug]` learning journey
+## Add interactive content for `[slug]` learning path
 
 ### Summary
 
@@ -921,7 +921,7 @@ When the user asks for a PR description, ALWAYS provide it in a markdown code bl
 
 ### Related
 
-- Learning journey: `/docs/learning-journeys/[slug]/`
+- Learning path: `/docs/learning-paths/[slug]/`
 ```
 ````
 
@@ -936,7 +936,7 @@ Use this template:
 ```
 gh issue create \
   --repo grafana/interactive-tutorials \
-  --title "[Selector] [element] in [LJ name]" \
+  --title "[Selector] [element] in [learning path name]" \
   --body "## Element
 [Description of the UI element]
 
@@ -956,7 +956,7 @@ gh issue create \
 ## Quick Reference
 
 ### Key Files
-- Source: `website/content/docs/learning-journeys/[slug]/`
+- Source: `website/content/docs/learning-paths/[slug]/`
 - Output: `interactive-tutorials/[slug]-lj/`
 - Mapping: `grafana-recommender/internal/configs/`
 
@@ -1225,7 +1225,7 @@ When user needs to verify something worked:
 
 ### Integration Setup Patterns
 
-These patterns are specific to integration/data source setup LJs (Linux, Windows, macOS, MySQL, etc.):
+These patterns are specific to integration/data source setup learning paths (Linux, Windows, macOS, MySQL, etc.):
 
 #### Alloy Installation Expand Button
 
