@@ -1,0 +1,186 @@
+{
+  "id": "configure-saml",
+  "title": "Configure SAML Authentication",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This guide walks you through configuring SAML authentication in Grafana. SAML (Security Assertion Markup Language) enables single sign-on (SSO) by allowing users to authenticate through an external Identity Provider (IdP).\n\nYou will learn to:\n\n- Access SAML configuration settings\n- Configure basic SAML settings\n- Set up Identity Provider details\n- Enable and test SAML authentication\n\n**Note:** You must be an administrator to configure SAML authentication."
+    },
+    {
+      "type": "section",
+      "id": "access-saml-settings",
+      "title": "Access SAML Settings",
+      "requirements": ["is-admin"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "First, navigate to the SAML configuration page in the Administration section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin']",
+          "requirements": ["navmenu-open"],
+          "content": "Click **Administration** in the main menu."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/admin/authentication']",
+          "requirements": ["on-page:/admin"],
+          "content": "Click **Authentication** in the Administration section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href*='saml'], button:contains('SAML')",
+          "tooltip": "The SAML authentication tab contains all settings for configuring single sign-on with your Identity Provider.",
+          "content": "Click the **SAML** tab to access SAML configuration."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "enable-saml",
+      "title": "Enable SAML Authentication",
+      "requirements": ["section-completed:access-saml-settings", "is-admin"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Enable SAML authentication and configure the basic settings to connect Grafana with your Identity Provider."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[type='checkbox'][id*='saml-enabled'], div[role='switch']:contains('Enable')",
+          "doIt": false,
+          "tooltip": "This toggle enables or disables SAML authentication. When enabled, users can log in through your configured Identity Provider.",
+          "content": "Toggle to enable SAML authentication."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='entity-id'], input[name*='entity']",
+          "doIt": false,
+          "tooltip": "The Entity ID uniquely identifies your Grafana instance to the Identity Provider. This is typically a URL like https://grafana.example.com.",
+          "content": "Enter your Grafana Entity ID."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='metadata-url'], input[name*='metadata']",
+          "doIt": false,
+          "tooltip": "The IdP Metadata URL points to your Identity Provider's configuration. Your IdP provider will supply this URL.",
+          "content": "Enter the Identity Provider Metadata URL."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-idp-details",
+      "title": "Configure Identity Provider Details",
+      "requirements": ["section-completed:enable-saml", "is-admin"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Configure how Grafana communicates with your Identity Provider and maps user attributes."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='sso-url'], input[name*='sso']",
+          "doIt": false,
+          "tooltip": "The SSO URL is the endpoint where Grafana sends SAML authentication requests. Your IdP will provide this URL.",
+          "content": "Enter the Single Sign-On URL from your Identity Provider."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='assertion-attribute-name'], input[name*='name']",
+          "doIt": false,
+          "tooltip": "Attribute mapping tells Grafana which SAML attributes contain user information like name and email. Common values are 'displayName' or 'name'.",
+          "content": "Configure the name attribute mapping."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='assertion-attribute-email'], input[name*='email']",
+          "doIt": false,
+          "tooltip": "The email attribute maps to the user's email address in the SAML response. This is typically 'email' or 'mail'.",
+          "content": "Configure the email attribute mapping."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='assertion-attribute-login'], input[name*='login']",
+          "doIt": false,
+          "tooltip": "The login attribute uniquely identifies the user. Common values are 'username', 'login', or 'uid'.",
+          "content": "Configure the login attribute mapping."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-role-mapping",
+      "title": "Configure Role Mapping",
+      "requirements": ["section-completed:configure-idp-details", "is-admin"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Optionally configure role mapping to automatically assign Grafana roles based on SAML attributes or groups from your Identity Provider."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='role-attribute'], input[name*='role']",
+          "doIt": false,
+          "tooltip": "Role mapping allows automatic assignment of Grafana roles (Admin, Editor, Viewer) based on attributes from your IdP.",
+          "content": "Configure role attribute mapping (optional)."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='admin-role'], input[value*='Admin']",
+          "doIt": false,
+          "tooltip": "Specify which role value from your IdP should map to Grafana Admin role.",
+          "content": "Map Identity Provider roles to Grafana Admin role."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id*='editor-role'], input[value*='Editor']",
+          "doIt": false,
+          "tooltip": "Specify which role value from your IdP should map to Grafana Editor role.",
+          "content": "Map Identity Provider roles to Grafana Editor role."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "save-configuration",
+      "title": "Save and Test Configuration",
+      "requirements": ["section-completed:configure-idp-details", "is-admin"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Save your SAML configuration and test the authentication flow."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "tooltip": "Save your SAML configuration. Make sure all required fields are filled before saving.",
+          "content": "Click **Save** to apply the SAML configuration."
+        },
+        {
+          "type": "markdown",
+          "content": "After saving, you can test SAML authentication by:\n\n1. Opening a new private/incognito browser window\n2. Navigating to your Grafana instance\n3. Clicking **Sign in with SAML** on the login page\n4. Authenticating through your Identity Provider\n\nIf successful, you'll be redirected back to Grafana and logged in automatically."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## 🎉 Congratulations!\n\nYou've successfully configured SAML authentication in Grafana. Your users can now sign in using your organization's Identity Provider.\n\n**What you've learned:**\n\n- How to enable SAML authentication\n- How to configure Identity Provider connection details\n- How to map SAML attributes to Grafana user properties\n- How to configure role-based access through SAML\n\n**Next steps:**\n\n- Test the SAML login flow with different user accounts\n- Configure additional settings like allowed organizations or team sync\n- Review the [SAML documentation](https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/) for advanced options\n- Set up SAML assertion encryption for enhanced security"
+    }
+  ]
+}
