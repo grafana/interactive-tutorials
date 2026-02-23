@@ -1,0 +1,47 @@
+{
+  "id": "mysql-integration-prepare-configuration",
+  "title": "Prepare MySQL database configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you prepare the MySQL database configuration required for monitoring. This includes creating a dedicated monitoring user account with the necessary permissions and gathering the connection details needed for Grafana Alloy.\n\nCreating a dedicated monitoring user with minimal required privileges follows security best practices and ensures that the monitoring system has only the access it needs to collect metrics and logs.\n\nTo prepare your MySQL database configuration, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Connect to your MySQL server as an administrative user:\n\n```\nmysql -u root -p\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Create a dedicated monitoring user for Grafana Alloy:\n\n```sql\nCREATE USER 'alloy_monitor'@'localhost' IDENTIFIED BY 'secure_password';\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Grant the necessary privileges for monitoring:\n\n```sql\nGRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'alloy_monitor'@'localhost';\nGRANT SELECT ON performance_schema.* TO 'alloy_monitor'@'localhost';\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Apply the privilege changes:\n\n```sql\nFLUSH PRIVILEGES;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Exit the MySQL client:\n\n```sql\nEXIT;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Test the monitoring user connection:\n\n```\nmysql -u alloy_monitor -p -e \"SHOW STATUS LIKE 'Uptime';\"\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Note your MySQL connection details for the next milestone:\n\n- Hostname: `localhost` (or your MySQL server hostname)\n- Port: `3306` (or your custom MySQL port)\n- Username: `alloy_monitor`\n- Password: The password you set for the monitoring user\n- Database: Leave empty for monitoring all databases"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you configure Grafana Alloy with the MySQL monitoring settings."
+    }
+  ]
+}
