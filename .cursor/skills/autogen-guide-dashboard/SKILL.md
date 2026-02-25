@@ -21,12 +21,14 @@ Input (Dashboard JSON)
   │
   ├─ Phase 2: Extract & Assess ── sub-agent loads dashboard-extraction-patterns.md
   │  │                              + dashboard-selector-strategies.md
+  │  │                              + dashboard-guide-rules.md
   │    Output: {guide_dir}/EXTRACTION_REPORT.md
   │
   ├─ Checkpoint: Plan ──────────── orchestrator builds plan, user confirms
   │    Output: {guide_dir}/GUIDE_PLAN.md
   │
   ├─ Phase 3: Generate Guide ──── per-section sub-agents, each loads authoring-guide.mdc
+  │    │                            + dashboard-guide-rules.md
   │    │                            + receives panel JSON context for its section
   │    │  3.1 Create guide shell (orchestrator)
   │    │  3.2 For each section → sub-agent generates section JSON
@@ -35,6 +37,7 @@ Input (Dashboard JSON)
   │    Output: {guide_dir}/content.json + SELECTOR_REPORT.md
   │
   └─ Phase 4: Review & Fix ────── sub-agent loads review-guide-pr.mdc
+  │                                 + dashboard-guide-rules.md
        Output: fixed content.json + change report
 ```
 
@@ -42,186 +45,16 @@ Input (Dashboard JSON)
 
 ## Critical Rules
 
-These rules apply to ALL generated guides. They are passed to sub-agents in their prompts.
+22 rules govern all generated guides. Sub-agents load them from
+`dashboard-guide-rules.md`. Key rules the orchestrator must know:
 
-1. **No markdown titles** -- the guide `title` renders in the app frame; a leading `## Title` duplicates it
-2. **`exists-reftarget` is auto-applied** -- never add it manually to requirements
-3. **`navmenu-open`** required for any step targeting navigation menu elements
-4. **`on-page:/path`** required for page-specific interactive actions
-5. **Tooltips** -- under 250 characters, one sentence, don't name the highlighted element
-6. **`verify`** on all state-changing actions (Save, Create, Test)
-7. **`doIt: false` for secrets** -- never automate filling passwords/tokens/keys
-8. **Section bookends** -- 1-sentence "what you'll do" intro markdown, 1-sentence "what you learned" summary markdown
-9. **Sections, not markdown headers** -- group steps with `section` blocks, each with a unique kebab-case `id`
-10. **Connect sections** -- if section 1's objective creates a resource, section 2 should require it
-11. **Action-focused content** -- "Save your configuration" not "The save button can be clicked"
-12. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
-13. **`skippable: true`** for conditional fields and permission-gated steps
-14. **No multistep singletons** -- a `multistep` with one step must be a plain `interactive` block
-15. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` or set `doIt: false`
-16. **No navigation steps** -- assume the user is already on the correct dashboard page; never emit a "navigate to the XYZ dashboard" step
-17. **No contextual preamble** -- never write "this is a guide to the XYZ dashboard" or mention the Grafana instance; the user already knows where they are
-18. **Minimal text** -- the guide renders in a narrow sidebar; use short declarative sentences, not paragraphs; every word must earn its place
-19. **Link to Grafana docs** -- when introducing a visualization type, query concept, or Grafana feature, include a `[docs](https://grafana.com/docs/...)` link so users can learn more
-20. **Ultra-short closings** -- final summary blocks should be 1–2 sentences max; never recap every section
-21. **Guided step descriptions** -- every `guided` step MUST include a `description` field; use `"Click inside the highlighted area"` for highlight/button actions and `"Hover over the highlighted area"` for hover actions; never rely on the default "Click this element" which is too vague
+- Rule 16: no navigation steps (user is already on the dashboard)
+- Rule 17: no contextual preamble
+- Rule 21: guided steps must include `description`
+- Rule 22: no noop-only sections
 
----
-
-## Golden Examples
-
-These examples show the target output quality for common dashboard guide patterns. Pass the relevant ones to each section's sub-agent.
-
-### Example A: Panel highlight with educational tooltip
-
-The most common pattern for dashboard tours. Highlight a panel and explain what it shows. Keep content short and declarative — the guide renders in a narrow sidebar.
-
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "section[data-testid='data-testid Panel header CPU throttling']",
-  "doIt": false,
-  "content": "**CPU throttling** shows how often containers are slowed by exceeding CPU limits. [docs](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/time-series/)",
-  "tooltip": "High throttling means your app is running slower than it could."
-}
-```
-
-Key things: `action: "highlight"` with `doIt: false` (view-only panels), selector uses the panel header `data-testid` pattern, content is short and punchy (no paragraphs), includes a docs link for the visualization type, tooltip is concise. **This `interactive` pattern is only valid for above-fold panels** (`gridPos.y < 8`). For below-fold panels, use Example H instead.
-
-### Example B: Panel content highlight (targeting the visualization area)
-
-When you want to highlight the chart/visualization inside a panel rather than the header.
-
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "section[data-testid='data-testid Panel header Alignment: Pod Usage/Requests (%)'] > div[data-testid='data-testid panel content']",
-  "doIt": false,
-  "content": "Review the **Alignment** graph for Pod CPU usage compared to requests.\n\nDetermine if Pods are running over or too close to their CPU requests.",
-  "tooltip": "Ideally usage should be 60-90% of requests."
-}
-```
-
-Key things: targets panel content `div` inside the header `section`, uses `>` child combinator, content is action-oriented. **This `interactive` pattern is only valid for above-fold panels.** For below-fold panels, wrap in a `guided` block with `lazyRender: true` (see Example H).
-
-### Example C: Variable dropdown interaction
-
-Highlight a template variable dropdown and explain what it filters.
-
-```json
-{
-  "type": "interactive",
-  "action": "highlight",
-  "reftarget": "div[data-testid='data-testid template variable'] label:contains('component')",
-  "doIt": false,
-  "content": "The **component** variable filters all panels to show data for a specific service component.\n\nSelect a value to narrow the dashboard to one service.",
-  "tooltip": "Each panel with $component in its query updates when you change this.",
-  "skippable": true,
-  "hint": "Variable dropdowns appear at the top of the dashboard."
-}
-```
-
-Key things: `doIt: false` because the user should choose their own value, `skippable: true` because variable interaction is optional, content explains the filtering effect.
-
-### Example D: Row navigation with expand/collapse
-
-Expand a collapsed row to reveal the panels within it.
-
-```json
-[
-  {
-    "type": "interactive",
-    "action": "button",
-    "reftarget": "Details for $component",
-    "content": "Expand the **Details for $component** row to reveal detailed panels.",
-    "tooltip": "Rows group related panels; click to expand or collapse."
-  },
-  {
-    "type": "interactive",
-    "action": "highlight",
-    "reftarget": "div[data-testid='data-testid Layout container row Details for $component'] section:nth-match(1)",
-    "doIt": false,
-    "content": "The first panel in this row shows the error rate for the selected component.",
-    "tooltip": "Errors are calculated as non-2xx responses divided by total requests."
-  }
-]
-```
-
-Key things: row expand uses `action: "button"` with the row title text, subsequent panel highlights are scoped inside the row's `Layout container` div, `:nth-match()` disambiguates panels within the row.
-
-### Example E: Guided hover interaction for panel drill-down
-
-Use a `guided` block when the user needs to hover to reveal a data link or tooltip.
-
-```json
-{
-  "type": "guided",
-  "content": "Hover over the **Frontend Response Latency** panel to see detailed data points.",
-  "steps": [
-    {
-      "action": "hover",
-      "reftarget": "section[data-testid='data-testid Panel header Frontend Response Latency'] div:nth-match(7)",
-      "description": "Hover over the highlighted area"
-    }
-  ]
-}
-```
-
-Key things: `guided` (not `multistep`) for user-performed actions, hover reveals tooltip data in time-series panels, uses `:nth-match()` to target the correct inner div, `description` provides clear user-facing instruction (never omit it).
-
-### Example F: Navigate to a specific dashboard
-
-**Not used for dashboard-context guides.** The skill assumes the user is already on the correct dashboard (rule 16). This example is retained only for rare cross-dashboard linking guides; never emit a navigation step in a single-dashboard tour.
-
-```json
-{
-  "type": "interactive",
-  "action": "navigate",
-  "reftarget": "/d/abc123/my-dashboard",
-  "content": "Navigate to the **My Dashboard** dashboard to begin the tour."
-}
-```
-
-Key things: `action: "navigate"` with the dashboard path, no `doIt` needed for navigation. **Do not use this pattern in dashboard tour guides** — instead, rely on `on-page:` requirements per section.
-
-### Example G: noop for dashboard concepts
-
-When no single element can be targeted but the user needs context about the dashboard structure. Keep it brief.
-
-```json
-{
-  "type": "interactive",
-  "action": "noop",
-  "content": "All panels query **Prometheus** via [PromQL](https://grafana.com/docs/grafana/latest/datasources/prometheus/). The time picker (top-right) controls the shared time range.",
-  "skippable": true
-}
-```
-
-Key things: `noop` when there's no sensible element to highlight. Use for dashboard-wide concepts (shared data source, time range, refresh interval). Keep text to 1–2 sentences. Include a docs link when referencing a Grafana feature or query language.
-
-### Example H: Below-fold panel highlight (guided + lazyRender)
-
-**CRITICAL**: Any panel below the fold (`gridPos.y >= 8`) must use a `guided` block with `lazyRender: true`, even if it has a unique title (Green-grade selector). Grafana lazy-renders panels — below-fold panels do not exist in the DOM until the user scrolls. A plain `interactive` block will fail with "Element not found" because `exists-reftarget` waits but cannot scroll.
-
-```json
-{
-  "type": "guided",
-  "content": "**State timeline strings** plots discrete states (LOW, NORMAL, HIGH, CRITICAL) as colored bands over time. [docs](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/)",
-  "tooltip": "Band width shows how long each state lasted.",
-  "steps": [
-    {
-      "action": "highlight",
-      "reftarget": "section[data-testid='data-testid Panel header State timeline strings']",
-      "lazyRender": true,
-      "description": "Click inside the highlighted area"
-    }
-  ]
-}
-```
-
-Key things: `guided` (not `interactive`) with `lazyRender: true` on the step, educational `content` and `tooltip` live on the outer `guided` block, `description` provides the user-facing instruction (always include it — the default "Click this element" is too vague), the selector is Green-grade (unique title) but `lazyRender` is still required because the panel is below the fold. **This pattern applies to ALL below-fold panels regardless of selector grade.**
+Full rules, golden examples (A–G), action decision tree, selector patterns,
+and the lazy-rendering CRITICAL section are all in `dashboard-guide-rules.md`.
 
 ---
 
@@ -281,7 +114,8 @@ Count the dashboard elements and present to the user:
 
 Scope guidelines by panel count:
 - **< 3 panels**: Too small for a guide. Suggest combining with another dashboard or expanding scope.
-- **3–12 panels**: Good scope for one guide.
+- **3–6 panels**: Small dashboard. Expect 8–15 total steps across 1–2 sections. Do not pad to hit higher targets.
+- **7–12 panels**: Good scope for one guide with 2–4 sections.
 - **12–25 panels**: Large. Consider splitting by row or logical grouping.
 - **> 25 panels**: Must split. Suggest one guide per row group or logical theme.
 
@@ -315,6 +149,7 @@ You are analyzing a Grafana dashboard JSON export to extract interactive element
 **Read these reference files first:**
 1. `.cursor/skills/autogen-guide-dashboard/dashboard-extraction-patterns.md` -- panel types, row detection, variable extraction, data source mapping
 2. `.cursor/skills/autogen-guide-dashboard/dashboard-selector-strategies.md` -- selector patterns for panels, rows, variables; grading model
+3. `.cursor/skills/autogen-guide-dashboard/dashboard-guide-rules.md` -- critical rules, golden examples, action decision tree, selector patterns, lazy rendering
 
 **Dashboard JSON to analyze** (read this file):
 {path_to_dashboard_json}
@@ -432,11 +267,15 @@ After the user sees the extraction report, build a structural plan. Read `{guide
 Only chain when section N creates something section N+1 depends on.
 Dashboard tours are typically independent sections -- use `on-page:/d/{uid}/{slug}` instead.
 
+### Section Viability
+For each section, estimate the number of **targeting steps** (steps with a reftarget — `highlight`, `button`, `guided` with `lazyRender`, etc.) vs **noop steps** (informational, no DOM interaction). A section needs **at least 1 targeting step** to justify being standalone. If a section would contain only noop steps (e.g., all below-fold Red-grade panels), **merge its panels into an adjacent section** as a closing "what else is here" block rather than emitting a separate section with no interactivity.
+
 ### Notes
 - Duplicate panel title handling strategy
 - Variable-interpolated panel titles
 - Collapsed rows that need expand steps
 - Step budget concerns (any sections that may exceed 8 steps)
+- Sections flagged as noop-only and which section they were merged into
 ```
 
 **Present the plan to the user.** Let them adjust section order, add/remove sections, or change emphasis. Confirm the panel groupings before proceeding.
@@ -468,7 +307,9 @@ Write the initial `{guide_dir}/content.json` with root structure and intro markd
 
 Iterate through the sections in GUIDE_PLAN.md. For each section, launch a sub-agent that generates just that section's JSON.
 
-**Step budget**: aim for **3–8 interactive steps per section**. If a section has more panels than that, prioritize the most important ones and mention the rest in the intro or summary markdown. A complete dashboard guide should have **15–40 interactive steps** total (lower than the 25–50 range for source-code guides, because dashboard panels are view-only highlights rather than interactive form fills).
+**Step budget**: aim for **3–8 interactive steps per section**. A complete dashboard guide should have **8–40 interactive steps** total depending on dashboard size (small dashboards with 3–6 panels are fine at 8–15 steps; do not pad with unnecessary noops to reach a higher count). If a section has more panels than the budget allows, prioritize the most important ones and mention the rest in the intro or summary markdown.
+
+**Targeting vs noop steps**: The step budget counts all interactive steps, but distinguish between **targeting steps** (those with a `reftarget` — highlights, buttons, guided steps) and **noop steps** (informational, no DOM targeting). A section must have **at least 1 targeting step**. If a planned section would contain only noop steps (e.g., all panels are below-fold Red-grade), do not emit it as a standalone section — instead merge its noop blocks into the preceding section's tail (after that section's summary markdown but before the section closing).
 
 #### Per-section sub-agent prompt template
 
@@ -477,8 +318,9 @@ Fill in `{placeholders}` and launch via the Task tool:
 ```
 You are generating ONE section of a Pathfinder interactive guide for a Grafana dashboard as a JSON object.
 
-**Read this reference file first:**
+**Read these reference files first:**
 1. `.cursor/authoring-guide.mdc` -- block types, action types, requirements, best practices
+2. `.cursor/skills/autogen-guide-dashboard/dashboard-guide-rules.md` -- critical rules, golden examples, action decision tree, selector patterns, lazy rendering
 
 **Section to generate:**
 - Section ID: {section_id}
@@ -498,65 +340,9 @@ You are generating ONE section of a Pathfinder interactive guide for a Grafana d
 {variable_definitions_json}
 ```
 
-**Critical rules** (violations are blocking):
-1. No markdown titles -- the section `title` is rendered by the app
-2. `exists-reftarget` is auto-applied -- never add it manually
-3. `navmenu-open` required for navigation menu element interactions
-4. `on-page:/path` required for page-specific actions
-5. Tooltips under 250 characters, one sentence, don't name the highlighted element
-6. `verify` on state-changing actions (Save, Create, Test)
-7. `doIt: false` for secrets -- never automate passwords/tokens/keys
-8. Start with a 1-sentence intro markdown, end with a 1-sentence summary markdown
-9. `skippable: true` + `hint` for optional steps (variable interaction, collapsed rows)
-10. Action-focused language -- "Review the CPU usage panel" not "The CPU usage panel shows data"
-11. Bold only GUI names -- "Expand the **Details** row" not "Expand the **Details** row panel"
-12. No multistep singletons -- single-step multistep → plain interactive block
-13. No focus-before-formfill -- highlight on input with doIt:true → use formfill or doIt:false
-14. No navigation steps -- the user is already on the dashboard; never emit navigate-to-dashboard steps
-15. No contextual preamble -- never say "this is a guide to the XYZ dashboard" or mention the Grafana instance
-16. Minimal text -- short declarative sentences only; paragraphs are almost never appropriate; every word must earn its place
-17. Link to Grafana docs -- when introducing a visualization type, query concept, or feature, include a `[docs](https://grafana.com/docs/...)` link
-18. Ultra-short closings -- summary blocks are 1 sentence max; never recap every panel
-19. Guided step descriptions -- every `guided` step MUST include `description`; use `"Click inside the highlighted area"` for highlight/button, `"Hover over the highlighted area"` for hover; never omit this field
+**Golden examples to follow:** {list the matching example letters, e.g. "A, G" or "C, D, G"}
 
-**Dashboard action decision tree:**
-
-| Dashboard Element     | Guide Action                                           |
-| --------------------- | ------------------------------------------------------ |
-| Panel (above fold, view mode) | `interactive` `highlight` with `doIt: false`, explain what it shows |
-| Panel (below fold, view mode) | **`guided`** with `highlight` step + `lazyRender: true` (see CRITICAL note below) |
-| Panel content (above fold)    | `interactive` `highlight` targeting panel content div, `doIt: false` |
-| Panel content (below fold)    | **`guided`** with `highlight` step targeting content div + `lazyRender: true` |
-| Panel with hover data | `guided` with `hover` step, then highlight              |
-| Variable dropdown     | `highlight` with `doIt: false`, explain filter options  |
-| Time picker           | `highlight` or `button`, explain time range             |
-| Row expand/collapse   | `button` on row title text                              |
-| Dashboard link        | `button` or `navigate`                                  |
-| Panel drill-down link | `guided` with hover + button                            |
-| Untitled panel (above fold) | `highlight` with `doIt: false` using nth-match(1) — only for the 1st untitled panel |
-| Untitled panel (below fold) | `noop` describing the panel, OR `guided` with `lazyRender: true` |
-
-**Selector patterns for dashboard elements:**
-- Panel header: `section[data-testid='data-testid Panel header {title}']`
-- Panel content: `section[data-testid='data-testid Panel header {title}'] > div[data-testid='data-testid panel content']`
-- Row container: `div[data-testid='data-testid Layout container row {row title}']`
-- Panel within row: `div[data-testid='data-testid Layout container row {row title}'] section[data-testid='data-testid Panel header {panel title}']`
-- Nth chart (when title is not unique): `section[data-testid='data-testid Panel header {title}']:nth-match(N)`
-
-**CRITICAL — Lazy rendering affects ALL below-fold panels:**
-Grafana lazy-renders panels. Only panels in or near the viewport exist in the DOM. Panels below the fold (`gridPos.y >= 8`) do NOT exist in the DOM at page load. `exists-reftarget` only waits — **it cannot scroll the page**. Rules:
-- **ALL panels below the fold** (any selector grade): MUST use `guided` with `lazyRender: true` — a plain `interactive` block WILL fail with "Element not found"
-- Green selectors (unique title) above the fold: safe in plain `interactive` blocks
-- Yellow/Red selectors using `nth-match(N)` where N > 1: **unreliable even with lazyRender** for below-fold panels — prefer `noop`/`markdown`
-- Below-fold panel example:
-```json
-{"type":"guided","content":"Review the **Request Latency** panel.","tooltip":"High latency indicates degraded performance.","steps":[{"action":"highlight","reftarget":"section[data-testid='data-testid Panel header Request Latency']","lazyRender":true,"description":"Click inside the highlighted area"}]}
-```
-
-**Step budget:** Generate 3–8 interactive steps for this section. If the section has more panels than that, prioritize the most important ones and mention the rest in the intro or summary markdown.
-
-**Golden examples:**
-{paste the matching golden examples from SKILL.md — choose examples that best match this section's patterns}
+**Step budget:** Generate 3–8 interactive steps for this section, with **at least 1 targeting step** (a step with a reftarget — highlight, button, or guided). If ALL panels in the section would be noop (e.g., all below-fold Red-grade), report this in your summary so the orchestrator can merge this section into an adjacent one. If the section has more panels than the budget allows, prioritize the most important ones and mention the rest in the intro or summary markdown.
 
 **Your task:**
 1. Return a single JSON object: `{"type": "section", "id": "{section_id}", ...}`
@@ -587,58 +373,34 @@ Match the section's patterns to the golden examples:
 | Section pattern | Golden examples |
 |----------------|----------------|
 | Above-fold panels to highlight | Example A + B |
-| Below-fold panels to highlight | **Example H** (required for ANY below-fold panel) |
-| Mix of above + below fold panels | Example A + **Example H** |
+| Below-fold panels to highlight | **Example G** (required for ANY below-fold panel) |
+| Mix of above + below fold panels | Example A + **Example G** |
 | Variable dropdowns to explore | Example C |
 | Collapsed row to expand + panels | Example D |
 | Hover to reveal tooltips/data links | Example E |
-| Dashboard-wide concept explanation | Example G |
-| Mix of patterns | Pass Example H + the most relevant other |
+| Dashboard-wide concept explanation | Example F |
+| Mix of patterns | Pass Example G + the most relevant other |
 
 ### 3.3 Orchestrator: Assemble the Guide
 
 After all section sub-agents complete:
 
 1. **Read each returned section JSON** and validate it parses correctly
-2. **Append each section** to `{guide_dir}/content.json`'s `blocks` array, in plan order
-3. **Add the closing summary markdown** as the final block — ultra-short, 1–2 sentences max. Never recap every section or panel. A single forward-looking sentence is ideal.
+2. **Check for noop-only sections** — if a section has zero targeting steps (every interactive step is `noop`), merge its blocks into the preceding section rather than appending it as standalone. Move the noop blocks to the end of the preceding section (after the summary markdown), and replace the preceding section's summary with the merged section's summary. If the noop-only section is the *first* section (no preceding section to merge into), merge it into the *following* section's intro instead.
+3. **Append each viable section** to `{guide_dir}/content.json`'s `blocks` array, in plan order
+4. **Add the closing summary markdown** as the final block — ultra-short, 1–2 sentences max. Never recap every section or panel. A single forward-looking sentence is ideal.
    ```json
    {
      "type": "markdown",
      "content": "{1–2 sentences: one takeaway or next step — not a recap}"
    }
    ```
-4. **Write the assembled file** to `{guide_dir}/content.json`
-5. **Spot-check**: read the first and last 30 lines to verify structure and bookends
+5. **Write the assembled file** to `{guide_dir}/content.json`
+6. **Spot-check**: read the first and last 30 lines to verify structure and bookends
 
 ### 3.4 Orchestrator: Generate Selector Report
 
-After assembly, write `{guide_dir}/SELECTOR_REPORT.md` by collating sub-agent feedback:
-
-```markdown
-## Selector Quality Report
-
-**Generated from**: dashboard `{uid}` -- "{title}"
-**Date**: {date}
-**Guide**: `{guide_id}/content.json`
-
-### Summary
-- **Total interactive steps**: N
-- **Green (unique panel title)**: n (percent%)
-- **Yellow (duplicate title, nth-match used)**: n (percent%)
-- **Red (no title or variable-interpolated)**: n (percent%)
-
-### Uncertain Selectors
-(list selectors that sub-agents flagged as uncertain)
-
-### Variable-Interpolated Titles
-(list panels whose titles contain $variable references -- these selectors
-depend on the current variable value and may break)
-
-### Suggestions
-(list improvements: panels that would benefit from unique titles, rows
-that should be named, etc.)
-```
+After assembly, write `{guide_dir}/SELECTOR_REPORT.md` by collating sub-agent feedback. Use the template from `dashboard-selector-strategies.md` (section "Selector Quality Report Template").
 
 ### Section chaining guidance
 
@@ -662,16 +424,18 @@ Launch a sub-agent to review and fix the assembled guide.
 ```
 You are reviewing an auto-generated Pathfinder guide for a Grafana dashboard tour.
 
-**Read this reference file first:**
+**Read these reference files first:**
 1. `.cursor/review-guide-pr.mdc` -- complete review protocol (sections 1-4 are blocking checks)
+2. `.cursor/skills/autogen-guide-dashboard/dashboard-guide-rules.md` -- rules, golden examples, and the "Review Checklist (Always Include)" section
 
 **Then read the guide:**
-2. `{guide_dir}/content.json`
+3. `{guide_dir}/content.json`
 
 **Apply every check from sections 1-4** of the review protocol against the guide JSON.
+**Apply every item** from the "Review Checklist (Always Include)" in dashboard-guide-rules.md.
 
-**Additionally check for these dashboard-guide-specific issues:**
-{tailored_items}
+**Additionally check for these dashboard-specific issues:**
+{tailored_items_conditional_only}
 
 For each issue found, **fix it directly** in `{guide_dir}/content.json`.
 
@@ -681,12 +445,12 @@ After fixing all issues, **return a report**:
 - Confirmation that the guide JSON is valid/parseable
 - Confirmation that all section IDs are unique
 - Confirmation that the requirements chain is logical
-- Step count per section (flag any section with 0 interactive steps or >10)
+- Step count per section: total interactive steps, targeting steps (with reftarget), and noop steps — flag any section with 0 targeting steps (noop-only) or >10 total steps
 ```
 
 ### Building the tailored review checklist
 
-Before launching the review sub-agent, build `{tailored_items}` systematically from the Phase 2 extraction report:
+Before launching the review sub-agent, build `{tailored_items_conditional_only}` from the Phase 2 extraction report. Only include the sections that apply to this dashboard — the "always include" items are now in `dashboard-guide-rules.md` and the sub-agent reads them directly.
 
 ```
 **Panel title uniqueness** (include if duplicate titles were found):
@@ -708,55 +472,6 @@ Before launching the review sub-agent, build `{tailored_items}` systematically f
 - These rows need expanding: {list row titles}
 - Verify expand step uses action: "button" with row title text
 - Verify subsequent panel highlights in the row use row-scoped selectors
-
-**Data source requirements** (include always):
-- Dashboard uses these data sources: {list types}
-- Verify on-page requirement includes the dashboard path
-- Consider whether has-datasource requirements are needed
-
-**Section chaining** (include always):
-- Verify section-completed is NOT used between independent dashboard sections
-- Dashboard tour sections should use on-page:/d/{uid}/{slug} instead
-- Every section should have on-page:/d/{uid}/{slug}
-
-**Lazy rendering** (include ALWAYS — this is the #1 source of dashboard guide bugs):
-- ANY below-fold panel (gridPos.y >= 8) in a plain `interactive` block is a bug — even Green-grade selectors
-- Grafana lazy-renders panels: below-fold panels do not exist in the DOM until scrolled into view
-- `exists-reftarget` only waits — it CANNOT scroll the page — so the element never appears
-- For EVERY interactive step that targets a below-fold panel: verify it uses a `guided` block with `lazyRender: true`
-- Fix plain `interactive` blocks targeting below-fold panels by converting to `guided` with `lazyRender: true`:
-  Before: `{"type":"interactive","action":"highlight","reftarget":"...","doIt":false,"content":"...","tooltip":"..."}`
-  After:  `{"type":"guided","content":"...","tooltip":"...","steps":[{"action":"highlight","reftarget":"...","lazyRender":true,"description":"Click inside the highlighted area"}]}`
-- nth-match(1) on an above-fold untitled panel is acceptable in an `interactive` block
-- nth-match(N) where N > 1 in a plain `interactive` block is ALWAYS a bug — it will fail due to lazy rendering
-- Fix nth-match issues by converting to `guided` with `lazyRender: true`, or replacing with `noop`
-
-**Step budget** (include always):
-- Verify each section has 3–8 interactive steps
-- Flag sections with 0 or 1 interactive steps (too thin)
-- Flag sections with >10 interactive steps (should be split)
-
-**No navigation steps** (include always):
-- The guide assumes the user is already on the dashboard
-- Remove any `action: "navigate"` steps that go to the dashboard itself
-- Remove any "Navigate to..." intro text
-
-**No contextual preamble** (include always):
-- Remove any text like "this is a guide to the XYZ dashboard" or "on the Grafana Play instance"
-- The user knows where they are; don't tell them
-
-**Text brevity** (include always):
-- Flag any `content` field longer than 2 sentences (likely too verbose for sidebar rendering)
-- Replace paragraphs with short declarative statements
-- Verify section intro/summary markdown is 1 sentence each
-
-**Grafana docs links** (include always):
-- Verify that visualization types and Grafana features have a `[docs](https://grafana.com/docs/...)` link
-- Links should appear naturally in the step content, not as separate blocks
-
-**Closing brevity** (include always):
-- The final markdown block should be 1–2 sentences max
-- Never recap every section or panel in the closing
 ```
 
 ---

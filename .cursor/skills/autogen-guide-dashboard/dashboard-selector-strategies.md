@@ -106,7 +106,8 @@ The most common case. Each panel has a unique `title` that maps directly to a st
     {
       "action": "highlight",
       "reftarget": "section[data-testid='data-testid Panel header Request Latency']",
-      "lazyRender": true
+      "lazyRender": true,
+      "description": "Click inside the highlighted area"
     }
   ]
 }
@@ -182,7 +183,8 @@ Grafana **lazy-renders** panels: only panels visible in the viewport (plus a sma
     {
       "action": "highlight",
       "reftarget": "section[data-testid='data-testid Panel header ']:nth-match(2)",
-      "lazyRender": true
+      "lazyRender": true,
+      "description": "Click inside the highlighted area"
     }
   ]
 }
@@ -326,11 +328,12 @@ Verified on play.grafana.org (schema v41): a dashboard with 5 uniquely-titled vi
      "type": "guided",
      "content": "Review the **Request Latency** panel.\n\nThis panel shows p95 latency.",
      "tooltip": "Spikes above 500ms indicate degraded performance.",
-     "steps": [{
-       "action": "highlight",
-       "reftarget": "section[data-testid='data-testid Panel header Request Latency']",
-       "lazyRender": true
-     }]
+    "steps": [{
+      "action": "highlight",
+      "reftarget": "section[data-testid='data-testid Panel header Request Latency']",
+      "lazyRender": true,
+      "description": "Click inside the highlighted area"
+    }]
    }
    ```
 2. **For untitled/duplicate-title below-fold panels**: prefer `noop` or `markdown` to avoid fragile `nth-match` + lazy rendering issues

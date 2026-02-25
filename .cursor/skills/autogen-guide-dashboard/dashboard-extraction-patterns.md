@@ -87,6 +87,11 @@ Each panel `type` maps to a different guide treatment. The `type` field determin
 
 **Panels with no title**: Prefer describing these in `noop` or `markdown` blocks rather than targeting them with fragile `:nth-match()` selectors. Untitled panels produce `data-testid="data-testid Panel header "` (with trailing space), but multiple untitled panels all share this value and can only be disambiguated by `:nth-match(N)`. This is **unreliable for below-fold panels** because Grafana lazy-renders: panels not in the viewport don't exist in the DOM, so `nth-match(N)` counts are wrong until the user scrolls. See `dashboard-selector-strategies.md` for the full decision tree.
 
+**Community / plugin panels** (`type` not in the table above): Panels from community plugins
+(e.g., `innius-video-panel`, `marcusolsson-json-datasource`) may use custom rendering that
+doesn't follow Grafana's `data-testid` conventions. Treat as `noop` in the guide unless
+the panel has a recognizable standard panel header. Note the plugin type in the extraction report.
+
 **Panels with very long titles**: The selector still works, but the step content should use a shortened name. E.g., `section[data-testid='data-testid Panel header Very Long Panel Title That Describes Everything']` is valid but the step should say "Review the **Very Long Panel Title** panel."
 
 ---
