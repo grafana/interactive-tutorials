@@ -4,11 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "## Introduction\n\noverall intro"
+      "content": "## Introduction\n\nThis dashboard provides an overview of the state of play in series 4 of the UK TV show \"The Traitors\" originally aired in January 2026.\n\nIt is a demonstration of how powerful Grafana's SQL expressions transform can be.  The data source used is a simple Google Sheet, with all data formatting and aggregation performed using SQL expressions inside Grafana."
     },
     {
       "type": "markdown",
-      "content": "## The Main Game\n\nThe main part of the game plays out over the first 11 episodes.  Each episode, the contestants tackle a physical challenge that may also involve solving puzzles.  Success in these challenges earns money towards the overall prize pot.\n\nAt the round table, contestants discuss theories about who the traitors might be and then vote for the person they think is most likely a traitor.  That person is then banished from the game immediately, revealing their status on the way out.\n\nOvernight, the traitors meet to determine which of the faithful they will murder.  That person leaves the game overnight and the remaining contestants find out who they are when they fail to show up for breakfast in the morning.\n\nContestants may earn a shield during the day's challenge.  This protects them from murder by the traitors.  Sometimes the traitors know who, if anyone, has a shield.  Other times they don't."
+      "content": "## The Main Game\n\nThe main part of the game plays out over the first 11 episodes.  Each episode, the players tackle a physical challenge that may also involve solving puzzles.  Success in these challenges earns money towards the overall prize pot.\n\nAt the round table, players discuss theories about who the traitors might be and then vote for the person they think is most likely a traitor.  That person is then banished from the game immediately, revealing their status on the way out.\n\nOvernight, the traitors meet to determine which of the faithful they will murder.  That person leaves the game overnight and the remaining contestants find out who they are when they fail to show up for breakfast in the morning.\n\nContestants may earn a shield during the day's challenge.  This protects them from murder by the traitors.  Sometimes the traitors know who, if anyone, has a shield.  Other times they don't.  Traitors also have the option to recruit a new traitor from the faithful players as an alternative to murdering.\n\n\n\nEach panel in this section uses data contained in a Google Sheet, transformed using only Grafana SQL expressions."
     },
     {
       "type": "section",
@@ -30,17 +30,18 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Active Traitors']",
-          "content": "traitors remaining in the game",
+          "content": "We've used high visibility glanceable stat panels in this section to summarize the state of the game.  This panel shows us how many traitors are active at the current time.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false
+          "doIt": false,
+          "lazyRender": true
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Most Votes Received (Grey = inactive player)']",
-          "content": "most votes received",
+          "content": "A bar chart shows how many votes each player has received across all of the round tables.  We use grey bars to indicate that the player is no longer in the game due to banishment or murder.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -51,7 +52,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Player Status by Episode (Fiona was hidden Traitor eps 1-3)']",
-          "content": "player status by episode",
+          "content": "The status history panel provides a great way to track each player's status over time.  For the first three episodes there was a hidden traitor whose status wasn't revealed to anyone, so we had to assume some players were faithful until the hidden traitor's identity was revealed.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -62,11 +63,12 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-Adam: Overview']",
-          "content": "per player section",
+          "content": "Finally, there's a repeating section that show's status and voting history for each player along with their picture.  This section is repeated for each player using a dashboard variable.  Take a moment to look at Adam's status.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false
+          "doIt": false,
+          "lazyRender": true
         }
       ]
     },
@@ -125,7 +127,7 @@
     },
     {
       "type": "markdown",
-      "content": "## SQL Expressions in Grafana\n\nTODO\n\n"
+      "content": "## SQL Expressions in Grafana\n\nHow did we build this dashboard?  Every panel uses the same combination of data source and transform.  The data always comes from a Google Sheet.  As you'll see in this guide, the data itself is very simple - for each episode we added a row to the spreadsheet for each active player containing just:\n\n- The episode number.\n- The player's name.\n- Which team the player was on in that episode.\n- Who the player voted for in that episode.\n- Whether the player was murdered or banished in that episoide.\n- The date that the episode aired.\n\nAll of the aggregations that you see displayed in the dashboard were created in Grafana using the SQL expressions transform.  The only data source queries to the Google Sheet simply fetch all the data in the format that it was recorded in.\n\nIn the following sections of this guide, you'll discover how this works..."
     },
     {
       "type": "section",
@@ -315,7 +317,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Next Steps and Additional Resources\n\n\n\nCheck  out these additional resources to learn more about the topics covered in this guide:\n\n- [SQL expressions documentation](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/query-transform-data/sql-expressions/).\n- [Google Sheets data source documentation](https://grafana.com/grafana/plugins/grafana-googlesheets-datasource/).\n- [The Traitors USA dashboard](https://play.grafana.org/d/adfhkge/usa-traitors-season-4) (a similar dashboard for the US version of the show).\n\n"
+      "content": "## Next Steps and Additional Resources\n\nCheck  out these additional resources to learn more about the topics covered in this guide:\n\n- [SQL expressions documentation](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/query-transform-data/sql-expressions/).\n- [Google Sheets data source documentation](https://grafana.com/grafana/plugins/grafana-googlesheets-datasource/).\n- [Dynamic image panel](https://grafana.com/grafana/plugins/dalvany-image-panel/).\n- [The Traitors USA dashboard](https://play.grafana.org/d/adfhkge/usa-traitors-season-4) (a similar dashboard for the US version of the show)."
     }
   ]
 }
