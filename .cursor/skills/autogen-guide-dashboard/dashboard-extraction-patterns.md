@@ -85,7 +85,7 @@ Each panel `type` maps to a different guide treatment. The `type` field determin
 
 **Repeating panels** (`repeat` field set): These panels duplicate themselves for each value of a template variable. The guide should explain the repeat mechanism rather than highlighting each instance. Use `:nth-match(1)` to target the first instance.
 
-**Panels with no title**: Skip in the guide or use `:nth-match()` with a comment about fragility. These panels are usually decorative or supplementary.
+**Panels with no title**: Prefer describing these in `noop` or `markdown` blocks rather than targeting them with fragile `:nth-match()` selectors. Untitled panels produce `data-testid="data-testid Panel header "` (with trailing space), but multiple untitled panels all share this value and can only be disambiguated by `:nth-match(N)`. This is **unreliable for below-fold panels** because Grafana lazy-renders: panels not in the viewport don't exist in the DOM, so `nth-match(N)` counts are wrong until the user scrolls. See `dashboard-selector-strategies.md` for the full decision tree.
 
 **Panels with very long titles**: The selector still works, but the step content should use a shortened name. E.g., `section[data-testid='data-testid Panel header Very Long Panel Title That Describes Everything']` is valid but the step should say "Review the **Very Long Panel Title** panel."
 

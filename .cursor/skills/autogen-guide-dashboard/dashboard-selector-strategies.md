@@ -128,24 +128,44 @@ Row-scoped selectors are more readable and self-documenting than `:nth-match()`.
 
 ### Red: No Title or Variable-Interpolated Title
 
-**No title:**
+Red-grade panels are the hardest to target reliably. **Prefer describing them in markdown or `noop` blocks rather than attempting fragile selectors.** Only target them with selectors if they are critical to the guide's educational purpose.
+
+#### Why `:nth-match()` is unreliable for untitled panels
+
+Grafana **lazy-renders** panels: only panels visible in the viewport (plus a small buffer) exist in the DOM. Panels below the fold are not rendered until the user scrolls. This means:
+
+- `section[data-testid='data-testid Panel header ']:nth-match(2)` will fail if only the first untitled panel is in the DOM
+- The count of matching elements changes as the user scrolls
+- `:nth-match(N)` indices are only valid when **all N elements are rendered**, which requires scrolling to the bottom first
+
+**Verified behavior** (play.grafana.org, schema v39): untitled panels render `data-testid="data-testid Panel header "` (with trailing space, empty title). Multiple untitled panels all share this same `data-testid` value.
+
+#### Strategy for untitled panels (in priority order)
+
+1. **Prefer `noop` or `markdown`**: describe what the panel shows without targeting it. This is the safest option and still provides educational value.
+
+2. **If the panel is above the fold** (roughly `gridPos.y < 8`): `:nth-match(1)` may work for the first untitled panel since it will be in the DOM at page load. Always use `doIt: false`.
+
+3. **If the panel is below the fold** and you must target it: use a `guided` block with `lazyRender: true`. This tells the guide system to scroll the element into view and wait for it to render before attempting the selector.
 
 ```json
-// Dashboard JSON -- panel with empty title
-{ "title": "", "type": "stat", "gridPos": { "y": 0, "x": 0 } }
-```
-```json
-// Guide step -- fallback to nth-match
+// Untitled panel below the fold -- guided with lazyRender
 {
-  "action": "highlight",
-  "reftarget": "section[data-testid='data-testid Panel header ']:nth-match(1)",
-  "doIt": false,
-  "content": "This stat panel shows the current value of the primary metric.",
-  "tooltip": "The exact metric depends on your data source configuration."
+  "type": "guided",
+  "content": "Scroll down to review the vertical gradient bar gauge.\n\nThis panel shows 16 series using gradient mode in vertical orientation.",
+  "steps": [
+    {
+      "action": "highlight",
+      "reftarget": "section[data-testid='data-testid Panel header ']:nth-match(2)",
+      "lazyRender": true
+    }
+  ]
 }
 ```
 
-**Variable-interpolated title:**
+4. **If there are many untitled panels**: strongly prefer `noop` for all but the first. The `:nth-match` indices become increasingly fragile as N grows, and each depends on all prior untitled panels being rendered.
+
+#### Variable-interpolated title
 
 ```json
 // Dashboard JSON
@@ -175,26 +195,41 @@ Given a panel from the dashboard JSON, derive its best selector:
 
 ```
 1. Read panel.title
-2. If title is empty or null:
+2. If title is empty, null, or missing:
      → Grade: Red
-     → Selector: `:nth-match()` by global panel position
+     → Estimate fold position: gridPos.y < 8 ≈ above fold, ≥ 8 ≈ below fold
+     → If above fold AND this is the 1st untitled panel (by gridPos order):
+         → Selector: section[data-testid='data-testid Panel header ']:nth-match(1)
+         → Use: interactive block with doIt: false
+     → If below fold OR 2nd+ untitled panel:
+         → Preferred: use noop or markdown to describe the panel (no selector needed)
+         → If selector is essential: use guided block with lazyRender: true
+           and section[data-testid='data-testid Panel header ']:nth-match(N)
+         → N = this panel's position among untitled panels (sorted by gridPos.y, then x)
+     → Record: fold position and recommended treatment in extraction report
 3. If title contains `$` (variable interpolation):
      → Grade: Red
      → Selector: row-scoped or `:nth-match()` if possible
      → Note: selector depends on current variable value
+     → If below fold: same lazyRender guidance as untitled panels
 4. Count how many panels share this exact title:
      If count == 1:
        → Grade: Green
        → Selector: `section[data-testid='data-testid Panel header {title}']`
+       → If below fold: the exists-reftarget auto-requirement handles waiting,
+         but note the panel may need scrolling to become visible
      If count > 1:
        → Grade: Yellow
        → If panels are in different rows:
            → Selector: row-scoped `div[...row...] section[...panel...]`
        → Else:
            → Selector: `section[...panel...]:nth-match(N)`
-           → N = this panel's position among same-titled panels (sorted by gridPos.y, then gridPos.x)
-5. Record the grade and selector in the extraction report
+           → N = this panel's position among same-titled panels (sorted by gridPos.y, then x)
+       → If below fold: same nth-match + lazy-render caution applies
+5. Record the grade, fold position, and selector in the extraction report
 ```
+
+**Fold estimation heuristic**: Grafana's default grid has ~8 vertical units visible without scrolling on a standard viewport (1080px). Panels with `gridPos.y >= 8` are likely below the fold. This is approximate -- actual visibility depends on browser height, panel heights of preceding panels, and whether rows are collapsed.
 
 ---
 
@@ -243,11 +278,29 @@ Include this report alongside every generated guide as `SELECTOR_REPORT.md` in t
 
 ## Dashboard-Specific Selector Caveats
 
-### Lazy-Loaded Panels
+### Lazy-Loaded Panels and nth-match
 
-Panels below the fold may not render until the user scrolls. When targeting these panels:
-- The `exists-reftarget` auto-requirement will wait for the element
-- Add `"lazyRender": true` to `guided` steps if the element needs scrolling to appear
+Grafana lazy-renders dashboard panels: only panels in or near the viewport exist in the DOM. Panels below the fold are **not in the DOM at all** until the user scrolls down. This has critical implications for selectors:
+
+**For Green-grade selectors (unique title)**: `exists-reftarget` (auto-applied) will wait for the element. If the guide system scrolls or the user scrolls, the panel renders and the selector resolves. This generally works, but the wait can feel slow.
+
+**For Yellow/Red-grade selectors using `:nth-match(N)`**: **this is broken by lazy rendering.** If you need the 3rd matching element but only 1 is rendered, `nth-match(3)` returns nothing. The `exists-reftarget` wait cannot help because it doesn't know to scroll further down. This was verified on play.grafana.org — a dashboard with 3 untitled panels only had 1 in the DOM at initial page load; `nth-match(2)` failed.
+
+**Mitigations** (in priority order):
+1. **Avoid targeting below-fold panels with `nth-match`** — use `noop` or `markdown` to describe them instead
+2. **Use `guided` blocks with `lazyRender: true`** — this tells the guide system to scroll the element into view before matching:
+   ```json
+   {
+     "type": "guided",
+     "content": "Scroll down to review the gradient bar gauge.",
+     "steps": [{
+       "action": "highlight",
+       "reftarget": "section[data-testid='data-testid Panel header ']:nth-match(2)",
+       "lazyRender": true
+     }]
+   }
+   ```
+3. **Restructure the guide** so that earlier steps naturally scroll the user past the needed panels, causing them to render before the `nth-match` step runs
 
 ### Repeated Panels
 

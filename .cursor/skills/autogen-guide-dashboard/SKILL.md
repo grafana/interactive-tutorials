@@ -206,21 +206,43 @@ The user provides dashboard JSON via one of:
 - **File path**: local path to a `.json` file
 - **Pasted JSON**: raw JSON in the conversation
 - **Grafana API URL**: `https://<instance>/api/dashboards/uid/<uid>`
-- **Dashboard URL**: `https://<instance>/d/<uid>/<slug>` (derive API URL from this)
+- **Dashboard URL**: `https://<instance>/d/<uid>/<slug>?...` (derive API URL from this)
 
-If given a dashboard URL, derive the API endpoint:
+If given a dashboard URL, extract the UID (the path segment immediately after `/d/`) and strip any query parameters or trailing slug:
+
 ```
-Dashboard URL: https://grafana.example.com/d/abc123/my-dashboard
-API URL:       https://grafana.example.com/api/dashboards/uid/abc123
+Dashboard URL: https://play.grafana.org/d/vmie2cmWz/bar-gauge?orgId=1&from=now-6h&to=now
+                                          ^^^^^^^^^^
+                                          UID
+API URL:       https://play.grafana.org/api/dashboards/uid/vmie2cmWz
 ```
 
 ### 1.2 Load the Dashboard JSON
 
-- **File path**: read the file directly
-- **Pasted JSON**: save to a temporary file for reference
-- **API URL**: fetch via `curl` or MCP tools (note: may require authentication)
+- **File path**: read the file directly.
+- **Pasted JSON**: save to `{guide_dir}/dashboard-source.json` for reference.
+- **Dashboard URL or API URL**: fetch via curl as shown below.
 
-Validate the JSON has the expected top-level keys: `panels` (or `rows` for legacy format), `templating`, `title`, `uid`.
+#### Fetching from a URL
+
+Extract the UID from the dashboard URL and run:
+
+```bash
+curl -sf "https://<instance>/api/dashboards/uid/<uid>" | jq '.dashboard' > {guide_dir}/dashboard-source.json
+```
+
+The Grafana REST API wraps the dashboard model inside `{"dashboard": {...}, "meta": {...}}`. The `jq '.dashboard'` step unwraps it so the file contains the raw dashboard JSON with `panels`, `title`, `uid`, etc. at the top level.
+
+If `jq` is not available, fetch without piping and manually read the `.dashboard` key from the response.
+
+**Authentication limitation**: This curl approach only works for **unauthenticated / anonymous-access Grafana instances** (e.g., play.grafana.org). If the instance is protected by password auth, Okta, SAML, OAuth, or any other login mechanism, the curl will fail with a 401/403 or return an HTML login page instead of JSON. **Do not attempt to resolve authentication issues.** Instead, tell the user:
+
+> "This Grafana instance requires authentication, so I can't fetch the dashboard JSON directly. Please export the dashboard JSON yourself:
+> 1. Open the dashboard in your browser
+> 2. Click the **Share** icon (or go to Dashboard settings → JSON Model)
+> 3. Copy the JSON and paste it here, or save it to a file and give me the path."
+
+After fetching or receiving the JSON, validate it has the expected top-level keys: `panels` (or `rows` for legacy format), `templating`, `title`, `uid`. If you see HTML or an `{"error": ...}` response instead, the fetch failed — fall back to asking the user to provide the JSON manually as described above.
 
 ### 1.3 Assess Scope
 
@@ -320,6 +342,7 @@ For each panel:
 #### {Panel Title}
 - Type: {timeseries | stat | gauge | table | heatmap | logs | ...}
 - Position: row {y-group}, col {x}, size {w}x{h}
+- Fold: above | below (gridPos.y < 8 ≈ above, ≥ 8 ≈ below)
 - Query: {abbreviated target expression}
 - Variables used: $var1, $var2
 - Transformations: {count} ({types})
@@ -327,7 +350,8 @@ For each panel:
 - Repeat: {variable name} (if repeating panel)
 - Best selector: `section[data-testid='data-testid Panel header {title}']`
 - Grade: Green | Yellow | Red
-- Guide treatment: highlight | guided-hover | noop
+- Guide treatment: highlight | guided-hover | guided-lazyRender | noop
+- Lazy-render note: (if Red/Yellow + below fold: "nth-match unreliable, prefer noop or guided with lazyRender")
 
 ### Concerns
 - (list any issues: duplicate titles, missing titles, very large panel count, etc.)
@@ -479,6 +503,8 @@ You are generating ONE section of a Pathfinder interactive guide for a Grafana d
 | Dashboard link        | `button` or `navigate`                                  |
 | Panel drill-down link | `guided` with hover + button                            |
 | Navigate to dashboard | `navigate` with dashboard path                          |
+| Untitled panel (above fold) | `highlight` with `doIt: false` using nth-match(1) — only for the 1st untitled panel |
+| Untitled panel (below fold) | `noop` describing the panel, OR `guided` with `lazyRender: true` (see below) |
 
 **Selector patterns for dashboard elements:**
 - Panel header: `section[data-testid='data-testid Panel header {title}']`
@@ -486,6 +512,15 @@ You are generating ONE section of a Pathfinder interactive guide for a Grafana d
 - Row container: `div[data-testid='data-testid Layout container row {row title}']`
 - Panel within row: `div[data-testid='data-testid Layout container row {row title}'] section[data-testid='data-testid Panel header {panel title}']`
 - Nth chart (when title is not unique): `section[data-testid='data-testid Panel header {title}']:nth-match(N)`
+
+**CRITICAL — Lazy rendering and nth-match:**
+Grafana lazy-renders panels. Only panels in or near the viewport exist in the DOM. `nth-match(N)` fails if the Nth matching element hasn't rendered yet (the user hasn't scrolled to it). Rules:
+- Green selectors (unique title): safe — `exists-reftarget` auto-waits
+- Yellow/Red selectors using `nth-match(N)` where N > 1: **unreliable for below-fold panels**
+- For untitled below-fold panels, prefer `noop`/`markdown` or use a `guided` block with `lazyRender: true`:
+```json
+{"type":"guided","content":"Scroll down to review the gradient bar gauge.","steps":[{"action":"highlight","reftarget":"section[data-testid='data-testid Panel header ']:nth-match(2)","lazyRender":true}]}
+```
 
 **Step budget:** Generate 3–8 interactive steps for this section. If the section has more panels than that, prioritize the most important ones and mention the rest in the intro or summary markdown.
 
@@ -652,6 +687,13 @@ Before launching the review sub-agent, build `{tailored_items}` systematically f
 - Dashboard tour sections should use on-page:/d/{uid}/{slug} instead
 - Every section should have on-page:/d/{uid}/{slug}
 
+**Lazy rendering + nth-match** (include if any Yellow/Red selectors exist):
+- These steps use nth-match selectors: {list steps with nth-match and their gridPos.y}
+- For below-fold panels (gridPos.y >= 8): verify the step uses a `guided` block with `lazyRender: true`, OR is a `noop`/`markdown` instead
+- nth-match(1) on an above-fold untitled panel is acceptable in an `interactive` block
+- nth-match(N) where N > 1 in a plain `interactive` block is ALWAYS a bug — it will fail due to lazy rendering
+- Fix by converting to `guided` with `lazyRender: true`, or replacing with `noop`
+
 **Step budget** (include always):
 - Verify each section has 3–8 interactive steps
 - Flag sections with 0 or 1 interactive steps (too thin)
@@ -702,7 +744,11 @@ Report immediately. Validate the presence of `panels` (or legacy `rows`), `title
 Older dashboards use `rows[].panels[]` instead of flat `panels[]`. Detect via `schemaVersion` or the presence of `rows` array. Flatten to the modern format for extraction: each row becomes a section, each row's panels become top-level panels with gridPos derived from their row position.
 
 ### No panel titles
-Generate the guide anyway with all `doIt: false` steps and `:nth-match()` selectors. Include a prominent note in the extraction report. The guide is still useful for educational content, but selectors will be fragile.
+Generate the guide anyway, but **do not rely on `:nth-match()` for below-fold untitled panels**. Grafana lazy-renders panels, so `nth-match(N)` only works when all N matching elements are in the DOM (i.e., the user has scrolled past them). Instead:
+- Use `noop` or `markdown` to describe untitled panels (safest)
+- For the first untitled above-fold panel, `nth-match(1)` in an `interactive` block with `doIt: false` is acceptable
+- For below-fold untitled panels, use `guided` blocks with `lazyRender: true` if you must target them
+- Include a prominent note in the extraction report about the fragile selectors
 
 ### Variable-interpolated titles
 Panels with titles like `Details for $component` produce selectors that depend on the current variable value. Flag these in the extraction report. Use row-scoped selectors or `:nth-match()` as fallback. The guide may need to specify a default variable value in its intro.
