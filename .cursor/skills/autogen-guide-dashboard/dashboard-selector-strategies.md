@@ -72,18 +72,43 @@ When extracting panels from dashboard JSON, grade each panel's best available se
 
 The most common case. Each panel has a unique `title` that maps directly to a stable `data-testid`.
 
+**Above-fold panels** (`gridPos.y < 8`) can use plain `interactive` blocks:
+
 ```json
 // Dashboard JSON
-{ "title": "CPU Usage", "type": "timeseries", ... }
+{ "title": "CPU Usage", "type": "timeseries", "gridPos": { "y": 0 }, ... }
 ```
 ```json
-// Guide step
+// Guide step -- above fold, safe as interactive
 {
+  "type": "interactive",
   "action": "highlight",
   "reftarget": "section[data-testid='data-testid Panel header CPU Usage']",
   "doIt": false,
   "content": "Review the **CPU Usage** panel.",
   "tooltip": "Shows CPU utilization over time for all selected pods."
+}
+```
+
+**Below-fold panels** (`gridPos.y >= 8`) **must** use `guided` blocks with `lazyRender: true`. Grafana lazy-renders panels — panels below the viewport do not exist in the DOM until the user scrolls to them. The `exists-reftarget` auto-requirement only waits; it cannot scroll the page. Without `lazyRender: true`, the element will never appear and the step will fail with "Element not found."
+
+```json
+// Dashboard JSON
+{ "title": "Request Latency", "type": "timeseries", "gridPos": { "y": 16 }, ... }
+```
+```json
+// Guide step -- below fold, MUST use guided + lazyRender
+{
+  "type": "guided",
+  "content": "Review the **Request Latency** panel.\n\nThis panel shows p95 request latency over time.",
+  "tooltip": "High latency spikes indicate backend performance degradation.",
+  "steps": [
+    {
+      "action": "highlight",
+      "reftarget": "section[data-testid='data-testid Panel header Request Latency']",
+      "lazyRender": true
+    }
+  ]
 }
 ```
 
@@ -216,8 +241,10 @@ Given a panel from the dashboard JSON, derive its best selector:
      If count == 1:
        → Grade: Green
        → Selector: `section[data-testid='data-testid Panel header {title}']`
-       → If below fold: the exists-reftarget auto-requirement handles waiting,
-         but note the panel may need scrolling to become visible
+       → If above fold: use plain interactive block (exists-reftarget auto-waits)
+       → If below fold: MUST use guided block with lazyRender: true
+         (exists-reftarget only waits — it cannot scroll; without lazyRender
+         Grafana never renders the panel and the selector times out)
      If count > 1:
        → Grade: Yellow
        → If panels are in different rows:
@@ -282,25 +309,32 @@ Include this report alongside every generated guide as `SELECTOR_REPORT.md` in t
 
 Grafana lazy-renders dashboard panels: only panels in or near the viewport exist in the DOM. Panels below the fold are **not in the DOM at all** until the user scrolls down. This has critical implications for selectors:
 
-**For Green-grade selectors (unique title)**: `exists-reftarget` (auto-applied) will wait for the element. If the guide system scrolls or the user scrolls, the panel renders and the selector resolves. This generally works, but the wait can feel slow.
+**ALL below-fold panels are affected by lazy rendering, regardless of selector grade.** Grafana does not render panels into the DOM until the user scrolls them into (or near) the viewport. The `exists-reftarget` auto-requirement only waits for an element to appear — **it cannot scroll the page**. If the panel hasn't been rendered, the wait times out and the step fails with "Element not found."
 
-**For Yellow/Red-grade selectors using `:nth-match(N)`**: **this is broken by lazy rendering.** If you need the 3rd matching element but only 1 is rendered, `nth-match(3)` returns nothing. The `exists-reftarget` wait cannot help because it doesn't know to scroll further down. This was verified on play.grafana.org — a dashboard with 3 untitled panels only had 1 in the DOM at initial page load; `nth-match(2)` failed.
+**For Green-grade selectors (unique title)**:
+- **Above fold**: safe in a plain `interactive` block — the element is already in the DOM at page load.
+- **Below fold**: **must use `guided` with `lazyRender: true`**. The `lazyRender` flag tells the guide system to scroll the element into view and wait for Grafana to render it before matching the selector. A plain `interactive` block will fail because `exists-reftarget` cannot trigger scrolling.
 
-**Mitigations** (in priority order):
-1. **Avoid targeting below-fold panels with `nth-match`** — use `noop` or `markdown` to describe them instead
-2. **Use `guided` blocks with `lazyRender: true`** — this tells the guide system to scroll the element into view before matching:
+Verified on play.grafana.org (schema v41): a dashboard with 5 uniquely-titled visualization panels at `gridPos.y >= 8` — none existed in the DOM at page load. Plain `interactive` blocks with `exists-reftarget` timed out with "Element not found" for all of them.
+
+**For Yellow/Red-grade selectors using `:nth-match(N)`**: **doubly broken by lazy rendering.** Not only is the element not in the DOM, but `nth-match(N)` counts are wrong when earlier matching elements haven't rendered. This was verified on play.grafana.org — a dashboard with 3 untitled panels only had 1 in the DOM at initial page load; `nth-match(2)` failed.
+
+**Mitigations for below-fold panels** (in priority order):
+1. **Use `guided` blocks with `lazyRender: true`** — this is required for ALL below-fold panels, including Green-grade:
    ```json
    {
      "type": "guided",
-     "content": "Scroll down to review the gradient bar gauge.",
+     "content": "Review the **Request Latency** panel.\n\nThis panel shows p95 latency.",
+     "tooltip": "Spikes above 500ms indicate degraded performance.",
      "steps": [{
        "action": "highlight",
-       "reftarget": "section[data-testid='data-testid Panel header ']:nth-match(2)",
+       "reftarget": "section[data-testid='data-testid Panel header Request Latency']",
        "lazyRender": true
      }]
    }
    ```
-3. **Restructure the guide** so that earlier steps naturally scroll the user past the needed panels, causing them to render before the `nth-match` step runs
+2. **For untitled/duplicate-title below-fold panels**: prefer `noop` or `markdown` to avoid fragile `nth-match` + lazy rendering issues
+3. **Restructure the guide** so that earlier steps naturally scroll the user past the needed panels, causing them to render before subsequent steps run
 
 ### Repeated Panels
 
