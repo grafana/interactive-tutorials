@@ -64,6 +64,7 @@ These rules apply to ALL generated guides. They are passed to sub-agents in thei
 18. **Minimal text** -- the guide renders in a narrow sidebar; use short declarative sentences, not paragraphs; every word must earn its place
 19. **Link to Grafana docs** -- when introducing a visualization type, query concept, or Grafana feature, include a `[docs](https://grafana.com/docs/...)` link so users can learn more
 20. **Ultra-short closings** -- final summary blocks should be 1–2 sentences max; never recap every section
+21. **Guided step descriptions** -- every `guided` step MUST include a `description` field; use `"Click inside the highlighted area"` for highlight/button actions and `"Hover over the highlighted area"` for hover actions; never rely on the default "Click this element" which is too vague
 
 ---
 
@@ -161,13 +162,14 @@ Use a `guided` block when the user needs to hover to reveal a data link or toolt
   "steps": [
     {
       "action": "hover",
-      "reftarget": "section[data-testid='data-testid Panel header Frontend Response Latency'] div:nth-match(7)"
+      "reftarget": "section[data-testid='data-testid Panel header Frontend Response Latency'] div:nth-match(7)",
+      "description": "Hover over the highlighted area"
     }
   ]
 }
 ```
 
-Key things: `guided` (not `multistep`) for user-performed actions, hover reveals tooltip data in time-series panels, uses `:nth-match()` to target the correct inner div.
+Key things: `guided` (not `multistep`) for user-performed actions, hover reveals tooltip data in time-series panels, uses `:nth-match()` to target the correct inner div, `description` provides clear user-facing instruction (never omit it).
 
 ### Example F: Navigate to a specific dashboard
 
@@ -212,13 +214,14 @@ Key things: `noop` when there's no sensible element to highlight. Use for dashbo
     {
       "action": "highlight",
       "reftarget": "section[data-testid='data-testid Panel header State timeline strings']",
-      "lazyRender": true
+      "lazyRender": true,
+      "description": "Click inside the highlighted area"
     }
   ]
 }
 ```
 
-Key things: `guided` (not `interactive`) with `lazyRender: true` on the step, educational `content` and `tooltip` live on the outer `guided` block, the selector is Green-grade (unique title) but `lazyRender` is still required because the panel is below the fold. **This pattern applies to ALL below-fold panels regardless of selector grade.**
+Key things: `guided` (not `interactive`) with `lazyRender: true` on the step, educational `content` and `tooltip` live on the outer `guided` block, `description` provides the user-facing instruction (always include it — the default "Click this element" is too vague), the selector is Green-grade (unique title) but `lazyRender` is still required because the panel is below the fold. **This pattern applies to ALL below-fold panels regardless of selector grade.**
 
 ---
 
@@ -514,6 +517,7 @@ You are generating ONE section of a Pathfinder interactive guide for a Grafana d
 16. Minimal text -- short declarative sentences only; paragraphs are almost never appropriate; every word must earn its place
 17. Link to Grafana docs -- when introducing a visualization type, query concept, or feature, include a `[docs](https://grafana.com/docs/...)` link
 18. Ultra-short closings -- summary blocks are 1 sentence max; never recap every panel
+19. Guided step descriptions -- every `guided` step MUST include `description`; use `"Click inside the highlighted area"` for highlight/button, `"Hover over the highlighted area"` for hover; never omit this field
 
 **Dashboard action decision tree:**
 
@@ -546,7 +550,7 @@ Grafana lazy-renders panels. Only panels in or near the viewport exist in the DO
 - Yellow/Red selectors using `nth-match(N)` where N > 1: **unreliable even with lazyRender** for below-fold panels — prefer `noop`/`markdown`
 - Below-fold panel example:
 ```json
-{"type":"guided","content":"Review the **Request Latency** panel.","tooltip":"High latency indicates degraded performance.","steps":[{"action":"highlight","reftarget":"section[data-testid='data-testid Panel header Request Latency']","lazyRender":true}]}
+{"type":"guided","content":"Review the **Request Latency** panel.","tooltip":"High latency indicates degraded performance.","steps":[{"action":"highlight","reftarget":"section[data-testid='data-testid Panel header Request Latency']","lazyRender":true,"description":"Click inside the highlighted area"}]}
 ```
 
 **Step budget:** Generate 3–8 interactive steps for this section. If the section has more panels than that, prioritize the most important ones and mention the rest in the intro or summary markdown.
@@ -722,7 +726,7 @@ Before launching the review sub-agent, build `{tailored_items}` systematically f
 - For EVERY interactive step that targets a below-fold panel: verify it uses a `guided` block with `lazyRender: true`
 - Fix plain `interactive` blocks targeting below-fold panels by converting to `guided` with `lazyRender: true`:
   Before: `{"type":"interactive","action":"highlight","reftarget":"...","doIt":false,"content":"...","tooltip":"..."}`
-  After:  `{"type":"guided","content":"...","tooltip":"...","steps":[{"action":"highlight","reftarget":"...","lazyRender":true}]}`
+  After:  `{"type":"guided","content":"...","tooltip":"...","steps":[{"action":"highlight","reftarget":"...","lazyRender":true,"description":"Click inside the highlighted area"}]}`
 - nth-match(1) on an above-fold untitled panel is acceptable in an `interactive` block
 - nth-match(N) where N > 1 in a plain `interactive` block is ALWAYS a bug — it will fail due to lazy rendering
 - Fix nth-match issues by converting to `guided` with `lazyRender: true`, or replacing with `noop`
