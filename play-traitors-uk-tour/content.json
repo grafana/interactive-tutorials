@@ -1,0 +1,373 @@
+{
+  "id": "play-traitors-uk-tour",
+  "title": "Explore SQL Expressions with The Traitors UK Dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "## Introduction\n\nThis dashboard provides an overview of the state of play in series 4 of the UK TV show \"The Traitors\" originally aired in January 2026.\n\nIt is a demonstration of how powerful Grafana's SQL expressions transform can be.  The data source used is a simple Google Sheet, with all data formatting and aggregation performed using SQL expressions inside Grafana."
+    },
+    {
+      "type": "markdown",
+      "content": "## The Main Game\n\nThe main part of the game plays out over the first 11 episodes.  Each episode, the players tackle a physical challenge that may also involve solving puzzles.  Success in these challenges earns money towards the overall prize pot.\n\nAt the round table, players discuss theories about who the traitors might be and then vote for the person they think is most likely a traitor.  That person is then banished from the game immediately, revealing their status on the way out.\n\nOvernight, the traitors meet to determine which of the faithful they will murder.  That person leaves the game overnight and the remaining contestants find out who they are when they fail to show up for breakfast in the morning.\n\nContestants may earn a shield during the day's challenge.  This protects them from murder by the traitors.  Sometimes the traitors know who, if anyone, has a shield.  Other times they don't.  Traitors also have the option to recruit a new traitor from the faithful players as an alternative to murdering.\n\n\n\nEach panel in this section uses data contained in a Google Sheet, transformed using only Grafana SQL expressions."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-68976",
+      "title": "The Main Game",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header '] div:nth-match(29)",
+          "content": "We'll begin our tour with the Main Game section of the dashboard.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Active Traitors']",
+          "content": "We've used high visibility glanceable stat panels in this section to summarize the state of the game.  This panel shows us how many traitors are active at the current time.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Most Votes Received (Grey = inactive player)']",
+          "content": "A bar chart shows how many votes each player has received across all of the round tables.  We use grey bars to indicate that the player is no longer in the game due to banishment or murder.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Player Status by Episode (Fiona was hidden Traitor eps 1-3)']",
+          "content": "The status history panel provides a great way to track each player's status over time.  For the first three episodes there was a hidden traitor whose status wasn't revealed to anyone, so we had to assume some players were faithful until the hidden traitor's identity was revealed.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-Adam: Overview']",
+          "content": "Finally, there's a repeating section that show's status and voting history for each player along with their picture.  This section is repeated for each player using a dashboard variable.  Take a moment to look at Adam's status.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## The End Game\n\nThe end game takes place in episode 12, after a final round table.  The remaining contestants take part in a series of votes.  Each contestant can choose to end the game, or banish someone else because they think one or more traitors remain.\n\nIf one or more contestant votes to banish, each contestant names the person they want to banish and the one with the most votes leaves immediately without declaring whether they were a faithful or a traitor.  If everyone agrees to end the game, it ends immediately with the prize going to the faithfuls if no traitors remain or the traitors if one or more of them remain. The game also ends should only two players remain.\n\nThe end game was modeled using SQL expressions and a different Google Sheet."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-29286",
+      "title": "The End Game",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header '] div:nth-match(19)",
+          "content": "Let's take a look at the End Game section of the dashboard.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header End Game Round 2']",
+          "content": "Here we see the ultimate outcome of the game, with Jack banished in the final vote.  Rachel and Stephen won, having played as traitors since the beginning.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Winners!']",
+          "content": "We used a dynamic image panel to show the winners images as a carousel.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Prize Awarded (max £120k)']",
+          "content": "This gauge shows how much of the overall £120,000 prize fund the winners took home between them.  We didn't model the prize fund in the Google Sheet, it's static data in the panel here.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## SQL Expressions in Grafana\n\nHow did we build this dashboard?  Every panel uses the same combination of data source and transform.  The data always comes from a Google Sheet.  As you'll see in this guide, the data itself is very simple - for each episode we added a row to the spreadsheet for each active player containing just:\n\n- The episode number.\n- The player's name.\n- Which team the player was on in that episode.\n- Who the player voted for in that episode.\n- Whether the player was murdered or banished in that episoide.\n- The date that the episode aired.\n\nAll of the aggregations that you see displayed in the dashboard were created in Grafana using the SQL expressions transformation.  The only data source queries to the Google Sheet simply fetch all the data in the format that it was recorded in.\n\nIn the following sections of this guide, you'll discover how this works..."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-62158",
+      "title": "Explore a Simple SQL Expression",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "First, open the Latest Episode panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Latest Episode'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Now click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"query-editor-row\"] > :first-child",
+          "content": "Now, take a look at the Google Sheets query configuration.  There's no range of cells specified here, so the query will read every cell in the spreadsheet.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Toggle table view, then unhide the results from the Google Sheets query.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "label[aria-label='Table view']",
+              "description": "Click the toggle here.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Hide response'] svg:nth-match(1)",
+              "description": "Click here to show data returned by the query."
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid panel content']",
+          "content": "Now you can see the raw data from the spreadsheet.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='query-editor-row'] div:nth-match(58)",
+          "content": "Study the SQL expression that we're using here to summarize the data.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Hide the results of the original Google Sheets query.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Hide response'] svg:nth-match(1)",
+              "description": "Click to hide the data returned by the query.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header ']",
+          "content": "Here you see the result of the SQL expression, which becomes the value used in the stat panel.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "To continue our tour, click the \"Back to dashboard\" button to exit the panel editor.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click the button to return to the dashboard view.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "What about more complex SQL expressions?  How far can we go with this?  In the next section we'll learn how Grafana Assistant can help."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-93894",
+      "title": "Discover a More Complex SQL Expression",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Edit the \"Most votes received\" panel and take a look at the data returned by the SQL expression.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Most Votes Received (Grey = inactive player)'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click here to edit the panel.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "label[aria-label='Table view']",
+              "description": "Click the toggle to view the data as a table."
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='query-editor-row'] div:nth-match(58)",
+          "content": "Now study the SQL expression that returns this data.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Note that the SQL expression is significantly more complex than the previous example.  This is because we want to perform the following steps before showing the data on the bar chart:\n\n1. Count the number of votes received by each player.\n2. Sort the data so that players appear in descending order of votes received.\n3. Determine if a player is still active in the game so that their bar can be displayed in a different colour.\n\nThe good news here is that you don't have to be a SQL expert to create and manage expressions of this complexity.  This expression was written by Grafana Assistant!\n\n"
+        },
+        {
+          "type": "guided",
+          "content": "Click the \"Back to dashboard\" button to continue the tour.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click the button to return to the dashboard view.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "One of the features of the dashboard is a section containing a number of panels that repeats for each player in the game.  This section is implemented as a repeating row using a dashboard variable named \"player\".  This variable is configured in the dashboard settings using the Google sheet as the data source to select distinct values from the \"player\" column.\n\nLet's see how to use variables with SQL expressions..."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-43467",
+      "title": "SQL Expressions with Variables",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Open Adam's Status panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Panel menu Status'] svg:nth-match(1)",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click to edit the panel.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='query-editor-row'] div:nth-match(58)",
+          "content": "Study the SQL expression used to determine Adam's status in the game.  Note the use of ${player} which is the dashboard variable.  The value of the variable (in this case \"Adam\") will be substituted into the SQL expression when it is evaluated.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Click the \"Back to dashboard\" button and exit edit mode to conclude the tour.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click the button to return to the dashboard view.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+              "description": "Click here to exit edit mode.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Next Steps and Additional Resources\n\nWe hope you enjoyed our brief tour of this dashboard and the many SQL expressions that make it work.  Check out these additional resources to learn more about the topics covered in this guide:\n\n- [The Google Sheet used for the Main Game](https://docs.google.com/spreadsheets/d/1VcaZ4q8ZM2k6O9f6BGMRiWbXYbPQ3gbjLlFuAM4BcJU/view).\n- [The Google Sheet used for the End Game](https://docs.google.com/spreadsheets/d/11FVTJmhYQAWG9BUddAcr2gNsjZVvcFaKN3V2DdK9Cnc/view).\n- [SQL expressions documentation](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/query-transform-data/sql-expressions/).\n- [Google Sheets data source documentation](https://grafana.com/grafana/plugins/grafana-googlesheets-datasource/).\n- [Dynamic image panel](https://grafana.com/grafana/plugins/dalvany-image-panel/).\n- [The Traitors USA dashboard](https://play.grafana.org/d/adfhkge/usa-traitors-season-4) (a similar dashboard for the US version of the show).\n\n"
+    }
+  ]
+}
