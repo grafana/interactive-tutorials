@@ -264,7 +264,7 @@ Given a panel from the dashboard JSON, derive its best selector:
 
 ## Selector Quality Report Template
 
-Include this report alongside every generated guide as `SELECTOR_REPORT.md` in the guide directory.
+Include this report alongside every generated guide as `assets/selector-report.md` in the guide directory. Start the file with the standard frontmatter disclaimer (see SKILL.md "Generated Files" section).
 
 ```markdown
 ## Selector Quality Report
