@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "postgresql-integration-prepare-configuration",
+  "title": "Prepare PostgreSQL database configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you prepare the PostgreSQL database configuration required for monitoring. This includes creating a dedicated monitoring user account with the necessary permissions and gathering the connection details needed for Grafana Alloy.\n\nCreating a dedicated monitoring user with minimal required privileges follows security best practices and ensures that the monitoring system has only the access it needs to collect metrics and logs."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Connect to your PostgreSQL server as an administrative user:\n\n```\npsql -U postgres -h localhost\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Create a dedicated monitoring user for Grafana Alloy:\n\n```sql\nCREATE USER alloy_monitor WITH PASSWORD 'secure_password';\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Grant the necessary privileges for monitoring:\n\n```sql\nGRANT CONNECT ON DATABASE postgres TO alloy_monitor;\nGRANT SELECT ON pg_stat_database TO alloy_monitor;\nGRANT SELECT ON pg_stat_user_tables TO alloy_monitor;\nGRANT SELECT ON pg_stat_user_indexes TO alloy_monitor;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "For PostgreSQL 10+, grant additional monitoring privileges:\n\n```sql\nGRANT pg_monitor TO alloy_monitor;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "For PostgreSQL versions below 10, grant individual monitoring functions:\n\n```sql\nGRANT EXECUTE ON FUNCTION pg_stat_file(text) TO alloy_monitor;\nGRANT EXECUTE ON FUNCTION pg_stat_file(text,boolean) TO alloy_monitor;\nGRANT EXECUTE ON FUNCTION pg_ls_dir(text) TO alloy_monitor;\nGRANT EXECUTE ON FUNCTION pg_ls_dir(text,boolean,boolean) TO alloy_monitor;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Exit the PostgreSQL client:\n\n```sql\n\\q\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Test the monitoring user connection:\n\n```\npsql -U alloy_monitor -h localhost -d postgres -c \"SELECT version();\"\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Note your PostgreSQL connection details for the next milestone:\n\n- Hostname: `localhost` (or your PostgreSQL server hostname)\n- Port: `5432` (or your custom PostgreSQL port)\n- Username: `alloy_monitor`\n- Password: The password you set for the monitoring user\n- Database: `postgres` (or your target database name)"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you configure Grafana Alloy with the PostgreSQL monitoring settings."
+    }
+  ]
+}

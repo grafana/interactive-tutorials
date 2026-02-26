@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "postgresql-integration-configure-alloy",
+  "title": "Configure Grafana Alloy for PostgreSQL monitoring",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you configure Grafana Alloy using the configuration snippets provided by the PostgreSQL integration. These snippets enable Grafana Alloy to collect PostgreSQL metrics and logs and send them to your Grafana Cloud instance.\n\nThe configuration includes components for PostgreSQL metrics collection using the Prometheus PostgreSQL exporter component and log collection using Loki source file components."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "On the PostgreSQL integration page in Grafana Cloud, scroll to the **Set up Grafana Alloy to use the PostgreSQL integration** section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='alloy-simple-block']+button",
+          "content": "At the bottom of the snippet, click **Copy to clipboard**."
+        },
+        {
+          "type": "markdown",
+          "content": "Open the Grafana Alloy configuration file on your system. For example, on a Linux machine, run:\n\n```\nsudo nano /etc/alloy/config.alloy\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Paste the integration snippet into the configuration file."
+        },
+        {
+          "type": "markdown",
+          "content": "Update the `data_source_names` parameter with your PostgreSQL connection details.\n\nReplace the placeholder `postgresql://localhost:5432/postgres` with your actual connection string.\n\nFor example: `postgresql://alloy_monitor:secure_password@localhost:5432/postgres`"
+        },
+        {
+          "type": "markdown",
+          "content": "Review the log path in the logs configuration and update it if necessary:\n\n- For Linux systems, the default path is `/var/log/postgresql/postgres.log`\n- For macOS systems, the default path is `/var/log/postgresql/postgres.log`\n- For Windows systems, the default path is `C:\\Program Files\\PostgreSQL\\*\\data\\pg_log`"
+        },
+        {
+          "type": "markdown",
+          "content": "Save the configuration file and exit the editor."
+        },
+        {
+          "type": "markdown",
+          "content": "Restart the Grafana Alloy service to apply the configuration. On Linux, run:\n\n```\nsudo systemctl restart alloy\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Check the service status to ensure it started successfully. On Linux, run:\n\n```\nsudo systemctl status alloy\n```"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The Grafana Alloy service should restart successfully and begin collecting PostgreSQL metrics and logs.\n\nIn the next milestone, you test the connection to verify that data is being collected and sent to Grafana Cloud."
+    }
+  ]
+}
