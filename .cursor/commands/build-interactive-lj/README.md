@@ -24,15 +24,15 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 
 ### 🚨 CRITICAL TESTING RULE
 
-> During Step 6 (Test in Pathfinder), the AI's ONLY job is to load JSON into the Block Editor. The USER does ALL testing by clicking "Show me", "Do it", and interactive buttons themselves. The AI must NEVER click these buttons.
+> During Step 6 (Test in Pathfinder), the AI must NOT interact with Pathfinder at all. The AI tells the user which content.json file to import, then WAITS. The USER handles ALL Pathfinder interactions: importing JSON, clicking "Show me", "Do it", and testing.
 
-**Why:** Users can test faster and catch visual/UX issues that automation misses.
+**Why:** Users can import and test faster and catch visual/UX issues that automation misses. AI interaction with Pathfinder is error-prone and wastes time.
 
 ### Core Principles
 
 1. **Be autonomous, not interrogative** - Analyze content and make intelligent decisions. Don't ask questions that can be inferred from context.
 2. **Follow steps in order** - Each step has verification built in.
-3. **Test ONE milestone at a time** - Report results, then ASK before testing the next.
+3. **Test ONE milestone at a time** - Tell the user which file to import, wait for their feedback.
 4. **ASK before fixing issues** - Explain the problem and proposed fix, wait for approval.
 5. **Let the user handle git** - Summarize changes, let them decide when to commit.
 6. **Use browser tools for selectors** - ALWAYS inspect the actual DOM with Playwright.
@@ -41,7 +41,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 
 ## Anti-Patterns (Do NOT)
 
-- ❌ **Do NOT click "Show me", "Do it", or interactive buttons** - User tests, AI waits
+- ❌ **Do NOT interact with Pathfinder** - No importing JSON, no clicking buttons. User handles all Pathfinder interactions
 - ❌ **Do NOT ask questions that can be inferred** - Be autonomous (recommender file, URL patterns, platform)
 - ❌ **Do NOT skip any milestones** - EVERY milestone needs a content.json
 - ❌ **Do NOT use placeholder selectors** - Never leave `"[selector]"` or `"TODO"`
