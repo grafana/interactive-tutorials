@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "mongodb-integration-prepare-configuration",
+  "title": "Prepare your configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before Alloy can collect metrics, you need to customize the MongoDB connection string in the configuration snippet you just copied.\n\nThe connection string tells the MongoDB exporter how to connect to your database. It includes:\n\n- **Host and port** - Where MongoDB is running (e.g., `localhost:27017`)\n- **Authentication** - Username and password for a monitoring user\n- **Database** - Which database to authenticate against (usually `admin`)\n- **Connection options** - SSL/TLS settings, replica set name, etc.\n\n## Create a monitoring user\n\nFor security best practices, create a dedicated MongoDB user with read-only permissions for monitoring:\n\n```javascript\nuse admin\ndb.createUser({\n  user: \"grafana_monitor\",\n  pwd: \"<secure-password>\",\n  roles: [\n    { role: \"clusterMonitor\", db: \"admin\" },\n    { role: \"read\", db: \"local\" }\n  ]\n})\n```\n\n## Update the connection string\n\nIn your Alloy configuration file, find the `mongodb_connection_string` argument and update it:\n\n```\narguments {\n  mongodb_connection_string = \"mongodb://grafana_monitor:<password>@localhost:27017/admin\"\n}\n```\n\n**Connection string format:**\n- **Standard**: `mongodb://username:password@host:port/database`\n- **Replica set**: `mongodb://username:password@host1:port1,host2:port2/database?replicaSet=myReplicaSet`\n- **With SSL**: `mongodb://username:password@host:port/database?ssl=true`\n- **MongoDB Atlas**: Use the connection string from your Atlas dashboard\n\nAfter updating the connection string, save the file and restart Alloy."
+    }
+  ]
+}

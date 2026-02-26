@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "mongodb-integration-test-connection",
+  "title": "Test the connection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now that you've configured Alloy with your MongoDB connection string, let's verify that metrics are flowing to Grafana Cloud.\n\nThere are two ways to test the connection:\n\n1. **Integration page test** - Quick validation directly from the integration page\n2. **Explore metrics** - Query MongoDB metrics in Grafana to confirm data is arriving\n\nLet's start with the integration page test."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "button[data-testid='test-connection-button']",
+      "requirements": ["exists-reftarget"],
+      "content": "Click **Test connection** to verify Alloy is sending MongoDB metrics."
+    },
+    {
+      "type": "markdown",
+      "content": "If the test succeeds, you'll see a confirmation message. If it fails, check:\n\n- Alloy is running: `sudo systemctl status alloy` (Linux) or equivalent\n- MongoDB connection string is correct in `/etc/alloy/config.alloy`\n- MongoDB user has proper permissions (`clusterMonitor` and `read` roles)\n- MongoDB is accessible from the Alloy host (test with `mongo` or `mongosh`)\n- Firewall rules allow Alloy to connect to MongoDB\n\n## Verify metrics in Explore\n\nFor a more thorough test, let's query MongoDB metrics directly."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+      "requirements": ["navmenu-open"],
+      "content": "To manually verify metrics, navigate to **Explore** in your Grafana Cloud instance."
+    },
+    {
+      "type": "markdown",
+      "content": "In Explore:\n\n1. Select your **Prometheus** data source\n2. Run this query to check for MongoDB metrics:\n   ```\n   mongodb_up{job=\"integrations/mongodb\"}\n   ```\n3. You should see a value of `1`, indicating MongoDB is reachable\n\n**Other useful queries to verify data:**\n\n- **Connection count**: `mongodb_connections{job=\"integrations/mongodb\"}`\n- **Operations per second**: `rate(mongodb_op_counters_total[5m])`\n- **Memory usage**: `mongodb_memory{job=\"integrations/mongodb\"}`\n- **Query execution time**: `mongodb_mongod_op_latencies_latency{job=\"integrations/mongodb\"}`\n\nIf you see data for these queries, your MongoDB integration is working correctly!"
+    }
+  ]
+}
