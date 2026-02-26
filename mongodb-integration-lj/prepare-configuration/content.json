@@ -1,11 +1,31 @@
 {
   "schemaVersion": "1.0.0",
   "id": "mongodb-integration-prepare-configuration",
-  "title": "Prepare your configuration",
+  "title": "Prepare MongoDB connection configuration",
   "blocks": [
     {
       "type": "markdown",
-      "content": "Before Alloy can collect metrics, you need to customize the MongoDB connection string in the configuration snippet you just copied.\n\nThe connection string tells the MongoDB exporter how to connect to your database. It includes:\n\n- **Host and port** - Where MongoDB is running (e.g., `localhost:27017`)\n- **Authentication** - Username and password for a monitoring user\n- **Database** - Which database to authenticate against (usually `admin`)\n- **Connection options** - SSL/TLS settings, replica set name, etc.\n\n## Create a monitoring user\n\nFor security best practices, create a dedicated MongoDB user with read-only permissions for monitoring:\n\n```javascript\nuse admin\ndb.createUser({\n  user: \"grafana_monitor\",\n  pwd: \"<secure-password>\",\n  roles: [\n    { role: \"clusterMonitor\", db: \"admin\" },\n    { role: \"read\", db: \"local\" }\n  ]\n})\n```\n\n## Update the connection string\n\nIn your Alloy configuration file, find the `mongodb_connection_string` argument and update it:\n\n```\narguments {\n  mongodb_connection_string = \"mongodb://grafana_monitor:<password>@localhost:27017/admin\"\n}\n```\n\n**Connection string format:**\n- **Standard**: `mongodb://username:password@host:port/database`\n- **Replica set**: `mongodb://username:password@host1:port1,host2:port2/database?replicaSet=myReplicaSet`\n- **With SSL**: `mongodb://username:password@host:port/database?ssl=true`\n- **MongoDB Atlas**: Use the connection string from your Atlas dashboard\n\nAfter updating the connection string, save the file and restart Alloy."
+      "content": "In this milestone, you prepare the specific MongoDB connection details and security credentials. Proper MongoDB authentication and connection configuration ensures secure and reliable metrics collection.\n\nSetting up dedicated monitoring credentials with minimal required permissions follows security best practices and prevents potential access issues.\n\nConsider the following security guidelines:\n\n- Use environment variables or secret management systems for production deployments\n- Limit MongoDB user permissions to only what's required for monitoring\n- Enable SSL/TLS for MongoDB connections in production environments\n- Regularly rotate monitoring user credentials"
+    },
+    {
+      "type": "markdown",
+      "content": "To prepare your MongoDB connection configuration, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "1. Connect to your MongoDB instance and create a user with read-only permissions.\n\n   The following script creates a dedicated MongoDB user for monitoring.\n\n   ```javascript\n   use admin\n   db.createUser({\n     user: \"grafana_monitoring\",\n     pwd: \"secure_password_here\", \n     roles: [\n       { role: \"read\", db: \"admin\" },\n       { role: \"clusterMonitor\", db: \"admin\" },\n       { role: \"read\", db: \"local\" }\n     ]\n   })\n   ```"
+    },
+    {
+      "type": "markdown",
+      "content": "2. Open the Grafana Alloy configuration file and replace the placeholders with your specific values.\n\n   This defines the MongoDB connection URI.\n\n   ```alloy\n   mongodb_uri = \"mongodb://grafana_monitoring:secure_password_here@mongodb.example.com:27017/admin\"\n   ```\n\n   For MongoDB cloud deployments, include additional parameters:\n\n   ```alloy\n   mongodb_uri = \"mongodb+srv://grafana_monitoring:secure_password_here@cluster.example.mongodb.net/admin?retryWrites=true\"\n   ```"
+    },
+    {
+      "type": "markdown",
+      "content": "3. Configure the service and cluster labels by updating the label values in the Grafana Alloy configuration file.\n\n   ```alloy\n   rule {\n       target_label = \"service_name\"\n       replacement  = \"mongodb-production\"\n   }\n\n   rule {\n       target_label = \"mongodb_cluster\"  \n       replacement  = \"main-cluster\"\n   }\n\n   rule {\n       target_label = \"instance\"\n       replacement  = \"mongodb-prod-01\"\n   }\n   ```\n\nIn your next milestone, you'll test the connection and verify metrics collection."
+    },
+    {
+      "type": "markdown",
+      "content": "## More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [MongoDB connection string format](/docs/grafana-cloud/send-data/metrics/)"
     }
   ]
 }
