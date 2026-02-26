@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "create-availability-slo-create-availability-slo",
+  "title": "Create an availability SLO",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Grafana SLO provides a wizard-based interface for creating SLOs. The wizard guides you through defining your SLI first by selecting a time window, data source, and query type. For availability SLOs using a ratio query, you specify success and total metrics."
+    },
+    {
+      "type": "multistep",
+      "content": "Navigate to **Alerts & IRM > SLO**.",
+      "requirements": ["navmenu-open"],
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "button[aria-label^=\"Collapse section: Alerts\"]"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[href=\"/a/grafana-slo-app/home/insights\"]"
+        }
+      ]
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href=\"/a/grafana-slo-app/wizard/new\"]",
+      "content": "Click **Create SLO**."
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "input[name=\"timeWindow\"]",
+      "targetvalue": "28d",
+      "content": "In the **Time window** field, enter `28d` for a 28-day rolling window."
+    },
+    {
+      "type": "markdown",
+      "content": "A 28-day rolling window is commonly used for availability SLOs. It smooths out short spikes and aligns with how error budgets are often consumed."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "input[aria-label=\"Select a data source\"]",
+      "content": "From the **Data source** dropdown, select the data source that contains your metrics."
+    },
+    {
+      "type": "markdown",
+      "content": "For **Query type**, select **Ratio query**. Note: The Ratio query option appears when you select a Prometheus-compatible data source."
+    },
+    {
+      "type": "markdown",
+      "content": "In the **Success metric** field, enter a Prometheus counter metric for successful events (e.g., `http_requests_total`).\n\nFor example, you might add a label filter `status!~\"5..\"` to count successful responses (non-5xx status codes)."
+    },
+    {
+      "type": "markdown",
+      "content": "In the **Total metric** field, enter a Prometheus counter metric for all events (e.g., `http_requests_total`)."
+    },
+    {
+      "type": "markdown",
+      "content": "The wizard displays a preview of your SLI ratio based on the metrics you configured.\n\n**Don't have a metric like `http_requests_total`?** Your application or exporter may use different metric names or labels. See [SLI examples](/docs/slo/latest/sli-examples/) for other patterns (e.g. log-based or custom metrics), or use Explore to find counters that represent success and total in your data source.\n\nIn the next milestone, you'll set a target, name your SLO, and save it."
+    },
+    {
+      "type": "markdown",
+      "content": "## More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [SLO creation documentation](/docs/grafana-cloud/alerting-and-irm/slo/)\n- [SLO best practices](/docs/slo/latest/best-practices/)"
+    }
+  ]
+}

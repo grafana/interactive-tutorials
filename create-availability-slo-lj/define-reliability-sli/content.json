@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "create-availability-slo-define-reliability-sli",
+  "title": "Define a reliability SLI",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A *service level indicator (SLI)* is the measurable quantity that tells you how well a service is doing. A good reliability SLI measures what users *actually* experience. For availability SLOs, this means identifying which events count as \"successful\" and which events represent the total. Before creating an SLO in Grafana, you should understand what metrics are available and how they map to user experience.\n\nThe SLI formula for availability is: successful events divided by total events. You need to identify which metrics in your system represent these values to create your own SLI for this process."
+    },
+    {
+      "type": "markdown",
+      "content": "To define a reliability SLI, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "Identify the service or endpoint you want to measure.\n\n   For example, identify your API gateway, a specific microservice, or a critical user-facing endpoint."
+    },
+    {
+      "type": "markdown",
+      "content": "Define what \"success\" means for your service.\n\n   For example, a successful request might be one that does not return a server error (HTTP 5xx)"
+    },
+    {
+      "type": "markdown",
+      "content": "Define the total event count that represents all attempts.\n\n   For example, all HTTP requests to the endpoint, regardless of status code."
+    },
+    {
+      "type": "markdown",
+      "content": "Verify your metrics exist in Grafana.\n\n   Sign in to your Grafana Cloud account if you haven't already."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href=\"/explore\"]",
+      "content": "In Grafana Cloud, open **Explore** from the main menu (or the Explore icon)."
+    },
+    {
+      "type": "markdown",
+      "content": "Run a query for your success metric and a query for your total metric. You should see time series or values returned. If you get no data, the metric name or labels may be wrong, or the data may not be in this data source. See the **Verify in Explore** section below for an example.\n\n(Optional) Document your SLI definition for reference.\n\n   For example, write: \"SLI = (successful requests / total requests) where successful = HTTP status < 500\"\n\nYou should now have a clear definition of your SLI with identified success and total event metrics."
+    },
+    {
+      "type": "markdown",
+      "content": "## Verify in Explore\n\nTo confirm your metrics exist before using them in the SLO wizard, use Explore:\n\n- **Success metric example (Prometheus):** `sum(rate(http_requests_total{status!~\"5..\"}))` — counts successful HTTP requests (2xx status). Adjust the metric name and label filter to match your service.\n- **Total metric example:** `sum(rate(http_requests_total[5m]))` — counts all requests.\n\n**Tip:** The SLO wizard's Ratio query mode only needs the metric name and label selectors -- it generates the full PromQL automatically and shows you a preview. The Explore examples above are for verifying your metrics exist before you start.\n\nRun each query in Explore and choose a time range where you expect traffic. You should see time series or a single value; if the result is empty, check your metric name and labels in your data source or see [SLI examples](/docs/slo/latest/sli-examples/) for other patterns.\n\nIn the next milestone, you'll create an availability SLO using the Grafana SLO wizard."
+    },
+    {
+      "type": "markdown",
+      "content": "## More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Explore metrics in Grafana](/docs/grafana-cloud/visualizations/panels-visualizations/)"
+    }
+  ]
+}
