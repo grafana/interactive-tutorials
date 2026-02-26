@@ -1,0 +1,273 @@
+{
+  "id": "how-to-setup-secrets-tutorial",
+  "title": "How To Setup Secrets Management",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this interactive guide we will walk you through how to use secrets management in Grafana Cloud Synthetic Monitoring. You'll learn how to:\n\n- Navigate to secrets configuration\n- Create and manage secrets\n- Use secrets in your synthetic monitoring checks\n\n### **Why Use Secrets Management?**\n\nSecrets management provides a secure, centralized way to handle sensitive data in your tests. With secrets management, you can:\n\n- **Protect credentials** – Safely store API keys, passwords, and tokens\n- **Prevent exposure** – Automatically redact secret values in logs and outputs\n- **Centrally manage** – Update credentials without modifying test scripts\n\n"
+    },
+    {
+      "type": "section",
+      "id": "naviage-to-testing-multistep-guided",
+      "title": "Navigate to Secrets Configuration",
+      "requirements": [
+        "on-page:/",
+        "navmenu-open"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
+          "content": "Select Testing & Synthetics\n---",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-synthetic-monitoring-app/home']",
+          "content": "Move To The Synthetic Section\n---\nThis is where you can create, manage and view insights from your Synthetic Monitoring checks.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-synthetic-monitoring-app/config']",
+          "content": "Select Config\n---\nThis is where you'll manage your Synthetic Monitoring configuration settings, including access tokens, Terraform, and secrets.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Secrets']",
+          "content": "Select Secrets\n---\nThis is where you'll manage sensitive credentials for synthetic monitoring checks here. By default, only Grafana Admins can create, edit, or delete secrets. Editor and Viewer roles can only be granted access to update secrets.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "performace-multistep-guided",
+      "title": "Create A Secret",
+      "requirements": [
+        "navmenu-open"
+      ],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Create QuickPizza Username Secret\n---\nLet's create a secret for a username credential",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Create secret"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#secret-name",
+              "targetvalue": "quickpizza-username"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#secret-description",
+              "targetvalue": "Username to access quick pizza"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#secret-value",
+              "targetvalue": "Admin"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Save')"
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Create QuickPizza Password Secret\n---\nLet's create a secret for a password credential",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Create secret"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#secret-name",
+              "targetvalue": "quickpizza-password"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#secret-description",
+              "targetvalue": "Password to login to QuickPizza"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#secret-value",
+              "targetvalue": "Admin"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Save')"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "### Using Secrets\n\nSecrets can be referenced in scripted checks and browser checks. \n\nNote: Other check types don't yet support secrets."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "performace-multistep-guided",
+      "title": "Create A Check With A Synthetic Monitoring Secret",
+      "requirements": [
+        "navmenu-open"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-synthetic-monitoring-app/checks']",
+          "content": "Select Checks\n---\nThis is where you'll view and manage your synthetic monitoring checks.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='action create check']",
+          "content": "Select Create A Check\n---\nLet's start building a check that uses your secrets.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='check-group-card-browser'] a:nth-match(1)",
+          "content": "Create Browser Check\n---\nChoose Browser as the check type. This type of check supports secrets management.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Let's Setup Browser Check\n---\nEnter the basic check configuration:",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='checkEditor form job']",
+              "targetvalue": "Test:QuickPizza"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='checkEditor form instance']",
+              "targetvalue": "https://quickpizza.grafana.com/admin"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='data-testid Code editor container']",
+          "content": "In the script editor:\n\nImport the secrets module at the top:\n\n`import secrets from 'k6/secrets';`\n\nReference your secrets in the script:\n\n`const username = secrets.get('QuickPizza Username');`\n`const password = secrets.get('QuickPizza Password');`\n\n(Optional) Add a log to see how secrets are redacted:\n\n`console.log('Trying to log secret: ${username}');`\n\nNote: the example script already includes secret placeholders as comments. Uncomment these lines to use them.",
+          "targetvalue": "@@CLEAR@@"
+        },
+        {
+          "type": "multistep",
+          "content": "Complete the test\n---\nWe will walk through the remaining steps to complete the test",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='checkEditor navigation execution']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "form[data-testid='checkEditor form'] label:nth-match(5)"
+            },
+            {
+              "action": "button",
+              "reftarget": "Alerting"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='checkEditor form submit']"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-81179",
+      "title": "How To Edit & Delete Secrets",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Navigate to Synthetic Config\n---\nThis is where you can manage all existing secrets",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#mega-menu-toggle"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-synthetic-monitoring-app/config']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Tab Secrets']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='config-content'] button:nth-match(6)",
+          "content": "Edit Secret\n---\nYou can always update secrets by clicking the edit button",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Delete quickpizza-password']",
+          "content": "Delete QuickPizza Password Secret\n---\nLet's delete the secret for QuickPizza password credential",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Delete quickpizza-username']",
+          "content": "Delete QuickPizza Username Secret\n---\nLet's delete the secret for QuickPizza username credential",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## **Congratulations!**\n\nYou've successfully completed this guide on secrets management in Grafana Cloud Synthetic Monitoring. You now know how to:\n\n- Navigate to secrets configuration\n- Create and securely store credentials\n- Reference secrets in scripted checks\n- Manage and rotate secrets\n\n"
+    }
+  ]
+}
