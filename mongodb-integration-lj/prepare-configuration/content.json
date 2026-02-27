@@ -13,15 +13,15 @@
     },
     {
       "type": "markdown",
-      "content": "1. Connect to your MongoDB instance and create a user with read-only permissions.\n\n   The following script creates a dedicated MongoDB user for monitoring.\n\n   ```javascript\n   use admin\n   db.createUser({\n     user: \"grafana_monitoring\",\n     pwd: \"secure_password_here\", \n     roles: [\n       { role: \"read\", db: \"admin\" },\n       { role: \"clusterMonitor\", db: \"admin\" },\n       { role: \"read\", db: \"local\" }\n     ]\n   })\n   ```"
+      "content": "Connect to your MongoDB instance and create a user with read-only permissions.\n\nThe following script creates a dedicated MongoDB user for monitoring.\n\n```javascript\nuse admin\ndb.createUser({\n  user: \"grafana_monitoring\",\n  pwd: \"secure_password_here\", \n  roles: [\n    { role: \"read\", db: \"admin\" },\n    { role: \"clusterMonitor\", db: \"admin\" },\n    { role: \"read\", db: \"local\" }\n  ]\n})\n```"
     },
     {
       "type": "markdown",
-      "content": "2. Open the Grafana Alloy configuration file and replace the placeholders with your specific values.\n\n   This defines the MongoDB connection URI.\n\n   ```alloy\n   mongodb_uri = \"mongodb://grafana_monitoring:secure_password_here@mongodb.example.com:27017/admin\"\n   ```\n\n   For MongoDB cloud deployments, include additional parameters:\n\n   ```alloy\n   mongodb_uri = \"mongodb+srv://grafana_monitoring:secure_password_here@cluster.example.mongodb.net/admin?retryWrites=true\"\n   ```"
+      "content": "Open the Grafana Alloy configuration file and replace the placeholders with your specific values.\n\nThis defines the MongoDB connection URI.\n\n```alloy\nmongodb_uri = \"mongodb://grafana_monitoring:secure_password_here@mongodb.example.com:27017/admin\"\n```\n\nFor MongoDB cloud deployments, include additional parameters:\n\n```alloy\nmongodb_uri = \"mongodb+srv://grafana_monitoring:secure_password_here@cluster.example.mongodb.net/admin?retryWrites=true\"\n```"
     },
     {
       "type": "markdown",
-      "content": "3. Configure the service and cluster labels by updating the label values in the Grafana Alloy configuration file.\n\n   ```alloy\n   rule {\n       target_label = \"service_name\"\n       replacement  = \"mongodb-production\"\n   }\n\n   rule {\n       target_label = \"mongodb_cluster\"  \n       replacement  = \"main-cluster\"\n   }\n\n   rule {\n       target_label = \"instance\"\n       replacement  = \"mongodb-prod-01\"\n   }\n   ```\n\nIn your next milestone, you'll test the connection and verify metrics collection."
+      "content": "Configure the service and cluster labels by updating the label values in the Grafana Alloy configuration file.\n\n```alloy\nrule {\n    target_label = \"service_name\"\n    replacement  = \"mongodb-production\"\n}\n\nrule {\n    target_label = \"mongodb_cluster\"  \n    replacement  = \"main-cluster\"\n}\n\nrule {\n    target_label = \"instance\"\n    replacement  = \"mongodb-prod-01\"\n}\n```\n\nIn your next milestone, you'll test the connection and verify metrics collection."
     },
     {
       "type": "markdown",
