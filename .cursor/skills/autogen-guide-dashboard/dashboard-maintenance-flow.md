@@ -19,6 +19,8 @@ If either is missing, this is not a maintenance run — follow the full generati
 
 ## Phase 0: Detect Prior Run
 
+This phase follows the Phase 0 pattern from the skill-memory convention (`.cursor/skills/skill-memory.md`). The manifest is the entry point.
+
 Read `{guide_dir}/assets/manifest.yaml`. Extract:
 
 - `dashboard.uid` and `dashboard.source_sha256` — for drift detection
@@ -38,19 +40,21 @@ Present a brief summary to the user:
 
 Re-fetch or re-read the dashboard JSON using the same approach as SKILL.md Phase 1.2. Save it to `{guide_dir}/assets/dashboard-source.json` (overwriting the previous snapshot).
 
-### 1M.2 Compute the new SHA-256
+### 1M.2 Compute the new hash
+
+Use the same targeted hash as the original run (panels and variables only — not the full JSON, to avoid false drift on cosmetic changes):
 
 ```bash
-shasum -a 256 {guide_dir}/assets/dashboard-source.json
+jq -c '{panels: [.panels[] | {title, type, gridPos}], templating: [.templating.list[] | {name, type}]}' {guide_dir}/assets/dashboard-source.json | shasum -a 256
 ```
 
-Compare the new hash with `dashboard.source_sha256` from the manifest.
+Compare the hex digest with `input_sha256` from the manifest.
 
 ### 1M.3 Branch on drift
 
-**If the hash matches** (no dashboard changes):
+**If the hash matches** (no meaningful dashboard changes):
 
-> "The dashboard JSON is unchanged since the last run. Skipping re-extraction."
+> "The dashboard is unchanged since the last run. Skipping re-extraction."
 
 Skip to Phase 4M (review-only run). This is useful for applying updated rules, fixing style issues, or re-reviewing with a new checklist.
 
@@ -76,19 +80,25 @@ You are analyzing a Grafana dashboard JSON export that has been UPDATED since th
 2. `.cursor/skills/autogen-guide-dashboard/dashboard-selector-strategies.md`
 3. `.cursor/skills/autogen-guide-dashboard/dashboard-guide-rules.md`
 
-**Previous extraction report** (read this — it's your warm start):
+**Previous extraction report** (read this — prose warm start):
 {guide_dir}/assets/extraction-report.md
+
+**Previous panels roster** (structured diff baseline from manifest):
+```yaml
+{paste the guide.panels array from assets/manifest.yaml here}
+```
 
 **Current dashboard JSON** (read this — it's the source of truth):
 {guide_dir}/assets/dashboard-source.json
 
 **Your task:**
 1. Parse the current dashboard JSON fully (same as a fresh extraction)
-2. Compare against the previous extraction report:
-   - **Added panels**: panels in the current JSON not in the previous report
-   - **Removed panels**: panels in the previous report not in the current JSON
-   - **Modified panels**: panels where title, type, gridPos, queries, or variables changed
-   - **Unchanged panels**: panels that match the previous report exactly
+2. Compare the current panels against the structured panels roster from the manifest (title, type, gridPos.y):
+   - **Added panels**: in the current JSON but not in the roster
+   - **Removed panels**: in the roster but not in the current JSON
+   - **Modified panels**: title, type, gridPos, queries, or variables changed — including gridPos.y changes that flip above-fold ↔ below-fold
+   - **Unchanged panels**: match the roster exactly
+3. Fall back to the extraction report prose for context on unchanged panels
 3. For added/modified panels: grade selectors, determine fold position, assign guide treatment
 4. For removed panels: flag which guide sections are affected
 5. Check for variable changes: new, removed, or renamed template variables
@@ -179,8 +189,9 @@ Run the same Phase 4 review as SKILL.md, but add a maintenance-specific check to
 Write an updated `{guide_dir}/assets/manifest.yaml` with:
 
 - The new `generated_at` timestamp
-- The new `source_sha256`
+- The new `input_sha256` (recomputed with the targeted hash)
 - Updated `sections`, `total_steps`, `selector_quality`
+- Updated `panels` array — replace with the current dashboard's `[{title, type, y}]` roster; this is the structured baseline the next maintenance run will diff against
 
 ---
 

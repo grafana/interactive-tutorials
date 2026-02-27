@@ -175,6 +175,23 @@ Key things: `guided` (not `interactive`) with `lazyRender: true` on the step, ed
 
 ---
 
+## Golden Example Routing
+
+When building a section's sub-agent prompt, pass only the relevant examples:
+
+| Section pattern | Golden examples |
+|----------------|----------------|
+| Above-fold panels to highlight | Example A + B |
+| Below-fold panels to highlight | **Example G** (required for ANY below-fold panel) |
+| Mix of above + below fold panels | Example A + **Example G** |
+| Variable dropdowns to explore | Example C |
+| Collapsed row to expand + panels | Example D |
+| Hover to reveal tooltips/data links | Example E |
+| Dashboard-wide concept explanation | Example F |
+| Mix of patterns | Pass Example G + the most relevant other |
+
+---
+
 ## Action Decision Tree
 
 | Dashboard Element | Guide Action |
@@ -255,24 +272,12 @@ These items apply to every dashboard guide review. The Phase 4 review sub-agent 
 - Flag sections with 0 or 1 total interactive steps (too thin)
 - Flag sections with >10 interactive steps (should be split)
 
-**No navigation steps**:
-- The guide assumes the user is already on the dashboard
-- Remove any `action: "navigate"` steps that go to the dashboard itself
-- Remove any "Navigate to..." intro text
+**Rule 16 — No navigation steps**: Remove any `action: "navigate"` steps targeting the dashboard itself; remove any "Navigate to..." intro text.
 
-**No contextual preamble**:
-- Remove any text like "this is a guide to the XYZ dashboard" or "on the Grafana Play instance"
-- The user knows where they are; don't tell them
+**Rule 17 — No contextual preamble**: Remove any text naming the dashboard, Grafana instance, or explaining where the user is.
 
-**Text brevity**:
-- Flag any `content` field longer than 2 sentences (likely too verbose for sidebar rendering)
-- Replace paragraphs with short declarative statements
-- Verify section intro/summary markdown is 1 sentence each
+**Rule 18 — Text brevity**: Flag `content` fields longer than 2 sentences; verify section intro/summary is 1 sentence each; replace paragraphs with short declarative statements.
 
-**Grafana docs links**:
-- Verify that visualization types and Grafana features have a `[docs](https://grafana.com/docs/...)` link
-- Links should appear naturally in the step content, not as separate blocks
+**Rule 19 — Grafana docs links**: Verify visualization types and Grafana features have a `[docs](https://grafana.com/docs/...)` link appearing naturally in step content.
 
-**Closing brevity**:
-- The final markdown block should be 1–2 sentences max
-- Never recap every section or panel in the closing
+**Rule 20 — Closing brevity**: The final markdown block must be 1–2 sentences max; never recap every section or panel.

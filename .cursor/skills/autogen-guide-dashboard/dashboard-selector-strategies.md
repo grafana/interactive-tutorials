@@ -258,7 +258,7 @@ Given a panel from the dashboard JSON, derive its best selector:
 5. Record the grade, fold position, and selector in the extraction report
 ```
 
-**Fold estimation heuristic**: Grafana's default grid has ~8 vertical units visible without scrolling on a standard viewport (1080px). Panels with `gridPos.y >= 8` are likely below the fold. This is approximate -- actual visibility depends on browser height, panel heights of preceding panels, and whether rows are collapsed.
+**Fold estimation heuristic**: Estimate fold position by summing the `gridPos.h` values of all panels whose `gridPos.y` is less than this panel's `gridPos.y`. A cumulative height >= 8 grid units suggests the panel is below the fold on a standard 1080px viewport. The `gridPos.y >= 8` shortcut is a rough approximation; summing actual panel heights is more accurate when large panels (h >= 8) appear early in the layout.
 
 ---
 
@@ -307,37 +307,7 @@ Include this report alongside every generated guide as `assets/selector-report.m
 
 ## Dashboard-Specific Selector Caveats
 
-### Lazy-Loaded Panels and nth-match
-
-Grafana lazy-renders dashboard panels: only panels in or near the viewport exist in the DOM. Panels below the fold are **not in the DOM at all** until the user scrolls down. This has critical implications for selectors:
-
-**ALL below-fold panels are affected by lazy rendering, regardless of selector grade.** Grafana does not render panels into the DOM until the user scrolls them into (or near) the viewport. The `exists-reftarget` auto-requirement only waits for an element to appear — **it cannot scroll the page**. If the panel hasn't been rendered, the wait times out and the step fails with "Element not found."
-
-**For Green-grade selectors (unique title)**:
-- **Above fold**: safe in a plain `interactive` block — the element is already in the DOM at page load.
-- **Below fold**: **must use `guided` with `lazyRender: true`**. The `lazyRender` flag tells the guide system to scroll the element into view and wait for Grafana to render it before matching the selector. A plain `interactive` block will fail because `exists-reftarget` cannot trigger scrolling.
-
-Verified on play.grafana.org (schema v41): a dashboard with 5 uniquely-titled visualization panels at `gridPos.y >= 8` — none existed in the DOM at page load. Plain `interactive` blocks with `exists-reftarget` timed out with "Element not found" for all of them.
-
-**For Yellow/Red-grade selectors using `:nth-match(N)`**: **doubly broken by lazy rendering.** Not only is the element not in the DOM, but `nth-match(N)` counts are wrong when earlier matching elements haven't rendered. This was verified on play.grafana.org — a dashboard with 3 untitled panels only had 1 in the DOM at initial page load; `nth-match(2)` failed.
-
-**Mitigations for below-fold panels** (in priority order):
-1. **Use `guided` blocks with `lazyRender: true`** — this is required for ALL below-fold panels, including Green-grade:
-   ```json
-   {
-     "type": "guided",
-     "content": "Review the **Request Latency** panel.\n\nThis panel shows p95 latency.",
-     "tooltip": "Spikes above 500ms indicate degraded performance.",
-    "steps": [{
-      "action": "highlight",
-      "reftarget": "section[data-testid='data-testid Panel header Request Latency']",
-      "lazyRender": true,
-      "description": "Click inside the highlighted area"
-    }]
-   }
-   ```
-2. **For untitled/duplicate-title below-fold panels**: prefer `noop` or `markdown` to avoid fragile `nth-match` + lazy rendering issues
-3. **Restructure the guide** so that earlier steps naturally scroll the user past the needed panels, causing them to render before subsequent steps run
+For lazy rendering guidance — why below-fold panels require `guided` blocks with `lazyRender: true`, and why `nth-match(N)` is unreliable for panels not yet in the DOM — see the **Lazy Rendering (CRITICAL)** section in `dashboard-guide-rules.md`.
 
 ### Repeated Panels
 

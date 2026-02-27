@@ -358,16 +358,119 @@ Panel options contain visualization-specific settings worth mentioning in guides
 
 ### Query Expression Summarization
 
-For educational tooltips, summarize what the query does in plain language:
+For educational tooltips, summarize what the query does in plain language: what metric it measures, what the function computes (rate, percentile, sum, etc.), and what high or low values indicate. Reference [Grafana docs](https://grafana.com/docs/) for query language specifics.
 
-| PromQL Pattern | Plain Language |
-|---------------|----------------|
-| `rate(metric[interval])` | Per-second rate of change |
-| `sum by (label) (...)` | Total grouped by {label} |
-| `histogram_quantile(0.95, ...)` | 95th percentile latency |
-| `increase(metric[interval])` | Total increase over time window |
-| `avg without (instance) (...)` | Average across all instances |
-| `topk(N, ...)` | Top N highest values |
-| `count(... > threshold)` | Number of series above threshold |
+---
 
-For LogQL, InfluxQL, and other query languages, provide similar plain-language summaries based on the query structure.
+## Extraction Report Template
+
+When writing `assets/extraction-report.md`, use the standard frontmatter from the skill-memory convention (with added `dashboard`, `dashboardTitle`, and `dashboardSha256` fields), then this structure:
+
+```markdown
+## Extraction Report
+
+**Dashboard**: {title} (uid: {uid})
+**Schema version**: {schemaVersion}
+**URL path**: /d/{uid}/{slug}
+**Panels**: N
+**Variables**: N
+**Data sources**: N
+**Rows/groups**: N
+
+### Selector Quality
+- N/N Green (unique panel title → unique data-testid)
+- N/N Yellow (duplicate title, needs nth-match or row scoping)
+- N/N Red (no title, or variable-interpolated title)
+
+### Row/Section Groups
+
+For each row or logical group:
+#### {Row/Group Name}
+- Panels: (table with columns: Title, Type, Selector, Grade, Variables Referenced, Data Source)
+- Row selector: `div[data-testid='data-testid Layout container row {title}']` (if explicit row)
+
+### Template Variables
+
+For each variable:
+- Name: $varName
+- Type: query | custom | datasource | interval | textbox
+- Current value: {current.value}
+- Referenced by panels: (list panel titles)
+- Datasource: {datasource name/uid}
+
+### Data Sources
+- (table: Name/UID, Type, Referenced by N panels)
+
+### Panel Details
+
+For each panel:
+#### {Panel Title}
+- Type: {timeseries | stat | gauge | table | heatmap | logs | ...}
+- Position: row {y-group}, col {x}, size {w}x{h}
+- Fold: above | below (sum gridPos.h of all panels above this one; cumulative >= 8 ≈ below fold)
+- Query: {abbreviated target expression}
+- Variables used: $var1, $var2
+- Transformations: {count} ({types})
+- Overrides: {count}
+- Repeat: {variable name} (if repeating panel)
+- Best selector: `section[data-testid='data-testid Panel header {title}']`
+- Grade: Green | Yellow | Red
+- Guide treatment: highlight (above fold only) | guided-lazyRender (below fold, any grade) | guided-hover | noop
+- Lazy-render note: (if below fold: "MUST use guided + lazyRender: true — exists-reftarget cannot scroll"; if Red/Yellow + below fold: "nth-match unreliable, prefer noop or guided with lazyRender")
+
+### Concerns
+- (list any issues: duplicate titles, missing titles, very large panel count, etc.)
+```
+
+---
+
+## Guide Plan Template
+
+When writing `assets/guide-plan.md`, use the standard frontmatter from the skill-memory convention (with dashboard-specific fields), then this structure:
+
+```markdown
+## Guide Plan
+
+**Guide ID**: {guide-id}
+**Title**: {Guide Title}
+**Guide type**: Dashboard Tour | Observability Guide | Monitoring Deep-Dive | SRE Walkthrough
+**Dashboard URL path**: /d/{uid}/{slug}
+**Data sources**: {list data source types}
+
+### Sections
+
+**Note**: No navigation section is needed. The guide assumes the user is already on the dashboard (rule 16).
+
+#### 1. {Section Name} (maps to row or logical group)
+- Section ID: {kebab-case-id}
+- Row/group: {row title or "top-level"}
+- Panels: {count} ({list panel titles})
+- Variables relevant: $var1, $var2 (if any)
+- Key panels to highlight: {list the most important 3-5}
+- Row expand needed: yes/no (if collapsed row)
+- Requirements: [on-page:/d/{uid}/{slug}]
+- Objectives: [] (if any)
+- Chains from: independent | section-completed:{previous-id} (only if dependent)
+
+#### 2. {Section Name}
+...
+
+### Variable Exploration Section (if variables exist)
+- Section ID: explore-variables
+- Variables: {list variable names and types}
+- Placement: first section after navigation (helps user understand filtering before panel tour)
+
+### Section Chaining
+Only chain when section N creates something section N+1 depends on.
+Dashboard tours are typically independent sections -- use `on-page:/d/{uid}/{slug}` instead.
+
+### Section Viability
+For each section, estimate **targeting steps** (steps with a reftarget) vs **noop steps** (informational, no DOM interaction). A section needs **at least 1 targeting step** to justify being standalone. If a section would contain only noop steps, **merge its panels into an adjacent section**.
+
+### Notes
+- Duplicate panel title handling strategy
+- Variable-interpolated panel titles
+- Collapsed rows that need expand steps
+- Step budget concerns (any sections that may exceed 8 steps)
+- Sections flagged as noop-only and which section they were merged into
+```
