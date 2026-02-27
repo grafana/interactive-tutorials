@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "postgresql-integration-test-connection",
+  "title": "Test the PostgreSQL monitoring connection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you verify that Grafana Alloy is successfully collecting PostgreSQL metrics and logs and sending them to your Grafana Cloud instance. Testing the connection ensures that your monitoring setup is working correctly before installing dashboards and alerts."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "On the PostgreSQL integration page in Grafana Cloud, scroll to the **Test connection** section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='test-connection-button']",
+          "content": "Click **Test connection** to validate that data is flowing from your PostgreSQL instance to Grafana Cloud."
+        },
+        {
+          "type": "markdown",
+          "content": "Wait for the connection test to complete. A successful test indicates that:\n\n- Grafana Alloy is running and configured correctly\n- PostgreSQL metrics are being collected\n- Data is reaching your Grafana Cloud instance"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": ["navmenu-open"],
+          "content": "To manually verify data collection, navigate to **Explore** in your Grafana Cloud instance."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "From the data source dropdown at the top-left, select your Prometheus data source where PostgreSQL metrics are stored."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-rows']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "In the query editor, search for `pg_up` to verify that the PostgreSQL exporter is reporting the database status."
+        },
+        {
+          "type": "markdown",
+          "content": "Check that the metric returns a value of `1`, indicating that PostgreSQL is up and responding to monitoring queries."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The connection test confirms that your PostgreSQL monitoring setup is working correctly and that metrics are flowing to Grafana Cloud.\n\nIn the next milestone, you install the pre-built PostgreSQL dashboards and alerts to start monitoring your database."
+    },
+    {
+      "type": "markdown",
+      "content": "## Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Alloy isn't running after a reboot](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#alloy-isnt-running-after-a-reboot)\n- [No metrics were found for this integration](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#no-metrics-were-found-for-this-integration)\n- [Alloy was not able to reach your application Prometheus metrics endpoint](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#alloy-was-not-able-to-reach-your-application-prometheus-metrics-endpoint)"
+    }
+  ]
+}
