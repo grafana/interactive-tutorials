@@ -75,11 +75,19 @@ prometheus-lj/
 
 ```json
 {
+  "name": "Person name or github handle",
   "team": "interactive-learning"
 }
 ```
 
-All content in this repository is authored by the same team. Use this value for all manifests.
+How to fill out `author`:
+
+* The `name` field can be filled out by consulting git commit history. Who wrote/
+committed the corresponding `content.json` file?  If more than one person, you can 
+comma separate authors
+* If you're working on a learning path or learning journey, the default team is
+"Grafana Documentation"
+* If unsure, leave name blank, and use "interactive-learning" for the team field.
 
 ### targeting
 
