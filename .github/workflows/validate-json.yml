@@ -85,7 +85,7 @@ jobs:
       working-directory: pathfinder-app
       run: npm run build:cli
 
-    - name: Validate guides
+    - name: Validate guides (content.json per-file)
       run: |
         echo "🔍 Finding and validating content.json files..."
         echo ""
@@ -121,3 +121,33 @@ jobs:
           echo ""
           echo "🎉 All $PASSED guide(s) validated successfully!"
         fi
+
+    - name: Validate packages (manifest.json directories)
+      run: |
+        echo "🔍 Validating all package directories (those with manifest.json)..."
+        echo ""
+        node pathfinder-app/dist/cli/cli/index.js validate --packages .
+
+    - name: Build repository.json
+      run: |
+        echo "🔨 Generating repository.json from all packages..."
+        echo ""
+        node pathfinder-app/dist/cli/cli/index.js build-repository . -o repository.json
+        echo ""
+        echo "📦 repository.json generated successfully"
+
+    - name: Build dependency graph (informational)
+      continue-on-error: true
+      run: |
+        echo "🔗 Building dependency graph..."
+        echo ""
+        node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json
+
+    - name: Upload repository.json and graph.json artifacts
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      with:
+        name: repository-and-graph-json
+        path: |
+          repository.json
+          graph.json
+        retention-days: 30

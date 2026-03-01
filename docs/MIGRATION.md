@@ -247,32 +247,60 @@ interactive-tutorials/
 
 ---
 
-## Phase 3: CI integration
+## Phase 3: CI integration ✓
+
+**Status: COMPLETE**
 
 **Goal:** CI validates packages and generates `repository.json` on every push/PR.
 
 ### Deliverables
 
-- [ ] **Extend `validate-json.yml`** with a new job (or extend the existing `validate-guides` job):
+- [x] **Extend `validate-json.yml`** with new steps in the existing `validate-guides` job:
   - After building the pathfinder CLI, run `validate --packages .` to validate all package directories (those with `manifest.json`)
   - Run `build-repository . -o repository.json` to generate `repository.json` from all packages
   - Run `build-graph` for dependency visualization (informational, not blocking)
   - Upload `repository.json` as a CI artifact for inspection
 
-- [ ] **Validation scope** — `validate --packages` validates only directories that contain `manifest.json`. Directories with only `content.json` (un-migrated guides) are still validated by the existing per-file validation loop. Both validations coexist.
+- [x] **Validation scope** — `validate --packages` validates only directories that contain `manifest.json`. Directories with only `content.json` (un-migrated guides) are still validated by the existing per-file validation loop. Both validations coexist.
 
-- [ ] **repository.json paths** — The `build-repository` command produces entries with paths relative to the repository root (e.g., `"path": "alerting-101/"`). These are also relative to the CDN publication root since the deploy step copies the repo structure into the `guides/` bucket prefix.
+- [x] **repository.json paths** — The `build-repository` command produces entries with paths relative to the repository root (e.g., `"path": "alerting-101/"`). These are also relative to the CDN publication root since the deploy step copies the repo structure into the `guides/` bucket prefix.
+
+- [x] **repository.json excluded from git** — Added `repository.json` to `.gitignore` since it is CI-generated and must never be committed.
 
 ### CI job ordering
 
 ```
 validate-recommender-rules (index.json)     ← existing, unchanged
 validate-guides (content.json per-file)      ← existing, unchanged
-validate-packages (manifest.json packages)   ← new
-build-repository (repository.json)           ← new
+validate-packages (manifest.json packages)   ← new (same job as validate-guides)
+build-repository (repository.json)           ← new (same job as validate-guides)
 ```
 
-The `validate-packages` and `build-repository` jobs depend on the pathfinder CLI being built, which the existing `validate-guides` job already does. They can share that build step or run in the same job.
+The `validate-packages` and `build-repository` steps are added to the existing `validate-guides` job after the per-file content.json validation. This avoids duplicating the pathfinder-app checkout, Node.js setup, and CLI build steps. The `validate-recommender-rules` job remains a separate parallel job.
+
+### Local verification
+
+Local verification performed successfully against the pathfinder CLI at `/Users/davidallen/hax/grafana-pathfinder-app`:
+
+1. **`validate --packages .`** — All 21 packages valid (13 with manifests, 8 content-only). No errors.
+2. **`build-repository . -o repository.json`** — Generated `repository.json` with 13 package entries.
+3. **`build-graph interactive-tutorials:repository.json`** — Graph built successfully (13 nodes, 29 edges). 7 warnings:
+   - 3 orphaned standalone guides (expected — `alerting-101`, `explore-drilldowns-101`, `first-dashboard` have no inter-package dependencies)
+   - 4 unresolved cross-repo references (`drilldown-metrics-lj`, `private-data-source-connect-lj`) — expected since these learning paths have not been migrated yet
+
+### Decisions recorded
+
+1. **Steps in existing job, not separate jobs.** The new `validate-packages`, `build-repository`, `build-graph`, and artifact upload steps are added to the existing `validate-guides` job rather than creating separate jobs. This avoids tripling the pathfinder-app checkout/install/build time. The `validate-recommender-rules` job (which doesn't need the CLI) remains separate and runs in parallel.
+
+2. **`build-graph` uses `continue-on-error: true`.** The dependency graph is informational — lint warnings about orphaned packages or missing cross-repo targets should not fail the CI pipeline. These warnings are expected during partial migration and will resolve as more guides are migrated.
+
+3. **`build-graph` requires `name:path` format.** The CLI's `build-graph` command takes `<name>:<path>` repository entries, not a bare directory. The CI step uses `interactive-tutorials:repository.json` to reference the generated file. This was discovered during local verification (the MIGRATION.md spec used `.` which the CLI rejected).
+
+4. **`repository.json` added to `.gitignore`.** Consistent with the strategy that `repository.json` is CI-generated and never committed to git. The `.gitignore` entry prevents accidental commits from local testing.
+
+5. **Artifact upload with 30-day retention.** The `repository.json` CI artifact uses `actions/upload-artifact@v4` with 30-day retention so it can be inspected on any PR or push without needing to re-run the workflow.
+
+6. **All pilot manifests validate cleanly.** No manifest fixes were needed — the Phase 2 pilot manifests all pass `validate --packages` without errors. The `build-graph` warnings are expected (unresolved cross-repo references, orphaned standalone guides) and do not indicate manifest problems.
 
 ---
 
