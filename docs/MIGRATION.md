@@ -86,34 +86,11 @@ These invariants hold throughout the entire migration — pilot and full:
 
 ### Field derivation rules
 
-These rules codify where each manifest field's data comes from during migration. The principle is **maximally complete from existing data, no guessing or inventing**.
+The complete field derivation rules — specifying where each manifest field's data comes from — are defined in [`docs/manifest-reference.md`](manifest-reference.md) under "Field derivation rules." The rules are split into three tables covering standalone guides, learning path steps, and learning paths.
 
-| Field | Source | Derivation |
-|-------|--------|------------|
-| `id` | `content.json` | Copy the `id` field verbatim |
-| `type` | Directory structure | `"guide"` for standalone guides and LJ steps; `"path"` for `*-lj` directories |
-| `repository` | Constant | `"interactive-tutorials"` (the schema default; can be omitted) |
-| `description` | `index.json` rule | Copy the `description` field from the matching rule. For LJ steps without an index.json entry, derive from the website markdown frontmatter `description` field |
-| `category` | Website markdown | For learning paths: `journey.group` from the path-level `_index.md` frontmatter (e.g., `journey: { group: data-availability }` → `"data-availability"`). For standalone guides: use the learning path's `journey.group` if the guide belongs to one, otherwise default to `"general"` and note the default |
-| `author` | Constant for pilot | `{ "team": "interactive-learning" }` — all content in this repo is currently authored by the same team |
-| `language` | Constant | `"en"` (the default; can be omitted) |
-| `startingLocation` | `index.json` rule | Recursively traverse the `match` expression (`and`/`or` combinators) and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). If the best choice is ambiguous from context, pick the first one found and note the choice in the generated `manifest.json`. Falls back to `"/"` if no URL rule exists |
-| `targeting.match` | `index.json` rule | Copy the `match` object from the matching rule verbatim |
-| `testEnvironment.tier` | `index.json` rule | If the `match` expression contains a `source` rule (at any nesting depth), then `"cloud"`. If `match` contains `"targetPlatform": "cloud"` (without a `source` rule), then `"cloud"`. Otherwise `"local"`. If ambiguous, note the ambiguity in the generated manifest |
-| `testEnvironment.instance` | `index.json` rule | If the `match` expression contains a `source` rule, set to that value (e.g., `"play.grafana.org"`). Otherwise omit |
-| `depends` | Website markdown | For LJ steps: step N+1 `depends` on step N (first step has no `depends`). For standalone guides: leave empty unless explicit |
-| `recommends` | Website markdown | For LJ steps: step N `recommends` step N+1 (last step has no `recommends`). At the path level: from `journey.links.to` in `_index.md`. At the step level: also from `side_journeys` in step markdown |
-| `suggests` | Website markdown | From `related_journeys` in path-level `_index.md` |
-| `provides` | Guide semantics | Infer from what the guide accomplishes (e.g., a data source setup guide provides `"datasource-configured"`). Leave empty when not obvious |
-| `steps` | Website markdown | For `type: "path"`: ordered list of step package IDs, derived from the step markdown `weight` field ordering. The `pathfinder_data` frontmatter field maps each markdown step to its `interactive-tutorials` directory |
+The governing principle is **maximally complete from existing data, no guessing or inventing**.
 
-### Matching index.json rules to guides
-
-The `index.json` `url` field contains the CDN URL for the guide (e.g., `https://interactive-learning.grafana.net/guides/alerting-101`). Some URLs have a trailing `/content.json` — strip it before matching. The guide directory name is the last path segment after stripping. Packages are identified by directory, not by file; either `content.json` or `manifest.json` can be resolved within the directory.
-
-Match by comparing the guide's `id` (from `content.json`) against the directory name extracted from each rule's `url`.
-
-For learning journey steps, individual steps typically don't have their own `index.json` entries — targeting lives at the path level. Step-level manifests have no `targeting` field unless the step has its own `index.json` entry. Step-level `description` comes from the website markdown.
+Guide-to-rule matching and `index.json` URL-to-directory mapping are also documented in [`docs/manifest-reference.md`](manifest-reference.md) under "Matching index.json rules to guides."
 
 ---
 
@@ -158,7 +135,9 @@ For learning journey steps, individual steps typically don't have their own `ind
   7. Validate cross-file ID consistency and step references
   8. Verify: no existing `content.json` in any step subdirectory was modified
 
-  **Metadata conflict resolution:** The website markdown `_index.md` is the authoritative source for path-level metadata (title, description, category, learning objectives, prerequisites). However, metadata may exist in multiple places — `index.json`, `journeys.yaml`, the markdown frontmatter, and the markdown body. If any path-level metadata in `_index.md` differs from or contradicts what is found elsewhere (e.g., a different description in `index.json`, a different category in `journeys.yaml`), the skill must **flag the conflict for manual resolution** by the user rather than silently picking one source. The agent should present both values and ask the user which to use.
+  **Metadata conflict resolution:** The website markdown `_index.md` is the authoritative source for path-level metadata (title, description, category, learning objectives, prerequisites). However, metadata may exist in multiple places — `index.json`, `journeys.yaml`, the markdown frontmatter, and the markdown body. A conflict exists whenever the same field has different string values in two sources, even if the values are semantically similar. The skill must **flag the conflict for manual resolution** by the user rather than silently picking one source. The agent should present both values and ask the user which to use.
+
+  **Website markdown fallback:** If the website repository is not available or a guide has no corresponding website markdown, the skill applies the fallback rules defined in [`docs/manifest-reference.md`](manifest-reference.md) under "When website markdown is unavailable." Fields that cannot be derived are flagged for manual entry rather than guessed.
 
   **Mapping LJ names to website paths:** The directory names differ between repos. The mapping is:
 
@@ -183,7 +162,7 @@ Learning path directories (`*-lj`) typically have no `content.json` at their roo
 1. `id` — the `*-lj` directory name (e.g., `"prometheus-lj"`)
 2. `title` — from the `_index.md` frontmatter `title` field
 3. `blocks` — derived from the `_index.md` body content:
-   - Strip Hugo shortcodes (`{{< ... >}}`, `{{< /... >}}`) — these are rendering directives, not content
+   - Strip Hugo shortcode tags (`{{< ... >}}`, `{{< /... >}}`) — these are rendering directives, not content. For wrapping shortcodes (e.g., `{{< admonition >}}...{{< /admonition >}}`), strip the opening and closing tags but preserve the inner content
    - Convert the remaining markdown body into one or more `markdown` blocks
    - Preserve learning objectives, prerequisites, and descriptive prose — these provide value as the path's introductory page
    - Images referenced via markdown syntax (`![alt](url)`) can be retained as-is in the markdown block content; the Pathfinder renderer will handle them
@@ -383,7 +362,7 @@ Each rule provides: `title`, `url`, `description`, `type`, `match` (targeting ex
 
 ### Website learning path markdown
 
-Location: `/Users/davidallen/hax/website/content/docs/learning-paths/`
+Location: `<website-repo>/content/docs/learning-paths/` (default local checkout: `/Users/davidallen/hax/website/content/docs/learning-paths/`)
 
 Structure:
 ```
@@ -425,8 +404,6 @@ Provides inter-journey category and `links.to` relationships at the journey grap
 
 ## Appendix: Naming conventions
 
-The general rule for mapping between repos is **strip the `-lj` suffix** from the `interactive-tutorials` directory name to get the corresponding `website/content/docs/learning-paths/` directory name (e.g., `prometheus-lj` → `prometheus`, `linux-server-integration-lj` → `linux-server-integration`).
+See [`docs/manifest-reference.md`](manifest-reference.md) under "Naming conventions" for the directory name mapping rules between repos.
 
 The full set of `*-lj` directories is ongoingly changing — authors continue to write new learning journeys on parallel branches during this migration. This is why we pilot on a subset and create a generic, reusable migration skill for the rest.
-
-Within paths, step directory names are identical in both repos. The website markdown `pathfinder_data` frontmatter field is the authoritative link: e.g., `pathfinder_data: prometheus-lj/add-data-source` maps the website step to the `interactive-tutorials/prometheus-lj/add-data-source/` directory.
