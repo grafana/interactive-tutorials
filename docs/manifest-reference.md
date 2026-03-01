@@ -150,13 +150,13 @@ These rules define where each manifest field's data comes from during migration.
 | `id` | `content.json` | Copy the `id` field verbatim. |
 | `type` | — | Always `"guide"`. |
 | `repository` | — | Omit (schema default `"interactive-tutorials"` applies). |
-| `description` | `index.json` rule | Copy the `description` from the matching rule. |
+| `description` | `index.json` rule | First priority: copy the `description` from the matching `index.json` rule (already catalog-style). If no rule exists, summarize available sources (content.json title, website markdown) into a compact one-line catalog summary. |
 | `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise `"general"`. |
-| `author` | — | `{ "team": "interactive-learning" }` |
+| `author` | — | `{ "team": "interactive-learning" }` for standalone guides; `{ "team": "Grafana Documentation" }` for steps inside a `*-lj` directory. |
 | `language` | — | Omit (schema default `"en"` applies). |
-| `startingLocation` | `index.json` rule | Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). Falls back to `"/"` if no URL rule exists. |
+| `startingLocation` | `index.json` rule | Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). Omit if no URL can be derived (do not fall back to `"/"`). |
 | `targeting.match` | `index.json` rule | Copy the `match` object verbatim. |
-| `testEnvironment.tier` | `index.json` rule | Apply [tier inference rules](#testenvironment). |
+| `testEnvironment.tier` | `index.json` rule | Apply [tier inference rules](#testenvironment). **Never omit `testEnvironment`.** When no `index.json` rule exists, default to `{ "tier": "cloud" }`. |
 | `testEnvironment.instance` | `index.json` rule | Set to the `source` value if present; otherwise omit. |
 | `depends` | — | Leave empty unless explicitly known. |
 | `recommends` | — | Leave empty unless explicitly known. |
@@ -169,9 +169,9 @@ These rules define where each manifest field's data comes from during migration.
 |-------|--------|------------|
 | `id` | `content.json` | Copy the `id` field verbatim. |
 | `type` | — | Always `"guide"`. |
-| `description` | Website step `index.md` | From the step markdown's `description` frontmatter field. |
+| `description` | `index.json` rule, then website step `index.md` | First priority: matching `index.json` rule description. Second: step markdown `description` frontmatter (condense to one line if verbose). Third: summarize from available context. |
 | `category` | Website path `_index.md` | Use `journey.group` from the parent path's `_index.md`. |
-| `author` | — | `{ "team": "interactive-learning" }` |
+| `author` | — | `{ "team": "Grafana Documentation" }` (all learning path content uses this team). |
 | `targeting` | — | Omit unless the step has its own `index.json` entry (targeting lives at the path level). |
 | `depends` | Step ordering | Step N+1 depends on step N. First step has no `depends`. |
 | `recommends` | Step ordering | Step N recommends step N+1. Last step has no next-step recommendation. |
@@ -183,10 +183,10 @@ These rules define where each manifest field's data comes from during migration.
 |-------|--------|------------|
 | `id` | Directory name | The `*-lj` directory name (e.g., `"prometheus-lj"`). |
 | `type` | — | Always `"path"`. |
-| `description` | Website `_index.md` | From the path-level `_index.md` frontmatter `description` field. |
+| `description` | `index.json` rule, then website `_index.md` | First priority: matching `index.json` rule description. Second: condense `_index.md` frontmatter `description` to a compact one-line catalog summary. |
 | `category` | Website `_index.md` | From `journey.group` (e.g., `"data-availability"`). |
-| `author` | — | `{ "team": "interactive-learning" }` |
-| `startingLocation` | `index.json` rule | Same derivation as standalone guides. Falls back to `"/"`. |
+| `author` | — | `{ "team": "Grafana Documentation" }` (all learning path content uses this team). |
+| `startingLocation` | `index.json` rule | Same derivation as standalone guides. Omit if no URL can be derived (do not fall back to `"/"`). |
 | `targeting.match` | `index.json` rule | Copy the `match` object from the matching rule, if one exists. |
 | `testEnvironment` | `index.json` rule | Apply [tier inference rules](#testenvironment). |
 | `steps` | Website step markdown | Ordered list of step package IDs, derived from the step markdown `weight` field ordering. The `pathfinder_data` frontmatter maps each step to its `interactive-tutorials` directory. |
