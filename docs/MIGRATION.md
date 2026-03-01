@@ -94,7 +94,9 @@ Guide-to-rule matching and `index.json` URL-to-directory mapping are also docume
 
 ---
 
-## Phase 1: Migration skill
+## Phase 1: Migration skill ✓
+
+**Status: COMPLETE**
 
 **Goal:** A reusable agent skill that atomically migrates one guide or one learning path to the package format.
 
@@ -110,7 +112,7 @@ Guide-to-rule matching and `index.json` URL-to-directory mapping are also docume
 
 ### Deliverables
 
-- [ ] **`.cursor/skills/migrate-guide/SKILL.md`** — Single skill with two modes:
+- [x] **`.cursor/skills/migrate-guide/SKILL.md`** — Single skill with two modes:
 
   **Mode 1: Standalone guide** — invoked on a guide directory (e.g., `alerting-101/`)
   1. Read `content.json` to extract `id` and `title` (do not modify)
@@ -168,6 +170,18 @@ Learning path directories (`*-lj`) typically have no `content.json` at their roo
    - Images referenced via markdown syntax (`![alt](url)`) can be retained as-is in the markdown block content; the Pathfinder renderer will handle them
 
 **Example:** For `prometheus-lj`, the path-level `content.json` would contain the title "Connect to a Prometheus data source in Grafana Cloud" and markdown blocks covering: what Prometheus is, what the journey teaches, learning objectives (the 5-point list), and prerequisites.
+
+### Decisions recorded
+
+1. **Single SKILL.md, no sub-agents.** Unlike the `autogen-guide` skill which uses a multi-phase sub-agent pipeline, the migration skill is a straightforward read-derive-write workflow. All logic is documented inline in `SKILL.md` and executed by a single agent invocation. This keeps the skill simple and predictable — the primary complexity is in the data derivation rules, which are already documented in `docs/manifest-reference.md`.
+
+2. **No skill-memory convention.** The `autogen-guide` skill uses `assets/manifest.yaml` for re-run detection because its input (source code) can drift. Migration input (`content.json`, `index.json`, website markdown) is stable — a guide is migrated once and then maintained by hand. Re-run detection adds complexity with no benefit, so the skill does not implement the skill-memory convention.
+
+3. **Website repo path hardcoded.** The website markdown path (`/Users/davidallen/hax/website/content/docs/learning-paths/`) is documented as a constant in the skill. If the website repo is not at this path, the skill applies fallback rules rather than failing. This matches the existing convention in `docs/manifest-reference.md`.
+
+4. **Conflict flagging over silent resolution.** When metadata differs between sources (e.g., `index.json` description vs website markdown description), the skill flags the conflict and asks the user to choose. This follows the MIGRATION.md specification and avoids the risk of silently picking the wrong value.
+
+5. **Field omission over empty arrays.** The skill omits optional fields (`depends`, `recommends`, `suggests`, `provides`) when they would be empty, rather than writing empty arrays. This produces cleaner manifests and matches the templates in `docs/manifest-reference.md`.
 
 ---
 
