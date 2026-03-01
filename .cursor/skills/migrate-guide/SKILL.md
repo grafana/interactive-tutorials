@@ -89,7 +89,12 @@ The `author` field has a `team` value that depends on content type:
 
 `"interactive-learning"` is the fallback default when content type is unknown. If you know the content is a learning path or a step within one, always use `"Grafana Documentation"`.
 
-The `author.name` field is optional. If git commit history clearly identifies the author(s), include it. If multiple authors, comma-separate them. If unsure, omit `name` entirely.
+The `author.name` field is optional. To derive it:
+1. Look at all git revisions since the `content.json` file was created (use `git log --follow` to track renames)
+2. Extract the GitHub handles (not full names) of all commit authors
+3. Exclude any obvious automation or bot authors (e.g., `dependabot`, `renovate`, `github-actions`, `bot`, etc.)
+4. If multiple authors remain, comma-separate their GitHub handles
+5. If no authors remain after filtering bots, or if unsure, omit `name` entirely
 
 ---
 
@@ -108,7 +113,7 @@ Read `{dir}/content.json` and extract the `id` and `title` fields. **Do not modi
 Read `index.json` from the repo root. Find the rule whose `url` path segment matches the directory name or the `content.json` `id`. Record:
 - `description` from the rule
 - `match` object from the rule
-- `startingLocation`: traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). If no URL can be extracted, omit `startingLocation` entirely — a missing value is preferable to a wrong one.
+- `startingLocation`: traverse the `match` expression recursively, collect all URL-bearing leaves (`urlPrefix` values and entries from `urlPrefixIn` arrays), then pick the first one. If no URL can be extracted, omit `startingLocation` entirely — a missing value is preferable to a wrong one.
 
 If no rule matches, record that targeting is absent.
 
@@ -120,16 +125,17 @@ If this guide directory is a direct child of a `*-lj` directory, look up the par
 
 **`testEnvironment` must NEVER be omitted.** Every manifest must include it.
 
-When an `index.json` rule with a `match` expression exists, apply these rules (most-specific-first):
+Apply these rules in order:
 
-| Condition | Result |
-|-----------|--------|
-| `match` contains `source: "play.grafana.org"` at any depth | `{ "tier": "play", "instance": "play.grafana.org" }` |
-| `match` contains a `source` rule (non-play) at any depth | `{ "tier": "cloud", "instance": "<source value>" }` |
-| `match` contains `"targetPlatform": "cloud"` (without `source`) | `{ "tier": "cloud" }` |
-| Match exists but none of the above apply | `{ "tier": "local" }` |
+**IF match expression exists (and is not empty):**
+- **IF** `match` contains `source` at any depth (any host, including `play.grafana.org`) → `{ "tier": "cloud", "instance": "<source value>" }`
+- **ELSE IF** `match` contains `"targetPlatform": "cloud"` → `{ "tier": "cloud" }`
+- **ELSE** → `{ "tier": "local" }`
 
-When **no `index.json` rule exists** (no match expression available), the minimum acceptable default is `{ "tier": "cloud" }`. Do not default to `"local"` when there is no match information — most Grafana content targets Cloud, and `"cloud"` is the safer assumption.
+**ELSE (no match expression or match expression is empty):**
+- → `{ "tier": "cloud" }` (minimum default)
+
+Note: An empty match expression (`match: {}`) is treated the same as no match expression — both default to `"cloud"`.
 
 #### 5. Generate manifest.json
 
@@ -303,7 +309,7 @@ After resolving descriptions for all steps, compare them pairwise. If two or mor
 
 #### 6. Look up path-level index.json rule
 
-Check if the `*-lj` directory name (or a URL containing it) has an entry in `index.json`. Extract `match` for `targeting` and derive `startingLocation` and `testEnvironment` using the same rules as Mode 1.
+Check if the `*-lj` directory name (or a URL containing it) has an entry in `index.json`. Extract `match` for `targeting` and derive `startingLocation` (traverse recursively, collect all URL-bearing leaves, pick the first) and `testEnvironment` (apply the IF/ELSE tier inference rules from Mode 1) using the same rules as Mode 1.
 
 #### 7. Generate path-level manifest.json
 
@@ -420,8 +426,8 @@ Tell the user:
 ## Reference-First Derivation
 
 For all field derivation logic and fallback rules, use `docs/manifest-reference.md` as the authoritative source:
-- `startingLocation` extraction
-- `testEnvironment` tier inference
+- `startingLocation` extraction (traverse recursively, collect all URL-bearing leaves, pick the first)
+- `testEnvironment` tier inference (IF/ELSE logic: source → cloud, targetPlatform: cloud → cloud, else → local; no match/empty match → cloud)
 - website-markdown fallback behavior
 
 Only include migration-specific orchestration logic in this skill. If this skill and `docs/manifest-reference.md` disagree, follow `docs/manifest-reference.md` and report the mismatch.
@@ -448,7 +454,7 @@ After generating all files, run this checklist:
 ## Error Handling
 
 ### No index.json rule found
-Generate the manifest without `targeting`. Omit `startingLocation` (do not default to `"/"`). `testEnvironment` defaults to `{ "tier": "cloud" }` (the minimum acceptable value). Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation).
+Generate the manifest without `targeting`. Omit `startingLocation` (do not default to `"/"`). `testEnvironment` defaults to `{ "tier": "cloud" }` (the minimum acceptable value — this applies when no match expression exists or when the match expression is empty). Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation).
 
 ### Website markdown not found
 Apply fallback rules. Clearly state which fields used fallback values and need manual review.
