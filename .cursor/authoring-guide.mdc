@@ -21,6 +21,8 @@ globs:
 | Guide patterns | [tutorial-patterns.mdc](tutorial-patterns.mdc) |
 | Full example guide | [complete-example-tutorial.mdc](complete-example-tutorial.mdc) |
 | Edge cases | [edge-cases-and-troubleshooting.mdc](edge-cases-and-troubleshooting.mdc) |
+| Manifest (package metadata) | [docs/manifest-reference.md](../docs/manifest-reference.md) |
+| Migration plan | [docs/MIGRATION.md](../docs/MIGRATION.md) |
 
 ## JSON Guide Root Structure
 
@@ -272,3 +274,16 @@ Before finalizing a guide:
 ## Schema Validation
 
 CI runs strict schema checking via `.github/workflows/validate-json.yml`. You can script the equivalent locally to validate structure and syntax.
+
+## Manifest Authoring
+
+Each guide directory is being migrated to a **package** — a directory containing both `content.json` and `manifest.json`. The manifest carries metadata, targeting rules, and dependency information that was previously split across `index.json` and external sources.
+
+When creating or editing a guide, also create/update its `manifest.json`. See [docs/manifest-reference.md](../docs/manifest-reference.md) for the full field reference, derivation rules, and copy-paste templates.
+
+Key points:
+
+- The `id` in `manifest.json` must match the `id` in `content.json`
+- `targeting.match` uses the same expression syntax as `index.json` rules
+- Learning path steps use `type: "guide"`; the `*-lj` root uses `type: "path"` with a `steps` array
+- Validate with `validate --package <dir>` from a pathfinder-app checkout

@@ -50,13 +50,15 @@ These invariants hold throughout the entire migration — pilot and full:
 
 ---
 
-## Phase 0: Documentation
+## Phase 0: Documentation ✓
+
+**Status: COMPLETE**
 
 **Goal:** Authors and agents have a reference for writing `manifest.json` in this repository, with field derivation rules specific to this repo's conventions.
 
 ### Deliverables
 
-- [ ] **`docs/manifest-reference.md`** — Manifest field reference adapted for this repository. Covers:
+- [x] **`docs/manifest-reference.md`** — Manifest field reference adapted for this repository. Covers:
   - Package directory structure (`content.json` + `manifest.json`)
   - Field-by-field reference for `manifest.json` with types, required/optional, defaults
   - Field derivation rules for migration (where each field's data comes from — see [field derivation rules](#field-derivation-rules) below)
@@ -68,9 +70,19 @@ These invariants hold throughout the entire migration — pilot and full:
 
   The canonical manifest schema can be obtained at any time by running `node dist/cli/cli/index.js schema manifest` from a pathfinder-app checkout. `docs/manifest-reference.md` should reference this as the authoritative schema source rather than duplicating it.
 
-- [ ] **Update `.cursor/authoring-guide.mdc`** — Add a documentation map entry pointing to `docs/manifest-reference.md` and a brief section on manifest authoring.
+- [x] **Update `.cursor/authoring-guide.mdc`** — Add a documentation map entry pointing to `docs/manifest-reference.md` and a brief section on manifest authoring.
 
-- [ ] **Update `AGENTS.md`** — Add task routing entries for manifest authoring and migration.
+- [x] **Update `AGENTS.md`** — Add task routing entries for manifest authoring and migration.
+
+### Decisions recorded
+
+1. **`docs/manifest-reference.md` references the CLI schema rather than duplicating it.** The doc points to `node dist/cli/cli/index.js schema manifest` as the authoritative source and serves as a practical companion with repo-specific derivation rules and templates.
+
+2. **Tier inference refined for `play` vs `cloud`.** The testEnvironment section distinguishes `"play"` (when `source` is `play.grafana.org`) from generic `"cloud"` (when `targetPlatform: "cloud"` or `source` is a non-play host). This distinction wasn't explicit in the original field derivation table but follows logically from the existing play vs cloud test environments.
+
+3. **`repository` and `language` marked as omittable.** Since schema defaults (`"interactive-tutorials"` and `"en"`) apply automatically, the templates and derivation rules recommend omitting these fields to reduce noise.
+
+4. **Documentation map entries added to both `.cursor/authoring-guide.mdc` and `AGENTS.md`.** The authoring guide got a new "Manifest Authoring" section at the end plus two entries in the documentation map table. `AGENTS.md` got two new task routing rows (manifest authoring, guide migration) and two new reference documentation rows.
 
 ### Field derivation rules
 
