@@ -318,40 +318,78 @@ Local verification performed successfully against the pathfinder CLI at `/Users/
 
 ## Phase 4: Deploy pipeline
 
-**Goal:** The deploy pipeline publishes `repository.json` to the CDN alongside guide content.
+**Goal:** The deploy pipeline publishes `repository.json` and all package files to the CDN under a new `packages/` prefix, keeping the legacy `guides/` path unchanged.
+
+### Design decisions
+
+1. **Two separate CDN paths, not one.** The legacy `guides/` copy (driven by `index.json`) continues completely unchanged. A new `packages/` copy is added as a parallel deploy step. This hard-separates the old code path from the new, so neither affects the other during the transition.
+
+2. **`packages/` is a full directory tree copy.** Every guide directory is copied recursively into `packages/` — all `*.json` files, all `assets/` subdirectories, and any other files present. This is required by the open package semantics: a package may include non-JSON files (images, metadata, etc.) that `content.json` or downstream consumers reference by relative path. Copying only `*.json` would silently break those references. The `packages/` copy must never be "optimized" to a JSON-only copy.
+
+3. **Exclude `pathfinder-app/` from the `packages/` copy.** The pathfinder-app repository is checked out into the workspace root as part of the CLI build step (same pattern as `validate-json.yml`). It must be explicitly excluded from the `packages/` copy — it is not a guide package and contains a large amount of source code, bundled guides, and build artifacts that must not be published to the CDN.
+
+4. **`repository.json` is co-located inside `packages/`.** The `build-repository` command is run with `packages/` as both the scan root and the output directory: `build-repository packages/ -o packages/repository.json`. This ensures every `"path"` entry in `repository.json` (e.g., `"path": "alerting-101/"`) is relative to the directory containing `repository.json` itself. Consumers resolve package content as `<base-url-of-repository.json>/<path>`. This invariant must be preserved — running `build-repository` from the repo root and placing `repository.json` elsewhere would break relative path resolution without post-processing.
+
+5. **Un-migrated guides are inert under `packages/`.** A guide that has `content.json` but no `manifest.json` will have its files present under `packages/` but will not appear in `repository.json`. It is undiscoverable by any consumer following the new code path. This is intentional — no filtering of un-migrated guides from the `packages/` copy is needed; discoverability is controlled entirely by `repository.json`.
+
+6. **`packages/` copy is added on every prod deploy.** The `guides/` copy already runs on every deploy; the new `packages/` step runs alongside it every time, so `packages/` is never stale relative to `guides/`.
+
+7. **`push-to-gcs` staging pattern: mirror the `guides/` approach.** The `push-to-gcs` action (`grafana/shared-workflows/actions/push-to-gcs`) has a `parent` input (default `"true"`) that controls whether the local directory name is included in the GCS destination path. The existing step uses `path: guides` with the default `parent: true`, which causes files to land at `bucket/guides/...`. For `packages/`, stage files into a local directory literally named `packages/` and use `path: packages` with default `parent: true` — this causes files to land at `bucket/packages/...`. No `bucket_path` override is needed; the naming convention does the work. This pattern is the simplest and most consistent with the existing step.
+
+   The action also has a `bucket_path` input that prepends a prefix to the bucket destination, but using it would require `parent: "false"` to avoid double-prefixing the local directory name. The staging-directory-naming approach is cleaner.
+
+   **Exclude list for the `packages/` staging copy:** the following must not be copied into the `packages/` staging directory: `pathfinder-app/` (CLI checkout), `.github/`, `docs/`, `.cursor/`, `shared/` (served separately under `guides/`), and any top-level files (`index.json`, `repository.json`, `*.md`, `*.yml`, etc.). Only guide subdirectories (those containing `content.json` or `manifest.json`) should be copied.
 
 ### Deliverables
 
-- [ ] **Extend `deploy.yml`** to include a build + publish step for `repository.json`:
-  1. Checkout pathfinder-app and build CLI (same pattern as validate-json.yml)
-  2. Run `build-repository . -o guides/repository.json`
-  3. The existing "Prepare tutorial files" step already copies guide directories into `guides/`
-  4. `repository.json` is published alongside `index.json` at the bucket root: `guides/repository.json`
+- [ ] **Checkout pathfinder-app and build CLI** in `deploy.yml` (same pattern as `validate-json.yml`)
 
-- [ ] **Verify relative paths** — `repository.json` entries use paths relative to the publication root. For example, `"path": "alerting-101/"` resolves to `https://interactive-learning.grafana.net/guides/alerting-101/content.json` when the CDN base URL is `https://interactive-learning.grafana.net/guides/`.
+- [ ] **Add "Prepare packages" step** to stage the full tree copy:
+  1. `mkdir -p packages/`
+  2. Copy every guide directory recursively into `packages/`, applying the exclude list above
+  3. Run `node pathfinder-app/dist/cli/cli/index.js build-repository packages/ -o packages/repository.json` to generate `repository.json` co-located with the packages. No `--exclude` flag needed here since `pathfinder-app/` is not inside the `packages/` staging directory.
+  4. (Optional) Run `build-graph` for informational artifact, `continue-on-error: true`
 
-- [ ] **Manifest files deployed** — The existing deploy step copies `*.json` from guide directories, which already includes `manifest.json` files. Verify that `manifest.json` files are deployed alongside `content.json`.
+- [ ] **Push `packages/` to GCS** using `path: packages` (default `parent: true`), same `bucket` and `service_account` as the existing `guides/` push:
+  ```yaml
+  - name: Push packages to GCS
+    uses: grafana/shared-workflows/actions/push-to-gcs@<pin> # push-to-gcs/v0.3.0
+    with:
+      bucket: interactive-learning-${{ github.event.inputs.environment }}
+      path: packages
+      environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
+      service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
+  ```
 
-- [ ] **Future: simplify deploy to copy entire repo** — In a later stage, the deploy pipeline should be upgraded to copy the near-entirety of the repo to the CDN (all `*.json`, all `assets/*`, `repository.json`) rather than discovering files individually. This removes the need for the pipeline to track which files each package includes. The current `find` + `cp *.json` approach works for the pilot but won't scale to packages with assets.
+- [ ] **Verify relative paths** — `"path": "alerting-101/"` in `repository.json` resolves to `https://interactive-learning.grafana.net/packages/alerting-101/` because `repository.json` and the package directories are siblings under `packages/`
 
 ### CDN structure after deploy
 
 ```
-interactive-learning-{env}/guides/
-├── index.json                     ← existing
-├── repository.json                ← new
-├── shared/                        ← existing
-├── alerting-101/
-│   ├── content.json
-│   └── manifest.json              ← new
-├── prometheus-lj/
-│   ├── content.json               ← new (path cover page)
-│   ├── manifest.json              ← new
-│   ├── add-data-source/
+interactive-learning-{env}/
+├── guides/                            ← existing, unchanged
+│   ├── index.json
+│   ├── shared/
+│   ├── alerting-101/
 │   │   ├── content.json
-│   │   └── manifest.json          ← new
-│   └── ...
-└── ... (all other guides, unchanged)
+│   │   └── manifest.json
+│   └── ... (all guides)
+└── packages/                          ← new
+    ├── repository.json                ← co-located with packages; paths relative to here
+    ├── alerting-101/
+    │   ├── content.json
+    │   ├── manifest.json
+    │   └── assets/                    ← full tree; non-JSON files included
+    ├── prometheus-lj/
+    │   ├── content.json
+    │   ├── manifest.json
+    │   ├── add-data-source/
+    │   │   ├── content.json
+    │   │   └── manifest.json
+    │   └── ...
+    ├── some-unmigrated-guide/
+    │   └── content.json               ← present but not in repository.json; unreachable
+    └── ... (all guide directories, full tree)
 ```
 
 ---
@@ -429,6 +467,18 @@ Once the full migration is complete, add a build step to `validate-json.yml` tha
 ```
 
 **When to enable:** Enable this step only after the full migration is complete (all guides have `manifest.json`). Until then, leave it commented out or gated behind a condition, since it would fail on every un-migrated guide. A practical trigger is the completion of `index.json` retirement — at that point the invariant must hold for the recommender to function correctly.
+
+### Legacy deploy cleanup
+
+Once it has been demonstrated that no recommender path depends on `index.json` or the `guides/` prefix on the CDN (i.e., all traffic has moved to `packages/` + `repository.json`):
+
+1. Remove the "Prepare tutorial files" step from `deploy.yml` that stages and publishes the `guides/` tree
+2. Remove the `guides/` push-to-GCS step
+3. Remove `index.json` from the repository (if not already done as part of `index.json` retirement above)
+4. Remove the `validate-recommender-rules` CI job (if not already removed)
+5. Optionally, drain the `guides/` bucket prefix on the CDN once confirmed no consumers remain
+
+**Gate:** Do not remove the `guides/` deploy step until you have verified — via recommender logs, CDN access logs, or integration tests — that zero live traffic is fetching from `guides/`. The `packages/` path must be serving successfully in production first.
 
 ---
 
