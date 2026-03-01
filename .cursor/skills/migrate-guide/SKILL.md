@@ -40,7 +40,7 @@ Determine the mode from the target directory:
 
 ### index.json (read-only)
 
-Location: `index.json` (repo root)
+Location: `index.json` (repo root). **index.json is at the repository root only; there is no per-guide index.json.**
 
 Each rule has: `title`, `url`, `description`, `type`, `match`. Match a rule to a guide by:
 1. Strip any trailing `/content.json` from the rule's `url`
@@ -52,6 +52,8 @@ If no rule matches, the guide has no targeting — omit the `targeting` field.
 ### Website learning path markdown (read-only, optional)
 
 Location: `/Users/davidallen/hax/website/content/docs/learning-paths/`
+
+If the hardcoded path does not exist (e.g., on another machine or in CI), the agent may shallow-clone the `grafana/website` repo into a temporary directory and use that path instead; the structure under `content/docs/learning-paths/` is the same as in a local checkout.
 
 Map `*-lj` directory names to website paths by stripping the `-lj` suffix (e.g., `prometheus-lj` → `prometheus`). Step directory names are identical in both repos. The website markdown `pathfinder_data` frontmatter provides the authoritative mapping when present, but most steps lack it — fall back to directory name matching (see step 3 canonical mapping rules).
 
@@ -91,10 +93,10 @@ The `author` field has a `team` value that depends on content type:
 
 The `author.name` field is optional. To derive it:
 1. Look at all git revisions since the `content.json` file was created (use `git log --follow` to track renames)
-2. Extract the GitHub handles (not full names) of all commit authors
+2. Prefer GitHub handles; extract commit author names/handles
 3. Exclude any obvious automation or bot authors (e.g., `dependabot`, `renovate`, `github-actions`, `bot`, etc.)
-4. If multiple authors remain, comma-separate their GitHub handles
-5. If no authors remain after filtering bots, or if unsure, omit `name` entirely
+4. If multiple authors remain, comma-separate them
+5. If only full names (not handles) appear in git history, use full names — some data is better than none. If no authors remain after filtering bots, or if unsure, omit `name` entirely
 
 ---
 
@@ -179,13 +181,13 @@ Field omission rules:
 
 #### 7. Run package validation (required)
 
-Run:
+Run from the pathfinder-app checkout root, or use the full path to the CLI; pass the full path to the guide directory (e.g. `.../interactive-tutorials/alerting-101`) so it works from any cwd:
 
 ```bash
 node dist/cli/cli/index.js validate --package <dir>
 ```
 
-This validation attempt is required for Phase 1 migration. If the command cannot run (CLI missing/unbuilt), treat this as an incomplete migration and explicitly report the blocker.
+This validation attempt is required for Phase 1 migration. If the command cannot run (CLI missing/unbuilt), treat this as an incomplete migration and explicitly report the blocker. If the CLI warns that `startingLocation` defaulted to `'/'`, that is expected when no index rule exists; the manifest correctly omitted it.
 
 #### 8. Write migration notes
 
@@ -228,7 +230,7 @@ Read `_index.md` from the website path. Extract from frontmatter:
 - `journey.group` — for `category`
 - `journey.skill` — note but defer (not in current schema)
 - `journey.links.to` — for `recommends`
-- `related_journeys.items` — for `suggests` (default) or `depends` (only if unambiguously prerequisite). **Relationship strength heuristic:** when the `related_journeys.heading` text says "before" or "prerequisite" but the body content qualifies the relationship (e.g., "while not required"), use `suggests`. The body-level qualification takes precedence over the heading-level framing. Only use `depends` when both the heading *and* the body unambiguously describe a hard prerequisite with no "optional" or "recommended" qualifier.
+- `related_journeys.items` — for `suggests` (default) or `depends` (only if unambiguously prerequisite). **Relationship strength heuristic:** when the `related_journeys.heading` text says "before" or "prerequisite" but the body content qualifies the relationship (e.g., "while not required"), use `suggests`. The body-level qualification takes precedence over the heading-level framing. Only use `depends` when both the heading *and* the body unambiguously describe a hard prerequisite with no "optional" or "recommended" qualifier. Example: heading says "Before you begin" but body says "while not required" → use `suggests`.
 
 Extract from body content:
 - All prose, learning objectives, prerequisites — for path-level content.json blocks
@@ -285,6 +287,7 @@ For each mapped step in canonical `weight` order:
 ```
 
 Step dependency rules:
+- Use each step's `content.json` `id` (not the directory name) in `depends`/`recommends` and in the path `steps` array.
 - First step: omit `depends`
 - Step N+1: `depends` on step N's `id`
 - Last step: omit `recommends` (no next step)
@@ -305,7 +308,7 @@ Read `journeys.yaml` and find the entry whose `id` maps to the current learning 
 
 #### 5b. Duplicate description sanity check
 
-After resolving descriptions for all steps, compare them pairwise. If two or more sibling steps within the same path have identical `description` values, flag this as a likely copy-paste error in the website markdown. Record it in the migration notes. Still use the values as-is (they come from the authoritative source), but the duplicate should be reviewed and corrected upstream.
+After resolving descriptions for all steps, compare them pairwise. If two or more sibling steps within the same path have identical `description` values, use the identical string for every step that has the same source description. Do not invent a variant. Record the duplicate in the migration notes and recommend an upstream fix.
 
 #### 6. Look up path-level index.json rule
 
@@ -384,7 +387,7 @@ Content transformation rules:
 
 #### 10. Run package validation (required)
 
-Run:
+Run from the pathfinder-app checkout root, or use the full path to the CLI; pass the full path to the guide directory (e.g. `.../interactive-tutorials/prometheus-lj`) so it works from any cwd:
 
 ```bash
 node dist/cli/cli/index.js validate --package <lj-dir>
@@ -392,7 +395,7 @@ node dist/cli/cli/index.js validate --package <lj-dir>
 
 If you created step-level manifests, also run `validate --package <step-dir>` for each created/updated step package.
 
-This validation attempt is required for Phase 1 migration. If the command cannot run (CLI missing/unbuilt), treat this as an incomplete migration and explicitly report the blocker.
+This validation attempt is required for Phase 1 migration. If the command cannot run (CLI missing/unbuilt), treat this as an incomplete migration and explicitly report the blocker. If the CLI warns that `startingLocation` defaulted to `'/'`, that is expected when no index rule exists; the manifest correctly omitted it.
 
 #### 11. Write migration notes
 
@@ -454,7 +457,7 @@ After generating all files, run this checklist:
 ## Error Handling
 
 ### No index.json rule found
-Generate the manifest without `targeting`. Omit `startingLocation` (do not default to `"/"`). `testEnvironment` defaults to `{ "tier": "cloud" }` (the minimum acceptable value — this applies when no match expression exists or when the match expression is empty). Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation).
+Generate the manifest without `targeting`. Omit `startingLocation` (do not default to `"/"`). `testEnvironment` defaults to `{ "tier": "cloud" }` (the minimum acceptable value — this applies when no match expression exists or when the match expression is empty). Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation). If the CLI warns that `startingLocation` defaulted to `'/'`, that is expected; the manifest correctly omitted it.
 
 ### Website markdown not found
 Apply fallback rules. Clearly state which fields used fallback values and need manual review.
@@ -521,6 +524,7 @@ migrated_at: "<ISO 8601 timestamp>"
 - <any journeys.yaml vs _index.md mismatches>
 - <any duplicate step descriptions>
 - <any side_journeys URLs that could not be resolved>
+- If any step lacked `pathfinder_data` and was mapped by directory name only, list those steps here.
 
 ## Surprises / Notes
 

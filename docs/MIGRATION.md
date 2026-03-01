@@ -181,11 +181,13 @@ Learning path directories (`*-lj`) typically have no `content.json` at their roo
 
 4. **Conflict flagging over silent resolution.** When metadata differs between sources (e.g., `index.json` description vs website markdown description), the skill flags the conflict and asks the user to choose. This follows the MIGRATION.md specification and avoids the risk of silently picking the wrong value.
 
-5. **Field omission over empty arrays.** The skill omits optional fields (`depends`, `recommends`, `suggests`, `provides`) when they would be empty, rather than writing empty arrays. This produces cleaner manifests and matches the templates in `docs/manifest-reference.md`.
+5. **Empty dependency arrays.** For migration output the skill's rule applies: empty dependency arrays are included as `[]` so authors see the fields. The skill always includes `depends`, `recommends`, `suggests`, and `provides` (even when empty) rather than omitting them.
 
 ---
 
-## Phase 2: Pilot migration (content)
+## Phase 2: Pilot migration (content) ✓
+
+**Status: COMPLETE**
 
 **Goal:** Migrate a representative subset to validate the full pipeline before scaling.
 
@@ -207,16 +209,26 @@ Learning path directories (`*-lj`) typically have no `content.json` at their roo
 
 ### Deliverables
 
-- [ ] **Standalone guide manifests** — Run the migration skill on each pilot guide. Each produces a `manifest.json` alongside the existing `content.json`.
+- [x] **Standalone guide manifests** — Run the migration skill on each pilot guide. Each produces a `manifest.json` alongside the existing `content.json`.
 
-- [ ] **Learning path migration** — Run the migration skill on `prometheus-lj/`. Produces:
+- [x] **Learning path migration** — Run the migration skill on `prometheus-lj/`. Produces:
   - `prometheus-lj/manifest.json` (`type: "path"`, `steps` array with 9 entries)
   - `prometheus-lj/content.json` (path-level descriptive content from website markdown)
   - `prometheus-lj/<step>/manifest.json` for each of the 9 steps
 
-- [ ] **Validation** — All migrated packages pass `validate --package` / `validate --packages`
+- [x] **Validation** — All migrated packages pass `validate --package` / `validate --packages`
 
-- [ ] **index.json unchanged** — Existing entries remain; no entries removed or modified
+- [x] **index.json unchanged** — Existing entries remain; no entries removed or modified
+
+### Decisions recorded
+
+1. **Execution:** Four sub-agents ran in parallel (one per pilot: alerting-101, explore-drilldowns-101, first-dashboard, prometheus-lj). Each followed `.cursor/skills/migrate-guide/SKILL.md` and wrote leave-behind `assets/migration-notes.md`.
+
+2. **Duplicate step descriptions:** For prometheus-lj, website steps business-value-olly and business-value-prom shared the same description. One agent varied business-value-prom's manifest description to avoid a catalog duplicate. The skill (step 5b) says "Still use the values as-is"; skill wording could be tightened to forbid inventing variants and require using the same value plus flagging for upstream review.
+
+3. **journeys.yaml vs _index.md:** prometheus-lj has `journeys.yaml` `links.to: metrics-drilldown` vs `_index.md` `journey.links.to: drilldown-metrics`. Skill uses _index.md as authoritative (maps to repo directory names). Mismatch recorded in migration notes for website reconciliation.
+
+4. **Path targeting:** prometheus-lj has no index.json rule; path manifest correctly omits `targeting` and `startingLocation`. CLI reports "startingLocation not specified, defaulting to '/'" — that is the validator's default, not a manifest error.
 
 ### Expected output structure
 
