@@ -404,6 +404,32 @@ Once all guides carry their own `targeting` in `manifest.json` and the recommend
 
 Some guides have `content.json` but no `index.json` entry (they are not contextually recommended — only reachable via direct link or learning path). These guides still get `manifest.json` with `type`, `description`, `author`, etc. They simply have no `targeting` field. The migration skill handles this: when no matching `index.json` rule is found, `targeting` is omitted.
 
+### CI enforcement: require manifest.json for every package
+
+Once the full migration is complete, add a build step to `validate-json.yml` that **fails the build** if any directory contains a `content.json` without a sibling `manifest.json`. This enforces the invariant that every package is fully migrated and prevents regressions (e.g., new guides committed without a manifest).
+
+**Implementation:** Add a step to the `validate-guides` job after the existing per-file validation loop:
+
+```yaml
+- name: Enforce manifest.json for all packages
+  run: |
+    missing=()
+    while IFS= read -r content_file; do
+      dir="$(dirname "$content_file")"
+      if [ ! -f "$dir/manifest.json" ]; then
+        missing+=("$content_file")
+      fi
+    done < <(find . -name "content.json" -not -path "*/node_modules/*" -not -path "*/.git/*")
+    if [ ${#missing[@]} -gt 0 ]; then
+      echo "ERROR: content.json found without manifest.json in the following locations:"
+      printf '  %s\n' "${missing[@]}"
+      exit 1
+    fi
+    echo "All packages have manifest.json."
+```
+
+**When to enable:** Enable this step only after the full migration is complete (all guides have `manifest.json`). Until then, leave it commented out or gated behind a condition, since it would fail on every un-migrated guide. A practical trigger is the completion of `index.json` retirement — at that point the invariant must hold for the recommender to function correctly.
+
 ---
 
 ## Appendix: Data sources for migration
