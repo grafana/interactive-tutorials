@@ -53,7 +53,7 @@ If no rule matches, the guide has no targeting — omit the `targeting` field.
 
 Location: `/Users/davidallen/hax/website/content/docs/learning-paths/`
 
-Map `*-lj` directory names to website paths by stripping the `-lj` suffix (e.g., `prometheus-lj` → `prometheus`). Step directory names are identical in both repos. The website markdown `pathfinder_data` frontmatter provides the authoritative mapping.
+Map `*-lj` directory names to website paths by stripping the `-lj` suffix (e.g., `prometheus-lj` → `prometheus`). Step directory names are identical in both repos. The website markdown `pathfinder_data` frontmatter provides the authoritative mapping when present, but most steps lack it — fall back to directory name matching (see step 3 canonical mapping rules).
 
 If the website repo is unavailable, apply fallback rules from `docs/manifest-reference.md` under "When website markdown is unavailable" and flag affected fields for manual review.
 
@@ -62,6 +62,34 @@ If the website repo is unavailable, apply fallback rules from `docs/manifest-ref
 Location: `/Users/davidallen/hax/website/content/docs/learning-paths/journeys.yaml`
 
 Provides inter-journey category and relationship data.
+
+---
+
+## Description Conventions
+
+The `description` field is a **compact, one-line summary** suitable for a course catalog listing. It is not introductory prose — that belongs in the `content.json` markdown blocks.
+
+**Priority for resolving `description`:**
+
+1. **`index.json` rule** — if the guide has a matching rule, use its `description` verbatim. These are already written in catalog style.
+2. **Summarize available sources** — if no `index.json` rule exists, collect all available description sources (website markdown frontmatter `description`, `content.json` title, path-level metadata) and boil them down into a single sentence. Write it in the style of the `index.json` descriptions (e.g., "Hands-on guide: Learn how to...").
+3. **Ask the user** — if no sources exist at all, stop and request a description. Do not invent one.
+
+---
+
+## Author Conventions
+
+The `author` field has a `team` value that depends on content type:
+
+| Content type | `author.team` |
+|-------------|---------------|
+| Learning path (`type: "path"`) | `"Grafana Documentation"` |
+| Step within a learning path (inside a `*-lj` directory) | `"Grafana Documentation"` |
+| Standalone guide (not inside a `*-lj` directory) | `"interactive-learning"` |
+
+`"interactive-learning"` is the fallback default when content type is unknown. If you know the content is a learning path or a step within one, always use `"Grafana Documentation"`.
+
+The `author.name` field is optional. If git commit history clearly identifies the author(s), include it. If multiple authors, comma-separate them. If unsure, omit `name` entirely.
 
 ---
 
@@ -80,7 +108,7 @@ Read `{dir}/content.json` and extract the `id` and `title` fields. **Do not modi
 Read `index.json` from the repo root. Find the rule whose `url` path segment matches the directory name or the `content.json` `id`. Record:
 - `description` from the rule
 - `match` object from the rule
-- `startingLocation`: traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). Falls back to `"/"`.
+- `startingLocation`: traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). If no URL can be extracted, omit `startingLocation` entirely — a missing value is preferable to a wrong one.
 
 If no rule matches, record that targeting is absent.
 
@@ -90,16 +118,18 @@ If this guide directory is a direct child of a `*-lj` directory, look up the par
 
 #### 4. Derive testEnvironment
 
-Apply these rules against the `match` expression (most-specific-first):
+**`testEnvironment` must NEVER be omitted.** Every manifest must include it.
+
+When an `index.json` rule with a `match` expression exists, apply these rules (most-specific-first):
 
 | Condition | Result |
 |-----------|--------|
 | `match` contains `source: "play.grafana.org"` at any depth | `{ "tier": "play", "instance": "play.grafana.org" }` |
 | `match` contains a `source` rule (non-play) at any depth | `{ "tier": "cloud", "instance": "<source value>" }` |
 | `match` contains `"targetPlatform": "cloud"` (without `source`) | `{ "tier": "cloud" }` |
-| Otherwise | `{ "tier": "local" }` |
+| Match exists but none of the above apply | `{ "tier": "local" }` |
 
-**Cloud content heuristic:** After applying the rules above, if the result is `tier: "local"` (because no `index.json` rule exists or the rule has no `source`/`targetPlatform`), check whether the guide's context suggests Cloud usage. Indicators include: the website markdown prerequisites mention "Grafana Cloud account", the path body text focuses on Cloud-specific features, or sibling steps within the same `*-lj` path are Cloud-oriented. If Cloud indicators are present, flag `tier: "local"` for manual review in the migration notes — the default is technically correct per derivation rules but may be semantically wrong.
+When **no `index.json` rule exists** (no match expression available), the minimum acceptable default is `{ "tier": "cloud" }`. Do not default to `"local"` when there is no match information — most Grafana content targets Cloud, and `"cloud"` is the safer assumption.
 
 #### 5. Generate manifest.json
 
@@ -109,10 +139,10 @@ Write `{dir}/manifest.json` with the derived fields:
 {
   "id": "<from content.json>",
   "type": "guide",
-  "description": "<from index.json rule, or flag for manual entry>",
+  "description": "<compact one-line summary; see Description Conventions>",
   "category": "<from journey.group if inside *-lj, else 'general'>",
-  "author": { "team": "interactive-learning" },
-  "startingLocation": "<first URL from match, or '/'>",
+  "author": { "team": "<see Author Conventions>" },
+  "startingLocation": "<first URL from match, if derivable>",
   "targeting": {
     "match": { "<copied verbatim from index.json rule>" }
   },
@@ -131,7 +161,8 @@ Field omission rules:
 - Omit `repository` (schema default `"interactive-tutorials"` applies)
 - Omit `language` (schema default `"en"` applies)
 - Omit `targeting` entirely if no index.json rule matched
-- Omit `testEnvironment.instance` if tier is `"local"`
+- Omit `startingLocation` if no URL can be derived from the match expression — do not fall back to `"/"`. A missing value is preferable to a wrong one.
+- **Never omit `testEnvironment`.** Minimum is `{ "tier": "cloud" }`. Omit `instance` when no instance value is available.
 - Always include `depends`, `recommends`, `suggests`, and `provides` — even when empty (`[]`). This makes the fields visible to authors so they know they can fill them out later. Never invent values; use `[]` when no information is available.
 
 #### 6. Validate
@@ -187,7 +218,7 @@ If not found, apply fallback rules and flag for manual review.
 
 Read `_index.md` from the website path. Extract from frontmatter:
 - `title` — for path-level content.json and manifest
-- `description` — for manifest
+- `description` — a source for the manifest description (apply [Description Conventions](#description-conventions): if there is an `index.json` rule for this path, prefer its description; otherwise condense the `_index.md` description into a compact one-line catalog summary)
 - `journey.group` — for `category`
 - `journey.skill` — note but defer (not in current schema)
 - `journey.links.to` — for `recommends`
@@ -206,8 +237,8 @@ Build a canonical step map from website markdown. For each `<website-step>/index
 - `side_journeys` — for step `suggests` (see step 3a below for URL-to-ID resolution)
 
 Canonical mapping rules:
-- Treat `pathfinder_data` as authoritative for mapping website steps to interactive-tutorials step directories.
-- Validate each `pathfinder_data` target exists under the `*-lj` directory and has `content.json`.
+- When present, treat `pathfinder_data` as authoritative for mapping website steps to interactive-tutorials step directories. Validate each target exists under the `*-lj` directory and has `content.json`.
+- **When `pathfinder_data` is absent** (common — most steps lack it), fall back to directory name matching: website step directory names are identical to interactive-tutorials step directory names within the same path. Confirm the match by verifying the directory exists and has `content.json`. Note which steps used name-matching fallback in the migration notes.
 - Build the path manifest `steps` array from this map, ordered by `weight`.
 - Do not derive step order from local directory listing.
 
@@ -223,19 +254,23 @@ For each mapped step in canonical `weight` order:
 
 1. Read the step's `content.json` to get `id` and `title` (**do not modify**)
 2. Check if the step has its own `index.json` entry (most steps don't — targeting lives at the path level)
-3. Resolve description source in priority order:
-   - Website step `index.md` `description`
-   - Matching step-level `index.json` rule `description` (if present)
-   - If neither exists: **stop and request manual description** for that step (required field; do not guess)
+3. Resolve description following the [Description Conventions](#description-conventions):
+   1. Matching step-level `index.json` rule `description` (first priority — already catalog-style)
+   2. Website step `index.md` `description` — if multi-sentence or verbose, condense to one line
+   3. Summarize from step `content.json` title + any other available context into a single catalog-style sentence
+   4. If no sources exist at all: **stop and request manual description** (required field; do not guess)
 4. Generate `{step-dir}/manifest.json`:
 
 ```json
 {
   "id": "<from step content.json>",
   "type": "guide",
-  "description": "<from step index.md description>",
+  "description": "<compact one-line summary; see Description Conventions>",
   "category": "<from parent path journey.group>",
-  "author": { "team": "interactive-learning" },
+  "author": { "team": "Grafana Documentation" },
+  "testEnvironment": {
+    "tier": "<inherited from path, or 'cloud' minimum>"
+  },
   "depends": ["<previous-step-id>"],
   "recommends": ["<next-step-id>"],
   "suggests": [],
@@ -278,15 +313,15 @@ Write `{lj-dir}/manifest.json`:
 {
   "id": "<lj-directory-name>",
   "type": "path",
-  "description": "<from _index.md description>",
+  "description": "<compact one-line summary; see Description Conventions>",
   "category": "<from journey.group>",
-  "author": { "team": "interactive-learning" },
-  "startingLocation": "<from index.json match, or '/'>",
+  "author": { "team": "Grafana Documentation" },
+  "startingLocation": "<from index.json match, if derivable>",
   "targeting": {
     "match": { "<from index.json rule if exists>" }
   },
   "testEnvironment": {
-    "tier": "<from index.json rule>"
+    "tier": "<from index.json rule, or 'cloud' minimum>"
   },
   "steps": [
     "<step-1-id>",
@@ -301,6 +336,8 @@ Write `{lj-dir}/manifest.json`:
 ```
 
 Omit `targeting` if no index.json rule exists for the path.
+Omit `startingLocation` if no URL can be derived — do not fall back to `"/"`.
+**Never omit `testEnvironment`.** Minimum is `{ "tier": "cloud" }`.
 Always include `depends`, `recommends`, `suggests`, and `provides` — use `[]` when no data is available.
 
 #### 8. Create path-level content.json
@@ -360,8 +397,7 @@ Write `{lj-dir}/assets/migration-notes.md` following the [migration notes conven
 - Results of all `validate --package` commands
 - Any metadata conflicts flagged (including journeys.yaml cross-validation mismatches)
 - Any duplicate descriptions detected
-- Any dangling references in `recommends`, `suggests`, or `depends`
-- Any `tier: "local"` flags from the Cloud content heuristic
+- Any dangling references in `recommends`, `suggests`, or `depends` (these are expected and preferred — the CLI catches them)
 - Any side_journeys URLs resolved (or not resolved) to package IDs
 - Any fields that need manual review
 - Any fallbacks used due to missing website markdown
@@ -403,7 +439,7 @@ After generating all files, run this checklist:
 - [ ] Path manifests have `type: "path"` and a `steps` array
 - [ ] Step manifests have `type: "guide"`
 - [ ] Step `depends`/`recommends` chains are consistent (no broken references within the current migration scope)
-- [ ] Dangling references (IDs in `depends`/`recommends`/`suggests` that point to directories not yet in the repo) are acceptable — include them in the manifest but record each one in the migration notes. CLI tools in later phases will lint/warn on dangling references.
+- [ ] Dangling references (IDs in `depends`/`recommends`/`suggests` that point to directories not yet in the repo) are acceptable and **preferred** — always include them when the underlying data supports the reference. The Pathfinder CLI (`validate --package`) knows how to detect and report dangling references, so they will be caught during validation. It is better to produce more dangling references (which the CLI catches) than to silently drop relationships that exist in the source data. Record each dangling reference in the migration notes.
 - [ ] JSON is syntactically valid in all generated files
 - [ ] `node dist/cli/cli/index.js validate --package <dir>` was run for each generated package (or a blocker was explicitly reported)
 
@@ -412,16 +448,17 @@ After generating all files, run this checklist:
 ## Error Handling
 
 ### No index.json rule found
-Generate the manifest without `targeting`, `startingLocation` defaults to `"/"`, `testEnvironment` defaults to `{ "tier": "local" }`. Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation).
+Generate the manifest without `targeting`. Omit `startingLocation` (do not default to `"/"`). `testEnvironment` defaults to `{ "tier": "cloud" }` (the minimum acceptable value). Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation).
 
 ### Website markdown not found
 Apply fallback rules. Clearly state which fields used fallback values and need manual review.
 
 ### Missing required step description during LJ fallback
-Try, in order:
-1. Website step `index.md` `description`
-2. Step-level `index.json` rule `description` (if any)
-3. If still missing, stop and ask the user for that step's description (required manifest field). Do not invent one.
+Follow the [Description Conventions](#description-conventions) priority:
+1. Step-level `index.json` rule `description` (first priority — already catalog-style)
+2. Website step `index.md` `description` — condense to one line if verbose
+3. Summarize from step `content.json` title and any available context into a single catalog-style sentence
+4. If no sources exist at all, stop and ask the user for that step's description (required manifest field). Do not invent one.
 
 ### content.json missing in a step directory
 This is unexpected. Report the missing file and skip that step. Do not create a content.json for a step — that is the content author's responsibility, not the migration skill's.
@@ -466,12 +503,12 @@ migrated_at: "<ISO 8601 timestamp>"
 ## Flags for Manual Review
 
 - <any fields that used fallback values>
-- <any tier: "local" overrides flagged by Cloud heuristic>
 - <any missing descriptions that were requested from the user>
 
 ## Dangling References
 
 - <any suggests/recommends/depends IDs that point to non-existent directories>
+- (Dangling references are expected and preferred — the Pathfinder CLI catches them during validation)
 
 ## Data Quality Issues
 
