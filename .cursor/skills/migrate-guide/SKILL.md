@@ -119,7 +119,11 @@ Write `{dir}/manifest.json` with the derived fields:
   "testEnvironment": {
     "tier": "<local|cloud|play>",
     "instance": "<if applicable>"
-  }
+  },
+  "depends": [],
+  "recommends": [],
+  "suggests": [],
+  "provides": []
 }
 ```
 
@@ -128,7 +132,7 @@ Field omission rules:
 - Omit `language` (schema default `"en"` applies)
 - Omit `targeting` entirely if no index.json rule matched
 - Omit `testEnvironment.instance` if tier is `"local"`
-- Omit `depends`, `recommends`, `suggests`, `provides` when empty (standalone guides generally have no dependency info unless explicitly known)
+- Always include `depends`, `recommends`, `suggests`, and `provides` — even when empty (`[]`). This makes the fields visible to authors so they know they can fill them out later. Never invent values; use `[]` when no information is available.
 
 #### 6. Validate
 
@@ -233,7 +237,9 @@ For each mapped step in canonical `weight` order:
   "category": "<from parent path journey.group>",
   "author": { "team": "interactive-learning" },
   "depends": ["<previous-step-id>"],
-  "recommends": ["<next-step-id>"]
+  "recommends": ["<next-step-id>"],
+  "suggests": [],
+  "provides": []
 }
 ```
 
@@ -287,13 +293,15 @@ Write `{lj-dir}/manifest.json`:
     "<step-2-id>",
     "..."
   ],
+  "depends": [],
   "recommends": ["<from journey.links.to>"],
-  "suggests": ["<from related_journeys>"]
+  "suggests": ["<from related_journeys>"],
+  "provides": []
 }
 ```
 
 Omit `targeting` if no index.json rule exists for the path.
-Omit `recommends`/`suggests`/`depends` when empty.
+Always include `depends`, `recommends`, `suggests`, and `provides` — use `[]` when no data is available.
 
 #### 8. Create path-level content.json
 
