@@ -4,10 +4,8 @@ This document describes the phased migration of the `interactive-tutorials` repo
 
 **Design references (in grafana-pathfinder-app):**
 - [PATHFINDER-PACKAGE-DESIGN.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/design/PATHFINDER-PACKAGE-DESIGN.md) — the package format spec
-- [PACKAGE-IMPLEMENTATION-PLAN.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/design/PACKAGE-IMPLEMENTATION-PLAN.md) — the multi-repo implementation plan (Phases 0–10)
 - [package-authoring.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/package-authoring.md) — manifest field reference and templates
-
-**This migration corresponds to Phase 4b of the implementation plan** — the pilot migration of the external `interactive-tutorials` repository to the package format.
+- [CLI_TOOLS.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) — CLI commands: `validate --package/--packages`, `build-repository`, `build-graph`, `schema manifest`
 
 ---
 
@@ -48,6 +46,8 @@ These invariants hold throughout the entire migration — pilot and full:
 
 3. **Parallel-safe by design.** Each migration operates on a single directory (one guide or one `*-lj` path). Because the skill only writes files within that directory and reads shared resources (`index.json`, website markdown) without modifying them, multiple agents can migrate different guides simultaneously without risk of conflict.
 
+4. **Rollback is trivial.** Since migration is additive-only (new files, no modifications to existing files), rollback is simply reverting the commit(s) that added manifest files. `repository.json` is CI-generated and never committed, so it disappears automatically when manifests are reverted.
+
 ---
 
 ## Phase 0: Documentation
@@ -66,6 +66,8 @@ These invariants hold throughout the entire migration — pilot and full:
   - Dependency fields: `depends`, `recommends`, `suggests`, `provides`
   - Copy-paste templates for standalone guide and learning path
 
+  The canonical manifest schema can be obtained at any time by running `node dist/cli/cli/index.js schema manifest` from a pathfinder-app checkout. `docs/manifest-reference.md` should reference this as the authoritative schema source rather than duplicating it.
+
 - [ ] **Update `.cursor/authoring-guide.mdc`** — Add a documentation map entry pointing to `docs/manifest-reference.md` and a brief section on manifest authoring.
 
 - [ ] **Update `AGENTS.md`** — Add task routing entries for manifest authoring and migration.
@@ -80,24 +82,26 @@ These rules codify where each manifest field's data comes from during migration.
 | `type` | Directory structure | `"guide"` for standalone guides and LJ steps; `"path"` for `*-lj` directories |
 | `repository` | Constant | `"interactive-tutorials"` (the schema default; can be omitted) |
 | `description` | `index.json` rule | Copy the `description` field from the matching rule. For LJ steps without an index.json entry, derive from the website markdown frontmatter `description` field |
-| `category` | Website markdown | `journey.group` from the path-level `_index.md` frontmatter (e.g., `"data-availability"`). For standalone guides, derive from the `index.json` URL targeting if a clear mapping exists. Default to `"general"` when no metadata is available |
+| `category` | Website markdown | For learning paths: `journey.group` from the path-level `_index.md` frontmatter (e.g., `journey: { group: data-availability }` → `"data-availability"`). For standalone guides: use the learning path's `journey.group` if the guide belongs to one, otherwise default to `"general"` and note the default |
 | `author` | Constant for pilot | `{ "team": "interactive-learning" }` — all content in this repo is currently authored by the same team |
 | `language` | Constant | `"en"` (the default; can be omitted) |
-| `startingLocation` | `index.json` rule | Extract the first URL path from the `match` expression (first `urlPrefix` or first entry in `urlPrefixIn`). Falls back to `"/"` if no URL rule exists |
+| `startingLocation` | `index.json` rule | Recursively traverse the `match` expression (`and`/`or` combinators) and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). If the best choice is ambiguous from context, pick the first one found and note the choice in the generated `manifest.json`. Falls back to `"/"` if no URL rule exists |
 | `targeting.match` | `index.json` rule | Copy the `match` object from the matching rule verbatim |
-| `testEnvironment.tier` | `index.json` rule | Infer from guide characteristics: if `match` contains `"source": "play.grafana.org"` → `"play"`; if `match` contains `"targetPlatform": "cloud"` → `"cloud"`; otherwise → `"local"` |
-| `testEnvironment.instance` | `index.json` rule | If tier is `"play"`, set `"play.grafana.org"` |
-| `depends` | Website markdown | For LJ steps: infer from step ordering (step N depends on step N-1 within the path). For standalone guides: leave empty unless explicit |
-| `recommends` | Website markdown | From `journey.links.to` in path-level `_index.md`, and `side_journeys` in step-level markdown |
+| `testEnvironment.tier` | `index.json` rule | If the `match` expression contains a `source` rule (at any nesting depth), then `"cloud"`. If `match` contains `"targetPlatform": "cloud"` (without a `source` rule), then `"cloud"`. Otherwise `"local"`. If ambiguous, note the ambiguity in the generated manifest |
+| `testEnvironment.instance` | `index.json` rule | If the `match` expression contains a `source` rule, set to that value (e.g., `"play.grafana.org"`). Otherwise omit |
+| `depends` | Website markdown | For LJ steps: step N+1 `depends` on step N (first step has no `depends`). For standalone guides: leave empty unless explicit |
+| `recommends` | Website markdown | For LJ steps: step N `recommends` step N+1 (last step has no `recommends`). At the path level: from `journey.links.to` in `_index.md`. At the step level: also from `side_journeys` in step markdown |
 | `suggests` | Website markdown | From `related_journeys` in path-level `_index.md` |
 | `provides` | Guide semantics | Infer from what the guide accomplishes (e.g., a data source setup guide provides `"datasource-configured"`). Leave empty when not obvious |
 | `steps` | Website markdown | For `type: "path"`: ordered list of step package IDs, derived from the step markdown `weight` field ordering. The `pathfinder_data` frontmatter field maps each markdown step to its `interactive-tutorials` directory |
 
 ### Matching index.json rules to guides
 
-The `index.json` `url` field contains the CDN URL for the guide (e.g., `https://interactive-learning.grafana.net/guides/alerting-101`). The guide directory name is the last path segment. Match by comparing the guide's `id` (from `content.json`) against the path segment extracted from each rule's `url`.
+The `index.json` `url` field contains the CDN URL for the guide (e.g., `https://interactive-learning.grafana.net/guides/alerting-101`). Some URLs have a trailing `/content.json` — strip it before matching. The guide directory name is the last path segment after stripping. Packages are identified by directory, not by file; either `content.json` or `manifest.json` can be resolved within the directory.
 
-For learning journey steps, individual steps typically don't have their own `index.json` entries — targeting lives at the path level. Step-level `description` comes from the website markdown.
+Match by comparing the guide's `id` (from `content.json`) against the directory name extracted from each rule's `url`.
+
+For learning journey steps, individual steps typically don't have their own `index.json` entries — targeting lives at the path level. Step-level manifests have no `targeting` field unless the step has its own `index.json` entry. Step-level `description` comes from the website markdown.
 
 ---
 
@@ -126,7 +130,7 @@ For learning journey steps, individual steps typically don't have their own `ind
   4. Generate `manifest.json` following the field derivation rules in `docs/manifest-reference.md`
   5. Validate: `id` matches between `content.json` and `manifest.json`
   6. Verify: no existing `content.json` was modified
-  7. Run pathfinder CLI validation if available
+  7. Run `validate --package <dir>` to validate the generated package
 
   **Mode 2: Learning path** — invoked on a `*-lj` directory (e.g., `prometheus-lj/`)
   1. Locate the website markdown path at `<website-repo>/content/docs/learning-paths/<path-name>/`
@@ -283,6 +287,8 @@ The `validate-packages` and `build-repository` jobs depend on the pathfinder CLI
 
 - [ ] **Manifest files deployed** — The existing deploy step copies `*.json` from guide directories, which already includes `manifest.json` files. Verify that `manifest.json` files are deployed alongside `content.json`.
 
+- [ ] **Future: simplify deploy to copy entire repo** — In a later stage, the deploy pipeline should be upgraded to copy the near-entirety of the repo to the CDN (all `*.json`, all `assets/*`, `repository.json`) rather than discovering files individually. This removes the need for the pipeline to track which files each package includes. The current `find` + `cp *.json` approach works for the pilot but won't scale to packages with assets.
+
 ### CDN structure after deploy
 
 ```
@@ -313,7 +319,7 @@ interactive-learning-{env}/guides/
 
 - [ ] **Dev deployment** — Deploy to the `dev` environment via `deploy.yml` workflow dispatch
 - [ ] **CDN verification** — Confirm `repository.json` is accessible at the expected CDN URL and contains correct entries for all pilot packages
-- [ ] **Recommender integration test** — Configure `grafana-recommender` (Phase 4a of the implementation plan) to fetch `repository.json` from the dev CDN. Verify it resolves pilot package IDs correctly.
+- [ ] **Recommender integration test** — Configure `grafana-recommender` to fetch `repository.json` from the dev CDN. Verify it resolves pilot package IDs correctly.
 - [ ] **Plugin integration test** — Verify the `grafana-pathfinder-app` frontend can load pilot guides through the composite resolver (bundled fallback → recommender resolution)
 - [ ] **index.json continuity** — Verify that existing recommendation rules continue to work for all guides (migrated and un-migrated)
 
@@ -344,6 +350,10 @@ Once all guides carry their own `targeting` in `manifest.json` and the recommend
 2. Compare aggregated rules against `index.json` to ensure no rules are lost
 3. Remove `index.json` from the repository and deploy pipeline
 4. Remove the `validate-recommender-rules` CI job
+
+### Multi-part guides (deferred)
+
+`welcome-to-play/` is a multi-part guide with subdirectories (`main-page`, `visualization-page`, `datasource-page`), each with its own `content.json` and `index.json` entry. It is not a learning path — it will need hand-migration into a metapackage. Defer this from both the pilot and the mechanical full migration; handle it as a separate future task.
 
 ### Guides without index.json entries
 
@@ -403,12 +413,8 @@ Provides inter-journey category and `links.to` relationships at the journey grap
 
 ## Appendix: Naming conventions
 
-| interactive-tutorials | Website learning-paths | Derivation |
-|----------------------|----------------------|------------|
-| `prometheus-lj` | `prometheus` | Strip `-lj` suffix |
-| `linux-server-integration-lj` | `linux-server-integration` | Strip `-lj` suffix |
-| `github-data-source-lj` | `github-data-source` | Strip `-lj` suffix |
+The general rule for mapping between repos is **strip the `-lj` suffix** from the `interactive-tutorials` directory name to get the corresponding `website/content/docs/learning-paths/` directory name (e.g., `prometheus-lj` → `prometheus`, `linux-server-integration-lj` → `linux-server-integration`).
 
-Within paths, step directory names are identical in both repos.
+The full set of `*-lj` directories is ongoingly changing — authors continue to write new learning journeys on parallel branches during this migration. This is why we pilot on a subset and create a generic, reusable migration skill for the rest.
 
-The website markdown `pathfinder_data` frontmatter field is the authoritative link: e.g., `pathfinder_data: prometheus-lj/add-data-source` maps the website step to the `interactive-tutorials/prometheus-lj/add-data-source/` directory.
+Within paths, step directory names are identical in both repos. The website markdown `pathfinder_data` frontmatter field is the authoritative link: e.g., `pathfinder_data: prometheus-lj/add-data-source` maps the website step to the `interactive-tutorials/prometheus-lj/add-data-source/` directory.
