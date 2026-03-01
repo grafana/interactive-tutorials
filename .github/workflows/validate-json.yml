@@ -85,6 +85,9 @@ jobs:
       working-directory: pathfinder-app
       run: npm run build:cli
 
+    # NOTE: this validates _only directories with content.json_
+    # Post-migration, if all directories are enforced to have manifest.json, this
+    # job can be removed as redundant to the other validate-packages job.
     - name: Validate guides (content.json per-file)
       run: |
         echo "🔍 Finding and validating content.json files..."
@@ -122,21 +125,26 @@ jobs:
           echo "🎉 All $PASSED guide(s) validated successfully!"
         fi
 
-    - name: Validate packages (manifest.json directories)
+    # NOTE: this validates _only directories with manifest.json_
+    - name: Validate Pathfinder Packages
       run: |
         echo "🔍 Validating all package directories (those with manifest.json)..."
         echo ""
-        node pathfinder-app/dist/cli/cli/index.js validate --packages .
+        # --exclude pathfinder-app: the CLI is checked out into the workspace root so the
+        # scanner would otherwise discover its bundled guides and report duplicates.
+        node pathfinder-app/dist/cli/cli/index.js validate --packages . --exclude pathfinder-app
 
     - name: Build repository.json
       run: |
         echo "🔨 Generating repository.json from all packages..."
         echo ""
-        node pathfinder-app/dist/cli/cli/index.js build-repository . -o repository.json
+        # --exclude pathfinder-app: prevents the scanner from indexing bundled guides that
+        # ship inside the pathfinder-app checkout at ./pathfinder-app/.
+        node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app -o repository.json
         echo ""
         echo "📦 repository.json generated successfully"
 
-    - name: Build dependency graph (informational)
+    - name: Build dependency graph
       continue-on-error: true
       run: |
         echo "🔗 Building dependency graph..."
