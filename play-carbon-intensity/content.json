@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "## Introduction\n\nThis dashboard shows you a live snapshot of the UK's electricity generation mix and carbon intensity — updated every 30 minutes to reflect the current half-hour period.\n\nIt's built using the [Grafana Infinity data source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/), which can pull data from any HTTP API, and [JQ](https://jqplay.org/) — a lightweight query language for reshaping JSON. Together they make it possible to go straight from a raw API response to a polished dashboard with no intermediate database required.\n\nAll the data comes from the [UK Carbon Intensity API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0), a free public API maintained by National Grid."
+      "content": "## Introduction\n\nThis dashboard shows you a live snapshot of the UK's electricity generation mix and carbon intensity — updated every 30 minutes to reflect the current half-hour period.\n\nIt's built using the Grafana Infinity data source, which can pull data from any HTTP API, and JQ — a lightweight query language for reshaping JSON. Together they make it possible to go straight from a raw API response to a polished dashboard with no intermediate database required.\n\nAll the data comes from the UK Carbon Intensity API, a free public API maintained by National Grid."
     },
     {
       "type": "section",
@@ -19,7 +19,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header England']",
-          "content": "These panels show the current carbon intensity forecast and index (low / moderate / high / very high) for England, Scotland and Wales. Each one filters the data from the shared raw data table you'll meet in a moment.",
+          "content": "These panels show the current carbon intensity forecast and index (low - very high) for England, Scotland and Wales. Each one filters the data from the shared raw data table you'll meet in a moment.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -41,7 +41,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Renewables by Region']",
-          "content": "The renewables figure here is calculated in the JQ expression as the sum of wind, solar, hydro and biomass for each region. The longer the bar, the greener the grid is in that part of the country right now.",
+          "content": "The renewables figure here is calculated in the JQ expression as the sum of wind, solar, hydro and biomass for each region. The longer the bar, the greener the grid is in that part of the country.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -52,7 +52,7 @@
     },
     {
       "type": "markdown",
-      "content": "## The Raw Data Table\n\nAll of the panels you've seen so far — and the regional rows further down — draw their data from a single source: the Raw Data table at the bottom of the dashboard. This is where the API is called and the JSON response is shaped into something Grafana can work with.\n\nLet's take a look at it."
+      "content": "## The Raw Data Table\n\nEvery other panel on the dashboard draws its data from a single source: the Raw Data table at the bottom. This is where the API is called and the JSON response is shaped into something Grafana can work with.\n\nLet's take a look at it."
     },
     {
       "type": "section",
@@ -63,7 +63,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-Raw Data']",
-          "content": "This table is the backbone of the dashboard. It makes a single call to the Carbon Intensity API and returns one row per region, with columns for the intensity forecast, index, and percentage of each fuel type in the generation mix. Every other panel references this table rather than making its own API call.",
+          "content": "This table is the backbone of the dashboard. It makes a single call to the API and returns one row per region, with columns for the intensity forecast, index, and percentage of each fuel type in the generation mix. Every other panel references this table rather than making its own API call.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -104,7 +104,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid=\"query-editor-row\"] > :first-child",
-          "content": "Here's the Infinity query. It's configured to call `https://api.carbonintensity.org.uk/regional` using a simple HTTP GET. The parser is set to **jq-backend**, which means the raw JSON response is handed straight to a JQ expression before any data reaches Grafana.",
+          "content": "Here's the Infinity query. It's configured to make a simple HTTP GET call to the API. The parser is set to **jq-backend**, which means the raw JSON response is handed straight to a JQ expression before any data reaches Grafana.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -115,7 +115,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid=\"query-editor-row\"]",
-          "content": "The JQ expression (labelled **Rows/Root expression** in the query editor) is where the heavy lifting happens:\n\n```\n.data[0].regions[] | {\n  regionid, shortname,\n  forecast: .intensity.forecast,\n  index:    .intensity.index,\n  gas:      (.generationmix[] | select(.fuel==\"gas\")    | .perc),\n  wind:     (.generationmix[] | select(.fuel==\"wind\")   | .perc),\n  ...\n  renewables: [biomass, wind, solar, hydro percentages] | add\n}\n```\n\nThe expression iterates over every region in the response, flattens the nested generation mix array into individual columns, and computes a `renewables` total on the fly. The result is a clean table that all the other panels can query using standard Grafana transformations.",
+          "content": "The JQ expression is where the heavy lifting happens.\n\nThe expression iterates over every region in the response, flattens the nested generation mix array into individual columns, and computes a renewables total on the fly. The result is a clean table that all the other panels can query using standard Grafana transformations.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -139,7 +139,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Regional Rows\n\nBelow the summary panels, the dashboard has a repeating row for each region returned by the API. Each row uses the same set of panels — carbon intensity, generation mix, renewables percentage — but filters the shared Raw Data table to show only the figures for that one region.\n\nLet's zoom in on one of them."
+      "content": "## Regional Rows\n\nThe dashboard has a repeating row for each region returned by the API. Each row uses the same set of panels, but filters the shared Raw Data table to show only the figures for each specific region in turn.\n\nLet's zoom in on one of them."
     },
     {
       "type": "section",
@@ -150,7 +150,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-North East England']",
-          "content": "Here's the row for North East England. The panels here are identical in structure to every other regional row — the only difference is a filter on the `shortname` field that picks out this region's data from the shared table. This pattern keeps the dashboard consistent and easy to maintain: update the JQ expression in the Raw Data table and every regional row benefits automatically.",
+          "content": "Here's the row for North East England. The panels here are identical in structure to every other regional row — a filter on the shortname field that picks out this region's data from the shared table. This pattern keeps the dashboard consistent and easy to maintain: update the JQ expression in the Raw Data table and every regional row benefits automatically.",
           "requirements": [
             "exists-reftarget"
           ],
