@@ -8,7 +8,7 @@ This command automates the creation of interactive content (`content.json` files
 
 When a writer runs `/build-interactive-lj`, this command guides them through a 7-step process to create fully functional interactive guides:
 
-1. **Environment Validation** - Verify repos, browser automation, and GitHub CLI
+1. **Environment Validation** - Verify repos and browser automation
 2. **Learning Path Validation** - Find the learning path and list milestones
 3. **Create Recommender Mapping** - Ensure the learning path appears in Pathfinder (if needed)
 4. **Scaffold Content Files** - Create content.json structure for each milestone
