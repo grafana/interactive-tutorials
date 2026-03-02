@@ -10,8 +10,6 @@ This guide covers everything you need to run the `/build-interactive-lj` command
 |------|---------------|
 | Clone all repos | `Clone the website, interactive-tutorials, and grafana-recommender repos for me` |
 | Check workspace | `Verify my Cursor workspace has all required repos for /build-interactive-lj` |
-| Install GitHub CLI | `Install GitHub CLI on my machine` |
-| Authenticate GitHub CLI | `Help me authenticate GitHub CLI` |
 | Setup Playwright MCP | `Walk me through setting up Playwright MCP in Cursor` |
 | Full setup | `Help me complete the full setup for /build-interactive-lj` |
 
@@ -166,79 +164,7 @@ After dev mode is enabled:
 
 ---
 
-## 5. GitHub CLI Setup
-
-GitHub CLI (`gh`) is used to file issues for broken selectors.
-
-### Why We File Issues
-
-It's important to understand that some Grafana UI elements may not have stable or easily targetable selectors, and that's perfectly okay! When you encounter a selector that consistently fails, we file an issue.
-
-👉 **https://github.com/grafana/interactive-tutorials/issues**
-
-This is the preferred method for communicating with **Robby Milo** about which selectors don't work. The Pathfinder team tracks these issues and can:
-- Request `data-testid` additions from the Grafana UI team
-- Document known limitations
-- Suggest workarounds
-
-**It's totally acceptable to find selectors that don't work.** That's part of the discovery process!
-
-### Install
-
-**macOS (Homebrew):**
-```bash
-brew install gh
-```
-
-**Windows (winget):**
-```bash
-winget install --id GitHub.cli
-```
-
-**Linux:**
-```bash
-# Debian/Ubuntu
-sudo apt install gh
-
-# Fedora
-sudo dnf install gh
-```
-
-> **🤖 AI Shortcut:** Ask the AI:
-> ```
-> Install GitHub CLI on my machine
-> ```
-
-### Authenticate
-
-```bash
-gh auth login
-```
-
-Follow the prompts:
-1. Select **GitHub.com**
-2. Select **HTTPS** (recommended)
-3. Authenticate with browser or token
-
-> **🤖 AI Shortcut:** Ask the AI:
-> ```
-> Help me authenticate GitHub CLI
-> ```
-
-### Verify Authentication
-
-```bash
-gh auth status
-```
-
-Should show:
-```
-✓ Logged in to github.com as [your-username]
-```
-
----
-
-## 6. Verifying Your Setup
+## 5. Verifying Your Setup
 
 Run this checklist before using `/build-interactive-lj`:
 
@@ -250,9 +176,6 @@ ls ~/Documents/repositories/website
 ls ~/Documents/repositories/interactive-tutorials
 ls ~/Documents/repositories/grafana-recommender
 
-# Check GitHub CLI
-gh auth status
-
 # Check Cursor workspace (in Cursor)
 # File → Open Workspace → verify all 3 repos visible
 ```
@@ -261,12 +184,12 @@ gh auth status
 
 > **🤖 AI Shortcut:** Ask the AI:
 > ```
-> Verify my setup for /build-interactive-lj - check repos, Playwright, and GitHub CLI
+> Verify my setup for /build-interactive-lj - check repos and Playwright
 > ```
 
 ---
 
-## 7. Common Issues
+## 6. Common Issues
 
 ### "Repository not found in workspace"
 
@@ -285,16 +208,6 @@ gh auth status
 1. Cursor Settings → Features → MCP Servers
 2. Enable Playwright
 3. Completely quit and restart Cursor
-
-### "GitHub CLI not authenticated"
-
-**Cause:** You haven't logged in with `gh auth login`.
-
-**Fix:**
-```bash
-gh auth login
-# Follow the prompts
-```
 
 ### "Browser automation fails silently"
 
@@ -333,7 +246,7 @@ See section 4 "Test Environment & Dev Mode Setup" above for first-time setup ins
 
 ---
 
-## 8. Getting Help
+## 7. Getting Help
 
 - **Slack:** `#proj-grafana-pathfinder`
 - **Issues:** https://github.com/grafana/interactive-tutorials/issues
