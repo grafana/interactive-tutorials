@@ -45,6 +45,10 @@ This document defines the structure and field requirements for `content.json` fi
       "action": "highlight",
       "reftarget": "a[href='/dashboards']",
       "content": "Navigate to **Dashboards**."
+    },
+    {
+      "type": "markdown",
+      "content": "**More to explore (optional)**\n\n- [Cost management docs](/docs/grafana-cloud/cost-management-and-billing/)"
     }
   ]
 }
@@ -238,6 +242,7 @@ This includes:
 - Pathfinder needs a content.json for every milestone to track progress through the learning path
 - Even non-interactive milestones need to be represented so users can mark them complete
 - Skipping milestones breaks the learning path flow
+- **The content.json is the source of truth** — all milestone content must live here
 
 ### For Milestones WITH Interactive UI Steps:
 
@@ -247,7 +252,7 @@ This includes:
 
 ### For Milestones WITHOUT Interactive UI Steps:
 
-Convert ALL content to `markdown` blocks with proper root-level schema:
+Convert ALL content to `markdown` blocks:
 
 ```json
 {
@@ -260,6 +265,58 @@ Convert ALL content to `markdown` blocks with proper root-level schema:
       "content": "[Full milestone content converted from markdown]"
     }
   ]
+}
+```
+
+---
+
+## CRITICAL: Include ALL Supplementary Content from Frontmatter
+
+**The content.json files are the source of truth for learning paths.** You MUST extract and include
+ALL supplementary content from the website milestone's YAML frontmatter. These appear as markdown
+blocks at the END of the `blocks` array.
+
+### Frontmatter Sections to Extract
+
+| Frontmatter Key | Output Block Title | Description |
+|------------------|--------------------|-------------|
+| `side_journeys` | **More to explore (optional)** | Links to related documentation |
+| `related_journeys` | **Related paths** | Links to other learning paths |
+| `cta.troubleshooting` | **Troubleshooting** | Links to troubleshooting documentation |
+
+### Block Ordering
+
+Supplementary blocks MUST appear at the end of the `blocks` array, in this order:
+
+1. Main body content (markdown, interactive, multistep blocks)
+2. Transition text (e.g., "In the next milestone, you'll...")
+3. **More to explore** (from `side_journeys`)
+4. **Related paths** (from `related_journeys`)
+5. **Troubleshooting** (from `cta.troubleshooting`)
+
+### Examples
+
+**More to explore** (from `side_journeys`):
+```json
+{
+  "type": "markdown",
+  "content": "**More to explore (optional)**\n\nAt this point in your journey, you can explore the following paths:\n\n- [Labels and Fields](/docs/grafana-cloud/visualizations/simplified-exploration/logs/labels-and-fields/)"
+}
+```
+
+**Related paths** (from `related_journeys`):
+```json
+{
+  "type": "markdown",
+  "content": "**Related paths**\n\nConsider taking the following paths after you complete this journey.\n\n- [Explore metrics using Metrics Drilldown](/docs/learning-paths/drilldown-metrics/)"
+}
+```
+
+**Troubleshooting** (from `cta.troubleshooting`):
+```json
+{
+  "type": "markdown",
+  "content": "**Troubleshooting**\n\nExplore the following troubleshooting topics if you need help:\n\n- [Failed to install Alloy for Windows](/docs/cloud-onboarding/next/troubleshoot/install-troubleshooting-windows-alloy/#error-failed-to-install-alloy-for-windows)"
 }
 ```
 
@@ -282,5 +339,10 @@ Before proceeding to selector discovery, verify EACH content.json file:
 - [ ] Navigation steps use `"multistep"` blocks
 - [ ] Interactive blocks do NOT have `"requirements": ["exists-reftarget"]` (it's auto-applied)
 - [ ] Interactive blocks have empty `"reftarget": ""` (selectors added in Step 5)
+
+### Supplementary Content:
+- [ ] **`side_journeys` from frontmatter** → included as "More to explore" markdown block (if present)
+- [ ] **`related_journeys` from frontmatter** → included as "Related paths" markdown block (if present)
+- [ ] **`cta.troubleshooting` from frontmatter** → included as "Troubleshooting" markdown block (if present)
 
 **If any check fails, fix before continuing.**
