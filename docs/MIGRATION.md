@@ -316,7 +316,9 @@ Local verification performed successfully against the pathfinder CLI at `/Users/
 
 ---
 
-## Phase 4: Deploy pipeline
+## Phase 4: Deploy pipeline ✓
+
+**Status: COMPLETE**
 
 **Goal:** The deploy pipeline publishes `repository.json` and all package files to the CDN under a new `packages/` prefix, keeping the legacy `guides/` path unchanged.
 
@@ -342,26 +344,27 @@ Local verification performed successfully against the pathfinder CLI at `/Users/
 
 ### Deliverables
 
-- [ ] **Checkout pathfinder-app and build CLI** in `deploy.yml` (same pattern as `validate-json.yml`)
+- [x] **Checkout pathfinder-app and build CLI** in `deploy.yml` (same pattern as `validate-json.yml`)
 
-- [ ] **Add "Prepare packages" step** to stage the full tree copy:
+- [x] **Add "Prepare packages" step** to stage the full tree copy:
   1. `mkdir -p packages/`
   2. Copy every guide directory recursively into `packages/`, applying the exclude list above
   3. Run `node pathfinder-app/dist/cli/cli/index.js build-repository packages/ -o packages/repository.json` to generate `repository.json` co-located with the packages. No `--exclude` flag needed here since `pathfinder-app/` is not inside the `packages/` staging directory.
   4. (Optional) Run `build-graph` for informational artifact, `continue-on-error: true`
 
-- [ ] **Push `packages/` to GCS** using `path: packages` (default `parent: true`), same `bucket` and `service_account` as the existing `guides/` push:
-  ```yaml
-  - name: Push packages to GCS
-    uses: grafana/shared-workflows/actions/push-to-gcs@<pin> # push-to-gcs/v0.3.0
-    with:
-      bucket: interactive-learning-${{ github.event.inputs.environment }}
-      path: packages
-      environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
-      service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
-  ```
+- [x] **Push `packages/` to GCS** using `path: packages` (default `parent: true`), same `bucket` and `service_account` as the existing `guides/` push
 
-- [ ] **Verify relative paths** — `"path": "alerting-101/"` in `repository.json` resolves to `https://interactive-learning.grafana.net/packages/alerting-101/` because `repository.json` and the package directories are siblings under `packages/`
+- [x] **Verify relative paths** — `"path": "alerting-101/"` in `repository.json` resolves to `https://interactive-learning.grafana.net/packages/alerting-101/` because `repository.json` and the package directories are siblings under `packages/`
+
+### Decisions recorded
+
+1. **`build-graph` runs inside `packages/` and outputs `graph.json` alongside `repository.json`.** The CLI outputs `graph.json` to the current working directory, so a dedicated "Build dependency graph" step uses `working-directory: packages` to run inside the staging directory. This ensures `graph.json` is staged as a sibling of `repository.json` and deployed to `bucket/packages/graph.json`. Graph warnings (orphaned packages, unresolved cross-repo refs) are expected during partial migration; the step uses `continue-on-error: true` so failures appear as visible warnings in the GitHub Actions UI without blocking the deploy.
+
+2. **Exclude list implemented as an explicit shell loop.** The "Prepare packages" step iterates top-level directories and skips `pathfinder-app`, `.github`, `docs`, `.cursor`, `shared`, `guides`, and `packages`. Top-level files (`.json`, `.md`, `.yml`, etc.) are naturally excluded because the loop only iterates directories (`*/`). This is simpler and less fragile than a `find`-based approach.
+
+3. **`--exclude` flag not used in `build-repository` for deploy.** In `validate-json.yml`, `--exclude pathfinder-app` is needed because the scan root is `.` (the repo root) and `pathfinder-app/` is present there. In `deploy.yml`, the scan root is `packages/` (the staging directory), into which `pathfinder-app/` is never copied. The flag is therefore unnecessary.
+
+4. **Partial migration is safe.** The deploy pipeline produces a valid but incomplete `repository.json` containing only migrated packages (those with `manifest.json`). Un-migrated guides are present under `packages/` but absent from `repository.json` and undiscoverable by consumers. The `guides/` legacy path continues to serve all guides. This means the Phase 4 pipeline can go live while migration is still in progress, enabling downstream component integration testing against real CDN content.
 
 ### CDN structure after deploy
 
