@@ -171,8 +171,23 @@ For each step, read the corresponding file from `steps/` directory:
 ### Block Types
 - `markdown` - Explanatory text, no automation
 - `interactive` - Automated actions with "Show me" / "Do it"
+- `interactive` (noop) - Non-interactive numbered step (no automation), used inside `section`
 - `multistep` - Sequential navigation (shows "▶ Run N steps")
+- `section` - Groups steps for sequential numbering (1, 2, 3...)
 - `guided` - User performs manually, no "Do it" button
+
+### Action Types
+- `highlight` - Click element by CSS selector
+- `button` - Click button by visible text
+- `formfill` - Enter text in field (use `targetvalue`)
+- `hover` - Reveal hover-dependent UI
+- `navigate` - Change pages
+- `noop` - Non-interactive numbered step (no UI automation)
+
+### Key Properties
+- `doIt: false` - Hides "Do it" button, keeps "Show me" (for manual steps)
+- `targetvalue` - Text to enter for `formfill` actions (NOT `formvalue`)
+- `content` - Instruction text (NOT `description`)
 
 ### Selector Priority
 1. `data-testid` (most stable)
@@ -182,3 +197,7 @@ For each step, read the corresponding file from `steps/` directory:
 5. Stable class (least stable)
 
 **Avoid:** Generic classes, positional selectors, text content
+
+### Supplementary Content Formatting
+- Use `---` divider + H3 heading (`###`) for "More to explore", "Related paths", "Troubleshooting"
+- Split long markdown blocks into multiple shorter blocks for readability
