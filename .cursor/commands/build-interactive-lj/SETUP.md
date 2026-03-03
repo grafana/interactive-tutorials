@@ -43,7 +43,7 @@ The workflow requires three repositories in your Cursor workspace:
 
 | Repository | Purpose | Clone URL |
 |------------|---------|-----------|
-| `website` | Source markdown for learning journeys | `git@github.com:grafana/website.git` |
+| `website` | Source markdown for learning paths | `git@github.com:grafana/website.git` |
 | `interactive-tutorials` | Where content.json files are created | `git@github.com:grafana/interactive-tutorials.git` |
 | `grafana-recommender` | Validates LJ is mapped to Grafana UI | `git@github.com:grafana/grafana-recommender.git` |
 
@@ -259,7 +259,7 @@ See section 4 "Test Environment & Dev Mode Setup" above for first-time setup ins
 Once all checks pass, you're ready to run:
 
 ```
-/build-interactive-lj [learning-journey-slug]
+/build-interactive-lj [learning-path-slug]
 ```
 
 Example:
