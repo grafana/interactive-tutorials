@@ -91,15 +91,15 @@ fully functional content.json files ready for a PR.
 Here's what our session will look like:
 
 1. **Environment check** - Verify your setup is ready (30 seconds)
-2. **Find your learning journey** - Locate source content and list milestones
-3. **Create recommender mapping** - Ensure the journey appears in Pathfinder (if needed)
+2. **Find your learning path** - Locate source content and list milestones
+3. **Create recommender mapping** - Ensure the learning path appears in Pathfinder (if needed)
 4. **Scaffold the files** - Create content.json structure for each milestone
 5. **Discover selectors** - Find CSS selectors for interactive elements
 6. **Test in Pathfinder** - Collaboratively test each milestone
 7. **Wrap up** - Summarize results and provide PR guidance
 
 Expect this to take 30-60 minutes depending on how many milestones your 
-learning journey has. I'll need your attention during testing so you can 
+learning path has. I'll need your attention during testing so you can 
 verify the highlights look right.
 ```
 
