@@ -56,19 +56,70 @@
       ]
     },
     {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "button[data-testid='agent-config-button']",
-      "content": "Click Install Grafana Alloy.",
-      "requirements": [
-        "exists-reftarget"
+      "type": "multistep",
+      "content": "Install Grafana Alloy.",
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "button[data-testid='agent-config-button']"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "button[data-testid='generate-token-submit-button']"
+        },
+        {
+          "action": "formfill",
+          "reftarget": "input[data-testid='generate-token-name-input']",
+          "targetvalue": "testing-token-alloy"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "button[data-testid='generate-token-submit-button']"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "#\\:r5u\\: > div.css-1ho5tbd > ol > li:nth-child(3) > div > button",
+          "lazyRender": true
+        },
+        {
+          "action": "noop",
+          "reftarget": ""
+        },
+        {
+          "action": "button",
+          "reftarget": "Test Alloy connection"
+        },
+        {
+          "action": "button",
+          "reftarget": "Proceed to install integration"
+        }
       ]
     },
     {
       "type": "interactive",
       "action": "highlight",
-      "reftarget": "button[data-testid='generate-token-submit-button']",
-      "content": "Click Create token."
+      "reftarget": "div[data-testid='alloy-simple-block']+button",
+      "content": "Manually copy and append the Grafana Alloy configuration snippets into your Grafana Alloy configuration file.",
+      "requirements": [
+        "exists-reftarget"
+      ],
+      "lazyRender": true
+    },
+    {
+      "type": "multistep",
+      "content": "Restart Grafana Alloy and test configurations.",
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "div[data-testid='restart-command']+button",
+          "lazyRender": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "button[data-testid='test-connection-button']",
+          "lazyRender": true
+        }
+      ]
     }
   ]
 }
