@@ -12,7 +12,6 @@ Verify that the user's setup is ready for creating interactive content.
 I'll check that your setup is ready:
 - Three repositories in your workspace (website, interactive-tutorials, grafana-recommender)
 - Playwright browser automation working
-- GitHub CLI authenticated (for filing selector issues if needed)
 
 If anything fails, I'll help you resolve the issue.
 
@@ -37,7 +36,6 @@ Check these and display results:
 - ✅/❌ `interactive-tutorials` repo in workspace
 - ✅/❌ `grafana-recommender` repo in workspace
 - ✅/❌ Playwright MCP available
-- ✅/❌ GitHub CLI authenticated
 
 **On any failure:** Help the user resolve the issue before continuing.
 
