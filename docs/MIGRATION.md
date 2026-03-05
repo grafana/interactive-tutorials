@@ -64,7 +64,7 @@ These invariants hold throughout the entire migration — pilot and full:
   - Field derivation rules for migration (where each field's data comes from — see [field derivation rules](#field-derivation-rules) below)
   - Targeting: how to translate an `index.json` rule into `targeting.match`
   - testEnvironment: tier inference rules (local, cloud, play)
-  - Learning path manifests: `type: "path"`, `steps` array, path-level `content.json`
+  - Learning path manifests: `type: "path"`, `milestones` array, path-level `content.json`
   - Dependency fields: `depends`, `recommends`, `suggests`, `provides`
   - Copy-paste templates for standalone guide and learning path
 
@@ -129,7 +129,7 @@ Guide-to-rule matching and `index.json` URL-to-directory mapping are also docume
   3. Read each step's markdown (`<step>/index.md`) for: `weight` (ordering), `step` (number), `pathfinder_data` (directory mapping), `description`, `side_journeys`
   4. For each step subdirectory: run Mode 1 to generate the step's `manifest.json`
   5. Create the path-level `manifest.json` (`type: "path"`) with:
-     - `steps` array ordered by `weight` from the markdown
+     - `milestones` array ordered by `weight` from the markdown
      - `description`, `category`, `author` from path-level markdown
      - `recommends` from `journey.links.to`
      - `suggests` from `related_journeys`
@@ -212,7 +212,7 @@ Learning path directories (`*-lj`) typically have no `content.json` at their roo
 - [x] **Standalone guide manifests** — Run the migration skill on each pilot guide. Each produces a `manifest.json` alongside the existing `content.json`.
 
 - [x] **Learning path migration** — Run the migration skill on `prometheus-lj/`. Produces:
-  - `prometheus-lj/manifest.json` (`type: "path"`, `steps` array with 9 entries)
+  - `prometheus-lj/manifest.json` (`type: "path"`, `milestones` array with 9 entries)
   - `prometheus-lj/content.json` (path-level descriptive content from website markdown)
   - `prometheus-lj/<step>/manifest.json` for each of the 9 steps
 
@@ -245,7 +245,7 @@ interactive-tutorials/
 │   └── manifest.json         ← new
 ├── prometheus-lj/
 │   ├── content.json          ← new (path-level cover page)
-│   ├── manifest.json         ← new (type: "path", steps: [...])
+│   ├── manifest.json         ← new (type: "path", milestones: [...])
 │   ├── add-data-source/
 │   │   ├── content.json      ← existing (unchanged)
 │   │   └── manifest.json     ← new
@@ -521,7 +521,7 @@ Key frontmatter fields:
 | Path `_index.md` | `journey.links.to` | manifest `recommends` |
 | Path `_index.md` | `related_journeys.items` | manifest `suggests` or `depends` |
 | Path `_index.md` | body content | Path content.json `blocks` (see [path-level content.json authoring](#path-level-contentjson-authoring)) |
-| Step `index.md` | `weight` | Step ordering within `steps` array |
+| Step `index.md` | `weight` | Step ordering within `milestones` array |
 | Step `index.md` | `step` | Step number (redundant with weight-based ordering) |
 | Step `index.md` | `pathfinder_data` | Maps step markdown to interactive-tutorials directory |
 | Step `index.md` | `description` | Step manifest `description` |

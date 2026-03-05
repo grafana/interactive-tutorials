@@ -238,7 +238,7 @@ Extract from body content:
 #### 3. Read step metadata
 
 Build a canonical step map from website markdown. For each `<website-step>/index.md` in the website path, extract:
-- `weight` — for ordering within the `steps` array
+- `weight` — for ordering within the `milestones` array
 - `step` — step number (redundant with weight ordering, use as cross-check)
 - `pathfinder_data` — authoritative mapping to the interactive-tutorials directory (e.g., `prometheus-lj/add-data-source`)
 - `description` — for step manifest
@@ -247,7 +247,7 @@ Build a canonical step map from website markdown. For each `<website-step>/index
 Canonical mapping rules:
 - When present, treat `pathfinder_data` as authoritative for mapping website steps to interactive-tutorials step directories. Validate each target exists under the `*-lj` directory and has `content.json`.
 - **When `pathfinder_data` is absent** (common — most steps lack it), fall back to directory name matching: website step directory names are identical to interactive-tutorials step directory names within the same path. Confirm the match by verifying the directory exists and has `content.json`. Note which steps used name-matching fallback in the migration notes.
-- Build the path manifest `steps` array from this map, ordered by `weight`.
+- Build the path manifest `milestones` array from this map, ordered by `weight`.
 - Do not derive step order from local directory listing.
 
 #### 3a. Resolve side_journeys URLs to package IDs
@@ -287,7 +287,7 @@ For each mapped step in canonical `weight` order:
 ```
 
 Step dependency rules:
-- Use each step's `content.json` `id` (not the directory name) in `depends`/`recommends` and in the path `steps` array.
+- Use each step's `content.json` `id` (not the directory name) in `depends`/`recommends` and in the path `milestones` array.
 - First step: omit `depends`
 - Step N+1: `depends` on step N's `id`
 - Last step: omit `recommends` (no next step)
@@ -332,7 +332,7 @@ Write `{lj-dir}/manifest.json`:
   "testEnvironment": {
     "tier": "<from index.json rule, or 'cloud' minimum>"
   },
-  "steps": [
+  "milestones": [
     "<step-1-id>",
     "<step-2-id>",
     "..."
@@ -380,7 +380,7 @@ Content transformation rules:
 #### 9. Validate
 
 - Confirm `id` consistency: path manifest `id` matches the directory name, step manifest `id` matches step `content.json` `id`
-- Confirm `steps` array in path manifest references valid step IDs that exist in step content.json files
+- Confirm `milestones` array in path manifest references valid step IDs that exist in step content.json files
 - Confirm step ordering matches website `weight` ordering
 - Confirm no pre-existing `content.json` in scope was modified by byte-level comparison against pre-write snapshots (including existing path-level `content.json`, if present)
 - Confirm all generated JSON is syntactically valid
@@ -445,7 +445,7 @@ After generating all files, run this checklist:
 - [ ] `id` matches between each `manifest.json` and `content.json` pair
 - [ ] No pre-existing `content.json` was modified (byte-level check against pre-write snapshots)
 - [ ] `index.json` was not modified
-- [ ] Path manifests have `type: "path"` and a `steps` array
+- [ ] Path manifests have `type: "path"` and a `milestones` array
 - [ ] Step manifests have `type: "guide"`
 - [ ] Step `depends`/`recommends` chains are consistent (no broken references within the current migration scope)
 - [ ] Dangling references (IDs in `depends`/`recommends`/`suggests` that point to directories not yet in the repo) are acceptable and **preferred** — always include them when the underlying data supports the reference. The Pathfinder CLI (`validate --package`) knows how to detect and report dangling references, so they will be caught during validation. It is better to produce more dangling references (which the CLI catches) than to silently drop relationships that exist in the source data. Record each dangling reference in the migration notes.
@@ -552,6 +552,6 @@ The skill reads `alerting-101/content.json` (id: `alerting-101`), finds the matc
 > "Migrate `prometheus-lj/` to the package format"
 
 The skill reads all 9 step `content.json` files, the website markdown at `learning-paths/prometheus/`, and the index.json. It generates:
-- `prometheus-lj/manifest.json` (type: path, 9 steps)
+- `prometheus-lj/manifest.json` (type: path, 9 milestones)
 - `prometheus-lj/content.json` (path-level cover page from website markdown)
 - 9 step-level `manifest.json` files

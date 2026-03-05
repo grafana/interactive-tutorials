@@ -37,7 +37,7 @@ A learning path (`*-lj` directory) is a package of type `"path"` with child step
 ```
 prometheus-lj/
 ├── content.json       # Path-level cover page (new, created during migration)
-├── manifest.json      # type: "path", steps array (new)
+├── manifest.json      # type: "path", milestones array (new)
 ├── add-data-source/
 │   ├── content.json   # Step guide (existing)
 │   └── manifest.json  # type: "guide" (new)
@@ -69,7 +69,7 @@ prometheus-lj/
 | `recommends` | `string[]` | No | `[]` | Package IDs suggested as follow-ups. |
 | `suggests` | `string[]` | No | `[]` | Loosely related package IDs. |
 | `provides` | `string[]` | No | `[]` | Capability tokens this package provides (e.g., `"datasource-configured"`). |
-| `steps` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"`. |
+| `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"`. |
 
 ### author
 
@@ -189,7 +189,7 @@ These rules define where each manifest field's data comes from during migration.
 | `startingLocation` | `index.json` rule | Same derivation as standalone guides. Omit if no URL can be derived (do not fall back to `"/"`). |
 | `targeting.match` | `index.json` rule | Copy the `match` object from the matching rule, if one exists. |
 | `testEnvironment` | `index.json` rule | Apply [tier inference rules](#testenvironment). |
-| `steps` | Website step markdown | Ordered list of step package IDs, derived from the step markdown `weight` field ordering. The `pathfinder_data` frontmatter maps each step to its `interactive-tutorials` directory. |
+| `milestones` | Website step markdown | Ordered list of step package IDs, derived from the step markdown `weight` field ordering. The `pathfinder_data` frontmatter maps each step to its `interactive-tutorials` directory. |
 | `recommends` | Website `_index.md` | From `journey.links.to`. |
 | `suggests` | Website `_index.md` | Default all `related_journeys` items to `suggests` unless the relationship is unambiguously prerequisite (e.g., the markdown body explicitly states the path must be completed first). |
 | `depends` | Website `_index.md` | Only from `related_journeys` items explicitly marked as prerequisites. In practice, most `related_journeys` are suggestions; leave `depends` empty if unsure and flag for manual review. |
@@ -202,7 +202,7 @@ If the website repository is not cloned locally or a guide has no corresponding 
 |-------|----------|
 | `description` | Use the `index.json` rule description. If no rule exists, flag for manual entry. |
 | `category` | Default to `"general"` and flag for manual review. |
-| `steps` (paths only) | Derive ordering from subdirectory names and `content.json` titles. Flag for manual verification. |
+| `milestones` (paths only) | Derive ordering from subdirectory names and `content.json` titles. Flag for manual verification. |
 | `recommends`, `suggests`, `depends` | Leave empty. These fields require website metadata to derive. |
 
 When any fallback is used, note in the PR which fields need manual verification.
@@ -312,7 +312,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "testEnvironment": {
     "tier": "<local|cloud>"
   },
-  "steps": [
+  "milestones": [
     "<step-1-id>",
     "<step-2-id>",
     "<step-3-id>"
