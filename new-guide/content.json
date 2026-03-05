@@ -3,121 +3,185 @@
   "title": "New Guide",
   "blocks": [
     {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
-      "content": "Click Connections.",
-      "requirements": [
-        "exists-reftarget",
-        "navmenu-open"
-      ]
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "#pageContent > div.css-15uwgyz > div > div > div.css-1736fpx-page-content > div > section > div:nth-child(1)",
-      "content": "Click Add new connection.",
-      "requirements": [
-        "exists-reftarget"
-      ]
-    },
-    {
-      "type": "interactive",
-      "action": "formfill",
-      "reftarget": "#pageContent > div.css-15uwgyz > div > div > div.css-1736fpx-page-content > div > div.css-fkkxk7 > div.css-1fhd082 > div > div",
-      "content": "Search for PostgreSQL.",
-      "targetvalue": "PostgreSQL"
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "a[href='/connections/add-new-connection/postgres']",
-      "content": "Select the PostgreSQL tile.",
-      "requirements": [
-        "exists-reftarget"
-      ]
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "input:nth-of-type(1)",
-      "content": "Select your operating system.",
-      "requirements": [
-        "exists-reftarget"
-      ]
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "#pageContent > div.css-15uwgyz > div > div > div.css-1736fpx-page-content > div > div.css-1s2c5hx > div > div > ol > li:nth-child(1) > div > div > div > div:nth-child(2) > div:nth-child(2) > div > div > div",
-      "content": "Select your architecture.",
-      "requirements": [
-        "exists-reftarget"
-      ]
-    },
-    {
-      "type": "multistep",
-      "content": "Install Grafana Alloy.",
-      "steps": [
+      "type": "section",
+      "id": "navigate-to-connections",
+      "title": "Navigate to Connections",
+      "blocks": [
         {
-          "action": "highlight",
-          "reftarget": "button[data-testid='agent-config-button']"
+          "type": "markdown",
+          "content": "In this section, you'll navigate to the Connections page and search for the PostgreSQL integration."
         },
         {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='generate-token-submit-button']"
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Click **Connections**.",
+          "requirements": [
+            "navmenu-open"
+          ]
         },
         {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add new connection",
+          "content": "Click **Add new connection**.",
+          "requirements": [
+            "on-page:/connections"
+          ]
+        },
+        {
+          "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[data-testid='generate-token-name-input']",
-          "targetvalue": "testing-token-alloy"
+          "reftarget": "input[placeholder*='Search']",
+          "content": "Search for **PostgreSQL**.",
+          "targetvalue": "PostgreSQL",
+          "requirements": [
+            "on-page:/connections"
+          ]
         },
         {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='generate-token-submit-button']"
-        },
-        {
-          "action": "highlight",
-          "reftarget": "#\\:r5u\\: > div.css-1ho5tbd > ol > li:nth-child(3) > div > button",
-          "lazyRender": true
-        },
-        {
-          "action": "noop",
-          "reftarget": ""
-        },
-        {
-          "action": "button",
-          "reftarget": "Test Alloy connection"
-        },
-        {
-          "action": "button",
-          "reftarget": "Proceed to install integration"
+          "reftarget": "a[href='/connections/add-new-connection/postgres']",
+          "content": "Select the **PostgreSQL** tile.",
+          "requirements": [
+            "on-page:/connections"
+          ]
         }
       ]
     },
     {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "div[data-testid='alloy-simple-block']+button",
-      "content": "Manually copy and append the Grafana Alloy configuration snippets into your Grafana Alloy configuration file.",
+      "type": "section",
+      "id": "configure-environment",
+      "title": "Configure Your Environment",
       "requirements": [
-        "exists-reftarget"
+        "section-completed:navigate-to-connections"
       ],
-      "lazyRender": true
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Select your operating system and architecture to get the correct installation instructions."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='os-selector'], [role='radiogroup']:has(label:contains('Linux'))",
+          "content": "Select your operating system.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/connections/add-new-connection/postgres"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='arch-selector'], [role='radiogroup']:has(label:contains('amd64'))",
+          "content": "Select your architecture.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/connections/add-new-connection/postgres"
+          ]
+        }
+      ]
     },
     {
-      "type": "multistep",
-      "content": "Restart Grafana Alloy and test configurations.",
-      "steps": [
+      "type": "section",
+      "id": "install-alloy",
+      "title": "Install Grafana Alloy",
+      "requirements": [
+        "section-completed:configure-environment"
+      ],
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "Follow these steps to install and configure Grafana Alloy for collecting PostgreSQL metrics."
+        },
+        {
+          "type": "multistep",
+          "content": "Generate an API token for Alloy.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/postgres"
+          ],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Run Grafana Alloy"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='generate-token-name-input']",
+              "targetvalue": "testing-token-alloy"
+            },
+            {
+              "action": "button",
+              "reftarget": "Create token"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Copy the installation commands shown on screen and run them in your terminal to install Grafana Alloy."
+        },
+        {
+          "type": "multistep",
+          "content": "Test the Alloy connection and proceed.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/postgres"
+          ],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Test Alloy connection"
+            },
+            {
+              "action": "button",
+              "reftarget": "Proceed to install integration"
+            }
+          ],
+          "verify": "on-page:/connections"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-alloy",
+      "title": "Configure Grafana Alloy",
+      "requirements": [
+        "section-completed:install-alloy"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Copy the configuration snippets and restart Alloy to complete the setup."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='restart-command']+button",
+          "reftarget": "div[data-testid='alloy-simple-block']+button, button:contains('Copy')",
+          "content": "Copy the Grafana Alloy configuration snippet and append it to your Alloy configuration file.",
           "lazyRender": true
         },
         {
-          "action": "highlight",
-          "reftarget": "button[data-testid='test-connection-button']",
-          "lazyRender": true
+          "type": "multistep",
+          "content": "Restart Grafana Alloy and test the connection.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='restart-command']+button, button:contains('Copy'):nth-match(2)",
+              "lazyRender": true
+            },
+            {
+              "action": "button",
+              "reftarget": "Test connection",
+              "lazyRender": true
+            }
+          ],
+          "verify": "has-datasource:postgres"
+        },
+        {
+          "type": "markdown",
+          "content": "You have successfully configured PostgreSQL monitoring with Grafana Alloy."
         }
       ]
     }
