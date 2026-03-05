@@ -12,20 +12,36 @@
       "content": "To prepare your MongoDB connection configuration, complete the following steps:"
     },
     {
-      "type": "markdown",
-      "content": "Connect to your MongoDB instance and create a user with read-only permissions.\n\nThe following script creates a dedicated MongoDB user for monitoring.\n\n```javascript\nuse admin\ndb.createUser({\n  user: \"grafana_monitoring\",\n  pwd: \"secure_password_here\", \n  roles: [\n    { role: \"read\", db: \"admin\" },\n    { role: \"clusterMonitor\", db: \"admin\" },\n    { role: \"read\", db: \"local\" }\n  ]\n})\n```"
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Connect to your MongoDB instance and create a user with read-only permissions.\n\nThe following script creates a dedicated MongoDB user for monitoring.\n\n```javascript\nuse admin\ndb.createUser({\n  user: \"grafana_monitoring\",\n  pwd: \"secure_password_here\", \n  roles: [\n    { role: \"read\", db: \"admin\" },\n    { role: \"clusterMonitor\", db: \"admin\" },\n    { role: \"read\", db: \"local\" }\n  ]\n})\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open the Grafana Alloy configuration file and replace the placeholders with your specific values.\n\nThis defines the MongoDB connection URI.\n\n```alloy\nmongodb_uri = \"mongodb://grafana_monitoring:secure_password_here@mongodb.example.com:27017/admin\"\n```\n\nFor MongoDB cloud deployments, include additional parameters:\n\n```alloy\nmongodb_uri = \"mongodb+srv://grafana_monitoring:secure_password_here@cluster.example.mongodb.net/admin?retryWrites=true\"\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Configure the service and cluster labels by updating the label values in the Grafana Alloy configuration file.\n\n```alloy\nrule {\n    target_label = \"service_name\"\n    replacement  = \"mongodb-production\"\n}\n\nrule {\n    target_label = \"mongodb_cluster\"  \n    replacement  = \"main-cluster\"\n}\n\nrule {\n    target_label = \"instance\"\n    replacement  = \"mongodb-prod-01\"\n}\n```"
+        }
+      ]
     },
     {
       "type": "markdown",
-      "content": "Open the Grafana Alloy configuration file and replace the placeholders with your specific values.\n\nThis defines the MongoDB connection URI.\n\n```alloy\nmongodb_uri = \"mongodb://grafana_monitoring:secure_password_here@mongodb.example.com:27017/admin\"\n```\n\nFor MongoDB cloud deployments, include additional parameters:\n\n```alloy\nmongodb_uri = \"mongodb+srv://grafana_monitoring:secure_password_here@cluster.example.mongodb.net/admin?retryWrites=true\"\n```"
+      "content": "In your next milestone, you'll test the connection and verify metrics collection."
     },
     {
       "type": "markdown",
-      "content": "Configure the service and cluster labels by updating the label values in the Grafana Alloy configuration file.\n\n```alloy\nrule {\n    target_label = \"service_name\"\n    replacement  = \"mongodb-production\"\n}\n\nrule {\n    target_label = \"mongodb_cluster\"  \n    replacement  = \"main-cluster\"\n}\n\nrule {\n    target_label = \"instance\"\n    replacement  = \"mongodb-prod-01\"\n}\n```\n\nIn your next milestone, you'll test the connection and verify metrics collection."
+      "content": "---"
     },
     {
       "type": "markdown",
-      "content": "## More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [MongoDB connection string format](/docs/grafana-cloud/send-data/metrics/)"
+      "content": "### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [MongoDB connection string format](/docs/grafana-cloud/send-data/metrics/)"
     }
   ]
 }
