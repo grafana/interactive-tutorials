@@ -22,8 +22,8 @@
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "Add new connection",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(h3:contains('Add new connection'))",
           "content": "Click **Add new connection**.",
           "requirements": [
             "on-page:/connections"
@@ -32,7 +32,7 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[placeholder*='Search']",
+          "reftarget": "input[data-testid='search-input-input']",
           "content": "Search for **PostgreSQL**.",
           "targetvalue": "PostgreSQL",
           "requirements": [
@@ -54,9 +54,6 @@
       "type": "section",
       "id": "configure-environment",
       "title": "Configure Your Environment",
-      "requirements": [
-        "section-completed:navigate-to-connections"
-      ],
       "blocks": [
         {
           "type": "markdown",
@@ -65,22 +62,23 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='os-selector'], [role='radiogroup']:has(label:contains('Linux'))",
+          "reftarget": "div[data-testid='collector-os-selection'] input",
           "content": "Select your operating system.",
-          "doIt": false,
           "requirements": [
-            "on-page:/connections/add-new-connection/postgres"
-          ]
+            "exists-reftarget"
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='arch-selector'], [role='radiogroup']:has(label:contains('amd64'))",
+          "reftarget": "div[data-testid='collector-arch-selection'] input",
           "content": "Select your architecture.",
-          "doIt": false,
           "requirements": [
-            "on-page:/connections/add-new-connection/postgres"
-          ]
+            "on-page:/connections/add-new-connection/postgres",
+            "exists-reftarget"
+          ],
+          "doIt": false
         }
       ]
     },
@@ -88,58 +86,41 @@
       "type": "section",
       "id": "install-alloy",
       "title": "Install Grafana Alloy",
-      "requirements": [
-        "section-completed:configure-environment"
-      ],
       "blocks": [
         {
           "type": "markdown",
-          "content": "Follow these steps to install and configure Grafana Alloy for collecting PostgreSQL metrics."
-        },
-        {
-          "type": "multistep",
-          "content": "Generate an API token for Alloy.",
-          "requirements": [
-            "on-page:/connections/add-new-connection/postgres"
-          ],
-          "steps": [
-            {
-              "action": "button",
-              "reftarget": "Run Grafana Alloy"
-            },
-            {
-              "action": "formfill",
-              "reftarget": "input[data-testid='generate-token-name-input']",
-              "targetvalue": "testing-token-alloy"
-            },
-            {
-              "action": "button",
-              "reftarget": "Create token"
-            }
-          ]
+          "content": "Install Grafana Alloy to collect PostgreSQL metrics and forward them to Grafana Cloud."
         },
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "Copy the installation commands shown on screen and run them in your terminal to install Grafana Alloy."
+          "action": "highlight",
+          "reftarget": "button[data-testid='agent-config-button']",
+          "requirements": ["exists-reftarget"],
+          "content": "In the **Install Alloy** section, click **Run Grafana Alloy**."
         },
         {
-          "type": "multistep",
-          "content": "Test the Alloy connection and proceed.",
-          "requirements": [
-            "on-page:/connections/add-new-connection/postgres"
-          ],
-          "steps": [
-            {
-              "action": "button",
-              "reftarget": "Test Alloy connection"
-            },
-            {
-              "action": "button",
-              "reftarget": "Proceed to install integration"
-            }
-          ],
-          "verify": "on-page:/connections"
+          "type": "markdown",
+          "content": "Perform one of the following:\n\n| If you want to | Then |\n| --- | --- |\n| Create a new token | Click **Create new token**, enter a meaningful token name (e.g., `postgres-alloy`), then click **Create token**. |\n| Use an existing token | Click **Use an existing token** and enter a token you have created in the past. |"
+        },
+        {
+          "type": "markdown",
+          "content": "Verify that the **Enable Remote Configuration** toggle is set to on."
+        },
+        {
+          "type": "markdown",
+          "content": "In the **Install and run Grafana Alloy** section, click **Copy to Clipboard**."
+        },
+        {
+          "type": "markdown",
+          "content": "Log into the machine where you are installing Grafana Alloy, open the Terminal, and paste the contents of the clipboard. Press **Enter** to install Grafana Alloy.\n\nWhen the installation is complete, you'll see `Alloy is now running!`"
+        },
+        {
+          "type": "markdown",
+          "content": "To verify that Grafana Alloy is installed correctly, click **Test Alloy connection**.\n\nIf Grafana Alloy is installed correctly, you'll see `Awesome! Grafana Alloy is good to go`."
+        },
+        {
+          "type": "markdown",
+          "content": "If Alloy is successfully installed, click **Proceed to install integration**."
         }
       ]
     },
@@ -147,41 +128,59 @@
       "type": "section",
       "id": "configure-alloy",
       "title": "Configure Grafana Alloy",
-      "requirements": [
-        "section-completed:install-alloy"
-      ],
       "blocks": [
         {
           "type": "markdown",
-          "content": "Copy the configuration snippets and restart Alloy to complete the setup."
+          "content": "Configure Grafana Alloy to collect PostgreSQL metrics and send them to Grafana Cloud.\n\nTo configure Alloy for PostgreSQL monitoring:"
+        },
+        {
+          "type": "markdown",
+          "content": "Review the **Check prerequisites specific to the PostgreSQL integration** section and verify your PostgreSQL instance meets the requirements."
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll to the **Set up Grafana Alloy to use the PostgreSQL integration** section and click **Copy to clipboard**."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='alloy-simple-block']+button, button:contains('Copy')",
-          "content": "Copy the Grafana Alloy configuration snippet and append it to your Alloy configuration file.",
+          "reftarget": "div[data-testid='alloy-simple-block']+button",
+          "content": "Click **Copy to clipboard**.",
           "lazyRender": true
         },
         {
-          "type": "multistep",
-          "content": "Restart Grafana Alloy and test the connection.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='restart-command']+button, button:contains('Copy'):nth-match(2)",
-              "lazyRender": true
-            },
-            {
-              "action": "button",
-              "reftarget": "Test connection",
-              "lazyRender": true
-            }
-          ],
-          "verify": "has-datasource:postgres"
+          "type": "markdown",
+          "content": "Open the Grafana Alloy configuration file on your system, paste the configuration snippet, and save the file."
         },
         {
           "type": "markdown",
-          "content": "You have successfully configured PostgreSQL monitoring with Grafana Alloy."
+          "content": "Scroll down to the **Restart Grafana Alloy** section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='restart-command']+button",
+          "content": "Click **Copy to clipboard** to copy the restart command.",
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Run the restart command on your Alloy machine."
+        },
+        {
+          "type": "markdown",
+          "content": "After restarting Alloy, test the connection."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='test-connection-button']",
+          "content": "Click **Test connection** to verify the PostgreSQL integration.",
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "If successful, you'll see a confirmation message. You have successfully configured PostgreSQL monitoring with Grafana Alloy."
         }
       ]
     }
