@@ -1,10 +1,11 @@
+
 {
   "id": "how-to-setup-secrets-tutorial",
   "title": "How To Setup Secrets Management",
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this interactive guide we will walk you through how to use secrets management in Grafana Cloud Synthetic Monitoring. You'll learn how to:\n\n- Navigate to secrets configuration\n- Create and manage secrets\n- Use secrets in your synthetic monitoring checks\n\n### **Why Use Secrets Management?**\n\nSecrets management provides a secure, centralized way to handle sensitive data in your tests. With secrets management, you can:\n\n- **Protect credentials** – Safely store API keys, passwords, and tokens\n- **Prevent exposure** – Automatically redact secret values in logs and outputs\n- **Centrally manage** – Update credentials without modifying test scripts\n\n"
+      "content": "In this interactive guide we will walk you through how to use secrets management in Grafana Cloud Synthetic Monitoring. You'll learn how to:\n\n- Navigate to secrets configuration\n- Create and manage secrets\n- Use secrets in your synthetic monitoring checks\n\n### **Why Use Secrets Management?**\n\nSecrets management provides a secure, centralized way to handle sensitive data in your tests. With secrets management, you can:\n\n- **Protect credentials** – Safely store API keys, passwords, and tokens\n- **Prevent exposure** – Automatically redact secret values in logs and outputs\n- **Centrally manage** – Update credentials without modifying test scripts"
     },
     {
       "type": "section",
@@ -23,7 +24,8 @@
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -33,7 +35,8 @@
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -54,7 +57,8 @@
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
-          ]
+          ],
+          "skippable": true
         }
       ]
     },
@@ -93,7 +97,8 @@
               "action": "highlight",
               "reftarget": "button:contains('Save')"
             }
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "multistep",
@@ -122,7 +127,8 @@
               "action": "highlight",
               "reftarget": "button:contains('Save')"
             }
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "markdown",
@@ -134,9 +140,6 @@
       "type": "section",
       "id": "performace-multistep-guided",
       "title": "Create A Check With A Synthetic Monitoring Secret",
-      "requirements": [
-        "navmenu-open"
-      ],
       "blocks": [
         {
           "type": "interactive",
@@ -146,7 +149,8 @@
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -155,7 +159,8 @@
           "content": "Select Create A Check\n---\nLet's start building a check that uses your secrets.",
           "requirements": [
             "exists-reftarget"
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -164,7 +169,8 @@
           "content": "Create Browser Check\n---\nChoose Browser as the check type. This type of check supports secrets management.",
           "requirements": [
             "exists-reftarget"
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "multistep",
@@ -180,14 +186,18 @@
               "reftarget": "input[data-testid='checkEditor form instance']",
               "targetvalue": "https://quickpizza.grafana.com/admin"
             }
-          ]
+          ],
+          "skippable": true
         },
         {
-          "type": "interactive",
-          "action": "formfill",
+          "type": "markdown",
+          "content": "In the script editor  \n---\n\nImport the secrets module at the top:\n\n`import secrets from 'k6/secrets';`\n\nReference your secrets in the script:\n\n`const username = secrets.get('QuickPizza Username');`\n\n`const password = secrets.get('QuickPizza Password');`\n\n(Optional) Add a log to see how secrets are redacted:\n\n`console.log('Trying to log secret: ${username}');`\n\nNote: the example script already includes secret placeholders as comments. Uncomment these lines to use them."
+        },
+        {
+          "type": "code-block",
           "reftarget": "div[data-testid='data-testid Code editor container']",
-          "content": "In the script editor:\n\nImport the secrets module at the top:\n\n`import secrets from 'k6/secrets';`\n\nReference your secrets in the script:\n\n`const username = secrets.get('QuickPizza Username');`\n`const password = secrets.get('QuickPizza Password');`\n\n(Optional) Add a log to see how secrets are redacted:\n\n`console.log('Trying to log secret: ${username}');`\n\nNote: the example script already includes secret placeholders as comments. Uncomment these lines to use them.",
-          "targetvalue": "@@CLEAR@@"
+          "language": "javascript",
+          "code": "import { browser } from \"k6/browser\";\nimport { expect } from \"https://jslib.k6.io/k6-testing/0.5.0/index.js\";\nimport { check } from 'https://jslib.k6.io/k6-utils/1.5.0/index.js';\nimport secrets from 'k6/secrets';\n\n// ------------------------------------------------------------//\n//   Record your browser script using Grafana k6 Studio!       //\n//   Visit https://grafana.com/docs/k6-studio/set-up/install/  //\n// ------------------------------------------------------------//\n\nexport const options = {\n  scenarios: {\n    default: {\n      executor: \"shared-iterations\",\n      options: { browser: { type: \"chromium\" } },\n    },\n  },\n};\n\n// This example logs into quickpizza.grafana.com\nexport default async function () {\n  const context = await browser.newContext();\n  const page = await context.newPage();\n  try {\n    await page.goto('https://quickpizza.grafana.com/admin', { waitUntil: 'networkidle' });\n\n    // TIP: Secure your credentials using secrets.get()\n    // https://grafana.com/docs/grafana-cloud/testing/synthetic-monitoring/create-checks/manage-secrets/\n    const username = await secrets.get('quickpizza-username');\n    const password = await secrets.get('quickpizza-password');\n\n    await page.getByRole('textbox', { name: 'Username' }).fill(username);\n    await page.getByRole('textbox', { name: 'Password' }).fill(password);\n\n    const signIn = page.getByRole('button', { name: 'Sign in' });\n    await signIn.click();\n    await expect(signIn).toBeHidden();\n\n    const heading = page.getByRole('heading');\n    await expect(heading).toBeVisible();\n    console.log('H2 header: ', await heading.textContent()); // will appear as logs in Loki\n\n    // TIP: Use expect() to immediately abort execution and fail a test (impacts uptime/reachability)\n    await expect(heading).toContainText(\"Latest pizza recommendations\");\n\n    // TIP: Use check() to report test results in the 'assertions' dashboard panel\n    // Scripts continue to run even if a check fails. Failed checks don't impact uptime and reachability\n    await check(heading, {\n      [\"Header is present\"]: async (h) => (await h.textContent()) == \"Latest pizza recommendations\"\n    });\n\n  } catch (e) {\n    console.log('Error during execution:', e);\n    throw e;\n  } finally {\n    await page.close();\n  }\n}"
         },
         {
           "type": "multistep",
@@ -209,7 +219,8 @@
               "action": "highlight",
               "reftarget": "button[data-testid='checkEditor form submit']"
             }
-          ]
+          ],
+          "skippable": true
         }
       ]
     },
