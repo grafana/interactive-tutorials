@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "kafka-monitoring-understand-alerts",
+  "title": "About Kafka integration pre-built alerts",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The Kafka integration provides a variety of pre-built alerts that you can use right away to begin troubleshooting issues. In this milestone, you'll become familiar with these pre-built alerts and learn how to use them to address various problems."
+    },
+    {
+      "type": "markdown",
+      "content": "> **Did you know?** If your Kafka cluster is functioning properly, you won't receive any alerts. No news is good news!"
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaOfflinePartitionCount**\n\n**Description:** Kafka has offline partitions.\n\n**What this means:** One or more partitions are offline, meaning they have no active leader and cannot be read from or written to. This indicates a critical issue affecting data availability.\n\n**What to do:** Check broker health and logs to identify why partitions went offline. Verify that the cluster has sufficient healthy brokers and that replication is functioning properly."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaUnderReplicatedPartitions**\n\n**Description:** Kafka has under-replicated partitions.\n\n**What this means:** Some partitions don't have the configured number of in-sync replicas, meaning data durability is at risk. If the leader broker fails, data loss could occur.\n\n**What to do:** Investigate broker performance and network connectivity. Check if any brokers are down or experiencing high load that prevents replication from keeping up."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaActiveController**\n\n**Description:** No active Kafka controller detected or multiple controllers detected.\n\n**What this means:** The cluster either has no active controller (preventing partition leadership changes) or has split-brain with multiple controllers, both of which are critical issues.\n\n**What to do:** Check ZooKeeper connectivity and health. Examine broker logs for controller election issues. Ensure network connectivity between brokers and ZooKeeper is stable."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaUncleanLeaderElection**\n\n**Description:** Unclean leader elections are occurring.\n\n**What this means:** Kafka is electing partition leaders from brokers that were not in-sync, which can result in message loss. This indicates the cluster is prioritizing availability over data consistency.\n\n**What to do:** Investigate why in-sync replicas are unavailable. Review broker health and replication lag. Consider adjusting replication factors or `min.insync.replicas` settings."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaISRExpandRate**\n\n**Description:** In-Sync Replica (ISR) expansion rate is high.\n\n**What this means:** Replicas are frequently joining the ISR set, which may indicate intermittent broker or network issues causing replicas to fall behind and then catch up.\n\n**What to do:** Monitor broker performance and network stability. Check for broker restarts or network partitions. Review replication lag metrics to identify problematic brokers."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaISRShrinkRate**\n\n**Description:** In-Sync Replica (ISR) shrink rate is high.\n\n**What this means:** Replicas are frequently being removed from the ISR set because they're falling behind the leader, indicating replication performance issues.\n\n**What to do:** Investigate broker resource utilization (CPU, disk I/O, network). Check for slow disks or network issues. Review replication lag and broker logs for errors."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaBrokerCount**\n\n**Description:** Kafka broker count has changed.\n\n**What this means:** The number of active brokers in the cluster has decreased, which may indicate broker failures or planned maintenance.\n\n**What to do:** Verify if the broker loss was intentional. If unplanned, investigate why brokers went offline and restore them to maintain cluster capacity and fault tolerance."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaZookeeperSyncConnect**\n\n**Description:** ZooKeeper sync connection issues detected.\n\n**What this means:** Kafka brokers are experiencing problems maintaining connections to ZooKeeper, which can affect cluster metadata operations and coordination.\n\n**What to do:** Check ZooKeeper cluster health and network connectivity between Kafka brokers and ZooKeeper nodes. Review ZooKeeper logs for errors."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaLagIsTooHigh**\n\n**Description:** Consumer lag is too high.\n\n**What this means:** Consumer groups are falling significantly behind in processing messages, indicating consumers can't keep up with the message production rate.\n\n**What to do:** Scale up consumer instances, optimize consumer processing logic, or investigate performance bottlenecks in consumer applications."
+    },
+    {
+      "type": "markdown",
+      "content": "**KafkaLagKeepsIncreasing**\n\n**Description:** Consumer lag keeps increasing.\n\n**What this means:** Consumer lag is continuously growing over time, indicating a persistent problem where consumers cannot keep pace with producers.\n\n**What to do:** Urgently investigate consumer performance issues. Consider increasing consumer parallelism, optimizing consumer code, or adjusting partition assignments."
+    },
+    {
+      "type": "markdown",
+      "content": "**JvmMemoryFillingUp**\n\n**Description:** JVM memory filling up for Kafka broker.\n\n**What this means:** Kafka broker JVM heap memory usage is high and trending upward, which may indicate a memory leak or insufficient heap size configuration.\n\n**What to do:** Monitor for garbage collection issues. Consider increasing JVM heap size if appropriate, or investigate potential memory leaks in custom components or configurations."
+    },
+    {
+      "type": "markdown",
+      "content": "**JvmThreadsDeadlocked**\n\n**Description:** JVM threads are deadlocked in Kafka broker.\n\n**What this means:** The Kafka broker JVM has detected threads that are stuck in a deadlock, which can cause the broker to become unresponsive.\n\n**What to do:** Collect thread dumps and analyze for deadlock situations. This typically requires restarting the affected broker and may indicate a bug that needs investigation."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you explore the Kafka metrics displayed in your dashboards."
+    }
+  ]
+}
