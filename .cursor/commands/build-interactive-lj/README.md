@@ -2,6 +2,8 @@
 
 This command automates the creation of interactive content (`content.json` files) for learning paths in Grafana Pathfinder.
 
+> **Creating a brand-new learning path?** Use `/create-learning-path` instead. It skips the markdown step entirely and lets you author enriched JSON directly. This command (`/build-interactive-lj`) is for adding interactivity to an *existing* markdown learning path.
+
 ---
 
 ## Overview
