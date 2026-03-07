@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "kafka-monitoring-install-grafana-alloy",
+  "title": "Install Grafana Alloy",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The Grafana Alloy installation process varies by operating system, and you can access the installation commands directly from Grafana Cloud. These commands are pre-configured with your stack-specific connection details, making the setup process straightforward."
+    },
+    {
+      "type": "markdown",
+      "content": "Alloy should be installed on a machine with network access to your Kafka brokers' JMX ports (typically port 9999 or as configured). This can be on one of the Kafka broker machines themselves, or on a dedicated monitoring host with network connectivity to all brokers in your cluster."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Navigate to **Connections > Add new connection**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']" }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the search box, type **Kafka** to find the Kafka integration."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/add-new-connection/kafka']",
+          "content": "Select the **Kafka** integration tile."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Under **Select platform**, choose your operating system and architecture."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='agent-config-button']",
+          "content": "Click **Run Grafana Alloy**. This opens a dialog to generate your Alloy installation command, which may include creating an API token."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Complete the dialog steps, then copy the generated installation command."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "**On the machine where Alloy is installed**, open the Alloy configuration file:\n\n- **Linux:** `/etc/alloy/config.alloy`\n- **macOS (Homebrew):** `/opt/homebrew/etc/alloy/config.alloy`\n- **Windows:** `C:\\Program Files\\GrafanaLabs\\Alloy\\config.alloy`\n- **Docker:** Depends on your volume mount configuration\n\nFor more information, refer to [Grafana Alloy configuration file locations](/docs/alloy/latest/configure/)."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "On the machine where you want to collect Kafka metrics, open a terminal with administrator or root privileges, paste and run the installation command, then wait for the installation to complete."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "The installation completes successfully and displays a confirmation message. The Alloy service starts automatically and runs in the background."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you configure the JMX exporter to expose Kafka broker metrics."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [What is Grafana Alloy?](/oss/alloy-opentelemetry-collector)\n- [Grafana Alloy configuration syntax and examples](/docs/alloy/latest/reference/config-blocks/)"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Common errors when executing Alloy installation script](/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#common-errors-when-executing-alloy-installation-script)\n- [Alloy is installed, but data doesn't appear in Grafana Cloud](/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#alloy-is-installed-but-data-doesnt-appear-in-grafana-cloud)"
+    }
+  ]
+}
