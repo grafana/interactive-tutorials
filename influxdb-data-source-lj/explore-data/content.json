@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "2.0.0",
+  "id": "influxdb-data-source-explore-data",
+  "title": "Explore InfluxDB data in Grafana",
+  "website": {
+    "menuTitle": "Explore data",
+    "description": "Run a sample Flux query in Grafana Explore to verify your InfluxDB data is accessible.",
+    "weight": 600,
+    "step": 7,
+    "keywords": ["InfluxDB", "Flux", "query", "Explore", "Grafana"],
+    "cta": { "type": "continue" },
+    "side_journeys": {
+      "title": "More to explore (optional)",
+      "heading": "At this point in your journey, you can explore the following paths:",
+      "items": [
+        { "title": "Flux language getting started", "link": "https://docs.influxdata.com/flux/latest/get-started/" },
+        { "title": "Grafana Explore", "link": "/docs/grafana/latest/explore/" },
+        { "title": "Building dashboards from Explore", "link": "/docs/grafana/latest/explore/add-to-dashboard/" }
+      ]
+    }
+  },
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you verify that your InfluxDB data source is working by running a Flux query in Grafana's Explore."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": ["navmenu-open"],
+          "content": "In the navigation menu, click **Explore**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "From the data source dropdown at the top-left, select your InfluxDB data source."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-rows']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "In the Flux query editor, enter a sample query to retrieve data from your bucket.\n\nFor example:\n\n```\nfrom(bucket: \"telegraf\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r._measurement == \"cpu\")\n  |> filter(fn: (r) => r._field == \"usage_idle\")\n  |> aggregateWindow(every: 1m, fn: mean)\n```\n\n**Tip:** Replace `telegraf` and the measurement/field names with values that match your data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Run query']",
+          "requirements": ["on-page:/explore"],
+          "content": "Click **Run query** to execute the Flux query.\n\nYou should see time series data displayed in the results panel. If you see results, your InfluxDB data source is working correctly."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Verify successful data access\n\nAfter running your query, you should see:\n\n- Time series data displayed as a graph or table\n- No connection errors or timeouts\n- Data that matches what you expect from your InfluxDB bucket\n- The ability to modify the query and run different Flux queries"
+    },
+    {
+      "type": "markdown",
+      "content": "**Congratulations!** You've successfully connected your InfluxDB instance to Grafana Cloud and verified that data is accessible."
+    }
+  ]
+}
