@@ -97,11 +97,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: pathfinder-app/package-lock.json
 
-      - name: Pathfinder repo: CLI tools dependencies
+      - name: Pathfinder repo CLI tools dependencies
         working-directory: pathfinder-app
         run: npm ci
 
-      - name: Pathfinder repo: CLI tools
+      - name: Pathfinder repo CLI tools
         working-directory: pathfinder-app
         run: npm run build:cli
 
@@ -154,7 +154,7 @@ jobs:
       - name: Validate packages before publish
         run: node pathfinder-app/dist/cli/cli/index.js validate --packages packages/
 
-      - name: Publish Pathfinder repo: Push packages to GCS
+      - name: 'Publish Pathfinder repo: Push packages to GCS'
         uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
         with:
           bucket: interactive-learning-${{ github.event.inputs.environment }}
