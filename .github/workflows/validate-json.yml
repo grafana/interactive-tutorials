@@ -49,8 +49,8 @@ jobs:
           exit 1
         fi
 
-  validate-guides:
-    name: Validate Interactive Guides (content.json)
+  validate-packages:
+    name: Validate Interactive Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -88,7 +88,7 @@ jobs:
     # NOTE: this validates _only directories with content.json_
     # Post-migration, if all directories are enforced to have manifest.json, this
     # job can be removed as redundant to the other validate-packages job.
-    - name: Validate guides (content.json per-file)
+    - name: Validate content.json
       run: |
         echo "🔍 Finding and validating content.json files..."
         echo ""
@@ -176,7 +176,7 @@ jobs:
             continue
           fi
 
-          echo "::warning file=${manifest_file}::targeting missing — this package has no contextual recommendation rules and will never be recommended"
+          echo "::warning file=${manifest_file#./}::targeting missing — this package has no contextual recommendation rules and will never be recommended"
           MISSING=$((MISSING + 1))
         done < <(find . -name "manifest.json" -type f \
                    -not -path "./pathfinder-app/*" \
