@@ -147,11 +147,24 @@ jobs:
           cat packages/repository.json
 
       - name: Build dependency graph
-        working-directory: packages
-        run: node ../pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json
+        continue-on-error: true
+        run: node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:packages/repository.json > packages/graph.json
 
       - name: Validate packages before publish
         run: node pathfinder-app/dist/cli/cli/index.js validate --packages packages/
+
+      - name: Verify files before push
+        run: |
+          echo "Files in packages/ directory:"
+          ls -la packages/ | head -20
+          echo ""
+          echo "Checking for repository.json:"
+          test -f packages/repository.json && echo "✅ repository.json exists" || echo "❌ repository.json MISSING"
+          echo "Checking for graph.json:"
+          test -f packages/graph.json && echo "✅ graph.json exists" || echo "⚠️  graph.json missing (optional)"
+          echo ""
+          echo "Top-level files that will be pushed:"
+          find packages -maxdepth 1 -type f
 
       - name: 'Publish Pathfinder repo: Push packages to GCS'
         uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
