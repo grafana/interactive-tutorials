@@ -77,3 +77,90 @@ jobs:
           # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
           environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
+
+      # ── Pathfinder package deploy ─────────────────────────────────────────────
+      # Builds repository.json from all migrated packages and publishes the full
+      # package tree to bucket/packages/. The guides/ deploy above is unchanged.
+
+      - name: Checkout pathfinder-app CLI
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          repository: grafana/grafana-pathfinder-app
+          ref: main
+          path: pathfinder-app
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: pathfinder-app/package-lock.json
+
+      - name: Pathfinder repo: CLI tools dependencies
+        working-directory: pathfinder-app
+        run: npm ci
+
+      - name: Pathfinder repo: CLI tools
+        working-directory: pathfinder-app
+        run: npm run build:cli
+
+      - name: Build Pathfinder Repo
+        run: |
+          mkdir -p packages
+
+          # Full recursive copy of every guide directory into packages/.
+          # Excluded dirs must not appear on the CDN:
+          #   pathfinder-app  — CLI checkout; large, not a guide package
+          #   .github         — CI/CD config
+          #   docs            — internal documentation
+          #   .cursor         — editor config
+          #   shared          — served separately under guides/
+          #   guides          — legacy staging dir created earlier in this job
+          #   packages        — the staging dir we are building right now
+          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages"
+
+          for dir in */; do
+            dir="${dir%/}"
+            skip=false
+            for excl in $EXCLUDE; do
+              if [[ "$dir" == "$excl" ]]; then
+                skip=true
+                break
+              fi
+            done
+            if [[ "$skip" == "false" ]]; then
+              cp -r "$dir" packages/
+            fi
+          done
+
+          # Build repository.json co-located inside packages/ so that "path"
+          # entries (e.g. "alerting-101/") resolve as siblings of repository.json
+          # on the CDN. No --exclude flag needed here: pathfinder-app/ was never
+          # copied into packages/.
+          node pathfinder-app/dist/cli/cli/index.js build-repository packages/ -o packages/repository.json
+
+          echo "Guide directories staged under packages/:"
+          find packages -maxdepth 1 -mindepth 1 -type d | sort
+          echo ""
+          echo "repository.json:"
+          cat packages/repository.json
+
+      - name: Build dependency graph
+        continue-on-error: true
+        working-directory: packages
+        run: node ../pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json
+
+      - name: Validate packages before publish
+        run: node pathfinder-app/dist/cli/cli/index.js validate --packages packages/
+
+      - name: Publish Pathfinder repo: Push packages to GCS
+        uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
+        with:
+          bucket: interactive-learning-${{ github.event.inputs.environment }}
+          # path: packages with default parent: true causes files to land at
+          # bucket/packages/... — same pattern as path: guides → bucket/guides/...
+          path: packages
+          # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
+          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
+          service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
