@@ -147,9 +147,8 @@ jobs:
           cat packages/repository.json
 
       - name: Build dependency graph
-        working-directory: packages
         continue-on-error: true
-        run: node ../pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json > graph.json
+        run: node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:packages/repository.json > packages/graph.json
 
       - name: Validate packages before publish
         run: node pathfinder-app/dist/cli/cli/index.js validate --packages packages/
