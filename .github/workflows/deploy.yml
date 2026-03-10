@@ -1,8 +1,11 @@
 name: Deploy to CDN
 
-run-name: Deploy ${{ inputs.branch }} to ${{ inputs.environment }} by @${{ github.actor }}
+run-name: ${{ github.event_name == 'push' && format('Deploy main to prod by @{0}', github.actor) || format('Deploy {0} to {1} by @{2}', inputs.branch, inputs.environment, github.actor) }}
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       branch:
@@ -21,6 +24,9 @@ permissions:
   contents: read
   id-token: write
 
+env:
+  DEPLOY_ENV: ${{ github.event_name == 'push' && 'prod' || github.event.inputs.environment }}
+
 jobs:
   deploy:
     name: Deploy to GCS
@@ -29,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ github.event_name == 'push' && github.ref || github.event.inputs.branch }}
           persist-credentials: false
 
       - name: Login to GCS
@@ -37,7 +43,7 @@ jobs:
         id: login-to-gcs
         with:
           # login-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
-          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
 
       - name: Prepare tutorial files
         run: |
@@ -72,10 +78,10 @@ jobs:
       - name: Push files to GCS
         uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
         with:
-          bucket: interactive-learning-${{ github.event.inputs.environment }}
+          bucket: interactive-learning-${{ env.DEPLOY_ENV }}
           path: guides
           # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
-          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
 
       # ── Pathfinder package deploy ─────────────────────────────────────────────
@@ -169,10 +175,10 @@ jobs:
       - name: 'Publish Pathfinder repo: Push packages to GCS'
         uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
         with:
-          bucket: interactive-learning-${{ github.event.inputs.environment }}
+          bucket: interactive-learning-${{ env.DEPLOY_ENV }}
           # path: packages with default parent: true causes files to land at
           # bucket/packages/... — same pattern as path: guides → bucket/guides/...
           path: packages
           # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
-          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
