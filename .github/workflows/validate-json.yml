@@ -49,8 +49,8 @@ jobs:
           exit 1
         fi
 
-  validate-guides:
-    name: Validate Interactive Guides (content.json)
+  validate-packages:
+    name: Validate Interactive Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -85,7 +85,10 @@ jobs:
       working-directory: pathfinder-app
       run: npm run build:cli
 
-    - name: Validate guides
+    # NOTE: this validates _only directories with content.json_
+    # Post-migration, if all directories are enforced to have manifest.json, this
+    # job can be removed as redundant to the other validate-packages job.
+    - name: Validate content.json
       run: |
         echo "🔍 Finding and validating content.json files..."
         echo ""
@@ -121,3 +124,104 @@ jobs:
           echo ""
           echo "🎉 All $PASSED guide(s) validated successfully!"
         fi
+
+    # Warns when a guide directory has content.json but no manifest.json (not yet migrated
+    # to the package format). Each missing file emits a ::warning:: annotation visible in
+    # the PR diff and Annotations panel — the build does not fail.
+    # TO ENFORCE: uncomment the `exit 1` line below once migration is complete.
+    - name: Check for missing manifest.json (warning)
+      run: |
+        MISSING=0
+
+        while IFS= read -r content_file; do
+          dir="$(dirname "$content_file")"
+          if [ ! -f "$dir/manifest.json" ]; then
+            echo "::warning file=${content_file}::manifest.json missing — this guide has not been migrated to the package format"
+            MISSING=$((MISSING + 1))
+          fi
+        done < <(find . -name "content.json" -type f \
+                   -not -path "./pathfinder-app/*" \
+                   -not -path "./.git/*")
+
+        echo ""
+        if [ "$MISSING" -gt 0 ]; then
+          echo "⚠️  $MISSING guide(s) are missing manifest.json (migration incomplete)"
+          # TO ENFORCE: uncomment the following line when migration is complete
+          # exit 1
+        else
+          echo "✅ All guides have manifest.json"
+        fi
+
+    # Warns when a manifest.json with type "guide" (at the repo root level, not inside an
+    # *-lj directory) or type "path" is missing a "targeting" field. Without targeting the
+    # package cannot be contextually recommended. LJ step guides intentionally omit targeting
+    # (targeting lives at the path level), so they are excluded from this check.
+    # Each missing field emits a ::warning:: annotation visible in the PR Annotations panel.
+    # TO ENFORCE: uncomment the `exit 1` line below once all packages have been reviewed.
+    - name: Check for missing targeting in manifest.json (warning)
+      run: |
+        MISSING=0
+
+        while IFS= read -r manifest_file; do
+          dir="$(dirname "$manifest_file")"
+          parent="$(dirname "$dir")"
+
+          # Skip if targeting is already present
+          if jq -e 'has("targeting")' "$manifest_file" > /dev/null 2>&1; then
+            continue
+          fi
+
+          # LJ step guides: parent directory ends in -lj — targeting lives at path level, skip
+          if echo "$parent" | grep -qE '\-lj$'; then
+            continue
+          fi
+
+          echo "::warning file=${manifest_file#./}::${manifest_file#./}: targeting missing — this package has no contextual recommendation rules and will never be recommended"
+          MISSING=$((MISSING + 1))
+        done < <(find . -name "manifest.json" -type f \
+                   -not -path "./pathfinder-app/*" \
+                   -not -path "./.git/*")
+
+        echo ""
+        if [ "$MISSING" -gt 0 ]; then
+          echo "⚠️  $MISSING package(s) are missing targeting in manifest.json"
+          # TO ENFORCE: uncomment the following line once all packages have been reviewed
+          # exit 1
+        else
+          echo "✅ All packages have targeting defined"
+        fi
+
+    # NOTE: this validates _only directories with manifest.json_
+    - name: Validate Pathfinder Packages
+      run: |
+        echo "🔍 Validating all package directories (those with manifest.json)..."
+        echo ""
+        # --exclude pathfinder-app: the CLI is checked out into the workspace root so the
+        # scanner would otherwise discover its bundled guides and report duplicates.
+        node pathfinder-app/dist/cli/cli/index.js validate --packages .
+
+    - name: Build repository.json
+      run: |
+        echo "🔨 Generating repository.json from all packages..."
+        echo ""
+        # --exclude pathfinder-app: prevents the scanner from indexing bundled guides that
+        # ship inside the pathfinder-app checkout at ./pathfinder-app/.
+        node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app -o repository.json
+        echo ""
+        echo "📦 repository.json generated successfully"
+
+    - name: Build dependency graph
+      continue-on-error: true
+      run: |
+        echo "🔗 Building dependency graph..."
+        echo ""
+        node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json
+
+    - name: Upload repository.json and graph.json artifacts
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      with:
+        name: repository-and-graph-json
+        path: |
+          repository.json
+          graph.json
+        retention-days: 30
