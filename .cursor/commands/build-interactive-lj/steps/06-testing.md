@@ -142,7 +142,7 @@ Before loading any JSON, check the milestone's content.json:
 2. If no interactive steps, **skip to next milestone** and inform user
 3. **Tell the user which file to import:**
    - Provide the full path to the content.json file
-   - Example: "Please import `mongodb-integration-lj/select-platform/content.json` into the Block Editor"
+   - Example: "Open `mongodb-integration-lj/select-platform/content.json`, copy the contents of the file, and paste it into the Block Editor"
 4. **STOP. WAIT. Do nothing until the user responds.**
 5. If user reports "this doesn't work": help fix the selector in the content.json file
 6. After user confirms milestone passes, move on to the next milestone
