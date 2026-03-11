@@ -130,7 +130,10 @@ If this guide directory is a direct child of a `*-lj` directory, look up the par
 Apply these rules in order:
 
 **IF match expression exists (and is not empty):**
-- **IF** `match` contains `source` at any depth (any host, including `play.grafana.org`) → `{ "tier": "cloud", "instance": "<source value>" }`
+- **IF** `match` contains `source` at any depth → evaluate the source value:
+  - **If the source value is a regex matching all `*.grafana.net` hosts** (e.g., `".*\\.grafana\\.net"`) → `{ "tier": "cloud" }` — this means "any Grafana Cloud instance", so no specific `instance` is set
+  - **If the source value is a concrete hostname** (e.g., `"play.grafana.org"`) → `{ "tier": "cloud", "instance": "<source value>" }`
+  - **If the source value is any other regex or pattern** → `{ "tier": "cloud" }` and flag for manual review — do not copy a regex into `instance`
 - **ELSE IF** `match` contains `"targetPlatform": "cloud"` → `{ "tier": "cloud" }`
 - **ELSE** → `{ "tier": "local" }`
 
