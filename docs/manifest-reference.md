@@ -123,19 +123,25 @@ Describes where CI or manual testing should run.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `tier` | `"local"` \| `"cloud"` \| `"play"` | Environment tier. |
-| `instance` | `string` | Specific instance URL (e.g., `"play.grafana.org"`). Only when `tier` is not `"local"`. |
+| `tier` | `"local"` \| `"cloud"` \| `"managed"` | Environment tier. `"play"` is **not** a valid tier — play.grafana.org is a cloud instance, so use `"cloud"` with `instance: "play.grafana.org"`. |
+| `instance` | `string` | Specific instance hostname (e.g., `"play.grafana.org"`). Only when `tier` is `"cloud"` or `"managed"` and a specific instance is known. |
 
 **Tier inference rules:**
 
 Rules are evaluated most-specific-first:
 
-| Condition | Tier |
-|-----------|------|
-| `match` contains `source: "play.grafana.org"` | `"play"` (with `instance: "play.grafana.org"`) |
-| `match` contains a `source` rule at any depth (non-play) | `"cloud"` (and set `instance` to the `source` value) |
-| `match` contains `"targetPlatform": "cloud"` (without `source`) | `"cloud"` |
-| Otherwise | `"local"` |
+| Condition | Tier | Instance |
+|-----------|------|----------|
+| `match` contains `source: "play.grafana.org"` (concrete hostname) | `"cloud"` | `"play.grafana.org"` |
+| `match` contains `source: ".*\\.grafana\\.net"` (all Grafana Cloud) | `"cloud"` | omit — means any cloud instance, no specific target |
+| `match` contains any other concrete `source` hostname | `"cloud"` | set to the `source` value |
+| `match` contains any other regex `source` pattern | `"cloud"` | omit — do not copy a regex into `instance`; flag for manual review |
+| `match` contains `"targetPlatform": "cloud"` (without `source`) | `"cloud"` | omit |
+| Otherwise | `"local"` | omit |
+
+> **Note:** `"play"` is not a valid `tier` value. Play.grafana.org is a specific cloud instance — model it as `tier: "cloud"` + `instance: "play.grafana.org"`, not as a distinct tier.
+>
+> **Note:** Never copy a regex pattern into `instance`. The `instance` field is a concrete hostname used to target a specific test environment. A regex `source` predicate in the match expression is a routing rule, not an instance identifier. `.*\\.grafana\\.net` specifically means "all Grafana Cloud instances" → `tier: "cloud"` with no `instance`.
 
 ---
 
@@ -291,7 +297,8 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
     "match": { "<copied from index.json rule match>" : [] }
   },
   "testEnvironment": {
-    "tier": "<local|cloud|play>"
+    "tier": "<local|cloud|managed>",
+    "instance": "<hostname, e.g. play.grafana.org — omit if not a specific instance>"
   }
 }
 ```
@@ -310,7 +317,8 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
     "match": { "<copied from index.json rule match>" : [] }
   },
   "testEnvironment": {
-    "tier": "<local|cloud>"
+    "tier": "<local|cloud|managed>",
+    "instance": "<hostname — omit if not a specific instance>"
   },
   "milestones": [
     "<step-1-id>",
