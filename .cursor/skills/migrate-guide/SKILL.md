@@ -1,6 +1,6 @@
 ---
 name: migrate-guide
-description: Migrate a standalone guide or learning path to the Pathfinder package format by generating manifest.json (and path-level content.json for LJs). Reads content.json, index.json, and optionally website markdown to derive all manifest fields. Use when the user wants to migrate a guide directory to the package format, or asks to create a manifest.json for a guide.
+description: Migrate a standalone guide or learning path to the Pathfinder package format by generating manifest.json (and path-level content.json for LJs). Reads content.json, index.json, recommender rules, and optionally website markdown to derive all manifest fields. Use when the user wants to migrate a guide directory to the package format, or asks to create a manifest.json for a guide.
 ---
 
 # Migrate Guide to Package Format
@@ -21,7 +21,8 @@ These rules are **inviolable** — the skill must never break them:
 
 1. **Never modify an existing `content.json`.** The skill may *create* a new `content.json` (path-level cover page) but must never modify one that already exists.
 2. **Never modify `index.json`.** Read it as a data source; never write to it.
-3. **Verify after writing.** Before any writes, snapshot every in-scope pre-existing `content.json` as raw bytes (or SHA-256). After writes, confirm each snapshot is byte-identical.
+3. **Never modify recommender files.** The `grafana-recommender` repo is a read-only data source; never write to it.
+4. **Verify after writing.** Before any writes, snapshot every in-scope pre-existing `content.json` as raw bytes (or SHA-256). After writes, confirm each snapshot is byte-identical.
 
 ---
 
@@ -65,6 +66,34 @@ Location: `/Users/davidallen/hax/website/content/docs/learning-paths/journeys.ya
 
 Provides inter-journey category and relationship data.
 
+### Recommender rules (read-only)
+
+Location: `grafana-recommender/internal/configs/state_recommendations/*.json`
+
+This is the **primary source of targeting/match rules for learning journeys**. `index.json` contains only `"type": "interactive"` entries — it never has learning-journey routing rules. All learning-journey match rules live in the recommender repo.
+
+**Locating the recommender repo (in priority order):**
+1. Check for a local checkout at common paths: `~/hax/grafana-recommender`, `~/Documents/repositories/grafana-recommender`, or a sibling directory to the interactive-tutorials repo
+2. If not found locally, shallow-clone `git@github.com:grafana/grafana-recommender.git` to `/tmp/grafana-recommender`
+3. If a `/tmp/grafana-recommender` clone already exists, run `git -C /tmp/grafana-recommender pull --ff-only` to ensure it has the latest rules
+
+**Freshness:** Always ensure the recommender checkout is up-to-date before extracting rules. If using a `/tmp` clone, pull at the start of each migration run. Stale rules can lead to incorrect or missing targeting.
+
+**Matching rules to a learning path:**
+
+Each `*.json` file in `state_recommendations/` has a `rules` array. Filter to entries where `"type": "learning-journey"`. Match by extracting the slug from the `url` field:
+1. Parse the `url` (e.g., `https://grafana.com/docs/learning-journeys/prometheus/`)
+2. Extract the path name — the segment after `/learning-journeys/` or `/learning-paths/` (e.g., `prometheus`). The recommender uses both URL prefixes interchangeably; handle both.
+3. Compare against the directory name with `-lj` stripped (e.g., `prometheus-lj` → `prometheus`)
+
+**Multiple rules per learning path:** A single learning path may have **multiple rules** across different recommender files (different URL contexts, different tags, different platform targets). Collect **all** matching rules. When a learning path has multiple rules:
+- **`targeting.match`**: If all rules share the same match expression, use it directly. If there are multiple distinct match expressions, wrap them in a top-level `{"or": [...]}` to preserve all routing contexts. Record which recommender files contributed which rules in the migration notes.
+- **`startingLocation`**: Traverse all collected match expressions, collect all URL-bearing leaves (`urlPrefix` values and `urlPrefixIn` entries), pick the first.
+- **`testEnvironment`**: Apply the standard tier inference rules across all collected matches. If any match contains `"targetPlatform": "cloud"`, the tier is `"cloud"`. If rules span both cloud and oss, use `"cloud"` (the more common deployment) and note the dual-platform targeting in migration notes.
+- **`description`**: If a recommender rule has a non-empty `description`, it is a valid source for the manifest description (see [Description Conventions](#description-conventions)).
+
+If the recommender repo is unavailable (clone fails, no network, no SSH key), fall back to index.json-only behavior and flag the absence in migration notes.
+
 ---
 
 ## Description Conventions
@@ -73,8 +102,8 @@ The `description` field is a **compact, one-line summary** suitable for a course
 
 **Priority for resolving `description`:**
 
-1. **`index.json` rule** — if the guide has a matching rule, use its `description` verbatim. These are already written in catalog style.
-2. **Summarize available sources** — if no `index.json` rule exists, collect all available description sources (website markdown frontmatter `description`, `content.json` title, path-level metadata) and boil them down into a single sentence. Write it in the style of the `index.json` descriptions (e.g., "Hands-on guide: Learn how to...").
+1. **`index.json` rule or recommender rule** — if the guide has a matching rule in either source, use its `description` verbatim. These are already written in catalog style. For learning journeys, the recommender is the primary source since `index.json` does not contain learning-journey entries. Skip entries with empty `description` values.
+2. **Summarize available sources** — if no rule with a non-empty description exists, collect all available description sources (website markdown frontmatter `description`, `content.json` title, path-level metadata) and boil them down into a single sentence. Write it in the style of the rule descriptions (e.g., "Hands-on guide: Learn how to...").
 3. **Ask the user** — if no sources exist at all, stop and request a description. Do not invent one.
 
 ---
@@ -171,7 +200,7 @@ Write `{dir}/manifest.json` with the derived fields:
 Field omission rules:
 - Omit `repository` (schema default `"interactive-tutorials"` applies)
 - Omit `language` (schema default `"en"` applies)
-- Omit `targeting` entirely if no index.json rule matched
+- Omit `targeting` entirely if no targeting rule was found (index.json for standalone guides, recommender for learning journeys)
 - Omit `startingLocation` if no URL can be derived from the match expression — do not fall back to `"/"`. A missing value is preferable to a wrong one.
 - **Never omit `testEnvironment`.** Minimum is `{ "tier": "cloud" }`. Omit `instance` when no instance value is available.
 - Always include `depends`, `recommends`, `suggests`, and `provides` — even when empty (`[]`). This makes the fields visible to authors so they know they can fill them out later. Never invent values; use `[]` when no information is available.
@@ -229,7 +258,7 @@ If not found, apply fallback rules and flag for manual review.
 
 Read `_index.md` from the website path. Extract from frontmatter:
 - `title` — for path-level content.json and manifest
-- `description` — a source for the manifest description (apply [Description Conventions](#description-conventions): if there is an `index.json` rule for this path, prefer its description; otherwise condense the `_index.md` description into a compact one-line catalog summary)
+- `description` — a source for the manifest description (apply [Description Conventions](#description-conventions): if there is a recommender or `index.json` rule for this path with a non-empty description, prefer it; otherwise condense the `_index.md` description into a compact one-line catalog summary)
 - `journey.group` — for `category`
 - `journey.skill` — note but defer (not in current schema)
 - `journey.links.to` — for `recommends`
@@ -297,11 +326,11 @@ Step dependency rules:
 - Step N: `recommends` step N+1's `id`
 - If the step has `side_journeys`, map them to `suggests`
 
-Omit `targeting` unless the step has its own `index.json` entry.
+Omit `targeting` unless the step has its own `index.json` entry. Steps within a learning path inherit targeting from the path level; step-level recommender rules are not expected and should not be searched for.
 
 #### 5. Check for metadata conflicts
 
-Compare metadata across sources (website markdown frontmatter, `index.json` rule if present, `journeys.yaml`). A conflict exists when the same field has different string values in two sources.
+Compare metadata across sources (website markdown frontmatter, recommender rules, `index.json` rule if present, `journeys.yaml`). A conflict exists when the same field has different string values in two sources.
 
 **Flag conflicts for the user** — present both values and ask which to use. Do not silently pick one.
 
@@ -313,9 +342,17 @@ Read `journeys.yaml` and find the entry whose `id` maps to the current learning 
 
 After resolving descriptions for all steps, compare them pairwise. If two or more sibling steps within the same path have identical `description` values, use the identical string for every step that has the same source description. Do not invent a variant. Record the duplicate in the migration notes and recommend an upstream fix.
 
-#### 6. Look up path-level index.json rule
+#### 6. Look up targeting rules
 
-Check if the `*-lj` directory name (or a URL containing it) has an entry in `index.json`. Extract `match` for `targeting` and derive `startingLocation` (traverse recursively, collect all URL-bearing leaves, pick the first) and `testEnvironment` (apply the IF/ELSE tier inference rules from Mode 1) using the same rules as Mode 1.
+Check **both** data sources for targeting rules, in this order:
+
+1. **Recommender rules** (primary for learning journeys): Scan all `*.json` files in the recommender's `state_recommendations/` directory for entries with `"type": "learning-journey"` whose URL slug matches this path (see [Data Sources > Recommender rules](#recommender-rules-read-only) for matching logic). Collect **all** matching rules across all files.
+
+2. **index.json** (fallback): Check if the `*-lj` directory name has an entry in `index.json`. In practice `index.json` does not contain learning-journey entries, but check anyway for future-proofing.
+
+Use the collected rules to derive `targeting`, `startingLocation`, and `testEnvironment` using the standard derivation rules (see Recommender rules data source for multi-rule handling). If rules were found in the recommender, record the source file(s) and the match expressions in the migration notes.
+
+If no rules are found in either source, the path has no targeting — omit the `targeting` field.
 
 #### 7. Generate path-level manifest.json
 
@@ -328,12 +365,12 @@ Write `{lj-dir}/manifest.json`:
   "description": "<compact one-line summary; see Description Conventions>",
   "category": "<from journey.group>",
   "author": { "team": "Grafana Documentation" },
-  "startingLocation": "<from index.json match, if derivable>",
+  "startingLocation": "<from targeting rules, if derivable>",
   "targeting": {
-    "match": { "<from index.json rule if exists>" }
+    "match": { "<from recommender/index.json rules; wrap in 'or' if multiple>" }
   },
   "testEnvironment": {
-    "tier": "<from index.json rule, or 'cloud' minimum>"
+    "tier": "<from targeting rules, or 'cloud' minimum>"
   },
   "milestones": [
     "<step-1-id>",
@@ -347,7 +384,7 @@ Write `{lj-dir}/manifest.json`:
 }
 ```
 
-Omit `targeting` if no index.json rule exists for the path.
+Omit `targeting` if no targeting rule exists for the path (neither recommender nor index.json).
 Omit `startingLocation` if no URL can be derived — do not fall back to `"/"`.
 **Never omit `testEnvironment`.** Minimum is `{ "tier": "cloud" }`.
 Always include `depends`, `recommends`, `suggests`, and `provides` — use `[]` when no data is available.
@@ -407,12 +444,13 @@ Write `{lj-dir}/assets/migration-notes.md` following the [migration notes conven
 - N step manifests created (list them)
 - Fields derived from each source
 - Results of all `validate --package` commands
-- Any metadata conflicts flagged (including journeys.yaml cross-validation mismatches)
+- Recommender rules found (list source files, URLs, and match expressions) or note that none were found / repo was unavailable
+- Any metadata conflicts flagged (including journeys.yaml cross-validation mismatches, recommender vs other source conflicts)
 - Any duplicate descriptions detected
 - Any dangling references in `recommends`, `suggests`, or `depends` (these are expected and preferred — the CLI catches them)
 - Any side_journeys URLs resolved (or not resolved) to package IDs
 - Any fields that need manual review
-- Any fallbacks used due to missing website markdown
+- Any fallbacks used due to missing website markdown or unavailable recommender repo
 - Any surprises or unexpected situations
 
 #### 12. Report
@@ -420,11 +458,11 @@ Write `{lj-dir}/assets/migration-notes.md` following the [migration notes conven
 Tell the user:
 - Path-level manifest and content.json created
 - N step manifests created (list them)
-- Fields derived from each source
+- Fields derived from each source (including which recommender files contributed targeting rules)
 - Results of all `validate --package` commands
 - Any conflicts flagged
 - Any fields that need manual review
-- Any fallbacks used due to missing website markdown
+- Any fallbacks used due to missing website markdown or unavailable recommender repo
 - Summary of migration notes written
 
 ---
@@ -448,6 +486,7 @@ After generating all files, run this checklist:
 - [ ] `id` matches between each `manifest.json` and `content.json` pair
 - [ ] No pre-existing `content.json` was modified (byte-level check against pre-write snapshots)
 - [ ] `index.json` was not modified
+- [ ] Recommender repo files were not modified
 - [ ] Path manifests have `type: "path"` and a `milestones` array
 - [ ] Step manifests have `type: "guide"`
 - [ ] Step `depends`/`recommends` chains are consistent (no broken references within the current migration scope)
@@ -459,8 +498,11 @@ After generating all files, run this checklist:
 
 ## Error Handling
 
-### No index.json rule found
-Generate the manifest without `targeting`. Omit `startingLocation` (do not default to `"/"`). `testEnvironment` defaults to `{ "tier": "cloud" }` (the minimum acceptable value — this applies when no match expression exists or when the match expression is empty). Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation). If the CLI warns that `startingLocation` defaulted to `'/'`, that is expected; the manifest correctly omitted it.
+### No targeting rule found
+For standalone guides, this means no `index.json` rule matched. For learning journeys, this means no recommender rule matched **and** no `index.json` rule matched. Generate the manifest without `targeting`. Omit `startingLocation` (do not default to `"/"`). `testEnvironment` defaults to `{ "tier": "cloud" }` (the minimum acceptable value — this applies when no match expression exists or when the match expression is empty). Flag for user review — the guide may be path-only (reachable via learning path, not contextual recommendation). If the CLI warns that `startingLocation` defaulted to `'/'`, that is expected; the manifest correctly omitted it.
+
+### Recommender repo unavailable
+If the recommender repo cannot be found locally and the shallow clone fails (e.g., no network, no SSH key), fall back to index.json-only behavior. Flag all LJ targeting fields as "recommender unavailable — needs manual review" in the migration notes. This is a degraded but functional migration; for learning journeys the result will almost certainly lack targeting since `index.json` does not contain learning-journey entries.
 
 ### Website markdown not found
 Apply fallback rules. Clearly state which fields used fallback values and need manual review.
@@ -522,6 +564,14 @@ migrated_at: "<ISO 8601 timestamp>"
 - <any suggests/recommends/depends IDs that point to non-existent directories>
 - (Dangling references are expected and preferred — the Pathfinder CLI catches them during validation)
 
+## Recommender Rules
+
+| Source File | Rule URL | Match Expression |
+|-------------|----------|------------------|
+| <recommender filename> | <rule url> | <match JSON summary> |
+
+(If no recommender rules were found, note "No recommender rules found for this path" and explain whether this is expected or needs investigation. If the recommender repo was unavailable, note that here.)
+
 ## Data Quality Issues
 
 - <any journeys.yaml vs _index.md mismatches>
@@ -554,7 +604,7 @@ The skill reads `alerting-101/content.json` (id: `alerting-101`), finds the matc
 ### Learning path
 > "Migrate `prometheus-lj/` to the package format"
 
-The skill reads all 9 step `content.json` files, the website markdown at `learning-paths/prometheus/`, and the index.json. It generates:
-- `prometheus-lj/manifest.json` (type: path, 9 milestones)
+The skill reads all 9 step `content.json` files, the website markdown at `learning-paths/prometheus/`, and searches both `index.json` and the recommender `state_recommendations/` files for targeting rules. It finds the recommender rule in `connections-cloud.json` matching `learning-journeys/prometheus/` and uses its match expression for targeting. It generates:
+- `prometheus-lj/manifest.json` (type: path, 9 milestones, targeting from recommender)
 - `prometheus-lj/content.json` (path-level cover page from website markdown)
 - 9 step-level `manifest.json` files

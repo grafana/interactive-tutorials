@@ -63,7 +63,7 @@ Supporting files the sub-agents load:
 ### migrate-guide
 **Trigger**: User wants to migrate a guide or learning path (`*-lj`) to the Pathfinder package format (add `manifest.json`).
 
-Read `.cursor/skills/migrate-guide/SKILL.md` — generates `manifest.json` (and path-level `content.json` for LJs) from `content.json`, `index.json`, and website markdown.
+Read `.cursor/skills/migrate-guide/SKILL.md` — generates `manifest.json` (and path-level `content.json` for LJs) from `content.json`, `index.json`, recommender rules (`grafana-recommender` repo), and website markdown.
 
 Supporting reference: `docs/manifest-reference.md`
 
