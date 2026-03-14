@@ -1,0 +1,215 @@
+{
+  "id": "SLO-LP",
+  "title": "Create an availability SLO",
+  "blocks": [
+    {
+      "type": "section",
+      "id": "guide-section-50121",
+      "title": "Navigate to SLOs",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Navigate to SLOs.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid navigation mega-menu'] svg:nth-match(25)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-slo-app/home/insights']"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-96729",
+      "title": "Create SLO",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/a/grafana-slo-app/wizard/new']:contains('Create SLO')",
+          "content": "Click **Create SLO.**",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent div[data-testid='input-wrapper']",
+          "content": "In the Time window field, enter the period over which to evaluate the SLO. A 28-day rolling window is commonly used for availability SLOs. It smooths out short spikes and aligns with how error budgets are often consumed.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Select a data source-input']",
+          "content": "From the Data source dropdown, select the data source that contains your metrics.",
+          "tooltip": "You must select a metrics data source here.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "Ratio",
+          "content": "For Query type, select Ratio query.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "section[data-testid='data-testid ReactMonacoEditor editorLazy'] div:nth-match(19)",
+          "targetvalue": "http_requests_total{status!~\"5..\"}",
+          "content": "In the Success metric field, enter a Prometheus counter metric for successful events.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "section[data-testid='data-testid ReactMonacoEditor editorLazy'] div:nth-match(68)",
+          "targetvalue": "http_requests_total",
+          "content": "In the Total metric field, enter a Prometheus counter metric for all events.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='walk-next-button']",
+          "content": "Click **Set target and error budget.**",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent div[data-testid='input-wrapper']",
+          "content": "In the **Target** field, enter a percentage greater than 0 and less than 100. For example, enter **99.9** for a “three nines” availability target.",
+          "targetvalue": "99.9",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='walk-next-button']",
+          "content": "Click **Add name and description**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ],
+      "id": "guide-section-92234",
+      "title": "Configure target and error budget"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='input-wrapper']:nth-match(1)",
+          "content": "Give the SLO a unique name.",
+          "targetvalue": "(Example:) My SLO"
+        },
+        {
+          "type": "interactive",
+          "action": "hover",
+          "reftarget": "textarea[name=\"description\"]",
+          "content": "(Optional) Enter a description that explains what the SLO measures.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "hover",
+          "reftarget": "div[data-testid='input-wrapper'] input:nth-match(2)",
+          "content": "Click the **Folder** dropdown and select an existing folder or click **+ Create folder** to create a new one.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='input-wrapper'] input:nth-match(3)",
+          "content": "(Optional) Add labels to categorize your SLO for searching and management.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='walk-next-button']",
+          "content": "Click **Add SLO alert rules**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ],
+      "id": "guide-section-36907",
+      "title": "Give the SLO a name and description"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[for='generate-alerts']",
+          "content": "(Optional) Select the **Add SLO alert rules** checkbox to generate alert rules.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='walk-next-button']",
+          "content": "Click **Review SLO**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ],
+      "id": "guide-section-17054",
+      "title": "Add alert rules"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='walk-save-button']",
+          "content": "Click **Save and view all SLOs.**",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ],
+      "id": "guide-section-46610",
+      "title": "Save your SLO"
+    }
+  ]
+}
