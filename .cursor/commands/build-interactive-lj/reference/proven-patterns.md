@@ -58,13 +58,14 @@ Even deeply nested paths like **Administration > Plugins and data > Plugins** wo
 | Destination | href | Full Selector |
 |-------------|------|---------------|
 | Connections | `/connections` | `a[data-testid='data-testid Nav menu item'][href='/connections']` |
+| Add new connection | `/connections/add-new-connection` | `a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']` |
+| Data sources | `/connections/datasources` | `a[data-testid='data-testid Nav menu item'][href='/connections/datasources']` |
+| Dashboards | `/dashboards` | `a[data-testid='data-testid Nav menu item'][href='/dashboards']` |
+| Explore | `/explore` | `a[data-testid='data-testid Nav menu item'][href='/explore']` |
+| Drilldown | `/drilldown` | `a[data-testid='data-testid Nav menu item'][href='/drilldown']` |
 | Alerts & IRM | `/alerts-and-incidents` | `a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']` |
 | Alerting | `/alerting` | `a[data-testid='data-testid Nav menu item'][href='/alerting']` |
 | Alert rules | `/alerting/list` | `a[data-testid='data-testid Nav menu item'][href='/alerting/list']` |
-| Dashboards | `/dashboards` | `a[data-testid='data-testid Nav menu item'][href='/dashboards']` |
-| Explore | `/explore` | `a[data-testid='data-testid Nav menu item'][href='/explore']` |
-| Add new connection | `/connections/add-new-connection` | `a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']` |
-| Data sources | `/connections/datasources` | `a[data-testid='data-testid Nav menu item'][href='/connections/datasources']` |
 | Observability | `/observability` | `a[data-testid='data-testid Nav menu item'][href='/observability']` |
 | Application (App O11y) | `/a/grafana-app-observability-app` | `a[data-testid='data-testid Nav menu item'][href='/a/grafana-app-observability-app']` |
 
@@ -266,15 +267,209 @@ Conditional on real-world installation:
 
 ---
 
+## Connections / Data Source Patterns
+
+### Add New Data Source Button
+
+The "Add new data source" button has a stable `data-testid`. Always prefer it over button text:
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "[data-testid='data-testid data-source-add-button']",
+  "content": "Click **Add new data source**."
+}
+```
+
+### Data Source Name Input
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[data-testid='data-testid Data source settings page name input field']",
+  "targetvalue": "My Data Source",
+  "content": "Enter a name for the data source.",
+  "doIt": false
+}
+```
+
+> Use `"doIt": false` here since the user should enter their own name.
+
+### Filter Data Sources by Name/Type
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[placeholder='Filter by name or type']",
+  "targetvalue": "Infinity",
+  "content": "In the filter box, type **Infinity** to find the data source."
+}
+```
+
+### Search Connections by Name
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[aria-label='Search connections by name']",
+  "targetvalue": "Infinity",
+  "content": "In the search box, type **Infinity** to filter the connections."
+}
+```
+
+### Connection/Plugin Tile Link
+
+Use the `href` for the specific data source plugin page:
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[href='/connections/datasources/yesoreyeram-infinity-datasource/']",
+  "content": "Click the **Infinity** tile to select it."
+}
+```
+
+---
+
+## Dashboard Patterns
+
+### Create New Dashboard
+
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "New",
+  "content": "Click **New** to open the creation menu."
+},
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "New dashboard",
+  "content": "Click **New dashboard** to create a dashboard."
+}
+```
+
+### Add Visualization Panel
+
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Panel",
+  "content": "Click **Panel** to add a new visualization."
+}
+```
+
+---
+
+## Section and Noop Patterns
+
+### Section with Mixed Automated and Manual Steps
+
+Use `section` to group steps that should be numbered sequentially. Mix `interactive`, `multistep`, and `noop` blocks inside:
+
+```json
+{
+  "type": "section",
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "noop",
+      "content": "Sign in to your Grafana Cloud account."
+    },
+    {
+      "type": "multistep",
+      "content": "Navigate to **Connections > Data sources**.",
+      "requirements": ["navmenu-open"],
+      "steps": [
+        { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
+        { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/datasources']" }
+      ]
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "[data-testid='data-testid data-source-add-button']",
+      "content": "Click **Add new data source**."
+    }
+  ]
+}
+```
+
+### Observation/Verification (Use Markdown, Not Noop)
+
+Observations are not directives — they should be `markdown`, not `noop`:
+
+```json
+{
+  "type": "markdown",
+  "content": "You should receive a **Health check successful** message."
+}
+```
+
+### Instructional Manual Step as Numbered Step
+
+When a step describes a manual action within a procedure:
+
+```json
+{
+  "type": "interactive",
+  "action": "noop",
+  "content": "Enter a title and description for your dashboard, select a folder if applicable, and click **Save**."
+}
+```
+
+---
+
+## Supplementary Content Patterns
+
+### More to Explore
+
+```json
+{
+  "type": "markdown",
+  "content": "---\n\n### More to explore (optional)\n\n- [Grafana Dashboards](/docs/grafana/latest/dashboards/)"
+}
+```
+
+### Related Paths
+
+```json
+{
+  "type": "markdown",
+  "content": "---\n\n### Related paths\n\nConsider taking the following paths after you complete this journey.\n\n- [Explore metrics using Metrics Drilldown](/docs/learning-paths/drilldown-metrics/)"
+}
+```
+
+### Troubleshooting
+
+```json
+{
+  "type": "markdown",
+  "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [There are no patterns](/docs/grafana-cloud/visualizations/simplified-exploration/logs/troubleshooting/#there-are-no-patterns)"
+}
+```
+
+---
+
 ## Quick Decision Guide
 
 | UI Element | Pattern to Use |
 |------------|----------------|
 | Navigate through menus | `multistep` with `navmenu-open` |
-| Search/filter input | `formfill` with `aria-label` |
+| Search/filter input | `formfill` with `aria-label` or `placeholder` |
 | Button with stable text | `button` action |
 | Button with data-testid | `highlight` with data-testid |
 | Clickable card/tile | `highlight` with `a[href="..."]` |
+| Non-interactive numbered step | `noop` inside a `section` |
+| Manual step (show but don't auto-do) | interactive with `doIt: false` |
 | User chooses between options | `markdown` |
 | Action outside browser | `markdown` |
 | Button that may not exist yet | `markdown` |
+| Supplementary links section | `markdown` with `---` divider + H3 heading |

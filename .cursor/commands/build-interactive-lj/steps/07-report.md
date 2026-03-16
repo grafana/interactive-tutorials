@@ -16,16 +16,11 @@ Use this exact format:
 RESULTS
 ├── Total milestones: [N]
 ├── Fully interactive: [N] ✅
-├── Partial (some markdown): [N] 🟡
-└── Issues filed: [N] 📝
+└── Partial (some markdown): [N] 🟡
 
 FILES CREATED
 ├── [slug]-lj/milestone-1/content.json ✅
 ├── [slug]-lj/milestone-2/content.json ✅
-└── ...
-
-ISSUES FILED (if any)
-├── #[N]: [element] - [brief description]
 └── ...
 
 NEXT STEPS
@@ -51,7 +46,6 @@ If yes, display:
 ```
 🎯 Interactive learning path complete: [slug]
 ✅ [N]/[N] milestones interactive
-📝 [N] issues filed for broken selectors
 🔗 Ready for PR
 ```
 
@@ -94,28 +88,3 @@ When the user asks for a PR description, ALWAYS provide it in a markdown code bl
 
 **IMPORTANT:** The user should NEVER have to ask "please provide in markdown" — always use the code block format by default.
 
----
-
-## Filing GitHub Issues
-
-For broken selectors that need Pathfinder team attention, file at:
-https://github.com/grafana/interactive-tutorials/issues
-
-Use this template:
-```
-gh issue create \
-  --repo grafana/interactive-tutorials \
-  --title "[Selector] [element] in [learning path name]" \
-  --body "## Element
-[Description of the UI element]
-
-## Selectors Tried
-1. \`[selector-1]\` - [why it failed]
-2. \`[selector-2]\` - [why it failed]
-
-## Page URL
-[Grafana page where element appears]
-
-## Suggested Fix
-[If you have ideas, otherwise: Needs data-testid added]"
-```

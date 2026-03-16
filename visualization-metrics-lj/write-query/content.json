@@ -1,10 +1,19 @@
 {
+  "schemaVersion": "1.0.0",
   "id": "visualization-metrics-write-query",
   "title": "Write a PromQL query",
   "blocks": [
     {
       "type": "markdown",
-      "content": "Now that you have a panel configured, it's time to write the query. A query is an expression that specifies the dataset to be used in the visualization.\n\nA PromQL query consists of three basic elements:\n- **Metric**: The specific time series data you want to analyze\n- **Label filter**: Key-value pairs that narrow down the dataset\n- **Operation**: Functions that modify or process the data\n\nTo write a PromQL query using the Query Builder, complete the following steps:"
+      "content": "Now that you have a panel configured, it's time to write the query. A query is an expression that specifies the dataset to be used in the visualization."
+    },
+    {
+      "type": "markdown",
+      "content": "A PromQL query consists of three basic elements:\n\n- **Metric**: A metric represents the specific time series data you want to analyze. It is the foundation of your query and defines the type of data to retrieve. For example, `node_cpu_usage_seconds_total` is a metric that tracks CPU usage over time.\n- **Label filter**: A label filter allows you to refine your query by specifying key-value pairs that narrow down the dataset. This helps you focus on specific subsets of data, such as a particular node or instance. For example, a label filter like `node=\"i-077dec042c9d8a744\"` retrieves data only for the specified node.\n- **Operation**: An operation modifies or processes the data retrieved by the query. It can perform calculations, aggregations, or transformations to derive meaningful insights. For example, the `rate()` operation calculates the per-second rate of increase for a given metric."
+    },
+    {
+      "type": "markdown",
+      "content": "To write a PromQL query using the Query Builder, complete the following steps:"
     },
     {
       "type": "section",
@@ -13,41 +22,30 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid=\"data-testid metric select\"]",
-          "content": "Click the **Metric** drop-down list to select a metric.",
+          "content": "Click the **Metric** drop-down list to select a metric.\n\nFor example, select `node_cpu_usage_seconds_total`.",
           "doIt": false,
           "requirements": ["exists-reftarget"]
         },
         {
-          "type": "markdown",
-          "content": "Select a metric from the list, for example `node_cpu_usage_seconds_total`."
-        },
-        {
-          "type": "markdown",
+          "type": "interactive",
+          "action": "noop",
           "content": "(Optional) In the **Label filters** fields, select a key-value pair and operator to filter your data. For example, select `node`, `=`, and your specific node ID."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Operations",
-          "content": "Click **+ Operations** to add a function to your query.",
+          "content": "Click **+ Operations** to add a function to your query.\n\nFor example, select **Range > Rate** and `$__rate_interval`.",
           "doIt": false,
           "requirements": ["exists-reftarget"]
-        },
-        {
-          "type": "markdown",
-          "content": "Select a function from the menu. For example, select **Range > Rate** and `$__rate_interval`."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Operations",
-          "content": "Click **+ Operations** again to add another operation.",
+          "content": "Click **+ Operations** again to add another operation.\n\nFor example, select **Aggregations > Sum**.",
           "doIt": false,
           "requirements": ["exists-reftarget"]
-        },
-        {
-          "type": "markdown",
-          "content": "Select another function. For example, select **Aggregations > Sum**."
         },
         {
           "type": "interactive",
@@ -66,6 +64,10 @@
     {
       "type": "markdown",
       "content": "Your visualization should now display data based on your query. In the next milestone, you'll configure the time range and refresh interval."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore\n\n- [Introduction to histograms and heatmaps](/docs/grafana-cloud/introduction/histograms/)\n- [Metrics explorer](/docs/grafana-cloud/connect-externally-hosted/data-sources/prometheus/query-editor/#metrics-explorer)\n- [Label filters](/docs/grafana-cloud/connect-externally-hosted/data-sources/prometheus/query-editor/#label-filters)\n- [Operations](/docs/grafana-cloud/connect-externally-hosted/data-sources/prometheus/query-editor/#operations)"
     }
   ]
 }

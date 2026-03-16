@@ -76,6 +76,19 @@ Walk through the actual Grafana UI at `https://learn.grafana-ops.net/` to find s
    - Update the content.json with the discovered selector
 3. Continue through the entire UI flow, capturing selectors as you go
 
+### 3-Attempt Limit Per Block
+
+You have a **maximum of 3 attempts** to find a working selector for each interactive block. On each attempt, try a different strategy from the Selector Decision Tree.
+
+- **Attempt 1:** Try the highest-priority selector available (data-testid, aria-label, etc.)
+- **Attempt 2:** Try the next selector strategy down the priority list, or adjust the page state (scroll, expand menus, wait for lazy-loaded elements)
+- **Attempt 3:** Try a broader DOM inspection or alternative navigation path to the element
+
+If all 3 attempts fail:
+1. **Do NOT keep retrying.** Move on to the next block.
+2. Leave the `reftarget` as `"TODO:manual-review"` in content.json.
+3. Record the block details and all 3 failed attempts in the **Unresolved Selectors** report (see below).
+
 ---
 
 ## Selector Decision Tree
@@ -114,9 +127,10 @@ Use this exact format:
 Discovering selectors for [milestone-name]...
 ├── [element description] → [selector] 🟢
 ├── [element description] → [selector] 🟡
-└── [element description] → FAILED ❌
+└── [element description] → UNRESOLVED (3/3 attempts failed) ❌
     Attempt 1: [selector tried] - [why it failed]
     Attempt 2: [selector tried] - [why it failed]
+    Attempt 3: [selector tried] - [why it failed]
 ```
 
 ---
@@ -125,10 +139,36 @@ Discovering selectors for [milestone-name]...
 
 Before proceeding to Step 6, verify:
 
-- [ ] All interactive blocks have real selectors (no placeholders)
-- [ ] No `"[selector]"` or `"TODO"` strings remain
+- [ ] All resolvable interactive blocks have real selectors (no placeholders)
+- [ ] No `"[selector]"` strings remain (only `"TODO:manual-review"` for unresolved blocks)
 - [ ] Selectors follow priority order (data-testid preferred)
-- [ ] Failed selectors are noted for user decision
+- [ ] Each selector attempt per block did not exceed 3 tries
+- [ ] All unresolved selectors are listed in the Unresolved Selectors report below
+
+---
+
+## Unresolved Selectors Report
+
+If any blocks remain unresolved after 3 attempts, display this section **before** the final summary:
+
+```
+⚠️  UNRESOLVED SELECTORS — Needs manual review
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[milestone-name] / [block description]
+  File: [path/to/content.json], block index [N]
+  Page: [URL where the element should appear]
+  Attempt 1: [selector] — [reason it failed]
+  Attempt 2: [selector] — [reason it failed]
+  Attempt 3: [selector] — [reason it failed]
+  Suggestion: [any hints — e.g. "element may be behind a feature flag",
+               "rendered inside an iframe", "only visible after specific user action"]
+
+[repeat for each unresolved block]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+> The user must resolve these manually before Step 6 testing can fully pass.
 
 ---
 
@@ -141,16 +181,19 @@ Use this exact format:
 ✅ Step 5 complete: Selector Discovery
 
 Results by milestone:
-├── [milestone-1]: [N] selectors found
-├── [milestone-2]: [N] selectors found
+├── [milestone-1]: [N] selectors found, [M] unresolved
+├── [milestone-2]: [N] selectors found, [M] unresolved
 └── ...
 
 Selector quality:
 ├── 🟢 High confidence: [N]
 ├── 🟡 Medium confidence: [N]
-└── 🔴 Failed/needs review: [N]
+└── 🔴 Unresolved/needs manual review: [N]
 
 ⏳ Next: Step 6 - Test in Pathfinder
    Ready to test? (Y/N)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+> If there are unresolved selectors, display the Unresolved Selectors Report 
+> immediately above this summary so the user sees it first.

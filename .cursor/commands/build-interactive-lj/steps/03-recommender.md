@@ -79,7 +79,7 @@ Automatically create the mapping JSON:
 
 1. Read the target recommender file(s)
 2. Parse the JSON
-3. Find an appropriate location in the `rules` array (group with similar learning journeys)
+3. Find an appropriate location in the `rules` array (group with similar learning paths)
 4. Insert the new mapping entry
 5. Write the updated JSON back to the file
 6. Validate JSON syntax
@@ -111,6 +111,6 @@ Mapping details:
 ## Important Notes
 
 - **JSON formatting:** Maintain consistent indentation (2 spaces) and formatting
-- **Placement:** Insert learning-journey entries near other learning journeys in the file
+- **Placement:** Insert learning-journey entries near other learning paths in the file
 - **Validation:** After editing, validate JSON syntax before proceeding
 - **Multiple platforms:** If "Both" is selected, ensure entries are identical except for `targetPlatform`
