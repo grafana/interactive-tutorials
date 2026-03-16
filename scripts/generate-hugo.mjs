@@ -41,9 +41,11 @@ function toYamlValue(value, indent = 0) {
         const entries = Object.entries(item);
         const first = entries[0];
         const rest = entries.slice(1);
-        let line = `${pad}  - ${first[0]}: ${toYamlValue(first[1], indent + 2)}`;
+        const firstRendered = toYamlValue(first[1], indent + 2);
+        let line = `${pad}  - ${first[0]}:${firstRendered.startsWith('\n') ? '' : ' '}${firstRendered}`;
         for (const [k, v] of rest) {
-          line += `\n${pad}    ${k}: ${toYamlValue(v, indent + 2)}`;
+          const rendered = toYamlValue(v, indent + 2);
+          line += `\n${pad}    ${k}:${rendered.startsWith('\n') ? '' : ' '}${rendered}`;
         }
         return line;
       }
@@ -68,11 +70,6 @@ function toYamlValue(value, indent = 0) {
 function buildFrontMatter(json, pathfinderDataPath) {
   const { website, title } = json;
   const lines = ['---'];
-
-  const fieldOrder = [
-    'menuTitle', 'description', 'keywords', 'grafana',
-    'weight', 'step'
-  ];
 
   if (website.menuTitle) lines.push(`menuTitle: ${toYamlValue(website.menuTitle)}`);
   lines.push(`title: ${toYamlValue(title)}`);
