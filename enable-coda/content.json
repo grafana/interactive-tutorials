@@ -1,0 +1,101 @@
+{
+    "id": "enable-coda",
+    "title": "Enable Coda",
+    "blocks": [
+        {
+            "type": "markdown",
+            "content": "Coda provides an embedded terminal experience inside Grafana. Follow these steps to enable it and connect to your first VM."
+        },
+        {
+            "type": "section",
+            "id": "enable-coda",
+            "title": "Enable Coda",
+            "requirements": [
+                "is-admin"
+            ],
+            "blocks": [
+                {
+                    "type": "interactive",
+                    "action": "navigate",
+                    "reftarget": "/plugins/grafana-pathfinder-app?page=configuration&dev=true",
+                    "content": "Open the Pathfinder plugin configuration page."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "#dev-mode",
+                    "content": "Enable **Dev Mode**. If you have already enabled it, skip this step.",
+                    "skippable": true
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "label[for='enable-coda-terminal']",
+                    "content": "Toggle **Enable Coda terminal** on.",
+                    "skippable": true
+                },
+                {
+                    "type": "interactive",
+                    "action": "noop",
+                    "content": "You need a provisioning token to continue. Reach out to Jay Clifford to request one."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "div[data-testid='input-wrapper']:nth-match(5)",
+                    "content": "Enter the **API URL** (the coda-server endpoint).",
+                    "doIt": false
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "div[data-testid='input-wrapper']:nth-match(6)",
+                    "content": "Enter the **Relay URL** (include the `wss://` prefix).",
+                    "doIt": false
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "div[data-testid='input-wrapper']:nth-match(7)",
+                    "content": "Enter your provisioning **token**.",
+                    "doIt": false
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[data-testid='config-submit']",
+                    "content": "Click **Submit** to save your configuration."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "[role='button']:contains('TerminalDisconnected')",
+                    "content": "You should now see a terminal connection indicator. Click it to connect to a VM.",
+                    "doIt": false
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "id": "coda-block-examples",
+            "title": "Coda Block Examples",
+            "blocks": [
+                {
+                    "type": "terminal-connect",
+                    "content": "Connect to a standard VM. These are drawn from a hot pool, so the connection should be fast."
+                },
+                {
+                    "type": "terminal-connect",
+                    "content": "Connect to a pre-built sample-app VM based on [integration-sample-apps](https://github.com/grafana/integration-sample-apps). This takes longer (~1 minute) because there is no hot pool.",
+                    "vmTemplate": "vm-aws-sample-app",
+                    "vmApp": "linux-node"
+                },
+                {
+                    "type": "terminal",
+                    "command": "echo 'hello pathfinder'",
+                    "content": "Terminal blocks can push commands directly to the connected terminal."
+                }
+            ]
+        }
+    ]
+}
