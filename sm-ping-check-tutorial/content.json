@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "# How to Perform a Ping Check with Grafana Cloud Synthetic Monitoring\n\nIn this interactive guide you'll learn how to set up and run a ping check in Grafana Cloud Synthetic Monitoring. You will:\n\n- Understand what a ping check is and when to use it\n- Create and configure a ping check for any endpoint\n- Select probe locations for global monitoring coverage\n- Set up alerting so you're notified when your endpoint goes down\n\n### **Why Use Ping Checks?**\n\n- **Verify reachability** – Confirm that an endpoint is online and responding to ICMP packets\n- **Measure latency** – Track round-trip response time from probe locations around the world\n- **Detect downtime proactively** – Get alerted before your users notice an outage\n"
+      "content": "In this interactive guide you'll learn how to set up and run a ping check in Grafana Cloud Synthetic Monitoring. You will:\n\n- Understand what a ping check is and when to use it\n- Create and configure a ping check for any endpoint\n- Select probe locations for global monitoring coverage\n- Set up alerting so you're notified when your endpoint goes down\n\n### **Why Use Ping Checks?**\n\n- **Verify reachability** – Confirm that an endpoint is online and responding to ICMP packets\n- **Measure latency** – Track round-trip response time from probe locations around the world\n- **Detect downtime proactively** – Get alerted before your users notice an outage\n\n"
     },
     {
       "type": "markdown",
@@ -90,12 +90,9 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "#_r18n_",
+          "reftarget": "input[name='target'][placeholder='grafana.com']",
           "content": "Enter your **Request Target** — the hostname or IP address to ping, for example **grafana.com**.",
-          "targetvalue": "grafana.com",
-          "requirements": [
-            "exists-reftarget"
-          ]
+          "targetvalue": "grafana.com"
         }
       ]
     },
@@ -120,8 +117,11 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='checkEditor form timeout']",
+          "reftarget": "form[data-testid='checkEditor form'] div:nth-match(6)",
           "content": "Optionally adjust the **Timeout** value if required.",
+          "requirements": [
+            "exists-reftarget"
+          ],
           "skippable": true,
           "doIt": false
         },
@@ -138,6 +138,13 @@
           "type": "multistep",
           "content": "Optionally add **Labels** to help organize your checks.",
           "steps": [
+            {
+              "action": "button",
+              "reftarget": "Label",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
             {
               "action": "formfill",
               "reftarget": "input[aria-label='Custom labels 1 name']",
@@ -233,7 +240,7 @@
     },
     {
       "type": "markdown",
-      "content": "## 🎉 Congratulations!\n\nYou've successfully set up a ping check in Grafana Cloud Synthetic Monitoring. You can now:\n\n- View results in the out-of-the-box **Synthetic Monitoring dashboard**, which shows uptime, reachability, and average latency\n- Monitor **response latency by probe location** to understand your endpoint's global performance\n- Receive **alerts** the moment your endpoint becomes unreachable\n\nTo learn more, explore other check types such as HTTP, DNS, and TCP checks — or set up private probes to monitor internal services not accessible from the public internet.\n"
+      "content": "## Congratulations!\n\nYou've successfully set up a ping check in Grafana Cloud Synthetic Monitoring. You can now:\n\n- View results in the **Synthetic Monitoring dashboard**, which shows uptime, reachability, and average latency\n- Monitor **response latency by probe location** to understand your endpoint's global performance\n- Receive **alerts** the moment your endpoint becomes unreachable\n\nTo learn more, explore other check types such as HTTP, DNS, and TCP checks — or set up private probes to monitor internal services not accessible from the public internet."
     }
   ]
 }
