@@ -90,7 +90,7 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "#_r122_",
+          "reftarget": "input[name='target']",
           "targetvalue": "smtp.gmail.com:587",
           "content": "Enter your **Request Target** — the hostname and port to connect to, for example **smtp.gmail.com:587**.",
           "requirements": [
@@ -120,6 +120,7 @@
         {
           "type": "multistep",
           "content": "Optionally click **Add query/response** to validate the TCP handshake. For example, set the query to `^220 ([^ ]+) ESMTP (.+)$` and the response to `EHLO prober\\r` to verify an SMTP server greeting.",
+          "skippable": true,
           "steps": [
             {
               "action": "button",
@@ -127,12 +128,12 @@
             },
             {
               "action": "formfill",
-              "reftarget": "#_r1pk_",
+              "reftarget": "textarea[name='queryResponse[0].send']",
               "targetvalue": "^220 ([^ ]+) ESMTP (.+)$"
             },
             {
               "action": "formfill",
-              "reftarget": "#_r1pl_",
+              "reftarget": "textarea[name='queryResponse[0].expect']",
               "targetvalue": "EHLO prober\\r"
             }
           ]
@@ -140,7 +141,7 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "#:r1ca:",
+          "reftarget": "input[name='timeout']",
           "targetvalue": "10",
           "content": "Optionally set a **Timeout**. If the check takes longer than this to run it will be marked as failed. A value of **10 seconds** is suitable for most services.",
           "requirements": [
@@ -161,6 +162,7 @@
         {
           "type": "multistep",
           "content": "Optionally add **Labels** to help organize and filter your checks.",
+          "skippable": true,
           "steps": [
             {
               "action": "formfill",
