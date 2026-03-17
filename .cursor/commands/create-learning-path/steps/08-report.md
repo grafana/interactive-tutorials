@@ -20,17 +20,15 @@ RESULTS
 └── Hugo-only (manual): [N] ✏️
 
 JSON FILES (interactive-tutorials repo)
+├── [slug]-lj/welcome/content.json ✅ welcome page
 ├── [slug]-lj/milestone-1/content.json ✅
 ├── [slug]-lj/milestone-2/content.json ✅
 └── ...
 
-GENERATED MARKDOWN (website repo)
-├── [slug]/milestone-1/index.md ✅ generated
-├── [slug]/milestone-2/index.md ✅ generated
-└── ...
-
-MANUAL FILES (website repo)
-├── [slug]/_index.md ✅ hand-written
+WEBSITE MARKDOWN (website repo)
+├── [slug]/_index.md → welcome/content.json ✅
+├── [slug]/milestone-1/index.md ✅
+├── [slug]/milestone-2/index.md ✅
 └── ...
 
 RECOMMENDER (grafana-recommender repo)
@@ -53,7 +51,7 @@ git commit -m "Add interactive content for [slug] learning path"
 git push && gh pr create
 ```
 
-### 2. website PR (generated + manual markdown)
+### 2. website PR (milestone markdown + path overview)
 
 ```
 git add content/docs/learning-paths/[slug]/
@@ -83,7 +81,7 @@ If yes, display:
 ```
 🎯 New interactive learning path: [slug]
 ✅ [N]/[N] milestones interactive
-📄 Hugo markdown auto-generated from JSON
+📄 Website markdown written alongside JSON
 🔗 Ready for PRs across interactive-tutorials, website, grafana-recommender
 ```
 
@@ -110,8 +108,8 @@ Add interactive content for `[slug]` learning path.
 
 ### Architecture
 
-- **JSON-first authoring** — content.json files are the single source of truth
-- Hugo markdown generated via `scripts/generate-hugo.mjs`
+- **JSON-first authoring** — content.json files contain the interactive content
+- Website markdown (front matter + `{{< pathfinder/json >}}`) written alongside JSON
 - Recommender mapping added for Pathfinder contextual suggestions
 ```
 ````

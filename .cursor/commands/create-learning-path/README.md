@@ -2,18 +2,18 @@
 
 Create a complete interactive learning path from scratch — plan, write JSON, wire up the website, and test.
 
-This is the **unified command** that replaces the two-pass workflow (write markdown first, then convert to JSON). Instead, you author enriched JSON files that serve as the single source of truth, and the Hugo markdown is generated automatically.
+This is the **unified command** that replaces the two-pass workflow (write markdown first, then convert to JSON). You author `content.json` files (schemaVersion 1.0.0) for the interactive Pathfinder experience, and write the corresponding website milestone `index.md` files with Hugo front matter directly.
 
 ---
 
 ## What It Does
 
 1. Plans the learning path structure and gets user approval
-2. Writes enriched `content.json` files (schemaVersion 2.0.0) with interactive blocks AND website metadata
+2. Writes `content.json` files (schemaVersion 1.0.0) with interactive blocks, and website milestone `index.md` files with Hugo front matter
 3. Creates the recommender mapping so Pathfinder surfaces the path
 4. Discovers CSS selectors by walking the Grafana UI
 5. Tests interactivity collaboratively with the user
-6. Generates Hugo markdown from the JSON
+6. Verifies website markdown is complete and correct
 7. Produces a final report
 
 ---
@@ -62,12 +62,10 @@ Verify repos and Playwright are available. Same as the existing command.
 
 Propose 2-4 path options, outline milestones, get user approval. Adapted from the learning path skill's planning phase.
 
-### Step 3: Write Enriched JSON ★ NEW
+### Step 3: Write JSON and Website Markdown ★ NEW
 > File: `steps/03-write-json.md`
 
-Create `content.json` files using schemaVersion 2.0.0 with the `website` key for Hugo metadata. This replaces the old "validate markdown → scaffold JSON" steps.
-
-Also writes the path overview `_index.md` in the website repo (this file requires Hugo shortcodes and is always hand-written).
+Create `content.json` files (schemaVersion 1.0.0) with interactive blocks and markdown content. Also write the corresponding website milestone `index.md` files with Hugo front matter and `{{< pathfinder/json >}}` body, and the path overview `_index.md`.
 
 ### Step 4: Create Recommender Mapping
 > File: `build-interactive-lj/steps/03-recommender.md`
@@ -84,15 +82,15 @@ Use Playwright to walk the Grafana UI and discover CSS selectors for each intera
 
 Collaboratively test each milestone in the Block Editor. User imports JSON, clicks through interactions, reports failures. AI fixes selectors. Same as the existing command.
 
-### Step 7: Generate Hugo Markdown ★ NEW
-> File: `steps/07-generate-hugo.md`
+### Step 7: Verify Website Markdown
+> File: `steps/07-verify-website-markdown.md`
 
-Run `scripts/generate-hugo.mjs` to produce Hugo `index.md` files from the enriched JSON. Dry-run first, then generate.
+Verify that every milestone has a corresponding website `index.md` with correct front matter and that the path overview `_index.md` is present.
 
 ### Step 8: Report and Next Steps
 > File: `steps/08-report.md`
 
-Summary of created files, quality metrics, and PR guidance. Updated from the original to include the Hugo generation results.
+Summary of created files, quality metrics, and PR guidance.
 
 ---
 
@@ -100,7 +98,7 @@ Summary of created files, quality metrics, and PR guidance. Updated from the ori
 
 | Document | Purpose |
 |----------|---------|
-| `reference/enriched-json-schema.md` | ★ NEW — Full schema for v2.0.0 enriched JSON with `website` key |
+| `reference/json-and-frontmatter-schema.md` | content.json schema (v1.0.0) and website front matter field reference |
 | `build-interactive-lj/reference/json-schema.md` | Block types and v1.0.0 base schema |
 | `build-interactive-lj/reference/proven-patterns.md` | Reusable interactive patterns by category |
 | `build-interactive-lj/reference/selector-patterns.md` | Selector stability rules and anti-patterns |
@@ -125,15 +123,16 @@ After completion, the learning path spans two repositories:
 ```
 interactive-tutorials/
   [slug]-lj/
-    milestone-1/content.json    ← enriched JSON (source of truth)
+    welcome/content.json        ← path landing page (intro, objectives, prerequisites)
+    milestone-1/content.json    ← Pathfinder interactive content
     milestone-2/content.json
     ...
 
 website/
   content/docs/learning-paths/[slug]/
-    _index.md                   ← hand-written (Hugo shortcodes)
-    milestone-1/index.md        ← generated from JSON
-    milestone-2/index.md        ← generated from JSON
+    _index.md                   ← front matter + {{< pathfinder/json >}} → welcome
+    milestone-1/index.md        ← front matter + {{< pathfinder/json >}}
+    milestone-2/index.md        ← front matter + {{< pathfinder/json >}}
     ...
 
 grafana-recommender/
@@ -141,21 +140,3 @@ grafana-recommender/
     [area]-cloud.json           ← mapping entry added
 ```
 
----
-
-## Generator Script
-
-The Hugo markdown generator lives at `interactive-tutorials/scripts/generate-hugo.mjs`.
-
-```bash
-# Dry run (preview without writing)
-node scripts/generate-hugo.mjs [slug]-lj --dry-run
-
-# Generate (writes to website repo)
-node scripts/generate-hugo.mjs [slug]-lj
-
-# Custom website directory
-node scripts/generate-hugo.mjs [slug]-lj --website-dir /path/to/website
-```
-
-The script reads each `content.json`, extracts the `website` key, and produces an `index.md` with Hugo front matter and the `{{< pathfinder/json >}}` shortcode.

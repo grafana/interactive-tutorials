@@ -124,7 +124,7 @@ Wait for explicit approval before proceeding to Step 3.
 
 ## Output
 
-The approved plan is used directly by Step 3 to write enriched JSON files. No intermediate artifacts are created — the plan lives in the conversation context.
+The approved plan is used directly by Step 3 to write JSON and website markdown files. No intermediate artifacts are created — the plan lives in the conversation context.
 
 ---
 
