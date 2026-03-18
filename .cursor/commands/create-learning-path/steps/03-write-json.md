@@ -587,27 +587,6 @@ Before proceeding to Step 4:
 
 ---
 
-## Display
+## Completion
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 3 complete: JSON and Website Markdown Written
-
-content.json files (interactive-tutorials):
-├── [slug]-lj/welcome/content.json (welcome page)
-├── [slug]-lj/milestone-1/content.json ([N] blocks)
-├── [slug]-lj/milestone-2/content.json ([N] blocks)
-└── ...
-
-Website markdown (website repo):
-├── [slug]/_index.md → welcome/content.json ✅
-├── [slug]/milestone-1/index.md ✅
-├── [slug]/milestone-2/index.md ✅
-└── ...
-
-Verification: All checks passed ✓
-
-⏳ Next: Step 4 - Recommender Mapping
-   Ready to proceed? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a summary listing: all content.json files created (with block counts), all website markdown files created, and verification status. Ask the user if they're ready for Step 4 (Recommender Mapping).

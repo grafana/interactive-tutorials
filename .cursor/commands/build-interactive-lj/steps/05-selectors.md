@@ -119,22 +119,6 @@ After selecting a selector, verify it's stable:
 
 ---
 
-## Display Progress
-
-Use this exact format:
-
-```
-Discovering selectors for [milestone-name]...
-├── [element description] → [selector] 🟢
-├── [element description] → [selector] 🟡
-└── [element description] → UNRESOLVED (3/3 attempts failed) ❌
-    Attempt 1: [selector tried] - [why it failed]
-    Attempt 2: [selector tried] - [why it failed]
-    Attempt 3: [selector tried] - [why it failed]
-```
-
----
-
 ## Verification Checklist (REQUIRED)
 
 Before proceeding to Step 6, verify:
@@ -143,57 +127,11 @@ Before proceeding to Step 6, verify:
 - [ ] No `"[selector]"` strings remain (only `"TODO:manual-review"` for unresolved blocks)
 - [ ] Selectors follow priority order (data-testid preferred)
 - [ ] Each selector attempt per block did not exceed 3 tries
-- [ ] All unresolved selectors are listed in the Unresolved Selectors report below
 
 ---
 
-## Unresolved Selectors Report
+## Completion
 
-If any blocks remain unresolved after 3 attempts, display this section **before** the final summary:
+Display a summary showing: selectors found per milestone, confidence level (high/medium/unresolved), and any unresolved blocks with their failed attempts and suggestions. If there are unresolved selectors, list them before the summary so the user sees them first.
 
-```
-⚠️  UNRESOLVED SELECTORS — Needs manual review
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[milestone-name] / [block description]
-  File: [path/to/content.json], block index [N]
-  Page: [URL where the element should appear]
-  Attempt 1: [selector] — [reason it failed]
-  Attempt 2: [selector] — [reason it failed]
-  Attempt 3: [selector] — [reason it failed]
-  Suggestion: [any hints — e.g. "element may be behind a feature flag",
-               "rendered inside an iframe", "only visible after specific user action"]
-
-[repeat for each unresolved block]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-> The user must resolve these manually before Step 6 testing can fully pass.
-
----
-
-## Display
-
-Use this exact format:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 5 complete: Selector Discovery
-
-Results by milestone:
-├── [milestone-1]: [N] selectors found, [M] unresolved
-├── [milestone-2]: [N] selectors found, [M] unresolved
-└── ...
-
-Selector quality:
-├── 🟢 High confidence: [N]
-├── 🟡 Medium confidence: [N]
-└── 🔴 Unresolved/needs manual review: [N]
-
-⏳ Next: Step 6 - Test in Pathfinder
-   Ready to test? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-> If there are unresolved selectors, display the Unresolved Selectors Report 
-> immediately above this summary so the user sees it first.
+Ask the user if they're ready to proceed to Step 6 (Test in Pathfinder).

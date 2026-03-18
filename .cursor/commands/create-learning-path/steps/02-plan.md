@@ -128,18 +128,6 @@ The approved plan is used directly by Step 3 to write JSON and website markdown 
 
 ---
 
-## Display
+## Completion
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 2 complete: Plan Approved
-
-Path: [path name]
-Group: [group]
-Skill: [level]
-Milestones: [N] total ([N] interactive, [N] conceptual)
-
-⏳ Next: Step 3 - Write Enriched JSON
-   Ready to create the content.json files? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a brief summary showing: path name, group, skill level, and milestone count. Ask the user if they're ready for Step 3 (Write Enriched JSON).

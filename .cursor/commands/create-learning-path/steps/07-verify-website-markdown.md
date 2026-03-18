@@ -107,22 +107,6 @@ Flag any files with additional body content (the interactive content lives in co
 
 ---
 
-## Display
+## Completion
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 7 complete: Website Markdown Verified
-
-Welcome page: welcome/content.json ↔ _index.md ✅
-
-Milestones verified: [N]/[N]
-├── [milestone-1] ✅ content.json ↔ index.md
-├── [milestone-2] ✅ content.json ↔ index.md
-└── ...
-
-Issues found: [N]
-└── (list any issues, or "None")
-
-⏳ Next: Step 8 - Report and Next Steps
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a summary showing: verification status per milestone (content.json vs index.md alignment), issues found (if any), and announce Step 8.
