@@ -1,41 +1,8 @@
-# JSON and Front Matter Schema Reference
+# Front Matter Schema Reference
 
-This document defines the structure for `content.json` files (Pathfinder interactive content) and the corresponding website `index.md` front matter fields.
+This document defines the website `index.md` front matter fields for learning path milestones.
 
----
-
-## content.json Schema (v1.0.0)
-
-### Root-Level Structure
-
-```json
-{
-  "schemaVersion": "1.0.0",
-  "id": "[learning-path-slug]-[milestone-slug]",
-  "title": "[Milestone Title]",
-  "blocks": [ ... ]
-}
-```
-
-### Field Specifications
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `schemaVersion` | string | Yes | Always `"1.0.0"` |
-| `id` | string | Yes | `[learning-path-slug]-[milestone-slug]` (kebab-case) |
-| `title` | string | Yes | Milestone title |
-| `blocks` | array | Yes | Content blocks (see block types below) |
-
-### Block Types
-
-See `build-interactive-lj/reference/json-schema.md` for the full block type reference:
-
-| Type | Purpose | Has "Do it"? |
-|------|---------|--------------|
-| `markdown` | Explanatory text | No |
-| `interactive` | Automated UI actions | Yes |
-| `multistep` | Sequential navigation | Yes |
-| `guided` | User performs manually | No |
+For `content.json` schema (root structure, block types, action types, field reference), see `build-interactive-lj/reference/json-schema.md`.
 
 ---
 

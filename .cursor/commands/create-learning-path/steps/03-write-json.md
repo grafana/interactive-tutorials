@@ -29,8 +29,8 @@ Write immediately without introduction.
 
 ## Before Starting
 
-> Read `reference/json-and-frontmatter-schema.md` for the complete field reference.
-> Read `build-interactive-lj/reference/json-schema.md` for block type details.
+> Read `build-interactive-lj/reference/json-schema.md` for content.json schema, block types, and field reference.
+> Read `reference/frontmatter-schema.md` for website front matter fields, CTA types, and paired examples.
 > Read `build-interactive-lj/reference/proven-patterns.md` for reusable patterns.
 
 ---
