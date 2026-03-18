@@ -94,6 +94,14 @@ Summary of created files, quality metrics, and PR guidance.
 
 ---
 
+## Session Planning
+
+For paths with 7+ milestones, plan for two sessions. The natural break point is after file creation and recommender mapping (Steps 1–4) and before selector discovery (Steps 5–8). All artifacts are on disk at the break point, so the second session reads the existing files and resumes at selector discovery.
+
+For paths with fewer milestones, a single session is usually sufficient.
+
+---
+
 ## Reference Documentation
 
 | Document | Purpose |

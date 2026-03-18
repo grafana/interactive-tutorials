@@ -20,6 +20,8 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 
 **Expected time:** 30-60 minutes depending on the number of milestones.
 
+**Session planning:** For paths with 7+ milestones, plan for two sessions. The natural break point is after scaffolding and recommender mapping (Steps 1–4) and before selector discovery (Steps 5–7). All artifacts are on disk at the break point, so the second session reads the existing files and resumes at selector discovery.
+
 ---
 
 ## Critical Rules
