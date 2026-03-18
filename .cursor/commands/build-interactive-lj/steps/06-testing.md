@@ -29,10 +29,10 @@ Testing is a **collaborative process** where AI and user work together:
 
 ## Access the Block Editor
 
-Testing happens in **Pathfinder Dev Mode** at: `https://learn.grafana-ops.net/?pathfinder-dev=true`
+Testing happens in **Pathfinder Dev Mode** at: `https://learn.grafana.net/?pathfinder-dev=true`
 
 > ⚠️ **Important:** This is different from selector discovery (Step 5), which uses 
-> `https://learn.grafana-ops.net/` to walk through the actual UI.
+> `https://learn.grafana.net/` to walk through the actual UI.
 
 Dev mode must be enabled before you can access the Block Editor. If this is the user's first time, direct them to SETUP.md section 4.
 
@@ -41,7 +41,7 @@ Dev mode must be enabled before you can access the Block Editor. If this is the 
 Have you enabled Dev Mode before? (If not, see SETUP.md section 4 for first-time setup)
 
 To test, open Pathfinder in dev mode:
-https://learn.grafana-ops.net/?pathfinder-dev=true
+https://learn.grafana.net/?pathfinder-dev=true
 
 Once the page loads, the Pathfinder sidebar should open automatically with Dev Tools visible.
 Click on "Interactive guide editor" to open the Block Editor.
@@ -50,7 +50,7 @@ Let me know when you're in the Block Editor. (Y/N)
 ```
 
 > ⚠️ **First-time users:** Must enable dev mode first at:
-> `https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true`
+> `https://learn.grafana.net/plugins/grafana-pathfinder-app?dev=true`
 > See SETUP.md section 4 for full instructions.
 
 ---

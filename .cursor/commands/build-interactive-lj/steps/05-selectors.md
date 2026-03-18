@@ -13,14 +13,14 @@ Use browser automation to find CSS selectors for each interactive element.
 
 ## Authentication Setup (REQUIRED)
 
-Selector discovery happens by walking through the actual Grafana UI at: `https://learn.grafana-ops.net/`
+Selector discovery happens by walking through the actual Grafana UI at: `https://learn.grafana.net/`
 
 > ⚠️ **Important:** This is different from testing in Pathfinder (Step 6), which uses 
-> `https://learn.grafana-ops.net/?pathfinder-dev=true`
+> `https://learn.grafana.net/?pathfinder-dev=true`
 
 Playwright opens a **fresh browser with no session**. Before discovering selectors:
 
-1. **Navigate to the test environment** using Playwright: `https://learn.grafana-ops.net/`
+1. **Navigate to the test environment** using Playwright: `https://learn.grafana.net/`
 2. **User must manually log in** through the Playwright browser window (Okta SAML)
 3. **Wait for user confirmation** that they are logged in
 4. **Walk through the UI flow** — navigate to pages where the learning path actions happen and inspect the DOM
@@ -32,7 +32,7 @@ Playwright opens a **fresh browser with no session**. Before discovering selecto
 ```
 I'll open the Grafana UI to discover selectors by walking through the actual pages.
 
-Opening: https://learn.grafana-ops.net/
+Opening: https://learn.grafana.net/
 
 Please log in when the browser window appears. Let me know when you're logged in. (Y/N)
 ```
@@ -66,7 +66,7 @@ Discover immediately without introduction.
 
 ## Discovery Process
 
-Walk through the actual Grafana UI at `https://learn.grafana-ops.net/` to find selectors:
+Walk through the actual Grafana UI at `https://learn.grafana.net/` to find selectors:
 
 1. Navigate to the starting page for the learning path (e.g., Dashboards page for dashboard creation flows)
 2. For each interactive block with empty `reftarget`:
