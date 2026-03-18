@@ -71,10 +71,28 @@ Walk through the actual Grafana UI at `https://learn.grafana.net/` to find selec
 1. Navigate to the starting page for the learning path (e.g., Dashboards page for dashboard creation flows)
 2. For each interactive block with empty `reftarget`:
    - Navigate to the relevant page in Grafana
-   - Use Playwright snapshot to inspect the DOM
+   - Query the DOM for the element (see Playwright usage below)
    - Find the element and extract the best available selector
    - Update the content.json with the discovered selector
 3. Continue through the entire UI flow, capturing selectors as you go
+
+### Efficient Playwright Usage
+
+Full-page snapshots are expensive and consume significant context. Prefer targeted queries:
+
+| Goal | Preferred approach | Avoid |
+|------|--------------------|-------|
+| Find a button's selector | `browser_evaluate`: `document.querySelector('button')?.getAttribute('data-testid')` | Full-page snapshot |
+| Check if element exists | `browser_evaluate`: `!!document.querySelector('[data-testid="..."]')` | Full-page snapshot |
+| List all data-testids on page | `browser_evaluate`: `[...document.querySelectorAll('[data-testid]')].map(e => e.getAttribute('data-testid'))` | Full-page snapshot |
+| Find elements near a label | `browser_evaluate`: query by label text, then inspect siblings | Full-page snapshot |
+
+**When a snapshot IS useful:**
+- When you have no idea what selectors exist in a region
+- When the element structure is complex (nested menus, modals)
+- Limit to one snapshot per page, then switch to targeted queries
+
+**Batch discoveries per page.** Group interactive blocks by the page they appear on. Navigate once, discover all selectors for that page, then move on. This avoids redundant navigation and repeated snapshots.
 
 ### 3-Attempt Limit Per Block
 
