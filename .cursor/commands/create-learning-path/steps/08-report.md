@@ -4,6 +4,18 @@ Summarize the session and provide guidance for creating PRs.
 
 ---
 
+## CODEOWNERS (REQUIRED)
+
+Add the new learning path directory to `.github/CODEOWNERS` with the user as code owner. Insert the entry alphabetically in the "Guide directories" section:
+
+```
+/[slug]-lj/ @[github-username]
+```
+
+Ask the user for their GitHub username if not already known from the existing CODEOWNERS entries.
+
+---
+
 ## Summary
 
 Display a completion summary showing: milestone counts (interactive/markdown-only/hugo-only), all created files across all three repos, and recommender mapping status.
