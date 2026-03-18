@@ -31,7 +31,7 @@ Write immediately without introduction.
 
 > Read `build-interactive-lj/reference/json-schema.md` for content.json schema, block types, and field reference.
 > Read `reference/frontmatter-schema.md` for website front matter fields, CTA types, and paired examples.
-> Read `build-interactive-lj/reference/proven-patterns.md` for reusable patterns.
+> Proven patterns for common UI elements are available in `.cursor/proven-patterns.mdc` (loaded automatically when editing content.json files).
 
 ---
 

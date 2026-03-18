@@ -108,7 +108,7 @@ For paths with fewer milestones, a single session is usually sufficient.
 |----------|---------|
 | `reference/frontmatter-schema.md` | Website front matter field reference, CTA types, and paired examples |
 | `build-interactive-lj/reference/json-schema.md` | content.json schema (v1.0.0), block types, action types, and field reference |
-| `build-interactive-lj/reference/proven-patterns.md` | Reusable interactive patterns by category |
+| `.cursor/proven-patterns.mdc` | Reusable interactive patterns (loaded automatically for content.json) |
 | `build-interactive-lj/reference/selector-patterns.md` | Selector stability rules and anti-patterns |
 
 ---

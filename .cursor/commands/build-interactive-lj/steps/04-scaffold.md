@@ -30,8 +30,8 @@ Scaffold immediately without introduction.
 
 ## Before Starting
 
-> 💡 **Important:** Before scaffolding, consult `reference/proven-patterns.md` for reusable JSON 
-> structures that match common Grafana UI elements (navigation, forms, buttons, etc.).
+> 💡 **Important:** Proven patterns for common Grafana UI elements (navigation, forms, buttons, etc.)
+> are in `.cursor/proven-patterns.mdc` — automatically loaded when editing content.json files.
 
 > 📖 **Critical:** Read `reference/json-schema.md` for complete JSON structure requirements and 
 > field reference. This ensures you use correct field names (`content` not `description`, 
