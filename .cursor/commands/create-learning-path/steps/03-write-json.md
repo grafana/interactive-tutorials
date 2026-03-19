@@ -97,6 +97,18 @@ Convert the plan's step descriptions into blocks:
 | Multi-option flow (create new vs use existing) | `markdown` with table |
 | Sequential UI steps in a group | `section` wrapping multiple blocks |
 
+**CRITICAL:** Every `section` block MUST include `"autoCollapse": false`:
+
+```json
+{
+  "type": "section",
+  "autoCollapse": false,
+  "blocks": [ ... ]
+}
+```
+
+**CRITICAL:** All links to images and documentation in content.json files MUST use absolute URLs. Use `https://grafana.com/docs/...` for Grafana docs and `https://grafana.com/oss/...` for OSS pages. Never use relative paths like `/docs/...` or `/oss/...`.
+
 ### 3. Leave Selectors Empty
 
 For interactive blocks, set `"reftarget": ""` — selectors are discovered in Step 5.
