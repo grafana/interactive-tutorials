@@ -12,14 +12,31 @@
       "autoCollapse": false,
       "blocks": [
         {
+          "type": "multistep",
+          "content": "Navigate to **Connections > Add new connection**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']" }
+          ]
+        },
+        {
           "type": "interactive",
-          "action": "noop",
-          "content": "Return to the HAProxy integration page:\n\na. Click **Connections > Add new connection** in the left-side menu\n\nb. Search for `HAProxy` and click the tile"
+          "action": "formfill",
+          "reftarget": "[aria-label='Search connections by name']",
+          "targetvalue": "HAProxy",
+          "content": "In the search box, type **HAProxy** to filter the integrations."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='install-button']",
+          "reftarget": "a[href='/connections/add-new-connection/haproxy']",
+          "content": "Click the **HAProxy** tile to return to the integration page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='install-button']",
           "content": "Scroll to the bottom of the page and click **Install** to add the prebuilt dashboards and alerts to your Grafana instance.\n\nOnce installed, the dashboards appear in your **Dashboards** list under the integration folder.",
           "requirements": ["on-page:/connections/add-new-connection/haproxy"],
           "doIt": false
@@ -27,7 +44,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[href^='/dashboards/f/integration---haproxy']",
+          "reftarget": "a[data-testid='view-dashboards-button']",
           "content": "Click **View Dashboards** to see the installed HAProxy dashboards.",
           "requirements": ["on-page:/connections/add-new-connection/haproxy"]
         }
