@@ -30,8 +30,8 @@ Scaffold immediately without introduction.
 
 ## Before Starting
 
-> 💡 **Important:** Before scaffolding, consult `reference/proven-patterns.md` for reusable JSON 
-> structures that match common Grafana UI elements (navigation, forms, buttons, etc.).
+> 💡 **Important:** Proven patterns for common Grafana UI elements (navigation, forms, buttons, etc.)
+> are in `.cursor/proven-patterns.mdc` — automatically loaded when editing content.json files.
 
 > 📖 **Critical:** Read `reference/json-schema.md` for complete JSON structure requirements and 
 > field reference. This ensures you use correct field names (`content` not `description`, 
@@ -381,27 +381,6 @@ Before proceeding to Step 5, verify EACH content.json file:
 
 ---
 
-## Display
+## Completion
 
-Use this exact format:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 4 complete: Scaffold
-
-Created [N] content.json files:
-├── [slug]-lj/milestone-1/content.json ([N] blocks)
-├── [slug]-lj/milestone-2/content.json ([N] blocks)
-└── ...
-
-Supplementary content included:
-├── More to explore: [N] milestones
-├── Related paths: [N] milestones
-└── Troubleshooting: [N] milestones
-
-Verification: All checks passed ✓
-
-⏳ Next: Step 5 - Selector Discovery
-   Ready to open the test environment?
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a summary listing: all created content.json files (with block counts), any supplementary content included, and verification status. Ask the user if they're ready for Step 5 (Selector Discovery).

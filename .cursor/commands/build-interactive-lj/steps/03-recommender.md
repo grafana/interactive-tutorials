@@ -86,25 +86,9 @@ Automatically create the mapping JSON:
 
 ---
 
-## Display
+## Completion
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 3 complete: Recommender Mapping Created
-
-Added mapping to:
-├── grafana-recommender/internal/configs/state_recommendations/[file].json
-
-Mapping details:
-├── Title: [title]
-├── URL pattern: [pattern]
-├── Platform: [cloud/oss/both]
-└── Context: [area]
-
-⏳ Next: Step 4 - Scaffold Content Files
-   Ready to proceed? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a summary showing: the file modified, mapping title, URL pattern, platform, and context. Ask the user if they're ready for Step 4 (Scaffold Content Files).
 
 ---
 
