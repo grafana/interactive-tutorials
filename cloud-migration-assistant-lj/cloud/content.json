@@ -25,7 +25,9 @@
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/migrate-to-cloud']",
           "content": "Open the navigation menu on the left side of the screen and select **Administration** > **General** > **Migrate to Grafana Cloud**.",
-          "requirements": ["navmenu-open"],
+          "requirements": [
+            "navmenu-open"
+          ],
           "doIt": false
         },
         {
@@ -33,7 +35,9 @@
           "action": "button",
           "reftarget": "Generate a migration token",
           "content": "Click the **Generate a migration token** button.",
-          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "requirements": [
+            "on-page:/admin/migrate-to-cloud"
+          ],
           "doIt": false
         },
         {
@@ -76,7 +80,9 @@
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
           "content": "Navigate to **Home** > **Dashboards** to view your migrated dashboards. Verify that your folder structure is preserved and dashboards appear in their original locations.",
-          "requirements": ["navmenu-open"],
+          "requirements": [
+            "navmenu-open"
+          ],
           "doIt": false
         },
         {
@@ -89,7 +95,9 @@
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
           "content": "Navigate to **Connections** > **Data sources** to verify your data sources were migrated with their credentials.",
-          "requirements": ["navmenu-open"],
+          "requirements": [
+            "navmenu-open"
+          ],
           "doIt": false
         },
         {
@@ -97,7 +105,9 @@
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
           "content": "If you migrated alerting resources, navigate to **Alerts & IRM** > **Alerting** > **Alert rules** to verify alert rules are present. By default, alert rules are migrated in a 'paused' state to prevent duplicate notifications from both your source and cloud instances.",
-          "requirements": ["navmenu-open"],
+          "requirements": [
+            "navmenu-open"
+          ],
           "doIt": false
         },
         {
@@ -117,85 +127,75 @@
     },
     {
       "type": "section",
-      "title": "Option 1: Manually unpause alert rules",
+      "title": "Option 1: Manually resume alert rules",
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
           "content": "In your Grafana Cloud instance, navigate to **Alerts & IRM** > **Alerting** > **Alert rules**.",
-          "requirements": ["navmenu-open"],
+          "requirements": [
+            "navmenu-open"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='radiogroup']",
+          "content": "Ensure you are in the **Grouped** view. This is the default view and shows alert rules organized by folder.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ],
           "doIt": false
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Review the list of alert rules (all should be in paused state)."
+          "content": "Before resuming alert rules here, disable or silence the corresponding alerts in your self-managed instance to avoid receiving duplicate notifications."
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Select the alert rules you want to activate by checking the boxes next to them."
+          "content": "Locate the folder containing your migrated alert rules."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='treeitem']:first-child [aria-label='Folder actions']",
+          "content": "Click the **Actions** button next to the folder name and select **Resume all rule evaluation**. This resumes all alert rules within that folder. To resume a specific rule instead, click the **More** button next to the rule name and select **Resume rule evaluation**.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Click the **Unpause** button at the top of the list."
+          "content": "Repeat for each folder or specific rule containing paused alert rules. There is no single button to resume all rules at once — you must resume them per folder or per rule."
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Verify that the selected alert rules change to an active state."
+          "content": "Verify that alert rules show a **Normal** state."
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Monitor alert notifications to ensure they fire correctly and reach the right contact points."
+          "content": "Monitor alert notifications to confirm they fire correctly and reach the right contact points."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "content": "Before activating alert rules in Grafana Cloud, disable or silence alerts in your self-managed instance to avoid receiving duplicate notifications."
     },
     {
       "type": "section",
       "title": "Option 2: Re-migrate alert rules in an active state",
       "blocks": [
         {
-          "type": "markdown",
-          "content": "If you prefer to migrate alert rules in their original state from your self-managed instance, you can configure this setting and re-run the migration."
-        },
-        {
           "type": "interactive",
           "action": "noop",
-          "content": "On your self-managed Grafana instance, locate your Grafana configuration file (`grafana.ini` or `custom.ini`) and add or modify the following setting:\n\n```ini\n[cloud_migration]\nalert_rules_state = unchanged\n```"
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "Save the configuration file and restart your Grafana instance."
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "Return to the Migration Assistant at **Home** > **Administration** > **General** > **Migrate to Grafana Cloud** on your self-managed instance."
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "Build a new snapshot by clicking **Build snapshot**, then click **Upload snapshot** to re-run the migration."
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "In Grafana Cloud, navigate to **Alerts & IRM** > **Alerting** > **Alert rules** and verify that alert rules are now in their original state (active or paused) from your self-managed instance."
+          "content": "If you prefer to migrate alert rules in their original state, you can configure a setting on your self-managed instance and re-upload the snapshot. Switch to the **self-managed guide** and follow the optional **Re-migrate alert rules in an active state** section to complete this from your source instance."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "content": "When you re-upload a snapshot, resources with matching UIDs are updated rather than duplicated. This means your alert rules will be updated to reflect their new state without creating duplicate rules."
     },
     {
       "type": "markdown",
