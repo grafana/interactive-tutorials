@@ -1,0 +1,189 @@
+{
+  "id": "create-first-slo",
+  "title": "Create Your First SLO",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this quick start guide, you'll create a **Service Level Objective** (SLO) using a ratio query.\n\nYou'll learn how to:\n- Define a service level indicator (SLI) with success and total metrics\n- Set a target percentage and error budget\n- Name and save your SLO\n\nThis takes about **3 minutes**."
+    },
+    {
+      "type": "section",
+      "id": "navigate-to-wizard",
+      "title": "Open the SLO creation wizard",
+      "objectives": ["on-page:/a/grafana-slo-app/wizard/new"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-slo-app/wizard/new",
+          "content": "Let's start by navigating to the SLO creation wizard.",
+          "showMe": false,
+          "doIt": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "define-sli",
+      "title": "Define the service level indicator",
+      "requirements": ["on-page:/a/grafana-slo-app/wizard/new"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The **service level indicator** (SLI) is the metric that measures how well your service is performing. You'll define it using a **ratio query** — dividing successful events by total events."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='time-window-input']",
+          "content": "The **time window** sets the evaluation period for your SLO. The default of 30 days works well for most use cases.",
+          "tooltip": "Leave this at 30 days for a standard SLO evaluation window.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-type-ratio']",
+          "content": "Select the **Ratio** query type. This lets you define success and total event metrics separately — the most common way to measure an SLI.",
+          "tooltip": "Ratio queries compare successful events against total events."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='success-metric-field'] textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "sum(rate(http_requests_total{code=~\"2..\"}[5m]))",
+          "content": "Enter the **success metric** — a PromQL query that counts successful events.\n\nThis example counts HTTP requests with 2xx status codes.",
+          "tooltip": "This query measures the rate of successful HTTP responses.",
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='total-metric-field'] textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "sum(rate(http_requests_total[5m]))",
+          "content": "Enter the **total metric** — a PromQL query that counts all events.\n\nThis example counts all HTTP requests regardless of status code.",
+          "tooltip": "This query measures the rate of all HTTP requests.",
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='run-queries-btn']",
+          "content": "Click **Run queries** to preview the results and verify your metrics are returning data.",
+          "tooltip": "Validates that your PromQL queries return data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='walk-next-button']",
+          "content": "Click **Set target and error budget** to proceed to the next step."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "set-target",
+      "title": "Set the target and error budget",
+      "requirements": ["section-completed:define-sli"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The **target** is the percentage of requests that should succeed. The **error budget** is calculated automatically as the remaining percentage — the amount of failure you can tolerate."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='target-input']",
+          "targetvalue": "99.9",
+          "content": "Enter **99.9** as the target percentage. This means 99.9% of requests should succeed, leaving a 0.1% error budget.",
+          "tooltip": "A 99.9% target is a common starting point for web services."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='walk-next-button']",
+          "content": "Click **Add name and description** to continue."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-name",
+      "title": "Name your SLO",
+      "requirements": ["section-completed:set-target"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='slo-name-input']",
+          "targetvalue": "HTTP Request Availability",
+          "content": "Give your SLO a clear, descriptive name. This appears on dashboards and in alert rules.",
+          "tooltip": "Choose a name that identifies the service and what's being measured."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[data-testid='slo-description-input']",
+          "targetvalue": "Measures the percentage of successful HTTP responses (2xx) across all services.",
+          "content": "Add a description that explains what this SLO measures. This helps your team understand the SLO's purpose.",
+          "tooltip": "A good description helps teammates understand what this SLO tracks."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='walk-next-button']",
+          "content": "Click **Add SLO alert rules** to continue. We'll skip optional fields like folder and labels for now."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "skip-alerts",
+      "title": "Configure alerts (optional)",
+      "requirements": ["section-completed:add-name"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "SLO alerting notifies your team when the error budget is burning too fast. For this quick start, we'll skip alerts — you can enable them later."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#generate-alerts",
+          "content": "The **Add SLO alert rules** checkbox enables burn-rate alerts. Leave it unchecked for now.",
+          "tooltip": "You can enable alerts later by editing the SLO.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='walk-next-button']",
+          "content": "Click **Review SLO** to see a summary of your configuration."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "review-and-save",
+      "title": "Review and save",
+      "requirements": ["section-completed:skip-alerts"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Review your SLO configuration. You can click **Edit section** on any card to go back and make changes."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='walk-save-button']",
+          "content": "Everything looks good! Click **Save and view all SLOs** to create your SLO.",
+          "tooltip": "This saves the SLO and starts generating recording rules."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## What you've learned\n\n- How to define an SLI using a **ratio query** with success and total metrics\n- How to set an SLO **target** and understand error budgets\n- How to **name and save** an SLO in Grafana\n\n## Next steps\n\n- **Enable alerts**: Edit your SLO to add burn-rate alert rules\n- **Add labels**: Use `service_name` and `team_name` labels to organize SLOs\n- **Explore dashboards**: View the auto-generated SLO dashboard to monitor performance\n- **Create more SLOs**: Define SLOs for other critical service metrics"
+    }
+  ]
+}
