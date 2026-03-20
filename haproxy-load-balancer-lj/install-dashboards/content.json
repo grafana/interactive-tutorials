@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "haproxy-load-balancer-install-dashboards",
+  "title": "Install prebuilt HAProxy dashboards",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Grafana Cloud provides prebuilt dashboards for HAProxy that give you immediate visibility into frontend traffic, backend health, and server performance.\n\nThe dashboards are installed from the integration page and appear in your Dashboards list."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Navigate to **Connections > Add new connection**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']" }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[aria-label='Search connections by name']",
+          "targetvalue": "HAProxy",
+          "content": "In the search box, type **HAProxy** to filter the integrations."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/add-new-connection/haproxy']",
+          "content": "Click the **HAProxy** tile to return to the integration page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='install-button']",
+          "content": "Scroll to the bottom of the page and click **Install** to add the prebuilt dashboards and alerts to your Grafana instance.\n\nOnce installed, the dashboards appear in your **Dashboards** list under the integration folder.",
+          "requirements": ["on-page:/connections/add-new-connection/haproxy"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='view-dashboards-button']",
+          "content": "Click **View Dashboards** to see the installed HAProxy dashboards.",
+          "requirements": ["on-page:/connections/add-new-connection/haproxy"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click **Dashboards** in the left-side menu.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Find and open the **HAProxy overview** dashboard from the integration folder.\n\nThis dashboard provides a high-level view of your HAProxy instance."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Key metrics to watch\n\nThe prebuilt dashboards organize HAProxy metrics into several categories:\n\n- **Frontend metrics** — Track incoming connection rates (`haproxy_frontend_current_sessions`), HTTP request rates, and error responses (4xx and 5xx).\n- **Backend metrics** — Monitor backend server health, active connections (`haproxy_backend_current_sessions`), and response times.\n- **Connection metrics** — Watch for connection limits being reached (`haproxy_frontend_limit_sessions`) and connection queue depth.\n- **Latency metrics** — Review average and percentile response times (`haproxy_backend_response_time_average_seconds`) to detect performance degradation."
+    },
+    {
+      "type": "markdown",
+      "content": "## What to look for\n\n- **High error rates** on frontends may indicate misconfigured backends or application issues.\n- **Backend servers marked DOWN** mean HAProxy has stopped routing traffic to those servers.\n- **Queue depth increasing** suggests backends can't keep up with incoming traffic.\n- **Rising latency** on a specific backend may point to resource exhaustion or application performance issues.\n\nExplore the dashboard panels to familiarize yourself with the data available. You can customize these dashboards or create your own based on the collected metrics."
+    }
+  ]
+}
