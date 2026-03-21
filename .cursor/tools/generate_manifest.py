@@ -36,7 +36,6 @@ Exit codes:
 import json
 import sys
 import argparse
-import os
 
 
 REQUIRED_FIELDS = ["type", "description", "author"]

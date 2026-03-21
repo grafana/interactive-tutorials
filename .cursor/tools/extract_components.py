@@ -255,13 +255,25 @@ def extract_file(file_path: str) -> dict:
         if field_tooltip_m and not props.get("tooltip"):
             props["tooltip"] = field_tooltip_m.group(1)
 
+        # Extract button children text when no label prop is available
+        button_text = None
+        if component_name == "Button":
+            button_text = props.get("label")
+            if not button_text and content[m.end() - 1] == ">":
+                after = content[m.end():]
+                close_m = re.search(r'^(.*?)</Button>', after, re.DOTALL)
+                if close_m:
+                    inner = re.sub(r'<[^>]+>', '', close_m.group(1)).strip()
+                    if inner and len(inner) < 60:
+                        button_text = inner
+
         # Grade the selector
         grading = grade_element({
             "data-testid": props.get("data-testid"),
             "id": props.get("id"),
             "aria-label": props.get("aria-label"),
             "name": props.get("name"),
-            "button_text": props.get("label") if component_name == "Button" else None,
+            "button_text": button_text,
             "componentType": component_name,
         })
 

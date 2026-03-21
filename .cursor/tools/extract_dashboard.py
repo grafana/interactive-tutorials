@@ -248,8 +248,18 @@ def compute_drift_hash(dashboard: dict) -> str:
 
 def extract(dashboard_path: str) -> dict:
     """Run the full extraction pipeline and return a structured report dict."""
-    with open(dashboard_path) as f:
-        dashboard = json.load(f)
+    try:
+        with open(dashboard_path, encoding="utf-8") as f:
+            dashboard = json.load(f)
+    except FileNotFoundError:
+        print(f"ERROR: file not found: {dashboard_path}", file=sys.stderr)
+        sys.exit(2)
+    except UnicodeDecodeError as e:
+        print(f"ERROR: encoding error in {dashboard_path}: {e}", file=sys.stderr)
+        sys.exit(2)
+    except json.JSONDecodeError as e:
+        print(f"ERROR: invalid JSON in {dashboard_path}: {e}", file=sys.stderr)
+        sys.exit(2)
 
     uid = dashboard.get("uid", "")
     title = dashboard.get("title", "")

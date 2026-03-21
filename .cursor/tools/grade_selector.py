@@ -16,8 +16,6 @@ Usage (as module):
 import json
 import sys
 import argparse
-import re
-
 
 def grade_element(element: dict) -> dict:
     """
