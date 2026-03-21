@@ -17,6 +17,13 @@ import json
 import sys
 import argparse
 
+def css_attr_value(value: str) -> str:
+    """
+    Escape a string for use inside a single-quoted CSS attribute selector.
+    """
+    return value.replace("\\", "\\\\").replace("'", "\\'")
+
+
 def grade_element(element: dict) -> dict:
     """
     Grade a UI element's best selector and derive recommended guide action.
@@ -77,7 +84,7 @@ def grade_element(element: dict) -> dict:
         elif variable_in_title or "$" in panel_title:
             # Variable-interpolated title
             grade = "red"
-            safe_title = panel_title
+            safe_title = css_attr_value(panel_title)
             selector = f"section[data-testid='data-testid Panel header {safe_title}']"
             reason = "Variable-interpolated title — selector depends on current variable value"
             action = "highlight"
@@ -85,14 +92,16 @@ def grade_element(element: dict) -> dict:
         elif duplicate_title:
             # Duplicate title — Yellow
             grade = "yellow"
-            selector = f"section[data-testid='data-testid Panel header {panel_title}']:nth-match(1)"
+            safe_title = css_attr_value(panel_title)
+            selector = f"section[data-testid='data-testid Panel header {safe_title}']:nth-match(1)"
             reason = "Duplicate panel title — nth-match or row-scoped selector required"
             action = "highlight"
             do_it = False
         else:
             # Unique title — Green
             grade = "green"
-            selector = f"section[data-testid='data-testid Panel header {panel_title}']"
+            safe_title = css_attr_value(panel_title)
+            selector = f"section[data-testid='data-testid Panel header {safe_title}']"
             reason = "Unique panel title — stable data-testid selector"
             action = "highlight"
             do_it = False  # Dashboard panels are view-only by default
@@ -110,7 +119,7 @@ def grade_element(element: dict) -> dict:
 
     # Green: data-testid or id
     if data_testid:
-        selector = f"[data-testid='{data_testid}']"
+        selector = f"[data-testid='{css_attr_value(data_testid)}']"
         if is_secret:
             action = "highlight"
             do_it = False
@@ -141,7 +150,7 @@ def grade_element(element: dict) -> dict:
         }
 
     if id_attr:
-        selector = f"#{id_attr}"
+        selector = f"[id='{css_attr_value(id_attr)}']"
         if is_secret:
             action = "highlight"
             do_it = False
@@ -176,7 +185,7 @@ def grade_element(element: dict) -> dict:
         }
 
     if aria_label:
-        selector = f"[aria-label='{aria_label}']"
+        selector = f"[aria-label='{css_attr_value(aria_label)}']"
         if is_secret:
             action, do_it = "highlight", False
             reason = "Yellow (aria-label) but secret — doIt: false required"
@@ -194,7 +203,7 @@ def grade_element(element: dict) -> dict:
         }
 
     if name:
-        selector = f"[name='{name}']"
+        selector = f"[name='{css_attr_value(name)}']"
         if is_secret:
             action, do_it = "highlight", False
             reason = "Yellow (name attr) but secret — doIt: false required"

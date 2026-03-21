@@ -281,11 +281,34 @@ def extract(dashboard_path: str) -> dict:
     # Handle both flat panels and legacy rows format
     raw_panels = dashboard.get("panels", [])
     if not raw_panels and "rows" in dashboard:
-        # Legacy format: flatten rows into panels
+        # Legacy format: flatten rows into panels and synthesize gridPos.y so
+        # fold estimation (above/below) remains meaningful.
+        raw_panels = []
+        row_y_offset = 0
         for row in dashboard["rows"]:
-            raw_panels.append({"type": "row", "title": row.get("title", ""), "collapsed": False, "gridPos": {"y": 0}})
-            for p in row.get("panels", []):
-                raw_panels.append(p)
+            row_panels = row.get("panels", [])
+            row_y = row.get("gridPos", {}).get("y", row_y_offset)
+            raw_panels.append({
+                "type": "row",
+                "title": row.get("title", ""),
+                "collapsed": row.get("collapse", False),
+                "gridPos": {"y": row_y},
+            })
+
+            row_max_bottom = row_y
+            for p in row_panels:
+                p_copy = dict(p)
+                grid_pos = dict(p_copy.get("gridPos", {}))
+                local_y = grid_pos.get("y", 0)
+                h = grid_pos.get("h", 4)
+                grid_pos["y"] = row_y + local_y
+                grid_pos["h"] = h
+                p_copy["gridPos"] = grid_pos
+                raw_panels.append(p_copy)
+                row_max_bottom = max(row_max_bottom, grid_pos["y"] + h)
+
+            # Ensure the next row starts below this one.
+            row_y_offset = max(row_y_offset, row_max_bottom)
 
     extracted_panels = extract_panels(raw_panels, raw_panels)
     rows = extract_rows(raw_panels)

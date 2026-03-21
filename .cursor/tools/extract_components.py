@@ -195,8 +195,9 @@ def extract_file(file_path: str) -> dict:
             imports["external"].append(source)
 
     # ── Extract FieldSets ────────────────────────────────────────────────────
+    fieldset_names = "|".join(re.escape(name) for name in FIELDSET_COMPONENTS)
     fs_pattern = re.compile(
-        r'<(?:FieldSet)\s([^>]*?)(?:/>|>)',
+        r'<(?:' + fieldset_names + r')\s([^>]*?)(?:/>|>)',
         re.DOTALL
     )
     for m in fs_pattern.finditer(content):

@@ -23,7 +23,7 @@ This phase follows the Phase 0 pattern from the skill-memory convention (`.curso
 
 Read `{guide_dir}/assets/manifest.yaml`. Extract:
 
-- `dashboard.uid` and `dashboard.source_sha256` — for drift detection
+- `dashboard.uid` and `input_sha256` — for drift detection
 - `guide.sections` — the section IDs from the previous run
 - `guide.selector_quality` — the previous selector quality breakdown
 - `files` — paths to all analysis artifacts

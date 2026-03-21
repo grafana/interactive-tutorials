@@ -87,11 +87,10 @@ def build_manifest(meta: dict, content_id: str) -> dict:
         valid_tiers = {"local", "cloud", "managed"}
         tier = test_env.get("tier", "")
         if tier not in valid_tiers:
-            print(
-                f"WARNING: testEnvironment.tier '{tier}' is not valid; "
-                f"expected one of {valid_tiers}. 'play' is not a tier — "
-                f"use tier:'cloud' + instance:'play.grafana.org'.",
-                file=sys.stderr,
+            raise ValueError(
+                f"testEnvironment.tier '{tier}' is not valid; "
+                f"expected one of {valid_tiers}. "
+                f"Use tier:'cloud' + instance:'play.grafana.org' for play."
             )
         manifest["testEnvironment"] = test_env
 
@@ -186,7 +185,11 @@ def main():
         sys.exit(1)
 
     # Build manifest
-    manifest = build_manifest(meta, content_id)
+    try:
+        manifest = build_manifest(meta, content_id)
+    except ValueError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     # Output
     output_str = json.dumps(manifest, indent=2) + "\n"
