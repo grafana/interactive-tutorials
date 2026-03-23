@@ -56,3 +56,4 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/lint](.cursor/commands/lint.md) | Validate guide JSON structure |
 | [/check](.cursor/commands/check.md) | Check guide quality against best practices |
 | [/attack](.cursor/commands/attack.md) | Find issues by simulating confused users |
+| [/build-interactive-lj](.cursor/commands/build-interactive-lj/README.md) | Multi-phase learning journey builder |
