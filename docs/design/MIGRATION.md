@@ -7,6 +7,12 @@ This document describes the phased migration of the `interactive-tutorials` repo
 - [package-authoring.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/package-authoring.md) — manifest field reference and templates
 - [CLI_TOOLS.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) — CLI commands: `validate --package/--packages`, `build-repository`, `build-graph`, `schema manifest`
 
+**Related design documents (in this repo):**
+- [DEDUPLICATION.md](DEDUPLICATION.md) — post-migration plan for removing duplicate recommendation rules from the recommender and freezing `index.json`
+
+**Partner-facing documentation:**
+- [Guide Author Migration to the Pathfinder Package Format](https://docs.google.com/document/d/1LQkqzjZwLibQPCg91SIwxDvYELv4xy2f2Fr9Y1wN0FY/edit?usp=sharing) — shared with docs partners to help them adapt their writing guidelines for new content (covers what `manifest.json` is, why it's necessary, and how to write guides going forward)
+
 ---
 
 ## Living document protocol
@@ -30,9 +36,9 @@ At the time of writing, this repository contains many guides (`content.json`) an
 
 ## Strategy
 
-**Pilot-first.** This branch migrates a representative subset (2–3 standalone guides + 1 learning journey) end-to-end: documentation, manifests, CI, deploy. Full migration is then a matter of reusing the migration skill on the remaining guides.
+**Pilot-first.** This branch migrates a representative subset (2–3 standalone guides + 1 learning journey) end-to-end: documentation, manifests, CI, deploy. Full migration is then a matter of reusing the migration skill (`.cursor/skills/migrate-guide/SKILL.md`) on the remaining guides. The skill produces complete packages — `manifest.json` alongside the existing `content.json` — and is the primary mechanism for all migration work.
 
-**Coexistence.** During partial migration, `index.json` continues to serve as the recommendation rules source for all guides. Guides with `manifest.json` carry their own `targeting`, but `index.json` entries are retained for all guides until the recommender consumes `repository.json` directly.
+**Coexistence.** During partial migration, three sources of recommendation rules overlap: (1) `index.json` entries for standalone guides, (2) `targeting.match` in each package's `manifest.json`, and (3) static `"type": "learning-journey"` rules in `grafana-recommender`'s `state_recommendations/*.json` files. All three are retained during migration. The recommender's `/api/v1/recommend` endpoint already evaluates both its static rules and package manifest targeting from `repository.json`, so duplication is expected and visible in the dev environment during coexistence. Deduplication is a post-migration concern addressed in [DEDUPLICATION.md](DEDUPLICATION.md).
 
 **repository.json is CI-generated.** It is never committed to git. CI generates it on every push and the deploy pipeline publishes it to the CDN alongside guide content. Paths in `repository.json` entries are relative to the CDN publication root (e.g., `alerting-101/` not `/guides/alerting-101/`).
 
@@ -86,11 +92,11 @@ These invariants hold throughout the entire migration — pilot and full:
 
 ### Field derivation rules
 
-The complete field derivation rules — specifying where each manifest field's data comes from — are defined in [`docs/manifest-reference.md`](manifest-reference.md) under "Field derivation rules." The rules are split into three tables covering standalone guides, learning path steps, and learning paths.
+The complete field derivation rules — specifying where each manifest field's data comes from — are defined in [`docs/manifest-reference.md`](../manifest-reference.md) under "Field derivation rules." The rules are split into three tables covering standalone guides, learning path steps, and learning paths.
 
 The governing principle is **maximally complete from existing data, no guessing or inventing**.
 
-Guide-to-rule matching and `index.json` URL-to-directory mapping are also documented in [`docs/manifest-reference.md`](manifest-reference.md) under "Matching index.json rules to guides."
+Guide-to-rule matching and `index.json` URL-to-directory mapping are also documented in [`docs/manifest-reference.md`](../manifest-reference.md) under "Matching index.json rules to guides."
 
 ---
 
@@ -139,7 +145,7 @@ Guide-to-rule matching and `index.json` URL-to-directory mapping are also docume
 
   **Metadata conflict resolution:** The website markdown `_index.md` is the authoritative source for path-level metadata (title, description, category, learning objectives, prerequisites). However, metadata may exist in multiple places — `index.json`, `journeys.yaml`, the markdown frontmatter, and the markdown body. A conflict exists whenever the same field has different string values in two sources, even if the values are semantically similar. The skill must **flag the conflict for manual resolution** by the user rather than silently picking one source. The agent should present both values and ask the user which to use.
 
-  **Website markdown fallback:** If the website repository is not available or a guide has no corresponding website markdown, the skill applies the fallback rules defined in [`docs/manifest-reference.md`](manifest-reference.md) under "When website markdown is unavailable." Fields that cannot be derived are flagged for manual entry rather than guessed.
+  **Website markdown fallback:** If the website repository is not available or a guide has no corresponding website markdown, the skill applies the fallback rules defined in [`docs/manifest-reference.md`](../manifest-reference.md) under "When website markdown is unavailable." Fields that cannot be derived are flagged for manual entry rather than guessed.
 
   **Mapping LJ names to website paths:** The directory names differ between repos. The mapping is:
 
@@ -413,29 +419,31 @@ interactive-learning-{env}/
 
 ## Full migration (future work)
 
-After the pilot is validated end-to-end, full migration is a mechanical process:
+After the pilot is validated end-to-end, full migration is a mechanical process driven by the migrate-guide skill (`.cursor/skills/migrate-guide/SKILL.md`). The skill has been upgraded to produce complete packages — each invocation generates a `manifest.json` with all derivable fields (including `targeting.match` from `index.json` rules or recommender static rules) alongside the existing `content.json`.
 
 ### Standalone guides
 
 For each un-migrated standalone guide:
-1. Run the migration skill
-2. Validate
+1. Run the migration skill (`.cursor/skills/migrate-guide/SKILL.md`)
+2. Validate with `validate --package`
 3. Deploy
 
 ### Learning paths
 
 For each `*-lj` directory:
-1. Run the migration skill (path mode)
+1. Run the migration skill in path mode
 2. Validate path-level and all step-level manifests
 3. Deploy
 
-### index.json retirement
+### index.json freeze
 
 Once all guides carry their own `targeting` in `manifest.json` and the recommender consumes `repository.json`:
 1. Verify the recommender aggregates all `targeting.match` rules from `repository.json`
 2. Compare aggregated rules against `index.json` to ensure no rules are lost
-3. Remove `index.json` from the repository and deploy pipeline
-4. Remove the `validate-recommender-rules` CI job
+3. **Freeze `index.json`** — stop accepting new changes, but leave the file in place. The legacy `/recommend` endpoint still ingests it and will continue to run until traffic decays to irrelevance.
+4. The `validate-recommender-rules` CI job remains active while `index.json` is present.
+
+Actual removal of `index.json` and its CI job happens later, once the legacy `/recommend` endpoint is retired. That decision is gated on Prometheus metrics showing minimal or zero traffic to the legacy endpoint. See [DEDUPLICATION.md](DEDUPLICATION.md) Phase 4 for details.
 
 ### Multi-part guides (deferred)
 
@@ -469,19 +477,25 @@ Once the full migration is complete, add a build step to `validate-json.yml` tha
     echo "All packages have manifest.json."
 ```
 
-**When to enable:** Enable this step only after the full migration is complete (all guides have `manifest.json`). Until then, leave it commented out or gated behind a condition, since it would fail on every un-migrated guide. A practical trigger is the completion of `index.json` retirement — at that point the invariant must hold for the recommender to function correctly.
+**When to enable:** Enable this step only after the full migration is complete (all guides have `manifest.json`). Until then, leave it commented out or gated behind a condition, since it would fail on every un-migrated guide. A practical trigger is the `index.json` freeze — at that point, all guides must have manifests for the recommender to function correctly via `repository.json`.
 
 ### Legacy deploy cleanup
 
-Once it has been demonstrated that no recommender path depends on `index.json` or the `guides/` prefix on the CDN (i.e., all traffic has moved to `packages/` + `repository.json`):
+Once Prometheus metrics confirm that traffic to the legacy `/recommend` endpoint and the `guides/` CDN prefix has decayed to irrelevance:
 
 1. Remove the "Prepare tutorial files" step from `deploy.yml` that stages and publishes the `guides/` tree
 2. Remove the `guides/` push-to-GCS step
-3. Remove `index.json` from the repository (if not already done as part of `index.json` retirement above)
-4. Remove the `validate-recommender-rules` CI job (if not already removed)
+3. Remove `index.json` from the repository (it has been frozen since the index.json freeze step above)
+4. Remove the `validate-recommender-rules` CI job
 5. Optionally, drain the `guides/` bucket prefix on the CDN once confirmed no consumers remain
 
-**Gate:** Do not remove the `guides/` deploy step until you have verified — via recommender logs, CDN access logs, or integration tests — that zero live traffic is fetching from `guides/`. The `packages/` path must be serving successfully in production first.
+**Gate:** Do not remove the `guides/` deploy step until you have verified — via recommender logs, CDN access logs, or Prometheus metrics — that zero live traffic is fetching from `guides/`. The `packages/` path must be serving successfully in production first.
+
+### Recommendation deduplication
+
+After full migration completes, every learning journey and standalone guide will have duplicate recommendation rules: the original sources (`index.json` for standalone guides; static `"type": "learning-journey"` rules in `grafana-recommender`'s `state_recommendations/*.json` for learning journeys) and the new `targeting.match` in each package's `manifest.json`. The recommender's `/api/v1/recommend` endpoint evaluates both sources, so users will see the same content recommended twice.
+
+The plan for resolving this duplication — validating equivalence, removing the redundant recommender rules, and freezing `index.json` — is documented in [DEDUPLICATION.md](DEDUPLICATION.md).
 
 ---
 
@@ -537,6 +551,6 @@ Provides inter-journey category and `links.to` relationships at the journey grap
 
 ## Appendix: Naming conventions
 
-See [`docs/manifest-reference.md`](manifest-reference.md) under "Naming conventions" for the directory name mapping rules between repos.
+See [`docs/manifest-reference.md`](../manifest-reference.md) under "Naming conventions" for the directory name mapping rules between repos.
 
 The full set of `*-lj` directories is ongoingly changing — authors continue to write new learning journeys on parallel branches during this migration. This is why we pilot on a subset and create a generic, reusable migration skill for the rest.
