@@ -96,6 +96,7 @@ The `section` block groups steps with "Do Section" functionality.
 | `title`         | string      | ❌       | —       | Section heading                               |
 | `requirements`  | string[]    | ❌       | —       | Section-level requirements                    |
 | `objectives`    | string[]    | ❌       | —       | Auto-complete entire section when met         |
+| `autoCollapse`  | boolean     | ❌       | `true`  | Collapse section when completed               |
 
 ---
 
@@ -197,6 +198,7 @@ The `conditional` block shows different content based on conditions.
 | `description`            | string                    | ❌       | —          | Author note (not shown to users)              |
 | `display`                | `"inline"` \| `"section"` | ❌       | `"inline"` | Display mode for branch content               |
 | `whenTrueSectionConfig`  | ConditionalSectionConfig  | ❌       | —          | Section config for the pass branch (when display is section) |
+| `reftarget`              | string                    | ❌       | —          | CSS selector for `exists-reftarget` auto-check              |
 | `whenFalseSectionConfig` | ConditionalSectionConfig  | ❌       | —          | Section config for the fail branch (when display is section) |
 
 **Section Config Properties:**
@@ -373,6 +375,81 @@ The `assistant` block wraps child blocks with AI customization.
 | `blocks`        | JsonBlock[]                                     | ✅       | Child blocks to wrap                          |
 | `assistantId`   | string                                          | ❌       | Unique ID prefix (auto-generated if omitted)  |
 | `assistantType` | `"query"` \| `"config"` \| `"code"` \| `"text"` | ❌       | Type of content for AI behavior               |
+
+---
+
+## Code Block Properties
+
+The `code-block` block inserts syntax-highlighted code into Monaco editors.
+
+```json
+{
+  "type": "code-block",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "code": "rate(http_requests_total[5m])",
+  "language": "promql",
+  "content": "Insert this PromQL query."
+}
+```
+
+| Property       | Type     | Required | Default | Description                                           |
+|----------------|----------|----------|---------|-------------------------------------------------------|
+| `type`         | string   | ✅       | —       | Must be `"code-block"`                               |
+| `reftarget`    | string   | ✅       | —       | CSS selector for the target Monaco editor container  |
+| `code`         | string   | ✅       | —       | The code to display and insert                       |
+| `language`     | string   | ❌       | —       | Language for syntax highlighting (e.g., `"promql"`, `"javascript"`, `"yaml"`) |
+| `content`      | string   | ❌       | —       | Markdown description shown above the code block      |
+| `requirements` | string[] | ❌       | —       | Requirements that must be met                        |
+| `objectives`   | string[] | ❌       | —       | Objectives tracked for this step                     |
+| `skippable`    | boolean  | ❌       | `false` | Allow skipping when requirements fail                |
+| `hint`         | string   | ❌       | —       | Hint shown when step cannot be completed             |
+
+---
+
+## Terminal Block Properties
+
+The `terminal` block displays a shell command with Copy and Exec buttons for the Coda terminal.
+
+```json
+{
+  "type": "terminal",
+  "command": "curl -s http://localhost:9090/api/v1/status/config | jq .",
+  "content": "Check the Prometheus configuration."
+}
+```
+
+| Property       | Type     | Required | Default | Description                                   |
+|----------------|----------|----------|---------|-----------------------------------------------|
+| `type`         | string   | ✅       | —       | Must be `"terminal"`                         |
+| `command`      | string   | ✅       | —       | Shell command to display and execute         |
+| `content`      | string   | ✅       | —       | Markdown description shown to the user       |
+| `requirements` | string[] | ❌       | —       | Requirements that must be met                |
+| `objectives`   | string[] | ❌       | —       | Objectives tracked for this step             |
+| `skippable`    | boolean  | ❌       | `false` | Allow skipping when requirements fail        |
+| `hint`         | string   | ❌       | —       | Hint shown when step cannot be completed     |
+
+---
+
+## Terminal Connect Block Properties
+
+The `terminal-connect` block provides a button to open and connect to a Coda terminal session.
+
+```json
+{
+  "type": "terminal-connect",
+  "content": "Start a terminal session to follow along.",
+  "vmTemplate": "vm-aws"
+}
+```
+
+| Property      | Type   | Required | Default              | Description                                                      |
+|---------------|--------|----------|----------------------|------------------------------------------------------------------|
+| `type`        | string | ✅       | —                    | Must be `"terminal-connect"`                                    |
+| `content`     | string | ✅       | —                    | Markdown description shown above the button                     |
+| `buttonText`  | string | ❌       | `"Try in terminal"`  | Custom button text                                              |
+| `vmTemplate`  | string | ❌       | `"vm-aws"`           | VM template: `"vm-aws"`, `"vm-aws-sample-app"`, or `"vm-aws-alloy-scenario"` |
+| `vmApp`       | string | ❌       | —                    | App name for sample-app template (e.g., `"nginx"`, `"mysql"`)  |
+| `vmScenario`  | string | ❌       | —                    | Scenario name for alloy-scenario template                       |
 
 ---
 

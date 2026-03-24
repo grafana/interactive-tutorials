@@ -320,6 +320,7 @@ Groups related interactive steps into a sequence with "Do Section" functionality
 | `blocks`       | JsonBlock[] | ✅       | Nested blocks (usually interactive) |
 | `requirements` | string[]    | ❌       | Section-level requirements          |
 | `objectives`   | string[]    | ❌       | Objectives for the entire section   |
+| `autoCollapse` | boolean     | ❌       | Collapse when completed (default: `true`) |
 
 #### Conditional Block
 
@@ -357,6 +358,7 @@ Shows different content based on runtime condition evaluation. Conditions use th
 | `whenTrue`               | JsonBlock[]               | ✅       | —          | Blocks shown when ALL conditions pass                        |
 | `whenFalse`              | JsonBlock[]               | ✅       | —          | Blocks shown when ANY condition fails                        |
 | `description`            | string                    | ❌       | —          | Author note (not shown to users)                             |
+| `reftarget`              | string                    | ❌       | —          | CSS selector for `exists-reftarget` auto-check               |
 | `display`                | `"inline"` \| `"section"` | ❌       | `"inline"` | Display mode for the branch content                          |
 | `whenTrueSectionConfig`  | ConditionalSectionConfig  | ❌       | —          | Section config for the pass branch (when display is section) |
 | `whenFalseSectionConfig` | ConditionalSectionConfig  | ❌       | —          | Section config for the fail branch (when display is section) |
@@ -729,6 +731,77 @@ Instead of using a wrapper block, you can enable AI customization directly on `m
 
 When `assistantEnabled` is `true`, the block displays a "Customize" button that invokes Grafana Assistant to adapt the content based on the user's configured datasources and environment.
 
+#### Code Block
+
+Inserts syntax-highlighted code into a Monaco editor. Renders a code snippet with a "Show me" button (highlights the target editor) and an "Insert" button (clears the editor and inserts the code).
+
+```json
+{
+  "type": "code-block",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "code": "rate(http_requests_total[5m])",
+  "language": "promql",
+  "content": "Insert this PromQL query to calculate the per-second rate of HTTP requests."
+}
+```
+
+| Field          | Type     | Required | Description                                           |
+|----------------|----------|----------|-------------------------------------------------------|
+| `reftarget`    | string   | ✅       | CSS selector for the target Monaco editor container  |
+| `code`         | string   | ✅       | The code to display and insert                       |
+| `language`     | string   | ❌       | Language for syntax highlighting (e.g., `"promql"`, `"yaml"`) |
+| `content`      | string   | ❌       | Markdown description shown above the code block      |
+| `requirements` | string[] | ❌       | Requirements that must be met                        |
+| `objectives`   | string[] | ❌       | Objectives tracked for this step                     |
+| `skippable`    | boolean  | ❌       | Allow skipping when requirements fail                |
+| `hint`         | string   | ❌       | Hint shown when step cannot be completed             |
+
+**When to use code-block vs formfill:**
+- Use `code-block` for Monaco editors — it clears existing content, inserts code properly, and shows a syntax-highlighted preview.
+- Use `formfill` for standard input/textarea fields.
+
+#### Terminal Block
+
+Displays a shell command with Copy and Exec buttons. Requires a connected Coda terminal session.
+
+```json
+{
+  "type": "terminal",
+  "command": "curl -s http://localhost:9090/api/v1/status/config | jq .",
+  "content": "Check that Prometheus is running and inspect its configuration."
+}
+```
+
+| Field          | Type     | Required | Description                                   |
+|----------------|----------|----------|-----------------------------------------------|
+| `command`      | string   | ✅       | Shell command to display and execute         |
+| `content`      | string   | ✅       | Markdown description shown to the user       |
+| `requirements` | string[] | ❌       | Requirements that must be met                |
+| `objectives`   | string[] | ❌       | Objectives tracked for this step             |
+| `skippable`    | boolean  | ❌       | Allow skipping when requirements fail        |
+| `hint`         | string   | ❌       | Hint shown when step cannot be completed     |
+
+#### Terminal Connect Block
+
+Renders a button that opens and connects to a Coda terminal session. Place before `terminal` blocks so the user has a connected session.
+
+```json
+{
+  "type": "terminal-connect",
+  "content": "Start a terminal session to follow along with the commands in this guide.",
+  "buttonText": "Open terminal",
+  "vmTemplate": "vm-aws"
+}
+```
+
+| Field         | Type   | Required | Default             | Description                                                      |
+|---------------|--------|----------|---------------------|------------------------------------------------------------------|
+| `content`     | string | ✅       | —                   | Markdown description shown above the button                     |
+| `buttonText`  | string | ❌       | `"Try in terminal"` | Custom button text                                              |
+| `vmTemplate`  | string | ❌       | `"vm-aws"`          | VM template: `"vm-aws"`, `"vm-aws-sample-app"`, or `"vm-aws-alloy-scenario"` |
+| `vmApp`       | string | ❌       | —                   | App name for sample-app template (e.g., `"nginx"`, `"mysql"`)  |
+| `vmScenario`  | string | ❌       | —                   | Scenario name for alloy-scenario template                       |
+
 ---
 
 ### Block Types Summary
@@ -747,6 +820,9 @@ When `assistantEnabled` is `true`, the block displays a "Customize" button that 
 | `guided`      | Interactive | User-performed sequence with detection                                  |
 | `quiz`        | Assessment  | Knowledge check with single/multiple choice                             |
 | `input`       | Assessment  | Collects user responses as variables                                    |
+| `code-block`  | Interactive | Inserts syntax-highlighted code into Monaco editors                     |
+| `terminal`    | Interactive | Displays shell commands with Copy and Exec buttons (Coda terminal)     |
+| `terminal-connect` | Interactive | Opens and connects to a Coda terminal session                     |
 
 ---
 
@@ -970,6 +1046,11 @@ import {
   JsonQuizBlock,
   JsonQuizChoice,
   JsonInputBlock,
+
+  // Code and terminal blocks
+  JsonCodeBlockBlock,
+  JsonTerminalBlock,
+  JsonTerminalConnectBlock,
 } from '../types/json-guide.types';
 ```
 
@@ -989,6 +1070,9 @@ import {
   isGuidedBlock,
   isQuizBlock,
   isInputBlock,
+  isCodeBlockBlock,
+  isTerminalBlock,
+  isTerminalConnectBlock,
   hasAssistantEnabled,
 } from '../types/json-guide.types';
 ```

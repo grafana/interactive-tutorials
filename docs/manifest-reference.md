@@ -55,21 +55,24 @@ prometheus-lj/
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
+| `schemaVersion` | `string` | No | `"1.1.0"` | Schema version. Can be omitted (schema default applies). |
 | `id` | `string` | **Yes** | — | Unique package identifier. Must match the `id` in `content.json`. |
-| `type` | `"guide"` \| `"path"` | **Yes** | — | `"guide"` for standalone guides and LJ steps; `"path"` for `*-lj` root directories. |
+| `type` | `"guide"` \| `"path"` \| `"journey"` | **Yes** | — | `"guide"` for standalone guides and LJ steps; `"path"` (or `"journey"`) for `*-lj` root directories. |
 | `repository` | `string` | No | `"interactive-tutorials"` | Repository identifier. Can be omitted (schema default applies). |
-| `description` | `string` | **Yes** | — | Short description of the guide or path. |
-| `category` | `string` | No | `"general"` | Content category for grouping and filtering. |
-| `author` | `object` | **Yes** | — | Attribution. See [author](#author). |
+| `description` | `string` | Recommended | — | Short description of the guide or path. CLI warns if missing. |
+| `category` | `string` | Recommended | — | Content category for grouping and filtering. CLI warns if missing. |
+| `author` | `object` | Recommended | — | Attribution. See [author](#author). CLI warns if missing. |
 | `language` | `string` | No | `"en"` | BCP 47 language tag. Can be omitted (schema default applies). |
-| `startingLocation` | `string` | No | `"/"` | URL path where the guide should be launched. |
+| `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
 | `targeting` | `object` | No | — | Contextual recommendation rules. See [targeting](#targeting). |
-| `testEnvironment` | `object` | No | — | Where to test this guide. See [testEnvironment](#testenvironment). |
-| `depends` | `string[]` | No | `[]` | Package IDs this package requires to have been completed first. |
-| `recommends` | `string[]` | No | `[]` | Package IDs suggested as follow-ups. |
-| `suggests` | `string[]` | No | `[]` | Loosely related package IDs. |
+| `testEnvironment` | `object` | No | `{ "tier": "cloud" }` | Where to test this guide. See [testEnvironment](#testenvironment). |
+| `depends` | `DependencyList` | No | `[]` | Hard prerequisites. See [dependency syntax](#dependency-syntax). |
+| `recommends` | `DependencyList` | No | `[]` | Soft prerequisites (recommended, not blocking). |
+| `suggests` | `DependencyList` | No | `[]` | Loosely related package IDs. |
 | `provides` | `string[]` | No | `[]` | Capability tokens this package provides (e.g., `"datasource-configured"`). |
-| `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"`. |
+| `conflicts` | `string[]` | No | `[]` | Packages that conflict (mutually exclusive). Schema-only in MVP. |
+| `replaces` | `string[]` | No | `[]` | Packages this one supersedes entirely. Schema-only in MVP. |
+| `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"` or `"journey"`. |
 
 ### author
 
@@ -123,8 +126,12 @@ Describes where CI or manual testing should run.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `tier` | `"local"` \| `"cloud"` \| `"managed"` | Environment tier. `"play"` is **not** a valid tier — play.grafana.org is a cloud instance, so use `"cloud"` with `instance: "play.grafana.org"`. |
-| `instance` | `string` | Specific instance hostname (e.g., `"play.grafana.org"`). Only when `tier` is `"cloud"` or `"managed"` and a specific instance is known. |
+| `tier` | `"local"` \| `"cloud"` | Environment tier. `"play"` is **not** a valid tier — play.grafana.org is a cloud instance, so use `"cloud"` with `instance: "play.grafana.org"`. |
+| `instance` | `string` | Specific instance hostname (e.g., `"play.grafana.org"`). Only when `tier` is `"cloud"` and a specific instance is known. |
+| `minVersion` | `string` | Minimum Grafana version required (semver, e.g., `"12.2.0"`). |
+| `datasets` | `string[]` | Named datasets to provision for testing. |
+| `datasources` | `string[]` | Data source types required (e.g., `["prometheus", "loki"]`). |
+| `plugins` | `string[]` | Plugin IDs required (e.g., `["grafana-piechart-panel"]`). |
 
 **Tier inference rules:**
 
@@ -142,6 +149,39 @@ Rules are evaluated most-specific-first:
 > **Note:** `"play"` is not a valid `tier` value. Play.grafana.org is a specific cloud instance — model it as `tier: "cloud"` + `instance: "play.grafana.org"`, not as a distinct tier.
 >
 > **Note:** Never copy a regex pattern into `instance`. The `instance` field is a concrete hostname used to target a specific test environment. A regex `source` predicate in the match expression is a routing rule, not an instance identifier. `.*\\.grafana\\.net` specifically means "all Grafana Cloud instances" → `tier: "cloud"` with no `instance`.
+
+---
+
+### Dependency syntax
+
+The `depends`, `recommends`, and `suggests` fields use **CNF (Conjunctive Normal Form)** — nested arrays that express AND/OR logic:
+
+- **Outer array** = AND (all must be satisfied)
+- **Inner arrays** = OR (any one satisfies)
+
+| JSON | Meaning |
+|------|---------|
+| `["A", "B"]` | A AND B |
+| `[["A", "B"]]` | A OR B |
+| `["A", ["B", "C"], "D"]` | A AND (B OR C) AND D |
+
+A flat `string[]` (the common case) means all items are required. Use nested arrays when alternative guides can satisfy the same prerequisite:
+
+```json
+{
+  "depends": ["welcome-to-grafana", ["prometheus-grafana-101", "loki-grafana-101"]]
+}
+```
+
+This means: "welcome-to-grafana" must be completed, AND either "prometheus-grafana-101" OR "loki-grafana-101".
+
+**Virtual capabilities:** Multiple guides can declare the same capability in `provides`. Any guide depending on that capability is satisfied when any provider is completed:
+
+```json
+{
+  "provides": ["datasource-configured"]
+}
+```
 
 ---
 
@@ -287,6 +327,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ```json
 {
+  "schemaVersion": "1.1.0",
   "id": "<guide-id>",
   "type": "guide",
   "description": "<from index.json rule description>",
@@ -297,7 +338,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
     "match": { "<copied from index.json rule match>" : [] }
   },
   "testEnvironment": {
-    "tier": "<local|cloud|managed>",
+    "tier": "<local|cloud>",
     "instance": "<hostname, e.g. play.grafana.org — omit if not a specific instance>"
   }
 }
@@ -307,6 +348,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ```json
 {
+  "schemaVersion": "1.1.0",
   "id": "<path-lj>",
   "type": "path",
   "description": "<from _index.md description>",
@@ -317,7 +359,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
     "match": { "<copied from index.json rule match>" : [] }
   },
   "testEnvironment": {
-    "tier": "<local|cloud|managed>",
+    "tier": "<local|cloud>",
     "instance": "<hostname — omit if not a specific instance>"
   },
   "milestones": [

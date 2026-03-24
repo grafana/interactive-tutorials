@@ -393,6 +393,62 @@ When `doIt` is false:
 | Test user knowledge                     | `quiz`                           |
 | Collect user input for variables        | `input`                          |
 | Just explanation (no action)            | `interactive` with `doIt: false` |
+| Insert code into a Monaco editor       | `code-block`                     |
+| Run a shell command in terminal        | `terminal`                       |
+| Connect user to a Coda terminal        | `terminal-connect`               |
+
+---
+
+## Code and Terminal Block Types
+
+### code-block
+
+- **Purpose**: Insert syntax-highlighted code into a Monaco editor in the Grafana UI.
+- **Behavior**: Renders a code snippet with syntax highlighting. "Show me" highlights the target Monaco editor; "Insert" clears the editor and inserts the code.
+- **Use when**: A guide step needs to provide a query, config, or code snippet that goes into a Monaco-based editor (e.g., PromQL, LogQL, or code editors).
+
+```json
+{
+  "type": "code-block",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "code": "rate(http_requests_total[5m])",
+  "language": "promql",
+  "content": "Insert this PromQL query to calculate the per-second rate of HTTP requests."
+}
+```
+
+**Key differences from formfill:**
+- **code-block**: Designed for Monaco editors — clears existing content and inserts code with proper editor events. Shows syntax-highlighted preview.
+- **formfill**: General-purpose input fill — sets value and fires change events. No syntax highlighting preview.
+
+### terminal
+
+- **Purpose**: Display a shell command with Copy and Exec buttons for the Coda terminal.
+- **Behavior**: Renders the command in a terminal-style block. "Copy" copies to clipboard; "Exec" sends the command to the connected Coda terminal for execution.
+- **Use when**: A guide step needs the user to run a shell command in a terminal session.
+
+```json
+{
+  "type": "terminal",
+  "command": "curl -s http://localhost:9090/api/v1/status/config | jq .",
+  "content": "Check that Prometheus is running and inspect its configuration."
+}
+```
+
+### terminal-connect
+
+- **Purpose**: Provide a button to open and connect to a Coda terminal session.
+- **Behavior**: Renders a "Try in terminal" button. Clicking it provisions and connects to a virtual machine terminal.
+- **Use when**: A guide needs the user to have a terminal session before running commands (typically placed before `terminal` blocks).
+
+```json
+{
+  "type": "terminal-connect",
+  "content": "Start a terminal session to follow along with the commands in this guide.",
+  "buttonText": "Open terminal",
+  "vmTemplate": "vm-aws"
+}
+```
 
 ---
 
