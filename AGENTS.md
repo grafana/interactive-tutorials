@@ -47,9 +47,8 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 
 | Document | Purpose |
 |----------|---------|
-| [json-guide-format.md](docs/json-guide-format.md) | Root structure and block overview |
-| [interactive-types.md](docs/interactive-types.md) | All block and action types |
-| [json-block-properties.md](docs/json-block-properties.md) | Complete property reference |
+| [json-guide-reference.md](docs/json-guide-reference.md) | Block types, properties, and guide structure |
+| [interactive-actions.md](docs/interactive-actions.md) | Action type behavior (Show vs Do) |
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
 | [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |

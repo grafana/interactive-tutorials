@@ -385,7 +385,7 @@ This requirement is evaluated differently by different rendering tools, allowing
 
 ### `var-<variableName>:<expectedValue>`
 
-**Purpose**: Checks if a guide response variable has a specific value. Variables are set by [input blocks](./json-guide-format.md#input-block).
+**Purpose**: Checks if a guide response variable has a specific value. Variables are set by [input blocks](./json-guide-reference.md#input-block).
 
 ```json
 {
@@ -415,7 +415,7 @@ This requirement is evaluated differently by different rendering tools, allowing
 }
 ```
 
-See [variable substitution](./json-guide-format.md#variable-substitution) for more details.
+See [variable substitution](./json-guide-reference.md#variable-substitution) for more details.
 
 ---
 
@@ -615,7 +615,6 @@ localStorage.setItem('grafana-docs-debug', 'true');
 
 ## See Also
 
-- [JSON Guide Format](json-guide-format.md) - Root structure overview
-- [Interactive Types](interactive-types.md) - Block and action types
-- [JSON Block Properties](json-block-properties.md) - Complete property reference
+- [JSON Guide Reference](json-guide-reference.md) - Block types, properties, and guide structure
+- [Interactive Actions](interactive-actions.md) - Action type behavior
 - [Selectors Reference](selectors-and-testids.md) - Stable selector patterns

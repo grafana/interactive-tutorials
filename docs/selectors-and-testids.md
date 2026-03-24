@@ -373,6 +373,6 @@ input[id='connection-url']
 
 ## See Also
 
-- [Interactive Types](interactive-types.md) - When to use each action type
-- [JSON Block Properties](json-block-properties.md) - Complete property reference
+- [Interactive Actions](interactive-actions.md) - Action type behavior
+- [JSON Guide Reference](json-guide-reference.md) - Block types and property reference
 - [Requirements Reference](requirements-reference.md) - Requirement conditions

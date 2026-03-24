@@ -79,7 +79,7 @@ For advanced selector patterns and manual writing, see [docs/selectors-and-testi
 
 Cursor knows this repo well. Use Ask mode to query how interactive elements work—it reads the `docs/` folder automatically.
 
-[Download Cursor](https://cursor.com/downloads) | [Interactive Types Reference](docs/interactive-types.md)
+[Download Cursor](https://cursor.com/downloads) | [JSON Guide Reference](docs/json-guide-reference.md)
 
 ## Demo: Understand What We're Building!
 
@@ -110,8 +110,7 @@ Primary documentation files in this repo:
 
 | Topic | File |
 |-------|------|
-| Guide Format | [docs/json-guide-format.md](docs/json-guide-format.md) |
-| Block Types | [docs/interactive-types.md](docs/interactive-types.md) |
-| Properties | [docs/json-block-properties.md](docs/json-block-properties.md) |
+| Guide Reference | [docs/json-guide-reference.md](docs/json-guide-reference.md) |
+| Action Types | [docs/interactive-actions.md](docs/interactive-actions.md) |
 | Requirements | [docs/requirements-reference.md](docs/requirements-reference.md) |
 | Selectors | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) |
