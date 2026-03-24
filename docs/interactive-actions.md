@@ -1,10 +1,11 @@
 # Interactive Actions Reference
 
-How each action type behaves at runtime — Show vs Do modes, target semantics, and when to use each.
+How each action type behaves at runtime, target semantics, and when to use each.
 
 ## Concepts
 
-- **Show vs Do**: Every action runs in two modes. Show highlights the target without changing state; Do performs the action (click, fill, navigate) and marks the step completed.
+- **"Show me" and "Do it" buttons**: Each interactive step renders two buttons controlled by the `showMe` (boolean, default `true`) and `doIt` (boolean, default `true`) properties. "Show me" highlights the target without changing state; "Do it" performs the action (click, fill, navigate) and marks the step completed. These are **not** action types — they are button visibility controls on the step.
+- **Action types**: The actual action is set via the `action` property: `highlight`, `button`, `formfill`, `navigate`, `hover`, or `noop`.
 - **Targets**: Depending on the action, `reftarget` is either a CSS selector, button text, a URL/path, or a section container selector.
 
 ---

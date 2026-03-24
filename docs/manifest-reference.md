@@ -59,9 +59,9 @@ prometheus-lj/
 | `id` | `string` | **Yes** | — | Unique package identifier. Must match the `id` in `content.json`. |
 | `type` | `"guide"` \| `"path"` \| `"journey"` | **Yes** | — | `"guide"` for standalone guides and LJ steps; `"path"` (or `"journey"`) for `*-lj` root directories. |
 | `repository` | `string` | No | `"interactive-tutorials"` | Repository identifier. Can be omitted (schema default applies). |
-| `description` | `string` | Recommended | — | Short description of the guide or path. CLI warns if missing. |
-| `category` | `string` | Recommended | — | Content category for grouping and filtering. CLI warns if missing. |
-| `author` | `object` | Recommended | — | Attribution. See [author](#author). CLI warns if missing. |
+| `description` | `string` | **Yes** | — | Short description of the guide or path. |
+| `category` | `string` | **Yes** | — | Content category for grouping and filtering. |
+| `author` | `object` | **Yes** | — | Attribution. See [author](#author). |
 | `language` | `string` | No | `"en"` | BCP 47 language tag. Can be omitted (schema default applies). |
 | `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
 | `targeting` | `object` | No | — | Contextual recommendation rules. See [targeting](#targeting). |

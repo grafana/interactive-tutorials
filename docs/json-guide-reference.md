@@ -8,19 +8,18 @@ Every JSON guide has these fields:
 
 ```json
 {
-  "schemaVersion": "1.0.0",
   "id": "my-guide-id",
   "title": "My Guide Title",
   "blocks": []
 }
 ```
 
-| Field           | Type        | Required | Description                             |
-|-----------------|-------------|----------|-----------------------------------------|
-| `schemaVersion` | string      | ✅       | Always `"1.0.0"` for content.json       |
-| `id`            | string      | ✅       | Unique identifier for the guide         |
-| `title`         | string      | ✅       | Display title shown in the UI           |
-| `blocks`        | JsonBlock[] | ✅       | Array of content and interactive blocks |
+| Field           | Type        | Required | Default   | Description                             |
+|-----------------|-------------|----------|-----------|-----------------------------------------|
+| `id`            | string      | ✅       | —         | Unique identifier for the guide         |
+| `title`         | string      | ✅       | —         | Display title shown in the UI           |
+| `blocks`        | JsonBlock[] | ✅       | —         | Array of content and interactive blocks |
+| `schemaVersion` | string      | ❌       | `"1.1.0"` | Schema version. Can be omitted (schema default applies). |
 
 ---
 
@@ -48,7 +47,7 @@ Every JSON guide has these fields:
 
 ## Action Types
 
-Actions are used in `interactive`, `multistep`, and `guided` blocks. See [Interactive Actions](interactive-actions.md) for detailed Show vs Do behavior.
+Actions are used in `interactive`, `multistep`, and `guided` blocks. See [Interactive Actions](interactive-actions.md) for detailed behavior and button controls.
 
 | Action | Description | `reftarget` | `targetvalue` |
 |--------|-------------|-------------|---------------|
@@ -769,7 +768,7 @@ Zod schemas: `JsonGuideSchema`, `JsonGuideSchemaStrict`, `JsonBlockSchema`, `CUR
 
 ## See Also
 
-- [Interactive Actions](interactive-actions.md) - Show vs Do behavior for each action type
+- [Interactive Actions](interactive-actions.md) - Action type behavior and button controls
 - [Requirements Reference](requirements-reference.md) - All supported requirements
 - [Selectors Reference](selectors-and-testids.md) - Stable selector patterns
 - [Guided Interactions](guided-interactions.md) - Detailed guided block documentation

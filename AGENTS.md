@@ -28,7 +28,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 15. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
 16. **`skippable: true` for conditional steps** -- use for permission-gated steps and optional/conditional fields
 17. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` instead, or set `doIt: false`
-18. **Include `schemaVersion`** -- all `content.json` files must include `"schemaVersion": "1.0.0"` at the root
+18. **`schemaVersion` is optional** -- if included, use `"schemaVersion": "1.1.0"`; the schema defaults to `"1.1.0"` when omitted
 
 ## Task Routing
 
@@ -48,7 +48,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Document | Purpose |
 |----------|---------|
 | [json-guide-reference.md](docs/json-guide-reference.md) | Block types, properties, and guide structure |
-| [interactive-actions.md](docs/interactive-actions.md) | Action type behavior (Show vs Do) |
+| [interactive-actions.md](docs/interactive-actions.md) | Action type behavior and button controls |
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
 | [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |
