@@ -1,0 +1,221 @@
+{
+  "id": "new-guide",
+  "title": "New Guide",
+  "blocks": [
+    {
+      "type": "section",
+      "id": "navigate-to-connections",
+      "title": "Navigate to Connections",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "In this section, you'll navigate to the Connections page and search for the PostgreSQL integration."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Click **Connections**.",
+          "requirements": [
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(h3:contains('Add new connection'))",
+          "content": "Click **Add new connection**.",
+          "requirements": [
+            "on-page:/connections"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='search-input-input']",
+          "content": "Search for **PostgreSQL**.",
+          "targetvalue": "PostgreSQL",
+          "requirements": [
+            "on-page:/connections"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/add-new-connection/postgres']",
+          "content": "Select the **PostgreSQL** tile.",
+          "requirements": [
+            "on-page:/connections"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-environment",
+      "title": "Configure Your Environment",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Select your operating system and architecture to get the correct installation instructions."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='collector-os-selection'] input",
+          "content": "Select your operating system.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='collector-arch-selection'] input",
+          "content": "Select your architecture.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/postgres",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "install-alloy",
+      "title": "Install Grafana Alloy",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Install Grafana Alloy to collect PostgreSQL metrics and forward them to Grafana Cloud."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='agent-config-button']",
+          "requirements": ["exists-reftarget"],
+          "content": "In the **Install Alloy** section, click **Run Grafana Alloy**."
+        },
+        {
+          "type": "markdown",
+          "content": "Perform one of the following:\n\n| If you want to | Then |\n| --- | --- |\n| Create a new token | Click **Create new token**, enter a meaningful token name (e.g., `postgres-alloy`), then click **Create token**. |\n| Use an existing token | Click **Use an existing token** and enter a token you have created in the past. |"
+        },
+        {
+          "type": "markdown",
+          "content": "Verify that the **Enable Remote Configuration** toggle is set to on."
+        },
+        {
+          "type": "markdown",
+          "content": "In the **Install and run Grafana Alloy** section, click **Copy to Clipboard**."
+        },
+        {
+          "type": "markdown",
+          "content": "Log into the machine where you are installing Grafana Alloy, open the Terminal, and paste the contents of the clipboard. Press **Enter** to install Grafana Alloy.\n\nWhen the installation is complete, you'll see `Alloy is now running!`"
+        },
+        {
+          "type": "markdown",
+          "content": "To verify that Grafana Alloy is installed correctly, click **Test Alloy connection**.\n\nIf Grafana Alloy is installed correctly, you'll see `Awesome! Grafana Alloy is good to go`."
+        },
+        {
+          "type": "markdown",
+          "content": "If Alloy is successfully installed, click **Proceed to install integration**."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-alloy",
+      "title": "Configure Grafana Alloy",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Configure Grafana Alloy to collect PostgreSQL metrics and send them to Grafana Cloud.\n\nTo configure Alloy for PostgreSQL monitoring:"
+        },
+        {
+          "type": "markdown",
+          "content": "Review the **Check prerequisites specific to the PostgreSQL integration** section and verify your PostgreSQL instance meets the requirements."
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll to the **Set up Grafana Alloy to use the PostgreSQL integration** section and click **Copy to clipboard**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='alloy-simple-block']+button",
+          "content": "Click **Copy to clipboard**.",
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Open the Grafana Alloy configuration file on your system, paste the configuration snippet, and save the file."
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll down to the **Restart Grafana Alloy** section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='restart-command']+button",
+          "content": "Click **Copy to clipboard** to copy the restart command.",
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Run the restart command on your Alloy machine."
+        },
+        {
+          "type": "markdown",
+          "content": "After restarting Alloy, test the connection."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='test-connection-button']",
+          "content": "Click **Test connection** to verify the PostgreSQL integration.",
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "If successful, you'll see a confirmation message. You have successfully configured PostgreSQL monitoring with Grafana Alloy."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "install-dashboards-alerts",
+      "title": "Install Dashboards and Alerts",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The PostgreSQL integration includes pre-built dashboards and alert rules that provide immediate visibility into your database performance.\n\nTo install the PostgreSQL dashboards and alerts:"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='install-button']",
+          "content": "In the **Install dashboards and alerts** section, click **Install**.",
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "You should see the message: **Dashboards and alerts have been installed.**"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='view-dashboards-button']",
+          "content": "Click **View Dashboards** to see the installed PostgreSQL dashboards.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "To see the installed alerts, navigate to **Alerts & IRM > Alerting > Alert rules**.\n\nPostgreSQL integration alerts typically begin with `PostgreSQL`.\n\n**Congratulations!** You've successfully set up PostgreSQL monitoring with Grafana Cloud."
+        }
+      ]
+    }
+  ]
+}
