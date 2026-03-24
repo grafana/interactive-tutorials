@@ -6,7 +6,8 @@ to validate a piece of content being written.
 1. Check that the file is valid JSON and can be parsed without errors
 2. Check that the root structure has required fields: `id`, `title`, `blocks`
 3. Check that all block types are valid (`markdown`, `interactive`, `section`,
-`multistep`, `guided`, `conditional`, `quiz`, `input`, `image`, `video`, `html`, `assistant`)
+`multistep`, `guided`, `conditional`, `quiz`, `input`, `image`, `video`, `html`,
+`assistant`, `code-block`, `terminal`, `terminal-connect`)
 4. Check that all action types are valid (`highlight`, `button`, `formfill`,
 `navigate`, `hover`, `noop`)
 5. Check that required properties are present for each block type (e.g.,
