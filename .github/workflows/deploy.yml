@@ -1,8 +1,11 @@
 name: Deploy to CDN
 
-run-name: Deploy ${{ inputs.branch }} to ${{ inputs.environment }} by @${{ github.actor }}
+run-name: ${{ github.event_name == 'push' && format('Deploy main to prod by @{0}', github.actor) || format('Deploy {0} to {1} by @{2}', inputs.branch, inputs.environment, github.actor) }}
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       branch:
@@ -21,6 +24,9 @@ permissions:
   contents: read
   id-token: write
 
+env:
+  DEPLOY_ENV: ${{ github.event_name == 'push' && 'prod' || github.event.inputs.environment }}
+
 jobs:
   deploy:
     name: Deploy to GCS
@@ -29,15 +35,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ github.event_name == 'push' && github.ref || github.event.inputs.branch }}
           persist-credentials: false
 
       - name: Login to GCS
-        uses: grafana/shared-workflows/actions/login-to-gcs@main
+        uses: grafana/shared-workflows/actions/login-to-gcs@6a97ef28077dbb66da3582aad604aef980cd1787 # login-to-gcs/v0.3.0
         id: login-to-gcs
         with:
           # login-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
-          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
 
       - name: Prepare tutorial files
         run: |
@@ -49,8 +55,9 @@ jobs:
           # Copy shared folder (snippets, templates, etc.)
           cp -r shared guides/
           
-          # Copy all tutorial directories (containing unstyled.html OR content.json)
-          # must sort and read -r unique to avoid duplicates
+          # Copy all tutorial directories (containing content.json)
+          # LEGACY: unstyled.html files are also copied for backward compatibility,
+          # but the HTML format is deprecated. Only content.json is respected going forward.
           find . \( -name "unstyled.html" -o -name "content.json" \) -type f \
             | sed 's|/[^/]*$||' \
             | sort -u \
@@ -58,9 +65,10 @@ jobs:
             # Skip excluded folders
             if [[ "$dir" != "." && "$dir" != "./docs"* && "$dir" != "./shared"* ]]; then
               mkdir -p "guides/$dir"
-              # Copy both files; if one is missing, error gets ignored and it's fine.
-              cp "$dir"/*.html "guides/$dir/" 2>/dev/null || true
+              # Copy JSON files (primary format)
               cp "$dir"/*.json "guides/$dir/" 2>/dev/null || true
+              # LEGACY: Copy HTML files for backward compatibility only
+              cp "$dir"/*.html "guides/$dir/" 2>/dev/null || true
             fi
           done
 
@@ -68,10 +76,109 @@ jobs:
           find guides -type f
 
       - name: Push files to GCS
-        uses: grafana/shared-workflows/actions/push-to-gcs@push-to-gcs/v0.3.0
+        uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
         with:
-          bucket: interactive-learning-${{ github.event.inputs.environment }}
+          bucket: interactive-learning-${{ env.DEPLOY_ENV }}
           path: guides
           # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
-          environment: ${{ github.event.inputs.environment == 'dev' && 'dev' || 'prod' }}
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
+          service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
+
+      # ── Pathfinder package deploy ─────────────────────────────────────────────
+      # Builds repository.json from all migrated packages and publishes the full
+      # package tree to bucket/packages/. The guides/ deploy above is unchanged.
+
+      - name: Checkout pathfinder-app CLI
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          repository: grafana/grafana-pathfinder-app
+          ref: main
+          path: pathfinder-app
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: pathfinder-app/package-lock.json
+
+      - name: Pathfinder repo CLI tools dependencies
+        working-directory: pathfinder-app
+        run: npm ci
+
+      - name: Pathfinder repo CLI tools
+        working-directory: pathfinder-app
+        run: npm run build:cli
+
+      - name: Build Pathfinder Repo
+        run: |
+          mkdir -p packages
+
+          # Full recursive copy of every guide directory into packages/.
+          # Excluded dirs must not appear on the CDN:
+          #   pathfinder-app  — CLI checkout; large, not a guide package
+          #   .github         — CI/CD config
+          #   docs            — internal documentation
+          #   .cursor         — editor config
+          #   shared          — served separately under guides/
+          #   guides          — legacy staging dir created earlier in this job
+          #   packages        — the staging dir we are building right now
+          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages"
+
+          for dir in */; do
+            dir="${dir%/}"
+            skip=false
+            for excl in $EXCLUDE; do
+              if [[ "$dir" == "$excl" ]]; then
+                skip=true
+                break
+              fi
+            done
+            if [[ "$skip" == "false" ]]; then
+              cp -r "$dir" packages/
+            fi
+          done
+
+          # Build repository.json co-located inside packages/ so that "path"
+          # entries (e.g. "alerting-101/") resolve as siblings of repository.json
+          # on the CDN. No --exclude flag needed here: pathfinder-app/ was never
+          # copied into packages/.
+          node pathfinder-app/dist/cli/cli/index.js build-repository packages/ -o packages/repository.json
+
+          echo "Guide directories staged under packages/:"
+          find packages -maxdepth 1 -mindepth 1 -type d | sort
+          echo ""
+          echo "repository.json:"
+          cat packages/repository.json
+
+      - name: Build dependency graph
+        continue-on-error: true
+        run: node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:packages/repository.json > packages/graph.json
+
+      - name: Validate packages before publish
+        run: node pathfinder-app/dist/cli/cli/index.js validate --packages packages/
+
+      - name: Verify files before push
+        run: |
+          echo "Files in packages/ directory:"
+          ls -la packages/ | head -20
+          echo ""
+          echo "Checking for repository.json:"
+          test -f packages/repository.json && echo "✅ repository.json exists" || echo "❌ repository.json MISSING"
+          echo "Checking for graph.json:"
+          test -f packages/graph.json && echo "✅ graph.json exists" || echo "⚠️  graph.json missing (optional)"
+          echo ""
+          echo "Top-level files that will be pushed:"
+          find packages -maxdepth 1 -type f
+
+      - name: 'Publish Pathfinder repo: Push packages to GCS'
+        uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
+        with:
+          bucket: interactive-learning-${{ env.DEPLOY_ENV }}
+          # path: packages with default parent: true causes files to land at
+          # bucket/packages/... — same pattern as path: guides → bucket/guides/...
+          path: packages
+          # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com

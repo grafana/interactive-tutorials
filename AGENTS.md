@@ -1,17 +1,49 @@
 ---
 alwaysApply: true
-description: Overview of this repository and guide authoring documentation.
+description: Overview of this repository and task routing for AI agents.
 ---
 
-# Interactive Guides Documentation
+# Interactive Guides Repository
 
-This repository contains interactive Grafana guides in JSON format, along with comprehensive documentation for AI systems to generate and assist with guide authoring.
+This repository contains interactive Grafana guides in JSON format. Each guide lives in its own directory with a `content.json` file defining the guide structure, and an optional `index.json` entry controls where the guide is recommended.
 
-## Documentation Structure
+Full reference documentation lives in `docs/`. AI-oriented references live in `.cursor/`.
 
-### Primary Documentation (`docs/`)
+## Critical Rules
 
-Comprehensive reference documentation:
+1. **Use `navmenu-open`** for any step targeting navigation menu elements
+2. **Use stable selectors** -- prefer `data-testid`, button text, and semantic attributes over CSS classes
+3. **No markdown titles in guides** -- the guide `title` is rendered by the app frame; a leading `## Title` duplicates it
+4. **No multistep singletons** -- a `multistep` with one step must be a plain `interactive` block
+5. **`exists-reftarget` is auto-applied** -- never add it manually to requirements
+6. **Use sections, not markdown headers** -- group steps with `section` blocks, not `##` headings
+7. **Include page requirements** -- page-specific actions need `on-page:/path`
+8. **Verify state changes** -- use `verify` after save/create operations
+9. **Keep prose brief** -- guides render in a sidebar; be direct and action-oriented
+10. **Action-focused content** -- "Save your configuration" not "The save button can be clicked"
+11. **Connect requirements and objectives** -- if section 1 creates a resource, section 2 should require it
+12. **Tooltips** -- under 250 characters, one sentence, don't name the highlighted element
+13. **`doIt: false` for secrets** -- never automate filling passwords, tokens, or API keys
+14. **Section bookends** -- each `section` needs a 1-sentence "what you'll do" intro markdown block and a 1-sentence "what you learned" summary markdown block
+15. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
+16. **`skippable: true` for conditional steps** -- use for permission-gated steps and optional/conditional fields
+17. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` instead, or set `doIt: false`
+18. **Include `schemaVersion`** -- all `content.json` files must include `"schemaVersion": "1.0.0"` at the root
+
+## Task Routing
+
+| Task | Read First | Deep References |
+|------|-----------|-----------------|
+| Author/edit a guide | [authoring-guide.mdc](.cursor/authoring-guide.mdc) | [common-workflows.mdc](.cursor/common-workflows.mdc), [tutorial-patterns.mdc](.cursor/tutorial-patterns.mdc), [proven-patterns.mdc](.cursor/proven-patterns.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc), `shared/snippets/`, `docs/` |
+| Review a guide PR | [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc), `docs/` |
+| Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
+| Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
+| Write index.json entry | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `index.json` |
+| Write/edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/MIGRATION.md](docs/MIGRATION.md) |
+| Migrate guide to package | [docs/MIGRATION.md](docs/MIGRATION.md) — Phases 0–4 complete; pilot guides migrated | [docs/manifest-reference.md](docs/manifest-reference.md), `.cursor/skills/migrate-guide/` |
+| Understand the system | [system-architecture.mdc](.cursor/system-architecture.mdc) | `docs/` |
+
+## Reference Documentation (`docs/`)
 
 | Document | Purpose |
 |----------|---------|
@@ -20,111 +52,23 @@ Comprehensive reference documentation:
 | [json-block-properties.md](docs/json-block-properties.md) | Complete property reference |
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
+| [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |
+| [manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and migration derivation rules |
+| [MIGRATION.md](docs/MIGRATION.md) | Phased migration plan to package format |
 
-### AI Quick References (`.cursor/`)
+## Shared Content (`shared/`)
 
-Slim references for AI assistance:
-
-| File | Purpose |
+| Path | Purpose |
 |------|---------|
-| [ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) | **Start here** - Quick reference with links |
-| [action-types-reference.mdc](.cursor/action-types-reference.mdc) | Action type decision tree |
-| [requirements-quick-reference.mdc](.cursor/requirements-quick-reference.mdc) | Requirement patterns |
-| [selector-library.mdc](.cursor/selector-library.mdc) | Common selectors |
-| [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | Reviewing PRs of Guides |
-| [best-practices.mdc](.cursor/best-practices.mdc) | Authoring best practices |
+| [shared/snippets/](shared/snippets/) | Pre-tested JSON blocks for common Grafana UI patterns (nav, save dashboard, datasource picker, tab navigation, drilldown nav, etc.) — copy and adapt rather than writing from scratch |
+| [shared/templates/tutorial-datasources.json](shared/templates/tutorial-datasources.json) | Reusable tutorial data source template |
 
-### Patterns and Examples (`.cursor/`)
-
-| File | Purpose |
-|------|---------|
-| [common-workflows.mdc](.cursor/common-workflows.mdc) | Reusable workflow templates |
-| [tutorial-patterns.mdc](.cursor/tutorial-patterns.mdc) | Guide structure patterns |
-| [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) | Full guide example |
-| [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc) | Handling complex scenarios |
-
-### Commands (`.cursor/commands/`)
-
-Agent commands for common tasks:
+## Commands
 
 | Command | Purpose |
 |---------|---------|
-| [new.md](.cursor/commands/new.md) | Create new guide |
-| [lint.md](.cursor/commands/lint.md) | Validate guide JSON |
-| [check.md](.cursor/commands/check.md) | Check guide quality |
-| [attack.md](.cursor/commands/attack.md) | Find issues in guide |
-
-## Quick Start for AI
-
-1. **Read** [ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) for essential patterns
-2. **Reference** [docs/json-guide-format.md](docs/json-guide-format.md) for structure
-3. **Use** [docs/requirements-reference.md](docs/requirements-reference.md) for requirements
-4. **Follow** [best-practices.mdc](.cursor/best-practices.mdc) for quality
-
-## JSON Guide Format
-
-All guides use JSON format exclusively:
-
-```json
-{
-  "id": "guide-id",
-  "title": "Guide Title",
-  "blocks": [
-    { "type": "markdown", "content": "Introduction text" },
-    { "type": "section", "id": "section-1", "title": "First Section", "blocks": [] }
-  ]
-}
-```
-
-## Essential Rules
-
-1. **Use `navmenu-open`** for navigation menu elements
-2. **Include page requirements** for page-specific actions
-3. **Use stable selectors** - prefer `data-testid` over CSS classes
-4. **Add tooltips** for educational value
-5. **Make steps skippable** where appropriate
-
-> **Note**: `exists-reftarget` is automatically applied for all DOM interactions—you don't need to add it manually.
-
-## Block Types
-
-| Category | Types |
-|----------|-------|
-| Content | `markdown`, `image`, `video` |
-| Interactive | `interactive`, `multistep`, `guided` |
-| Structural | `section`, `conditional` |
-| Assessment | `quiz`, `input` |
-
-## Action Types
-
-| Action | Use Case |
-|--------|----------|
-| `highlight` | Click by CSS selector |
-| `button` | Click by button text |
-| `formfill` | Enter text in fields |
-| `navigate` | Change pages |
-| `hover` | Reveal hover-dependent UI |
-
-## Quick Reference Cards
-
-### Action Selection
-```
-Click button with stable text → button action
-Click element with stable selector → highlight action
-Fill form field → formfill action
-Navigate to page → navigate action
-Reveal hover-hidden UI → hover action
-Multiple related actions → multistep action
-User performs manually → guided action
-Explain interface → highlight with doIt: false
-```
-
-### Requirements Selection
-```
-Navigation element → navmenu-open
-Page-specific → on-page:/path
-Admin feature → is-admin
-Data source needed → has-datasource:type
-Plugin needed → has-plugin:id
-Sequential dependency → section-completed:id
-```
+| [/new](.cursor/commands/new.md) | Create a new guide from scratch |
+| [/lint](.cursor/commands/lint.md) | Validate guide JSON structure |
+| [/check](.cursor/commands/check.md) | Check guide quality against best practices |
+| [/attack](.cursor/commands/attack.md) | Find issues by simulating confused users |
+| [/build-interactive-lj](.cursor/commands/build-interactive-lj/README.md) | Multi-phase learning journey builder |
