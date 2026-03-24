@@ -4,21 +4,23 @@ Complete reference for the JSON guide format — root structure, all block types
 
 ## Root Structure
 
-Every JSON guide has three required fields:
+Every JSON guide has these fields:
 
 ```json
 {
+  "schemaVersion": "1.0.0",
   "id": "my-guide-id",
   "title": "My Guide Title",
   "blocks": []
 }
 ```
 
-| Field    | Type        | Required | Description                             |
-|----------|-------------|----------|-----------------------------------------|
-| `id`     | string      | ✅       | Unique identifier for the guide         |
-| `title`  | string      | ✅       | Display title shown in the UI           |
-| `blocks` | JsonBlock[] | ✅       | Array of content and interactive blocks |
+| Field           | Type        | Required | Description                             |
+|-----------------|-------------|----------|-----------------------------------------|
+| `schemaVersion` | string      | ✅       | Always `"1.0.0"` for content.json       |
+| `id`            | string      | ✅       | Unique identifier for the guide         |
+| `title`         | string      | ✅       | Display title shown in the UI           |
+| `blocks`        | JsonBlock[] | ✅       | Array of content and interactive blocks |
 
 ---
 
@@ -284,6 +286,8 @@ Shows different content based on runtime condition evaluation. Conditions use re
 
 **ConditionalSectionConfig:** `{ title?: string, requirements?: string[], objectives?: string[] }`
 
+**Display modes:** `"inline"` (default) renders content directly without wrapper. `"section"` wraps content with section styling, collapse controls, and "Do" button — use with `whenTrueSectionConfig`/`whenFalseSectionConfig` to give each branch its own title and objectives.
+
 ### Multistep Block
 
 Executes multiple actions **automatically** when user clicks "Do it".
@@ -480,6 +484,24 @@ Knowledge assessment with single or multiple choice questions.
 
 **Choice Properties:** `id` (string, required), `text` (string, required), `correct` (boolean), `hint` (string — shown when this wrong choice is selected).
 
+**Multi-select example:**
+
+```json
+{
+  "type": "quiz",
+  "question": "Which of these are valid Grafana data sources? (Select all that apply)",
+  "multiSelect": true,
+  "choices": [
+    { "id": "a", "text": "Prometheus", "correct": true },
+    { "id": "b", "text": "Microsoft Word", "hint": "Word is not a data source!" },
+    { "id": "c", "text": "Loki", "correct": true },
+    { "id": "d", "text": "InfluxDB", "correct": true }
+  ]
+}
+```
+
+**Blocking behavior:** When a quiz is inside a section, subsequent steps show "Complete previous step" until the quiz is completed.
+
 ### Input Block
 
 Collects user responses stored as variables. Variables can be referenced with `{{variableName}}` in content or `var-name:value` in requirements.
@@ -512,6 +534,34 @@ Collects user responses stored as variables. Variables can be referenced with `{
 | `datasourceFilter` | string | ❌ | — | Filter datasources by type (e.g., `"prometheus"`). Only for `"datasource"` inputType |
 | `requirements` | string[] | ❌ | — | Requirements for this input |
 | `skippable` | boolean | ❌ | `false` | Allow skipping |
+
+**Boolean example:**
+
+```json
+{
+  "type": "input",
+  "prompt": "Before continuing, please confirm you understand the requirements.",
+  "inputType": "boolean",
+  "variableName": "policyAccepted",
+  "checkboxLabel": "I understand and accept the terms",
+  "required": true
+}
+```
+
+**Datasource picker example:**
+
+```json
+{
+  "type": "input",
+  "prompt": "Select the Prometheus data source you want to use for this guide:",
+  "inputType": "datasource",
+  "variableName": "selectedDatasource",
+  "datasourceFilter": "prometheus",
+  "required": true
+}
+```
+
+When `inputType` is `"datasource"`, the block renders a datasource picker dropdown. The `datasourceFilter` property limits the list to datasources of a specific type.
 
 ---
 
@@ -572,6 +622,47 @@ If the variable is not set, `[not set]` is displayed as a fallback.
 ```
 
 **Syntax:** `var-{variableName}:{expectedValue}`
+
+**Complete variable flow example:**
+
+```json
+{
+  "id": "custom-datasource-guide",
+  "title": "Configure your data source",
+  "blocks": [
+    {
+      "type": "input",
+      "prompt": "What would you like to name your data source?",
+      "inputType": "text",
+      "variableName": "dsName",
+      "placeholder": "e.g., my-prometheus",
+      "required": true
+    },
+    {
+      "type": "input",
+      "prompt": "I confirm this data source will be used for production monitoring.",
+      "inputType": "boolean",
+      "variableName": "isProd",
+      "checkboxLabel": "Yes, this is for production"
+    },
+    {
+      "type": "markdown",
+      "content": "## Setting up {{dsName}}\n\nLet's configure your new data source."
+    },
+    {
+      "type": "section",
+      "title": "Production hardening",
+      "requirements": ["var-isProd:true"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Since **{{dsName}}** is for production, let's enable high availability settings."
+        }
+      ]
+    }
+  ]
+}
+```
 
 ---
 
