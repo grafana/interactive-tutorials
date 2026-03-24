@@ -103,7 +103,7 @@ your guide, so we can include it in the recommender.
 
 For complete reference documentation:
 
-- **This repo**: See [.cursor/ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) for AI-assisted authoring
+- **This repo**: See [.cursor/ai-guide.mdc](.cursor/ai-guide.mdc) for AI-assisted authoring
 - **Pathfinder Plugin Docs**: See [interactive learning plugin docs](https://grafana.com/docs/plugins/grafana-pathfinder-app/latest/)
 
 Primary documentation files in this repo:
