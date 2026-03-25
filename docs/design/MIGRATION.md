@@ -9,6 +9,7 @@ This document describes the phased migration of the `interactive-tutorials` repo
 
 **Related design documents (in this repo):**
 - [DEDUPLICATION.md](DEDUPLICATION.md) — post-migration plan for removing duplicate recommendation rules from the recommender and freezing `index.json`
+- [MASS-MIGRATION-PLAN.md](MASS-MIGRATION-PLAN.md) — execution plan for migrating all remaining guides via batch PRs
 
 **Partner-facing documentation:**
 - [Guide Author Migration to the Pathfinder Package Format](https://docs.google.com/document/d/1LQkqzjZwLibQPCg91SIwxDvYELv4xy2f2Fr9Y1wN0FY/edit?usp=sharing) — shared with docs partners to help them adapt their writing guidelines for new content (covers what `manifest.json` is, why it's necessary, and how to write guides going forward)
@@ -420,6 +421,8 @@ interactive-learning-{env}/
 ## Full migration (future work)
 
 After the pilot is validated end-to-end, full migration is a mechanical process driven by the migrate-guide skill (`.cursor/skills/migrate-guide/SKILL.md`). The skill has been upgraded to produce complete packages — each invocation generates a `manifest.json` with all derivable fields (including `targeting.match` from `index.json` rules or recommender static rules) alongside the existing `content.json`.
+
+The detailed execution plan — PR conventions, review checklist, wave-based batching, and tracking — is in [MASS-MIGRATION-PLAN.md](MASS-MIGRATION-PLAN.md).
 
 ### Standalone guides
 

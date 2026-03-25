@@ -2,7 +2,7 @@
 
 ## Background
 
-We are underway with a package migration plan; read [MIGRATION.md](MIGRATION.md) for critical context.
+We are underway with a package migration plan; read [MIGRATION.md](MIGRATION.md) for critical context. The execution plan for completing all remaining migrations is in [MASS-MIGRATION-PLAN.md](MASS-MIGRATION-PLAN.md).
 
 ## Problem
 
