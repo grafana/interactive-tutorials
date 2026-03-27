@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this interactive guide you'll learn how to set up and run a DNS check in Grafana Cloud Synthetic Monitoring. You will:\n\n- Create and configure a DNS check for any domain\n- Set a valid response code and timeout for accurate failure detection\n- Select probe locations for global DNS validation\n- Set up alerting so you're notified when resolution fails\n\n### **Why Use DNS Checks?**\n\n- **Real-time DNS monitoring** – Detect resolution failures and latency from multiple global locations before they impact users\n- **Security monitoring** – Identify DDoS attacks or DNS poisoning attempts early\n- **Global DNS validation** – Test that domains resolve correctly from probe locations around the world\n\n"
+      "content": "In this guide, you'll set up and run a DNS check in Grafana Cloud Synthetic Monitoring, including configuration, selecting probe locations, and alerting\n\n### **Why Use DNS Checks?**\n\nDNS checks let you detect resolution failures and latency globally, catch security threats like DDoS attacks and DNS poisoning early, and validate that domains resolve correctly from multiple locations.\n\n"
     },
     {
       "type": "markdown",
@@ -31,7 +31,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[id='pageContent'] a[href='/a/grafana-synthetic-monitoring-app/home']",
-          "content": "Click **Synthetic Monitoring** to open the Synthetics home page.",
+          "content": "Click **Synthetics** to open the Synthetic Monitoring home page.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -81,7 +81,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "label[title='Validate the DNS records for a given host.']",
+          "reftarget": "label:contains('DNS')",
           "content": "Set the **Request Type** to **DNS**.",
           "requirements": [
             "exists-reftarget"
@@ -90,9 +90,9 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[data-testid='checkEditor form instance']",
-          "targetvalue": "grafana.com",
+          "reftarget": "[name=\"target\"]",
           "content": "Enter your **Request Target** — the domain name to resolve, for example **grafana.com**.",
+          "targetvalue": "grafana.com",
           "requirements": [
             "exists-reftarget"
           ]
@@ -119,19 +119,19 @@
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "input[data-testid='checkEditor form validRCodes']",
-          "content": "Optionally set the **Valid Response Code**. Choose **NOERROR** to confirm the DNS query returned a valid response. The check will fail if any other response code is returned.",
-          "skippable": true,
-          "doIt": false
+          "action": "noop",
+          "content": "Optionally set the **Valid Response Code**. We will keep **NOERROR** to confirm the DNS query returned a valid response. The check will fail if any other response code is returned."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "input[data-testid='checkEditor form timeout']",
+          "action": "formfill",
+          "reftarget": "[aria-label=\"timeout seconds input\"]",
           "content": "Optionally set a **Timeout**. If the check takes longer than this to run it will be marked as failed. A value of **10 seconds** is suitable for most DNS checks.",
-          "skippable": true,
-          "doIt": false
+          "targetvalue": "10",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -148,12 +148,12 @@
           "steps": [
             {
               "action": "formfill",
-              "reftarget": "input[aria-label='Custom labels 1 name']",
+              "reftarget": "input[placeholder='name']",
               "targetvalue": "env"
             },
             {
               "action": "formfill",
-              "reftarget": "input[aria-label='Custom labels 1 value']",
+              "reftarget": "input[placeholder='value']",
               "targetvalue": "test"
             }
           ]
@@ -219,7 +219,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox']",
-          "content": "Enable the **Probe Failed Executions** alert by clicking the checkbox. For example, alert when 2 of 10 executions fail in the last five minutes.",
+          "content": "Enable the **Probe Failed Executions** alert by clicking the checkbox.",
           "requirements": [
             "exists-reftarget"
           ]
@@ -241,7 +241,7 @@
     },
     {
       "type": "markdown",
-      "content": "## 🎉 Congratulations!\n\nYou've successfully set up a DNS check in Grafana Cloud Synthetic Monitoring. You can now:\n\n- View results in the out-of-the-box **Synthetic Monitoring dashboard**, showing uptime, reachability, average latency, and frequency\n- Monitor **response latency and resource records by probe location** for deeper visibility into global DNS performance\n- Receive **alerts** the moment DNS resolution fails or returns unexpected results\n\nTo learn more, explore other check types such as HTTP, Ping, and TCP checks — or set up private probes to monitor internal services not accessible from the public internet.\n"
+      "content": "## Congratulations!\n\nYou've successfully set up a DNS check in Grafana Cloud Synthetic Monitoring. You can now:\n\n- View results in the out-of-the-box **Synthetic Monitoring dashboard**, showing uptime, reachability, average latency, and frequency\n- Monitor **response latency and resource records by probe location** for deeper visibility into global DNS performance\n- Receive **alerts** the moment DNS resolution fails or returns unexpected results\n\nTo learn more, visit the documentation to explore other check types such as HTTP, Ping, and TCP checks."
     }
   ]
 }
