@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "mysql-db-olly-prepare-mysql",
+  "title": "Prepare your MySQL database",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll prepare your MySQL database for monitoring. This involves enabling Performance Schema, creating a dedicated monitoring user, and adjusting digest length settings for complete query capture."
+    },
+    {
+      "type": "markdown",
+      "content": "## Enable Performance Schema\n\nPerformance Schema is enabled by default in MySQL 8.0 and later. Verify the setting by running:\n\n```sql\nSHOW VARIABLES LIKE 'performance_schema';\n```\n\nExpected result: Value is `ON`."
+    },
+    {
+      "type": "markdown",
+      "content": "## Create a monitoring user\n\nCreate a dedicated user for Database Observability. Replace the password with a strong value:\n\n```sql\nCREATE USER 'db-o11y'@'%' IDENTIFIED BY '<STRONG_PASSWORD>';\n```\n\nGrant the required privileges:\n\n```sql\nGRANT PROCESS ON *.* TO 'db-o11y'@'%';\nGRANT REPLICATION CLIENT ON *.* TO 'db-o11y'@'%';\nGRANT SELECT ON performance_schema.* TO 'db-o11y'@'%';\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "## Disable tracking of monitoring queries\n\nPrevent the monitoring user's own queries from appearing in your data by excluding them from Performance Schema:\n\n```sql\nUPDATE performance_schema.setup_actors\nSET ENABLED = 'NO', HISTORY = 'NO'\nWHERE HOST = '%' AND USER = 'db-o11y';\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "## Grant object privileges for detailed data\n\nGrant additional privileges for schema details and explain plans:\n\n```sql\nGRANT SELECT ON *.* TO 'db-o11y'@'%';\n```\n\nThis lets Alloy collect table schemas, indexes, and run `EXPLAIN` on sampled queries."
+    },
+    {
+      "type": "markdown",
+      "content": "## Increase digest length limits\n\nIncrease the digest length to capture complete query text:\n\n```sql\nSET GLOBAL max_digest_length = 4096;\nSET GLOBAL performance_schema_max_digest_length = 4096;\n```\n\nVerify both settings:\n\n```sql\nSHOW VARIABLES LIKE 'max_digest_length';\nSHOW VARIABLES LIKE 'performance_schema_max_digest_length';\n```\n\nExpected result: Both values are `4096`.\n\n> **Note:** Add these settings to your MySQL configuration file (`my.cnf`) to persist across restarts."
+    },
+    {
+      "type": "markdown",
+      "content": "## Optional: enable consumers for wait events\n\nTo collect CPU usage and wait events with query samples, enable the consumers:\n\n```sql\nUPDATE performance_schema.setup_consumers\nSET ENABLED = 'YES'\nWHERE NAME IN ('events_statements_cpu', 'events_waits_current', 'events_waits_history');\n```\n\nThese consumers reset when MySQL restarts. You can grant Alloy permission to auto-enable them instead — refer to the [Database Observability MySQL setup documentation](https://grafana.com/docs/grafana-cloud/monitor-applications/database-observability/set-up/mysql/mysql/) for details."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll configure Grafana Alloy with the Database Observability components."
+    }
+  ]
+}
