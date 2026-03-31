@@ -1,0 +1,315 @@
+{
+  "id": "play-nz-geonet-tour",
+  "title": "Explore New Zealand Seismic Data with Infinity and JQ",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This dashboard visualizes live earthquake and volcanic activity data from New Zealand's GeoNet monitoring network. You'll see how the Grafana Infinity data source calls a public API, how JQ reshapes the JSON response into tabular data, and how a single API query powers multiple panels through Grafana's dashboard data source."
+    },
+    {
+      "type": "section",
+      "id": "dashboard-overview",
+      "title": "Dashboard Overview",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll get your bearings by exploring the two main sections of the dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-Earthquakes']",
+          "content": "The Earthquakes section covers the top half of the dashboard. Stat panels at the top surface the most recent and largest events; below them a full-width geomap plots every earthquake in the dataset, with further charts breaking down activity by magnitude.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-Volcanoes']",
+          "content": "Further down, the Volcanoes section shows the current alert level for each of New Zealand's active volcanoes, both on a map and in a colour-coded summary table. Both sections call the GeoNet API directly — no intermediary database needed.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Now that you know the layout, let's dig into the earthquake panels."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "earthquake-panels",
+      "title": "The Earthquake Section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll explore the key earthquake panels and see how they share a single API query."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Most Recent']",
+          "content": "This stat panel shows the time of the most recent earthquake. Rather than making its own API call, it references the main earthquake panel as a data source — Grafana's **Dashboard** data source lets any panel consume another panel's query result.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Largest Recent']",
+          "content": "The **Largest Recent** panel finds the biggest earthquake by sorting the same dataset by magnitude before applying the reduce function.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Recent Earthquakes']",
+          "content": "The main geomap is where the data originates. It calls the GeoNet API directly using the Infinity data source and renders two overlapping layers: small marker circles and a heatmap weighted by magnitude, so areas of concentrated seismic activity glow more intensely.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "You can see how one API call feeds several panels. Next, let's open the Recent Earthquakes panel to look at the query and JQ expression inside."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "heatmap-config",
+      "title": "Inside the Recent Earthquakes Panel",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the data hub panel to see the Infinity query, the JQ expression, and how the heatmap layer is configured."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Recent Earthquakes panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Recent Earthquakes'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"query-editor-row\"] > :first-child",
+          "content": "The Infinity query calls the GeoNet Earthquake API, fetching all earthquakes with a Modified Mercalli Intensity of 1 or above — the threshold for perceptible shaking. The parser is set to **jq-backend**, so the raw GeoJSON response passes directly through a JQ expression.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Open the parsing options to reveal the JQ expression.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='infinity-query-row-collapse-show-parsing-options-&-result-fields'] svg",
+              "description": "Click here to expand the parsing options.",
+              "lazyRender": true
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='infinity-query-field-wrapper-rows/root'] textarea",
+          "content": "The JQ expression iterates over every item in the GeoJSON features array and projects it into a flat object — extracting the public ID, timestamp, depth, MMI, magnitude, locality, and coordinates. The result is a clean table that all the other earthquake panels consume.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard to continue.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen how Infinity and JQ turn a raw GeoJSON feed into the table that powers the whole earthquake section. Next, see how transforms reshape that data for the bar chart."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "bar-chart-transforms",
+      "title": "Grouping Earthquakes by Magnitude",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the bar chart panel and follow the transformation pipeline that groups raw earthquake rows into magnitude bands."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Number of Recent Earthquakes by Magnitude panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Number of Recent Earthquakes by Magnitude'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Transform data tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Transformations']",
+              "description": "Click the Transformations tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "Five transformations run in sequence to produce the chart:\n\n1. **Calculate field** — applies a floor function to the magnitude, rounding each earthquake down to a whole number band (e.g., 2.7 becomes 2).\n2. **Group by** — counts how many earthquakes fall into each band.\n3. **Organize fields** — renames magnitude_scale to magnitude and magnitude_scale (count) to occurrences, dropping the raw columns.\n4. **Sort by** — orders the bands from lowest to highest magnitude.\n5. **Convert field type** — converts the magnitude number to a string so it renders as a categorical x-axis label rather than a numeric axis."
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard to continue.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "That transformation chain converts raw rows into a grouped bar chart without touching the underlying query or data source."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "geojson-feed",
+      "title": "The GeoJSON Feed Example",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the GeoJSON Feed Example panel to see how the same earthquake data can be displayed as a colour-coded magnitude map."
+        },
+        {
+          "type": "guided",
+          "content": "Open the GeoJSON Feed Example panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header GeoJSON Feed Example'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"query-editor-row\"] > :first-child",
+          "content": "The data source here is set to **Dashboard**, pointing at the Recent Earthquakes panel. No second API call is made — this panel simply reuses the table that Infinity + JQ already produced, applying its own colour rules on top.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard and exit edit mode to wrap up.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+              "description": "Click here to exit edit mode.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen how multiple map panels can share one underlying query to give different perspectives on the same data."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "volcanoes",
+      "title": "Volcanic Activity",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll take a quick look at how the volcanoes section follows the same Infinity + JQ pattern as the earthquake panels."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Volcanic Alert Status']",
+          "content": "The Volcanic Alert Status map calls a separate GeoNet endpoint using the same Infinity + JQ approach. A JQ expression extracts each volcano's ID, title, location, alert level and colour code. Coloured triangles mark each volcano on the map — green means no elevated activity; yellow, orange and red indicate increasing levels of unrest.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Volcano Alert Summary']",
+          "content": "The table alongside lists every monitored volcano with its current alert level, activity description and hazard status. Row colours match the map, making it easy to scan for elevated alerts.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've now seen the full dashboard — two independent Infinity queries powering an earthquake heatmap, bar chart, and volcanic alert map."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Further Resources\n\nHere are the tools and data sources behind this dashboard:\n\n- [New Zealand GeoNet API](https://api.geonet.org.nz/) — the free public API providing real-time earthquake and volcano data.\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — the plugin that lets Grafana query any HTTP API directly.\n- [JQ Playground](https://jqplay.org/) — experiment with JQ expressions interactively in your browser.\n- [JQ Manual](https://jqlang.org/manual/) — the full language reference for JQ.\n- [UK Carbon Intensity Dashboard](https://play.grafana.org/d/carbon-intensity) — another example using Infinity and JQ to pull live data from a public API."
+    }
+  ]
+}
