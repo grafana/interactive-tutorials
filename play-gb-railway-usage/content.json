@@ -29,16 +29,57 @@
           "lazyRender": true
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header Main Origin/Destination']:nth-match(2)",
-          "content": "The next row does exactly the same thing, but filters for rank 2. Each rank gets its own row of panels, all pointing at the same underlying data. This approach means the CSV is loaded once and every leaderboard panel is just a filtered view of it.",
-          "doIt": false,
-          "lazyRender": true
+          "type": "guided",
+          "content": "Open the second row's Main Origin/Destination panel for editing to see how the filter works.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Main Origin/Destination']:nth-match(2) svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Transformations tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Transformations']",
+              "description": "Click the Transformations tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
         },
         {
           "type": "markdown",
-          "content": "You've seen how filter-by-value turns a single table into a multi-row leaderboard. Next, the summary charts at the bottom of the dashboard."
+          "content": "Two transformations produce this panel's value:\n\n1. **Filter by value** — keeps only the row where entries_exits_rank equals 2, discarding all other stations.\n2. **Reduce** — pulls out the main_origin_or_destination field from that single row and displays it as a stat."
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard to continue.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "Every panel in every leaderboard row uses this same pattern — one filter value is all that changes between them."
         }
       ]
     },
