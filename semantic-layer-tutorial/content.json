@@ -1,0 +1,281 @@
+{
+  "id": "semantic-layer-tutorial",
+  "title": "BI in Grafana: Semantic Layer",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Interactive Demo: Semantic Layer for Grafana\n\nWe'll quickly walk through how BI dashboards are enhanced by a Semantic Layer, both for dashboard viewers and authors.\n\n"
+    },
+    {
+      "type": "section",
+      "id": "cross-filtering",
+      "title": "\"Cross filtering\" - drill into dashboard data",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "With \"Cross filtering\" we can click on any panel-data, and filter the entire dashboard to that data value"
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/cubeds-ecom-full-data-model/grafana-for-bi3a-semantic-layer-demo?var-Filters=from%3D2018-01-29T00:00:00.000Z&to=2018-03-04T23:59:59.000Z&from=2018-01-28T00:00:00.000Z&timezone=browser",
+          "content": "Navigate to the **Grafana for BI: Semantic Layer** demo dashboard",
+          "verify": "on-page:/d/cubeds-ecom-full-data-model"
+        },
+        {
+          "type": "guided",
+          "content": "Click to filter: show Credit-card payments only\n\nWithin the **Order Amount by Payment Method** panel, click the \"credit_card\" bar, then the **Filter for …** button in the tooltip",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid panel content'] div:nth-match(14)",
+              "description": "Click one of the bars within the bar chart."
+            },
+            {
+              "action": "button",
+              "reftarget": "Filter for 'credit_card'"
+            }
+          ],
+          "requirements": [
+            "on-page:/d/cubeds-ecom-full-data-model"
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "hover",
+          "reftarget": "section[data-testid='data-testid Panel header Orders: Amount and Count, by First Name'] div[data-testid='data-testid panel content']",
+          "content": "Now we'll click to filter from the Table panel. First hover a cell to show the filter buttons",
+          "requirements": [
+            "on-page:/d/cubeds-ecom-full-data-model"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "guided",
+          "content": "Now click the \"Add to filter\" icon",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[role=\"gridcell\"]:contains(\"Gerald\")",
+              "description": "Select the highlighted cell",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role=\"gridcell\"]:contains(\"Gerald\") button[aria-label=\"Filter for value\"]",
+              "description": "Click the button \"Filter for value\"",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ],
+          "requirements": [
+            "on-page:/d/cubeds-ecom-full-data-model"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Orders: Amount, by First Name'] div[data-testid='uplot-main-div']",
+          "content": "Notice how all other panels, including this one, are immediately filtered per the filters we've added.",
+          "tooltip": "Notice how all other panels, including this one, are immediately filtered per the filters we've added.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='data-testid template variable'] input:nth-match(3)",
+          "content": "Now let's further customise the filters we've added. We'll update `last_name` to filter for one of many values.",
+          "targetvalue": "order_details.customers_last_name =| C. B.",
+          "tooltip": "Now let's further customise the filters we've added. We'll update `last_name` to filter for one of many values."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "generated-sql",
+      "title": "View Generated SQL, including JOINs",
+      "requirements": [
+        "on-page:/d/cubeds-ecom-full-data-model"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/cubeds-ecom-full-data-model?var-Filters=order_details.payments_payment_method%7C%3D%7Ccredit_card&var-Filters=order_details.customers_last_name%7C%3D__gfp__%7CW.%7CB.%7CC.",
+          "content": "Navigate to the **Grafana for BI: Semantic Layer** demo dashboard",
+          "verify": "on-page:/d/cubeds-ecom-full-data-model"
+        },
+        {
+          "type": "markdown",
+          "content": "Let's look at how this is done, and see the SQL which is generated by the Semantic Layer."
+        },
+        {
+          "type": "guided",
+          "content": "First edit the **Orders: Amount, by First Name** panel",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Orders: Amount, by First Name'] button[data-testid='data-testid Panel menu Orders: Amount, by First Name']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']"
+            }
+          ],
+          "requirements": [
+            "on-page:/d/cubeds-ecom-full-data-model"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[aria-label='Dimensions']",
+          "content": "Notice that only two selections were needed to build the query for this panel:\n- a single Dimension and\n- a single Measure",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/cubeds-ecom-full-data-model"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[aria-label='Generated SQL query']",
+          "content": "Yet this complete SQL Query was generated for us by the Semantic Layer data source",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[aria-label=\"Generated SQL query\"]:contains('payment_method')",
+          "content": "Let's remove our filters now, and see the conditions in the `WHERE` clause such as `` `payments`.payment_method `` disappear",
+          "tooltip": "Let's remove our filters now, and see the conditions in the `WHERE` clause such as `` `payments`.payment_method `` disappear",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "guided",
+          "content": "Click first to clear a single filter, then try clicking to remove all remaining filters.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid template variable'] svg:nth-match(6)",
+              "description": "Click the cross"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid template variable'] svg:nth-match(7)",
+              "description": "Click the cross again to clear all."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[aria-label='Generated SQL query']",
+          "content": "You can now see the statement has been removed from the where clause.",
+          "tooltip": "You can now see the statement has been removed from the where clause.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "time-range-filtering",
+      "title": "Time-range filtering",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/cubeds-ecom-full-data-model?var-Filters=",
+          "content": "Navigate to the **Grafana for BI: Semantic Layer** demo dashboard",
+          "verify": "on-page:/d/cubeds-ecom-full-data-model"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid panel content'] >   div[data-testid='uplot-main-div']:nth-match(3)",
+          "content": "Drag a box to zoom in on a specific time range\n\nZoom in again to a smaller time range to see other panels filtered further",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "scrollContainer": "#pageContent"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Dashboard template variables Variable Value DropDown value link text order_details.order_date-input']",
+          "content": "Notice the `order_details.order_date` field is being used as our Time-range filtering field.\n\nIt's this field which lands in the SQL `WHERE` clause, and which is filtered to the time-range start and end timestamps.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "joins-are-injected",
+      "title": "`JOIN`s are injected",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The Semantic Layer data source doesn't just convert Grafana AdHoc filters to SQL `WHERE` clauses. It will inject the necessary `JOIN`s too.  \n  \nThis dynamic injection means we never hit any `column not found` error."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/territory-navigator",
+          "content": "Let's first navigate to a more involved BI Dashboard - the Territory Navigator example"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-59679'] section[data-testid='data-testid Panel header Open Opportunities (Cube)']",
+          "content": "Scroll to the Open Opportunities (Cube) panel.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "scrollContainer": "#pageContent"
+        },
+        {
+          "type": "guided",
+          "content": "filter to **Stage: Qualification**\n\nSee the rest of the dashboard update.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid tableng header filter'] svg:nth-match(5)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[title='Qualification']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:text('Ok')"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
