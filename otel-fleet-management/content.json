@@ -1,0 +1,399 @@
+{
+  "id": "otel-fleet-management",
+  "title": "Fleet Management: Onboard an OpenTelemetry Collector",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this guide, you'll deploy an OpenTelemetry Collector with the OpAMP Supervisor and connect it to Fleet Management. You'll then create a self-monitoring pipeline and verify your collector appears in the inventory."
+    },
+    {
+      "type": "section",
+      "id": "setup-terminal",
+      "title": "Set up terminal",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll connect to a terminal session where you'll install and run the OpenTelemetry Collector."
+        },
+        {
+          "type": "terminal-connect",
+          "content": "Connect to a terminal session. This is where you'll run installation and configuration commands."
+        },
+        {
+          "type": "terminal",
+          "command": "docker ps",
+          "content": "Verify the terminal is working by running a quick command.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Your terminal is ready for the next steps."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-access-policy",
+      "title": "Create an access policy and token",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll create a Grafana Cloud access policy with the scopes needed for Fleet Management and telemetry ingestion."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "<Unsure>",
+          "content": "Navigate to **Access Policies** in Grafana Cloud."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Click **Create access policy**."
+        },
+        {
+          "type": "guided",
+          "content": "Configure the access policy. Give it a name, add your stack to the realms, and add the required scopes.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "<Unsure>",
+              "targetvalue": "otel-fleet-management",
+              "description": "Enter a name for the access policy."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Add your stack to the realms list."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Add the fleet-management:read scope."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Add the metrics:write scope."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Add the logs:write scope."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Add the traces:write scope."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Click **Create** to save the access policy."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Now create a token for this access policy. Click **Add token**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Copy the token and save it somewhere safe. You'll need it to configure the OpAMP Supervisor.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "You now have an access policy token with the required scopes."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "install-otel",
+      "title": "Install OpenTelemetry Collector and OpAMP Supervisor",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll install the OpenTelemetry Collector Contrib distribution and the OpAMP Supervisor."
+        },
+        {
+          "type": "terminal",
+          "command": "sudo apt-get update && sudo apt-get install -y otelcol-contrib",
+          "content": "Install the OpenTelemetry Collector Contrib distribution.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "terminal",
+          "command": "sudo apt-get install -y opampsupervisor",
+          "content": "Install the OpAMP Supervisor.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Both the OpenTelemetry Collector and OpAMP Supervisor are now installed."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-supervisor",
+      "title": "Configure the OpAMP Supervisor",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll gather connection details from Fleet Management and configure the OpAMP Supervisor to connect your collector."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "content": "Open **Fleet Management** from the main menu."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Select the **API** tab to find your connection details."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Note the **Fleet Management URL** and **Instance ID** shown in this section. You'll use these in the next steps.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "You need to set the following environment variables before starting the supervisor:\n\n- `GCLOUD_FM_URL` — Fleet Management URL (from the API tab)\n- `GCLOUD_OTLP_URL` — OTLP gateway URL (from Grafana Cloud Portal > Your stacks > OpenTelemetry)\n- `GCLOUD_INSTANCE_ID` — your Grafana Cloud instance ID (from the API tab)\n- `GCLOUD_RW_API_KEY` — the access policy token you created earlier\n- `GCLOUD_BASIC_AUTH` — base64-encoded `instance_id:token`"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Expand terminal']",
+          "content": "Expand the terminal panel.",
+          "skippable": true
+        },
+        {
+          "type": "terminal",
+          "command": "export GCLOUD_FM_URL=\"<FLEET_MANAGEMENT_URL>\"\nexport GCLOUD_OTLP_URL=\"<OTLP_GATEWAY_URL>\"\nexport GCLOUD_INSTANCE_ID=\"<INSTANCE_ID>\"\nexport GCLOUD_RW_API_KEY=\"<ACCESS_POLICY_TOKEN>\"\nexport GCLOUD_BASIC_AUTH=$(echo \"${GCLOUD_INSTANCE_ID}:${GCLOUD_RW_API_KEY}\" | openssl base64 -A)",
+          "content": "Set the environment variables. Replace the placeholder values with your actual connection details and token.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "terminal",
+          "command": "cat > supervisor-config.yaml << 'EOF'\nserver:\n  endpoint: \"${env:GCLOUD_FM_URL}/v1/opamp\"\n  headers:\n    Authorization: \"Basic ${env:GCLOUD_BASIC_AUTH}\"\n\ncapabilities:\n  accepts_remote_config: true\n  reports_remote_config: true\n\nagent:\n  executable: /usr/bin/otelcol-contrib\n  description:\n    identifying_attributes:\n      collector_name: my-otel-collector\n    non_identifying_attributes:\n      environment: \"dev\"\n  args: [--feature-gates, service.AllowNoPipelines]\n\nstorage:\n  directory: /var/lib/otelcol/supervisor\nEOF",
+          "content": "Create the supervisor configuration file.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "The OpAMP Supervisor is now configured to connect to your Fleet Management instance."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "start-supervisor",
+      "title": "Start the OpAMP Supervisor",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll start the OpAMP Supervisor, which launches and manages the OpenTelemetry Collector."
+        },
+        {
+          "type": "terminal",
+          "command": "opampsupervisor --config=supervisor-config.yaml",
+          "content": "Start the OpAMP Supervisor. It will launch the OpenTelemetry Collector and connect to Fleet Management.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "The supervisor is now running and managing your OpenTelemetry Collector."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-pipeline",
+      "title": "Create a self-monitoring pipeline",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll create a remote configuration pipeline that sends the collector's internal metrics, logs, and traces to Grafana Cloud. This enables health monitoring in Fleet Management."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/fleet-management",
+          "content": "Navigate to **Fleet Management**.",
+          "verify": "on-page:/a/grafana-collector-app/fleet-management"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Select the **Remote Configuration** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Click **Create configuration pipeline**."
+        },
+        {
+          "type": "guided",
+          "content": "Select the collector type and configuration template.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Select **OpenTelemetry** as the collector type."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Select **Configuration template**."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Select the platform where your collector is running."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Select the **OpenTelemetry Collector Health** integration."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "<Unsure>",
+              "description": "Click **Next**."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Review the generated pipeline name and YAML configuration. Click **Test configuration pipeline** to validate the syntax."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Once the test passes, click **Next**."
+        },
+        {
+          "type": "guided",
+          "content": "Assign matching attributes to roll the configuration out to your collectors.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "<Unsure>",
+              "targetvalue": "os.type",
+              "description": "Set the attribute to os.type."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "<Unsure>",
+              "targetvalue": "=~",
+              "description": "Set the matcher to regex match."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "<Unsure>",
+              "targetvalue": ".*",
+              "description": "Set the value to match all collectors."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Click **Save** and confirm to save the pipeline."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "<Unsure>",
+          "content": "Find your pipeline in the list and click **Activate** to enable it."
+        },
+        {
+          "type": "markdown",
+          "content": "Your self-monitoring pipeline is now active and will push collector health data to Grafana Cloud."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "verify-collector",
+      "title": "Verify your collector",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll confirm the collector appears in the Fleet Management inventory with a healthy status."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/fleet-management/fleet-inventory",
+          "content": "Navigate to the **Fleet Inventory**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='tab-fleet-inventory']",
+          "content": "Select the **Inventory** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid^='collector-row-']:nth-match(1)",
+          "content": "Your OpenTelemetry Collector should now appear in the list.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "Verify the following:\n\n- **Status** is green\n- **Collector ID** is present\n- **Version**, **OS**, and **Attributes** are populated"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid^='collector-row-']:nth-match(1)",
+          "content": "Click your collector to view its health, logs, attributes, and merged configuration.",
+          "tooltip": "Shows collector details including health metrics and active configuration"
+        },
+        {
+          "type": "markdown",
+          "content": "You've confirmed your collector is connected and reporting to Fleet Management."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your OpenTelemetry Collector is now connected to Fleet Management via the OpAMP Supervisor. From here you can push remote configurations, monitor collector health, and manage your fleet at scale."
+    }
+  ]
+}
