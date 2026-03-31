@@ -32,6 +32,7 @@ Write immediately without introduction.
 > Read `build-interactive-lj/reference/json-schema.md` for content.json schema, block types, and field reference.
 > Read `reference/frontmatter-schema.md` for website front matter fields, CTA types, and paired examples.
 > Proven patterns for common UI elements are available in `.cursor/proven-patterns.mdc` (loaded automatically when editing content.json files).
+> **MANDATORY**: The feature documentation fetched in Step 2 is the authoritative source for all factual claims. When writing blocks, reference those docs — not training data — for feature names, UI navigation paths, capabilities, platform availability, and prerequisites.
 
 ---
 
@@ -305,6 +306,9 @@ related_journeys:
   items:
     - title: [Related path title]
       link: /docs/learning-paths/[related-path]/
+source_docs:
+  - /docs/grafana-cloud/[product]/[feature]/
+  - /docs/grafana/latest/[feature]/
 pathfinder_data: [slug]-lj/welcome
 ---
 
@@ -320,6 +324,7 @@ These fields appear only on `_index.md`, not on milestone `index.md` files:
 | `journey` | Yes | Path metadata: group, skill level, source, logo |
 | `cascade` | Yes | Always `{ layout: single-journey }` — propagates to child pages |
 | `cta.type` | Yes | Always `start` for the landing page |
+| `source_docs` | Yes | Canonical docs pages the path content was derived from (populated by AI during Step 2) |
 | `cta.title` | Yes | Prompt text (typically "Are you ready?") |
 | `cta.cta_text` | Yes | Button text (typically "Let's go!") |
 
@@ -393,6 +398,9 @@ related_journeys:
   items:
     - title: [Related path title]
       link: /docs/learning-paths/[related-path]/
+source_docs:
+  - /docs/grafana-cloud/[product]/[feature]/
+  - /docs/grafana/latest/[feature]/
 pathfinder_data: [slug]-lj/welcome
 ---
 

@@ -14,7 +14,8 @@ This is the **unified command** that replaces the two-pass workflow (write markd
 4. Discovers CSS selectors by walking the Grafana UI
 5. Tests interactivity collaboratively with the user
 6. Verifies website markdown is complete and correct
-7. Produces a final report
+7. Verifies factual claims against live Grafana documentation
+8. Produces a final report
 
 ---
 
@@ -86,6 +87,11 @@ Collaboratively test each milestone in the Block Editor. User imports JSON, clic
 > File: `steps/07-verify-website-markdown.md`
 
 Verify that every milestone has a corresponding website `index.md` with correct front matter and that the path overview `_index.md` is present.
+
+### Step 7b: Verify Documentation Accuracy (MANDATORY)
+> File: `steps/07b-verify-docs-accuracy.md`
+
+Cross-check all factual claims in the learning path content against live Grafana documentation. Fetches canonical docs pages and compares navigation paths, feature names, capability descriptions, platform availability, and prerequisites.
 
 ### Step 8: Report and Next Steps
 > File: `steps/08-report.md`
