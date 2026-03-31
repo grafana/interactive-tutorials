@@ -37,6 +37,8 @@ Scaffold immediately without introduction.
 > field reference. This ensures you use correct field names (`content` not `description`, 
 > `targetvalue` not `formvalue`).
 
+> **MANDATORY**: The feature documentation fetched in Step 2 is the authoritative source for all factual claims. When writing blocks, reference those docs — not training data — for feature names, UI navigation paths, capabilities, platform availability, and prerequisites.
+
 ---
 
 ## CRITICAL: Scaffold ALL Milestones
