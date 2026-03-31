@@ -41,7 +41,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Main Origin/Destination']:nth-match(1)",
-          "content": "Each row in the leaderboard shows a single station's key figures: its name, total entries and exits, its main origin or destination, and the percentage of journeys that went to or from there. Every panel in the row references the shared Raw Data panel at the bottom, then uses a **Filter by value** transformation to isolate the single row where `entries_exits_rank` equals the position you're looking at.",
+          "content": "Each row in the leaderboard shows a single station's key figures: its name, total entries and exits, its main origin or destination, and the percentage of journeys that went to or from there. Every panel in the row references the shared Raw Data panel at the bottom, then uses a **Filter by value** transformation to isolate the single row matching the position you're looking at.",
           "doIt": false,
           "lazyRender": true
         },
@@ -72,7 +72,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Entries and Exits by Region']",
-          "content": "This bar gauge groups every station by region and sums their total entries and exits. It uses three transforms in sequence: **Organize fields** (drop the columns not needed), **Group by** (sum `all_entries_exits` for each region), and **Rows to fields** (pivot the result so each region becomes a separate bar).",
+          "content": "This bar gauge groups every station by region and sums their total entries and exits. It uses three transforms in sequence: **Organize fields** (drop the columns not needed), **Group by** (sum total entries and exits for each region), and **Rows to fields** (pivot the result so each region becomes a separate bar).",
           "doIt": false,
           "lazyRender": true
         },
@@ -149,7 +149,7 @@
         },
         {
           "type": "markdown",
-          "content": "Three transforms clean up the raw CSV before any other panel can use it:\n\n1. **Organize fields** — reorders and renames columns to match the field names expected by downstream panels.\n2. **Convert field type** — casts numeric columns (rank, entries/exits counts) from strings to numbers so they can be sorted and calculated against.\n3. **Sort by** — orders all rows by `entries_exits_rank` ascending, so rank 1 always appears first in every filtered view."
+          "content": "Three transforms clean up the raw CSV before any other panel can use it:\n\n1. **Organize fields** — reorders and renames columns to match the field names expected by downstream panels.\n2. **Convert field type** — casts the rank and entries/exits columns from strings to numbers so they can be sorted and calculated.\n3. **Sort by** — orders all rows by rank ascending, so rank 1 always appears first in every filtered view."
         },
         {
           "type": "guided",
@@ -166,7 +166,7 @@
         },
         {
           "type": "markdown",
-          "content": "You've seen the data foundation. Next, open one of the statistic panels to see how it calculates a percentage that isn't in the original CSV."
+          "content": "You've seen the data foundation. Next, open one of the statistic panels to see how it calculates a percentage that isn't in the original data."
         }
       ]
     },
@@ -213,7 +213,7 @@
         },
         {
           "type": "markdown",
-          "content": "Eight transformations turn the raw station table into the ranked percentage bar gauge:\n\n1. **Organize fields** — keep only `station`, `season_ticket_entries_exits`, and `all_entries_exits`; drop everything else.\n2. **Calculate field** — divides `season_ticket_entries_exits` by `all_entries_exits` to produce a `season_ticket_percentage` ratio (e.g., 0.42).\n3. **Convert field type** — casts that ratio column to a number.\n4. **Calculate field** — multiplies the ratio by 100 to produce `season_ticket_pct` as a readable percentage (e.g., 42).\n5. **Convert field type** — casts `season_ticket_pct` to a number.\n6. **Sort by** — orders rows descending by `season_ticket_pct` so the highest stations appear first.\n7. **Organize fields** — drops intermediate columns, keeping only `station` and `season_ticket_pct`.\n8. **Group by** — deduplicates the result, keeping one row per station with the last non-null percentage value."
+          "content": "The key steps in the transformation chain are:\n\n1. **Organize fields** — strips the table down to just the station name, season ticket count, and total entries/exits.\n2. **Calculate field** (used twice) — first divides season ticket journeys by total journeys to get a ratio, then multiplies by 100 to turn it into a readable percentage. The percentage isn't in the source data at all — Grafana computes it here.\n3. **Sort by** — orders stations from highest to lowest percentage so the most season-ticket-dependent stations appear at the top of the bar gauge.\n4. **Group by** — deduplicates the result to one row per station."
         },
         {
           "type": "guided",
