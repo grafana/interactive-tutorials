@@ -92,23 +92,59 @@
         },
         {
           "type": "markdown",
-          "content": "### Drill into an entity\n\nClicking an entity name opens a detailed drawer with deep observability data for that entity."
+          "content": "### Drill into an entity\n\nClicking an entity name opens a detailed drawer with deep observability data. Let's explore what's inside."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='catalog-entity-name-btn']",
+          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
           "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
-          "tooltip": "Opens the entity detail drawer with metrics, logs, traces, and more.",
-          "content": "Click any entity name to open the detail drawer. This gives you instant access to **Latency**, **Error Ratio**, **Request Rate** charts, plus tabs for **Logs**, **Traces**, **Profiles**, **Metrics**, **Kubernetes** details, and **Service KPI**."
+          "tooltip": "Opens the entity detail drawer.",
+          "content": "Click the first entity to open its detail drawer."
         },
         {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Close",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "type": "guided",
+          "content": "Explore the entity detail drawer. Each tab gives you a different lens into this service's health and behavior.",
+          "stepTimeout": 45000,
           "skippable": true,
-          "content": "Close the entity detail drawer."
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='entity-drawer-apps-tab-serviceOverview']",
+              "description": "View the Service overview tab",
+              "tooltip": "Shows Latency, Error Ratio, Request Rate charts, duration distribution, and outbound dependencies."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-logs-tab']",
+              "description": "Switch to the Logs tab",
+              "tooltip": "Query and explore logs emitted by this service."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-traces-tab']",
+              "description": "Switch to the Traces tab",
+              "tooltip": "View distributed traces flowing through this service."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-kpis-tab']",
+              "description": "Switch to the Metrics tab",
+              "tooltip": "Browse all metrics associated with this service."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-overview-tab']",
+              "description": "Switch to the Properties tab",
+              "tooltip": "View metadata like cluster, namespace, workload type, and discovery timestamps."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='data-testid Drawer close']",
+              "description": "Close the drawer",
+              "tooltip": "Done exploring -- close the entity detail drawer."
+            }
+          ]
         },
         {
           "type": "markdown",
