@@ -63,6 +63,7 @@
       "type": "section",
       "id": "explore-add-pane",
       "title": "Explore the Add pane",
+      "autoCollapse": false,
       "blocks": [
         {
           "type": "markdown",
@@ -171,6 +172,101 @@
     },
     {
       "type": "section",
+      "id": "add-panel",
+      "title": "Add a visualization panel",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll add a panel using TestData so the dashboard has some content to work with."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
+          "content": "Open the **Add** pane from the right toolbar."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid sidebar add new panel']",
+          "content": "Click the **Panel** area to add a new panel to the dashboard.",
+          "tooltip": "This adds a panel to the currently active tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Sidebar container'] button:text('Configure')",
+          "content": "Click **Configure** to open the full panel editor where you can choose a data source and build a query.",
+          "tooltip": "The panel editor gives you full control over data sources, queries, and visualization options."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "targetvalue": "TestData",
+          "content": "Type **TestData** into the data source picker to select the built-in test data source.",
+          "tooltip": "TestData generates sample data without needing an external connection."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='dialog'] button:text('Grafana TestData')",
+          "content": "Select **Grafana TestData** from the results.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click **Back to dashboard** to return to the canvas with your new panel.",
+          "tooltip": "The panel is added to your Overview tab with sample time series data."
+        },
+        {
+          "type": "markdown",
+          "content": "Your dashboard now has a visualization. Next, you'll organize it using rows."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "group-into-rows",
+      "title": "Organize panels with rows",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll group your panel into a collapsible row to see how rows work inside tabs."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
+          "content": "Open the **Add** pane again."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Group into rows')",
+          "content": "Click **Group into rows** to wrap the existing panel in a collapsible row.",
+          "tooltip": "Rows can be nested inside tabs to create a multi-level layout hierarchy."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='tree']",
+          "content": "Notice the content outline now shows the row nested inside the Overview tab, with your panel inside it. This is the power of dynamic dashboards — tabs contain rows, rows contain panels.",
+          "tooltip": "The outline updates in real-time as you add and reorganize content.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "Rows inside tabs give you two levels of organization — tabs for broad categories and rows for grouping related panels within each tab."
+        }
+      ]
+    },
+    {
+      "type": "section",
       "id": "content-outline",
       "title": "Navigate with the content outline",
       "blocks": [
@@ -188,9 +284,12 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[role='tree']",
+          "reftarget": "div[data-testid='data-testid Sidebar container'] li:nth-match(1)",
           "content": "The content outline shows your dashboard as a navigable tree: **Dashboard** at the root, with Variables, Annotations, Links, and your tabs listed below. Click any item to jump directly to it.",
           "tooltip": "Essential for large dashboards — jump to any section instantly instead of scrolling.",
+          "requirements": [
+            "exists-reftarget"
+          ],
           "doIt": false
         },
         {
@@ -320,7 +419,7 @@
     },
     {
       "type": "markdown",
-      "content": "You've explored the key features of Dynamic Dashboards in Grafana:\n\n- **Tabs** to segment dashboard content horizontally\n- **Repeat options** to auto-generate tabs per variable value\n- **Auto-grid layout** for responsive panel arrangement\n- **Show/hide rules** for conditional rendering based on variables\n- **Content outline** for tree-based navigation\n- **Inline dashboard options** for quick configuration\n- **Edit as code** with the new Dashboard v2 schema\n\nThese features are in public preview and available in Grafana 12.4+. Create your own dynamic dashboards to organize complex observability data."
+      "content": "You've explored the key features of Dynamic Dashboards in Grafana:\n\n- **Tabs** to segment dashboard content horizontally\n- **Repeat options** to auto-generate tabs per variable value\n- **Auto-grid layout** for responsive panel arrangement\n- **Show/hide rules** for conditional rendering based on variables\n- **Rows** nested inside tabs for multi-level organization\n- **Content outline** for tree-based navigation\n- **Inline dashboard options** for quick configuration\n- **Edit as code** with the new Dashboard v2 schema\n\nThese features are in public preview and available in Grafana 12.4+. Create your own dynamic dashboards to organize complex observability data."
     }
   ]
 }
