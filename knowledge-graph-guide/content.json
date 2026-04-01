@@ -1,0 +1,307 @@
+{
+  "id": "knowledge-graph-guide",
+  "title": "Exploring Grafana Knowledge Graph",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Grafana Knowledge Graph automatically discovers and maps every entity in your environment -- services, nodes, pods, and more. In this guide you will explore two key features:\n\n- **Entity catalog** -- browse, search, and inspect all discovered entities\n- **RCA workbench** -- investigate issues across entities using insights and multiple visualization modes"
+    },
+    {
+      "type": "section",
+      "id": "entity-catalog",
+      "title": "Explore the Entity Catalog",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You will learn how to browse discovered entities, filter by type and health, and drill into service-level details."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-asserts-app/catalog",
+          "verify": "on-page:/a/grafana-asserts-app/catalog",
+          "showMe": false,
+          "content": "Navigate to the **Entity catalog**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='insights-circle']",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "doIt": false,
+          "tooltip": "Colored rings visualize health across five categories: Saturation, Amend, Anomaly, Failure, and Error.",
+          "content": "Each entity in the catalog has insight rings -- colored circles that show its health status at a glance. The table also shows the entity name, technology stack, and key metrics like **Latency P95**, **Error Ratio**, and **Request Rate**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Search entity']",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "doIt": false,
+          "tooltip": "Search narrows the catalog to matching entities.",
+          "content": "Use the search box to quickly find a specific entity by name."
+        },
+        {
+          "type": "markdown",
+          "content": "### Entity types\n\nThe left sidebar lets you filter entities by type. The Knowledge Graph discovers many types of entities from your telemetry data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:has([data-testid='catalog-type-Service-radio'])",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "doIt": false,
+          "tooltip": "Services are the default view -- discovered from your metrics and traces.",
+          "content": "**Service** is selected by default. Services represent application-level components discovered from metrics and traces. The count shows how many entities of each type exist."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:has([data-testid='catalog-type-Node-radio'])",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "tooltip": "Switch to see infrastructure nodes instead of services.",
+          "content": "Click **Node** to view infrastructure-level entities. Nodes represent the underlying compute instances running your services."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:has([data-testid='catalog-type-Service-radio'])",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "tooltip": "Switch back to the service view.",
+          "content": "Click **Service** to return to the service view."
+        },
+        {
+          "type": "markdown",
+          "content": "### Insight rings\n\nThe colored rings next to each entity name represent its health status across five categories. These are the same insight categories used throughout Knowledge Graph."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='insight-type-filter']:nth-match(6)",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "tooltip": "Filter to only show entities with error insights.",
+          "content": "Check **Error** under Insight Rings to filter the catalog to only entities experiencing errors. The five insight categories are:\n\n- **Saturation** -- resource limits being reached\n- **Amend** -- configuration changes detected\n- **Anomaly** -- unusual metric behavior\n- **Failure** -- component failures\n- **Error** -- application errors"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='insight-type-filter']:nth-match(1)",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "tooltip": "Clear the filter to show all entities again.",
+          "content": "Check **All** to clear the insight filter and show all entities."
+        },
+        {
+          "type": "markdown",
+          "content": "### Drill into an entity\n\nClicking an entity name opens a detailed drawer with deep observability data. Let's explore what's inside."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "tooltip": "Opens the entity detail drawer.",
+          "content": "Click the first entity to open its detail drawer."
+        },
+        {
+          "type": "guided",
+          "content": "Explore the entity detail drawer. Each tab gives you a different lens into this service's health and behavior.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='entity-drawer-apps-tab-serviceOverview']",
+              "description": "View the Service overview tab",
+              "tooltip": "Shows Latency, Error Ratio, Request Rate charts, duration distribution, and outbound dependencies."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-logs-tab']",
+              "description": "Switch to the Logs tab",
+              "tooltip": "Query and explore logs emitted by this service."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-traces-tab']",
+              "description": "Switch to the Traces tab",
+              "tooltip": "View distributed traces flowing through this service."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-kpis-tab']",
+              "description": "Switch to the Metrics tab",
+              "tooltip": "Browse all metrics associated with this service."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-overview-tab']",
+              "description": "Switch to the Properties tab",
+              "tooltip": "View metadata like cluster, namespace, workload type, and discovery timestamps."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='data-testid Drawer close']",
+              "description": "Close the drawer",
+              "tooltip": "Done exploring -- close the entity detail drawer."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "You learned how to browse the Entity catalog, filter by entity type and insight category, and drill into individual entities for detailed observability data."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "rca-workbench",
+      "title": "Investigate with the RCA Workbench",
+      "requirements": ["section-completed:entity-catalog"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You will learn how to populate the RCA workbench, read insight timelines, drill into a service's KPI drawer, and explore multiple visualization modes."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-asserts-app/assertions",
+          "verify": "on-page:/a/grafana-asserts-app/assertions",
+          "showMe": false,
+          "content": "Navigate to the **RCA workbench**."
+        },
+        {
+          "type": "markdown",
+          "content": "The RCA (Root Cause Analysis) workbench is your investigation hub. You add entities here to compare their insights side-by-side and trace the chain of causation across your environment."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='empty-assertions-top-services-link']",
+          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "skippable": true,
+          "tooltip": "Populates the workbench with the services that have the most active insights.",
+          "content": "Click **Add top services by insights** to automatically populate the workbench with the most problematic services. This is the fastest way to start an investigation."
+        },
+        {
+          "type": "markdown",
+          "content": "The workbench is now populated with services. The **Timeline** shows when insights fired for each entity -- red bars for errors, orange for warnings. Look for patterns: do errors correlate across services? Did one trigger the others?"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='assertions-summary-tab']",
+          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "tooltip": "Shows each entity with its specific active insights listed.",
+          "content": "Click **Summary** to see exactly which insights are firing per entity. Each service is listed with its assertions expanded below it."
+        },
+        {
+          "type": "markdown",
+          "content": "### Expand and investigate a service\n\nIn the Summary view, each entity shows its active insights. You can collapse or expand entities to focus your investigation. Let's look closer at the **frontend** service."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1)",
+          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "tooltip": "Collapse or expand to show/hide this service's insights.",
+          "content": "Click **frontend** to toggle its insight list. Notice the red error icons and orange warning icons -- these tell you the severity at a glance."
+        },
+        {
+          "type": "markdown",
+          "content": "### Open the KPI drawer\n\nEvery entity in the workbench has a KPI drawer -- a side panel with detailed dashboards for that service. The drawer is dynamically populated based on what the Knowledge Graph discovered: application metrics, Kubernetes details, traces, logs, and more. Hover over a service to reveal the action buttons."
+        },
+        {
+          "type": "guided",
+          "content": "Hover over the **frontend** service to reveal the action buttons, then open its KPI drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1)",
+              "description": "Hover over the frontend service",
+              "tooltip": "Hover to reveal the action buttons: Causes, KPIs, Connected entities, and Remove."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1) [data-testid='assertions-dir-view-kpi-btn']",
+              "description": "Click KPIs to open the drawer",
+              "tooltip": "Opens a detailed KPI drawer with dashboards auto-discovered for this service."
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Explore the KPI drawer tabs. Each tab gives you a different lens into this service's health.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-apps-tab-serviceOverview']",
+              "description": "View the Service overview",
+              "tooltip": "Shows Latency, Error Ratio, Request Rate, duration distribution, and outbound dependencies."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-traces-tab']",
+              "description": "Switch to Traces",
+              "tooltip": "View distributed traces flowing through this service to find slow or errored requests."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-logs-tab']",
+              "description": "Switch to Logs",
+              "tooltip": "Query and explore logs emitted by this service -- look for error stack traces."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-overview-tab']",
+              "description": "View Properties",
+              "tooltip": "Auto-discovered metadata: cluster, namespace, workload type, runtime, and discovery timestamps."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='data-testid Drawer close']",
+              "description": "Close the KPI drawer",
+              "tooltip": "Return to the workbench to continue investigating."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "### Visualize the blast radius\n\nThe **Graph** tab shows a topology of how the entities in your workbench connect to each other. This is the same knowledge graph data powering the entire experience -- rendered as a real-time diagram with no manual diagramming required."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='assertions-graph-tab']",
+          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "tooltip": "Shows entity topology with nodes colored by health status.",
+          "content": "Click **Graph** to see the service topology. Nodes are colored by health -- green for healthy, red/orange for impacted. Connections show dependencies so you can trace the blast radius of an issue."
+        },
+        {
+          "type": "markdown",
+          "content": "### Summarize with the Mind map\n\nThe **Mind map** provides a hierarchical breakdown of all insights across every entity in your workbench, organized by category and severity."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='assertions-mindmap-tab']",
+          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "tooltip": "Tree-structured breakdown of all insights by category and severity.",
+          "content": "Click **Mind map** to see the big picture. The root node shows total insight counts (critical, warning, info), branching into categories like **error** and **anomaly**. Expand nodes to drill down to individual assertions."
+        },
+        {
+          "type": "markdown",
+          "content": "You learned how to populate the RCA workbench, read insight timelines, hover to reveal action buttons, drill into a service's KPI drawer with traces, logs, and metrics, and visualize blast radius with the Graph and Mind map views."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have completed the Knowledge Graph tour. You now know how to:\n\n- Browse and filter entities in the **Entity catalog**\n- Drill into individual entities for detailed metrics, logs, and traces\n- Use the **RCA workbench** to investigate issues across multiple entities\n- Read insights across Timeline, Summary, Graph, and Mind map views\n\nNext, try using the **Entity Graph** (found in the Observability menu) for a full visual topology of your environment, or set up **Health targets** to define SLOs for your services."
+    }
+  ]
+}
