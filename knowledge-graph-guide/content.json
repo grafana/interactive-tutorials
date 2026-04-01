@@ -160,7 +160,7 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "You will learn how to use the RCA workbench to investigate issues across multiple entities using search, timelines, graphs, and mind maps."
+          "content": "You will learn how to populate the RCA workbench, read insight timelines, drill into a service's KPI drawer, and explore multiple visualization modes."
         },
         {
           "type": "interactive",
@@ -180,82 +180,122 @@
           "reftarget": "[data-testid='empty-assertions-top-services-link']",
           "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
           "skippable": true,
-          "tooltip": "Quickly populates the workbench with services that have the most active insights.",
-          "content": "Click **Add top services by insights** to automatically populate the workbench with the services that currently have the most active issues. This is the fastest way to start an investigation."
+          "tooltip": "Populates the workbench with the services that have the most active insights.",
+          "content": "Click **Add top services by insights** to automatically populate the workbench with the most problematic services. This is the fastest way to start an investigation."
         },
         {
           "type": "markdown",
-          "content": "### Timeline view\n\nThe Timeline is the default view. It shows a time-based visualization of when insights fired for each entity -- red bars for errors, orange for warnings."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='assertions-timeline-tab']",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
-          "doIt": false,
-          "tooltip": "Shows when insights fired over time for each entity.",
-          "content": "The **Timeline** tab displays a chronological view of insights per entity. Red bars indicate errors, orange bars indicate warnings. Use this to spot when issues started and whether they correlate across services."
-        },
-        {
-          "type": "markdown",
-          "content": "### Summary view\n\nThe Summary view groups insights by entity so you can quickly see what is affecting each service."
+          "content": "The workbench is now populated with services. The **Timeline** shows when insights fired for each entity -- red bars for errors, orange for warnings. Look for patterns: do errors correlate across services? Did one trigger the others?"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='assertions-summary-tab']",
           "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
-          "tooltip": "Lists each entity with its specific active insights expanded.",
-          "content": "Click **Summary** to see each entity with its specific insights listed below it. This view tells you exactly what assertions are firing -- for example, an error like `EventStreamError` or an anomaly like `LatencyAverageAnomaly`."
+          "tooltip": "Shows each entity with its specific active insights listed.",
+          "content": "Click **Summary** to see exactly which insights are firing per entity. Each service is listed with its assertions expanded below it."
         },
         {
           "type": "markdown",
-          "content": "### Graph view\n\nThe Graph view shows the topology of your entities and how they connect to each other."
+          "content": "### Expand and investigate a service\n\nIn the Summary view, each entity shows its active insights. You can collapse or expand entities to focus your investigation. Let's look closer at the **frontend** service."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1)",
+          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "tooltip": "Collapse or expand to show/hide this service's insights.",
+          "content": "Click **frontend** to toggle its insight list. Notice the red error icons and orange warning icons -- these tell you the severity at a glance."
+        },
+        {
+          "type": "markdown",
+          "content": "### Open the KPI drawer\n\nEvery entity in the workbench has a KPI drawer -- a side panel with detailed dashboards for that service. The drawer is dynamically populated based on what the Knowledge Graph discovered: application metrics, Kubernetes details, traces, logs, and more. Hover over a service to reveal the action buttons."
+        },
+        {
+          "type": "guided",
+          "content": "Hover over the **frontend** service to reveal the action buttons, then open its KPI drawer.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1)",
+              "description": "Hover over the frontend service",
+              "tooltip": "Hover to reveal the action buttons: Causes, KPIs, Connected entities, and Remove."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1) [data-testid='assertions-dir-view-kpi-btn']",
+              "description": "Click KPIs to open the drawer",
+              "tooltip": "Opens a detailed KPI drawer with dashboards auto-discovered for this service."
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Explore the KPI drawer tabs. Each tab gives you a different lens into this service's health.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-apps-tab-serviceOverview']",
+              "description": "View the Service overview",
+              "tooltip": "Shows Latency, Error Ratio, Request Rate, duration distribution, and outbound dependencies."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-traces-tab']",
+              "description": "Switch to Traces",
+              "tooltip": "View distributed traces flowing through this service to find slow or errored requests."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-logs-tab']",
+              "description": "Switch to Logs",
+              "tooltip": "Query and explore logs emitted by this service -- look for error stack traces."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='entity-drawer-overview-tab']",
+              "description": "View Properties",
+              "tooltip": "Auto-discovered metadata: cluster, namespace, workload type, runtime, and discovery timestamps."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='data-testid Drawer close']",
+              "description": "Close the KPI drawer",
+              "tooltip": "Return to the workbench to continue investigating."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "### Visualize the blast radius\n\nThe **Graph** tab shows a topology of how the entities in your workbench connect to each other. This is the same knowledge graph data powering the entire experience -- rendered as a real-time diagram with no manual diagramming required."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='assertions-graph-tab']",
           "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
-          "tooltip": "Visualizes entity relationships and dependencies as a network graph.",
-          "content": "Click **Graph** to see a visual topology of the entities in your workbench. Nodes are colored by health status -- green for healthy, red for critical. This helps you understand blast radius and dependency chains."
+          "tooltip": "Shows entity topology with nodes colored by health status.",
+          "content": "Click **Graph** to see the service topology. Nodes are colored by health -- green for healthy, red/orange for impacted. Connections show dependencies so you can trace the blast radius of an issue."
         },
         {
           "type": "markdown",
-          "content": "### Mind map view\n\nThe Mind map provides a hierarchical breakdown of all insights by category and severity."
+          "content": "### Summarize with the Mind map\n\nThe **Mind map** provides a hierarchical breakdown of all insights across every entity in your workbench, organized by category and severity."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='assertions-mindmap-tab']",
           "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
-          "tooltip": "Breaks down insights into a hierarchical tree by category.",
-          "content": "Click **Mind map** to see a tree-structured breakdown of all insights. The root node shows total counts (critical, warning, info), which branch into categories like **error** and **anomaly**. This gives you an at-a-glance severity summary."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='assertions-timeline-tab']",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
-          "tooltip": "Return to the timeline to continue your investigation.",
-          "content": "Click **Timeline** to return to the chronological view."
+          "tooltip": "Tree-structured breakdown of all insights by category and severity.",
+          "content": "Click **Mind map** to see the big picture. The root node shows total insight counts (critical, warning, info), branching into categories like **error** and **anomaly**. Expand nodes to drill down to individual assertions."
         },
         {
           "type": "markdown",
-          "content": "### Search for entities\n\nYou can search for specific entity types or names to add them to the workbench."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='insights-search-query-select']",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
-          "doIt": false,
-          "tooltip": "Type queries like 'Show all Services' or search for specific entity names.",
-          "content": "The search bar accepts natural-language-style queries like **Show all Services** or **Show all Nodes**. You can also search for specific entity names. The workbench supports up to 20 entities at a time."
-        },
-        {
-          "type": "markdown",
-          "content": "You learned how to populate the RCA workbench, read timeline insights, switch between Summary, Graph, and Mind map views, and search for entities to investigate."
+          "content": "You learned how to populate the RCA workbench, read insight timelines, hover to reveal action buttons, drill into a service's KPI drawer with traces, logs, and metrics, and visualize blast radius with the Graph and Mind map views."
         }
       ]
     },
