@@ -19,27 +19,31 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/a/grafana-asserts-app/catalog",
-          "verify": "on-page:/a/grafana-asserts-app/catalog",
+          "content": "Navigate to the **Entity catalog**.",
           "showMe": false,
-          "content": "Navigate to the **Entity catalog**."
+          "verify": "on-page:/a/grafana-asserts-app/catalog"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='insights-circle']",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
-          "doIt": false,
+          "content": "Each entity in the catalog has insight rings -- colored circles that show its health status at a glance. The table also shows the entity name, technology stack, and key metrics like **Latency P95**, **Error Ratio**, and **Request Rate**.",
           "tooltip": "Colored rings visualize health across five categories: Saturation, Amend, Anomaly, Failure, and Error.",
-          "content": "Each entity in the catalog has insight rings -- colored circles that show its health status at a glance. The table also shows the entity name, technology stack, and key metrics like **Latency P95**, **Error Ratio**, and **Request Rate**."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "input[placeholder='Search entity']",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
-          "doIt": false,
+          "content": "Use the search box to quickly find a specific entity by name.",
           "tooltip": "Search narrows the catalog to matching entities.",
-          "content": "Use the search box to quickly find a specific entity by name."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "doIt": false
         },
         {
           "type": "markdown",
@@ -49,26 +53,32 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "label:has([data-testid='catalog-type-Service-radio'])",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
-          "doIt": false,
+          "content": "**Service** is selected by default. Services represent application-level components discovered from metrics and traces. The count shows how many entities of each type exist.",
           "tooltip": "Services are the default view -- discovered from your metrics and traces.",
-          "content": "**Service** is selected by default. Services represent application-level components discovered from metrics and traces. The count shows how many entities of each type exist."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "label:has([data-testid='catalog-type-Node-radio'])",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "content": "Click **Node** to view infrastructure-level entities. Nodes represent the underlying compute instances running your services.",
           "tooltip": "Switch to see infrastructure nodes instead of services.",
-          "content": "Click **Node** to view infrastructure-level entities. Nodes represent the underlying compute instances running your services."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "label:has([data-testid='catalog-type-Service-radio'])",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "content": "Click **Service** to return to the service view.",
           "tooltip": "Switch back to the service view.",
-          "content": "Click **Service** to return to the service view."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ]
         },
         {
           "type": "markdown",
@@ -78,17 +88,21 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='insight-type-filter']:nth-match(6)",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "content": "Check **Error** under Insight Rings to filter the catalog to only entities experiencing errors. The five insight categories are:\n\n- **Saturation** -- resource limits being reached\n- **Amend** -- configuration changes detected\n- **Anomaly** -- unusual metric behavior\n- **Failure** -- component failures\n- **Error** -- application errors",
           "tooltip": "Filter to only show entities with error insights.",
-          "content": "Check **Error** under Insight Rings to filter the catalog to only entities experiencing errors. The five insight categories are:\n\n- **Saturation** -- resource limits being reached\n- **Amend** -- configuration changes detected\n- **Anomaly** -- unusual metric behavior\n- **Failure** -- component failures\n- **Error** -- application errors"
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='insight-type-filter']:nth-match(1)",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "content": "Check **All** to clear the insight filter and show all entities.",
           "tooltip": "Clear the filter to show all entities again.",
-          "content": "Check **All** to clear the insight filter and show all entities."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ]
         },
         {
           "type": "markdown",
@@ -98,53 +112,55 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
-          "requirements": ["on-page:/a/grafana-asserts-app/catalog"],
+          "content": "Click the first entity to open its detail drawer.",
           "tooltip": "Opens the entity detail drawer.",
-          "content": "Click the first entity to open its detail drawer."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ]
         },
         {
           "type": "guided",
           "content": "Explore the entity detail drawer. Each tab gives you a different lens into this service's health and behavior.",
-          "stepTimeout": 45000,
-          "skippable": true,
           "steps": [
             {
               "action": "highlight",
               "reftarget": "[data-testid='entity-drawer-apps-tab-serviceOverview']",
-              "description": "View the Service overview tab",
-              "tooltip": "Shows Latency, Error Ratio, Request Rate charts, duration distribution, and outbound dependencies."
+              "tooltip": "Shows Latency, Error Ratio, Request Rate charts, duration distribution, and outbound dependencies.",
+              "description": "View the Service overview tab"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-logs-tab']",
-              "description": "Switch to the Logs tab",
-              "tooltip": "Query and explore logs emitted by this service."
+              "tooltip": "Query and explore logs emitted by this service.",
+              "description": "Switch to the Logs tab"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-traces-tab']",
-              "description": "Switch to the Traces tab",
-              "tooltip": "View distributed traces flowing through this service."
+              "tooltip": "View distributed traces flowing through this service.",
+              "description": "Switch to the Traces tab"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-kpis-tab']",
-              "description": "Switch to the Metrics tab",
-              "tooltip": "Browse all metrics associated with this service."
+              "tooltip": "Browse all metrics associated with this service.",
+              "description": "Switch to the Metrics tab"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-overview-tab']",
-              "description": "Switch to the Properties tab",
-              "tooltip": "View metadata like cluster, namespace, workload type, and discovery timestamps."
+              "tooltip": "View metadata like cluster, namespace, workload type, and discovery timestamps.",
+              "description": "Switch to the Properties tab"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='data-testid Drawer close']",
-              "description": "Close the drawer",
-              "tooltip": "Done exploring -- close the entity detail drawer."
+              "tooltip": "Done exploring -- close the entity detail drawer.",
+              "description": "Close the drawer"
             }
-          ]
+          ],
+          "stepTimeout": 45000,
+          "skippable": true
         },
         {
           "type": "markdown",
@@ -156,7 +172,9 @@
       "type": "section",
       "id": "rca-workbench",
       "title": "Investigate with the RCA Workbench",
-      "requirements": ["section-completed:entity-catalog"],
+      "requirements": [
+        "section-completed:entity-catalog"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -166,9 +184,9 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/a/grafana-asserts-app/assertions",
-          "verify": "on-page:/a/grafana-asserts-app/assertions",
+          "content": "Navigate to the **RCA workbench**.",
           "showMe": false,
-          "content": "Navigate to the **RCA workbench**."
+          "verify": "on-page:/a/grafana-asserts-app/assertions"
         },
         {
           "type": "markdown",
@@ -178,10 +196,12 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='empty-assertions-top-services-link']",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
-          "skippable": true,
+          "content": "Click **Add top services by insights** to automatically populate the workbench with the most problematic services. This is the fastest way to start an investigation.",
           "tooltip": "Populates the workbench with the services that have the most active insights.",
-          "content": "Click **Add top services by insights** to automatically populate the workbench with the most problematic services. This is the fastest way to start an investigation."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/assertions"
+          ],
+          "skippable": true
         },
         {
           "type": "markdown",
@@ -191,9 +211,21 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='assertions-summary-tab']",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "content": "Click **Summary** to see exactly which insights are firing per entity. Each service is listed with its assertions expanded below it.",
           "tooltip": "Shows each entity with its specific active insights listed.",
-          "content": "Click **Summary** to see exactly which insights are firing per entity. Each service is listed with its assertions expanded below it."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/assertions"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='assertions-timeline-tab']",
+          "content": "Let's go back to Timeline.",
+          "tooltip": "Let's go back to Timeline.",
+          "requirements": [
+            "exists-reftarget"
+          ]
         },
         {
           "type": "markdown",
@@ -203,9 +235,11 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1)",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "content": "Click **frontend** to toggle its insight list. Notice the red error icons and orange warning icons -- these tell you the severity at a glance.",
           "tooltip": "Collapse or expand to show/hide this service's insights.",
-          "content": "Click **frontend** to toggle its insight list. Notice the red error icons and orange warning icons -- these tell you the severity at a glance."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/assertions"
+          ]
         },
         {
           "type": "markdown",
@@ -214,60 +248,60 @@
         {
           "type": "guided",
           "content": "Hover over the **frontend** service to reveal the action buttons, then open its KPI drawer.",
-          "stepTimeout": 45000,
-          "skippable": true,
           "steps": [
             {
               "action": "hover",
               "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1)",
-              "description": "Hover over the frontend service",
-              "tooltip": "Hover to reveal the action buttons: Causes, KPIs, Connected entities, and Remove."
+              "tooltip": "Hover to reveal the action buttons: Causes, KPIs, Connected entities, and Remove.",
+              "description": "Hover over the frontend service"
             },
             {
               "action": "highlight",
               "reftarget": "div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1) [data-testid='assertions-dir-view-kpi-btn']",
-              "description": "Click KPIs to open the drawer",
-              "tooltip": "Opens a detailed KPI drawer with dashboards auto-discovered for this service."
+              "tooltip": "Opens a detailed KPI drawer with dashboards auto-discovered for this service.",
+              "description": "Click KPIs to open the drawer"
             }
-          ]
+          ],
+          "stepTimeout": 45000,
+          "skippable": true
         },
         {
           "type": "guided",
           "content": "Explore the KPI drawer tabs. Each tab gives you a different lens into this service's health.",
-          "stepTimeout": 45000,
-          "skippable": true,
           "steps": [
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-apps-tab-serviceOverview']",
-              "description": "View the Service overview",
-              "tooltip": "Shows Latency, Error Ratio, Request Rate, duration distribution, and outbound dependencies."
+              "tooltip": "Shows Latency, Error Ratio, Request Rate, duration distribution, and outbound dependencies.",
+              "description": "View the Service overview"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-traces-tab']",
-              "description": "Switch to Traces",
-              "tooltip": "View distributed traces flowing through this service to find slow or errored requests."
+              "tooltip": "View distributed traces flowing through this service to find slow or errored requests.",
+              "description": "Switch to Traces"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-logs-tab']",
-              "description": "Switch to Logs",
-              "tooltip": "Query and explore logs emitted by this service -- look for error stack traces."
+              "tooltip": "Query and explore logs emitted by this service -- look for error stack traces.",
+              "description": "Switch to Logs"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='entity-drawer-overview-tab']",
-              "description": "View Properties",
-              "tooltip": "Auto-discovered metadata: cluster, namespace, workload type, runtime, and discovery timestamps."
+              "tooltip": "Auto-discovered metadata: cluster, namespace, workload type, runtime, and discovery timestamps.",
+              "description": "View Properties"
             },
             {
               "action": "button",
               "reftarget": "[data-testid='data-testid Drawer close']",
-              "description": "Close the KPI drawer",
-              "tooltip": "Return to the workbench to continue investigating."
+              "tooltip": "Return to the workbench to continue investigating.",
+              "description": "Close the KPI drawer"
             }
-          ]
+          ],
+          "stepTimeout": 45000,
+          "skippable": true
         },
         {
           "type": "markdown",
@@ -277,9 +311,11 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='assertions-graph-tab']",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "content": "Click **Graph** to see the service topology. Nodes are colored by health -- green for healthy, red/orange for impacted. Connections show dependencies so you can trace the blast radius of an issue.",
           "tooltip": "Shows entity topology with nodes colored by health status.",
-          "content": "Click **Graph** to see the service topology. Nodes are colored by health -- green for healthy, red/orange for impacted. Connections show dependencies so you can trace the blast radius of an issue."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/assertions"
+          ]
         },
         {
           "type": "markdown",
@@ -289,9 +325,11 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='assertions-mindmap-tab']",
-          "requirements": ["on-page:/a/grafana-asserts-app/assertions"],
+          "content": "Click **Mind map** to see the big picture. The root node shows total insight counts (critical, warning, info), branching into categories like **error** and **anomaly**. Expand nodes to drill down to individual assertions.",
           "tooltip": "Tree-structured breakdown of all insights by category and severity.",
-          "content": "Click **Mind map** to see the big picture. The root node shows total insight counts (critical, warning, info), branching into categories like **error** and **anomaly**. Expand nodes to drill down to individual assertions."
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/assertions"
+          ]
         },
         {
           "type": "markdown",
