@@ -4,11 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Grafana's Git Sync lets you connect a Git repository to your Grafana instance so dashboards are automatically stored and versioned as code. Changes flow both ways — edit in Grafana and push to Git, or commit to Git and pull into Grafana.\n\nIn this guide you'll inspect an active Git Sync connection, create a dashboard that syncs to a repository, and then clean it up."
-    },
-    {
-      "type": "markdown",
-      "content": "You'll open the Provisioning page and explore the status of a connected Git repository."
+      "content": "Git Sync connects a GitHub repository to your Grafana instance so that dashboards are automatically stored and versioned as code. Edit a dashboard in Grafana and the change is pushed to Git; commit a change in Git and Grafana pulls it in.\n\nIn this guide you will explore an active Git Sync connection, create a dashboard that syncs to a repository, and clean it up afterward."
     },
     {
       "type": "section",
@@ -17,14 +13,14 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "You'll navigate to the provisioning settings and inspect the health, resources, and pull status of an existing Git Sync connection."
+          "content": "You'll open the Provisioning settings and inspect the health, resources, and pull status of an existing Git Sync connection."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/provisioning']",
-          "content": "Open **Provisioning** from the administration menu.",
-          "tooltip": "Provisioning is where you manage external sources of Grafana resources.",
+          "content": "Open **Provisioning** from the main menu.",
+          "tooltip": "Provisioning manages external sources of Grafana resources like Git repositories.",
           "requirements": [
             "navmenu-open"
           ]
@@ -34,7 +30,7 @@
           "action": "highlight",
           "reftarget": "a[href='/admin/provisioning/repository-4301603']",
           "content": "Click **View** to open the connected repository.",
-          "tooltip": "This repository is already connected and syncing dashboards with Git.",
+          "tooltip": "Each connected repository shows its sync status, managed resources, and recent jobs.",
           "requirements": [
             "on-page:/admin/provisioning"
           ]
@@ -43,49 +39,45 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Card heading']:contains('Resources')",
-          "content": "The **Resources** card shows the types and counts of Grafana resources managed by this repository.",
-          "tooltip": "Resources include dashboards, folders, and other provisioned items.",
+          "content": "Review the **Resources** card. It lists the types and counts of Grafana resources managed by this repository, such as folders and dashboards.",
+          "tooltip": "This card updates as you add or remove resources from the synced folder.",
           "doIt": false
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Card heading']:contains('Health')",
-          "content": "The **Health** card reports whether the connection to the remote repository is healthy.",
-          "tooltip": "A healthy status means Grafana can reach the repository and authenticate.",
+          "content": "Check the **Health** card. It reports whether Grafana can reach and authenticate with the remote repository.",
+          "tooltip": "A healthy status confirms the Git connection and credentials are working.",
           "doIt": false
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Card heading']:contains('Pull status')",
-          "content": "The **Pull status** card shows whether the latest pull from the remote repository succeeded and when the last sync job ran.",
-          "tooltip": "Grafana periodically pulls changes from the repository on a schedule.",
+          "content": "Check the **Pull status** card. It shows the result of the last sync, the most recent commit reference, and when the last successful pull occurred.",
+          "tooltip": "Grafana pulls changes from the repository on a schedule or when a webhook fires.",
           "doIt": false
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Tab Resources']",
-          "content": "Switch to the **Resources** tab to see every resource managed by this repository.",
-          "tooltip": "Each row shows a resource title, type, and its current sync status."
+          "content": "Switch to the **Resources** tab to see every individual resource managed by this repository.",
+          "tooltip": "Each row shows a resource's title, type, current sync status, and commit hash."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Pull",
-          "content": "Click **Pull** to manually trigger a sync from the remote repository right now.",
-          "tooltip": "This fetches the latest commits and applies any changes to Grafana."
+          "content": "Click **Pull** to manually trigger a sync from the remote repository.",
+          "tooltip": "Use this to pull changes immediately instead of waiting for the next scheduled sync."
         },
         {
           "type": "markdown",
-          "content": "You've seen how Grafana tracks the health, resources, and sync status of a connected Git repository."
+          "content": "You've explored the provisioning overview for a Git Sync repository, including its health, resources, and pull status."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "content": "Next, you'll create a new dashboard and save it into the Git-synced folder so it automatically appears in the repository."
     },
     {
       "type": "section",
@@ -94,7 +86,7 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "You'll create a dashboard from a template and save it into the Git Sync folder so it's automatically pushed to the connected repository."
+          "content": "You'll create a dashboard from a template and save it into the Git Sync folder so it is automatically committed and pushed to the connected repository."
         },
         {
           "type": "guided",
@@ -103,7 +95,7 @@
             {
               "action": "highlight",
               "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
-              "description": "Open Dashboards from the navigation menu.",
+              "description": "Open **Dashboards** from the main menu.",
               "requirements": [
                 "navmenu-open"
               ]
@@ -111,33 +103,33 @@
             {
               "action": "highlight",
               "reftarget": "div[data-testid='data-testid browse-dashboards-table'] div[data-testid='data-testid browse dashboards row git-sync-dashboards/']",
-              "description": "Open the git-sync-dashboards folder."
+              "description": "Open the **git-sync-dashboards** folder."
             },
             {
               "action": "highlight",
               "reftarget": "#pageContent button:text('New')",
-              "description": "Click the New button."
+              "description": "Click **New** to open the create menu."
             },
             {
               "action": "highlight",
               "reftarget": "[role='menuitem']:contains('Dashboard from template')",
-              "description": "Select Dashboard from template."
+              "description": "Select **Dashboard from template**."
             }
           ]
         },
         {
           "type": "multistep",
-          "content": "Save the dashboard into the **git-sync-dashboards** folder. Because this folder is managed by Git Sync, the dashboard is automatically committed and pushed to the repository.",
+          "content": "Save the new dashboard into the **git-sync-dashboards** folder. Because this folder is managed by Git Sync, the dashboard JSON is automatically committed and pushed to the repository.",
           "steps": [
             {
               "action": "highlight",
               "reftarget": "div[data-testid='data-testid dashboard controls'] button[data-testid='data-testid Save dashboard button']",
-              "tooltip": "Open the save dialog to choose where to store this dashboard."
+              "tooltip": "Opens the save dialog where you choose a title and folder."
             },
             {
               "action": "button",
               "reftarget": "Dashboards",
-              "tooltip": "Open the folder picker to select the target folder."
+              "tooltip": "Opens the folder picker so you can choose where to store the dashboard."
             },
             {
               "action": "formfill",
@@ -150,7 +142,7 @@
             {
               "action": "highlight",
               "reftarget": "button:text('Save')",
-              "tooltip": "Save the dashboard into the synced folder.",
+              "tooltip": "Saves the dashboard and triggers a Git Sync push to the repository.",
               "skippable": true
             }
           ]
@@ -159,18 +151,14 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "https://github.com/Jayclifford345/git-sync-dashboards",
-          "content": "Open the GitHub repository to verify that your new dashboard has been synced. Once you see the dashboard file on the **main** branch, return to this guide to continue.",
+          "content": "Open the GitHub repository to verify your new dashboard has been synced. Once you see the dashboard file on the **main** branch, return to this guide.",
           "tooltip": "Git Sync pushes the dashboard JSON to the repository automatically."
         },
         {
           "type": "markdown",
-          "content": "You've created a dashboard and confirmed it was automatically synced to the connected Git repository."
+          "content": "You've created a dashboard and confirmed it was automatically pushed to the connected Git repository."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "content": "Finally, you'll clean up by deleting the dashboard you just created and verify that the deletion syncs back to the repository."
     },
     {
       "type": "section",
@@ -179,21 +167,21 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "You'll select and delete the dashboard you just created. The deletion is also synced to the Git repository."
+          "content": "You'll delete the dashboard you just created to confirm that deletions also sync back to the Git repository."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid git-sync-dashboards/ breadcrumb']",
-          "content": "Navigate back to the **git-sync-dashboards** folder.",
-          "tooltip": "Use the breadcrumb to return to the folder view."
+          "content": "Click the **git-sync-dashboards/** breadcrumb to return to the folder.",
+          "tooltip": "Breadcrumbs let you navigate back up the folder hierarchy."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "input[aria-label='Select']",
-          "content": "Select the dashboard you just created by clicking the checkbox.",
-          "tooltip": "Selecting a dashboard enables the bulk action toolbar."
+          "content": "Select the dashboard you created by clicking its checkbox.",
+          "tooltip": "Selecting items enables bulk actions like moving or deleting."
         },
         {
           "type": "multistep",
@@ -202,29 +190,29 @@
             {
               "action": "highlight",
               "reftarget": "div[data-testid='manage-actions'] button:text('Delete')",
-              "tooltip": "Open the delete confirmation dialog."
+              "tooltip": "Opens a confirmation dialog before deleting."
             },
             {
               "action": "highlight",
               "reftarget": "[role=\"dialog\"] button:text('Delete')",
-              "tooltip": "Confirm the deletion."
+              "tooltip": "Confirms the deletion and triggers a Git Sync commit removing the file."
             },
             {
               "action": "highlight",
               "reftarget": "button[data-testid='data-testid Drawer close']",
-              "tooltip": "Close the results drawer."
+              "tooltip": "Closes the results drawer to return to the folder view."
             }
           ]
         },
         {
           "type": "markdown",
-          "content": "You've removed the dashboard. Git Sync will commit the deletion to the repository, keeping Grafana and Git in sync."
+          "content": "You've deleted the dashboard. Git Sync will commit the removal to the repository, keeping Grafana and Git in sync."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "**Congratulations!** You've experienced the full Git Sync workflow — inspecting a connected repository, creating a dashboard that automatically syncs to Git, and cleaning up with a deletion that flows back to the repository. Git Sync makes it easy to manage dashboards as code without leaving the Grafana UI."
+      "content": "**Congratulations!** You've completed the full Git Sync workflow: inspecting a connected repository, creating a dashboard that automatically syncs to Git, and confirming that deletions flow back to the repository. Any dashboard saved into a Git Sync folder is version-controlled without leaving the Grafana UI."
     }
   ]
 }
