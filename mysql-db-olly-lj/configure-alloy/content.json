@@ -8,24 +8,58 @@
       "content": "In this milestone, you'll install Grafana Alloy and add the Database Observability configuration blocks for MySQL. Alloy collects both metrics and structured logs from your database and forwards them to Grafana Cloud."
     },
     {
-      "type": "markdown",
-      "content": "## Install Grafana Alloy\n\nInstall Grafana Alloy 1.14.0 or later. Refer to the [Alloy installation documentation](https://grafana.com/docs/alloy/latest/get-started/install/) for your platform.\n\nRun Alloy with the public preview stability flag:\n\n```bash\nalloy run config.alloy --stability.level=public-preview\n```"
-    },
-    {
-      "type": "markdown",
-      "content": "## Create the DSN secret file\n\nCreate a file with the Data Source Name string that Alloy uses to connect to your MySQL database. Replace the placeholders with your values:\n\n```bash\necho 'db-o11y:<DB_PASSWORD>@tcp(<DB_HOST>:<DB_PORT>)/' > /var/lib/alloy/mysql_secret\n```\n\nReplace:\n- `<DB_PASSWORD>` — Password for the `db-o11y` user you created\n- `<DB_HOST>` — Hostname or IP of your MySQL server\n- `<DB_PORT>` — MySQL port (default: 3306)"
-    },
-    {
-      "type": "markdown",
-      "content": "## Add the Database Observability configuration\n\nAdd these blocks to your Alloy configuration file. These configure the MySQL exporter for metrics and the Database Observability component for query-level logs:\n\n```alloy\nlocal.file \"mysql_secret\" {\n  filename  = \"/var/lib/alloy/mysql_secret\"\n  is_secret = true\n}\n\nprometheus.exporter.mysql \"mysql\" {\n  data_source_name  = local.file.mysql_secret.content\n  enable_collectors = [\"perf_schema.eventsstatements\"]\n  perf_schema.eventsstatements {\n    text_limit = 0\n  }\n}\n\ndatabase_observability.mysql \"mysql\" {\n  data_source_name = local.file.mysql_secret.content\n  forward_to       = [loki.relabel.database_observability_mysql.receiver]\n  targets          = prometheus.exporter.mysql.mysql.targets\n}\n```"
-    },
-    {
-      "type": "markdown",
-      "content": "## Add relabeling and scraping configuration\n\nAdd the relabeling rules and Prometheus scrape configuration:\n\n```alloy\nloki.relabel \"database_observability_mysql\" {\n  forward_to = [loki.write.logs_service.receiver]\n\n  rule {\n    target_label = \"instance\"\n    replacement  = \"<DB_HOST>:<DB_PORT>\"\n  }\n}\n\ndiscovery.relabel \"database_observability_mysql\" {\n  targets = database_observability.mysql.mysql.targets\n\n  rule {\n    target_label = \"job\"\n    replacement  = \"integrations/db-o11y\"\n  }\n  rule {\n    target_label = \"instance\"\n    replacement  = \"<DB_HOST>:<DB_PORT>\"\n  }\n}\n\nprometheus.scrape \"database_observability_mysql\" {\n  targets    = discovery.relabel.database_observability_mysql.output\n  forward_to = [prometheus.remote_write.metrics_service.receiver]\n}\n```\n\nReplace `<DB_HOST>:<DB_PORT>` with your MySQL host and port."
-    },
-    {
-      "type": "markdown",
-      "content": "## Add Grafana Cloud write configuration\n\nAdd the Prometheus remote write and Loki write blocks. Find your Grafana Cloud credentials in your stack's configuration page:\n\n```alloy\nprometheus.remote_write \"metrics_service\" {\n  endpoint {\n    url = \"https://prometheus-<region>.grafana.net/api/prom/push\"\n    basic_auth {\n      username = \"<METRICS_USER>\"\n      password = \"<METRICS_API_KEY>\"\n    }\n  }\n}\n\nloki.write \"logs_service\" {\n  endpoint {\n    url = \"https://logs-<region>.grafana.net/loki/api/v1/push\"\n    basic_auth {\n      username = \"<LOGS_USER>\"\n      password = \"<LOGS_API_KEY>\"\n    }\n  }\n}\n```\n\nReplace the region, usernames, and API keys with your Grafana Cloud stack values."
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "To configure Grafana Alloy to connect your MySQL database to Grafana Cloud, complete the following steps:"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Install Grafana Alloy 1.14.0 or later. Refer to the [Alloy installation documentation](https://grafana.com/docs/alloy/latest/get-started/install/) for your platform."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run Alloy with the public preview stability flag:\n\n```bash\nalloy run config.alloy --stability.level=public-preview\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Create the Data Source Name secret file. Replace the placeholders with your values:\n\n```bash\necho 'db-o11y:<DB_PASSWORD>@tcp(<DB_HOST>:<DB_PORT>)/' > /var/lib/alloy/mysql_secret\n```\n\nReplace:\n- **DB_PASSWORD** — Password for the `db-o11y` user you created\n- **DB_HOST** — Hostname or IP of your MySQL server\n- **DB_PORT** — MySQL port (default: 3306)"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Add the core Database Observability blocks to your Alloy configuration file. These configure the MySQL exporter for metrics and the Database Observability component for query-level logs:\n\n```alloy\nlocal.file \"mysql_secret\" {\n  filename  = \"/var/lib/alloy/mysql_secret\"\n  is_secret = true\n}\n\nprometheus.exporter.mysql \"mysql\" {\n  data_source_name  = local.file.mysql_secret.content\n  enable_collectors = [\"perf_schema.eventsstatements\"]\n  perf_schema.eventsstatements {\n    text_limit = 0\n  }\n}\n\ndatabase_observability.mysql \"mysql\" {\n  data_source_name = local.file.mysql_secret.content\n  forward_to       = [loki.relabel.database_observability_mysql.receiver]\n  targets          = prometheus.exporter.mysql.mysql.targets\n}\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Add the relabeling rules and Prometheus scrape configuration:\n\n```alloy\nloki.relabel \"database_observability_mysql\" {\n  forward_to = [loki.write.logs_service.receiver]\n\n  rule {\n    target_label = \"instance\"\n    replacement  = \"<DB_HOST>:<DB_PORT>\"\n  }\n}\n\ndiscovery.relabel \"database_observability_mysql\" {\n  targets = database_observability.mysql.mysql.targets\n\n  rule {\n    target_label = \"job\"\n    replacement  = \"integrations/db-o11y\"\n  }\n  rule {\n    target_label = \"instance\"\n    replacement  = \"<DB_HOST>:<DB_PORT>\"\n  }\n}\n\nprometheus.scrape \"database_observability_mysql\" {\n  targets    = discovery.relabel.database_observability_mysql.output\n  forward_to = [prometheus.remote_write.metrics_service.receiver]\n}\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the relabeling blocks you just added, replace the `DB_HOST` and `DB_PORT` placeholder values with your MySQL host and port."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Add the Prometheus remote write and Loki write blocks. Find your Grafana Cloud credentials in your stack's configuration page:\n\n```alloy\nprometheus.remote_write \"metrics_service\" {\n  endpoint {\n    url = \"https://prometheus-<region>.grafana.net/api/prom/push\"\n    basic_auth {\n      username = \"<METRICS_USER>\"\n      password = \"<METRICS_API_KEY>\"\n    }\n  }\n}\n\nloki.write \"logs_service\" {\n  endpoint {\n    url = \"https://logs-<region>.grafana.net/loki/api/v1/push\"\n    basic_auth {\n      username = \"<LOGS_USER>\"\n      password = \"<LOGS_API_KEY>\"\n    }\n  }\n}\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Replace the region, usernames, and API keys with your Grafana Cloud stack values."
+        },
+        {
+          "type": "markdown",
+          "content": "You've configured Grafana Alloy with all the Database Observability components for MySQL."
+        }
+      ]
     },
     {
       "type": "markdown",
