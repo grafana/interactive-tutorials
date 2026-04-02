@@ -13,17 +13,13 @@
         },
         {
           "type": "guided",
-          "content": "Learn how to import your existing Prometheus, Mimir, or Loki alerting resources into Grafana using the Import Wizard.",
+          "content": "Navigate to the Import Wizard from the Alerting menu.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Card heading'] a:nth-match(1)",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
               "requirements": [
-                "exists-reftarget"
+                "navmenu-open"
               ]
             },
             {
@@ -37,73 +33,62 @@
             {
               "action": "highlight",
               "reftarget": "[role='menuitem']:contains('Import to GMA')"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div:nth-of-type(1):nth-match(361)",
-              "description": "Select data source option",
-              "requirements": [
-                "exists-reftarget"
-              ]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Select menu'] div:nth-match(6)",
-              "description": "Select the data source containing the Alertmanager configuration you’d like to import.",
-              "requirements": [
-                "exists-reftarget"
-              ]
-            },
-            {
-              "action": "formfill",
-              "reftarget": "#pageContent div[data-testid='input-wrapper']",
-              "targetvalue": "policy-tree-1"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid='wizard-next-button']",
-              "requirements": [
-                "exists-reftarget"
-              ]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "input[placeholder='Select a policy tree']",
-              "requirements": [
-                "exists-reftarget"
-              ],
-              "description": "Select the policy tree where you want your imported rules to be routed: the same name you entered in the previous step."
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-source-card'] div:nth-match(1) button:contains('alerting-demo-prom Prometheus')",
-              "description": "Select Data source option: you will import alert rules from a data source.",
-              "requirements": [
-                "exists-reftarget"
-              ]
-            },
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[title='Import from an Alertmanager data source']",
+          "content": "Select data source option"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent input[role='combobox']",
+          "content": "Select the data source containing the Alertmanager configuration you'd like to import.",
+          "targetvalue": "alerting-demo-alertmanager"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='wizard-next-button']",
+          "content": "Click Alert Rules.",
+          "tooltip": "Click Alert Rules."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select a policy tree']",
+          "content": "Select the policy tree where you want your imported rules to be routed: the same name you entered in the previous step."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#radiogroup-list-82-0",
+          "content": "Select Data source option: you will import alert rules from a data source.",
+          "targetvalue": "alerting-demo-prom",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Let's finalise our import.",
+          "steps": [
             {
               "action": "highlight",
               "reftarget": "div[data-testid='input-wrapper'] input:nth-match(2)",
-              "requirements": [
-                "exists-reftarget"
-              ],
               "description": "Select the data source from which you want to import the alert rules."
             },
             {
               "action": "highlight",
               "reftarget": "input[placeholder='All namespaces']",
-              "requirements": [
-                "exists-reftarget"
-              ],
               "description": "You can filter here your imported rules by namespace. Select one."
             },
             {
               "action": "highlight",
               "reftarget": "input[placeholder='All groups']",
-              "requirements": [
-                "exists-reftarget"
-              ],
               "description": "Filter by group: select one group."
             },
             {
@@ -114,16 +99,26 @@
             {
               "action": "highlight",
               "reftarget": "button[data-testid='wizard-next-button']",
-              "requirements": [
-                "exists-reftarget"
-              ]
-            },
-            {
-              "action": "button",
-              "reftarget": "Start import",
-              "description": "Click here to start the import. Once you confirm, you’ll be redirected to the alert rules list page, where your imported rules will appear."
+              "description": "highlight on element"
             }
           ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Start import",
+          "content": "Start import will begin the process of importing your datasource alerts.",
+          "tooltip": "Start import will begin the process of importing your datasource alerts.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/",
+          "content": "Let's reset for the next person."
         }
       ]
     }
