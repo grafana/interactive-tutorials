@@ -1,0 +1,230 @@
+{
+  "id": "git-sync-guide",
+  "title": "Git Sync: Manage Dashboards as Code",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Grafana's Git Sync lets you connect a Git repository to your Grafana instance so dashboards are automatically stored and versioned as code. Changes flow both ways — edit in Grafana and push to Git, or commit to Git and pull into Grafana.\n\nIn this guide you'll inspect an active Git Sync connection, create a dashboard that syncs to a repository, and then clean it up."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll open the Provisioning page and explore the status of a connected Git repository."
+    },
+    {
+      "type": "section",
+      "id": "git-sync-overview",
+      "title": "Explore a Git Sync repository",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll navigate to the provisioning settings and inspect the health, resources, and pull status of an existing Git Sync connection."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/provisioning']",
+          "content": "Open **Provisioning** from the administration menu.",
+          "tooltip": "Provisioning is where you manage external sources of Grafana resources.",
+          "requirements": [
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/admin/provisioning/repository-4301603']",
+          "content": "Click **View** to open the connected repository.",
+          "tooltip": "This repository is already connected and syncing dashboards with Git.",
+          "requirements": [
+            "on-page:/admin/provisioning"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Resources')",
+          "content": "The **Resources** card shows the types and counts of Grafana resources managed by this repository.",
+          "tooltip": "Resources include dashboards, folders, and other provisioned items.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Health')",
+          "content": "The **Health** card reports whether the connection to the remote repository is healthy.",
+          "tooltip": "A healthy status means Grafana can reach the repository and authenticate.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Pull status')",
+          "content": "The **Pull status** card shows whether the latest pull from the remote repository succeeded and when the last sync job ran.",
+          "tooltip": "Grafana periodically pulls changes from the repository on a schedule.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Resources']",
+          "content": "Switch to the **Resources** tab to see every resource managed by this repository.",
+          "tooltip": "Each row shows a resource title, type, and its current sync status."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Pull",
+          "content": "Click **Pull** to manually trigger a sync from the remote repository right now.",
+          "tooltip": "This fetches the latest commits and applies any changes to Grafana."
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen how Grafana tracks the health, resources, and sync status of a connected Git repository."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Next, you'll create a new dashboard and save it into the Git-synced folder so it automatically appears in the repository."
+    },
+    {
+      "type": "section",
+      "id": "add-dashboard",
+      "title": "Add a dashboard to the synced folder",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll create a dashboard from a template and save it into the Git Sync folder so it's automatically pushed to the connected repository."
+        },
+        {
+          "type": "guided",
+          "content": "Navigate to the synced dashboards folder and create a new dashboard from a template.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+              "description": "Open Dashboards from the navigation menu."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid browse-dashboards-table'] div[data-testid='data-testid browse dashboards row git-sync-dashboards/']",
+              "description": "Open the git-sync-dashboards folder.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#pageContent button:text('New')",
+              "description": "Click the New button."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:contains('Dashboard from template')",
+              "description": "Select Dashboard from template."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Save the dashboard into the **git-sync-dashboards** folder. Because this folder is managed by Git Sync, the dashboard is automatically committed and pushed to the repository.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid dashboard controls'] button[data-testid='data-testid Save dashboard button']",
+              "tooltip": "Open the save dialog to choose where to store this dashboard."
+            },
+            {
+              "action": "button",
+              "reftarget": "Dashboards",
+              "tooltip": "Open the folder picker to select the target folder."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[role='combobox']",
+              "targetvalue": "git-sync-dashboards/",
+              "description": "Type git-sync-dashboards/",
+              "formHint": "git-sync-dashboards/",
+              "validateInput": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:text('Save')",
+              "tooltip": "Save the dashboard into the synced folder.",
+              "skippable": true
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "https://github.com/Jayclifford345/git-sync-dashboards",
+          "content": "Open the GitHub repository to verify that your new dashboard has been synced. Once you see the dashboard file on the **main** branch, return to this guide to continue.",
+          "tooltip": "Git Sync pushes the dashboard JSON to the repository automatically."
+        },
+        {
+          "type": "markdown",
+          "content": "You've created a dashboard and confirmed it was automatically synced to the connected Git repository."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, you'll clean up by deleting the dashboard you just created and verify that the deletion syncs back to the repository."
+    },
+    {
+      "type": "section",
+      "id": "remove-dashboard",
+      "title": "Remove the dashboard",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll select and delete the dashboard you just created. The deletion is also synced to the Git repository."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid git-sync-dashboards/ breadcrumb']",
+          "content": "Navigate back to the **git-sync-dashboards** folder.",
+          "tooltip": "Use the breadcrumb to return to the folder view."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[aria-label='Select']",
+          "content": "Select the dashboard you just created by clicking the checkbox.",
+          "tooltip": "Selecting a dashboard enables the bulk action toolbar."
+        },
+        {
+          "type": "multistep",
+          "content": "Delete the selected dashboard and close the confirmation drawer.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='manage-actions'] button:text('Delete')",
+              "tooltip": "Open the delete confirmation dialog."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role=\"dialog\"] button:text('Delete')",
+              "tooltip": "Confirm the deletion."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Drawer close']",
+              "tooltip": "Close the results drawer."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "You've removed the dashboard. Git Sync will commit the deletion to the repository, keeping Grafana and Git in sync."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Congratulations!** You've experienced the full Git Sync workflow — inspecting a connected repository, creating a dashboard that automatically syncs to Git, and cleaning up with a deletion that flows back to the repository. Git Sync makes it easy to manage dashboards as code without leaving the Grafana UI."
+    }
+  ]
+}
