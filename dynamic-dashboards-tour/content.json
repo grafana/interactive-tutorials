@@ -30,13 +30,11 @@
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button:text('New'):nth-match(1)",
-              "description": "Click **New** to open the creation menu."
+              "reftarget": "#pageContent button:text('New')"
             },
             {
               "action": "highlight",
-              "reftarget": "menuitem:text('New dashboard')",
-              "description": "Select **New dashboard** from the dropdown."
+              "reftarget": "[role='menuitem']:text('New dashboard')"
             }
           ],
           "requirements": [
@@ -54,6 +52,9 @@
       "id": "explore-add-pane",
       "title": "Explore the Add pane",
       "autoCollapse": false,
+      "requirements": [
+        "section-completed:create-dashboard"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -111,6 +112,9 @@
       "type": "section",
       "id": "add-tabs",
       "title": "Add and configure tabs",
+      "requirements": [
+        "section-completed:explore-add-pane"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -164,6 +168,9 @@
       "type": "section",
       "id": "add-panel",
       "title": "Add a visualization panel",
+      "requirements": [
+        "section-completed:add-tabs"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -193,18 +200,9 @@
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='data-testid Select a data source']",
-          "targetvalue": "TestData",
           "content": "Type **TestData** into the data source picker to select the built-in test data source.",
+          "targetvalue": "Grafana TestData",
           "tooltip": "TestData generates sample data without needing an external connection."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[role='dialog'] button:text('Grafana TestData')",
-          "content": "Select **Grafana TestData** from the results.",
-          "requirements": [
-            "exists-reftarget"
-          ]
         },
         {
           "type": "interactive",
@@ -223,6 +221,9 @@
       "type": "section",
       "id": "group-into-rows",
       "title": "Organize panels with rows",
+      "requirements": [
+        "section-completed:add-panel"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -251,6 +252,9 @@
       "type": "section",
       "id": "content-outline",
       "title": "Navigate with the content outline",
+      "requirements": [
+        "section-completed:group-into-rows"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -284,6 +288,9 @@
       "type": "section",
       "id": "dashboard-options",
       "title": "Configure dashboard options",
+      "requirements": [
+        "section-completed:content-outline"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -330,6 +337,9 @@
       "type": "section",
       "id": "edit-as-code",
       "title": "View the dashboard as code",
+      "requirements": [
+        "section-completed:dashboard-options"
+      ],
       "blocks": [
         {
           "type": "markdown",
@@ -368,6 +378,9 @@
       "type": "section",
       "id": "clean-up",
       "title": "Clean up",
+      "requirements": [
+        "section-completed:edit-as-code"
+      ],
       "blocks": [
         {
           "type": "markdown",
