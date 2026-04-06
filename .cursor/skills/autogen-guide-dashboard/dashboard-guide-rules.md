@@ -6,23 +6,10 @@ Consolidated rules, patterns, and golden examples for generating interactive gui
 
 ## Critical Rules
 
-These rules apply to ALL generated guides. Violations are blocking.
+Rules 1–15 are shared across all autogen skills. **Read `.cursor/skills/shared/critical-rules.md` first**, then apply the dashboard-specific extensions below.
 
-1. **No markdown titles** -- the guide `title` renders in the app frame; a leading `## Title` duplicates it
-2. **`exists-reftarget` is auto-applied** -- never add it manually to requirements
-3. **`navmenu-open`** required for any step targeting navigation menu elements
-4. **`on-page:/path`** required for page-specific interactive actions
-5. **Tooltips** -- under 250 characters, one sentence, don't name the highlighted element
-6. **`verify`** on all state-changing actions (Save, Create, Test)
-7. **`doIt: false` for secrets** -- never automate filling passwords/tokens/keys
-8. **Section bookends** -- 1-sentence "what you'll do" intro markdown, 1-sentence "what you learned" summary markdown
-9. **Sections, not markdown headers** -- group steps with `section` blocks, each with a unique kebab-case `id`
-10. **Connect sections** -- if section 1's objective creates a resource, section 2 should require it
-11. **Action-focused content** -- "Save your configuration" not "The save button can be clicked"
-12. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
-13. **`skippable: true`** for conditional fields and permission-gated steps
-14. **No multistep singletons** -- a `multistep` with one step must be a plain `interactive` block
-15. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` or set `doIt: false`
+<!-- Dashboard-specific rules (16–22) -->
+
 16. **No navigation steps** -- assume the user is already on the correct dashboard page; never emit a "navigate to the XYZ dashboard" step. (For rare cross-dashboard links, `action: "navigate"` with the target path is valid but not part of this skill's scope.)
 17. **No contextual preamble** -- never write "this is a guide to the XYZ dashboard" or mention the Grafana instance; the user already knows where they are
 18. **Minimal text** -- the guide renders in a narrow sidebar; use short declarative sentences, not paragraphs; every word must earn its place

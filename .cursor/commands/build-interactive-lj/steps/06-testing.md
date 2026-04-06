@@ -29,10 +29,10 @@ Testing is a **collaborative process** where AI and user work together:
 
 ## Access the Block Editor
 
-Testing happens in **Pathfinder Dev Mode** at: `https://learn.grafana-ops.net/?pathfinder-dev=true`
+Testing happens in **Pathfinder Dev Mode** at: `https://learn.grafana.net/?pathfinder-dev=true`
 
 > ⚠️ **Important:** This is different from selector discovery (Step 5), which uses 
-> `https://learn.grafana-ops.net/` to walk through the actual UI.
+> `https://learn.grafana.net/` to walk through the actual UI.
 
 Dev mode must be enabled before you can access the Block Editor. If this is the user's first time, direct them to SETUP.md section 4.
 
@@ -41,7 +41,7 @@ Dev mode must be enabled before you can access the Block Editor. If this is the 
 Have you enabled Dev Mode before? (If not, see SETUP.md section 4 for first-time setup)
 
 To test, open Pathfinder in dev mode:
-https://learn.grafana-ops.net/?pathfinder-dev=true
+https://learn.grafana.net/?pathfinder-dev=true
 
 Once the page loads, the Pathfinder sidebar should open automatically with Dev Tools visible.
 Click on "Interactive guide editor" to open the Block Editor.
@@ -50,7 +50,7 @@ Let me know when you're in the Block Editor. (Y/N)
 ```
 
 > ⚠️ **First-time users:** Must enable dev mode first at:
-> `https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true`
+> `https://learn.grafana.net/plugins/grafana-pathfinder-app?dev=true`
 > See SETUP.md section 4 for full instructions.
 
 ---
@@ -179,73 +179,16 @@ Before loading any JSON, check the milestone's content.json:
 
 ## Display Per Milestone
 
-**When skipping a markdown-only milestone:**
-```
-⏭️ Skipping: [milestone-name] (markdown-only, no interactive steps)
-```
-
-**When telling user to test an interactive milestone:**
-
-Use this exact format:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Testing: [milestone-name] ([N] of [total interactive])
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Please import: [slug]-lj/[milestone-name]/content.json
-
-Interactive blocks in this milestone:
-├── Block 1: [description]
-├── Block 2: [description]
-└── Block 3: [description]
-
-Let me know how it goes!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-**Wait for user feedback before proceeding to the next milestone.**
+For each milestone, tell the user: the milestone name, its position in the sequence, the file path to import, and a list of the interactive blocks it contains. Wait for user feedback before proceeding to the next milestone. Skip markdown-only milestones with a brief note.
 
 ---
 
 ## Handling Persistent Failures
 
-When a step fails after 2 fix attempts, ask user:
-```
-Block [N] failed after 2 attempts.
-Selector tried: [list selectors]
-
-Options:
-1. Convert to markdown (remove interactivity)
-2. File issue at https://github.com/grafana/interactive-tutorials/issues
-3. Skip and continue
-
-Which would you prefer? (1/2/3)
-```
+When a step fails after 2 fix attempts, offer the user three options: convert to markdown, file an issue, or skip and continue.
 
 ---
 
-## Final Summary (After ALL Interactive Milestones Tested)
+## Completion
 
-Only after all interactive milestones have been tested and user has confirmed each one:
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 6 Complete: All Interactive Milestones Tested
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Total milestones: [N]
-├── Interactive milestones tested: [N]
-└── Markdown-only milestones skipped: [N]
-
-Test Results:
-├── [milestone-1]: ⏭️ Skipped (markdown-only)
-├── [milestone-2]: ✅ All blocks passed
-├── [milestone-3]: 🟡 [N] blocks needed fixes
-├── [milestone-4]: ✅ All blocks passed
-├── [milestone-5]: ⏭️ Skipped (markdown-only)
-└── [milestone-6]: ✅ All blocks passed
-
-Proceeding to Step 7: Final Summary...
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+After all interactive milestones are tested, display a summary showing: total milestones, how many were tested vs skipped, and pass/fail status per milestone.
