@@ -66,7 +66,7 @@ Counts as of 2026-03-25. Re-verify before execution — authors may add or remov
 
 ### Already migrated (not in scope)
 
-`alerting-101`, `explore-drilldowns-101`, `first-dashboard`, `prometheus-lj` (pilot, Phase 2), plus 21 other guides that already have `manifest.json` (verified 2026-04-06: `adaptive-logs-recommendations`, `adaptive-metrics-recommendations`, `connect-prometheus-metrics`, `dynamic-dashboards-tour`, `enable-block-editor`, `git-sync-guide`, `grafana-13-tour-learn`, `grafana-13-tour-play`, `irm-configuration`, `k8s-cpu`, `k8s-mem`, `knowledge-graph-guide`, `logql-101`, `play-traitors-uk-tour`, `rca-demo`, `rca-demo-ops`, `rca-demo-v2`, `sm-setting-up-your-first-check`, `test-sm-overview-tutorial`, `tour-of-visualizations`, `transform-data`, `understanding-the-four-golden-signals-of-observability`).
+`alerting-101`, `explore-drilldowns-101`, `first-dashboard`, `prometheus-lj` (pilot, Phase 2), plus 21 other guides that already have `manifest.json` (verified 2026-04-06: `adaptive-logs-recommendations`, `adaptive-metrics-recommendations`, `connect-prometheus-metrics`, `enable-block-editor`, `git-sync-guide`, `grafana-13-tour-learn`, `grafana-13-tour-play`, `irm-configuration`, `k8s-cpu`, `k8s-mem`, `knowledge-graph-guide`, `logql-101`, `play-traitors-uk-tour`, `rca-demo`, `rca-demo-ops`, `rca-demo-v2`, `sm-setting-up-your-first-check`, `test-sm-overview-tutorial`, `tour-of-visualizations`, `transform-data`, `understanding-the-four-golden-signals-of-observability`).
 
 ---
 
