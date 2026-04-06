@@ -13,40 +13,48 @@ This document specifies the process for migrating all remaining guides and learn
 
 Counts as of 2026-03-25. Re-verify before execution — authors may add or remove guides on parallel branches.
 
-### Unmigrated standalone guides (6)
+### Unmigrated standalone guides (12)
 
 | Directory | Notes |
 |-----------|-------|
+| `dynamic-dashboards-tour` | Added 2026-04-06 re-verify |
 | `enable-coda` | |
 | `fleet-management-onboarding` | |
+| `how-to-import-external-alerting-resource-5e08` | Hash-suffixed ID; verify index.json targeting. Added 2026-04-06 re-verify |
 | `how-to-setup-secrets-tutorial` | |
+| `otel-fleet-management` | Added 2026-04-06 re-verify |
 | `play-carbon-intensity` | |
+| `semantic-layer-tutorial` | Added 2026-04-06 re-verify |
 | `slo-quickstart` | |
+| `sm-dns-check-tutorial` | Added 2026-04-06 re-verify |
 | `sm-ping-check-tutorial` | |
+| `sm-tcp-check-tutorial` | Added 2026-04-06 re-verify |
 
-### Unmigrated learning paths (19)
+### Unmigrated learning paths (21)
 
-| Directory | Steps |
-|-----------|-------|
-| `adaptive-logs-lj` | 7 |
-| `billing-usage-lj` | 5 |
-| `detect-outages-synthetic-monitoring-lj` | 6 |
-| `drilldown-logs-lj` | 8 |
-| `drilldown-metrics-lj` | 5 |
-| `drilldown-traces-lj` | 5 |
-| `github-data-source-lj` | 5 |
-| `grafana-cloud-tour-lj` | 5 |
-| `infinity-csv-lj` | 7 |
-| `infrastructure-alerting-lj` | 9 |
-| `kafka-monitoring-lj` | 10 |
-| `linux-server-integration-lj` | 8 |
-| `macos-integration-lj` | 8 |
-| `mysql-data-source-lj` | 7 |
-| `mysql-integration-lj` | 8 |
-| `postgresql-integration-lj` | 8 |
-| `prom-remote-write-lj` | 5 |
-| `visualization-metrics-lj` | 6 |
-| `visualization-traces-lj` | 8 |
+| Directory | Steps | Notes |
+|-----------|-------|-------|
+| `adaptive-logs-lj` | 7 | Has root content.json already |
+| `billing-usage-lj` | 6 | Plan previously listed 5 — step count corrected 2026-04-06 |
+| `create-availability-slo-lj` | 6 | Added 2026-04-06 re-verify |
+| `detect-outages-synthetic-monitoring-lj` | 6 | |
+| `drilldown-logs-lj` | 8 | |
+| `drilldown-metrics-lj` | 5 | |
+| `drilldown-traces-lj` | 5 | |
+| `github-data-source-lj` | 5 | |
+| `grafana-cloud-tour-lj` | 5 | |
+| `infinity-csv-lj` | 7 | |
+| `influxdb-data-source-lj` | 8 | Added 2026-04-06 re-verify |
+| `infrastructure-alerting-lj` | 9 | |
+| `kafka-monitoring-lj` | 11 | Plan previously listed 10 — step count corrected 2026-04-06 |
+| `linux-server-integration-lj` | 8 | |
+| `macos-integration-lj` | 8 | |
+| `mysql-data-source-lj` | 7 | |
+| `mysql-integration-lj` | 8 | |
+| `postgresql-integration-lj` | 8 | |
+| `prom-remote-write-lj` | 6 | Plan previously listed 5 — step count corrected 2026-04-06 |
+| `visualization-metrics-lj` | 6 | |
+| `visualization-traces-lj` | 8 | |
 
 ### Special cases (3)
 
@@ -58,7 +66,7 @@ Counts as of 2026-03-25. Re-verify before execution — authors may add or remov
 
 ### Already migrated (not in scope)
 
-`alerting-101`, `explore-drilldowns-101`, `first-dashboard`, `prometheus-lj` (pilot, Phase 2), plus 17 other standalone guides that already have `manifest.json`.
+`alerting-101`, `explore-drilldowns-101`, `first-dashboard`, `prometheus-lj` (pilot, Phase 2), plus 21 other guides that already have `manifest.json` (verified 2026-04-06: `adaptive-logs-recommendations`, `adaptive-metrics-recommendations`, `connect-prometheus-metrics`, `dynamic-dashboards-tour`, `enable-block-editor`, `git-sync-guide`, `grafana-13-tour-learn`, `grafana-13-tour-play`, `irm-configuration`, `k8s-cpu`, `k8s-mem`, `knowledge-graph-guide`, `logql-101`, `play-traitors-uk-tour`, `rca-demo`, `rca-demo-ops`, `rca-demo-v2`, `sm-setting-up-your-first-check`, `test-sm-overview-tutorial`, `tour-of-visualizations`, `transform-data`, `understanding-the-four-golden-signals-of-observability`).
 
 ---
 
@@ -82,6 +90,7 @@ Package migration: <directory-name>
 | `migration` | All migration PRs |
 | `lj` | Learning paths only |
 | `special-case` | `visualization-logs`, `windows-integration`, `welcome-to-play` |
+| `needs-review` | Migration completed with `status: incomplete` — has open TODO items in notes |
 
 ### Body template
 
@@ -127,9 +136,17 @@ Package migration of `<directory-name>/` to the Pathfinder two-file package form
 
 <from migration-notes.md — any fallbacks, missing data, conflicts>
 
+## TODOs
+
+<!-- Only include this section if assets/migration-notes.md contains TODO items (status: incomplete). -->
+<!-- Copy every `- [ ] TODO(...)` line from migration-notes.md verbatim. -->
+
+- [ ] TODO(<category>): <item>
+
 ## Migration Notes
 
 Full details in `<dir>/assets/migration-notes.md`.
+Migration status: `<complete | incomplete>` (from migration-notes.md frontmatter `status` field).
 
 ## Dedup Linkage
 
@@ -187,15 +204,19 @@ The migration skill (`.cursor/skills/migrate-guide/SKILL.md`) is well-suited for
 
 ### Interactive prompts and batch mode
 
-The skill says "stop and ask the user" for missing descriptions and metadata conflicts. In mass-parallel mode, this creates blocking queues.
+The skill implements an explicit **batch mode** — see the `## Batch Mode` section in the skill for the full spec. In summary: any situation that would normally block for user input (missing description, metadata conflict) instead writes a `TODO(<category>)` item into the migration notes, sets `status: incomplete` in the notes frontmatter, and continues. The sub-agent then surfaces every TODO item in the PR body (see PR template above) and applies the `needs-review` label.
 
-**Batch convention:** When running migrations in parallel via sub-agents, the agent should write a `TODO` item in the migration notes instead of blocking on interactive prompts. Mark the migration as incomplete. Do a follow-up pass on incomplete migrations after the batch.
+**Post-wave follow-up:** After merging a wave, collect all PRs tagged `needs-review`. For each, address the TODO items (supply descriptions, resolve conflicts) and push a follow-up commit to main or a separate PR. Do not start the next wave until all `needs-review` PRs from the previous wave are resolved.
 
 ### External repo freshness
 
 The skill reads from the website repo (`/Users/davidallen/hax/website/`) and the recommender repo. In parallel execution, each agent resolves the same absolute paths.
 
 **Pre-batch requirement:** Pull both repos once before starting any wave. Do not rely on per-agent pulls — concurrent `git pull` to the same path will race.
+
+### Special case: adaptive-logs-lj (existing root content.json)
+
+`adaptive-logs-lj/` already has a root-level `content.json` on main. The migration skill's Mode 2 step 8 already handles this correctly (`Only if {lj-dir}/content.json does not already exist`), so the skill will preserve it. However, the path is unusual enough to warrant extra care: do **not** run this one as part of a parallel wave. Run it manually, confirm the root `content.json` byte-hash is unchanged after the migration, and treat the result as the reference run before merging.
 
 ### Special case: non-`-lj` learning paths
 
@@ -231,32 +252,42 @@ Ensure the Pathfinder CLI is built:
 cd /Users/davidallen/hax/grafana-pathfinder-app && npm run build:cli
 ```
 
-#### Wave 1: Standalone guides (6 PRs)
+#### Wave 1: Standalone guides (12 PRs)
 
-Run all 6 in parallel. These are Mode 1 (simple): each creates 2–3 files (`manifest.json`, `assets/migration-notes.md`). Low risk, fast execution. Use this wave to validate the PR template and review process before scaling to learning paths.
+Run all 12 in parallel. These are Mode 1 (simple): each creates 2–3 files (`manifest.json`, `assets/migration-notes.md`). Low risk, fast execution. Use this wave to validate the PR template and review process before scaling to learning paths.
 
-| Directory |
-|-----------|
-| `enable-coda` |
-| `fleet-management-onboarding` |
-| `how-to-setup-secrets-tutorial` |
-| `play-carbon-intensity` |
-| `slo-quickstart` |
-| `sm-ping-check-tutorial` |
-
-**After wave 1:** Review all 6 PRs. Confirm the PR body template works, the review checklist catches real issues, and no systemic problems exist. Adjust the template or process before continuing.
-
-#### Wave 2: Learning paths, batch A (7 PRs)
-
-| Directory | Steps |
+| Directory | Notes |
 |-----------|-------|
-| `adaptive-logs-lj` | 7 |
-| `billing-usage-lj` | 5 |
-| `drilldown-logs-lj` | 8 |
-| `drilldown-metrics-lj` | 5 |
-| `drilldown-traces-lj` | 5 |
-| `grafana-cloud-tour-lj` | 5 |
-| `prom-remote-write-lj` | 5 |
+| `dynamic-dashboards-tour` | |
+| `enable-coda` | |
+| `fleet-management-onboarding` | |
+| `how-to-import-external-alerting-resource-5e08` | Hash-suffixed ID; verify index.json targeting |
+| `how-to-setup-secrets-tutorial` | |
+| `otel-fleet-management` | |
+| `play-carbon-intensity` | |
+| `semantic-layer-tutorial` | |
+| `slo-quickstart` | |
+| `sm-dns-check-tutorial` | |
+| `sm-ping-check-tutorial` | |
+| `sm-tcp-check-tutorial` | |
+
+**After wave 1:** Review all 12 PRs. Confirm the PR body template works, the review checklist catches real issues, and no systemic problems exist. Adjust the template or process before continuing.
+
+#### Wave 2: Learning paths, batch A (8 PRs + 1 manual)
+
+> **Note:** `adaptive-logs-lj` must be run manually, not as part of the parallel batch. See [Special case: adaptive-logs-lj](#special-case-adaptive-logs-lj-existing-root-contentjson).
+
+| Directory | Steps | Execution |
+|-----------|-------|-----------|
+| `adaptive-logs-lj` | 7 | **Manual only** — has existing root content.json; run separately and verify byte-hash |
+| `billing-usage-lj` | 6 | Parallel |
+| `create-availability-slo-lj` | 6 | Parallel |
+| `drilldown-logs-lj` | 8 | Parallel |
+| `drilldown-metrics-lj` | 5 | Parallel |
+| `drilldown-traces-lj` | 5 | Parallel |
+| `grafana-cloud-tour-lj` | 5 | Parallel |
+| `influxdb-data-source-lj` | 8 | Parallel |
+| `prom-remote-write-lj` | 6 | Parallel |
 
 #### Wave 3: Learning paths, batch B (7 PRs)
 
@@ -295,10 +326,11 @@ These need human attention. Run them last, possibly one at a time with interacti
 Each migration runs as a sub-agent with `isolation: "worktree"`. The agent:
 
 1. Checks out a worktree on branch `migration/<directory-name>`
-2. Runs the migration skill on the target directory
-3. Commits the new files
-4. Creates the PR using the body template above
-5. Returns the PR URL
+2. Runs the migration skill on the target directory in batch mode
+3. Reads `assets/migration-notes.md` and checks the `status` frontmatter field
+4. Commits the new files
+5. Creates the PR using the body template above — if `status: incomplete`, copy all `TODO(...)` lines from migration notes into the PR body's `## TODOs` section and apply the `needs-review` label in addition to the standard labels
+6. Returns the PR URL and flags whether the migration was complete or incomplete
 
 Within a wave, all agents run in parallel. The orchestrating agent collects PR URLs and reports them.
 
@@ -324,16 +356,23 @@ Create a GitHub issue titled **"Package migration: full migration tracking"** wi
 
 ```markdown
 ## Standalone guides
+- [ ] `dynamic-dashboards-tour` —
 - [ ] `enable-coda` —
 - [ ] `fleet-management-onboarding` —
+- [ ] `how-to-import-external-alerting-resource-5e08` —
 - [ ] `how-to-setup-secrets-tutorial` —
+- [ ] `otel-fleet-management` —
 - [ ] `play-carbon-intensity` —
+- [ ] `semantic-layer-tutorial` —
 - [ ] `slo-quickstart` —
+- [ ] `sm-dns-check-tutorial` —
 - [ ] `sm-ping-check-tutorial` —
+- [ ] `sm-tcp-check-tutorial` —
 
 ## Learning paths
 - [ ] `adaptive-logs-lj` —
 - [ ] `billing-usage-lj` —
+- [ ] `create-availability-slo-lj` —
 - [ ] `detect-outages-synthetic-monitoring-lj` —
 - [ ] `drilldown-logs-lj` —
 - [ ] `drilldown-metrics-lj` —
@@ -341,6 +380,7 @@ Create a GitHub issue titled **"Package migration: full migration tracking"** wi
 - [ ] `github-data-source-lj` —
 - [ ] `grafana-cloud-tour-lj` —
 - [ ] `infinity-csv-lj` —
+- [ ] `influxdb-data-source-lj` —
 - [ ] `infrastructure-alerting-lj` —
 - [ ] `kafka-monitoring-lj` —
 - [ ] `linux-server-integration-lj` —
