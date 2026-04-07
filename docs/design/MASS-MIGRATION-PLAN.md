@@ -350,55 +350,60 @@ This catches cross-package issues (duplicate IDs, broken dependency chains) that
 
 ## Tracking
 
-### GitHub tracking issue
+**Base / umbrella PR:** [#227 — Pathfinder package format: mass migration base](https://github.com/grafana/interactive-tutorials/pull/227)
 
-Create a GitHub issue titled **"Package migration: full migration tracking"** with a checklist of all directories. Each checkbox links to its PR once created.
+Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠️ = `needs-review` (has open TODOs)
 
-```markdown
-## Standalone guides
-- [ ] `dynamic-dashboards-tour` —
-- [ ] `enable-coda` —
-- [ ] `fleet-management-onboarding` —
-- [ ] `how-to-import-external-alerting-resource-5e08` —
-- [ ] `how-to-setup-secrets-tutorial` —
-- [ ] `otel-fleet-management` —
-- [ ] `play-carbon-intensity` —
-- [ ] `semantic-layer-tutorial` —
-- [ ] `slo-quickstart` —
-- [ ] `sm-dns-check-tutorial` —
-- [ ] `sm-ping-check-tutorial` —
-- [ ] `sm-tcp-check-tutorial` —
+### Standalone guides
 
-## Learning paths
-- [ ] `adaptive-logs-lj` —
-- [ ] `billing-usage-lj` —
-- [ ] `create-availability-slo-lj` —
-- [ ] `detect-outages-synthetic-monitoring-lj` —
-- [ ] `drilldown-logs-lj` —
-- [ ] `drilldown-metrics-lj` —
-- [ ] `drilldown-traces-lj` —
-- [ ] `github-data-source-lj` —
-- [ ] `grafana-cloud-tour-lj` —
-- [ ] `infinity-csv-lj` —
-- [ ] `influxdb-data-source-lj` —
-- [ ] `infrastructure-alerting-lj` —
-- [ ] `kafka-monitoring-lj` —
-- [ ] `linux-server-integration-lj` —
-- [ ] `macos-integration-lj` —
-- [ ] `mysql-data-source-lj` —
-- [ ] `mysql-integration-lj` —
-- [ ] `postgresql-integration-lj` —
-- [ ] `prom-remote-write-lj` —
-- [ ] `visualization-metrics-lj` —
-- [ ] `visualization-traces-lj` —
+| Status | Directory | PR |
+|--------|-----------|-----|
+| [~] ⚠️ | `dynamic-dashboards-tour` | [#228](https://github.com/grafana/interactive-tutorials/pull/228) |
+| [~] | `enable-coda` | [#229](https://github.com/grafana/interactive-tutorials/pull/229) |
+| [~] | `fleet-management-onboarding` | [#230](https://github.com/grafana/interactive-tutorials/pull/230) |
+| [~] ⚠️ | `how-to-import-external-alerting-resource-5e08` | [#231](https://github.com/grafana/interactive-tutorials/pull/231) |
+| [~] | `how-to-setup-secrets-tutorial` | [#232](https://github.com/grafana/interactive-tutorials/pull/232) |
+| [~] ⚠️ | `otel-fleet-management` | [#234](https://github.com/grafana/interactive-tutorials/pull/234) |
+| [~] | `play-carbon-intensity` | [#233](https://github.com/grafana/interactive-tutorials/pull/233) |
+| [~] ⚠️ | `semantic-layer-tutorial` | [#237](https://github.com/grafana/interactive-tutorials/pull/237) |
+| [~] ⚠️ | `slo-quickstart` | [#235](https://github.com/grafana/interactive-tutorials/pull/235) |
+| [~] | `sm-dns-check-tutorial` | [#236](https://github.com/grafana/interactive-tutorials/pull/236) |
+| [~] | `sm-ping-check-tutorial` | [#239](https://github.com/grafana/interactive-tutorials/pull/239) |
+| [~] | `sm-tcp-check-tutorial` | [#238](https://github.com/grafana/interactive-tutorials/pull/238) |
 
-## Special cases
-- [ ] `visualization-logs` —
-- [ ] `windows-integration` —
-- [ ] `welcome-to-play` —
-```
+### Learning paths
 
-Each line gets the PR link appended once the PR is created (e.g., `- [x] enable-coda — #205`).
+| Status | Directory | PR |
+|--------|-----------|-----|
+| [ ] | `adaptive-logs-lj` _(manual run — see special case note)_ | — |
+| [ ] | `billing-usage-lj` | — |
+| [ ] | `create-availability-slo-lj` | — |
+| [ ] | `detect-outages-synthetic-monitoring-lj` | — |
+| [ ] | `drilldown-logs-lj` | — |
+| [ ] | `drilldown-metrics-lj` | — |
+| [ ] | `drilldown-traces-lj` | — |
+| [ ] | `github-data-source-lj` | — |
+| [ ] | `grafana-cloud-tour-lj` | — |
+| [ ] | `infinity-csv-lj` | — |
+| [ ] | `influxdb-data-source-lj` | — |
+| [ ] | `infrastructure-alerting-lj` | — |
+| [ ] | `kafka-monitoring-lj` | — |
+| [ ] | `linux-server-integration-lj` | — |
+| [ ] | `macos-integration-lj` | — |
+| [ ] | `mysql-data-source-lj` | — |
+| [ ] | `mysql-integration-lj` | — |
+| [ ] | `postgresql-integration-lj` | — |
+| [ ] | `prom-remote-write-lj` | — |
+| [ ] | `visualization-metrics-lj` | — |
+| [ ] | `visualization-traces-lj` | — |
+
+### Special cases
+
+| Status | Directory | PR |
+|--------|-----------|-----|
+| [ ] | `visualization-logs` | — |
+| [ ] | `windows-integration` | — |
+| [ ] | `welcome-to-play` | — |
 
 ### Batch management commands
 
