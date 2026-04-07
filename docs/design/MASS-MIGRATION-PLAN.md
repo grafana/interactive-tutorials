@@ -376,16 +376,16 @@ Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠
 | Status | Directory | PR |
 |--------|-----------|-----|
 | [ ] | `adaptive-logs-lj` _(manual run — see special case note)_ | — |
-| [ ] | `billing-usage-lj` | — |
-| [ ] | `create-availability-slo-lj` | — |
+| [~] | `billing-usage-lj` | [#240](https://github.com/grafana/interactive-tutorials/pull/240) |
+| [~] | `create-availability-slo-lj` | [#241](https://github.com/grafana/interactive-tutorials/pull/241) |
 | [ ] | `detect-outages-synthetic-monitoring-lj` | — |
-| [ ] | `drilldown-logs-lj` | — |
-| [ ] | `drilldown-metrics-lj` | — |
-| [ ] | `drilldown-traces-lj` | — |
+| [~] | `drilldown-logs-lj` | [#245](https://github.com/grafana/interactive-tutorials/pull/245) |
+| [~] | `drilldown-metrics-lj` | [#242](https://github.com/grafana/interactive-tutorials/pull/242) |
+| [~] | `drilldown-traces-lj` | [#243](https://github.com/grafana/interactive-tutorials/pull/243) |
 | [ ] | `github-data-source-lj` | — |
-| [ ] | `grafana-cloud-tour-lj` | — |
+| [~] | `grafana-cloud-tour-lj` | [#244](https://github.com/grafana/interactive-tutorials/pull/244) |
 | [ ] | `infinity-csv-lj` | — |
-| [ ] | `influxdb-data-source-lj` | — |
+| [~] ⚠️ | `influxdb-data-source-lj` | [#246](https://github.com/grafana/interactive-tutorials/pull/246) |
 | [ ] | `infrastructure-alerting-lj` | — |
 | [ ] | `kafka-monitoring-lj` | — |
 | [ ] | `linux-server-integration-lj` | — |
@@ -393,7 +393,7 @@ Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠
 | [ ] | `mysql-data-source-lj` | — |
 | [ ] | `mysql-integration-lj` | — |
 | [ ] | `postgresql-integration-lj` | — |
-| [ ] | `prom-remote-write-lj` | — |
+| [~] | `prom-remote-write-lj` | [#247](https://github.com/grafana/interactive-tutorials/pull/247) |
 | [ ] | `visualization-metrics-lj` | — |
 | [ ] | `visualization-traces-lj` | — |
 
