@@ -375,35 +375,35 @@ Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠
 
 | Status | Directory | PR |
 |--------|-----------|-----|
-| [ ] | `adaptive-logs-lj` _(manual run — see special case note)_ | — |
+| [ ] | `adaptive-logs-lj` _(manual run — see special case note)_ | [#263](https://github.com/grafana/interactive-tutorials/pull/263) |
 | [~] | `billing-usage-lj` | [#240](https://github.com/grafana/interactive-tutorials/pull/240) |
 | [~] | `create-availability-slo-lj` | [#241](https://github.com/grafana/interactive-tutorials/pull/241) |
-| [ ] | `detect-outages-synthetic-monitoring-lj` | — |
+| [ ] | `detect-outages-synthetic-monitoring-lj` | [#248](https://github.com/grafana/interactive-tutorials/pull/248) |
 | [~] | `drilldown-logs-lj` | [#245](https://github.com/grafana/interactive-tutorials/pull/245) |
 | [~] | `drilldown-metrics-lj` | [#242](https://github.com/grafana/interactive-tutorials/pull/242) |
 | [~] | `drilldown-traces-lj` | [#243](https://github.com/grafana/interactive-tutorials/pull/243) |
-| [ ] | `github-data-source-lj` | — |
+| [ ] | `github-data-source-lj` | [#249](https://github.com/grafana/interactive-tutorials/pull/249) |
 | [~] | `grafana-cloud-tour-lj` | [#244](https://github.com/grafana/interactive-tutorials/pull/244) |
-| [ ] | `infinity-csv-lj` | — |
+| [ ] | `infinity-csv-lj` | [#251](https://github.com/grafana/interactive-tutorials/pull/251) |
 | [~] ⚠️ | `influxdb-data-source-lj` | [#246](https://github.com/grafana/interactive-tutorials/pull/246) |
-| [ ] | `infrastructure-alerting-lj` | — |
-| [ ] | `kafka-monitoring-lj` | — |
-| [ ] | `linux-server-integration-lj` | — |
-| [ ] | `macos-integration-lj` | — |
-| [ ] | `mysql-data-source-lj` | — |
-| [ ] | `mysql-integration-lj` | — |
-| [ ] | `postgresql-integration-lj` | — |
+| [ ] | `infrastructure-alerting-lj` | [#254](https://github.com/grafana/interactive-tutorials/pull/254) |
+| [ ] | `kafka-monitoring-lj` | [#250](https://github.com/grafana/interactive-tutorials/pull/250) |
+| [ ] | `linux-server-integration-lj` | [#252](https://github.com/grafana/interactive-tutorials/pull/252) |
+| [ ] | `macos-integration-lj` | [#253](https://github.com/grafana/interactive-tutorials/pull/253) |
+| [ ] | `mysql-data-source-lj` | [#260](https://github.com/grafana/interactive-tutorials/pull/260) |
+| [ ] | `mysql-integration-lj` | [#258](https://github.com/grafana/interactive-tutorials/pull/258) |
+| [ ] | `postgresql-integration-lj` | [#262](https://github.com/grafana/interactive-tutorials/pull/262) |
 | [~] | `prom-remote-write-lj` | [#247](https://github.com/grafana/interactive-tutorials/pull/247) |
-| [ ] | `visualization-metrics-lj` | — |
-| [ ] | `visualization-traces-lj` | — |
+| [ ] | `visualization-metrics-lj` | [#259](https://github.com/grafana/interactive-tutorials/pull/259) |
+| [ ] | `visualization-traces-lj` | [#261](https://github.com/grafana/interactive-tutorials/pull/261) |
 
 ### Special cases
 
 | Status | Directory | PR |
 |--------|-----------|-----|
-| [ ] | `visualization-logs` | — |
-| [ ] | `windows-integration` | — |
-| [ ] | `welcome-to-play` | — |
+| [ ] | `visualization-logs` | [#264](https://github.com/grafana/interactive-tutorials/pull/264) |
+| [ ] | `windows-integration` | [#265](https://github.com/grafana/interactive-tutorials/pull/265) |
+| [ ] | `welcome-to-play` | [#266](https://github.com/grafana/interactive-tutorials/pull/266) |
 
 ### Batch management commands
 
