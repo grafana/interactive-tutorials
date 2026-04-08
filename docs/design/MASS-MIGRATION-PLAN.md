@@ -375,7 +375,7 @@ Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠
 
 | Status | Directory | PR |
 |--------|-----------|-----|
-| [ ] | `adaptive-logs-lj` _(manual run — see special case note)_ | — |
+| [ ] | `adaptive-logs-lj` _(manual run — see special case note)_ | [#263](https://github.com/grafana/interactive-tutorials/pull/263) |
 | [~] | `billing-usage-lj` | [#240](https://github.com/grafana/interactive-tutorials/pull/240) |
 | [~] | `create-availability-slo-lj` | [#241](https://github.com/grafana/interactive-tutorials/pull/241) |
 | [ ] | `detect-outages-synthetic-monitoring-lj` | [#248](https://github.com/grafana/interactive-tutorials/pull/248) |
@@ -401,9 +401,9 @@ Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠
 
 | Status | Directory | PR |
 |--------|-----------|-----|
-| [ ] | `visualization-logs` | — |
-| [ ] | `windows-integration` | — |
-| [ ] | `welcome-to-play` | — |
+| [ ] | `visualization-logs` | [#264](https://github.com/grafana/interactive-tutorials/pull/264) |
+| [ ] | `windows-integration` | [#265](https://github.com/grafana/interactive-tutorials/pull/265) |
+| [ ] | `welcome-to-play` | [#266](https://github.com/grafana/interactive-tutorials/pull/266) |
 
 ### Batch management commands
 
