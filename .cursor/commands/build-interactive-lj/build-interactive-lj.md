@@ -62,7 +62,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 ├── reference/
 │   ├── selector-patterns.md     # Selector discovery rules & stability patterns
 │   ├── json-schema.md           # JSON structure requirements & field reference
-│   └── proven-patterns.md       # Appendix of working patterns for common UI
+│   (proven-patterns moved to .cursor/proven-patterns.mdc — auto-loaded for content.json)
 └── steps/
     ├── 01-environment.md        # Environment validation
     ├── 02-validation.md         # Learning path validation
@@ -157,7 +157,7 @@ For each step, read the corresponding file from `steps/` directory:
 **Reference files** can be consulted at any time:
 - `reference/selector-patterns.md` - Selector rules and stability checks
 - `reference/json-schema.md` - JSON structure and field requirements
-- `reference/proven-patterns.md` - Reusable patterns for common UI elements
+- `.cursor/proven-patterns.mdc` - Reusable patterns (auto-loaded for content.json files)
 
 ---
 

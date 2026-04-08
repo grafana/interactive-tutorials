@@ -1,0 +1,182 @@
+{
+  "id": "grafana-13-tour-learn",
+  "title": "Tour of Grafana 13 Features",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**What you'll learn:** A quick tour of what’s new and better in Grafana 13. It all runs on Learn, so you don’t need your own stack to follow along.\n\nEach stop jumps you to a real example, where you can open it, click around, and see how the feature behaves in an actual UI."
+    },
+    {
+      "type": "section",
+      "id": "dynamic-dashboards",
+      "title": "Dynamic Dashboards",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Dynamic dashboards is now **Generally Available**! You get **Tabs** for horizontal structure, show/hide rules for panels, rows, or tabs driven by variables or query results, **Auto grid** layouts that adapt to the viewport, and many more!"
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/dashboard/new?doc=https://interactive-learning.grafana.net/guides/dynamic-dashboards-tour/content.json",
+          "content": "**Dynamic Dashboards Interactive Guide** — Open this guide to try out the new and improved dynamic dashboards."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "suggested-dashboards",
+      "title": "Suggested Dashboards",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "**Suggested dashboards** is a feature designed to reduce the time it takes for you to create your first effective dashboard. Suggested dashboards leverage the context of your data connections to recommend pre-built dashboards from both Grafana and the Community."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "content": "**Data sources** — Navigate to the data sources page, then follow the interactive steps below to explore suggested dashboards for your data source."
+        },
+        {
+          "type": "guided",
+          "content": "Search for a Prometheus data source and explore its suggested dashboards.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "#pageContent div[data-testid='input-wrapper']",
+              "targetvalue": "prom",
+              "description": "Search for a **Prometheus** data source.",
+              "formHint": "try typing \"prom\"",
+              "validateInput": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:text('Build a dashboard'):nth-match(1)",
+              "description": "Click **Build a dashboard** on the first Prometheus data source."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "menuitem:text('From suggestions')",
+              "description": "Select **From suggestions** to see pre-built dashboards for this data source."
+            }
+          ],
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-floating-ui-focusable]",
+          "content": "Browse the suggested dashboards — both Grafana-provided and community-built templates are available. Pick one to get started instantly!",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "dashboards-from-templates",
+      "title": "Dashboards from Templates",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You can now create dashboards from pre-defined Grafana templates! 🙌 \n\nGrafana provides a variety of pre-built dashboard templates that you can use to quickly set up visualizations for your data. These dashboards use sample data, which you can replace with your own data, making it easier to get started with monitoring and analysis."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "content": "**Dashboards** — Navigate to the dashboards page, then follow the interactive steps below to try and create a dashboard from a template."
+        },
+        {
+          "type": "guided",
+          "content": "Follow along to learn how to create a dashboard from a template",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#pageContent button:contains('New')",
+              "description": "Click the **New** button"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:contains('Dashboard from template')",
+              "description": "Select **Dashboard from template** in the dropdown menu"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-floating-ui-focusable]",
+              "description": "You should now see pre-defined templates that you can start using instantly",
+              "lazyRender": true
+            }
+          ],
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "saved-queries",
+      "title": "Saved Queries",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Writing queries is one of Grafana's most powerful features, but it can also be one of the most time-consuming. Whether you're exploring logs or building new dashboards, you often find yourself and your team rewriting the same queries over and over again.\n\n**Saved Queries** makes it easy for everyone on your team to save, share, and reuse queries, eliminating the need to start from scratch each time."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore",
+          "content": "**Explore** - Navigate to explore page and then run the interactive steps below to see how a query is saved."
+        },
+        {
+          "type": "multistep",
+          "content": "Run this guide automatically so you can see how to save a query",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "label:contains('Code')",
+              "tooltip": "Click **Code** to add a query"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div.view-lines[data-mprt='7']:nth-of-type(5)",
+              "targetvalue": "rate(http_client_duration_milliseconds_count{service_name=\"checkoutservice\"}[$__rate_interval])",
+              "validateInput": true,
+              "tooltip": "Add the query - rate(http_client_duration_milliseconds_count{service_name=\"checkoutservice\"}[$__rate_interval]"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid saved queries button']",
+              "tooltip": "Click the **Saved queries** button"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid save to query library button']",
+              "tooltip": "Select the **Save query** in the dropdown menu"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid query library title input']",
+              "targetvalue": "HTTP Client Duration query",
+              "tooltip": "Provide a name for your saved query (or keep the name as-is for demo purposes)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid query library save query button']",
+              "tooltip": "Click the **Save** button to save your query"
+            }
+          ],
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    }
+  ]
+}

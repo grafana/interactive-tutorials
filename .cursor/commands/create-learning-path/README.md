@@ -14,7 +14,8 @@ This is the **unified command** that replaces the two-pass workflow (write markd
 4. Discovers CSS selectors by walking the Grafana UI
 5. Tests interactivity collaboratively with the user
 6. Verifies website markdown is complete and correct
-7. Produces a final report
+7. Verifies factual claims against live Grafana documentation
+8. Produces a final report
 
 ---
 
@@ -87,6 +88,11 @@ Collaboratively test each milestone in the Block Editor. User imports JSON, clic
 
 Verify that every milestone has a corresponding website `index.md` with correct front matter and that the path overview `_index.md` is present.
 
+### Step 7b: Verify Documentation Accuracy (MANDATORY)
+> File: `steps/07b-verify-docs-accuracy.md`
+
+Cross-check all factual claims in the learning path content against live Grafana documentation. Fetches canonical docs pages and compares navigation paths, feature names, capability descriptions, platform availability, and prerequisites.
+
 ### Step 8: Report and Next Steps
 > File: `steps/08-report.md`
 
@@ -94,13 +100,21 @@ Summary of created files, quality metrics, and PR guidance.
 
 ---
 
+## Session Planning
+
+For paths with 7+ milestones, plan for two sessions. The natural break point is after file creation and recommender mapping (Steps 1–4) and before selector discovery (Steps 5–8). All artifacts are on disk at the break point, so the second session reads the existing files and resumes at selector discovery.
+
+For paths with fewer milestones, a single session is usually sufficient.
+
+---
+
 ## Reference Documentation
 
 | Document | Purpose |
 |----------|---------|
-| `reference/json-and-frontmatter-schema.md` | content.json schema (v1.0.0) and website front matter field reference |
-| `build-interactive-lj/reference/json-schema.md` | Block types and v1.0.0 base schema |
-| `build-interactive-lj/reference/proven-patterns.md` | Reusable interactive patterns by category |
+| `reference/frontmatter-schema.md` | Website front matter field reference, CTA types, and paired examples |
+| `build-interactive-lj/reference/json-schema.md` | content.json schema (v1.0.0), block types, action types, and field reference |
+| `.cursor/proven-patterns.mdc` | Reusable interactive patterns (loaded automatically for content.json) |
 | `build-interactive-lj/reference/selector-patterns.md` | Selector stability rules and anti-patterns |
 
 ---

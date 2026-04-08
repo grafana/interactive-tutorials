@@ -35,6 +35,7 @@ Before proposing paths:
 - Review existing paths in `website/content/docs/learning-paths/` for patterns and gaps
 - Understand the feature's complexity and user journey
 - Identify which milestone categories apply (see below)
+- **Read all related feature documentation (MANDATORY)** — Identify the canonical Grafana docs pages for the feature/product. Read every doc page in full — prefer reading from the local `website` repo first (e.g., `content/docs/grafana-cloud/.../_index.md`); fall back to WebFetch for docs not in the workspace. Read the main docs page, sub-pages for getting started, navigation, configuration, and concepts. These docs are the authoritative source for all factual claims in the path. Do NOT rely on training data or memory for feature names, UI navigation, capabilities, platform availability, or prerequisites. Track the list of all docs pages consulted — these will be added to the `_index.md` front matter as `source_docs` in Step 3.
 
 ### 2. Propose 2-4 Learning Path Options
 
@@ -128,18 +129,6 @@ The approved plan is used directly by Step 3 to write JSON and website markdown 
 
 ---
 
-## Display
+## Completion
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 2 complete: Plan Approved
-
-Path: [path name]
-Group: [group]
-Skill: [level]
-Milestones: [N] total ([N] interactive, [N] conceptual)
-
-⏳ Next: Step 3 - Write Enriched JSON
-   Ready to create the content.json files? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a brief summary showing: path name, group, skill level, and milestone count. Ask the user if they're ready for Step 3 (Write Enriched JSON).

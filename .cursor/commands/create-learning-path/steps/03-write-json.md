@@ -29,9 +29,10 @@ Write immediately without introduction.
 
 ## Before Starting
 
-> Read `reference/json-and-frontmatter-schema.md` for the complete field reference.
-> Read `build-interactive-lj/reference/json-schema.md` for block type details.
-> Read `build-interactive-lj/reference/proven-patterns.md` for reusable patterns.
+> Read `build-interactive-lj/reference/json-schema.md` for content.json schema, block types, and field reference.
+> Read `reference/frontmatter-schema.md` for website front matter fields, CTA types, and paired examples.
+> Proven patterns for common UI elements are available in `.cursor/proven-patterns.mdc` (loaded automatically when editing content.json files).
+> **MANDATORY**: The feature documentation fetched in Step 2 is the authoritative source for all factual claims. When writing blocks, reference those docs — not training data — for feature names, UI navigation paths, capabilities, platform availability, and prerequisites.
 
 ---
 
@@ -96,6 +97,18 @@ Convert the plan's step descriptions into blocks:
 | User performs action outside browser | `markdown` or `guided` |
 | Multi-option flow (create new vs use existing) | `markdown` with table |
 | Sequential UI steps in a group | `section` wrapping multiple blocks |
+
+**CRITICAL:** Every `section` block MUST include `"autoCollapse": false`:
+
+```json
+{
+  "type": "section",
+  "autoCollapse": false,
+  "blocks": [ ... ]
+}
+```
+
+**CRITICAL:** All links to images and documentation in content.json files MUST use absolute URLs. Use `https://grafana.com/docs/...` for Grafana docs and `https://grafana.com/oss/...` for OSS pages. Never use relative paths like `/docs/...` or `/oss/...`.
 
 ### 3. Leave Selectors Empty
 
@@ -293,6 +306,9 @@ related_journeys:
   items:
     - title: [Related path title]
       link: /docs/learning-paths/[related-path]/
+source_docs:
+  - /docs/grafana-cloud/[product]/[feature]/
+  - /docs/grafana/latest/[feature]/
 pathfinder_data: [slug]-lj/welcome
 ---
 
@@ -308,6 +324,7 @@ These fields appear only on `_index.md`, not on milestone `index.md` files:
 | `journey` | Yes | Path metadata: group, skill level, source, logo |
 | `cascade` | Yes | Always `{ layout: single-journey }` — propagates to child pages |
 | `cta.type` | Yes | Always `start` for the landing page |
+| `source_docs` | Yes | Canonical docs pages the path content was derived from (populated by AI during Step 2) |
 | `cta.title` | Yes | Prompt text (typically "Are you ready?") |
 | `cta.cta_text` | Yes | Button text (typically "Let's go!") |
 
@@ -381,6 +398,9 @@ related_journeys:
   items:
     - title: [Related path title]
       link: /docs/learning-paths/[related-path]/
+source_docs:
+  - /docs/grafana-cloud/[product]/[feature]/
+  - /docs/grafana/latest/[feature]/
 pathfinder_data: [slug]-lj/welcome
 ---
 
@@ -587,27 +607,6 @@ Before proceeding to Step 4:
 
 ---
 
-## Display
+## Completion
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 3 complete: JSON and Website Markdown Written
-
-content.json files (interactive-tutorials):
-├── [slug]-lj/welcome/content.json (welcome page)
-├── [slug]-lj/milestone-1/content.json ([N] blocks)
-├── [slug]-lj/milestone-2/content.json ([N] blocks)
-└── ...
-
-Website markdown (website repo):
-├── [slug]/_index.md → welcome/content.json ✅
-├── [slug]/milestone-1/index.md ✅
-├── [slug]/milestone-2/index.md ✅
-└── ...
-
-Verification: All checks passed ✓
-
-⏳ Next: Step 4 - Recommender Mapping
-   Ready to proceed? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a summary listing: all content.json files created (with block counts), all website markdown files created, and verification status. Ask the user if they're ready for Step 4 (Recommender Mapping).
