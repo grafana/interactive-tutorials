@@ -36,7 +36,7 @@ status: complete
 | `targeting.match` | recommender rule (alerting-irm-cloud.json) | `{"and": [{"urlPrefix": "/alerting"}, {"targetPlatform": "cloud"}]}` |
 | `testEnvironment.tier` | match contains `targetPlatform: cloud` | `cloud` |
 | `milestones` | website step `weight` ordering | 10 steps (see below) |
-| `suggests` | `end-journey/index.md` `related_journeys` | `["grafana-irm-configuration-lj"]` |
+| `suggests` | `end-journey/index.md` `related_journeys` | `["irm-configuration-lj"]` |
 
 Step descriptions derived from website step `index.md` `description` frontmatter (all steps had `pathfinder_data` present).
 
@@ -46,9 +46,13 @@ Step descriptions derived from website step `index.md` `description` frontmatter
 |-------------|----------|------------------|
 | `alerting-irm-cloud.json` | `https://grafana.com/docs/learning-journeys/infrastructure-alerting/` | `{"and": [{"urlPrefix": "/alerting"}, {"targetPlatform": "cloud"}]}` |
 
+## Content Removed During Migration
+
+- Removed prerequisite: "A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/get/)." — redundant for Pathfinder users who are already in Grafana
+
 ## Dangling References
 
-- `grafana-irm-configuration-lj` in path `suggests` — referenced from `end-journey/index.md` `related_journeys` link `/docs/learning-paths/grafana-irm-configuration/`. No `grafana-irm-configuration-lj` directory exists in the repo (only `irm-configuration` as a standalone guide). The Pathfinder CLI will catch this during repository-level validation.
+- `irm-configuration-lj` in path `suggests` and `end-journey` step `suggests` — referenced from `end-journey/index.md` `related_journeys` link `/docs/learning-paths/grafana-irm-configuration/`. No `irm-configuration-lj` directory exists in the repo (only `irm-configuration` as a standalone guide). Aligned both path-level and step-level `suggests` to use `irm-configuration-lj` (matches repo directory naming convention). The Pathfinder CLI will catch this during repository-level validation.
 
 ## Data Quality Issues
 
