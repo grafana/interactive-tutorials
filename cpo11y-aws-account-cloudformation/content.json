@@ -1,0 +1,143 @@
+{
+  "id": "cpo11y-aws-account-cloudformation",
+  "title": "Add your first AWS account with CloudFormation in Cloud Provider Observability",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Welcome! In this tutorial, you’ll connect your first AWS account to **Cloud Provider Observability** in Grafana Cloud using **CloudFormation**.\n\nBy the end of this tutorial, Grafana will be securely connected to your AWS account and ready to collect metrics and metadata from CloudWatch — without exposing credentials or requiring manual IAM setup.\n\n"
+    },
+    {
+      "type": "guided",
+      "content": "## Navigate to AWS Accounts\n\nTo get started, open **Cloud Provider Observability** and navigate to the **AWS Accounts** configuration page.\n\nThis page is where Grafana manages access to your cloud environments. Each account you add here represents a trust relationship that allows Grafana to read telemetry data directly from AWS on your behalf.\n\n**Why this matters:**  \nManaging AWS access in one place makes it easy to audit, update, or remove cloud connections as your infrastructure evolves.",
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/observability']",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "description": "Open **Observability** in the main menu."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-csp-app']",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "description": "Select **Cloud provider** in the main menu."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-csp-app/aws']",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "description": "Click **AWS** in the main menu."
+        },
+        {
+          "action": "button",
+          "reftarget": "Add your AWS services",
+          "requirements": [
+            "on-page:/a/grafana-csp-app/aws",
+            "has-permission:cloudprovider:awswriter"
+          ],
+          "description": "Click the **Add your AWS services** button."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='configuration-card-accounts']",
+          "description": "Click the **AWS accounts** card.",
+          "requirements": [
+            "on-page:/a/grafana-csp-app/aws/configuration",
+            "has-permission:cloudprovider:awswriter"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "guided",
+      "content": "## Start adding a new AWS account\n\nThis opens a guided flow that helps you create a secure connection between Grafana Cloud and your AWS account.\n\nWhy this matters:\nUsing the built-in flow ensures you follow best practices for security and permissions, instead of manually configuring IAM roles and policies.",
+      "steps": [
+        {
+          "action": "button",
+          "reftarget": "button[data-testid='add-cloudwatch-job-button']",
+          "description": "Select **Add account** to begin.",
+          "requirements": [
+            "on-page:/a/grafana-csp-app/aws/configuration/accounts",
+            "has-permission:cloudprovider:awswriter"
+          ]
+        },
+        {
+          "action": "highlight",
+          "reftarget": "#pageContent svg[data-testid='icon-external-link-alt']",
+          "requirements": [
+            "on-page:/a/grafana-csp-app/aws/configuration/accounts/create",
+            "has-permission:cloudprovider:awswriter"
+          ],
+          "description": "Click the **Launch stack** button to open your new stack in AWS console."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Review the CloudFormation stack in AWS\n\nAfter you have launched the provided CloudFormation template, review the AWS CloudFormation console in a new tab with all required parameters pre-filled.\n\nIn AWS:\n\n1. Review the stack details.\n2. Acknowledge that IAM resources will be created.\n3. Copy the **AccountID**.\n4. Create the stack and wait for it to complete.\n\n**Why this matters:**  \nCloudFormation ensures the IAM role is created correctly, with the right trust relationship that allows Grafana Cloud to assume the role securely."
+    },
+    {
+      "type": "guided",
+      "content": "## Enter AWS account details\n\nFor the next step in creating your AWS account in Cloud Provider Observability, you need to enter an account name, paste the ARN from the CloudFormation stack, and select which AWS regions you want included.",
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "#name",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-csp-app/aws/configuration/accounts/create",
+            "has-permission:cloudprovider:awswriter"
+          ],
+          "description": "Enter a name for your AWS account."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "#arn",
+          "description": "Paste the ARN you copied from your CloudFormation stack template.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-csp-app/aws/configuration/accounts/create",
+            "has-permission:cloudprovider:awswriter"
+          ]
+        },
+        {
+          "action": "highlight",
+          "reftarget": "#regions-selector",
+          "description": "Select the AWS Regions you would like included. You can select multiple regions.",
+          "requirements": [
+            "on-page:/a/grafana-csp-app/aws/configuration/accounts/create",
+            "has-permission:cloudprovider:awswriter",
+            "exists-reftarget"
+          ],
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "guided",
+      "content": "## Complete account connection\n\nAfter you have entered all the required fields with your account details, the **Add account** button is active and you can complete the process.",
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "button[data-testid='add-account-submit-button']",
+          "description": "Click the **Add account** button to complete connecting your account.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-csp-app/aws/configuration/accounts/create",
+            "has-permission:cloudprovider:awswriter"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## What’s next?\n\nNow that your AWS account is connected, you can:\n\n- Configure scrape jobs for specific services\n- Add additional AWS accounts using the same CloudFormation approach\n- Use consistent observability across multiple cloud environments\n\nYou’ve taken the first step toward unified, cloud-native observability with Grafana Cloud 🚀\n\n"
+    }
+  ]
+}
