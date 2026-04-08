@@ -452,7 +452,9 @@ Content transformation rules:
 - For non-wrapping shortcodes with a `heading` attribute (e.g., `{{< docs/icon-heading heading="## Here's what to expect" >}}`), extract and preserve the heading value as a markdown header in the output
 - Convert remaining markdown into one or more `markdown` blocks
 - Preserve learning objectives, prerequisites, and descriptive prose
-- Images referenced via markdown syntax can be retained as-is
+- **Remove image links that use website-relative paths** — markdown images like `![alt text](/media/docs/...)` reference paths that only resolve on the Grafana website and will not function in Pathfinder. Strip these image references entirely (including their alt text and surrounding syntax). Retain any surrounding prose but clean up orphaned whitespace or empty paragraphs left behind.
+- **Remove "Grafana Cloud account" prerequisites** — any prerequisite or requirement bullet point that says the user needs a Grafana Cloud account (e.g., "A Grafana Cloud account. To create an account, refer to...") is redundant for Pathfinder users, who are already in Grafana. Remove these bullet points entirely.
+- **Record all removed content in migration notes** — for every image link or prerequisite removed by the above rules, record the exact text that was removed in the migration notes under a `## Content Removed During Migration` section. This provides a clear audit trail of what was stripped from the original website content.
 - Do NOT add a markdown title (`## Title`) — the `title` field handles that
 
 #### 9. Validate
@@ -599,6 +601,12 @@ status: complete  # set to "incomplete" when any TODO items are present
 
 - <any fields that used fallback values>
 - <any missing descriptions that were requested from the user>
+
+## Content Removed During Migration
+
+- <list each piece of content removed from path-level content.json, with the removal reason>
+- Example: `Removed image: ![Example Logs Drilldown user interface](/media/docs/learning-journey/logs-drilldown/logs-drilldown.png)` — website-relative image path
+- Example: `Removed prerequisite: "A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account)."` — redundant for Pathfinder users
 
 ## Dangling References
 
