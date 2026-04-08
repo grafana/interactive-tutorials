@@ -390,12 +390,12 @@ Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠
 | [ ] | `kafka-monitoring-lj` | [#250](https://github.com/grafana/interactive-tutorials/pull/250) |
 | [ ] | `linux-server-integration-lj` | [#252](https://github.com/grafana/interactive-tutorials/pull/252) |
 | [ ] | `macos-integration-lj` | [#253](https://github.com/grafana/interactive-tutorials/pull/253) |
-| [ ] | `mysql-data-source-lj` | — |
-| [ ] | `mysql-integration-lj` | — |
-| [ ] | `postgresql-integration-lj` | — |
+| [ ] | `mysql-data-source-lj` | [#260](https://github.com/grafana/interactive-tutorials/pull/260) |
+| [ ] | `mysql-integration-lj` | [#258](https://github.com/grafana/interactive-tutorials/pull/258) |
+| [ ] | `postgresql-integration-lj` | [#262](https://github.com/grafana/interactive-tutorials/pull/262) |
 | [~] | `prom-remote-write-lj` | [#247](https://github.com/grafana/interactive-tutorials/pull/247) |
-| [ ] | `visualization-metrics-lj` | — |
-| [ ] | `visualization-traces-lj` | — |
+| [ ] | `visualization-metrics-lj` | [#259](https://github.com/grafana/interactive-tutorials/pull/259) |
+| [ ] | `visualization-traces-lj` | [#261](https://github.com/grafana/interactive-tutorials/pull/261) |
 
 ### Special cases
 
