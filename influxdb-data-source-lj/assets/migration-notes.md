@@ -50,6 +50,10 @@ migrated_at: "2026-04-07T00:00:00Z"
 - **Step ordering inferred from content**: No website `weight` data available. Order was determined from logical content flow: welcome -> business-value -> verify-influxdb -> add-data-source -> configure-connection -> test-connection -> explore-data -> end-journey. Needs verification.
 - **Path-level content.json**: Created from welcome step content since no `_index.md` exists. Review for accuracy.
 
+## Content Removed During Migration
+
+- Removed prerequisite: "A Grafana Cloud account" — redundant for Pathfinder users who are already in Grafana
+
 ## Recommender Rules
 
 No `learning-journey` type recommender rules found for this path. The recommender has `docs-page` type entries for InfluxDB in `connections-cloud.json` and `connections-oss.json`, but these are documentation page recommendations, not learning journey targeting rules.
