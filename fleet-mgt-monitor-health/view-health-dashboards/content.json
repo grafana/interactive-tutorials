@@ -1,0 +1,63 @@
+{
+  "id": "view-health-dashboards",
+  "title": "View health dashboards for a registered collector",
+  "blocks": [
+    {
+      "type": "video",
+      "provider": "youtube",
+      "title": "View health dashboards",
+      "src": "https://www.youtube.com/embed/PrjTxzc27Ns",
+      "start": 441,
+      "end": 506
+    },
+    {
+      "type": "markdown",
+      "content": "You can use a collector's internal metrics to identify issues and make decisions about scaling based on resource usage. Visualize these metrics with out-of-the-box dashboards in Grafana Fleet Management."
+    },
+    {
+      "type": "markdown",
+      "content": "The Fleet Management service displays dashboards based on Alloy Health metrics in the application interface."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "content": "In your Grafana Cloud stack, click **Connections** > **Collector** > **Fleet Management**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Inventory']",
+          "content": "Search, filter, or sort to find the unhealthy collector in your **Inventory**.",
+          "doIt": false
+        },
+        {
+          "type": "guided",
+          "content": "Click on the collector to open the details view drawer and view the **Health** tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "table[role='table'] tbody tr:first-child td:nth-child(2) span"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Health']"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "> **NOTE:**\n> If a collector's health dashboards are not reporting data, refer to [Health dashboards have no data](https://grafana.com/docs/grafana-cloud/send-data/fleet-management/set-up/onboard-collectors/onboard-troubleshooting/#health-dashboards-have-no-data) for troubleshooting guidance.\n\nThe dashboards in the Health tab are based on the [Alloy Health integration](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-alloy-health/) and default to use metrics scraped by the `self_monitoring_metrics` pipeline, which is assigned automatically to a registered collector.\nYou can change the data source with the dropdown menu on the **Health** tab of the details view.\n## Fleet Management dashboards\nThe application offers four dashboards:\n- The **Collector** dashboard reports [metrics](https://grafana.com/docs/grafana-cloud/send-data/alloy/troubleshoot/controller_metrics/) from the collector's [component controller](https://grafana.com/docs/grafana-cloud/send-data/alloy/get-started/component_controller/).\n- The **Resources** dashboard reports [metrics](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-alloy-health/#metrics) based on the collector's resource usage.\n- The **Prometheus Components** dashboard reports metrics on the performance of Prometheus components in the collector's configuration, including:\n  - [`prometheus.scrape`](https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.scrape/)\n  - [`prometheus.remote_write`](https://grafana.com/docs/grafana-cloud/send-data/alloy/reference/components/prometheus/prometheus.remote_write/)\n- The **Cluster Node** dashboard reports metrics on the status of communication with peers within a cluster of Alloy instances.\n  [Metrics](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-alloy-health/#metrics) reported on this dashboard begin with `cluster_node_*`.\n  Clustering must be enabled before Cluster Node metrics are reported."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll see the logs associated with a collector."
+    }
+  ]
+}
