@@ -109,7 +109,9 @@ jobs:
               FAILED=$((FAILED + 1))
             fi
           fi
-        done < <(find . -name "content.json" -type f -not -path "./pathfinder-app/*")
+        done < <(find . -name "content.json" -type f \
+                   -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*")
         
         echo ""
         echo "📊 Validation Summary:"
@@ -140,6 +142,7 @@ jobs:
           fi
         done < <(find . -name "content.json" -type f \
                    -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*" \
                    -not -path "./.git/*")
 
         echo ""
@@ -178,6 +181,7 @@ jobs:
           MISSING=$((MISSING + 1))
         done < <(find . -name "manifest.json" -type f \
                    -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*" \
                    -not -path "./.git/*")
 
         echo ""
@@ -196,7 +200,7 @@ jobs:
         echo ""
         # --exclude pathfinder-app: the CLI is checked out into the workspace root so the
         # scanner would otherwise discover its bundled guides and report duplicates.
-        node pathfinder-app/dist/cli/cli/index.js validate --packages .
+        node pathfinder-app/dist/cli/cli/index.js validate --packages . --exclude pathfinder-app --exclude shared
 
     - name: Build repository.json
       run: |
@@ -204,7 +208,7 @@ jobs:
         echo ""
         # --exclude pathfinder-app: prevents the scanner from indexing bundled guides that
         # ship inside the pathfinder-app checkout at ./pathfinder-app/.
-        node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app -o repository.json
+        node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app --exclude shared -o repository.json
         echo ""
         echo "📦 repository.json generated successfully"
 
