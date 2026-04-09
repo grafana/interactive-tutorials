@@ -71,7 +71,7 @@ When you see `data-testid` in source, note these risks in the extraction report.
 
 ## Selector Quality Report Template
 
-Include this report alongside every generated guide as `SELECTOR_REPORT.md` in the guide directory.
+Include this report alongside every generated guide as `assets/selector-report.md` in the guide directory.
 
 ```markdown
 ## Selector Quality Report

@@ -125,7 +125,7 @@ All interactive content testing happens in the shared test environment.
 ### Test Environment URL
 
 ```
-https://learn.grafana-ops.net
+https://learn.grafana.net
 ```
 
 All Grafana employees have access via Okta SAML.
@@ -134,7 +134,7 @@ All Grafana employees have access via Okta SAML.
 
 Before you can use the Block Editor, you must enable dev mode:
 
-1. Go to: `https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true`
+1. Go to: `https://learn.grafana.net/plugins/grafana-pathfinder-app?dev=true`
 2. Log in with Okta SAML
 3. Find the **"Dev Mode"** checkbox and **enable it**
 4. Click **Save**
@@ -145,7 +145,7 @@ Once enabled, dev mode persists across sessions — you only need to do this onc
 
 After dev mode is enabled:
 
-1. Go to `https://learn.grafana-ops.net`
+1. Go to `https://learn.grafana.net`
 2. Click the **Help button (?)** in the upper right
 3. Click the **Debug icon** (looks like a bug or tools icon)
 4. Select **"Block Editor"**
@@ -232,7 +232,7 @@ ls ~/Documents/repositories/grafana-recommender
 **Cause:** Playwright opens a fresh browser with no session/cookies.
 
 **Fix:**
-1. Let Playwright navigate to `https://learn.grafana-ops.net`
+1. Let Playwright navigate to `https://learn.grafana.net`
 2. **Manually log in** through the Playwright-controlled browser window (Okta SAML)
 3. Tell the AI when you're logged in
 4. The session persists for the rest of that browser session
