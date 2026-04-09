@@ -30,6 +30,6 @@ this would become a directory called first-k6-test.
 
 5. Update the `id` field to match the directory name
 6. Update the `title` field to match the user's chosen tutorial name
-7. Remind the user to consult docs/json-guide-format.md for the full format reference
+7. Remind the user to consult docs/json-guide-reference.md for the full format reference
 
 > **Note**: The HTML format (`unstyled.html`) is deprecated. All new guides must use the JSON format (`content.json`).

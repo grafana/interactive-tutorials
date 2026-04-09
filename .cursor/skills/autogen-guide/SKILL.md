@@ -9,6 +9,8 @@ Generate an interactive guide `content.json` by analyzing UI source code. This s
 
 **Do NOT read external reference files upfront.** Each phase's sub-agent loads its own references. Everything the orchestrator needs is inline below.
 
+This skill implements the **skill-memory convention**. See `.cursor/skills/skill-memory.md` for the shared `assets/`, manifest, and frontmatter standards that this skill extends.
+
 ---
 
 ## Workflow Overview
@@ -16,48 +18,127 @@ Generate an interactive guide `content.json` by analyzing UI source code. This s
 ```
 Input (GitHub URLs)
   │
-  ├─ Phase 1: Acquire & Scope ─── orchestrator (no external reads)
-  │    Output: source files fetched, scope confirmed by user
+  ├─ Phase 0: Check for Prior Run ── orchestrator
+  │    Output: skip or warm-start based on manifest
   │
-  ├─ Phase 2: Extract & Assess ── sub-agent loads extraction-patterns.md + selector-strategies.md
-  │    Output: {guide_dir}/EXTRACTION_REPORT.md
+  ├─ Phase 1: Acquire & Scope ────── orchestrator (no external reads)
+  │    Runs: extract_components.py → assets/component-extraction.json
+  │    Writes: source files fetched, scope confirmed by user
+  │    Creates: {guide_dir}/assets/
   │
-  ├─ Checkpoint: Plan ──────────── orchestrator builds plan, user confirms
-  │    Output: {guide_dir}/GUIDE_PLAN.md
+  ├─ Phase 2: Extract & Assess ───── sub-agent loads shared/critical-rules.md
+  │    │                               + extraction-patterns.md + selector-strategies.md
+  │    │                               + reads assets/component-extraction.json
+  │    Writes: {guide_dir}/assets/extraction-report.md
   │
-  ├─ Phase 3: Generate Guide ──── per-section sub-agents, each loads authoring-guide.mdc
-  │    │                            + receives source code context for its section
+  ├─ Checkpoint: Plan ────────────── orchestrator builds plan, user confirms
+  │    Writes: {guide_dir}/assets/guide-plan.md
+  │
+  ├─ Checkpoint: Package Metadata ── orchestrator gathers manifest fields from user
+  │    Writes: {guide_dir}/assets/package-metadata.json
+  │
+  ├─ Phase 3: Generate Guide ──────── per-section sub-agents, each loads authoring-guide.mdc
+  │    │                               + shared/critical-rules.md
+  │    │                               + receives component-extraction.json context for its section
   │    │  3.1 Create guide shell (orchestrator)
   │    │  3.2 For each section → sub-agent generates section JSON
-  │    │  3.3 Assemble sections into content.json (orchestrator)
-  │    │  3.4 Generate SELECTOR_REPORT.md (orchestrator)
-  │    Output: {guide_dir}/content.json + SELECTOR_REPORT.md
+  │    │  3.3 Assemble via assemble_guide.py → content.json (with validation)
+  │    │  3.4 Generate assets/selector-report.md (orchestrator)
+  │    Writes: {guide_dir}/content.json + {guide_dir}/assets/selector-report.md
   │
-  └─ Phase 4: Review & Fix ────── sub-agent loads review-guide-pr.mdc
-       Output: fixed content.json + change report
+  ├─ Phase 4: Review & Fix ──────── sub-agent loads review-guide-pr.mdc
+  │    Writes: fixed content.json + change report
+  │
+  ├─ Phase 5a: Write Skill Memory ── orchestrator
+  │    Writes: {guide_dir}/assets/manifest.yaml
+  │
+  ├─ Phase 5b: Generate Package Manifest ── orchestrator
+  │    Runs: generate_manifest.py → {guide_dir}/manifest.json
+  │
+  └─ Phase 6: Validate Package ──── orchestrator
+       Runs: assemble_guide.py --validate-only + optional CLI validate --package
 ```
 
 ---
 
 ## Critical Rules
 
-These rules apply to ALL generated guides. They are passed to sub-agents in their prompts.
+Read `.cursor/skills/shared/critical-rules.md` for rules 1–15. These apply to ALL generated guides and are passed to sub-agents in their prompts.
 
-1. **No markdown titles** -- the guide `title` renders in the app frame; a leading `## Title` duplicates it
-2. **`exists-reftarget` is auto-applied** -- never add it manually to requirements
-3. **`navmenu-open`** required for any step targeting navigation menu elements
-4. **`on-page:/path`** required for page-specific interactive actions
-5. **Tooltips** -- under 250 characters, one sentence, don't name the highlighted element
-6. **`verify`** on all state-changing actions (Save, Create, Test)
-7. **`doIt: false` for secrets** -- never automate filling passwords/tokens/keys
-8. **Section bookends** -- brief "what you'll do" intro markdown, "what you've done" summary markdown
-9. **Sections, not markdown headers** -- group steps with `section` blocks, each with a unique kebab-case `id`
-10. **Connect sections** -- if section 1's objective creates a resource, section 2 should require it
-11. **Action-focused content** -- "Save your configuration" not "The save button can be clicked"
-12. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
-13. **`skippable: true`** for conditional fields and permission-gated steps
-14. **No multistep singletons** -- a `multistep` with one step must be a plain `interactive` block
-15. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` or set `doIt: false`
+---
+
+## Generated Files
+
+The skill's deliverable lives at the output directory root. Everything in `assets/` is skill-internal context — not consumed by the end product.
+
+```
+{guide_dir}/
+  content.json                    ← the deliverable (Pathfinder guide)
+  manifest.json                   ← the package manifest (generated in Phase 5b)
+  assets/
+    extraction-report.md          ← component analysis, fields, selectors, grades
+    guide-plan.md                 ← section structure and source file assignments
+    selector-report.md            ← selector quality assessment
+    package-metadata.json         ← manifest fields gathered at Package Metadata checkpoint
+    manifest.yaml                 ← provenance, drift detection, skill memory
+```
+
+`assets/` files are auto-generated and should not be edited manually.
+
+### Frontmatter disclaimer
+
+Every generated markdown file in `assets/` **must** start with the standard frontmatter from the skill-memory convention, extended with source-specific fields:
+
+```markdown
+---
+disclaimer: Auto-generated by autogen-guide skill. Do not edit manually.
+notice: To regenerate, re-run the skill against this source.
+input_sha256: {hex digest}
+source: {owner}/{repo}@{commit_sha}:{path}
+---
+```
+
+### Manifest file
+
+After all phases complete, write `{guide_dir}/assets/manifest.yaml`:
+
+```yaml
+# Auto-generated by autogen-guide skill. Do not edit manually.
+schema_version: 1
+skill_name: "autogen-guide"
+generated_at: "{ISO 8601 timestamp}"
+input_sha256: "{hex digest — see below}"
+
+source:
+  repo: "{owner}/{repo}"
+  branch: "{branch}"
+  path: "{path}"
+  commit_sha: "{sha}"
+
+guide:
+  id: "{guide_id}"
+  sections:
+    - "{section-id-1}"
+    - "{section-id-2}"
+  total_steps: {N}
+  selector_quality:
+    green: {N}
+    yellow: {N}
+    red: {N}
+
+files:
+  extraction_report: "assets/extraction-report.md"
+  guide_plan: "assets/guide-plan.md"
+  selector_report: "assets/selector-report.md"
+```
+
+Compute `input_sha256` by hashing the source identity — the commit SHA is the natural fingerprint for source code drift:
+
+```bash
+echo -n "{owner}/{repo}:{path}@{commit_sha}" | shasum -a 256
+```
+
+This means cosmetic guide edits (title wording, step reordering) do not trigger re-extraction — only an actual source code change does.
 
 ---
 
@@ -200,6 +281,29 @@ Key things: `noop` when there's no sensible element to highlight. Keep it brief.
 
 ---
 
+## Phase 0: Check for Prior Run (Orchestrator)
+
+Before starting the full generation pipeline, check whether this guide has been generated before.
+
+1. Check whether `{guide_dir}/assets/manifest.yaml` exists
+2. If it does: read the manifest, extract `input_sha256` and `generated_at`
+3. Re-hash the current input: `echo -n "{owner}/{repo}:{path}@{current_commit_sha}" | shasum -a 256`
+4. Compare hashes:
+   - **Match** → no drift; tell the user the guide is up to date and offer options: skip to Phase 4 review, re-generate a specific section, or proceed with a full fresh run
+   - **Mismatch** → drift detected; tell the user the source has changed since `{generated_at}` (commit `{stored_sha}` → `{current_sha}`), then proceed with a delta-aware re-run using prior `assets/extraction-report.md` as warm-start context for the Phase 2 sub-agent
+5. If manifest does not exist: fresh run — proceed to Phase 1
+
+```
+assets/manifest.yaml exists?
+  No  → full generation pipeline (Phase 1 onward)
+  Yes → re-hash input
+          matches stored hash?
+            Yes → offer user: skip to review, re-gen section, or fresh run
+            No  → delta re-run (use prior assets/ as warm start, then Phase 1 onward)
+```
+
+---
+
 ## Phase 1: Acquire and Scope (Orchestrator)
 
 You handle this phase directly. No sub-agent needed -- it's mostly tool calls.
@@ -227,12 +331,15 @@ If the user has already cloned the repo or provides local file paths, use those 
 
 ### 1.3 Assess Scope
 
-Scan the linked code for interactive UI components. Look for these component names:
-`Field`, `InlineField`, `FieldSet`, `Input`, `Select`, `Switch`, `Button`, `TextArea`, `SecretInput`, `RadioButtonGroup`, `Checkbox`, `Slider`, `Alert`
+After fetching the source files, run the component extraction script to get a deterministic count:
 
-Count them and present to the user:
+```bash
+python .cursor/tools/extract_components.py {source_file_1} {source_file_2} ... > {guide_dir}/assets/component-extraction.json
+```
 
-> "The linked directory contains 6 component files with ~45 interactive elements across 8 sections. This will produce a guide with approximately 8 sections and 30-40 steps. Should I proceed, narrow, or expand?"
+Use the `scopeEstimate` output to present scope to the user:
+
+> "The linked directory contains {totalFieldSets} field groups and {totalComponents} interactive elements. This will produce a guide with approximately {N} sections and {M} steps. Should I proceed, narrow, or expand?"
 
 Scope guidelines:
 - **< 5 elements**: Too small. Suggest expanding.
@@ -261,7 +368,7 @@ git -C /tmp/autogen-<repo> rev-parse HEAD
 
 ### 1.6 Create the Guide Directory
 
-Create `{guide-id}/` in the workspace root. The `guide-id` should be kebab-case, derived from the component's purpose (e.g., `infinity-config-tour`).
+Create `{guide-id}/` in the workspace root and `{guide-id}/assets/` for generated analysis files. The `guide-id` should be kebab-case, derived from the component's purpose (e.g., `infinity-config-tour`).
 
 Proceed to Phase 2 after the user confirms scope.
 
@@ -273,29 +380,47 @@ Launch a sub-agent using the Task tool. This sub-agent loads the extraction and 
 
 ### Sub-agent prompt template
 
+Before launching the sub-agent, the orchestrator runs the extraction script:
+
+```bash
+python .cursor/tools/extract_components.py {source_files} > {guide_dir}/assets/component-extraction.json
+```
+
+The sub-agent receives this structured JSON as context (instead of reading raw source files to enumerate components), and its job shifts to **interpreting** the extraction — identifying section groupings, assessing UI patterns, and writing the prose extraction report.
+
 Fill in `{placeholders}` and pass as the Task prompt:
 
 ```
-You are analyzing React/TypeScript UI source code to extract interactive elements for a Pathfinder guide.
+You are analyzing React/TypeScript UI source code to produce an extraction report for a Pathfinder guide.
 
 **Read these reference files first:**
-1. `.cursor/skills/autogen-guide/extraction-patterns.md` -- component patterns, props extraction, conditional logic, traversal strategy
-2. `.cursor/skills/autogen-guide/selector-strategies.md` -- selector grading (Green/Yellow/Red), quality report template
+1. `.cursor/skills/shared/critical-rules.md` -- rules 1-15 that apply to all guides
+2. `.cursor/skills/autogen-guide/extraction-patterns.md` -- component patterns, props extraction, conditional logic
+3. `.cursor/skills/autogen-guide/selector-strategies.md` -- selector grading (Green/Yellow/Red), quality report template
 
-**Source files to analyze** (read each one):
+**Pre-computed component extraction** (read this file — components, selectors, and grades are already computed):
+{guide_dir}/assets/component-extraction.json
+
+**Source files for context** (read only sections relevant to your section grouping decisions):
 {list_of_source_file_paths}
 
 **Entry point component**: {entry_point_file}
 
 **Your task:**
-1. For each source file, identify all interactive UI components (Field, Input, Select, Switch, Button, SecretInput, TextArea, etc.)
-2. Extract metadata for each: label, description, placeholder, type, options, required, default value, conditional rendering
-3. Grade each element's best selector as Green (data-testid/id), Yellow (aria-label/name/button text), or Red (structural only)
-4. Detect conditional rendering patterns (logical AND, ternary, switch/case, array map)
-5. Identify logical section groupings (FieldSet, tabs, sub-components)
-6. Check for plugin.json if present -- extract plugin ID and name
+1. Read the component-extraction.json — component inventory, selector grades, and FieldSet groupings are already computed; DO NOT re-count or re-grade from scratch
+2. Interpret the extraction: identify logical section groupings (FieldSets map to sections; tabs/sub-components may also create sections)
+3. Note UI patterns per section (tab nav, card grid, toggles, field arrays, nested conditionals)
+4. Check for plugin.json if present -- extract plugin ID and name
+5. Flag any grading caveats (HOC wrapping risks, wrapper mismatches noted in selector-strategies.md)
 
-**Write your results** to `{guide_dir}/EXTRACTION_REPORT.md` using this structure:
+**Write your results** to `{guide_dir}/assets/extraction-report.md` using the standard frontmatter followed by this structure:
+
+---
+disclaimer: Auto-generated by autogen-guide skill. Do not edit manually.
+notice: To regenerate, re-run the skill against this source.
+input_sha256: {hex digest}
+source: {owner}/{repo}@{commit_sha}:{path}
+---
 
 ## Extraction Report
 
@@ -303,7 +428,7 @@ You are analyzing React/TypeScript UI source code to extract interactive element
 **Entry point**: {entry_point}
 **Files analyzed**: N
 **Sections identified**: N (list names)
-**Interactive elements**: N
+**Interactive elements**: N (from component-extraction.json scopeEstimate)
 
 ### Selector Quality
 - N/N Green (data-testid or id)
@@ -333,9 +458,16 @@ After the sub-agent completes, present the extraction report summary to the user
 
 ## Checkpoint: Build the Guide Plan (Orchestrator)
 
-After the user sees the extraction report, build a structural plan. Read `{guide_dir}/EXTRACTION_REPORT.md` and produce `{guide_dir}/GUIDE_PLAN.md`:
+After the user sees the extraction report, build a structural plan. Read `{guide_dir}/assets/extraction-report.md` and produce `{guide_dir}/assets/guide-plan.md` with the standard frontmatter followed by:
 
 ```markdown
+---
+disclaimer: Auto-generated by autogen-guide skill. Do not edit manually.
+notice: To regenerate, re-run the skill against this source.
+input_sha256: {hex digest}
+source: {owner}/{repo}@{commit_sha}:{path}
+---
+
 ## Guide Plan
 
 **Guide ID**: {guide-id}
@@ -379,6 +511,47 @@ Independent tabs/pages should NOT chain — use `on-page:/path` instead.
 
 ---
 
+## Checkpoint: Package Metadata (Orchestrator)
+
+Before generating guide content, gather package metadata from the user.
+Present defaults where possible and ask for confirmation or overrides.
+
+**Auto-derived (confirm with user):**
+- `id`: {guide-id from plan}
+- `description`: {1-line summary derived from extraction report}
+- `type`: "guide"
+
+**Requires user input:**
+- `category`: What category does this guide belong to?
+  Suggest based on context (e.g., "data-availability" for datasource guides,
+  "general" as fallback). Present as a question.
+- `startingLocation`: Where in Grafana does this guide launch?
+  Suggest from target page in plan (e.g., "/connections/datasources/edit").
+- `targeting.match`: Where should this guide be recommended?
+  Suggest `{ "urlPrefix": "..." }` based on startingLocation.
+  Present the suggestion and ask the user to confirm or customize.
+- `testEnvironment`: Where should this guide be tested?
+  Default suggestion: `{ "tier": "cloud" }`.
+- `author.team`: Default "interactive-learning". Ask if different.
+
+Store the confirmed metadata in `{guide_dir}/assets/package-metadata.json`
+for use in Phase 5b manifest generation.
+
+```json
+{
+  "contentJsonPath": "{guide_dir}/content.json",
+  "type": "guide",
+  "description": "...",
+  "category": "...",
+  "author": { "team": "interactive-learning" },
+  "startingLocation": "...",
+  "targeting": { "match": { "urlPrefix": "..." } },
+  "testEnvironment": { "tier": "cloud" }
+}
+```
+
+---
+
 ## Phase 3: Generate Guide (Per-Section Sub-Agents)
 
 Instead of one monolithic sub-agent, generate the guide **section by section**. This keeps each sub-agent's context small and focused, prevents quality degradation in later sections, and allows source code context to flow through.
@@ -402,7 +575,7 @@ Write the initial `{guide_dir}/content.json` with root structure and intro markd
 
 ### 3.2 For Each Section: Launch a Sub-Agent
 
-Iterate through the sections in GUIDE_PLAN.md. For each section, launch a sub-agent that generates just that section's JSON.
+Iterate through the sections in `{guide_dir}/assets/guide-plan.md`. For each section, launch a sub-agent that generates just that section's JSON.
 
 **Step budget**: aim for **3–8 interactive steps per section**. If a section would need more than 10, split it into sub-sections in the plan first. A complete guide should have **25–50 interactive steps** total.
 
@@ -413,8 +586,9 @@ Fill in `{placeholders}` and launch via the Task tool:
 ```
 You are generating ONE section of a Pathfinder interactive guide as a JSON object.
 
-**Read this reference file first:**
+**Read these reference files first:**
 1. `.cursor/authoring-guide.mdc` -- block types, action types, requirements, best practices
+2. `.cursor/skills/shared/critical-rules.md` -- rules 1-15 that apply to all guides (violations are blocking)
 
 **Section to generate:**
 - Section ID: {section_id}
@@ -422,28 +596,13 @@ You are generating ONE section of a Pathfinder interactive guide as a JSON objec
 - Requirements: {section_requirements_array}
 - Objectives: {section_objectives_array_or_none}
 - Tab/navigation prerequisite: {tab_click_description_or_none}
-- Fields in this section (from extraction report):
+- Fields in this section (from component-extraction.json for this section's FieldSet):
 {extraction_data_for_this_section}
 
 **Source code context** (relevant JSX for this section):
 ```tsx
 {source_code_snippet_for_this_section}
 ```
-
-**Critical rules** (violations are blocking):
-1. No markdown titles -- the section `title` is rendered by the app
-2. `exists-reftarget` is auto-applied -- never add it manually
-3. `navmenu-open` required for navigation menu element interactions
-4. `on-page:/path` required for page-specific actions
-5. Tooltips under 250 characters, one sentence, don't name the highlighted element
-6. `verify` on state-changing actions (Save, Create, Test)
-7. `doIt: false` for secrets -- never automate passwords/tokens/keys
-8. Start with a brief intro markdown, end with a brief summary markdown
-9. `skippable: true` + `hint` for conditional and permission-gated steps
-10. Action-focused language -- "Save your configuration" not "The save button can be clicked"
-11. Bold only GUI names -- "Click **Save & test**" not "Click the **Save & test** button"
-12. No multistep singletons -- single-step multistep → plain interactive block
-13. No focus-before-formfill -- highlight on input with doIt:true → use formfill or doIt:false
 
 **Action decision tree:**
 - Select/dropdown → `highlight` with `doIt: false`, explain options in tooltip
@@ -502,23 +661,37 @@ Match the section's UI patterns to the golden examples:
 
 After all section sub-agents complete:
 
-1. **Read each returned section JSON** and validate it parses correctly
-2. **Append each section** to `{guide_dir}/content.json`'s `blocks` array, in plan order
-3. **Add the closing summary markdown** as the final block:
+1. **Write each returned section JSON** to a temporary file: `{guide_dir}/assets/section-{section_id}.json`
+2. **Add the closing summary markdown** to the guide shell as the final block:
    ```json
    {
      "type": "markdown",
      "content": "{summary of what the user explored/configured, list the key sections, suggest next steps}"
    }
    ```
-4. **Write the assembled file** to `{guide_dir}/content.json`
-5. **Spot-check**: read the first and last 30 lines to verify structure and bookends
+3. **Run the assembly script** to assemble and validate in one step:
+   ```bash
+   python .cursor/tools/assemble_guide.py \
+     --shell {guide_dir}/assets/guide-shell.json \
+     --sections {guide_dir}/assets/section-*.json \
+     --output {guide_dir}/content.json
+   ```
+   The script validates: unique section IDs, no multistep singletons, no exists-reftarget, tooltip lengths, section bookends, step counts, and no noop-only sections.
+4. **If validation fails**: fix the flagged issues in the section JSON files and re-run.
+5. **Spot-check**: read the first and last sections to verify structure and bookends.
 
 ### 3.4 Orchestrator: Generate Selector Report
 
-After assembly, write `{guide_dir}/SELECTOR_REPORT.md` by collating sub-agent feedback:
+After assembly, write `{guide_dir}/assets/selector-report.md` by collating sub-agent feedback. Start the file with the standard frontmatter disclaimer, then:
 
 ```markdown
+---
+disclaimer: Auto-generated by autogen-guide skill. Do not edit manually.
+notice: To regenerate, re-run the skill against this source.
+input_sha256: {hex digest}
+source: {owner}/{repo}@{commit_sha}:{path}
+---
+
 ## Selector Quality Report
 
 **Generated from**: `{owner}/{repo}@{sha}`
@@ -627,22 +800,113 @@ Before launching the review sub-agent, build `{tailored_items}` systematically f
 
 ---
 
+## Phase 5a: Write Skill Memory Manifest (Orchestrator)
+
+After Phase 4 completes, write `{guide_dir}/assets/manifest.yaml`. Gather the values from prior phases:
+
+- `generated_at`: current ISO 8601 timestamp
+- `input_sha256`: computed in Phase 0 / Phase 1 (same value used in frontmatter)
+- `commit_sha`: recorded in Phase 1.5
+- `sections`: list of section IDs from the assembled guide
+- `total_steps`, `selector_quality`: from Phase 4 review report output
+
+```yaml
+# Auto-generated by autogen-guide skill. Do not edit manually.
+schema_version: 1
+skill_name: "autogen-guide"
+generated_at: "{ISO 8601 timestamp}"
+input_sha256: "{hex digest}"
+
+source:
+  repo: "{owner}/{repo}"
+  branch: "{branch}"
+  path: "{path}"
+  commit_sha: "{sha}"
+
+guide:
+  id: "{guide_id}"
+  sections:
+    - "{section-id-1}"
+    - "{section-id-2}"
+  total_steps: {N}
+  selector_quality:
+    green: {N}
+    yellow: {N}
+    red: {N}
+
+files:
+  extraction_report: "assets/extraction-report.md"
+  guide_plan: "assets/guide-plan.md"
+  selector_report: "assets/selector-report.md"
+```
+
+This manifest is the entry point for future maintenance runs (Phase 0).
+
+---
+
+## Phase 5b: Generate Package Manifest (Orchestrator)
+
+Generate the Pathfinder package `manifest.json` using the metadata gathered at the Package Metadata checkpoint.
+
+1. Run the manifest generation script:
+   ```bash
+   python .cursor/tools/generate_manifest.py \
+     --input {guide_dir}/assets/package-metadata.json \
+     --content {guide_dir}/content.json \
+     --output {guide_dir}/manifest.json
+   ```
+
+2. The script validates that the `id` in `package-metadata.json` matches the `id` in `content.json` and exits with an error if they differ.
+
+3. Present the generated `manifest.json` to the user for final review before proceeding.
+
+---
+
+## Phase 6: Validate Package (Orchestrator)
+
+After manifest generation:
+
+1. **Run structural validation** on the assembled guide:
+   ```bash
+   python .cursor/tools/assemble_guide.py --validate-only {guide_dir}/content.json
+   ```
+
+2. **Run Pathfinder CLI validation** if available (check for a `grafana-pathfinder-app` checkout):
+   ```bash
+   node {pathfinder-app}/dist/cli/cli/index.js validate --package {guide_dir}
+   ```
+   If the CLI is not available, report this as incomplete and instruct the user to run validation manually. The package is still usable but unvalidated.
+
+---
+
 ## Final Delivery (Orchestrator)
 
-After Phase 4 completes:
+After Phase 6 completes:
 
 1. **Read the review report** -- check if any issues couldn't be auto-fixed
 2. **Validate JSON** -- ensure `{guide_dir}/content.json` parses correctly
 3. **Spot-check** -- read the first and last sections to verify bookends and structure
 4. **Present to the user** -- summarize what was generated:
    - Guide location: `{guide_dir}/content.json`
+   - Package manifest: `{guide_dir}/manifest.json`
    - Sections: N (list names)
    - Total interactive steps: N (average per section)
    - Selector quality: N Green, N Yellow, N Red
    - Any compromises, omitted fields, or known issues
    - Review fixes applied
-5. **Note the index.json entry** -- remind the user that an `index.json` entry is needed for the guide to appear in recommendations
-6. **Note selector improvements** -- point the user to `SELECTOR_REPORT.md` for upstream `data-testid` suggestions
+5. **Note the manifest** -- the `manifest.json` has been generated alongside the guide. If you need this guide to appear in contextual recommendations, verify the `targeting.match` rules.
+6. **Note selector improvements** -- point the user to `assets/selector-report.md` for upstream `data-testid` suggestions
+
+---
+
+## External Dependencies
+
+This skill reads two files **outside** its own directory. If they are moved or renamed, sub-agent phases will fail silently:
+
+- `.cursor/authoring-guide.mdc` — block types, action types, requirements (read by Phase 3 section sub-agents)
+- `.cursor/review-guide-pr.mdc` — complete review protocol (read by Phase 4 review sub-agent)
+
+This skill implements the **skill-memory convention**. See `.cursor/skills/skill-memory.md` for the shared `assets/`, manifest, and frontmatter standards that this skill extends.
 
 ---
 

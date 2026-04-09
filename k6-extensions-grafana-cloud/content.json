@@ -1,0 +1,82 @@
+{
+  "id": "k6-extensions-grafana-cloud",
+  "title": "Use k6 extensions in Grafana Cloud k6",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**What you'll learn:** How to run a Grafana Cloud k6 test that imports a supported extension (using `k6/x/faker` as an example), execute it, and confirm the extension output, without building a custom k6 binary."
+    },
+    {
+      "type": "section",
+      "id": "k6-extensions",
+      "title": "Run a test with the faker extension",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open a k6 project, start a scripted test that uses an extension, run it, and check **Logs** for the faker output."
+        },
+        {
+          "type": "markdown",
+          "content": "k6 extensions extend core k6 behavior. In k6 open source you can build a custom binary; in Grafana Cloud k6 you can import a supported subset in your scripts, without any custom build required."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/k6-app/projects/6999415",
+          "verify": "on-page:/a/k6-app",
+          "content": "**k6 test with extensions** — Go to the k6 projects page, then follow the steps below."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create new test",
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "content": "Click **Create new test** to create a sample k6 test with extensions."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Start Scripting",
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "content": "Click **Start Scripting**."
+        },
+        {
+          "type": "code-block",
+          "code": "import { sleep } from 'k6'\nimport http from 'k6/http'\nimport faker from 'k6/x/faker'\n\n// See https://grafana.com/docs/k6/latest/using-k6/k6-options/reference/\nexport const options = {\n  vus: 1,\n  iterations: 1,\n  thresholds: {\n    http_req_failed: ['rate<0.02'], // http errors should be less than 2%\n    http_req_duration: ['p(95)<2000'], // 95% requests should be below 2s\n  },\n  cloud: {\n    distribution: {\n      'amazon:us:ashburn': { loadZone: 'amazon:us:ashburn', percent: 100 },\n    },\n  },\n}\n\nexport default function main() {\n  console.log(faker.person.firstName())\n  let response = http.get('https://quickpizza.grafana.com')\n  sleep(1)\n}",
+          "reftarget": "div[data-testid='data-testid Code editor container']",
+          "language": "javascript",
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "content": "Add this script: it imports **k6/x/faker** and logs a random first name when the test runs."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create And Run",
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "content": "Click **Create and Run** and wait for the test to finish."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-onboarding='breakdown'] a[data-testid='data-testid Tab LOGS']",
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "content": "Open the **Logs** tab to confirm the extension ran."
+        },
+        {
+          "type": "markdown",
+          "content": "You learned how to import **k6/x/faker**, run the test in Grafana Cloud k6, and verify extension output on **Logs** (you should see a random first name). For the full list of supported extensions, see [Use k6 extensions](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/use-k6-extensions/#import-an-extension-in-your-test-script)."
+        }
+      ]
+    }
+  ]
+}

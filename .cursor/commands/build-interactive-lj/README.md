@@ -2,13 +2,15 @@
 
 This command automates the creation of interactive content (`content.json` files) for learning paths in Grafana Pathfinder.
 
+> **Creating a brand-new learning path?** Use `/create-learning-path` instead. It skips the markdown step entirely and lets you author enriched JSON directly. This command (`/build-interactive-lj`) is for adding interactivity to an *existing* markdown learning path.
+
 ---
 
 ## Overview
 
 When a writer runs `/build-interactive-lj`, this command guides them through a 7-step process to create fully functional interactive guides:
 
-1. **Environment Validation** - Verify repos, browser automation, and GitHub CLI
+1. **Environment Validation** - Verify repos and browser automation
 2. **Learning Path Validation** - Find the learning path and list milestones
 3. **Create Recommender Mapping** - Ensure the learning path appears in Pathfinder (if needed)
 4. **Scaffold Content Files** - Create content.json structure for each milestone
@@ -18,21 +20,23 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 
 **Expected time:** 30-60 minutes depending on the number of milestones.
 
+**Session planning:** For paths with 7+ milestones, plan for two sessions. The natural break point is after scaffolding and recommender mapping (Steps 1–4) and before selector discovery (Steps 5–7). All artifacts are on disk at the break point, so the second session reads the existing files and resumes at selector discovery.
+
 ---
 
 ## Critical Rules
 
 ### 🚨 CRITICAL TESTING RULE
 
-> During Step 6 (Test in Pathfinder), the AI's ONLY job is to load JSON into the Block Editor. The USER does ALL testing by clicking "Show me", "Do it", and interactive buttons themselves. The AI must NEVER click these buttons.
+> During Step 6 (Test in Pathfinder), the AI must NOT interact with Pathfinder at all. The AI tells the user which content.json file to import, then WAITS. The USER handles ALL Pathfinder interactions: importing JSON, clicking "Show me", "Do it", and testing.
 
-**Why:** Users can test faster and catch visual/UX issues that automation misses.
+**Why:** Users can import and test faster and catch visual/UX issues that automation misses. AI interaction with Pathfinder is error-prone and wastes time.
 
 ### Core Principles
 
 1. **Be autonomous, not interrogative** - Analyze content and make intelligent decisions. Don't ask questions that can be inferred from context.
 2. **Follow steps in order** - Each step has verification built in.
-3. **Test ONE milestone at a time** - Report results, then ASK before testing the next.
+3. **Test ONE milestone at a time** - Tell the user which file to import, wait for their feedback.
 4. **ASK before fixing issues** - Explain the problem and proposed fix, wait for approval.
 5. **Let the user handle git** - Summarize changes, let them decide when to commit.
 6. **Use browser tools for selectors** - ALWAYS inspect the actual DOM with Playwright.
@@ -41,7 +45,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 
 ## Anti-Patterns (Do NOT)
 
-- ❌ **Do NOT click "Show me", "Do it", or interactive buttons** - User tests, AI waits
+- ❌ **Do NOT interact with Pathfinder** - No importing JSON, no clicking buttons. User handles all Pathfinder interactions
 - ❌ **Do NOT ask questions that can be inferred** - Be autonomous (recommender file, URL patterns, platform)
 - ❌ **Do NOT skip any milestones** - EVERY milestone needs a content.json
 - ❌ **Do NOT use placeholder selectors** - Never leave `"[selector]"` or `"TODO"`
@@ -62,7 +66,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 ├── reference/
 │   ├── selector-patterns.md     # Selector discovery rules & stability patterns
 │   ├── json-schema.md           # JSON structure requirements & field reference
-│   └── proven-patterns.md       # Appendix of working patterns for common UI
+│   (proven-patterns moved to .cursor/proven-patterns.mdc — auto-loaded for content.json)
 └── steps/
     ├── 01-environment.md        # Environment validation
     ├── 02-validation.md         # Learning path validation
@@ -71,6 +75,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
     ├── 05-selectors.md          # Selector discovery
     ├── 06-testing.md            # Test in Pathfinder
     └── 07-report.md             # Report and next steps
+(Step 6b uses ../create-learning-path/steps/07b-verify-docs-accuracy.md)
 ```
 
 ---
@@ -91,15 +96,15 @@ fully functional content.json files ready for a PR.
 Here's what our session will look like:
 
 1. **Environment check** - Verify your setup is ready (30 seconds)
-2. **Find your learning journey** - Locate source content and list milestones
-3. **Create recommender mapping** - Ensure the journey appears in Pathfinder (if needed)
+2. **Find your learning path** - Locate source content and list milestones
+3. **Create recommender mapping** - Ensure the learning path appears in Pathfinder (if needed)
 4. **Scaffold the files** - Create content.json structure for each milestone
 5. **Discover selectors** - Find CSS selectors for interactive elements
 6. **Test in Pathfinder** - Collaboratively test each milestone
 7. **Wrap up** - Summarize results and provide PR guidance
 
 Expect this to take 30-60 minutes depending on how many milestones your 
-learning journey has. I'll need your attention during testing so you can 
+learning path has. I'll need your attention during testing so you can 
 verify the highlights look right.
 ```
 
@@ -152,12 +157,13 @@ For each step, read the corresponding file from `steps/` directory:
 - **Step 4:** Read `steps/04-scaffold.md` and `reference/json-schema.md`
 - **Step 5:** Read `steps/05-selectors.md` and `reference/selector-patterns.md`
 - **Step 6:** Read `steps/06-testing.md`
+- **Step 6b:** Read `../create-learning-path/steps/07b-verify-docs-accuracy.md` (verify factual claims against live docs)
 - **Step 7:** Read `steps/07-report.md`
 
 **Reference files** can be consulted at any time:
 - `reference/selector-patterns.md` - Selector rules and stability checks
 - `reference/json-schema.md` - JSON structure and field requirements
-- `reference/proven-patterns.md` - Reusable patterns for common UI elements
+- `.cursor/proven-patterns.mdc` - Reusable patterns (auto-loaded for content.json files)
 
 ---
 
@@ -171,8 +177,23 @@ For each step, read the corresponding file from `steps/` directory:
 ### Block Types
 - `markdown` - Explanatory text, no automation
 - `interactive` - Automated actions with "Show me" / "Do it"
+- `interactive` (noop) - Non-interactive numbered step (no automation), used inside `section`
 - `multistep` - Sequential navigation (shows "▶ Run N steps")
+- `section` - Groups steps for sequential numbering (1, 2, 3...)
 - `guided` - User performs manually, no "Do it" button
+
+### Action Types
+- `highlight` - Click element by CSS selector
+- `button` - Click button by visible text
+- `formfill` - Enter text in field (use `targetvalue`)
+- `hover` - Reveal hover-dependent UI
+- `navigate` - Change pages
+- `noop` - Non-interactive numbered step (no UI automation)
+
+### Key Properties
+- `doIt: false` - Hides "Do it" button, keeps "Show me" (for manual steps)
+- `targetvalue` - Text to enter for `formfill` actions (NOT `formvalue`)
+- `content` - Instruction text (NOT `description`)
 
 ### Selector Priority
 1. `data-testid` (most stable)
@@ -182,3 +203,7 @@ For each step, read the corresponding file from `steps/` directory:
 5. Stable class (least stable)
 
 **Avoid:** Generic classes, positional selectors, text content
+
+### Supplementary Content Formatting
+- Use `---` divider + H3 heading (`###`) for "More to explore", "Related paths", "Troubleshooting"
+- Split long markdown blocks into multiple shorter blocks for readability
