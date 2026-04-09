@@ -111,6 +111,15 @@ Removal of `index.json` happens later, when the legacy `/recommend` endpoint is 
 | Other systems consume recommender LJ rules | Removing rules breaks those systems | Audit recommender consumers before the dedup PR; the recommender team knows the consumer list |
 | `index.json` removal breaks legacy endpoint | Legacy `/recommend` stops working | `index.json` is frozen, not removed — legacy endpoint runs until explicitly retired |
 
+## Status
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 1: Complete all package migrations | ✅ Done | All migration PRs merged; 62 packages validated, 250 repository entries built. See [POST-BATCH-VALIDATION-REPORT.md](POST-BATCH-VALIDATION-REPORT.md). |
+| Phase 2: Validate equivalence | ✅ Done | Structural equivalence verified as part of the dedup PR audit table (see below). |
+| Phase 3: Deduplicate the recommender | 🔄 In progress | PR open in [grafana-recommender](https://github.com/grafana/grafana-recommender/pulls). Awaiting review and merge. |
+| Phase 4: Freeze index.json | 🔄 Partially done | CI guard (`freeze-index-json.yml`) blocks PR changes to `index.json`. Formal freeze comment in `index.json` itself is pending Phase 3 merge. |
+
 ## Preconditions
 
 * On the pathfinder repo, [PR 697](https://github.com/grafana/grafana-pathfinder-app/pull/697) is important because it introduces the machinery 

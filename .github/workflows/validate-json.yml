@@ -109,7 +109,9 @@ jobs:
               FAILED=$((FAILED + 1))
             fi
           fi
-        done < <(find . -name "content.json" -type f -not -path "./pathfinder-app/*")
+        done < <(find . -name "content.json" -type f \
+                   -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*")
         
         echo ""
         echo "📊 Validation Summary:"
@@ -125,11 +127,10 @@ jobs:
           echo "🎉 All $PASSED guide(s) validated successfully!"
         fi
 
-    # Warns when a guide directory has content.json but no manifest.json (not yet migrated
-    # to the package format). Each missing file emits a ::warning:: annotation visible in
-    # the PR diff and Annotations panel — the build does not fail.
-    # TO ENFORCE: uncomment the `exit 1` line below once migration is complete.
-    - name: Check for missing manifest.json (warning)
+    # Fails when a guide directory has content.json but no manifest.json. Migration is
+    # complete; all guides must be in the package format. Each missing file emits a
+    # ::warning:: annotation, then the step exits non-zero.
+    - name: Check for missing manifest.json
       run: |
         MISSING=0
 
@@ -141,13 +142,13 @@ jobs:
           fi
         done < <(find . -name "content.json" -type f \
                    -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*" \
                    -not -path "./.git/*")
 
         echo ""
         if [ "$MISSING" -gt 0 ]; then
-          echo "⚠️  $MISSING guide(s) are missing manifest.json (migration incomplete)"
-          # TO ENFORCE: uncomment the following line when migration is complete
-          # exit 1
+          echo "❌ $MISSING guide(s) are missing manifest.json (migration incomplete)"
+          exit 1
         else
           echo "✅ All guides have manifest.json"
         fi
@@ -180,6 +181,7 @@ jobs:
           MISSING=$((MISSING + 1))
         done < <(find . -name "manifest.json" -type f \
                    -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*" \
                    -not -path "./.git/*")
 
         echo ""
@@ -191,14 +193,42 @@ jobs:
           echo "✅ All packages have targeting defined"
         fi
 
-    # NOTE: this validates _only directories with manifest.json_
+    # NOTE: validate --packages does not support --exclude, so we enumerate
+    # package directories from manifest.json files and validate each directory.
     - name: Validate Pathfinder Packages
       run: |
-        echo "🔍 Validating all package directories (those with manifest.json)..."
+        echo "🔍 Validating package directories (excluding pathfinder-app and shared)..."
         echo ""
-        # --exclude pathfinder-app: the CLI is checked out into the workspace root so the
-        # scanner would otherwise discover its bundled guides and report duplicates.
-        node pathfinder-app/dist/cli/cli/index.js validate --packages .
+        PASSED=0
+        FAILED=0
+
+        while IFS= read -r manifest_file; do
+          if [ -n "$manifest_file" ]; then
+            dir="$(dirname "$manifest_file")"
+            echo "📦 Validating package: $dir"
+
+            if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir"; then
+              PASSED=$((PASSED + 1))
+            else
+              echo "❌ Package validation failed: $dir"
+              FAILED=$((FAILED + 1))
+            fi
+          fi
+        done < <(find . -name "manifest.json" -type f \
+                   -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*" \
+                   -not -path "./.git/*")
+
+        echo ""
+        echo "📊 Package validation summary:"
+        echo "  ✅ Passed: $PASSED"
+        echo "  ❌ Failed: $FAILED"
+
+        if [ "$FAILED" -gt 0 ]; then
+          echo ""
+          echo "❌ $FAILED package(s) failed validation"
+          exit 1
+        fi
 
     - name: Build repository.json
       run: |
@@ -206,7 +236,7 @@ jobs:
         echo ""
         # --exclude pathfinder-app: prevents the scanner from indexing bundled guides that
         # ship inside the pathfinder-app checkout at ./pathfinder-app/.
-        node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app -o repository.json
+        node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app --exclude shared -o repository.json
         echo ""
         echo "📦 repository.json generated successfully"
 

@@ -352,58 +352,58 @@ This catches cross-package issues (duplicate IDs, broken dependency chains) that
 
 **Base / umbrella PR:** [#227 — Pathfinder package format: mass migration base](https://github.com/grafana/interactive-tutorials/pull/227)
 
-Legend: `[ ]` = PR not yet opened · `[~]` = PR open · `[x]` = PR merged · ⚠️ = `needs-review` (has open TODOs)
+Legend: `[x]` = PR merged. All TODOs from `needs-review` PRs were resolved on the individual PRs.
 
 ### Standalone guides
 
 | Status | Directory | PR |
 |--------|-----------|-----|
-| [~] ⚠️ | `dynamic-dashboards-tour` | [#228](https://github.com/grafana/interactive-tutorials/pull/228) |
-| [~] | `enable-coda` | [#229](https://github.com/grafana/interactive-tutorials/pull/229) |
-| [~] | `fleet-management-onboarding` | [#230](https://github.com/grafana/interactive-tutorials/pull/230) |
-| [~] ⚠️ | `how-to-import-external-alerting-resource-5e08` | [#231](https://github.com/grafana/interactive-tutorials/pull/231) |
-| [~] | `how-to-setup-secrets-tutorial` | [#232](https://github.com/grafana/interactive-tutorials/pull/232) |
-| [~] ⚠️ | `otel-fleet-management` | [#234](https://github.com/grafana/interactive-tutorials/pull/234) |
-| [~] | `play-carbon-intensity` | [#233](https://github.com/grafana/interactive-tutorials/pull/233) |
-| [~] ⚠️ | `semantic-layer-tutorial` | [#237](https://github.com/grafana/interactive-tutorials/pull/237) |
-| [~] ⚠️ | `slo-quickstart` | [#235](https://github.com/grafana/interactive-tutorials/pull/235) |
-| [~] | `sm-dns-check-tutorial` | [#236](https://github.com/grafana/interactive-tutorials/pull/236) |
-| [~] | `sm-ping-check-tutorial` | [#239](https://github.com/grafana/interactive-tutorials/pull/239) |
-| [~] | `sm-tcp-check-tutorial` | [#238](https://github.com/grafana/interactive-tutorials/pull/238) |
+| [x] | `dynamic-dashboards-tour` | [#228](https://github.com/grafana/interactive-tutorials/pull/228) |
+| [x] | `enable-coda` | [#229](https://github.com/grafana/interactive-tutorials/pull/229) |
+| [x] | `fleet-management-onboarding` | [#230](https://github.com/grafana/interactive-tutorials/pull/230) |
+| [x] | `how-to-import-external-alerting-resource-5e08` | [#231](https://github.com/grafana/interactive-tutorials/pull/231) |
+| [x] | `how-to-setup-secrets-tutorial` | [#232](https://github.com/grafana/interactive-tutorials/pull/232) |
+| [x] | `otel-fleet-management` | [#234](https://github.com/grafana/interactive-tutorials/pull/234) |
+| [x] | `play-carbon-intensity` | [#233](https://github.com/grafana/interactive-tutorials/pull/233) |
+| [x] | `semantic-layer-tutorial` | [#237](https://github.com/grafana/interactive-tutorials/pull/237) |
+| [x] | `slo-quickstart` | [#235](https://github.com/grafana/interactive-tutorials/pull/235) |
+| [x] | `sm-dns-check-tutorial` | [#236](https://github.com/grafana/interactive-tutorials/pull/236) |
+| [x] | `sm-ping-check-tutorial` | [#239](https://github.com/grafana/interactive-tutorials/pull/239) |
+| [x] | `sm-tcp-check-tutorial` | [#238](https://github.com/grafana/interactive-tutorials/pull/238) |
 
 ### Learning paths
 
 | Status | Directory | PR |
 |--------|-----------|-----|
-| [ ] | `adaptive-logs-lj` _(manual run — see special case note)_ | [#263](https://github.com/grafana/interactive-tutorials/pull/263) |
-| [~] | `billing-usage-lj` | [#240](https://github.com/grafana/interactive-tutorials/pull/240) |
-| [~] | `create-availability-slo-lj` | [#241](https://github.com/grafana/interactive-tutorials/pull/241) |
-| [ ] | `detect-outages-synthetic-monitoring-lj` | [#248](https://github.com/grafana/interactive-tutorials/pull/248) |
-| [~] | `drilldown-logs-lj` | [#245](https://github.com/grafana/interactive-tutorials/pull/245) |
-| [~] | `drilldown-metrics-lj` | [#242](https://github.com/grafana/interactive-tutorials/pull/242) |
-| [~] | `drilldown-traces-lj` | [#243](https://github.com/grafana/interactive-tutorials/pull/243) |
-| [ ] | `github-data-source-lj` | [#249](https://github.com/grafana/interactive-tutorials/pull/249) |
-| [~] | `grafana-cloud-tour-lj` | [#244](https://github.com/grafana/interactive-tutorials/pull/244) |
-| [ ] | `infinity-csv-lj` | [#251](https://github.com/grafana/interactive-tutorials/pull/251) |
-| [~] ⚠️ | `influxdb-data-source-lj` | [#246](https://github.com/grafana/interactive-tutorials/pull/246) |
-| [ ] | `infrastructure-alerting-lj` | [#254](https://github.com/grafana/interactive-tutorials/pull/254) |
-| [ ] | `kafka-monitoring-lj` | [#250](https://github.com/grafana/interactive-tutorials/pull/250) |
-| [ ] | `linux-server-integration-lj` | [#252](https://github.com/grafana/interactive-tutorials/pull/252) |
-| [ ] | `macos-integration-lj` | [#253](https://github.com/grafana/interactive-tutorials/pull/253) |
-| [ ] | `mysql-data-source-lj` | [#260](https://github.com/grafana/interactive-tutorials/pull/260) |
-| [ ] | `mysql-integration-lj` | [#258](https://github.com/grafana/interactive-tutorials/pull/258) |
-| [ ] | `postgresql-integration-lj` | [#262](https://github.com/grafana/interactive-tutorials/pull/262) |
-| [~] | `prom-remote-write-lj` | [#247](https://github.com/grafana/interactive-tutorials/pull/247) |
-| [ ] | `visualization-metrics-lj` | [#259](https://github.com/grafana/interactive-tutorials/pull/259) |
-| [ ] | `visualization-traces-lj` | [#261](https://github.com/grafana/interactive-tutorials/pull/261) |
+| [x] | `adaptive-logs-lj` _(manual run — see special case note)_ | [#263](https://github.com/grafana/interactive-tutorials/pull/263) |
+| [x] | `billing-usage-lj` | [#240](https://github.com/grafana/interactive-tutorials/pull/240) |
+| [x] | `create-availability-slo-lj` | [#241](https://github.com/grafana/interactive-tutorials/pull/241) |
+| [x] | `detect-outages-synthetic-monitoring-lj` | [#248](https://github.com/grafana/interactive-tutorials/pull/248) |
+| [x] | `drilldown-logs-lj` | [#245](https://github.com/grafana/interactive-tutorials/pull/245) |
+| [x] | `drilldown-metrics-lj` | [#242](https://github.com/grafana/interactive-tutorials/pull/242) |
+| [x] | `drilldown-traces-lj` | [#243](https://github.com/grafana/interactive-tutorials/pull/243) |
+| [x] | `github-data-source-lj` | [#249](https://github.com/grafana/interactive-tutorials/pull/249) |
+| [x] | `grafana-cloud-tour-lj` | [#244](https://github.com/grafana/interactive-tutorials/pull/244) |
+| [x] | `infinity-csv-lj` | [#251](https://github.com/grafana/interactive-tutorials/pull/251) |
+| [x] | `influxdb-data-source-lj` | [#246](https://github.com/grafana/interactive-tutorials/pull/246) |
+| [x] | `infrastructure-alerting-lj` | [#254](https://github.com/grafana/interactive-tutorials/pull/254) |
+| [x] | `kafka-monitoring-lj` | [#250](https://github.com/grafana/interactive-tutorials/pull/250) |
+| [x] | `linux-server-integration-lj` | [#252](https://github.com/grafana/interactive-tutorials/pull/252) |
+| [x] | `macos-integration-lj` | [#253](https://github.com/grafana/interactive-tutorials/pull/253) |
+| [x] | `mysql-data-source-lj` | [#260](https://github.com/grafana/interactive-tutorials/pull/260) |
+| [x] | `mysql-integration-lj` | [#258](https://github.com/grafana/interactive-tutorials/pull/258) |
+| [x] | `postgresql-integration-lj` | [#262](https://github.com/grafana/interactive-tutorials/pull/262) |
+| [x] | `prom-remote-write-lj` | [#247](https://github.com/grafana/interactive-tutorials/pull/247) |
+| [x] | `visualization-metrics-lj` | [#259](https://github.com/grafana/interactive-tutorials/pull/259) |
+| [x] | `visualization-traces-lj` | [#261](https://github.com/grafana/interactive-tutorials/pull/261) |
 
 ### Special cases
 
 | Status | Directory | PR |
 |--------|-----------|-----|
-| [ ] | `visualization-logs` | [#264](https://github.com/grafana/interactive-tutorials/pull/264) |
-| [ ] | `windows-integration` | [#265](https://github.com/grafana/interactive-tutorials/pull/265) |
-| [ ] | `welcome-to-play` | [#266](https://github.com/grafana/interactive-tutorials/pull/266) |
+| [x] | `visualization-logs` | [#264](https://github.com/grafana/interactive-tutorials/pull/264) |
+| [x] | `windows-integration` | [#265](https://github.com/grafana/interactive-tutorials/pull/265) |
+| [x] | `welcome-to-play` | [#266](https://github.com/grafana/interactive-tutorials/pull/266) |
 
 ### Batch management commands
 
@@ -441,11 +441,24 @@ The "Sources Consulted" table in the migration PR body is the key artifact. It r
 
 ## Success Criteria
 
-The mass migration is complete when:
+| Criterion | Status |
+|-----------|--------|
+| Every directory in the inventory has a merged PR | ✅ Done — all 36 PRs merged |
+| `validate --packages .` passes on main with zero errors | ✅ Done — 62 packages, 0 errors (see [POST-BATCH-VALIDATION-REPORT.md](POST-BATCH-VALIDATION-REPORT.md)) |
+| `build-repository` produces a `repository.json` containing all migrated packages | ✅ Done — 250 entries |
+| CI enforcement step (require `manifest.json` for every `content.json`) enabled | ✅ Done — enforced in `.github/workflows/validate-json.yml` |
+| All `assets/migration-notes.md` files committed | ✅ Done |
+| `welcome-to-play` recommends cycle resolved | ✅ Done — severed `welcome-to-play-visualization` → `welcome-to-play-main` |
 
-1. Every directory in the inventory has a merged PR
-2. `validate --packages .` passes on main with zero errors
-3. `build-repository` produces a `repository.json` containing all migrated packages
-4. The CI enforcement step (require `manifest.json` for every `content.json`) can be enabled without failures
-5. The tracking issue has all checkboxes checked
-6. All `assets/migration-notes.md` files are committed and document the full derivation history
+---
+
+## What's Next (to close the epic)
+
+These remaining steps complete the deduplication and formally close the migration epic. See [DEDUPLICATION.md](DEDUPLICATION.md) for full context.
+
+| Step | Owner | Status |
+|------|-------|--------|
+| Verify [Pathfinder PR #697](https://github.com/grafana/grafana-pathfinder-app/pull/697) (or successor) is merged — precondition for dedup going live | Pathfinder team | ⏳ Pending |
+| Merge the deduplication PR in [grafana-recommender](https://github.com/grafana/grafana-recommender/pulls) | Recommender team | 🔄 PR open |
+| Freeze `index.json` — add a comment at the top marking it as frozen, serving legacy `/recommend` endpoint only | Interactive learning | ⏳ Pending dedup merge |
+| Close umbrella PR [#227](https://github.com/grafana/interactive-tutorials/pull/227) | Interactive learning | ⏳ Pending dedup merge |
