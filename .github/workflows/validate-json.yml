@@ -193,14 +193,42 @@ jobs:
           echo "✅ All packages have targeting defined"
         fi
 
-    # NOTE: this validates _only directories with manifest.json_
+    # NOTE: validate --packages does not support --exclude, so we enumerate
+    # package directories from manifest.json files and validate each directory.
     - name: Validate Pathfinder Packages
       run: |
-        echo "🔍 Validating all package directories (those with manifest.json)..."
+        echo "🔍 Validating package directories (excluding pathfinder-app and shared)..."
         echo ""
-        # --exclude pathfinder-app: the CLI is checked out into the workspace root so the
-        # scanner would otherwise discover its bundled guides and report duplicates.
-        node pathfinder-app/dist/cli/cli/index.js validate --packages . --exclude pathfinder-app --exclude shared
+        PASSED=0
+        FAILED=0
+
+        while IFS= read -r manifest_file; do
+          if [ -n "$manifest_file" ]; then
+            dir="$(dirname "$manifest_file")"
+            echo "📦 Validating package: $dir"
+
+            if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir"; then
+              PASSED=$((PASSED + 1))
+            else
+              echo "❌ Package validation failed: $dir"
+              FAILED=$((FAILED + 1))
+            fi
+          fi
+        done < <(find . -name "manifest.json" -type f \
+                   -not -path "./pathfinder-app/*" \
+                   -not -path "./shared/*" \
+                   -not -path "./.git/*")
+
+        echo ""
+        echo "📊 Package validation summary:"
+        echo "  ✅ Passed: $PASSED"
+        echo "  ❌ Failed: $FAILED"
+
+        if [ "$FAILED" -gt 0 ]; then
+          echo ""
+          echo "❌ $FAILED package(s) failed validation"
+          exit 1
+        fi
 
     - name: Build repository.json
       run: |
