@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "infinity-csv-build-dashboard",
+  "title": "Build a dashboard using the Infinity data source",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A Grafana dashboard is a set of one or more panels, organized and arranged into one or more rows, that provide an at-a-glance view of related information. These panels are created using components that query and transform raw data from a data source into visualizations."
+    },
+    {
+      "type": "markdown",
+      "content": "A data source can be an SQL database, Grafana Loki, Grafana Mimir, or an API endpoint. It can even be a basic CSV file. Data source plugins take a query you want answered, retrieve the data from the data source, and reconcile the differences between the data model of the data source and the data model of Grafana dashboards."
+    },
+    {
+      "type": "markdown",
+      "content": "The instructions in this milestone are based on the publicly available [Traffic density](https://thingspeak.com/channels/38629/feed.csv) CSV file, which has the following structure.\n\n```csv\ncreated_at,entry_id,field1,field2\n2025-04-07 12:19:26 UTC,18706390,6.000000,20.000000\n2025-04-07 12:19:41 UTC,18706391,4.000000,19.000000\n2025-04-07 12:19:56 UTC,18706392,8.000000,25.000000\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "To build a dashboard with the Infinity data source, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "requirements": ["navmenu-open"],
+          "content": "From the navigation menu, click **Dashboards**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click **New** and select **New dashboard**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open the panel editor by doing one of the following:\n\n- If you see an **Add visualization** button or placeholder, click it.\n- If you see a **+** icon in the top toolbar, click it and select **Visualization**.\n\nEither option opens the panel editor."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "targetvalue": "Infinity",
+          "content": "In the query section at the bottom of the screen, click the **Data source** dropdown and search for your Infinity data source."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Select your Infinity data source from the list."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='infinity-query-field-label-type']",
+          "doIt": false,
+          "content": "In the **Type** dropdown, select **CSV**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='infinity-query-field-label-method']",
+          "doIt": false,
+          "content": "Set **Method** to **GET**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='infinity-query-url-input']",
+          "targetvalue": "https://thingspeak.com/channels/38629/feed.csv",
+          "doIt": false,
+          "content": "In the **URL** field, enter the URL of your CSV data.\n\nFor example: `https://thingspeak.com/channels/38629/feed.csv`"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Toggle Parsing options & Result fields']",
+          "content": "Expand **Parsing options & Result fields**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder=',']",
+          "targetvalue": ",",
+          "content": "Under **Advanced Options**, set the **Delimiter** field to `,`."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add Columns",
+          "content": "Click **Add Columns** and add a column for each field:\n\n- **Column Name** `created_at` / **Title** `Created at` / **Format as** `Time`\n- **Column Name** `field1` / **Title** `Density of Westbound Cars` / **Format as** `Number`\n- **Column Name** `field2` / **Title** `Density of Eastbound Cars` / **Format as** `Number`"
+        },
+        {
+          "type": "multistep",
+          "content": "In the right pane, click **All visualizations**, search for `Table`, and select it from the results.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Visualizations']"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[placeholder='Search for...']",
+              "targetvalue": "Table"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Plugin visualization item Table']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Back to dashboard button']",
+          "content": "Click **Back to dashboard** in the top-left of the panel editor."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Save dashboard button']",
+          "content": "In the toolbar, click **Save dashboard**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Enter a name for your dashboard and click **Save**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The dashboard is now available for others to see."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Modify dashboard settings](https://grafana.com/docs/grafana-cloud/visualizations/dashboards/build-dashboards/modify-dashboard-settings/)\n- [Manage dashboards](https://grafana.com/docs/grafana-cloud/visualizations/dashboards/manage-dashboards/)\n- [Filtering data / Using template variables in Query](https://grafana.com/docs/plugins/yesoreyeram-infinity-datasource/latest/query/filters/)"
+    }
+  ]
+}

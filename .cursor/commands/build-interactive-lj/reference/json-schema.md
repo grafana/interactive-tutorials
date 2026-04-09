@@ -48,7 +48,7 @@ This document defines the structure and field requirements for `content.json` fi
     },
     {
       "type": "markdown",
-      "content": "**More to explore (optional)**\n\n- [Cost management docs](/docs/grafana-cloud/cost-management-and-billing/)"
+      "content": "---\n\n### More to explore (optional)\n\n- [Cost management docs](/docs/grafana-cloud/cost-management-and-billing/)"
     }
   ]
 }
@@ -63,6 +63,7 @@ This document defines the structure and field requirements for `content.json` fi
 | `markdown` | Explanatory text, instructions | No | Conceptual content, external actions, conditional UI |
 | `interactive` | Automated actions with "Show me" / "Do it" | Yes | Single UI interactions (click, fill, hover) |
 | `multistep` | Sequential navigation (shows "▶ Run N steps") | Yes | Multi-step navigation through menus |
+| `section` | Groups steps for sequential numbering | N/A | Wrap related interactive/noop steps so they render as numbered steps |
 | `guided` | User performs manually, no automation | No | Manual actions that can't be automated |
 
 ---
@@ -76,6 +77,49 @@ This document defines the structure and field requirements for `content.json` fi
 | `formfill` | Enter text in field | CSS selector | `targetvalue` |
 | `hover` | Reveal hover-dependent UI | CSS selector | - |
 | `navigate` | Change pages | URL path | - |
+| `noop` | Non-interactive numbered step (no automation) | Not used | - |
+
+### The `noop` Action
+
+Use `noop` for steps that should be **numbered** within a `section` but don't trigger any UI automation. This is distinct from `markdown` blocks, which are unnumbered.
+
+**When to use `noop`:**
+- The step is inside a `section` and should be numbered in sequence with interactive steps
+- The step is a directive telling the user to do something manually (e.g., "Enter the username and password", "Click **Save**")
+- The step is instructional but part of a numbered procedure
+
+**When NOT to use `noop`:**
+- The content is an observation or confirmation (e.g., "You should see a success message") → use `markdown`
+- The content is purely explanatory and should NOT be numbered → use `markdown`
+- The content is outside a `section` → use `markdown`
+
+```json
+{
+  "type": "interactive",
+  "action": "noop",
+  "content": "Enter a title and description for your dashboard, select a folder if applicable, and click **Save**."
+}
+```
+
+### The `doIt` Property
+
+Add `"doIt": false` to any interactive block where the user should perform the action manually. This hides the "Do it" button while keeping the "Show me" highlight.
+
+**When to use `doIt: false`:**
+- The step involves user-specific input (e.g., selecting their own data source, entering a custom name)
+- The automated action could cause unintended side effects
+- The step highlights an element but the user should decide when/how to interact
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[data-testid='data-testid Data source settings page name input field']",
+  "targetvalue": "My Infinity Data Source",
+  "content": "Enter a name for the data source.",
+  "doIt": false
+}
+```
 
 ---
 
@@ -87,6 +131,12 @@ This document defines the structure and field requirements for `content.json` fi
 - ❌ `description` → ✅ `content`
 - ❌ `formvalue` → ✅ `targetvalue`
 - ❌ `title` on interactive blocks (not needed)
+
+### Optional Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `doIt` | boolean | `true` | Set to `false` to hide the "Do it" button while keeping "Show me" |
 
 ---
 
@@ -144,6 +194,38 @@ For revealing hover-dependent UI:
   "requirements": ["exists-reftarget"]
 }
 ```
+
+### Section Block (Correct)
+
+Wraps interactive/noop steps so they render as a numbered sequence. All `interactive` and `noop` blocks inside a section are assigned step numbers (1, 2, 3...). `markdown` and `image` blocks inside a section are unnumbered.
+
+```json
+{
+  "type": "section",
+  "blocks": [
+    {
+      "type": "interactive",
+      "action": "noop",
+      "content": "Sign in to your Grafana environment."
+    },
+    {
+      "type": "multistep",
+      "content": "Navigate to **Connections > Add new connection**.",
+      "requirements": ["navmenu-open"],
+      "steps": [
+        { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
+        { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']" }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You should see the connections page."
+    }
+  ]
+}
+```
+
+> **Key rule:** A `section` with only one step should be a plain `interactive` block instead. Don't wrap a single step in a section.
 
 ### Multistep Block (Correct)
 
@@ -280,9 +362,13 @@ blocks at the END of the `blocks` array.
 
 | Frontmatter Key | Output Block Title | Description |
 |------------------|--------------------|-------------|
-| `side_journeys` | **More to explore (optional)** | Links to related documentation |
-| `related_journeys` | **Related paths** | Links to other learning paths |
-| `cta.troubleshooting` | **Troubleshooting** | Links to troubleshooting documentation |
+| `side_journeys` | `### More to explore (optional)` | Links to related documentation |
+| `related_journeys` | `### Related paths` | Links to other learning paths |
+| `cta.troubleshooting` | `### Troubleshooting` | Links to troubleshooting documentation |
+
+### Formatting Rules
+
+Each supplementary block uses a **horizontal rule divider** (`---`) followed by an **H3 heading** (`###`). This visually separates supplementary content from the main body and renders the heading at a larger, more readable size than bold text.
 
 ### Block Ordering
 
@@ -300,7 +386,7 @@ Supplementary blocks MUST appear at the end of the `blocks` array, in this order
 ```json
 {
   "type": "markdown",
-  "content": "**More to explore (optional)**\n\nAt this point in your journey, you can explore the following paths:\n\n- [Labels and Fields](/docs/grafana-cloud/visualizations/simplified-exploration/logs/labels-and-fields/)"
+  "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Labels and Fields](/docs/grafana-cloud/visualizations/simplified-exploration/logs/labels-and-fields/)"
 }
 ```
 
@@ -308,7 +394,7 @@ Supplementary blocks MUST appear at the end of the `blocks` array, in this order
 ```json
 {
   "type": "markdown",
-  "content": "**Related paths**\n\nConsider taking the following paths after you complete this journey.\n\n- [Explore metrics using Metrics Drilldown](/docs/learning-paths/drilldown-metrics/)"
+  "content": "---\n\n### Related paths\n\nConsider taking the following paths after you complete this journey.\n\n- [Explore metrics using Metrics Drilldown](/docs/learning-paths/drilldown-metrics/)"
 }
 ```
 
@@ -316,7 +402,7 @@ Supplementary blocks MUST appear at the end of the `blocks` array, in this order
 ```json
 {
   "type": "markdown",
-  "content": "**Troubleshooting**\n\nExplore the following troubleshooting topics if you need help:\n\n- [Failed to install Alloy for Windows](/docs/cloud-onboarding/next/troubleshoot/install-troubleshooting-windows-alloy/#error-failed-to-install-alloy-for-windows)"
+  "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Failed to install Alloy for Windows](/docs/cloud-onboarding/next/troubleshoot/install-troubleshooting-windows-alloy/#error-failed-to-install-alloy-for-windows)"
 }
 ```
 
