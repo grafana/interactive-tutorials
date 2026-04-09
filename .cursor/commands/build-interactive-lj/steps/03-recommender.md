@@ -79,38 +79,22 @@ Automatically create the mapping JSON:
 
 1. Read the target recommender file(s)
 2. Parse the JSON
-3. Find an appropriate location in the `rules` array (group with similar learning journeys)
+3. Find an appropriate location in the `rules` array (group with similar learning paths)
 4. Insert the new mapping entry
 5. Write the updated JSON back to the file
 6. Validate JSON syntax
 
 ---
 
-## Display
+## Completion
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 3 complete: Recommender Mapping Created
-
-Added mapping to:
-├── grafana-recommender/internal/configs/state_recommendations/[file].json
-
-Mapping details:
-├── Title: [title]
-├── URL pattern: [pattern]
-├── Platform: [cloud/oss/both]
-└── Context: [area]
-
-⏳ Next: Step 4 - Scaffold Content Files
-   Ready to proceed? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Display a summary showing: the file modified, mapping title, URL pattern, platform, and context. Ask the user if they're ready for Step 4 (Scaffold Content Files).
 
 ---
 
 ## Important Notes
 
 - **JSON formatting:** Maintain consistent indentation (2 spaces) and formatting
-- **Placement:** Insert learning-journey entries near other learning journeys in the file
+- **Placement:** Insert learning-journey entries near other learning paths in the file
 - **Validation:** After editing, validate JSON syntax before proceeding
 - **Multiple platforms:** If "Both" is selected, ensure entries are identical except for `targetPlatform`
