@@ -118,7 +118,7 @@ Removal of `index.json` happens later, when the legacy `/recommend` endpoint is 
 | Phase 1: Complete all package migrations | ✅ Done | All migration PRs merged; 62 packages validated, 250 repository entries built. See [POST-BATCH-VALIDATION-REPORT.md](POST-BATCH-VALIDATION-REPORT.md). |
 | Phase 2: Validate equivalence | ✅ Done | Structural equivalence verified as part of the dedup PR audit table (see below). |
 | Phase 3: Deduplicate the recommender | 🔄 In progress | PR open in [grafana-recommender](https://github.com/grafana/grafana-recommender/pulls). Awaiting review and merge. |
-| Phase 4: Freeze index.json | ⏳ Pending | Blocked on Phase 3 merge. |
+| Phase 4: Freeze index.json | 🔄 Partially done | CI guard (`freeze-index-json.yml`) blocks PR changes to `index.json`. Formal freeze comment in `index.json` itself is pending Phase 3 merge. |
 
 ## Preconditions
 

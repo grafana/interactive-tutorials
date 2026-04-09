@@ -2,17 +2,18 @@
 
 **Generated:** 2026-04-09  
 **Repository:** `interactive-tutorials` (local workspace)  
-**Pathfinder CLI:** `/Users/davidallen/hax/grafana-pathfinder-app` — `npm run build:cli` (TypeScript compile to `dist/cli/cli/index.js`)
+**Pathfinder CLI:** local checkout of `grafana/grafana-pathfinder-app` — `npm run build:cli` (TypeScript compile to `dist/cli/cli/index.js`)
 
 ## Commands run
 
 ```bash
-cd /Users/davidallen/hax/grafana-pathfinder-app && npm run build:cli
+# $PATHFINDER_APP = local checkout of grafana/grafana-pathfinder-app
+cd "$PATHFINDER_APP" && npm run build:cli
 
-cd /Users/davidallen/hax/interactive-tutorials
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js validate --packages .
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js build-repository . -o repository.json
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json -o graph.json
+cd interactive-tutorials
+node "$PATHFINDER_APP/dist/cli/cli/index.js" validate --packages .
+node "$PATHFINDER_APP/dist/cli/cli/index.js" build-repository . -o repository.json
+node "$PATHFINDER_APP/dist/cli/cli/index.js" build-graph interactive-tutorials:repository.json -o graph.json
 ```
 
 ## Artifacts (repo root)
@@ -65,7 +66,7 @@ The entry count is higher than “62 packages” because `build-repository` disc
    `depends` / `recommends` / `suggests` targets that are not present in this repository as a package ID or virtual capability — for example `kubernetes-lj`, `fleet-mgt-monitor-health-lj`, `private-data-source-connect-lj`, `visualization-logs-lj`, `github-visualize-lj`, `irm-configuration-lj`, `grafana-irm-configuration-lj`, `plugin-enabled:grafana-asserts-app`, etc. These are expected when manifests reference **not-yet-migrated** journeys, external plugins, or IDs that only exist in another catalog.
 
 2. **Cycle in `recommends` (1 warning)**  
-   `welcome-to-play-main` → `welcome-to-play-visualization` → `welcome-to-play-main`. Worth a manual content review for the welcome-to-play metapackage.
+   `welcome-to-play-main` → `welcome-to-play-visualization` → `welcome-to-play-main`. **Resolved:** the `visualization-page → main` edge was removed in this branch (see `welcome-to-play/visualization-page/manifest.json`); regenerating the graph after merge will show 0 cycles.
 
 3. **Orphaned packages (37 warnings)**  
    Packages with no incoming or outgoing graph edges — mostly standalone guides that are not linked into dependency chains. This is informational, not a schema failure.
@@ -76,7 +77,7 @@ The entry count is higher than “62 packages” because `build-repository` disc
 
 - **Package validation:** PASS — no blocking errors across the tree.  
 - **Aggregate build:** PASS — `repository.json` and `graph.json` generated successfully.  
-- **Follow-ups:** Graph warnings do not fail the CLI; they flag **graph hygiene** (external references, one cycle, orphans). Use this output as input to [DEDUPLICATION.md](DEDUPLICATION.md) Phase 2 (equivalence) and to any cleanup of `welcome-to-play` / cross-repo `suggests` IDs.
+- **Follow-ups:** Graph warnings do not fail the CLI; they flag **graph hygiene** (external references, orphans). The one `recommends` cycle (`welcome-to-play`) is resolved in this branch. Remaining warnings are dangling cross-repo references and orphaned standalone guides — use this output as input to [DEDUPLICATION.md](DEDUPLICATION.md) Phase 2 (equivalence) and to any cleanup of cross-repo `suggests` IDs.
 
 ---
 
@@ -85,9 +86,10 @@ The entry count is higher than “62 packages” because `build-repository` disc
 Regenerate after pulling latest `main`:
 
 ```bash
-cd /Users/davidallen/hax/grafana-pathfinder-app && npm run build:cli
-cd /Users/davidallen/hax/interactive-tutorials
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js validate --packages .
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js build-repository . -o repository.json
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json -o graph.json
+# $PATHFINDER_APP = local checkout of grafana/grafana-pathfinder-app
+cd "$PATHFINDER_APP" && npm run build:cli
+cd interactive-tutorials
+node "$PATHFINDER_APP/dist/cli/cli/index.js" validate --packages .
+node "$PATHFINDER_APP/dist/cli/cli/index.js" build-repository . -o repository.json
+node "$PATHFINDER_APP/dist/cli/cli/index.js" build-graph interactive-tutorials:repository.json -o graph.json
 ```
