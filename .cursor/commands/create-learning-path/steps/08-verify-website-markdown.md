@@ -1,4 +1,4 @@
-# Step 7: Verify Website Markdown
+# Step 8: Verify Website Markdown
 
 Verify that every milestone has a corresponding website `index.md` and that the path overview `_index.md` is present and correct.
 
@@ -7,10 +7,10 @@ Verify that every milestone has a corresponding website `index.md` and that the 
 ## Tutorial Mode Introduction
 
 ```
-**Step 7: Verify Website Markdown**
+**Step 8: Verify Website Markdown**
 
 I'll check that all website markdown files are in place and correct:
-- welcome/content.json exists and _index.md points to it
+- Path-level content.json exists and _index.md points to it
 - Every milestone content.json has a corresponding index.md
 - Front matter fields are valid (pathfinder_data, layout, weight, step)
 
@@ -56,13 +56,15 @@ For each milestone `index.md`, confirm:
 | `title` | Should match the content.json `title` |
 | `cta.type` | Must be one of: `start`, `continue`, `success`, `conclusion` |
 
-### 3. Verify Welcome Page
+### 3. Verify Path Cover Page
 
-Check that `welcome/content.json` exists:
+Check that the path-level `content.json` exists:
 
 ```bash
-ls interactive-tutorials/[slug]-lj/welcome/content.json
+ls interactive-tutorials/[slug]-lj/content.json
 ```
+
+Confirm the path-level `content.json` has `"id": "[slug]-lj"` matching the directory name.
 
 Check that `_index.md` exists and points to it:
 
@@ -74,7 +76,7 @@ For `_index.md`, confirm:
 
 | Field | Check |
 |-------|-------|
-| `pathfinder_data` | Must be `[slug]-lj/welcome` |
+| `pathfinder_data` | Must be `[slug]-lj` |
 | `layout` | Must be `single-journey` |
 | `cascade.layout` | Must be `single-journey` |
 | `journey` | Must have `group`, `skill`, `source`, `logo` |
@@ -96,9 +98,9 @@ Flag any files with additional body content (the interactive content lives in co
 
 | Issue | Fix |
 |-------|-----|
-| Missing `welcome/content.json` | Create it following the welcome template in Step 3 |
+| Missing path-level `content.json` | Create it following the path cover page template in Step 3 |
 | Missing `index.md` for a milestone | Create it following the template in Step 3 |
-| `_index.md` missing `pathfinder_data` | Add `pathfinder_data: [slug]-lj/welcome` |
+| `_index.md` missing `pathfinder_data` | Add `pathfinder_data: [slug]-lj` |
 | `_index.md` has hand-written body | Replace body with `{{< pathfinder/json >}}` |
 | `pathfinder_data` path doesn't match | Update to `[slug]-lj/[milestone]` |
 | Missing `layout: single-journey` | Add it to front matter |
@@ -109,4 +111,4 @@ Flag any files with additional body content (the interactive content lives in co
 
 ## Completion
 
-Display a summary showing: verification status per milestone (content.json vs index.md alignment), issues found (if any), and announce Step 8.
+Display a summary showing: verification status per milestone (content.json vs index.md alignment), issues found (if any), and announce Step 8b.

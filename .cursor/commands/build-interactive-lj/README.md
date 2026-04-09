@@ -75,7 +75,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
     ├── 05-selectors.md          # Selector discovery
     ├── 06-testing.md            # Test in Pathfinder
     └── 07-report.md             # Report and next steps
-(Step 6b uses ../create-learning-path/steps/07b-verify-docs-accuracy.md)
+(Step 6b uses ../create-learning-path/steps/08b-verify-docs-accuracy.md)
 ```
 
 ---
@@ -157,7 +157,7 @@ For each step, read the corresponding file from `steps/` directory:
 - **Step 4:** Read `steps/04-scaffold.md` and `reference/json-schema.md`
 - **Step 5:** Read `steps/05-selectors.md` and `reference/selector-patterns.md`
 - **Step 6:** Read `steps/06-testing.md`
-- **Step 6b:** Read `../create-learning-path/steps/07b-verify-docs-accuracy.md` (verify factual claims against live docs)
+- **Step 6b:** Read `../create-learning-path/steps/08b-verify-docs-accuracy.md` (verify factual claims against live docs)
 - **Step 7:** Read `steps/07-report.md`
 
 **Reference files** can be consulted at any time:
