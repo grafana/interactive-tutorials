@@ -1,0 +1,235 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "saml-auth-okta",
+  "title": "Configure SAML authentication with Okta",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This tutorial walks you through configuring SAML authentication with Okta as the Identity Provider in the Grafana UI." 
+    },
+    {
+      "type": "markdown",
+      "content": " > SAML is available in **Grafana Enterprise** (10.0+) and on **select Grafana Cloud plans**."
+    },
+    {
+      "type": "markdown",
+      "content": "You need permission to read and update SAML settings in the UI, such as the `fixed:authentication.config:writer` role. Use a stack where you can change authentication settings. **Do not use read-only sandboxes such as Grafana Play.**"
+    },
+    {
+      "type": "markdown",
+      "content": "For more information refer to the [Configure SAML authentication using the Grafana user interface](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/saml-ui/) and [Configure SAML with Okta](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/configure-saml-with-okta/) documentation."
+    }, 
+    {
+      "type": "section",
+      "id": "prerequisites",
+      "title": "Prerequisites",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Before you proceed, confirm you can administer SAML in Grafana and Okta."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In Okta, ensure you can open the **Admin Console** and create a SAML app integration. Refer to Okta's [Add app integration](https://help.okta.com/en/prod/Content/Topics/Apps/apps-overview-add-apps.htm) docs if needed."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In Grafana, confirm you have access to **Administration** > **Authentication** (or equivalent) for SAML. See [Roles and permissions](https://grafana.com/docs/grafana/latest/administration/roles-and-permissions/) if unsure."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "open-saml-ui",
+      "title": "Go to the SAML configuration menu in Grafana",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Open the SAML provider configuration so you can run the wizard and copy Service Provider URLs for the Okta console."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/admin/authentication/saml",
+          "verify": "on-page:/admin/authentication/saml",
+          "content": "Go to **Administration** > **Authentication**, choose **SAML**, or open the SAML configuration page directly.\n\n---\nIf your menu differs slightly, use the same destination: the SAML authentication settings for your stack.",
+          "requirements": ["is-logged-in"],
+          "skippable": true,
+          "tooltip": "Skip only if your role cannot open SAML settings; otherwise open **Administration** > **Authentication** > **SAML** to start the SAML wizard."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "grafana-wizard-start",
+      "title": "SAML UI wizard: General and Sign requests",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Complete the **General settings** and **Sign requests** steps before configuring your settings in Okta."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In **General settings**, set options such as **Allow signup**, **Auto login**, **Single logout**, and **Identity provider initiated login** as needed. See the field table in the [SAML UI documentation](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/saml-ui/#general-settings). "
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In **Sign requests**, choose whether outgoing requests are signed. If they are, provide or generate a certificate and private key (for example **Generate key and certificate** in the UI). **Do not share private keys**."
+        },
+        {
+          "type": "markdown",
+          "content": "You've configured Grafana to expose URLs and fields for Okta, the Identity Provider."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "connect-idp-urls",
+      "title": "Copy Grafana URLs for Okta",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Copy the **Metadata URL** and **Assertion Consumer Service (ACS) URL** from Grafana so you can use them in Okta."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In **Connect Grafana with Identity Provider**, find **Configure IdP using Grafana Metadata**. Copy the **Metadata URL** so you can paste it in Okta so it can read Service Provider metadata."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Copy the **Assertion Consumer Service URL** (ACS). In Okta this is usually the **Single sign on URL** / Reply URL."
+        },
+        {
+          "type": "markdown",
+          "content": "You have the SP URLs Okta needs. Keep this page available while you configure Okta."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "okta-create-app",
+      "title": "Create and configure the SAML app in Okta",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Create a SAML 2.0 app in Okta and paste the URLs from Grafana."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Sign in to the [Okta portal](https://login.okta.com/), open **Admin Console** (switch to **Classic UI** from Developer Console if needed), then open **Applications**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Choose **Create App Integration**, select **SAML 2.0**, then **Create**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "On **General Settings**, name the app (for example, Grafana) and add a logo if you want."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "On **Configure SAML**, set **Single sign on URL** to the **ACS URL** you copied from Grafana (`/saml/acs`)."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Set **Audience URI (SP Entity ID)** to your Grafana metadata URL (typically the `/saml/metadata` URL shown in Grafana or derived from your instance). It must match the Service Provider **entity ID** Grafana expects."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Adjust **Name ID format** and **Application username** if you use SAML Single Logout; otherwise defaults are often enough. See [Configure SAML with Okta](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/configure-saml-with-okta/) for details."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Under **ATTRIBUTE STATEMENTS (REQUIRED)**, add attributes whose **names** match what you will enter in Grafana **User mapping** (for example **Login**, **Email**, **DisplayName** with Okta expressions such as `user.login`, `user.email`, and a display name). Names must align with the Grafana **Assertion attributes mappings** fields."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Optionally under **GROUP ATTRIBUTE STATEMENTS**, add a group attribute (for example **Group**) if you use group or team sync in Grafana."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Finish the Okta wizard (**Next**, then **Finish**). Note your Okta **Identity Provider metadata** URL or file—you will paste metadata into Grafana next."
+        },
+        {
+          "type": "markdown",
+          "content": "Okta is configured to trust Grafana’s ACS and audience and to send the attributes Grafana will map."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "finish-grafana-wizard",
+      "title": "Finish SAML in Grafana: IdP metadata and User mapping",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Paste Okta metadata into Grafana, map assertions, then test and enable."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Still under **Connect Grafana with Identity Provider**, paste **IdP metadata** into Grafana (URL, file path, or Base64—whichever the UI offers). This tells Grafana how to connect to Okta."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Select **Next: User mapping**. In **Assertion attributes mappings**, enter the attribute names that match Okta (for example Login, Email, DisplayName). See the [Okta attribute table](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/configure-saml-with-okta/) in the official guide."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "If you use groups or role sync, complete **Groups attribute**, **Role mapping**, **Org mapping**, or **Allowed organizations** as needed. See [SAML UI](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/saml-ui/#user-mapping) and related topics (team sync, role sync, org mapping)."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Select **Next: Test and enable**, then **Save and enable**. Fix any validation errors the UI shows, then use **Save and apply** if the UI prompts you after edits."
+        },
+        {
+          "type": "markdown",
+          "content": "SAML is enabled from Grafana’s perspective and aligned with Okta’s metadata and attributes."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "optional-scim",
+      "title": "Optional: SCIM and Okta",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Decide whether you need an extra assertion for SCIM-provisioned users."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "If you use **SCIM** with Okta, align the SAML assertion with the provisioned user (for example an external ID claim). Follow the **SCIM** subsection in [Configure SAML with Okta](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/configure-saml-with-okta/).",
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "You know when to add SCIM-specific mapping beyond basic Login, Email, and display name."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n**Reference:** [SAML UI](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/saml-ui/) · [Configure SAML with Okta](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/configure-saml-with-okta/) · [SAML authentication in Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/saml/) · [Okta guide source](https://github.com/grafana/grafana/blob/main/docs/sources/setup-grafana/configure-access/configure-authentication/saml/configure-saml-with-okta/_index.md)"
+    }
+  ]
+}
