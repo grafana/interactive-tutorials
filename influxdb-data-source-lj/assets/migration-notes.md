@@ -10,16 +10,15 @@ migrated_at: "2026-04-07T00:00:00Z"
 
 ## Files Created
 
-- `manifest.json` — path-level manifest (type: path, 8 milestones)
-- `content.json` — path-level cover page derived from welcome step content
-- `welcome/manifest.json` — step 1 manifest
-- `business-value/manifest.json` — step 2 manifest
-- `verify-influxdb/manifest.json` — step 3 manifest
-- `add-data-source/manifest.json` — step 4 manifest
-- `configure-connection/manifest.json` — step 5 manifest
-- `test-connection/manifest.json` — step 6 manifest
-- `explore-data/manifest.json` — step 7 manifest
-- `end-journey/manifest.json` — step 8 manifest
+- `manifest.json` — path-level manifest (type: path, 7 milestones)
+- `content.json` — path-level cover page (id: `influxdb-data-source-lj`, welcome content folded in)
+- `business-value/manifest.json` — step 1 manifest
+- `verify-influxdb/manifest.json` — step 2 manifest
+- `add-data-source/manifest.json` — step 3 manifest
+- `configure-connection/manifest.json` — step 4 manifest
+- `test-connection/manifest.json` — step 5 manifest
+- `explore-data/manifest.json` — step 6 manifest
+- `end-journey/manifest.json` — step 7 manifest
 
 ## Field Derivation Summary
 
@@ -34,7 +33,7 @@ migrated_at: "2026-04-07T00:00:00Z"
 | `testEnvironment.tier` | fallback (no targeting rules) | `cloud` |
 | `targeting` | none found | omitted |
 | `startingLocation` | none derivable | omitted |
-| `milestones` | inferred from content flow (no website weight data) | 8 steps ordered by logical progression |
+| `milestones` | inferred from content flow (no website weight data) | 7 steps ordered by logical progression (landing-page milestone removed; welcome content folded into path cover page) |
 | `recommends` (path) | no journey.links.to available | `[]` |
 | `suggests` (path) | no related_journeys available | `[]` |
 | Step `id` values | each step's content.json | verbatim |
@@ -47,7 +46,7 @@ migrated_at: "2026-04-07T00:00:00Z"
 - **No index.json rule found**: No matching entry in index.json for this learning path.
 - **No journeys.yaml entry found**: `influxdb-data-source` is not listed in journeys.yaml. No journey links or related journeys available.
 - **Category inferred**: `data-availability` was inferred from content topic (InfluxDB data source connection). Needs verification.
-- **Step ordering inferred from content**: No website `weight` data available. Order was determined from logical content flow: welcome -> business-value -> verify-influxdb -> add-data-source -> configure-connection -> test-connection -> explore-data -> end-journey. Needs verification.
+- **Step ordering inferred from content**: No website `weight` data available. Order was determined from logical content flow: business-value -> verify-influxdb -> add-data-source -> configure-connection -> test-connection -> explore-data -> end-journey. Welcome content folded into path cover page. Needs verification.
 - **Path-level content.json**: Created from welcome step content since no `_index.md` exists. Review for accuracy.
 
 ## Content Removed During Migration
