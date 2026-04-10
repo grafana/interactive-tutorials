@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "iis-web-server-configure-iis-integration",
+  "title": "Configure the IIS integration for request and worker metrics",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "After you've verified that IIS performance counters are available, the next step is to configure Grafana Alloy to collect IIS metrics. This configuration process requires you to copy a code snippet from Grafana Cloud and add it to the Alloy configuration file."
+    },
+    {
+      "type": "markdown",
+      "content": "> **Did you know?** By default, the integration collects the metrics necessary to populate the IIS dashboards and alerts, including request rates, error codes, active connections, and worker process health. You always have the option to collect additional metrics later."
+    },
+    {
+      "type": "markdown",
+      "content": "To configure Alloy to use the IIS integration, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In Grafana Cloud, under the **Set up Grafana Alloy to use the IIS integration** section, click **Copy to clipboard**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "On your Windows Server, open Command Prompt as Administrator."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open the Alloy configuration file with Notepad:\n\n```cmd\nnotepad \"C:\\Program Files\\GrafanaLabs\\Alloy\\config.alloy\"\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Scroll to the end of the configuration file and paste the code snippet you copied from Grafana Cloud.\n\nThe snippet configures the `prometheus.exporter.windows` component with the IIS collector enabled, which scrapes metrics from the `Web Service` and `W3SVC_W3WP` performance counter categories."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click **File > Save** to save the changes, then close Notepad."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next step, you'll restart Alloy and verify that metrics are flowing to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [No metrics were found for this integration](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshooting-windows-alloy/#no-metrics-were-found-for-this-integration)\n- [Alloy was not able to reach your application Prometheus metrics endpoint](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshooting-windows-alloy/#alloy-was-not-able-to-reach-your-application-prometheus-metrics-endpoint)"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore\n\n- [Configure Grafana Alloy](https://grafana.com/docs/alloy/latest/configure)\n- [Windows exporter IIS collector](https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.exporter.windows/)"
+    }
+  ]
+}

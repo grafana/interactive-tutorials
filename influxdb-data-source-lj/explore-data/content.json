@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "influxdb-data-source-explore-data",
+  "title": "Explore InfluxDB data in Grafana",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you verify that your InfluxDB data source is working by running a query in Grafana's Explore."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": ["navmenu-open"],
+          "content": "In the navigation menu, click **Explore**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "From the data source dropdown at the top-left, select your InfluxDB data source."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-rows']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "In the query editor, enter a sample query to retrieve data. The syntax depends on which query language you selected when configuring the data source.\n\n**Flux example:**\n\n```\nfrom(bucket: \"telegraf\")\n  |> range(start: -1h)\n  |> filter(fn: (r) => r._measurement == \"cpu\")\n  |> filter(fn: (r) => r._field == \"usage_idle\")\n  |> aggregateWindow(every: 1m, fn: mean)\n```\n\n**InfluxQL example:**\n\n```\nSELECT mean(\"usage_idle\") FROM \"cpu\" WHERE time > now() - 1h GROUP BY time(1m)\n```\n\n**SQL example:**\n\n```\nSELECT DATE_BIN(INTERVAL '1 minute', time) AS time,\n       AVG(usage_idle) AS usage_idle\nFROM cpu\nWHERE time > NOW() - INTERVAL '1 hour'\nGROUP BY 1\nORDER BY 1\n```\n\n**Tip:** Replace the measurement and field names with values that match your data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Run query']",
+          "requirements": ["on-page:/explore"],
+          "content": "Click **Run query** to execute the query.\n\nYou should see time series data displayed in the results panel. If you see results, your InfluxDB data source is working correctly."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Verify successful data access\n\nAfter running your query, you should see:\n\n- Time series data displayed as a graph or table\n- No connection errors or timeouts\n- Data that matches what you expect from your InfluxDB instance\n- The ability to modify the query and run different queries"
+    },
+    {
+      "type": "markdown",
+      "content": "**Congratulations!** You've successfully connected your InfluxDB instance to Grafana Cloud and verified that data is accessible."
+    }
+  ]
+}

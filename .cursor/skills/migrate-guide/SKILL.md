@@ -26,6 +26,26 @@ These rules are **inviolable** — the skill must never break them:
 
 ---
 
+## Batch Mode
+
+When this skill is invoked as a sub-agent by an orchestrator (i.e., the agent was not started interactively by a human), it operates in **batch mode**. In batch mode:
+
+- **Never block waiting for user input.** Any situation that would normally require asking the user is resolved by writing a `TODO` item in the migration notes instead.
+- **Mark the migration as incomplete** when a TODO item is written. Include `status: incomplete` in the migration-notes frontmatter and add a `## TODO` section listing every unresolved item.
+- **Continue past blockers.** Generate as much of the output as possible. A partially-completed manifest with TODO items is preferable to no output at all.
+
+**TODO item format** (use consistently throughout migration notes):
+
+```
+- [ ] TODO(<category>): <what is missing> — <what the reviewer must do>
+```
+
+Categories: `description`, `conflict`, `review`, `fallback`.
+
+Example: `- [ ] TODO(description): step "configure-alloy" has no description source — reviewer must supply a one-line catalog description`
+
+---
+
 ## Mode Detection
 
 Determine the mode from the target directory:
@@ -104,7 +124,9 @@ The `description` field is a **compact, one-line summary** suitable for a course
 
 1. **`index.json` rule or recommender rule** — if the guide has a matching rule in either source, use its `description` verbatim. These are already written in catalog style. For learning journeys, the recommender is the primary source since `index.json` does not contain learning-journey entries. Skip entries with empty `description` values.
 2. **Summarize available sources** — if no rule with a non-empty description exists, collect all available description sources (website markdown frontmatter `description`, `content.json` title, path-level metadata) and boil them down into a single sentence. Write it in the style of the rule descriptions (e.g., "Hands-on guide: Learn how to...").
-3. **Ask the user** — if no sources exist at all, stop and request a description. Do not invent one.
+3. **No sources at all** — if no sources exist at all, do not invent a description.
+   - **Interactive mode:** Stop and ask the user for a description.
+   - **Batch mode:** Write `- [ ] TODO(description): <guide-id> has no description source — reviewer must supply a one-line catalog description` in the migration notes, leave the `description` field as `"TODO: manual description required"`, and mark the migration incomplete. Continue generating all other fields.
 
 ---
 
@@ -121,11 +143,18 @@ The `author` field has a `team` value that depends on content type:
 `"interactive-learning"` is the fallback default when content type is unknown. If you know the content is a learning path or a step within one, always use `"Grafana Documentation"`.
 
 The `author.name` field is optional. To derive it:
-1. Look at all git revisions since the `content.json` file was created (use `git log --follow` to track renames)
-2. Prefer GitHub handles; extract commit author names/handles
-3. Exclude any obvious automation or bot authors (e.g., `dependabot`, `renovate`, `github-actions`, `bot`, etc.)
-4. If multiple authors remain, comma-separate them
-5. If only full names (not handles) appear in git history, use full names — some data is better than none. If no authors remain after filtering bots, or if unsure, omit `name` entirely
+
+1. **`.github/CODEOWNERS` (preferred when guide-specific):** Read `.github/CODEOWNERS` from the interactive-tutorials repo root. If a **directory-scoped** rule applies to the package being migrated, use the listed GitHub handle(s) for `author.name` (strip the leading `@`; comma-separate multiple handles).
+   - **Matching:** Normalize the migrated directory to a repo-relative path (e.g. standalone `alerting-101`, path `prometheus-lj`, step `prometheus-lj/add-data-source`). Find a line whose pattern is a path prefix for that directory, e.g. `/alerting-101/` or `/prometheus-lj/` (GitHub CODEOWNERS uses last matching rule wins). If a step directory has no own line, try the parent `*-lj` directory (e.g. `/prometheus-lj/` for any step under it).
+   - **Do not** use generic review patterns as the author source: `*`, `**/content.json`, `**/manifest.json`, `**/assets/*`, or other repo-wide globs — those list many reviewers and are not primary author attribution. If only those patterns match, skip to git history.
+   - Team owners (e.g. `@grafana/slo-squad`) may appear; use the handle as `name` (without `@`) when that is the listed owner.
+2. **Git history** — if step 1 did not yield `author.name`, look at all git revisions since the `content.json` file was created (use `git log --follow` to track renames)
+3. Prefer GitHub handles; extract commit author names/handles
+4. Exclude any obvious automation or bot authors (e.g., `dependabot`, `renovate`, `github-actions`, `bot`, etc.)
+5. If multiple authors remain, comma-separate them
+6. If only full names (not handles) appear in git history, use full names — some data is better than none. If no authors remain after filtering bots, or if unsure, omit `name` entirely
+
+Record in migration notes when `author.name` came from CODEOWNERS vs git history.
 
 ---
 
@@ -200,6 +229,7 @@ Write `{dir}/manifest.json` with the derived fields:
 Field omission rules:
 - Omit `repository` (schema default `"interactive-tutorials"` applies)
 - Omit `language` (schema default `"en"` applies)
+- Include `author.name` when derived per [Author Conventions](#author-conventions); omit otherwise
 - Omit `targeting` entirely if no targeting rule was found (index.json for standalone guides, recommender for learning journeys)
 - Omit `startingLocation` if no URL can be derived from the match expression — do not fall back to `"/"`. A missing value is preferable to a wrong one.
 - **Never omit `testEnvironment`.** Minimum is `{ "tier": "cloud" }`. Omit `instance` when no instance value is available.
@@ -298,7 +328,9 @@ For each mapped step in canonical `weight` order:
    1. Matching step-level `index.json` rule `description` (first priority — already catalog-style)
    2. Website step `index.md` `description` — if multi-sentence or verbose, condense to one line
    3. Summarize from step `content.json` title + any other available context into a single catalog-style sentence
-   4. If no sources exist at all: **stop and request manual description** (required field; do not guess)
+   4. If no sources exist at all: do not guess.
+      - **Interactive mode:** Stop and request a manual description for that step.
+      - **Batch mode:** Write `- [ ] TODO(description): step "<step-id>" has no description source — reviewer must supply a one-line catalog description` in the migration notes, set `"description": "TODO: manual description required"` in the step manifest, and mark the migration incomplete. Continue generating all remaining steps and the path manifest.
 4. Generate `{step-dir}/manifest.json`:
 
 ```json
@@ -318,6 +350,8 @@ For each mapped step in canonical `weight` order:
 }
 ```
 
+Include `author.name` when derived per [Author Conventions](#author-conventions) (CODEOWNERS often applies at the parent `*-lj` path for all steps); omit `name` when unknown.
+
 Step dependency rules:
 - Use each step's `content.json` `id` (not the directory name) in `depends`/`recommends` and in the path `milestones` array.
 - First step: omit `depends`
@@ -332,7 +366,9 @@ Omit `targeting` unless the step has its own `index.json` entry. Steps within a 
 
 Compare metadata across sources (website markdown frontmatter, recommender rules, `index.json` rule if present, `journeys.yaml`). A conflict exists when the same field has different string values in two sources.
 
-**Flag conflicts for the user** — present both values and ask which to use. Do not silently pick one.
+**Flag conflicts** — do not silently pick one.
+- **Interactive mode:** Present both values and ask the user which to use.
+- **Batch mode:** Pick the higher-priority source (recommender > `_index.md` > `index.json` > `journeys.yaml`), write `- [ ] TODO(conflict): field "<field>" has conflicting values — "<source-A-value>" (from <source-A>) vs "<source-B-value>" (from <source-B>); used <source-A-value>` in the migration notes, and mark the migration incomplete.
 
 #### 5a. Cross-validate journey.links.to against journeys.yaml
 
@@ -384,6 +420,8 @@ Write `{lj-dir}/manifest.json`:
 }
 ```
 
+Include `author.name` on the path manifest when derived per [Author Conventions](#author-conventions); omit when unknown.
+
 Omit `targeting` if no targeting rule exists for the path (neither recommender nor index.json).
 Omit `startingLocation` if no URL can be derived — do not fall back to `"/"`.
 **Never omit `testEnvironment`.** Minimum is `{ "tier": "cloud" }`.
@@ -414,7 +452,9 @@ Content transformation rules:
 - For non-wrapping shortcodes with a `heading` attribute (e.g., `{{< docs/icon-heading heading="## Here's what to expect" >}}`), extract and preserve the heading value as a markdown header in the output
 - Convert remaining markdown into one or more `markdown` blocks
 - Preserve learning objectives, prerequisites, and descriptive prose
-- Images referenced via markdown syntax can be retained as-is
+- **Remove image links that use website-relative paths** — markdown images like `![alt text](/media/docs/...)` reference paths that only resolve on the Grafana website and will not function in Pathfinder. Strip these image references entirely (including their alt text and surrounding syntax). Retain any surrounding prose but clean up orphaned whitespace or empty paragraphs left behind.
+- **Remove "Grafana Cloud account" prerequisites** — any prerequisite or requirement bullet point that says the user needs a Grafana Cloud account (e.g., "A Grafana Cloud account. To create an account, refer to...") is redundant for Pathfinder users, who are already in Grafana. Remove these bullet points entirely.
+- **Record all removed content in migration notes** — for every image link or prerequisite removed by the above rules, record the exact text that was removed in the migration notes under a `## Content Removed During Migration` section. This provides a clear audit trail of what was stripped from the original website content.
 - Do NOT add a markdown title (`## Title`) — the `title` field handles that
 
 #### 9. Validate
@@ -512,13 +552,15 @@ Follow the [Description Conventions](#description-conventions) priority:
 1. Step-level `index.json` rule `description` (first priority — already catalog-style)
 2. Website step `index.md` `description` — condense to one line if verbose
 3. Summarize from step `content.json` title and any available context into a single catalog-style sentence
-4. If no sources exist at all, stop and ask the user for that step's description (required manifest field). Do not invent one.
+4. If no sources exist at all: apply the batch-mode rule from [## Batch Mode](#batch-mode) — in interactive mode, stop and ask; in batch mode, write a `TODO(description)` item and continue. Do not invent a description.
 
 ### content.json missing in a step directory
 This is unexpected. Report the missing file and skip that step. Do not create a content.json for a step — that is the content author's responsibility, not the migration skill's.
 
 ### Metadata conflict between sources
-Present both values to the user, state which source each came from, and ask the user to choose. Do not guess.
+Do not guess. Apply the batch-mode rule from [## Batch Mode](#batch-mode):
+- **Interactive mode:** Present both values, state the source of each, and ask the user to choose.
+- **Batch mode:** Pick the higher-priority source, record the conflict as a `TODO(conflict)` item in the migration notes, and mark the migration incomplete.
 
 ---
 
@@ -538,6 +580,7 @@ Every migration produces a leave-behind document recording findings, decisions, 
 disclaimer: Auto-generated by migrate-guide. Do not edit manually.
 notice: To regenerate, re-run the migration skill on this directory.
 migrated_at: "<ISO 8601 timestamp>"
+status: complete  # set to "incomplete" when any TODO items are present
 ---
 
 # Migration Notes: <directory-name>
@@ -558,6 +601,12 @@ migrated_at: "<ISO 8601 timestamp>"
 
 - <any fields that used fallback values>
 - <any missing descriptions that were requested from the user>
+
+## Content Removed During Migration
+
+- <list each piece of content removed from path-level content.json, with the removal reason>
+- Example: `Removed image: ![Example Logs Drilldown user interface](/media/docs/learning-journey/logs-drilldown/logs-drilldown.png)` — website-relative image path
+- Example: `Removed prerequisite: "A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account)."` — redundant for Pathfinder users
 
 ## Dangling References
 
