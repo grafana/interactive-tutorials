@@ -79,38 +79,81 @@ Automatically create the mapping JSON:
 
 1. Read the target recommender file(s)
 2. Parse the JSON
-3. Find an appropriate location in the `rules` array (group with similar learning journeys)
+3. Find an appropriate location in the `rules` array (group with similar learning paths)
 4. Insert the new mapping entry
 5. Write the updated JSON back to the file
 6. Validate JSON syntax
 
 ---
 
-## Display
+## Update Path Manifest with Targeting
 
+After the recommender mapping is created (or an existing mapping is found), check whether a path-level `manifest.json` exists at `interactive-tutorials/[slug]-lj/manifest.json`. If it does, update it with targeting data derived from the recommender rule's `match` expression.
+
+### Fields to Populate
+
+1. **`startingLocation`** — Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf:
+   - `urlPrefix` value
+   - First entry of `urlPrefixIn` array
+   - If no URL can be derived, omit the field.
+
+2. **`targeting.match`** — Copy the `match` object from the recommender rule verbatim.
+
+3. **`testEnvironment.tier`** — Apply these inference rules:
+   - `match` contains `"targetPlatform": "cloud"` → `"tier": "cloud"`
+   - `match` contains `"targetPlatform": "oss"` → `"tier": "local"`
+   - `match` contains `source: "play.grafana.org"` → `"tier": "cloud"`, `"instance": "play.grafana.org"`
+   - Otherwise → `"tier": "cloud"` (default)
+
+### Example
+
+Given this recommender rule:
+
+```json
+{
+  "match": {
+    "and": [
+      { "urlPrefixIn": ["/connections/add-new-connection/haproxy", "/connections/infrastructure"] },
+      { "targetPlatform": "cloud" }
+    ]
+  }
+}
 ```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 3 complete: Recommender Mapping Created
 
-Added mapping to:
-├── grafana-recommender/internal/configs/state_recommendations/[file].json
+Update the manifest:
 
-Mapping details:
-├── Title: [title]
-├── URL pattern: [pattern]
-├── Platform: [cloud/oss/both]
-└── Context: [area]
-
-⏳ Next: Step 4 - Scaffold Content Files
-   Ready to proceed? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```json
+{
+  "startingLocation": "/connections/add-new-connection/haproxy",
+  "targeting": {
+    "match": {
+      "and": [
+        { "urlPrefixIn": ["/connections/add-new-connection/haproxy", "/connections/infrastructure"] },
+        { "targetPlatform": "cloud" }
+      ]
+    }
+  },
+  "testEnvironment": {
+    "tier": "cloud"
+  }
+}
 ```
+
+### When No Manifest Exists
+
+If `manifest.json` does not exist (for example, when this step is run from `/build-interactive-lj` on a path that has not been migrated to the package format), skip this section and proceed to the completion summary.
+
+---
+
+## Completion
+
+Display a summary showing: the recommender file modified, mapping title, URL pattern, platform, context, and whether the path manifest was updated with targeting. Ask the user if they're ready for the next step.
 
 ---
 
 ## Important Notes
 
 - **JSON formatting:** Maintain consistent indentation (2 spaces) and formatting
-- **Placement:** Insert learning-journey entries near other learning journeys in the file
+- **Placement:** Insert learning-journey entries near other learning paths in the file
 - **Validation:** After editing, validate JSON syntax before proceeding
 - **Multiple platforms:** If "Both" is selected, ensure entries are identical except for `targetPlatform`

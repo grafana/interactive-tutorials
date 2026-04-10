@@ -6,7 +6,7 @@ the Block Editor; assisted by Cursor's AI assistant (if you use it).
 
 ## TL;DR for Grafana Employees
 
-1. Go to [https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true](https://learn.grafana-ops.net/plugins/grafana-pathfinder-app?dev=true)
+1. Go to [https://learn.grafana.net/plugins/grafana-pathfinder-app?dev=true](https://learn.grafana.net/plugins/grafana-pathfinder-app?dev=true)
 2. Log in with Okta SAML. Find the "Dev Mode" checkbox; enable it ([it looks like this](docs/img/dev-mode.png)) and save
 3. Click the `?` icon (help menu for Grafana) in the upper right → Debug icon ([it looks like this](docs/img/dev-tools.jpg)) → Block Editor ([looks like this](docs/img/block-editor.jpg))
 4. Start building.
@@ -19,7 +19,7 @@ Ping Tom Glenn, David Allen, or Simon Prickett, all of whom have done this befor
 
 ## If you can't access stack above: Run the Plugin Locally
 
-If you don't have access to `learn.grafana-ops.net/login` (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can still run the Pathfinder plugin locally:
+If you don't have access to `learn.grafana.net/login` (e.g., you're an open source community contributor, customer, or internal user who doesn't have the right permissions set up), you can still run the Pathfinder plugin locally:
 
 * Clone this repo to your machine. Also clone the [interactive learning plugin](https://github.com/grafana/grafana-pathfinder-app)
 * Start the plugin repo. [Full instructions are here](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/LOCAL_DEV.md) but the short version is: `npm install` then `npm run build && npm run server` and go to http://localhost:3000/
@@ -79,7 +79,7 @@ For advanced selector patterns and manual writing, see [docs/selectors-and-testi
 
 Cursor knows this repo well. Use Ask mode to query how interactive elements work—it reads the `docs/` folder automatically.
 
-[Download Cursor](https://cursor.com/downloads) | [Interactive Types Reference](docs/interactive-types.md)
+[Download Cursor](https://cursor.com/downloads) | [JSON Guide Reference](docs/json-guide-reference.md)
 
 ## Demo: Understand What We're Building!
 
@@ -103,15 +103,14 @@ your guide, so we can include it in the recommender.
 
 For complete reference documentation:
 
-- **This repo**: See [.cursor/ai-guide-reference.mdc](.cursor/ai-guide-reference.mdc) for AI-assisted authoring
+- **This repo**: See [.cursor/authoring-guide.mdc](.cursor/authoring-guide.mdc) for AI-assisted authoring
 - **Pathfinder Plugin Docs**: See [interactive learning plugin docs](https://grafana.com/docs/plugins/grafana-pathfinder-app/latest/)
 
 Primary documentation files in this repo:
 
 | Topic | File |
 |-------|------|
-| Guide Format | [docs/json-guide-format.md](docs/json-guide-format.md) |
-| Block Types | [docs/interactive-types.md](docs/interactive-types.md) |
-| Properties | [docs/json-block-properties.md](docs/json-block-properties.md) |
+| Guide Reference | [docs/json-guide-reference.md](docs/json-guide-reference.md) |
+| Action Types | [docs/interactive-actions.md](docs/interactive-actions.md) |
 | Requirements | [docs/requirements-reference.md](docs/requirements-reference.md) |
 | Selectors | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) |

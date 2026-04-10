@@ -13,14 +13,14 @@ Use browser automation to find CSS selectors for each interactive element.
 
 ## Authentication Setup (REQUIRED)
 
-Selector discovery happens by walking through the actual Grafana UI at: `https://learn.grafana-ops.net/`
+Selector discovery happens by walking through the actual Grafana UI at: `https://learn.grafana.net/`
 
 > ⚠️ **Important:** This is different from testing in Pathfinder (Step 6), which uses 
-> `https://learn.grafana-ops.net/?pathfinder-dev=true`
+> `https://learn.grafana.net/?pathfinder-dev=true`
 
 Playwright opens a **fresh browser with no session**. Before discovering selectors:
 
-1. **Navigate to the test environment** using Playwright: `https://learn.grafana-ops.net/`
+1. **Navigate to the test environment** using Playwright: `https://learn.grafana.net/`
 2. **User must manually log in** through the Playwright browser window (Okta SAML)
 3. **Wait for user confirmation** that they are logged in
 4. **Walk through the UI flow** — navigate to pages where the learning path actions happen and inspect the DOM
@@ -32,7 +32,7 @@ Playwright opens a **fresh browser with no session**. Before discovering selecto
 ```
 I'll open the Grafana UI to discover selectors by walking through the actual pages.
 
-Opening: https://learn.grafana-ops.net/
+Opening: https://learn.grafana.net/
 
 Please log in when the browser window appears. Let me know when you're logged in. (Y/N)
 ```
@@ -66,15 +66,46 @@ Discover immediately without introduction.
 
 ## Discovery Process
 
-Walk through the actual Grafana UI at `https://learn.grafana-ops.net/` to find selectors:
+Walk through the actual Grafana UI at `https://learn.grafana.net/` to find selectors:
 
 1. Navigate to the starting page for the learning path (e.g., Dashboards page for dashboard creation flows)
 2. For each interactive block with empty `reftarget`:
    - Navigate to the relevant page in Grafana
-   - Use Playwright snapshot to inspect the DOM
+   - Query the DOM for the element (see Playwright usage below)
    - Find the element and extract the best available selector
    - Update the content.json with the discovered selector
 3. Continue through the entire UI flow, capturing selectors as you go
+
+### Efficient Playwright Usage
+
+Full-page snapshots are expensive and consume significant context. Prefer targeted queries:
+
+| Goal | Preferred approach | Avoid |
+|------|--------------------|-------|
+| Find a button's selector | `browser_evaluate`: `document.querySelector('button')?.getAttribute('data-testid')` | Full-page snapshot |
+| Check if element exists | `browser_evaluate`: `!!document.querySelector('[data-testid="..."]')` | Full-page snapshot |
+| List all data-testids on page | `browser_evaluate`: `[...document.querySelectorAll('[data-testid]')].map(e => e.getAttribute('data-testid'))` | Full-page snapshot |
+| Find elements near a label | `browser_evaluate`: query by label text, then inspect siblings | Full-page snapshot |
+
+**When a snapshot IS useful:**
+- When you have no idea what selectors exist in a region
+- When the element structure is complex (nested menus, modals)
+- Limit to one snapshot per page, then switch to targeted queries
+
+**Batch discoveries per page.** Group interactive blocks by the page they appear on. Navigate once, discover all selectors for that page, then move on. This avoids redundant navigation and repeated snapshots.
+
+### 3-Attempt Limit Per Block
+
+You have a **maximum of 3 attempts** to find a working selector for each interactive block. On each attempt, try a different strategy from the Selector Decision Tree.
+
+- **Attempt 1:** Try the highest-priority selector available (data-testid, aria-label, etc.)
+- **Attempt 2:** Try the next selector strategy down the priority list, or adjust the page state (scroll, expand menus, wait for lazy-loaded elements)
+- **Attempt 3:** Try a broader DOM inspection or alternative navigation path to the element
+
+If all 3 attempts fail:
+1. **Do NOT keep retrying.** Move on to the next block.
+2. Leave the `reftarget` as `"TODO:manual-review"` in content.json.
+3. Record the block details and all 3 failed attempts in the **Unresolved Selectors** report (see below).
 
 ---
 
@@ -106,51 +137,19 @@ After selecting a selector, verify it's stable:
 
 ---
 
-## Display Progress
-
-Use this exact format:
-
-```
-Discovering selectors for [milestone-name]...
-├── [element description] → [selector] 🟢
-├── [element description] → [selector] 🟡
-└── [element description] → FAILED ❌
-    Attempt 1: [selector tried] - [why it failed]
-    Attempt 2: [selector tried] - [why it failed]
-```
-
----
-
 ## Verification Checklist (REQUIRED)
 
 Before proceeding to Step 6, verify:
 
-- [ ] All interactive blocks have real selectors (no placeholders)
-- [ ] No `"[selector]"` or `"TODO"` strings remain
+- [ ] All resolvable interactive blocks have real selectors (no placeholders)
+- [ ] No `"[selector]"` strings remain (only `"TODO:manual-review"` for unresolved blocks)
 - [ ] Selectors follow priority order (data-testid preferred)
-- [ ] Failed selectors are noted for user decision
+- [ ] Each selector attempt per block did not exceed 3 tries
 
 ---
 
-## Display
+## Completion
 
-Use this exact format:
+Display a summary showing: selectors found per milestone, confidence level (high/medium/unresolved), and any unresolved blocks with their failed attempts and suggestions. If there are unresolved selectors, list them before the summary so the user sees them first.
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Step 5 complete: Selector Discovery
-
-Results by milestone:
-├── [milestone-1]: [N] selectors found
-├── [milestone-2]: [N] selectors found
-└── ...
-
-Selector quality:
-├── 🟢 High confidence: [N]
-├── 🟡 Medium confidence: [N]
-└── 🔴 Failed/needs review: [N]
-
-⏳ Next: Step 6 - Test in Pathfinder
-   Ready to test? (Y/N)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Ask the user if they're ready to proceed to Step 6 (Test in Pathfinder).

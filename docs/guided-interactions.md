@@ -326,7 +326,7 @@ Unlike automated steps, guided interactions do not block the page. Users can int
 
 ## See Also
 
-- [JSON Guide Format](json-guide-format.md) - Root structure and block overview
-- [Interactive Types](interactive-types.md) - When to use each type
+- [JSON Guide Reference](json-guide-reference.md) - Block types, properties, and guide structure
+- [Interactive Actions](interactive-actions.md) - Action type behavior
 - [Requirements Reference](requirements-reference.md) - All supported requirements
 - [Selectors Reference](selectors-and-testids.md) - Stable selector patterns

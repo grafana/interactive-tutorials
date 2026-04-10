@@ -2,6 +2,8 @@
 
 This command automates the creation of interactive content (`content.json` files) for learning paths in Grafana Pathfinder.
 
+> **Creating a brand-new learning path?** Use `/create-learning-path` instead. It skips the markdown step entirely and lets you author enriched JSON directly. This command (`/build-interactive-lj`) is for adding interactivity to an *existing* markdown learning path.
+
 ---
 
 ## Overview
@@ -17,6 +19,8 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 7. **Report and Next Steps** - Summarize results and provide PR guidance
 
 **Expected time:** 30-60 minutes depending on the number of milestones.
+
+**Session planning:** For paths with 7+ milestones, plan for two sessions. The natural break point is after scaffolding and recommender mapping (Steps 1–4) and before selector discovery (Steps 5–7). All artifacts are on disk at the break point, so the second session reads the existing files and resumes at selector discovery.
 
 ---
 
@@ -62,7 +66,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
 ├── reference/
 │   ├── selector-patterns.md     # Selector discovery rules & stability patterns
 │   ├── json-schema.md           # JSON structure requirements & field reference
-│   └── proven-patterns.md       # Appendix of working patterns for common UI
+│   (proven-patterns moved to .cursor/proven-patterns.mdc — auto-loaded for content.json)
 └── steps/
     ├── 01-environment.md        # Environment validation
     ├── 02-validation.md         # Learning path validation
@@ -71,6 +75,7 @@ When a writer runs `/build-interactive-lj`, this command guides them through a 7
     ├── 05-selectors.md          # Selector discovery
     ├── 06-testing.md            # Test in Pathfinder
     └── 07-report.md             # Report and next steps
+(Step 6b uses ../create-learning-path/steps/08b-verify-docs-accuracy.md)
 ```
 
 ---
@@ -91,15 +96,15 @@ fully functional content.json files ready for a PR.
 Here's what our session will look like:
 
 1. **Environment check** - Verify your setup is ready (30 seconds)
-2. **Find your learning journey** - Locate source content and list milestones
-3. **Create recommender mapping** - Ensure the journey appears in Pathfinder (if needed)
+2. **Find your learning path** - Locate source content and list milestones
+3. **Create recommender mapping** - Ensure the learning path appears in Pathfinder (if needed)
 4. **Scaffold the files** - Create content.json structure for each milestone
 5. **Discover selectors** - Find CSS selectors for interactive elements
 6. **Test in Pathfinder** - Collaboratively test each milestone
 7. **Wrap up** - Summarize results and provide PR guidance
 
 Expect this to take 30-60 minutes depending on how many milestones your 
-learning journey has. I'll need your attention during testing so you can 
+learning path has. I'll need your attention during testing so you can 
 verify the highlights look right.
 ```
 
@@ -152,12 +157,13 @@ For each step, read the corresponding file from `steps/` directory:
 - **Step 4:** Read `steps/04-scaffold.md` and `reference/json-schema.md`
 - **Step 5:** Read `steps/05-selectors.md` and `reference/selector-patterns.md`
 - **Step 6:** Read `steps/06-testing.md`
+- **Step 6b:** Read `../create-learning-path/steps/08b-verify-docs-accuracy.md` (verify factual claims against live docs)
 - **Step 7:** Read `steps/07-report.md`
 
 **Reference files** can be consulted at any time:
 - `reference/selector-patterns.md` - Selector rules and stability checks
 - `reference/json-schema.md` - JSON structure and field requirements
-- `reference/proven-patterns.md` - Reusable patterns for common UI elements
+- `.cursor/proven-patterns.mdc` - Reusable patterns (auto-loaded for content.json files)
 
 ---
 
