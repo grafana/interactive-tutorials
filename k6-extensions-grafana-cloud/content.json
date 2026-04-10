@@ -52,9 +52,9 @@
         },
         {
           "type": "code-block",
+          "code": "import { sleep } from 'k6'\nimport faker from 'k6/x/faker'\n\n// See https://grafana.com/docs/k6/latest/using-k6/k6-options/reference/\nexport const options = {\n  vus: 1,\n  iterations: 1,\n  cloud: {\n    distribution: {\n      'amazon:us:ashburn': { loadZone: 'amazon:us:ashburn', percent: 100 },\n    },\n  },\n}\n\nexport default function main() {\n  console.log(faker.person.firstName())\n  sleep(1)\n}",
           "reftarget": "div[data-testid='data-testid Code editor container']",
           "language": "javascript",
-          "code": "import { sleep } from 'k6'\nimport http from 'k6/http'\nimport faker from 'k6/x/faker'\n\n// See https://grafana.com/docs/k6/latest/using-k6/k6-options/reference/\nexport const options = {\n  vus: 1,\n  iterations: 1,\n  thresholds: {\n    http_req_failed: ['rate<0.02'], // http errors should be less than 2%\n    http_req_duration: ['p(95)<2000'], // 95% requests should be below 2s\n  },\n  cloud: {\n    distribution: {\n      'amazon:us:ashburn': { loadZone: 'amazon:us:ashburn', percent: 100 },\n    },\n  },\n}\n\nexport default function main() {\n  console.log(faker.person.firstName())\n  sleep(1)\n}",
           "content": "Add this script: it imports **k6/x/faker** and logs a random first name when the test runs.",
           "requirements": [
             "on-page:/a/k6-app"
