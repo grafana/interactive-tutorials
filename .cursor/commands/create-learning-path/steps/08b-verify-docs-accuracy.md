@@ -1,4 +1,4 @@
-# Step 7b: Verify documentation accuracy
+# Step 8b: Verify documentation accuracy
 
 Verify that all factual claims in the learning path content match current Grafana documentation.
 
@@ -7,7 +7,7 @@ Verify that all factual claims in the learning path content match current Grafan
 ## Tutorial Mode Introduction
 
 ```
-**Step 7b: Verify documentation accuracy**
+**Step 8b: Verify documentation accuracy**
 
 I'll cross-check the content you just created against the live Grafana
 documentation to make sure all factual claims are accurate:
@@ -40,7 +40,7 @@ Scan all `content.json` files for Grafana product names, feature names, and UI n
 For each product/feature identified, determine the canonical docs page. Check:
 
 - The `end-journey/content.json` (often contains doc links)
-- The `welcome/content.json` (may reference products)
+- The path-level `content.json` (may reference products)
 - Any `content.json` block that links to `grafana.com/docs/`
 
 Read the docs from the local `website` repo first (e.g., `content/docs/grafana-cloud/.../_index.md`); fall back to WebFetch for docs not in the workspace.
@@ -89,4 +89,4 @@ For each inconsistency:
 
 ## Completion
 
-Display a summary showing: number of products/features verified, number of discrepancies by severity, and fixes applied. Ask the user if they're ready for Step 8 (Report).
+Display a summary showing: number of products/features verified, number of discrepancies by severity, and fixes applied. Ask the user if they're ready for Step 9 (Report).

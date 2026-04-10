@@ -86,9 +86,68 @@ Automatically create the mapping JSON:
 
 ---
 
+## Update Path Manifest with Targeting
+
+After the recommender mapping is created (or an existing mapping is found), check whether a path-level `manifest.json` exists at `interactive-tutorials/[slug]-lj/manifest.json`. If it does, update it with targeting data derived from the recommender rule's `match` expression.
+
+### Fields to Populate
+
+1. **`startingLocation`** — Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf:
+   - `urlPrefix` value
+   - First entry of `urlPrefixIn` array
+   - If no URL can be derived, omit the field.
+
+2. **`targeting.match`** — Copy the `match` object from the recommender rule verbatim.
+
+3. **`testEnvironment.tier`** — Apply these inference rules:
+   - `match` contains `"targetPlatform": "cloud"` → `"tier": "cloud"`
+   - `match` contains `"targetPlatform": "oss"` → `"tier": "local"`
+   - `match` contains `source: "play.grafana.org"` → `"tier": "cloud"`, `"instance": "play.grafana.org"`
+   - Otherwise → `"tier": "cloud"` (default)
+
+### Example
+
+Given this recommender rule:
+
+```json
+{
+  "match": {
+    "and": [
+      { "urlPrefixIn": ["/connections/add-new-connection/haproxy", "/connections/infrastructure"] },
+      { "targetPlatform": "cloud" }
+    ]
+  }
+}
+```
+
+Update the manifest:
+
+```json
+{
+  "startingLocation": "/connections/add-new-connection/haproxy",
+  "targeting": {
+    "match": {
+      "and": [
+        { "urlPrefixIn": ["/connections/add-new-connection/haproxy", "/connections/infrastructure"] },
+        { "targetPlatform": "cloud" }
+      ]
+    }
+  },
+  "testEnvironment": {
+    "tier": "cloud"
+  }
+}
+```
+
+### When No Manifest Exists
+
+If `manifest.json` does not exist (for example, when this step is run from `/build-interactive-lj` on a path that has not been migrated to the package format), skip this section and proceed to the completion summary.
+
+---
+
 ## Completion
 
-Display a summary showing: the file modified, mapping title, URL pattern, platform, and context. Ask the user if they're ready for Step 4 (Scaffold Content Files).
+Display a summary showing: the recommender file modified, mapping title, URL pattern, platform, context, and whether the path manifest was updated with targeting. Ask the user if they're ready for the next step.
 
 ---
 
