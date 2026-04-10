@@ -1,0 +1,224 @@
+{
+  "id": "create-new-scripted-synthetics-check-tutorial",
+  "title": "Interactive Guide: Create a new Scripted Synthetic Monitoring Check",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this interactive guide you'll learn how to set up and run a Scripted check in Grafana Cloud Synthetic Monitoring. You will:\n\n- Know how to create and configure Scripted checks\n- Understand how Synthetic Monitoring helps you track uptime and performance\n- Learn how to set up alerts to stay informed about your service status\n\n"
+    },
+    {
+      "type": "section",
+      "id": "navigating-to-create-new-synthetics-check",
+      "title": "Navigating to the Create new Check page",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-synthetic-monitoring-app/home",
+          "content": "Let's start by navigating to Synthetics. This is where you'll create and manage your synthetic checks.",
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/home"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='action create check']",
+          "content": "Click the \"Create new check\" button",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='check-group-card-scripted'] a:nth-match(1)",
+          "content": "Select the \"Scripted\" check type.\n\nNotice the k6 logo?\n\nThis Check type let's us express the workload using k6 Scripting.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Filling out Check details: Script",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='checkEditor form job']",
+          "content": "Fill in an appropriate name for your Check",
+          "targetvalue": "Quickpizza availability",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='input-wrapper'] input[data-testid='checkEditor form instance']",
+          "content": "Fill in an appropriate instance value for your Check",
+          "targetvalue": "prod-quickpizza",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "code-block",
+          "reftarget": "div[data-testid='data-testid Code editor container']",
+          "language": "javascript",
+          "code": "import http from \"k6/http\"\nimport { expect } from \"https://jslib.k6.io/k6-testing/0.6.1/index.js\"\n\nexport const options = {\n  vus: 1,\n  iterations: 1,\n}\n\nexport default function main() {\n  const response = http.get(\"https://quickpizza.grafana.com\")\n\n  expect(response.status).toBe(200)\n}",
+          "content": "Use the following example script",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='checkEditor form'] > div:last-child button[type='button']",
+          "content": "Let's click Uptime and proceed to the next step",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-23995",
+      "title": "Filling out Check details: Uptime",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "form[data-testid='checkEditor form'] div[data-testid='timeout']",
+          "targetvalue": "Quickpizza availability",
+          "content": "Select a the maximum time the check is allowed to run for before considering the check execution failed.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='checkEditor form'] > div:last-child > div:last-child  button[type='button']",
+          "content": "Let's click Labels and proceed to the next step",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-18646",
+      "title": "Filling out Check details: Custom labels",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='checkEditor genericLabelContent']",
+          "content": "Here you can fill out any additional labels that you want to attach to the metrics that sampled during the check execution.",
+          "targetvalue": "Quickpizza availability",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='checkEditor form'] > div:last-child > div:last-child  button[type='button']",
+          "content": "Let's click Execution and proceed to the next step",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Filling out Check details: Execution",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "form[data-testid='checkEditor form'] label:nth-match(47)",
+          "content": "Select which Geolocation to run the Check from.\nIn this guide we'll use Stockholm, Sweden.",
+          "targetvalue": "Quickpizza availability",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='frequency-component'] [role='radiogroup'] label:contains('1m')",
+          "targetvalue": "Quickpizza availability",
+          "content": "Set the frequency the check should run",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='checkEditor form'] > div:last-child > div:last-child  button[type='button']",
+          "content": "Let's click Alerting and proceed to the next step",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "section-filling-out-check-details-alerting",
+      "title": "Filling out Check details: Alerting",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='form-section-alerting'] [data-testid='checkEditor formTabs content']",
+          "targetvalue": "Quickpizza availability",
+          "content": "Here you can define under which conditions you want to be alerted",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "form[data-testid='checkEditor form'] button[data-testid='checkEditor form submit']",
+          "content": "Click Save, and now we're all set!",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Congrats, you have now created your first Synthetic Check! 🎉\n\n"
+    },
+    {
+      "type": "multistep",
+      "content": "Let's start polling for updates so we can see it in action!",
+      "steps": [
+        {
+          "action": "button",
+          "reftarget": "button[data-testid='data-testid RefreshPicker interval button']"
+        },
+        {
+          "action": "button",
+          "reftarget": "[role='menuitemradio'][aria-label='5 seconds']"
+        }
+      ]
+    }
+  ]
+}
