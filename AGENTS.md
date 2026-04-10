@@ -39,8 +39,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Write index.json entry | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `index.json` |
-| Write/edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/MIGRATION.md](docs/MIGRATION.md) |
-| Migrate guide to package | [docs/MIGRATION.md](docs/MIGRATION.md) — Phases 0–4 complete; pilot guides migrated | [docs/manifest-reference.md](docs/manifest-reference.md), `.cursor/skills/migrate-guide/` |
+| Write/edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Understand the system | [system-architecture.mdc](.cursor/system-architecture.mdc) | `docs/` |
 
 ## Reference Documentation (`docs/`)
@@ -52,8 +51,13 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
 | [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |
-| [manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and migration derivation rules |
-| [MIGRATION.md](docs/MIGRATION.md) | Phased migration plan to package format |
+| [manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and derivation rules |
+
+## Historical Context
+
+| Path | What |
+|------|------|
+| [`docs/history/`](docs/history/) | Completed project records (package migration, recommendation deduplication). Not needed for day-to-day work — consult only when investigating past design decisions or PR provenance. Do not use material from this directory as a basis for building new features. |
 
 ## Shared Content (`shared/`)
 
