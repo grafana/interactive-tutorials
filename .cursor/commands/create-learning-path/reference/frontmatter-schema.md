@@ -12,12 +12,12 @@ Every page in a learning path has Hugo front matter and `{{< pathfinder/json >}}
 
 ### Path Overview (`_index.md`) Fields
 
-The `_index.md` is the landing page. It points to `welcome/content.json` via `pathfinder_data`.
+The `_index.md` is the landing page. It points to the path-level `content.json` via `pathfinder_data`.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `menuTitle` | string | Yes | Short path name for navigation |
-| `title` | string | Yes | Full path title (matches welcome content.json `title`) |
+| `title` | string | Yes | Full path title (matches path-level content.json `title`) |
 | `description` | string | Yes | 1-2 sentence path description |
 | `weight` | number | Yes | Ordering weight among all learning paths |
 | `journey` | object | Yes | Path metadata: `group`, `skill`, `source`, `logo` |
@@ -27,7 +27,7 @@ The `_index.md` is the landing page. It points to `welcome/content.json` via `pa
 | `cta` | object | Yes | Always `{ type: start, title: "Are you ready?", cta_text: "Let's go!" }` |
 | `keywords` | string[] | No | SEO keywords |
 | `related_journeys` | object | No | Related prerequisite paths |
-| `pathfinder_data` | string | Yes | Always `[slug]-lj/welcome` |
+| `pathfinder_data` | string | Yes | Always `[slug]-lj` |
 
 ### Milestone (`index.md`) Fields
 
@@ -117,13 +117,13 @@ related_journeys:
 
 ---
 
-## Complete Example (Welcome Page)
+## Complete Example (Path Cover Page)
 
-**welcome/content.json:**
+**linux-server-integration-lj/content.json:**
 ```json
 {
   "schemaVersion": "1.0.0",
-  "id": "linux-server-integration-welcome",
+  "id": "linux-server-integration-lj",
   "title": "Monitor a Linux server in Grafana Cloud",
   "blocks": [
     {
@@ -171,7 +171,7 @@ cta:
   type: start
   title: Are you ready?
   cta_text: Let's go!
-pathfinder_data: linux-server-integration-lj/welcome
+pathfinder_data: linux-server-integration-lj
 ---
 
 {{< pathfinder/json >}}
