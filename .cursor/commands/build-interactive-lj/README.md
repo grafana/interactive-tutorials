@@ -14,9 +14,18 @@ Ask the user for the **learning path slug** (the folder name from `website/conte
 
 ## Workflow
 
-Follow the steps in `.cursor/learning-path-workflows/workflows.md`. This is **Workflow A** (existing markdown).
+Follow these phases in order:
 
-The key difference from Workflow B: milestone markdown already exists. You update each `index.md` by adding `pathfinder_data` to the front matter and replacing the body with `{{< pathfinder/json >}}`.
+1. **Validate environment.** Confirm both the `website` and `interactive-tutorials` repos are accessible in the workspace and Playwright MCP is available.
+2. **Read existing milestones and feature docs.** Locate the learning path in `website/content/docs/learning-paths/[slug]/`. List every milestone directory. Then read the canonical Grafana docs for every product/feature referenced in the milestones — these are the authoritative source for all factual claims.
+3. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks.
+4. **Update website markdown.** Add `pathfinder_data: [slug]-lj/[milestone]` to each milestone `index.md` front matter and replace the body with `{{< pathfinder/json >}}`. Do the same for the path `_index.md` (use `pathfinder_data: [slug]-lj`).
+5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`.
+6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
+7. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
+8. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
+
+For background on how this command relates to `/create-learning-path`, refer to `.cursor/learning-path-workflows/workflows.md`.
 
 ---
 

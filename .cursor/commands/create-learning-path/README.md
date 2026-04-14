@@ -16,15 +16,19 @@ The user provides:
 
 ## Workflow
 
-Follow the steps in `.cursor/learning-path-workflows/workflows.md`. This is **Workflow B** (new from scratch).
+Follow these phases in order:
 
-The key difference from Workflow A: no milestone markdown exists. You create the `_index.md` and every `[milestone]/index.md` from scratch with full Hugo front matter, `pathfinder_data`, and `{{< pathfinder/json >}}`. Refer to `reference/frontmatter-schema.md` for the complete front matter templates.
+1. **Validate environment.** Confirm both the `website` and `interactive-tutorials` repos are accessible in the workspace and Playwright MCP is available.
+2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch. Track which pages you read — these go into the path `_index.md` front matter as `source_docs`.
+3. **Propose path options.** Review existing paths in `website/content/docs/learning-paths/` for structural patterns. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
+4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content.
+5. **Create website markdown.** Create `_index.md` and every `[milestone]/index.md` from scratch with full Hugo front matter, `pathfinder_data`, and `{{< pathfinder/json >}}` body. Refer to `reference/frontmatter-schema.md` for the complete front matter templates.
+6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`.
+7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
+8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
+9. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
 
-### Planning (unique to this workflow)
-
-Before writing files, propose 2-4 path options with milestones. Get user approval before proceeding. Follow these scope guidelines:
-- Target 2-5 minutes per milestone, 6-8 milestones per path (max 10)
-- Read all canonical feature docs before proposing (same rule as Workflow A)
+For background on how this command relates to `/build-interactive-lj`, refer to `.cursor/learning-path-workflows/workflows.md`.
 
 ---
 
