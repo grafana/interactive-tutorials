@@ -1,0 +1,126 @@
+{
+  "id": "otel-fleet-management",
+  "title": "Fleet Management: Create an OpenTelemetry Configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this guide, you'll use Fleet Management to create a remote configuration pipeline for an OpenTelemetry Collector. The pipeline uses the **Application Observability** integration to send metrics, logs, and traces to Grafana Cloud.\n\nBefore starting, ensure the following prerequisites are complete:\n\n1. **Access policy and token** — create a Grafana Cloud access policy with `fleet-management:read`, `metrics:write`, `logs:write`, and `traces:write` scopes (or the `set:otel-data-write` preset)\n2. **OpenTelemetry Collector** — install [OpenTelemetry Collector Contrib](https://github.com/open-telemetry/opentelemetry-collector-releases/tree/main/distributions/otelcol-contrib) with the [opampextension](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/opampextension)\n3. **OpAMP Supervisor** — install and configure the [OpAMP Supervisor](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/cmd/opampsupervisor/README.md) to connect your collector to Fleet Management"
+    },
+    {
+      "type": "section",
+      "id": "otel-configuration",
+      "title": "Create an OpenTelemetry configuration pipeline",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll create a remote configuration pipeline in Fleet Management and walk through the setup wizard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
+          "content": "Open **Fleet Management** from the navigation menu.",
+          "requirements": [
+            "exists-reftarget",
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='fleet-management-page'] button[data-testid='tab-remote-configuration']",
+          "content": "Select the **Remote Configuration** tab. This is where you manage configuration pipelines that are deployed to your collectors.",
+          "tooltip": "Remote Configuration lets you push YAML configs to collectors without restarting them.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='remote-configuration-page'] button[data-testid='remote-configuration-create-button']",
+          "content": "Click **Create configuration pipeline** to start the setup wizard.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Walk through the configuration wizard. You'll select OpenTelemetry as the collector type, choose the Application Observability integration, test the generated config, and save it as a draft.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#pageContent div[data-testid='data-testid Card heading']:nth-match(2) button:text('OpenTelemetry')",
+              "description": "Select **OpenTelemetry** — Fleet Management supports both Alloy and OpenTelemetry collectors."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Card heading']:contains('Application Observability') button:contains('Application Observability')",
+              "description": "Select **Application Observability** — this generates a config that exports metrics, logs, and traces to Grafana Cloud."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:text('Next')",
+              "description": "Click **Next** to review the generated YAML configuration."
+            },
+            {
+              "action": "button",
+              "reftarget": "Test configuration pipeline",
+              "description": "Validate the YAML syntax. Wait for the success message before continuing."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:text('Next')",
+              "description": "Click **Next** to proceed to attribute matching, which controls which collectors receive this pipeline."
+            },
+            {
+              "action": "button",
+              "reftarget": "Save draft",
+              "description": "Save the pipeline as a draft. Drafts aren't deployed until you activate them."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid portal-container'] button[data-testid='data-testid Confirm Modal Danger Button']",
+              "description": "Confirm saving. The pipeline will appear in the configuration list."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='remote-configuration-page'] span:nth-match(3)",
+          "content": "Your configuration pipeline is now saved. Once an OpenTelemetry Collector is installed and connected via the OpAMP Supervisor, you can activate this pipeline to remotely deploy it.",
+          "tooltip": "Activate the pipeline when your collector is connected to push the config remotely.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "guided",
+          "content": "Clean up the demo pipeline so the next person can start fresh.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='remote-config-delete-pipeline-application_o11y_linux'] svg[data-testid='icon-trash-alt']",
+              "description": "Click the delete icon to remove the draft pipeline."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid portal-container'] button[data-testid='data-testid Confirm Modal Danger Button']",
+              "description": "Confirm the deletion — this only removes the draft, no running collectors are affected."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen how to create a remote configuration pipeline for an OpenTelemetry Collector using Fleet Management."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Fleet Management lets you centrally manage OpenTelemetry Collector configurations without manual restarts. Pair this with the OpAMP Supervisor to push config updates, monitor collector health, and manage your fleet at scale."
+    }
+  ]
+}

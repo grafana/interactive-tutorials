@@ -9,10 +9,10 @@ Create content.json files for the Pathfinder interactive experience and correspo
 ```
 **Step 3: Write JSON and Website Markdown**
 
-I'll create two sets of files for each milestone plus a welcome page:
+I'll create two sets of files for each milestone plus a path cover page:
 - content.json (schemaVersion 1.0.0) with interactive blocks and markdown content
 - website index.md with Hugo front matter and {{< pathfinder/json >}} body
-- welcome/content.json for the path landing page (intro, objectives, prerequisites)
+- A root content.json for the path cover page (intro, objectives, prerequisites)
 
 Ready to proceed? (Y/N)
 ```
@@ -32,6 +32,7 @@ Write immediately without introduction.
 > Read `build-interactive-lj/reference/json-schema.md` for content.json schema, block types, and field reference.
 > Read `reference/frontmatter-schema.md` for website front matter fields, CTA types, and paired examples.
 > Proven patterns for common UI elements are available in `.cursor/proven-patterns.mdc` (loaded automatically when editing content.json files).
+> **MANDATORY**: The feature documentation fetched in Step 2 is the authoritative source for all factual claims. When writing blocks, reference those docs — not training data — for feature names, UI navigation paths, capabilities, platform availability, and prerequisites.
 
 ---
 
@@ -42,7 +43,7 @@ Create the learning path directory in interactive-tutorials:
 ```
 interactive-tutorials/
   [slug]-lj/
-    welcome/content.json          ← path landing page (intro, objectives, prerequisites)
+    content.json                   ← path cover page (intro, objectives, prerequisites)
     business-value/content.json
     install-alloy/content.json
     configure-alloy/content.json
@@ -55,7 +56,7 @@ Create the corresponding website directory:
 ```
 website/
   content/docs/learning-paths/[slug]/
-    _index.md                     ← front matter + {{< pathfinder/json >}} → welcome
+    _index.md                     ← front matter + {{< pathfinder/json >}} → path cover page
     business-value/index.md
     install-alloy/index.md
     configure-alloy/index.md
@@ -111,7 +112,7 @@ Convert the plan's step descriptions into blocks:
 
 ### 3. Leave Selectors Empty
 
-For interactive blocks, set `"reftarget": ""` — selectors are discovered in Step 5.
+For interactive blocks, set `"reftarget": ""` — selectors are discovered in Step 6.
 
 Exception: nav menu items use a known pattern and can be filled immediately:
 ```json
@@ -231,18 +232,18 @@ related_journeys:
 
 ---
 
-## Part C: Write Welcome Page
+## Part C: Write Path Cover Page
 
-The welcome page is the learning path landing page. It consists of two files:
+The path cover page is the learning path landing page. It lives at the root of the `[slug]-lj/` directory (not in a `welcome/` subdirectory). It consists of two files:
 
-### 1. Create `welcome/content.json`
+### 1. Create `[slug]-lj/content.json`
 
-This file contains the path introduction, objectives, prerequisites, and boilerplate as markdown blocks:
+This file contains the path introduction, objectives, prerequisites, and boilerplate as markdown blocks. The `id` matches the directory name:
 
 ```json
 {
   "schemaVersion": "1.0.0",
-  "id": "[slug]-welcome",
+  "id": "[slug]-lj",
   "title": "[Path Title]",
   "blocks": [
     {
@@ -271,7 +272,7 @@ This file contains the path introduction, objectives, prerequisites, and boilerp
 
 ### 2. Create `_index.md` in the website repo
 
-The `_index.md` uses `{{< pathfinder/json >}}` as its body, with `pathfinder_data` pointing to the welcome content.json. The front matter contains path-level metadata that Hugo needs for navigation and theming:
+The `_index.md` uses `{{< pathfinder/json >}}` as its body, with `pathfinder_data` pointing to the path-level content.json. The front matter contains path-level metadata that Hugo needs for navigation and theming:
 
 ```markdown
 ---
@@ -305,7 +306,10 @@ related_journeys:
   items:
     - title: [Related path title]
       link: /docs/learning-paths/[related-path]/
-pathfinder_data: [slug]-lj/welcome
+source_docs:
+  - /docs/grafana-cloud/[product]/[feature]/
+  - /docs/grafana/latest/[feature]/
+pathfinder_data: [slug]-lj
 ---
 
 {{< pathfinder/json >}}
@@ -320,6 +324,7 @@ These fields appear only on `_index.md`, not on milestone `index.md` files:
 | `journey` | Yes | Path metadata: group, skill level, source, logo |
 | `cascade` | Yes | Always `{ layout: single-journey }` — propagates to child pages |
 | `cta.type` | Yes | Always `start` for the landing page |
+| `source_docs` | Yes | Canonical docs pages the path content was derived from (populated by AI during Step 2) |
 | `cta.title` | Yes | Prompt text (typically "Are you ready?") |
 | `cta.cta_text` | Yes | Button text (typically "Let's go!") |
 
@@ -327,13 +332,13 @@ These fields appear only on `_index.md`, not on milestone `index.md` files:
 
 ## Page and Milestone Templates
 
-### Welcome Page
+### Path Cover Page
 
-**welcome/content.json:**
+**[slug]-lj/content.json:**
 ```json
 {
   "schemaVersion": "1.0.0",
-  "id": "[slug]-welcome",
+  "id": "[slug]-lj",
   "title": "[Full Path Title]",
   "blocks": [
     {
@@ -393,7 +398,10 @@ related_journeys:
   items:
     - title: [Related path title]
       link: /docs/learning-paths/[related-path]/
-pathfinder_data: [slug]-lj/welcome
+source_docs:
+  - /docs/grafana-cloud/[product]/[feature]/
+  - /docs/grafana/latest/[feature]/
+pathfinder_data: [slug]-lj
 ---
 
 {{< pathfinder/json >}}
@@ -580,25 +588,26 @@ pathfinder_data: [slug]-lj/end-journey
 
 Before proceeding to Step 4:
 
-- [ ] `welcome/content.json` exists with intro, objectives, prerequisites
+- [ ] Path-level `content.json` exists at `[slug]-lj/content.json` with intro, objectives, prerequisites
+- [ ] Path-level `content.json` has `"id": "[slug]-lj"` matching the directory name
 - [ ] Every milestone has a `content.json` file
 - [ ] Every file has `"schemaVersion": "1.0.0"`
-- [ ] Every file has `"id"` in `[path-slug]-[milestone-slug]` format
+- [ ] Every milestone file has `"id"` in `[path-slug]-[milestone-slug]` format
 - [ ] Every file has `"title"` matching the plan
 - [ ] content.json files have NO `"website"` key
 - [ ] Interactive blocks use `"content"` (NOT `"description"`)
 - [ ] Formfill actions use `"targetvalue"` (NOT `"formvalue"`)
-- [ ] Interactive blocks have `"reftarget": ""` (selectors in Step 5)
+- [ ] Interactive blocks have `"reftarget": ""` (selectors in Step 6)
 - [ ] `"exists-reftarget"` is NOT manually added
 - [ ] Every milestone has a corresponding `index.md` in the website repo
 - [ ] Every `index.md` has `layout: single-journey` in front matter
 - [ ] Every `index.md` has `pathfinder_data` pointing to `[slug]-lj/[milestone]`
 - [ ] Every `index.md` body is `{{< pathfinder/json >}}`
-- [ ] `_index.md` exists with `pathfinder_data: [slug]-lj/welcome` and `{{< pathfinder/json >}}` body
+- [ ] `_index.md` exists with `pathfinder_data: [slug]-lj` and `{{< pathfinder/json >}}` body
 - [ ] `_index.md` has `journey`, `cascade`, and `cta.type: start` in front matter
 
 ---
 
 ## Completion
 
-Display a summary listing: all content.json files created (with block counts), all website markdown files created, and verification status. Ask the user if they're ready for Step 4 (Recommender Mapping).
+Display a summary listing: all content.json files created (with block counts), all website markdown files created, and verification status. Ask the user if they're ready for Step 4 (Generate Manifests).
