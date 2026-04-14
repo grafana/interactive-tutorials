@@ -1,0 +1,431 @@
+{
+  "id": "git-sync-setup",
+  "title": "Set Up Git Sync",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "## Step 1: Connect your GitHub App\n\nGit Sync uses a **GitHub App** to authenticate with your repository. If you haven't already created one, you can do so from your GitHub organization's settings under **[Developer settings > GitHub Apps](https://github.com/settings/apps)**.\n\nYou'll need three pieces of information from your GitHub App:\n\n- **App ID** — found on the app's General settings page\n- **Installation ID** — found in the URL after installing the app to your organization\n- **Private Key** — generated and downloaded from the app's settings\n\n"
+    },
+    {
+      "type": "section",
+      "id": "guide-section-connect-github-app",
+      "title": "Connect your GitHub App",
+      "requirements": [
+        "is-admin"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/admin/provisioning/connect/github']",
+          "content": "Click on **Configure with GitHub** to start setting up Git Sync with a GitHub repository."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('Connect with GitHub App')",
+          "content": "Select the **Connect with GitHub App** option."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('Connect to a new app')",
+          "content": "Select **Connect to a new app** to register a new GitHub App connection."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#title",
+          "targetvalue": "My GitHub App",
+          "content": "Enter a display name for your GitHub App connection. This is just for your reference within Grafana."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#appID",
+          "targetvalue": "<YourAppId>",
+          "content": "Paste in your GitHub App's **App ID**. You can find this on the app's settings page in GitHub.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#installationID",
+          "targetvalue": "<YourInstallationId>",
+          "content": "Paste in your GitHub App's **Installation ID**. This appears in the URL when you view the app installation in your GitHub organization settings.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#privateKey",
+          "targetvalue": "<YourPrivateKey>",
+          "content": "Paste in your GitHub App's **Private Key**. This is the `.pem` file you downloaded when you generated a key for the app.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create connection",
+          "content": "Click **Create connection** to save and verify your GitHub App credentials."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Step 2: Configure and synchronize your repository\n\nNow that Grafana is connected to GitHub, it's time to choose which repository to synchronize with. This repository is where your Grafana dashboards and other resources will be stored as code.\n\nYou can use an existing repository or create a new empty one. Git Sync will handle the initial export for you."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-configure-repository",
+      "title": "Configure and synchronize your repository",
+      "requirements": [
+        "navmenu-open",
+        "is-admin",
+        "section-completed:guide-section-connect-github-app"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='https://github.com/owner/repository']",
+          "content": "Select your **GitHub repository** from the dropdown. Only repositories that the GitHub App has access to will appear here.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Configure repository",
+          "content": "Click **Configure repository** to proceed with the selected repo."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Choose what to synchronize",
+          "content": "Click **Choose what to synchronize** to select which Grafana resource types will be stored in this repository."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#repository-title",
+          "targetvalue": "Git Sync Workshop Demo",
+          "content": "Give the repository a **Display Name**. This will also become the name of the folder in Grafana where your synchronized resources live.",
+          "tooltip": "This will also become the name of the folder in Grafana where your synchronized dashboards will live."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Choose additional settings",
+          "content": "Click **Choose additional settings** to review optional configuration for your sync."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Finish",
+          "content": "Click **Finish** to complete the setup."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Git Sync is now configured! Your Grafana resources are being synchronized to your GitHub repository.\n\nFrom here, any changes you make to dashboards in Grafana will be committed to the repository, and changes pushed to the repository will be reflected in Grafana."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-74819",
+      "title": "Reviewing your provisioned repository",
+      "requirements": [
+        "section-completed:guide-section-configure-repository"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Resources')",
+          "content": "The **Resources** card shows the Grafana resource types being synchronized and how many of each exist in the repository.",
+          "tooltip": "In a fresh setup, you'll typically see dashboards and folders here. As you add more resources to sync, this list will grow.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Health')",
+          "content": "The **Health** card shows the current status of the connection between Grafana and your GitHub repository.",
+          "tooltip": "A **Healthy** status with a **Connected** connection status means Grafana can communicate with your GitHub App successfully. If this shows an error, check your GitHub App credentials.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Webhook')",
+          "content": "The **Webhook** card shows the GitHub webhook that notifies Grafana when changes are pushed to the repository.",
+          "tooltip": "The webhook listens for `pull_request` and `push` events. When someone pushes a change to your repo, the webhook triggers Grafana to pull in those changes automatically.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Pull status')",
+          "content": "The **Pull status** card shows details about the most recent sync from GitHub to Grafana, including the branch and commit reference.",
+          "tooltip": "You can use the **Pull** button here to manually trigger a sync from your repository at any time. The **Last Ref** links directly to the commit on GitHub.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Card heading']:contains('Jobs')",
+          "content": "The **Jobs** table shows a history of all sync operations, including their status, duration, and any messages.",
+          "tooltip": "This is useful for debugging sync issues. If a job fails, expand it to see the full error message. A \"no changes to sync\" message means everything is already up to date.",
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Working with dashboards\n\nNow that Git Sync is set up, let's see it in action. With Git Sync enabled, every dashboard change you make in Grafana creates a **pull request** in your GitHub repository — giving you version history, peer review, and a clear audit trail.\n\nWe'll walk through three common workflows: saving a copy of an existing dashboard, creating a brand new one, and updating one that's already synced."
+    },
+    {
+      "type": "markdown",
+      "content": "### Save an existing dashboard\n\nIf you already have dashboards in Grafana that aren't yet managed by Git Sync, you can bring them in by saving a copy into your synced folder. This leaves the original untouched while adding a version-controlled copy to your repository."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-68363",
+      "title": "Save an existing dashboard",
+      "requirements": [
+        "section-completed:guide-section-74819"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click **Dashboards** in the left-side menu."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Find and open a dashboard that you'd like to save a copy of into your synced repository."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+          "content": "Click **Edit** to enter the dashboard editor."
+        },
+        {
+          "type": "guided",
+          "content": "Follow the steps below:",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Nav toolbar'] svg:nth-match(2)",
+              "description": "Open the save dropdown menu."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:contains('Save as copy')",
+              "description": "Select **Save as copy** to create a duplicate."
+            },
+            {
+              "action": "button",
+              "reftarget": "Select folder",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "description": "Click **Select folder** to choose where to save the copy."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#:r2cr:",
+              "description": "Select your Git Sync folder from the list.",
+              "skippable": true
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#dashboard-title",
+              "targetvalue": "Existing Dashboard",
+              "description": "Give the dashboard copy a name."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role=\"dialog\"] button:contains('Save')",
+              "description": "Click **Save** to create the copy in your synced folder."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Open pull request in GitHub",
+          "content": "Because this dashboard lives in a synced folder, Grafana prompts you to open a pull request. Click **Open pull request in GitHub** to review the change on GitHub.",
+          "tooltip": "Every change to a synced dashboard generates a pull request, giving your team the chance to review before merging."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Create a new dashboard\n\nNext, let's create a brand new dashboard directly inside the synced folder. Any dashboard created here is automatically tracked by Git Sync."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-87873",
+      "title": "Create a new dashboard",
+      "requirements": [
+        "section-completed:guide-section-68363"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click **Dashboards** in the left-side menu."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click on the folder that you synced with Git — this is where our new dashboard will live."
+        },
+        {
+          "type": "multistep",
+          "content": "Click **New** and select **New dashboard** to start building from scratch.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#pageContent button:contains('New')",
+              "tooltip": "Click the **New** button."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:contains('New dashboard')",
+              "tooltip": "Select **New dashboard** from the menu."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Add a visualization to the dashboard. We'll use the built-in **Grafana** data source for a quick demo panel.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Create new panel button']",
+              "tooltip": "Click **Add visualization** to create your first panel."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Built in data source list'] div:nth-match(27) button",
+              "tooltip": "Select the **Grafana** built-in data source."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Refresh** to run the query and preview data in your panel."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click **Back to dashboard** to exit the panel editor and return to the dashboard view."
+        },
+        {
+          "type": "guided",
+          "content": "Save the dashboard. Since it's inside a synced folder, this will trigger a pull request.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Save dashboard button']",
+              "description": "Click **Save dashboard**."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role=\"dialog\"] button:contains('Save')",
+              "description": "Confirm by clicking **Save**."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Open pull request in GitHub",
+          "content": "Click **Open pull request in GitHub** to view the pull request for your new dashboard.",
+          "tooltip": "On GitHub, you'll see the dashboard definition added as a JSON file in the repository."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Update an existing dashboard\n\nFinally, let's modify a dashboard that's already being managed by Git Sync. When you save changes to a synced dashboard, Grafana will ask you for a **commit message** describing what you changed — just like committing code."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-42491",
+      "title": "Update an existing dashboard",
+      "requirements": [
+        "section-completed:guide-section-87873"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click **Dashboards** in the left-side menu."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open a dashboard from your synced folder that you'd like to modify."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+          "content": "Click **Edit** to enter the dashboard editor."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Make a change to your existing dashboard, such as adding a new visualization."
+        },
+        {
+          "type": "guided",
+          "content": "Save the dashboard. Since this dashboard is already synced, you'll be prompted to write a **commit message** describing your change.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Save dashboard button']",
+              "description": "Click **Save dashboard**."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea[name=\"comment\"]",
+              "targetvalue": "Added a new time series panel.",
+              "description": "Write a short commit message describing your change. This will appear in the Git history."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role=\"dialog\"] button:contains('Save')",
+              "description": "Click **Save** to commit the change."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Open pull request in GitHub",
+          "content": "Click **Open pull request in GitHub** to review the diff of your dashboard changes on GitHub.",
+          "tooltip": "The pull request will show exactly what changed in the dashboard JSON — making it easy for teammates to review."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n## Guide complete!\n\nYou've successfully configured Git Sync and experienced the core workflows for managing Grafana dashboards as code. Here's what you covered:\n\n- **Connected Grafana to GitHub** using a GitHub App for secure authentication\n- **Synchronized a repository** to store your Grafana resources as version-controlled files\n- **Saved a copy** of an existing dashboard into your synced folder\n- **Created a new dashboard** directly in a Git-managed folder\n- **Updated a synced dashboard** with a descriptive commit message\n\nEvery change you made generated a **pull request** on GitHub — bringing code review, version history, and collaboration to your Grafana workflow.\n\n### What's next?\n\n- **Merge your pull requests** on GitHub and watch the changes sync back to Grafana automatically\n- **Invite your team** to collaborate — they can review and approve dashboard changes just like any other code\n- **Explore branch-based workflows** to test dashboard changes in isolation before merging to main\n- Visit the [Git Sync documentation](https://grafana.com/docs/grafana-cloud/connect-externally/provisioning/git-sync/) to learn more about advanced configuration options"
+    }
+  ]
+}
