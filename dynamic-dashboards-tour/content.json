@@ -1,0 +1,420 @@
+{
+  "id": "dynamic-dashboards-tour",
+  "title": "Dynamic Dashboards: Explore the New Dashboard Experience",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Dynamic Dashboards is a new dashboarding experience in Grafana built on the Dashboard v2 schema. It introduces **tabs**, **auto-grid layouts**, **conditional visibility rules**, and an **interactive content outline** — making large, complex dashboards easier to build and navigate.\n\nIn this guide, you'll create a new dynamic dashboard and explore each of these features hands-on."
+    },
+    {
+      "type": "section",
+      "id": "create-dashboard",
+      "title": "Create a new dynamic dashboard",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll create a new dashboard, which automatically uses the dynamic dashboard editor."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Open **Dashboards** from the navigation menu.",
+          "requirements": [
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Create a new dashboard using the **New** button.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#pageContent button:text('New')"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:text('New dashboard')"
+            }
+          ],
+          "requirements": [
+            "on-page:/dashboards"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "You're now in the dynamic dashboard editor with the Add pane open. The right-side toolbar is where you'll find all the new features."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "explore-add-pane",
+      "title": "Explore the Add pane",
+      "autoCollapse": false,
+      "requirements": [
+        "section-completed:create-dashboard"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the Add pane to see how panels, layouts, and controls are added to a dynamic dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
+          "content": "Click the **+** button in the right toolbar to open the Add pane.",
+          "tooltip": "The Add pane is your starting point for building dashboard content.",
+          "requirements": [
+            "on-page:/dashboard/new"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid sidebar add new panel']",
+          "content": "The **Panel** area at the top lets you drag or click to add a new visualization panel to the dashboard.",
+          "tooltip": "Click to add a panel, or drag it onto the canvas to place it precisely.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Group into rows')",
+          "content": "**Group into rows** lets you organize panels into collapsible row sections — similar to the classic dashboard experience.",
+          "tooltip": "Rows help group related panels and reduce scrolling on large dashboards.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Group into tabs')",
+          "content": "**Group into tabs** is a new dynamic dashboard feature. Tabs let you segment your dashboard horizontally — each tab can hold its own set of panels and rows.",
+          "tooltip": "Tabs eliminate the need to split metrics across multiple dashboards.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Variable')",
+          "content": "You can also add **Variables**, **Annotation queries**, and **Links** directly from the Add pane as dashboard controls.",
+          "tooltip": "Variables power cross-filtering and conditional visibility.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "The Add pane gives you one place to build your entire dashboard structure — panels, layout groups, and controls."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-tabs",
+      "title": "Add and configure tabs",
+      "requirements": [
+        "section-completed:explore-add-pane"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll add a tab to the dashboard and explore the tab configuration options including layout and conditional visibility."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Group into tabs')",
+          "content": "Click **Group into tabs** to add your first tab to the dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid tab title input']",
+          "targetvalue": "Overview",
+          "content": "The tab configuration pane opens on the right. Rename this tab to something descriptive.",
+          "tooltip": "Use descriptive names like 'Overview', 'Metrics', or 'Logs' to organize your dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[aria-label='layout-selection-option-Auto']",
+          "content": "Switch between **Custom** and **Auto** layout modes. Auto layout automatically arranges panels in a responsive grid that adapts to different screen sizes.",
+          "tooltip": "Auto layout handles column count and sizing so panels reflow cleanly on any screen.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Expand Repeat options category']",
+          "content": "**Repeat options** lets you automatically duplicate this tab for each value of a variable. For example, repeat a tab per environment or region to create per-context views without manual duplication.",
+          "tooltip": "Pair with a multi-value variable to generate one tab per selected value.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Value picker button Add rule']",
+          "content": "The **Show / hide rules** section lets you conditionally show or hide this tab based on variable values. Click **+ Add rule** to create a visibility condition.",
+          "tooltip": "Use this to show region-specific tabs only when that region is selected.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "Tabs combined with repeat options and show/hide rules give you powerful conditional rendering — the dashboard adapts dynamically to what the viewer needs to see."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-panel",
+      "title": "Add a visualization panel",
+      "requirements": [
+        "section-completed:add-tabs"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll add a panel using TestData so the dashboard has some content to work with."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
+          "content": "Open the **Add** pane from the right toolbar."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid sidebar add new panel']",
+          "content": "Click the **Panel** area to add a new panel to the dashboard.",
+          "tooltip": "This adds a panel to the currently active tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Sidebar container'] button:text('Configure')",
+          "content": "Click **Configure** to open the full panel editor where you can choose a data source and build a query.",
+          "tooltip": "The panel editor gives you full control over data sources, queries, and visualization options."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "content": "Type **TestData** into the data source picker to select the built-in test data source.",
+          "targetvalue": "Grafana TestData",
+          "tooltip": "TestData generates sample data without needing an external connection."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click **Back to dashboard** to return to the canvas with your new panel.",
+          "tooltip": "The panel is added to your Overview tab with sample time series data."
+        },
+        {
+          "type": "markdown",
+          "content": "Your dashboard now has a visualization. Next, you'll organize it using rows."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "group-into-rows",
+      "title": "Organize panels with rows",
+      "requirements": [
+        "section-completed:add-panel"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll group your panel into a collapsible row to see how rows work inside tabs."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
+          "content": "Open the **Add** pane again."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Group into rows')",
+          "content": "Click **Group into rows** to wrap the existing panel in a collapsible row.",
+          "tooltip": "Rows can be nested inside tabs to create a multi-level layout hierarchy."
+        },
+        {
+          "type": "markdown",
+          "content": "Rows inside tabs give you two levels of organization — tabs for broad categories and rows for grouping related panels within each tab. Next, you'll open the content outline to see this hierarchy."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "content-outline",
+      "title": "Navigate with the content outline",
+      "requirements": [
+        "section-completed:group-into-rows"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the content outline to see a tree-view of your entire dashboard structure."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar outline button']",
+          "content": "Click the **Outline** button in the right toolbar to open the content outline pane.",
+          "tooltip": "The outline gives you a bird's-eye view of all dashboard elements."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Sidebar container'] ul[role='tree']",
+          "content": "The content outline shows your dashboard as a navigable tree: **Dashboard** at the root, with your Overview tab, row, and panel nested below. Click any item to jump directly to it.",
+          "tooltip": "Essential for large dashboards — jump to any section instantly instead of scrolling.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "As you add more panels, rows, and tabs, the outline tree grows with them — making even dashboards with hundreds of panels easy to navigate."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "dashboard-options",
+      "title": "Configure dashboard options",
+      "requirements": [
+        "section-completed:content-outline"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the dashboard options pane to see the top-level settings including the layout toggle."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar options button']",
+          "content": "Click the **Options** (gear) button in the right toolbar to open the dashboard options pane.",
+          "tooltip": "Dashboard-level settings live here — title, description, layout, and variables."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[value='New dashboard']",
+          "targetvalue": "My Dynamic Dashboard",
+          "content": "Set the dashboard **Title** directly from this pane — no need to open a separate settings page.",
+          "tooltip": "Quick inline editing without leaving the dashboard canvas."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[aria-label='layout-selection-option-Tabs']",
+          "content": "The **Layout** toggle lets you switch the entire dashboard between **Rows** mode (classic) and **Tabs** mode (dynamic). This controls the top-level layout structure.",
+          "tooltip": "Switching layouts reorganizes how all your panels are grouped.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Add variable')",
+          "content": "The **Variables** section lets you add dashboard variables. Variables power template queries, cross-filtering, and the conditional show/hide rules you saw on tabs.",
+          "tooltip": "Variables are the engine behind dynamic, interactive dashboards.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "All dashboard configuration is accessible from the side pane — you can update settings without leaving the editor."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "edit-as-code",
+      "title": "View the dashboard as code",
+      "requirements": [
+        "section-completed:dashboard-options"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the code editor to see the new Dashboard v2 JSON schema that powers dynamic dashboards."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Code']",
+          "content": "Click the **Code** button in the right toolbar to open the code editor.",
+          "tooltip": "View and edit the raw dashboard definition — great for version control and automation."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:text('YAML')",
+          "content": "Toggle between **JSON** and **YAML** formats. The underlying schema is Dashboard v2 — notice the `TabsLayout` kind and structured `elements` that replace the flat panel array of the classic schema.",
+          "tooltip": "YAML can be easier to read for large dashboards.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid CanvasGridAddActions add-panel']",
+          "content": "You can also add panels and group them directly from the code view using **Add panel** and **Group panels**.",
+          "tooltip": "Combines code editing with visual controls for a flexible workflow.",
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "The v2 schema enables all dynamic features — tabs, auto-grid, conditional visibility — while remaining fully editable as code for GitOps and infrastructure-as-code workflows."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "clean-up",
+      "title": "Clean up",
+      "requirements": [
+        "section-completed:edit-as-code"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll discard this dashboard without saving so the next person can start fresh."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+          "content": "Click **Exit edit** to leave the dashboard editor without saving."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Discard')",
+          "content": "Click **Discard** to confirm you want to leave without saving. This removes the unsaved dashboard.",
+          "tooltip": "The dashboard is not saved — the next person gets a clean slate."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "content": "Navigate back to the **Dashboards** list to start fresh.",
+          "verify": "on-page:/dashboards"
+        },
+        {
+          "type": "markdown",
+          "content": "All cleaned up and ready for the next person."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've explored the key features of Dynamic Dashboards in Grafana:\n\n- **Tabs** to segment dashboard content horizontally\n- **Repeat options** to auto-generate tabs per variable value\n- **Auto-grid layout** for responsive panel arrangement\n- **Show/hide rules** for conditional rendering based on variables\n- **Rows** nested inside tabs for multi-level organization\n- **Content outline** for tree-based navigation\n- **Inline dashboard options** for quick configuration\n- **Edit as code** with the new Dashboard v2 schema\n\nThese features are in public preview and available in Grafana 12.4+. Create your own dynamic dashboards to organize complex observability data."
+    }
+  ]
+}
