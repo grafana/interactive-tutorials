@@ -1,0 +1,111 @@
+{
+  "id": "alerting-notification-message",
+  "title": "Configure alert notification messages",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Annotations add context to your alert notifications — a summary of what's wrong, a detailed description, and a link to your runbook. Good annotations help responders understand and resolve issues without needing to open Grafana.\n\nIn this guide, you'll configure the summary, description, and runbook URL annotations for your alert rule."
+    },
+    {
+      "type": "section",
+      "id": "add-summary",
+      "title": "Add a summary annotation",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll write a summary that appears as the headline in alert notifications."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='annotation-value-0']",
+          "content": "In the **Configure notification message** section, locate the **Summary** field.\n\nThe summary is the first line responders see in Slack, PagerDuty, email, and other channels. Keep it brief and include template variables to make it dynamic.\n\n| If alerting on | Example summary |\n|----------------|------------------|\n| CPU usage | `CPU usage is high on {{ $labels.instance }}` |\n| Error rate | `Error rate elevated for {{ $labels.job }}` |\n| Disk space | `Disk space low on {{ $labels.instance }}` |\n| Log errors | `{{ $labels.job }} is logging excessive errors` |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Template variables you can use in annotations:\n\n| Variable | Value |\n|----------|-------|\n| `{{ $labels.instance }}` | The instance label (hostname or IP) |\n| `{{ $labels.job }}` | The job label (service name) |\n| `{{ $labels.<key> }}` | Any label from your query results |\n| `{{ $value }}` | The current metric value that triggered the alert |"
+        },
+        {
+          "type": "markdown",
+          "content": "Your summary annotation gives responders a quick headline of what triggered the alert."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-description",
+      "title": "Add a description annotation",
+      "requirements": ["section-completed:add-summary"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll write a description that provides detailed context for responders."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='annotation-value-1']",
+          "content": "In the **Description** field, add detailed context that helps responders understand and triage the alert.\n\nInclude:\n- What the alert monitors and why it matters\n- The current value and threshold\n- Suggested first steps for investigation\n\nFor example:\n\n```\nCPU usage on {{ $labels.instance }} has exceeded 80% for the pending period.\nCurrent value: {{ $value }}%.\n\nCheck for:\n- Recent deployments that may have increased load\n- Runaway processes consuming CPU\n- Whether the host needs scaling\n```",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your description annotation provides the detailed context responders need to investigate the issue."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-runbook-url",
+      "title": "Add a runbook URL",
+      "requirements": ["section-completed:add-description"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll link a runbook that gives responders step-by-step resolution instructions."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='annotation-value-2']",
+          "content": "In the **Runbook URL** field, enter a link to your team's documentation for responding to this type of alert.\n\nA runbook should answer:\n- What does this alert mean?\n- How do I verify the issue?\n- What are the resolution steps?\n- Who should I escalate to if I can't resolve it?\n\nFor example: `https://wiki.example.com/runbooks/high-cpu-usage`",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "If you don't have a runbook yet, leave this field empty for now. You can add it later by editing the alert rule.\n\nConsider creating runbooks for your most common alert types:\n\n| Alert type | Runbook content |\n|------------|----------------|\n| High CPU | Check top processes, recent deploys, scaling options |\n| Disk full | Identify large files, log rotation, cleanup scripts |\n| Error rate spike | Check recent changes, downstream dependencies, rollback steps |"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:contains('Add custom annotation')",
+          "content": "Optionally, click **Add custom annotation** to add additional key-value metadata to your alert notifications. Custom annotations are useful for including team-specific information or links.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:contains('Link dashboard and panel')",
+          "content": "Optionally, click **Link dashboard and panel** to associate this alert with a specific dashboard. When linked, alert notifications include a direct link to the relevant dashboard for faster investigation.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your runbook URL gives responders a direct link to resolution instructions."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've configured your alert notification messages. A clear summary helps responders triage, a detailed description provides investigation context, and a runbook URL links to resolution steps. Together, these annotations make your alerts actionable."
+    }
+  ]
+}
