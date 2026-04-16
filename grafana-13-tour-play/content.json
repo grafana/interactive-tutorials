@@ -47,6 +47,278 @@
     },
     {
       "type": "section",
+      "id": "graphviz-visualization",
+      "title": "Graphviz visualization",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Graphviz lets you visualize relationships, flows, and architectures using the Graphviz DOT language with live metrics from any Grafana data source.\n\nDefine diagrams as code, bind metrics to visual properties, and let Graphviz layout engines handle the rest. Perfect for service topologies, business processes, infrastructure architectures, and organizational structures that update automatically with your data."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/je7t48l/graphviz-panel-showcase",
+          "content": "**Graphviz** — Open this dashboard to try the new **Graphviz** panel visualization."
+        },
+        {
+          "type": "markdown",
+          "content": "## Starting point"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-1'] section[data-testid='data-testid Panel header Customer Purchasing Process (traffic, revenue)']",
+          "content": "Observe the panel in this dashboard titled **Customer Purchasing Process (traffic, revenue)**.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Note that the panel contains a diagram of a business flow for a hypothetical company's e-commerce checkout process.\n\nThe audience for this diagram would probably be more business-focused than purely technical, and the specifics of which microservices, frontends, etc., would be represented in aggregate for our hypothetical use case.\n\nOur diagram has all the right data in it ... but it's a little plain, it needs something more to bring the data to life.\n\nLet's make it look like the **Customer Purchasing Process (traffic, revenue, SLAs)** panel instead."
+        },
+        {
+          "type": "markdown",
+          "content": "## Objective\n\nWe will bring this diagram to life by binding our data to visual properties by:\n\n- Adding a rule to an existing edge (arrow) override that will color-code edges, and\n- Creating a new node (box) override rule with automatic data matching to color-code nodes\n\n"
+        },
+        {
+          "type": "markdown",
+          "content": "## Adding data-driven colors to edges\n\nLet's add color coding to edges by updating an existing override rule."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/je7t48l/graphviz-panel-showcase?editPanel=1",
+          "content": "Navigate to the edit view to edit the panel"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Panel editor content'] div[data-testid='data-testid Options group Edge overrides']",
+          "content": "In the panel options, scroll down to the **Edge overrides** section",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid radio-button'] label:contains('Autodetect')",
+          "content": "Note that **Autodetect** matched all of the edges we're targeting",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "This will **automatically** execute the steps required to add color-coding to the edges.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Override edge property"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:text('Stroke Color')",
+              "description": "Select **Stroke Color** from the menu."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input:nth-match(6)",
+              "targetvalue": "Conversion rate (percentage)",
+              "description": "For the **Threshold set**, provide **Conversion rate (percentage)** as the input",
+              "validateInput": true
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='data-testid Edge overrides Edge override rules field property editor'] input:nth-match(5)",
+              "targetvalue": "conversion_rate",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "description": "For the **Color field**, provide **conversion_rate** as the input.",
+              "validateInput": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='graphviz-panel-rendered'] div[data-testid='graphviz-panel-rendered-svg']",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Observe that all of the edges are now colour coded based on **conversion_rate**!"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "## Adding data-driven colors to nodes\n\nLet's add color coding to nodes by creating a brand new override rule."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Panel editor content'] div[data-testid='data-testid Options group Node overrides']",
+          "content": "In the panel options, scroll down to the **Node overrides** section",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add node override rule",
+          "content": "Note that there are no node overrides yet. Click on **+ Add node override rule** button to create a new one.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] button:text('All')",
+          "content": "Click the **All** button to the right of the **Select Nodes by ID** input",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid radio-button'] label:nth-match(6)",
+          "content": "Note that the default **Autodetect** match mode found matches for all nodes.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "This will automatically execute the steps required to add color-coding (stroke color) to the nodes' outline.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Override node property"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:text('Stroke Color')"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input:nth-match(7)",
+              "targetvalue": "Service health (SLA percentage)"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] input:nth-match(4)",
+              "targetvalue": "service_health"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Customer Purchasing Process (traffic, revenue)'] div[data-testid='data-testid panel content']",
+              "tooltip": "Observe that all of the nodes now have an outline colour based on the health of their services.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "g#abandon_checkout",
+              "tooltip": "Note that the abandonment nodes have a default colour. Hmmm, that's not quite right!",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] input:nth-match(1)",
+          "content": "Scroll back up to the **Select Nodes by ID** input at the top of **Node override rule 1**.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "Remove **abandon**, **abandon_checkout**, and **bounce** nodes.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div:text('abandon') button",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:text('abandon_checkout') button",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:text('bounce') button",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "g#abandon_checkout",
+          "content": "Note that those nodes no longer have the override applied, since they have no service.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "This will automatically execute the steps required to add color-coding (filled color) to the nodes' outline.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Override node property"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:text('Fill Color')"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input:nth-match(8)",
+              "targetvalue": "Service health (SLA percentage)"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] input:nth-match(6)",
+              "targetvalue": "service_health"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='graphviz-panel-rendered'] div[data-testid='graphviz-panel-rendered-svg']",
+              "tooltip": "We're done! Now we can see that cart and checkout abandonment cost our company a lot of money! Also, both of the services behind those experiences have been having trouble meeting their SLAs."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You've tried out our new Graphviz panel visualization!\n\nNow, we can see that cart and checkout abandonment cost our company a lot of money! Also, both of the services behind those experiences have been having trouble meeting their SLAs.\n\n---\n\nCheck out [Graphviz panel](https://grafana.com/grafana/plugins/grafana-graphviz-panel/) documentation for more information!"
+        }
+      ]
+    },
+    {
+      "type": "section",
       "id": "guide-section-86436",
       "title": "New and improved Gauge visualization",
       "blocks": [
