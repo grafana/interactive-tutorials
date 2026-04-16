@@ -32,7 +32,8 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "Run query",
-          "content": "Click the **Run query** button",
+          "content": "Click **Run query** to execute the SQL expression.",
+          "tooltip": "Execute the expression and see filtered results in the panel.",
           "requirements": [
             "exists-reftarget"
           ]
@@ -63,7 +64,8 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "label:contains('Circle')",
-          "content": "Click the **Circular** button to change the style from arc to circular",
+          "content": "Switch to **Circle** style to see the new circular gauge.",
+          "tooltip": "Circular gauges support sparklines, gradients, and center glow.",
           "requirements": [
             "exists-reftarget"
           ]
@@ -72,7 +74,8 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "label[aria-label='Center glow']",
-          "content": "Toggle **Center glow** to add a center glow effect",
+          "content": "Toggle **Center glow** to add a glow effect.",
+          "tooltip": "This accessibility feature makes the current value easier to read at a glance.",
           "requirements": [
             "exists-reftarget"
           ]
@@ -82,7 +85,7 @@
           "action": "formfill",
           "reftarget": "#gauge-segmentCount",
           "targetvalue": "30",
-          "content": "Increase the segment by adding a number",
+          "content": "Set the **Segment count** to break the gauge into segments.",
           "tooltip": "Try typing 30!",
           "requirements": [
             "exists-reftarget"
@@ -125,8 +128,8 @@
               "action": "formfill",
               "reftarget": "div[data-testid='data-testid Cell options Cell type field property editor'] input[role='combobox']",
               "targetvalue": "Pill",
-              "validateInput": true,
-              "description": "Type **Pill** to change the cell type and hit enter"
+              "description": "Type **Pill** to change the cell type and hit enter",
+              "validateInput": true
             }
           ]
         },
@@ -152,44 +155,64 @@
           "content": "**Copy-paste styles** — Open this dashboard to try out the new copy-paste styles feature and follow the guided step below!"
         },
         {
-          "type": "guided",
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid dashboard controls'] button[data-testid='data-testid Edit dashboard button']",
+          "content": "Click **Edit** to enter edit mode.",
+          "tooltip": "You need to be in edit mode to access panel style options.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-8'] section[data-testid='data-testid Panel header Gauge with sparkline and gradient']",
+          "content": "Find the **Gauge with sparkline and gradient** panel — you'll copy styles from this one.",
+          "tooltip": "This panel's visual styling will be copied to another panel.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "scrollContainer": "div[data-testid='data-testid DashboardEditPaneSplitter primary body'] div[data-testid='data-testid DashboardEditPaneSplitter body container']"
+        },
+        {
+          "type": "multistep",
           "content": "Follow along to see how copy-paste styles work in action!",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid dashboard controls'] button[data-testid='data-testid Edit dashboard button']",
-              "description": "Click the **Edit** button if you are not in edit mode.",
-              "skippable": true
+              "reftarget": "div[data-testid='data-testid header-container'] button[data-testid='data-testid Panel menu Gauge with sparkline and gradient']",
+              "tooltip": "Open the panel menu to access style options.",
+              "lazyRender": true,
+              "scrollContainer": "div[data-testid='data-testid DashboardEditPaneSplitter primary body'] div[data-testid='data-testid DashboardEditPaneSplitter body container']"
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-testid='data-testid portal-container'] div[data-testid='data-testid Panel menu item Styles']",
+              "tooltip": "Hover to reveal the style actions."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid portal-container'] div:text('Copy styles')",
+              "tooltip": "Copy the visual styling from this panel."
             },
             {
               "action": "highlight",
               "reftarget": "div[data-testid='data-testid header-container'] button[data-testid='data-testid Panel menu Gauge with sparkline and center glow']",
-              "description": "On this panel, hover and click the three-dot icon"
+              "tooltip": "Open the menu on the target panel."
             },
             {
               "action": "hover",
               "reftarget": "div[data-testid='data-testid portal-container'] div[data-testid='data-testid Panel menu item Styles']",
-              "description": "Hover over the **Styles** option"
+              "tooltip": "Hover to reveal the style actions."
             },
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid SubMenu container'] button[data-testid='data-testid Panel menu item Copy styles']",
-              "description": "Click the **Copy styles** button"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-testid header-container'] button[data-testid='data-testid Panel menu Gauge with sparkline and gradient']",
-              "description": "On a different panel, hover and click the three-dot icon"
-            },
-            {
-              "action": "hover",
-              "reftarget": "div[data-testid='data-testid portal-container'] div[data-testid='data-testid Panel menu item Styles']",
-              "description": "Hover over the **Styles** option"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-testid SubMenu container'] button[data-testid='data-testid Panel menu item Paste styles']",
-              "description": "Click the **Paste styles** button"
+              "reftarget": "div[data-testid='data-testid portal-container'] div:text('Paste styles')",
+              "tooltip": "Apply the copied styles to this panel."
             }
           ]
         },
@@ -218,7 +241,8 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='data-testid toggle-viz-picker']",
-          "content": "Click the **Change** button to select a different visualization type.",
+          "content": "Click **Change** to open the visualization picker.",
+          "tooltip": "The updated picker now shows full-size previews of each suggestion.",
           "requirements": [
             "exists-reftarget"
           ]
@@ -227,7 +251,8 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid suggestion-Bar gauge - LCD']",
-          "content": "Select one of the suggested visualizations and see your visualization update!",
+          "content": "Pick **Bar gauge - LCD** and watch the panel update in real time.",
+          "tooltip": "Each suggestion shows a live preview before you commit to it.",
           "requirements": [
             "exists-reftarget"
           ]
