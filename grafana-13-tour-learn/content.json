@@ -39,42 +39,39 @@
           "content": "**Data sources** — Navigate to the data sources page, then follow the interactive steps below to explore suggested dashboards for your data source."
         },
         {
-          "type": "guided",
+          "type": "multistep",
           "content": "Search for a Prometheus data source and explore its suggested dashboards.",
           "steps": [
             {
               "action": "formfill",
-              "reftarget": "#pageContent div[data-testid='input-wrapper']",
+              "reftarget": "input[placeholder='Search by name or type']",
               "targetvalue": "prom",
-              "description": "Search for a **Prometheus** data source.",
-              "formHint": "try typing \"prom\"",
-              "validateInput": true
+              "tooltip": "Filter the list to find Prometheus data sources."
             },
             {
               "action": "highlight",
               "reftarget": "button:text('Build a dashboard'):nth-match(1)",
-              "description": "Click **Build a dashboard** on the first Prometheus data source."
+              "tooltip": "Start creating a dashboard from this data source."
             },
             {
               "action": "highlight",
-              "reftarget": "menuitem:text('From suggestions')",
-              "description": "Select **From suggestions** to see pre-built dashboards for this data source."
+              "reftarget": "[role='menuitem']:text('From suggestions')",
+              "tooltip": "Choose a pre-built dashboard recommended for this data source."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Card heading']:nth-match(10)",
+              "tooltip": "Both Grafana-curated and community-contributed templates are listed here."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#_r_bl_ button[aria-label='Close']",
+              "tooltip": "Close the suggestions panel to continue the tour."
             }
           ],
           "requirements": [
             "exists-reftarget"
           ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-floating-ui-focusable]",
-          "content": "Browse the suggested dashboards — both Grafana-provided and community-built templates are available. Pick one to get started instantly!",
-          "tooltip": "Both Grafana-curated and community-contributed templates are listed here.",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "doIt": false
         }
       ]
     },
@@ -94,24 +91,23 @@
           "content": "**Dashboards** — Navigate to the dashboards page, then follow the interactive steps below to try and create a dashboard from a template."
         },
         {
-          "type": "guided",
+          "type": "multistep",
           "content": "Follow along to learn how to create a dashboard from a template",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "#pageContent button:contains('New')",
-              "description": "Click the **New** button"
+              "reftarget": "#pageContent button:text('New')",
+              "tooltip": "Open the menu to create a new dashboard."
             },
             {
               "action": "highlight",
-              "reftarget": "[role='menuitem']:contains('Dashboard from template')",
-              "description": "Select **Dashboard from template** in the dropdown menu"
+              "reftarget": "[role='menuitem']:text('Use template')",
+              "tooltip": "Pick a pre-built template to get started quickly."
             },
             {
               "action": "highlight",
-              "reftarget": "[data-floating-ui-focusable]",
-              "description": "You should now see pre-defined templates that you can start using instantly",
-              "lazyRender": true
+              "reftarget": "div[data-testid='data-testid Card heading']:nth-match(2)",
+              "tooltip": "Browse the available templates and choose one that fits your needs."
             }
           ],
           "requirements": [
