@@ -1,150 +1,93 @@
 # /create-learning-path
 
-Create a complete interactive learning path from scratch — plan, write JSON, wire up the website, and test.
+Create a complete interactive learning path from scratch. Produces `content.json` and `manifest.json` files in the interactive-tutorials repo, and creates website markdown with `pathfinder_data` and `{{< pathfinder/json >}}`.
 
-This is the **unified command** that replaces the two-pass workflow (write markdown first, then convert to JSON). You author `content.json` files (schemaVersion 1.0.0) for the interactive Pathfinder experience, and write the corresponding website milestone `index.md` files with Hugo front matter directly.
-
----
-
-## What It Does
-
-1. Plans the learning path structure and gets user approval
-2. Writes `content.json` files (schemaVersion 1.0.0) with interactive blocks, and website milestone `index.md` files with Hugo front matter
-3. Creates the recommender mapping so Pathfinder surfaces the path
-4. Discovers CSS selectors by walking the Grafana UI
-5. Tests interactivity collaboratively with the user
-6. Verifies website markdown is complete and correct
-7. Produces a final report
-
----
-
-## Prerequisites
-
-See `build-interactive-lj/SETUP.md` for environment setup:
-- Three repos in workspace: `website`, `interactive-tutorials`, `grafana-recommender`
-- Playwright MCP configured
-- GitHub CLI authenticated (`gh auth login`)
+> **Adding interactivity to an existing learning path?** Use `/build-interactive-lj` instead.
 
 ---
 
 ## Input
 
 The user provides:
-- **Feature or product goal** — what they want the learning path to teach
-- **Target audience** — who is this for (typically Grafana beginners)
-
-No markdown source files needed. This command creates everything from a description.
+- **Feature or product goal** — what the learning path should teach
+- **Target audience** — who it's for (typically Grafana beginners)
 
 ---
 
-## Mode
+## Workflow
 
-Ask the user their mode preference at the start:
+Follow these phases in order:
 
-| Mode | Behavior |
-|------|----------|
-| **Tutorial** | Explain what each step does, confirm before proceeding |
-| **Expert** | Run each step immediately, minimal prompts |
+1. **Validate environment.** Confirm both the `website` and `interactive-tutorials` repos are accessible in the workspace and Playwright MCP is available.
+2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch. Track which pages you read — these go into the path `_index.md` front matter as `source_docs`.
+3. **Propose path options.** Review existing paths in `website/content/docs/learning-paths/` for structural patterns. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
+4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content.
+5. **Create website markdown.** Create `_index.md` and every `[milestone]/index.md` from scratch with full Hugo front matter, `pathfinder_data`, and `{{< pathfinder/json >}}` body. Refer to `reference/frontmatter-schema.md` for the complete front matter templates.
+6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`.
+7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
+8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
+9. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
 
-Default to **Tutorial** if not specified.
-
----
-
-## Steps
-
-### Step 1: Environment Validation
-> File: `build-interactive-lj/steps/01-environment.md`
-
-Verify repos and Playwright are available. Same as the existing command.
-
-### Step 2: Plan Learning Path ★ NEW
-> File: `steps/02-plan.md`
-
-Propose 2-4 path options, outline milestones, get user approval. Adapted from the learning path skill's planning phase.
-
-### Step 3: Write JSON and Website Markdown ★ NEW
-> File: `steps/03-write-json.md`
-
-Create `content.json` files (schemaVersion 1.0.0) with interactive blocks and markdown content. Also write the corresponding website milestone `index.md` files with Hugo front matter and `{{< pathfinder/json >}}` body, and the path overview `_index.md`.
-
-### Step 4: Create Recommender Mapping
-> File: `build-interactive-lj/steps/03-recommender.md`
-
-Create the recommender mapping so Pathfinder surfaces the learning path. Same as the existing command.
-
-### Step 5: Selector Discovery
-> File: `build-interactive-lj/steps/05-selectors.md`
-
-Use Playwright to walk the Grafana UI and discover CSS selectors for each interactive block. Same as the existing command.
-
-### Step 6: Test in Pathfinder
-> File: `build-interactive-lj/steps/06-testing.md`
-
-Collaboratively test each milestone in the Block Editor. User imports JSON, clicks through interactions, reports failures. AI fixes selectors. Same as the existing command.
-
-### Step 7: Verify Website Markdown
-> File: `steps/07-verify-website-markdown.md`
-
-Verify that every milestone has a corresponding website `index.md` with correct front matter and that the path overview `_index.md` is present.
-
-### Step 8: Report and Next Steps
-> File: `steps/08-report.md`
-
-Summary of created files, quality metrics, and PR guidance.
+For background on how this command relates to `/build-interactive-lj`, refer to `.cursor/learning-path-workflows/workflows.md`.
 
 ---
 
-## Session Planning
+## Critical rules
 
-For paths with 7+ milestones, plan for two sessions. The natural break point is after file creation and recommender mapping (Steps 1–4) and before selector discovery (Steps 5–8). All artifacts are on disk at the break point, so the second session reads the existing files and resumes at selector discovery.
-
-For paths with fewer milestones, a single session is usually sufficient.
-
----
-
-## Reference Documentation
-
-| Document | Purpose |
-|----------|---------|
-| `reference/frontmatter-schema.md` | Website front matter field reference, CTA types, and paired examples |
-| `build-interactive-lj/reference/json-schema.md` | content.json schema (v1.0.0), block types, action types, and field reference |
-| `.cursor/proven-patterns.mdc` | Reusable interactive patterns (loaded automatically for content.json) |
-| `build-interactive-lj/reference/selector-patterns.md` | Selector stability rules and anti-patterns |
+1. **Read all canonical feature docs before writing content.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch. These docs are the authoritative source — never rely on training data.
+2. **Scaffold ALL milestones.** Every milestone needs a `content.json`, including conceptual, intro, and conclusion pages.
+3. **Use Playwright for selectors.** Never guess. Always inspect the actual DOM at `learn.grafana.net`.
+4. **User handles all Pathfinder testing.** Tell the user which `content.json` to import. Wait for their feedback. Never import JSON or click interactive buttons yourself.
+5. **Ask before fixing.** When the user reports a broken selector, explain and propose a fix, then wait for approval.
+6. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
+7. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
+8. **Verify docs accuracy.** After testing, cross-check all factual claims against live Grafana documentation.
 
 ---
 
-## Relationship to Existing Commands
+## Anti-patterns
 
-| Command | Purpose | When to Use |
-|---------|---------|-------------|
-| **`/create-learning-path`** (this) | Create a new learning path from scratch | Starting from zero — no markdown exists |
-| **`/build-interactive-lj`** | Add interactivity to an existing markdown learning path | A learning path already exists in the website repo |
-
-The existing `/build-interactive-lj` remains useful for retrofitting existing markdown-first paths. This command is for net-new paths where JSON-first is the better approach.
+- Never use `description` — use `content`
+- Never use `formvalue` — use `targetvalue`
+- Never add `exists-reftarget` to requirements — it's auto-applied
+- Never use position-based selectors (`:nth-child`, `:first-of-type`)
+- Never use non-standard CSS (`:contains()`, `:has-text()`)
+- Never use data-dependent selectors — use `^=` starts-with patterns
+- Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
+- All links in content.json must be absolute URLs (`https://grafana.com/docs/...`), not relative
 
 ---
 
-## File Layout
+## Reference
 
-After completion, the learning path spans two repositories:
+Consult these during the workflow:
 
-```
-interactive-tutorials/
-  [slug]-lj/
-    welcome/content.json        ← path landing page (intro, objectives, prerequisites)
-    milestone-1/content.json    ← Pathfinder interactive content
-    milestone-2/content.json
-    ...
+| Document | When |
+| --- | --- |
+| `reference/frontmatter-schema.md` | Creating website front matter (field reference, CTA types, templates) |
+| `../build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
+| `../build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
+| `docs/manifest-reference.md` | Generating manifest.json files |
+| `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |
 
-website/
-  content/docs/learning-paths/[slug]/
-    _index.md                   ← front matter + {{< pathfinder/json >}} → welcome
-    milestone-1/index.md        ← front matter + {{< pathfinder/json >}}
-    milestone-2/index.md        ← front matter + {{< pathfinder/json >}}
-    ...
+---
 
-grafana-recommender/
-  internal/configs/state_recommendations/
-    [area]-cloud.json           ← mapping entry added
-```
+## Quick reference
 
+### Block types
+
+`markdown` · `interactive` · `multistep` · `section` · `guided`
+
+### Action types
+
+`highlight` · `button` · `formfill` · `hover` · `navigate` · `noop`
+
+### Selector priority
+
+`data-testid` > `aria-label` > `href` > `id` > stable class
+
+### Key properties
+
+- `doIt: false` — hides "Do it" button, keeps "Show me"
+- `targetvalue` — text to enter for `formfill` actions
+- `content` — instruction text for interactive blocks

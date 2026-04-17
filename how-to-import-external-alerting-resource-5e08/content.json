@@ -1,0 +1,121 @@
+{
+  "id": "how-to-import-external-alerting-resource-5e08",
+  "title": "How to import external alerting resources into Grafana alerting",
+  "blocks": [
+    {
+      "type": "section",
+      "id": "guide-section-42089",
+      "title": "Alerting: Import Wizard",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "# Import your alerting setup into Grafana\n\nWelcome to the Import Alerting Resources learning guide.\n\nIf you already have alert rules running in Prometheus, Mimir, or Loki, you don't need to start from scratch. Grafana can import your existing alerting configuration directly, without manual copy-pasting or rewriting expressions. Your alerts keep working the same way they did before.\n\nIn this guide, you'll use the new Import Wizard to bring your Alertmanager configuration and alert rules into Grafana Managed Alerts.\n\n---\n\n## Here's what to expect\n\nWhen you complete this guide, you'll be able to:\n\n- Import an Alertmanager configuration (contact points, notification policies, templates) into Grafana\n- Import Prometheus-compatible alert rules from a YAML file or a connected data source\n- Understand how imported routing lives as its own notification policy tree alongside your existing Grafana policies\n\n---\n\n## Before you begin\n\nBefore you start the import, make sure you have:\n\n- A running Grafana instance with **Grafana Managed Alerts** enabled\n- A Prometheus, Mimir, or Loki data source configured in Grafana, **or** an Alertmanager configuration YAML file and a rules YAML file ready on your machine\n- **Editor** or **Admin** permissions in Grafana (required to create alert rules and notification policies)\n\n---\n\n## Good to know: order matters\n\nThe Import Wizard has three steps, and the order is important:\n\n1. **AlertManager configuration first** — Grafana creates a separate notification policy tree with your imported routing, contact points, and templates.\n2. **Alert rules second** — You select which policy tree the imported rules should use for routing.\n3. Review and import\n\nYour existing Grafana notification policies are not affected."
+        },
+        {
+          "type": "guided",
+          "content": "Navigate to the Import Wizard from the Alerting menu.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+              "requirements": [
+                "navmenu-open"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#pageContent a[href='/alerting/list']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('More'):nth-match(1)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:contains('Import to Grafana Alerting')"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[title='Import from an Alertmanager data source']",
+          "content": "Select data source option"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent input[role='combobox']",
+          "targetvalue": "alerting-demo-alertmanager",
+          "content": "Select the data source containing the Alertmanager configuration you'd like to import."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='wizard-next-button']",
+          "content": "Click Alert Rules.",
+          "tooltip": "Click Alert Rules."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select a policy tree']",
+          "content": "Select the policy tree where you want your imported rules to be routed: the same name you entered in the previous step."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='input-wrapper'] #data-source-picker",
+          "content": "Select Data source option: you will import alert rules from a data source.",
+          "targetvalue": "alerting-demo-prom",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Let's finalise our import.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "input[placeholder='All namespaces']",
+              "description": "You can filter here your imported rules by namespace. Select one."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "input[placeholder='All groups']",
+              "description": "Filter by group: select one group."
+            },
+            {
+              "action": "button",
+              "reftarget": "Select folder",
+              "description": "Select 'alerting-imported-rules' folder here."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='wizard-next-button']",
+              "description": "highlight on element"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Start import",
+          "content": "Start import will begin the process of importing your datasource alerts.",
+          "tooltip": "Start import will begin the process of importing your datasource alerts.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/",
+          "content": "Let's reset for the next person."
+        }
+      ]
+    }
+  ]
+}

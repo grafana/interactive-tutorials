@@ -1,0 +1,32 @@
+name: Freeze index.json build
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  freeze-index-json:
+    name: Freeze index.json build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: false
+
+      - name: Enforce index.json freeze
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -Fxq "index.json"; then
+            echo "::error file=index.json::Freeze index.json build failed: index.json is frozen (except explicit maintainer override). Use manifest.json targeting.match rules instead of adding or updating index.json entries."
+            exit 1
+          fi
+
+          echo "✅ Freeze index.json build passed: no changes to index.json."

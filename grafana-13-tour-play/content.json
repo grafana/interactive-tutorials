@@ -1,0 +1,620 @@
+{
+  "id": "grafana-13-tour-play",
+  "title": "Tour of Grafana 13 Features",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**What you'll learn:** A quick tour of what’s new and better in Grafana 13. It all runs on Play, so you don’t need your own stack to follow along.\n\nEach stop jumps you to a real example, where you can open it, click around, and see how the feature behaves in an actual UI."
+    },
+    {
+      "type": "section",
+      "id": "sql-expressions-dashboard",
+      "title": "SQL Expressions",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Grafana SQL expressions let you use SQL to query and transform panel query results on the server after those queries run, and before the panel renders.\n\nYou’ll open the **SQL Expressions Showcase** on Play, look around at the ready-made examples, change one line of SQL to filter a chart, then open a panel that joins two queries together."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?orgId=1&from=now-6h&to=now&timezone=utc",
+          "content": "**SQL Expressions Showcase** — Open this dashboard to try SQL expressions hands-on."
+        },
+        {
+          "type": "markdown",
+          "content": "## Overview of the SQL Expressions Showcase dashboard\n\n\n\nLet's give you a quick tour of this dashboard!"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-2'] section[data-testid='data-testid Panel header Documentation: Basic SELECT']",
+          "content": "Have a read through the different documentation text panels, such as **Documentation: Basic SELECT**. This panel explains the basic SQL operations used in the example panels below, along with example queries and use cases.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-3'] section[data-testid='data-testid Panel header Base Query (A) - Total CPU Usage']",
+          "content": "This panel shows our base query, without SQL expressions applied.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-4'] section[data-testid='data-testid Panel header 1. SQL: Basic SELECT * (Passthrough)']",
+          "content": "This panel shows our base query with SQL expressions applied.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll past the other numbered panels and read the corresponding documentation panel above. When something looks useful, feel free to hover over the panel, click the three-dot icon, and select the **Edit** button to view the underlying query and SQL expression.\n\nTo continue the guide, go back to the dashboard view.\n\n## Update a SQL expression \n\nLet's go ahead and update an existing SQL expression."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?editPanel=4",
+          "content": "Navigate to  **1. SQL: Basic SELECT * (Passthrough)** panel."
+        },
+        {
+          "type": "code-block",
+          "code": "SELECT time, __value__ FROM A WHERE __value__ > 0.4",
+          "reftarget": "div[data-testid='data-testid Code editor container']",
+          "language": "sql",
+          "content": "Find the SQL expression that currently says `SELECT * FROM A`. Replace the whole line with the line above. It keeps the time column and the metric column, but drops points where the value is 0.4 or below."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run query",
+          "content": "Click **Run query** to execute the SQL expression."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header 1. SQL: Basic SELECT * (Passthrough)'] div[data-testid='data-testid panel content']",
+          "content": "The chart should update. If it looks empty, try a smaller number than 0.4 and run again.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "## Combining two queries with SQL expressions"
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?editPanel=13",
+          "content": "Navigate to  **7. SQL: INNER JOIN Two Queries** panel."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='query-editor-rows']>div:nth-child(1) input[data-testid='data-testid Select a data source']",
+          "content": "This panel has two regular queries, marked as A and B, both coming from the **grafanacloud-play-prom** data source.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Code editor container']",
+          "content": "Look at the SQL expression at the bottom of the query list. It joins query A and query B on matching timestamps by the time column. On this demo dashboard, both queries hit Prometheus; on your own dashboard, A and B can come from different data sources in the same panel, and the SQL still starts with `FROM A` and `FROM B`.",
+          "requirements": [
+            "on-page:/d/mapr4nb/sql-expressions-showcase"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "In this example, query A is CPU usage, and query B is the same CPU curve multiplied by 0.75, so the join is easy to see. \n\nWhen you want to go deeper (supported data sources, limits, alerting), head over to the [SQL expressions](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/query-transform-data/sql-expressions/) documentation for more guidance."
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You are now familiar with SQL expressions! You changed one filter on a live panel and saw how two queries can be merged in SQL, whether they use the same data source or different ones."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "graphviz-visualization",
+      "title": "Graphviz visualization",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Graphviz lets you visualize relationships, flows, and architectures using the Graphviz DOT language with live metrics from any Grafana data source.\n\nDefine diagrams as code, bind metrics to visual properties, and let Graphviz layout engines handle the rest. Perfect for service topologies, business processes, infrastructure architectures, and organizational structures that update automatically with your data."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/je7t48l/graphviz-panel-showcase",
+          "content": "**Graphviz** — Open this dashboard to try the new **Graphviz** panel visualization."
+        },
+        {
+          "type": "markdown",
+          "content": "## Starting point"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-1'] section[data-testid='data-testid Panel header Customer Purchasing Process (traffic, revenue)']",
+          "content": "Observe the panel in this dashboard titled **Customer Purchasing Process (traffic, revenue)**.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Note that the panel contains a diagram of a business flow for a hypothetical company's e-commerce checkout process.\n\nThe audience for this diagram would probably be more business-focused than purely technical, and the specifics of which microservices, frontends, etc., would be represented in aggregate for our hypothetical use case.\n\nOur diagram has all the right data in it ... but it's a little plain, it needs something more to bring the data to life.\n\nLet's make it look like the **Customer Purchasing Process (traffic, revenue, SLAs)** panel instead."
+        },
+        {
+          "type": "markdown",
+          "content": "## Objective\n\nWe will bring this diagram to life by binding our data to visual properties by:\n\n- Adding a rule to an existing edge (arrow) override that will color-code edges, and\n- Creating a new node (box) override rule with automatic data matching to color-code nodes\n\n"
+        },
+        {
+          "type": "markdown",
+          "content": "## Adding data-driven colors to edges\n\nLet's add color coding to edges by updating an existing override rule."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/je7t48l/graphviz-panel-showcase?editPanel=1",
+          "content": "Navigate to the edit view to edit the panel"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Panel editor content'] div[data-testid='data-testid Options group Edge overrides']",
+          "content": "In the panel options, scroll down to the **Edge overrides** section",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid radio-button'] label:contains('Autodetect')",
+          "content": "Note that **Autodetect** matched all of the edges we're targeting",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "This will **automatically** execute the steps required to add color-coding to the edges.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Override edge property"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:text('Stroke Color')",
+              "description": "Select **Stroke Color** from the menu."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input[placeholder=\"Field config thresholds\"]:nth-match(1)",
+              "targetvalue": "Conversion rate (percentage)",
+              "description": "For the **Threshold set**, provide **Conversion rate (percentage)** as the input",
+              "validateInput": true
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='data-testid Edge overrides Edge override rules field property editor'] input:nth-match(5)",
+              "targetvalue": "conversion_rate",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "description": "For the **Color field**, provide **conversion_rate** as the input.",
+              "validateInput": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='graphviz-panel-rendered'] div[data-testid='graphviz-panel-rendered-svg']",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Observe that all of the edges are now colour coded based on **conversion_rate**!"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "## Adding data-driven colors to nodes\n\nLet's add color coding to nodes by creating a brand new override rule."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Panel editor content'] div[data-testid='data-testid Options group Node overrides']",
+          "content": "In the panel options, scroll down to the **Node overrides** section",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add node override rule",
+          "content": "Note that there are no node overrides yet. Click on **+ Add node override rule** button to create a new one.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] button:text('All')",
+          "content": "Click the **All** button to the right of the **Select Nodes by ID** input",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid radio-button'] label:nth-match(6)",
+          "content": "Note that the default **Autodetect** match mode found matches for all nodes.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "This will automatically execute the steps required to add color-coding (stroke color) to the nodes' outline.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Override node property"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:text('Stroke Color')"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input[placeholder=\"Field config thresholds\"]:nth-match(2)",
+              "targetvalue": "Service health (SLA percentage)"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] input:nth-match(4)",
+              "targetvalue": "service_health"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Customer Purchasing Process (traffic, revenue)'] div[data-testid='data-testid panel content']",
+              "tooltip": "Observe that all of the nodes now have an outline colour based on the health of their services.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "g#abandon_checkout",
+              "tooltip": "Note that the abandonment nodes have a default colour. Hmmm, that's not quite right!",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] input:nth-match(1)",
+          "content": "Scroll back up to the **Select Nodes by ID** input at the top of **Node override rule 1**.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "Remove **abandon**, **abandon_checkout**, and **bounce** nodes.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div:text('abandon') button",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:text('abandon_checkout') button",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:text('bounce') button",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "g#abandon_checkout",
+          "content": "Note that those nodes no longer have the override applied, since they have no service.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "This will automatically execute the steps required to add color-coding (filled color) to the nodes' outline.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Override node property"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='menuitem']:text('Fill Color')"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input[placeholder=\"Field config thresholds\"]:nth-match(3)",
+              "targetvalue": "Service health (SLA percentage)"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='data-testid Node overrides Node override rules field property editor'] input:nth-match(6)",
+              "targetvalue": "service_health"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='graphviz-panel-rendered'] div[data-testid='graphviz-panel-rendered-svg']",
+              "tooltip": "We're done! Now we can see that cart and checkout abandonment cost our company a lot of money! Also, both of the services behind those experiences have been having trouble meeting their SLAs."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You've tried out our new Graphviz panel visualization!\n\nNow, we can see that cart and checkout abandonment cost our company a lot of money! Also, both of the services behind those experiences have been having trouble meeting their SLAs.\n\n---\n\nCheck out [Graphviz panel](https://grafana.com/grafana/plugins/grafana-graphviz-panel/) documentation for more information!"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-86436",
+      "title": "New and improved Gauge visualization",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Grafana has revamped the Gauge visualization!\n\nThe new gauge introduces a Circular style with built-in sparklines, gradients, and accessibility improvements, such as Center glow. "
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mansnzp/gauge?editPanel=5",
+          "content": "**Gauges** — Open this dashboard to try the new and improved **Gauge** visualization."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('Circle')",
+          "content": "Switch to **Circle** style to see the new circular gauge.",
+          "tooltip": "Circular gauges support sparklines, gradients, and center glow.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[aria-label='Center glow']",
+          "content": "Toggle **Center glow** to add a glow effect.",
+          "tooltip": "This accessibility feature makes the current value easier to read at a glance.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#gauge-segmentCount",
+          "targetvalue": "30",
+          "content": "Set the **Segment count** to break the gauge into segments.",
+          "tooltip": "Try typing 30!",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You've tried out the revamped Gauge visualization. To find out more what else we have changed, check out [Revamped gauge visualization]([https://grafana.com/whats-new/2026-01-19-revamped-gauge-visualization/)."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "guide-section-42818",
+      "title": "New and improved Table visualization",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Grafana has revamped the **Table** visualizations so dashboards look sharper and tell a clearer story.\n\nThe table visualization, which includes performance improvements, introduces new cell types: **Pill** and **Markdown + HTML** cells. "
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/U_bZIMRMk/table-panel-showcase?editPanel=4",
+          "content": "**Table** — Open this dashboard to explore the table visualization."
+        },
+        {
+          "type": "guided",
+          "content": "Follow along to try some of the new Table features",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Cell options Cell type field property editor'] input[role='combobox']",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "description": "Click **Cell type**"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='data-testid Cell options Cell type field property editor'] input[role='combobox']",
+              "targetvalue": "Pill",
+              "description": "Type **Pill** to change the cell type and hit enter",
+              "validateInput": true
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You've tried out the revamped Table visualization. To find out more about what else we have changed, check out [New table visualization]([https://grafana.com/whats-new/2025-09-05-new-table-visualization-is-generally-available/])."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "copy-paste-style-features",
+      "title": "New Copy-Paste styles feature",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Styling panels in Grafana used to require a lot of manual work. Editing each panel individually, or duplicating one just to reuse its look, and then swapping out the query. \n\nWith the new copy-paste styles feature, you can copy the styling from one panel and apply it to another in just a couple of clicks."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mansnzp/gauge",
+          "content": "**Copy-paste styles** — Open this dashboard to try out the new copy-paste styles feature and follow the guided step below!"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid dashboard controls'] button[data-testid='data-testid Edit dashboard button']",
+          "content": "Click **Edit** to enter edit mode.",
+          "tooltip": "You need to be in edit mode to access panel style options.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-8'] section[data-testid='data-testid Panel header Gauge with sparkline and gradient']",
+          "content": "Find the **Gauge with sparkline and gradient** panel — you'll copy styles from this one.",
+          "tooltip": "This panel's visual styling will be copied to another panel.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "scrollContainer": "div[data-testid='data-testid DashboardEditPaneSplitter primary body'] div[data-testid='data-testid DashboardEditPaneSplitter body container']"
+        },
+        {
+          "type": "guided",
+          "content": "Follow along to see how copy-paste styles work in action!",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid header-container'] button[data-testid='data-testid Panel menu Gauge with sparkline and gradient']",
+              "lazyRender": true,
+              "scrollContainer": "div[data-testid='data-testid DashboardEditPaneSplitter primary body'] div[data-testid='data-testid DashboardEditPaneSplitter body container']",
+              "description": "Open the panel menu to access style options."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-testid='data-testid portal-container'] div[data-testid='data-testid Panel menu item Styles']",
+              "description": "Hover to reveal the style actions."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid portal-container'] div:text('Copy styles')",
+              "description": "Copy the visual styling from this panel."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid header-container'] button[data-testid='data-testid Panel menu Gauge with sparkline and center glow']",
+              "description": "Open the menu on the target panel."
+            },
+            {
+              "action": "hover",
+              "reftarget": "div[data-testid='data-testid portal-container'] div[data-testid='data-testid Panel menu item Styles']",
+              "description": "Hover to reveal the style actions."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid portal-container'] div:text('Paste styles')",
+              "description": "Apply the copied styles to this panel."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You've tried out the new copy-paste styles feature!"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "visualization-suggestions",
+      "title": "Dashboard Visualization Suggestions",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Visualization Suggestions have been updated to provide more relevant suggestions and are now the default method for selecting a panel visualization.\n\nWhen you preview a visualization using the updated Suggestions feature, we give you a full-sized preview of the suggestion in the panel editor before you select the suggestion."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/ec0c1486-03e6-4b64-bc80-11e764466e66/london-transport-tfl?orgId=1&from=now-24h&to=now&timezone=browser&refresh=5m&editPanel=1",
+          "content": "**London Transport TFL** — Open this dashboard, then follow the interactive steps below to try the new and improved visualization suggestions."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid toggle-viz-picker']",
+          "content": "Click **Change** to open the visualization picker.",
+          "tooltip": "The updated picker now shows full-size previews of each suggestion.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid suggestion-Bar gauge - LCD']",
+          "content": "Pick **Bar gauge - LCD** and watch the panel update in real time.",
+          "tooltip": "Each suggestion shows a live preview before you commit to it.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You've tried out the new dashboard visualization suggestions feature!"
+        }
+      ]
+    }
+  ]
+}

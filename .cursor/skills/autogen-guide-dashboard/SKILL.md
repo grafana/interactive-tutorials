@@ -18,33 +18,45 @@ Generate an interactive guide `content.json` by analyzing a Grafana dashboard JS
 ```
 Input (Dashboard JSON)
   │
-  ├─ Phase 1: Acquire & Scope ─── orchestrator (no external reads)
+  ├─ Phase 1: Acquire & Scope ────── orchestrator (no external reads)
+  │    Runs: extract_dashboard.py → assets/dashboard-extraction.json
   │    Output: dashboard JSON parsed, scope confirmed by user
   │    Writes: {guide_dir}/assets/dashboard-source.json
+  │            {guide_dir}/assets/dashboard-extraction.json
   │
-  ├─ Phase 2: Extract & Assess ── sub-agent loads dashboard-extraction-patterns.md
-  │  │                              + dashboard-selector-strategies.md
-  │  │                              + dashboard-guide-rules.md
+  ├─ Phase 2: Extract & Assess ───── sub-agent loads dashboard-extraction-patterns.md
+  │    │                               + dashboard-selector-strategies.md
+  │    │                               + dashboard-guide-rules.md (references shared/critical-rules.md)
+  │    │                               + reads assets/dashboard-extraction.json
   │    Writes: {guide_dir}/assets/extraction-report.md
   │
-  ├─ Checkpoint: Plan ──────────── orchestrator builds plan, user confirms
+  ├─ Checkpoint: Plan ────────────── orchestrator builds plan, user confirms
   │    Writes: {guide_dir}/assets/guide-plan.md
   │
-  ├─ Phase 3: Generate Guide ──── per-section sub-agents, each loads authoring-guide.mdc
-  │    │                            + dashboard-guide-rules.md
-  │    │                            + receives panel JSON context for its section
+  ├─ Checkpoint: Package Metadata ── orchestrator gathers manifest fields from user
+  │    Writes: {guide_dir}/assets/package-metadata.json
+  │
+  ├─ Phase 3: Generate Guide ──────── per-section sub-agents, each loads authoring-guide.mdc
+  │    │                               + dashboard-guide-rules.md
+  │    │                               + receives structured panel data from dashboard-extraction.json
   │    │  3.1 Create guide shell (orchestrator)
-  │    │  3.2 For each section → sub-agent generates section JSON
-  │    │  3.3 Assemble sections into content.json (orchestrator)
-  │    │  3.4 Generate selector-report.md (orchestrator)
+  │    │  3.2 For each section → sub-agent generates section JSON (parallel)
+  │    │  3.3 Assemble via assemble_guide.py → content.json (with validation)
+  │    │  3.4 Generate assets/selector-report.md (orchestrator)
   │    Writes: {guide_dir}/content.json + {guide_dir}/assets/selector-report.md
   │
-  ├─ Phase 4: Review & Fix ────── sub-agent loads review-guide-pr.mdc
-  │  │                              + dashboard-guide-rules.md
+  ├─ Phase 4: Review & Fix ──────── sub-agent loads review-guide-pr.mdc
+  │    │                              + dashboard-guide-rules.md
   │    Writes: fixed content.json + change report
   │
-  └─ Phase 5: Write Manifest ──── orchestrator
-       Writes: {guide_dir}/assets/manifest.yaml
+  ├─ Phase 5a: Write Skill Memory ── orchestrator
+  │    Writes: {guide_dir}/assets/manifest.yaml
+  │
+  ├─ Phase 5b: Generate Package Manifest ── orchestrator
+  │    Runs: generate_manifest.py → {guide_dir}/manifest.json
+  │
+  └─ Phase 6: Validate Package ──── orchestrator
+       Runs: assemble_guide.py --validate-only + optional CLI validate --package
 ```
 
 ---
@@ -71,11 +83,14 @@ The skill writes analysis artifacts into an `assets/` subdirectory inside the gu
 ```
 {guide_dir}/
   content.json                    ← the deliverable (Pathfinder guide)
+  manifest.json                   ← the package manifest (generated in Phase 5b)
   assets/
     dashboard-source.json         ← input dashboard JSON snapshot
+    dashboard-extraction.json     ← structured extraction from extract_dashboard.py
     extraction-report.md          ← panel analysis, selectors, grades
     guide-plan.md                 ← section structure and panel assignments
     selector-report.md            ← selector quality assessment
+    package-metadata.json         ← manifest fields gathered at Package Metadata checkpoint
     manifest.yaml                 ← provenance, drift detection, skill memory
 ```
 
@@ -203,11 +218,21 @@ If `jq` is not available, fetch without piping and manually read the `.dashboard
 
 After fetching or receiving the JSON, validate it has the expected top-level keys: `panels` (or `rows` for legacy format), `templating`, `title`, `uid`. If you see HTML or an `{"error": ...}` response instead, the fetch failed — fall back to asking the user to provide the JSON manually as described above.
 
-### 1.3 Assess Scope
+### 1.3 Run Extraction Script
 
-Count the dashboard elements and present to the user:
+After loading the dashboard JSON, run the extraction script to produce a structured analysis:
 
-> "This dashboard contains 8 panels across 2 rows, with 3 template variables and 1 data source. This will produce a guide with approximately 3 sections and 12-16 steps. Should I proceed?"
+```bash
+python .cursor/tools/extract_dashboard.py {guide_dir}/assets/dashboard-source.json > {guide_dir}/assets/dashboard-extraction.json
+```
+
+The script outputs panels with selector grades, fold positions, variable bindings, rows, data sources, duplicate title detection, and the drift hash. Use this structured output for all subsequent phases — sub-agents receive the extraction JSON instead of parsing raw dashboard JSON.
+
+### 1.4 Assess Scope
+
+Use the extraction script's output to present scope to the user:
+
+> "This dashboard contains {N} panels across {R} rows, with {V} template variables and {D} data sources. Selector quality: {G} Green, {Y} Yellow, {R} Red. This will produce a guide with approximately {S} sections and {T} steps. Should I proceed?"
 
 Scope guidelines by panel count:
 - **< 3 panels**: Too small for a guide. Suggest combining with another dashboard or expanding scope.
@@ -216,7 +241,7 @@ Scope guidelines by panel count:
 - **12–25 panels**: Large. Consider splitting by row or logical grouping.
 - **> 25 panels**: Must split. Suggest one guide per row group or logical theme.
 
-### 1.4 Identify Dashboard Metadata
+### 1.5 Identify Dashboard Metadata
 
 Extract from the JSON:
 - `uid` and `title` -- for guide ID and title
@@ -224,7 +249,7 @@ Extract from the JSON:
 - URL path: `/d/<uid>/<slug>` -- for `on-page:` requirements
 - `tags[]` -- context for guide description
 
-### 1.5 Create the Guide Directory
+### 1.6 Create the Guide Directory
 
 Create `{guide-id}/` in the workspace root and `{guide-id}/assets/` for generated analysis files. The `guide-id` should be kebab-case, derived from the dashboard title (e.g., `performance-stats-tour`, `k8s-cpu-dashboard`).
 
@@ -238,28 +263,30 @@ Launch a sub-agent using the Task tool. This sub-agent loads the dashboard-speci
 
 ### Sub-agent prompt template
 
+Before launching the sub-agent, the orchestrator has already run `extract_dashboard.py` (Phase 1.3). The sub-agent receives the structured extraction JSON as context and its job shifts to **interpreting** the extraction — building section groupings, writing educational annotations, and producing the prose extraction report.
+
 Fill in `{placeholders}` and pass as the Task prompt:
 
 ```
-You are analyzing a Grafana dashboard JSON export to extract interactive elements for a Pathfinder guide.
+You are analyzing a Grafana dashboard JSON export to produce an extraction report for a Pathfinder guide.
 
 **Read these reference files first:**
 1. `.cursor/skills/autogen-guide-dashboard/dashboard-extraction-patterns.md` -- panel types, row detection, variable extraction, data source mapping
 2. `.cursor/skills/autogen-guide-dashboard/dashboard-selector-strategies.md` -- selector patterns for panels, rows, variables; grading model
-3. `.cursor/skills/autogen-guide-dashboard/dashboard-guide-rules.md` -- critical rules, golden examples, action decision tree, selector patterns, lazy rendering
+3. `.cursor/skills/autogen-guide-dashboard/dashboard-guide-rules.md` -- critical rules (including shared/critical-rules.md rules 1-15), golden examples, action decision tree, lazy rendering
 
-**Dashboard JSON to analyze** (read this file):
-{path_to_dashboard_json}
+**Pre-computed dashboard extraction** (read this file — panel selectors, grades, fold positions, variable bindings, and drift hash are already computed):
+{guide_dir}/assets/dashboard-extraction.json
+
+**Raw dashboard JSON for context** (read this file for query expressions, thresholds, legends, and educational content):
+{guide_dir}/assets/dashboard-source.json
 
 **Your task:**
-1. Parse the top-level dashboard structure: title, uid, schemaVersion, tags
-2. Extract all panels: title, type, gridPos, targets (query expressions), datasource, repeat config
-3. Detect row groupings: explicit `type: "row"` panels, or gridPos.y clustering
-4. Extract template variables from `templating.list[]`: name, type, query, current value, datasource
-5. Map variable-to-panel bindings: scan targets[].expr, panel titles, and repeat config for $varName references
-6. Extract data sources: from panels[].datasource and templating.list[].datasource
-7. Grade each panel's selector stability (Green/Yellow/Red based on title uniqueness)
-8. Note any transformations or overrides that affect panel behavior
+1. Read dashboard-extraction.json — panel inventory, selector grades, fold positions, variable bindings, and duplicate title detection are already computed; DO NOT re-grade or re-count from scratch
+2. Interpret the extraction: build section groupings (by row or logical theme), annotate panels with educational context from the raw dashboard JSON (query expressions, thresholds, legends)
+3. Identify the recommended guide treatment for each panel (which golden example applies, per the Action Decision Tree)
+4. Note any transformations or overrides that affect panel behavior
+5. Flag any selector concerns (variable-interpolated titles, duplicate titles, below-fold panels)
 
 **Write your results** to `{guide_dir}/assets/extraction-report.md` using the standard frontmatter and `## Extraction Report Template` structure from `dashboard-extraction-patterns.md`.
 
@@ -277,6 +304,47 @@ After the user sees the extraction report, build a structural plan. Read `{guide
 Use the `## Guide Plan Template` structure from `dashboard-extraction-patterns.md`, prefixed with the standard frontmatter disclaimer.
 
 **Present the plan to the user.** Let them adjust section order, add/remove sections, or change emphasis. Confirm the panel groupings before proceeding.
+
+---
+
+## Checkpoint: Package Metadata (Orchestrator)
+
+Before generating guide content, gather package metadata from the user.
+Present defaults where possible and ask for confirmation or overrides.
+
+**Auto-derived (confirm with user):**
+- `id`: {guide-id from plan}
+- `description`: {1-line summary derived from extraction report}
+- `type`: "guide"
+
+**Requires user input (with auto-suggestions):**
+- `category`: What category does this guide belong to?
+  Suggest based on context (e.g., "data-availability" for datasource guides, "general" as fallback).
+- `startingLocation`: Where in Grafana does this guide launch?
+  Auto-derive from dashboard URL path: `/d/{uid}/{slug}`.
+- `targeting.match`: Where should this guide be recommended?
+  Suggest `{ "urlPrefix": "/d/{uid}" }` from the dashboard UID.
+  Present the suggestion and ask the user to confirm or customize.
+- `testEnvironment`: Where should this guide be tested?
+  - If source was play.grafana.org: suggest `{ "tier": "cloud", "instance": "play.grafana.org" }`
+  - Otherwise: suggest `{ "tier": "cloud" }` as minimum default.
+- `author.team`: Default "interactive-learning". Ask if different.
+
+Store the confirmed metadata in `{guide_dir}/assets/package-metadata.json`
+for use in Phase 5b manifest generation.
+
+```json
+{
+  "contentJsonPath": "{guide_dir}/content.json",
+  "type": "guide",
+  "description": "...",
+  "category": "...",
+  "author": { "team": "interactive-learning" },
+  "startingLocation": "/d/{uid}/{slug}",
+  "targeting": { "match": { "urlPrefix": "/d/{uid}" } },
+  "testEnvironment": { "tier": "cloud" }
+}
+```
 
 ---
 
@@ -353,16 +421,17 @@ You are generating ONE section of a Pathfinder interactive guide for a Grafana d
 **Also return** a brief text summary: step count, any selectors you're uncertain about, any panels you omitted and why.
 ```
 
-#### Building the panel JSON context
+#### Building the panel context
 
-For each section, include the **relevant panel objects** from the dashboard JSON:
+For each section, provide two inputs:
 
-1. Find the panels belonging to this section (by row grouping or gridPos)
-2. Include the full panel JSON objects (title, type, targets, fieldConfig, options)
-3. Include the variable definitions referenced by those panels
-4. Trim large `targets[].expr` queries to the first 200 characters if very long
+1. **Structured panel data** from `{guide_dir}/assets/dashboard-extraction.json` — filter to only the panels in this section (by row or gridPos grouping). This gives the sub-agent precomputed selectors, grades, fold positions, and variable bindings without re-parsing.
 
-This gives the sub-agent direct access to query expressions, thresholds, legends, and other educational context.
+2. **Raw panel JSON objects** from the dashboard for educational context (query expressions, thresholds, legends). Extract from `{guide_dir}/assets/dashboard-source.json`. Trim large `targets[].expr` queries to the first 200 characters if very long.
+
+Include the variable definitions from the extraction output that are referenced by these panels.
+
+This two-layer approach gives the sub-agent both structural certainty (from the script) and educational richness (from the raw JSON).
 
 #### Choosing which golden example to pass
 
@@ -372,18 +441,25 @@ Use the `## Golden Example Routing` table in `dashboard-guide-rules.md` to selec
 
 After all section sub-agents complete:
 
-1. **Read each returned section JSON** and validate it parses correctly
-2. **Check for noop-only sections** — if a section has zero targeting steps (every interactive step is `noop`), merge its blocks into the preceding section rather than appending it as standalone. Move the noop blocks to the end of the preceding section (after the summary markdown), and replace the preceding section's summary with the merged section's summary. If the noop-only section is the *first* section (no preceding section to merge into), merge it into the *following* section's intro instead.
-3. **Append each viable section** to `{guide_dir}/content.json`'s `blocks` array, in plan order
-4. **Add the closing summary markdown** as the final block — ultra-short, 1–2 sentences max. Never recap every section or panel. A single forward-looking sentence is ideal.
+1. **Write each returned section JSON** to a temporary file: `{guide_dir}/assets/section-{section_id}.json`
+2. **Check for noop-only sections** (before assembly): if a section has zero targeting steps (every interactive step is `noop`), merge its blocks into the preceding section's tail (after summary markdown) rather than passing it to assembly. If the noop-only section is the *first* section, merge it into the *following* section's intro instead.
+3. **Add the closing summary markdown** to the shell as the final top-level block — ultra-short, 1–2 sentences max. Never recap every section or panel.
    ```json
    {
      "type": "markdown",
      "content": "{1–2 sentences: one takeaway or next step — not a recap}"
    }
    ```
-5. **Write the assembled file** to `{guide_dir}/content.json`
-6. **Spot-check**: read the first and last 30 lines to verify structure and bookends
+4. **Run the assembly script** to assemble and validate:
+   ```bash
+   python .cursor/tools/assemble_guide.py \
+     --shell {guide_dir}/assets/guide-shell.json \
+     --sections {guide_dir}/assets/section-*.json \
+     --output {guide_dir}/content.json
+   ```
+   The script validates: unique section IDs, no multistep singletons, no exists-reftarget, tooltip lengths, section bookends, step counts, and no noop-only sections.
+5. **If validation fails**: fix the flagged issues in the section JSON files and re-run.
+6. **Spot-check**: read the first and last sections to verify structure and bookends.
 
 ### 3.4 Orchestrator: Generate Selector Report
 
@@ -470,16 +546,36 @@ After Phase 4 completes:
 1. **Read the review report** -- check if any issues couldn't be auto-fixed
 2. **Validate JSON** -- ensure `{guide_dir}/content.json` parses correctly
 3. **Spot-check** -- read the first and last sections to verify bookends and structure
-4. **Write the manifest** -- generate `{guide_dir}/assets/manifest.yaml` (see "Generated Files" section for the template). Compute the dashboard SHA-256 hash and record section IDs, step counts, and selector quality from the review output.
-5. **Present to the user** -- summarize what was generated:
+4. **Write the skill memory manifest** -- generate `{guide_dir}/assets/manifest.yaml` (Phase 5a; see "Generated Files" section for the template). Compute the dashboard SHA-256 hash and record section IDs, step counts, and selector quality from the review output.
+
+5. **Run Phase 5b** -- generate the Pathfinder package manifest:
+   ```bash
+   python .cursor/tools/generate_manifest.py \
+     --input {guide_dir}/assets/package-metadata.json \
+     --content {guide_dir}/content.json \
+     --output {guide_dir}/manifest.json
+   ```
+
+6. **Run Phase 6 validation**:
+   ```bash
+   python .cursor/tools/assemble_guide.py --validate-only {guide_dir}/content.json
+   ```
+   And if the Pathfinder CLI is available:
+   ```bash
+   node {pathfinder-app}/dist/cli/cli/index.js validate --package {guide_dir}
+   ```
+   If the CLI is not available, report this as incomplete and instruct the user to run validation manually.
+
+7. **Present to the user** -- summarize what was generated:
    - Guide location: `{guide_dir}/content.json`
+   - Package manifest: `{guide_dir}/manifest.json`
    - Sections: N (list names)
    - Total interactive steps: N (average per section)
    - Selector quality: N Green, N Yellow, N Red
    - Any compromises, omitted panels, or known issues
    - Review fixes applied
-6. **Note the index.json entry** -- remind the user that an `index.json` entry is needed for the guide to appear in recommendations
-7. **Note selector improvements** -- point the user to `assets/selector-report.md` for any fragile selectors
+8. **Note the manifest** -- the `manifest.json` has been generated alongside the guide. If you need this guide to appear in contextual recommendations, verify the `targeting.match` rules.
+9. **Note selector improvements** -- point the user to `assets/selector-report.md` for any fragile selectors
 
 ---
 
