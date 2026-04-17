@@ -1,0 +1,54 @@
+{
+  "id": "establish-k6-baseline-design-load-profile",
+  "title": "Design your load profile",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you create `baseline.js` with a ramping virtual user profile: ramp up, steady state, and ramp down."
+    },
+    {
+      "type": "section",
+      "id": "author-baseline-script",
+      "title": "Author the baseline script",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll build a minimal k6 script with `stages` so metrics stabilize during the middle stage."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In your code editor, create a new file named `baseline.js` and add the following imports.\n\nIf you prefer a visual approach to script creation, you can use [k6 Studio](https://grafana.com/docs/k6-studio/). This path uses a code editor so you can see and modify the script directly as you add checks and thresholds in later milestones.\n\n```javascript\nimport http from 'k6/http';\nimport { sleep } from 'k6';\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Define your load profile using the `stages` option.\n\nThe following example ramps up to 20 virtual users over 30 seconds, holds steady for 1 minute, then ramps back down over 30 seconds:\n\n```javascript\nexport const options = {\n  stages: [\n    { duration: '30s', target: 20 },\n    { duration: '1m', target: 20 },\n    { duration: '30s', target: 0 },\n  ],\n};\n```\n\nThe `stages` shorthand uses the ramping virtual users executor. Adjust `target` to approximate production concurrency and lengthen the steady stage if metrics need more time to settle."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Add the default function that performs your request:\n\n```javascript\nexport default function () {\n  http.get('https://quickpizza.grafana.com');\n  sleep(1);\n}\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Replace the URL with the endpoint you want to baseline."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Save the file. Your complete `baseline.js` should look like this:\n\n```javascript\nimport http from 'k6/http';\nimport { sleep } from 'k6';\n\nexport const options = {\n  stages: [\n    { duration: '30s', target: 20 },\n    { duration: '1m', target: 20 },\n    { duration: '30s', target: 0 },\n  ],\n};\n\nexport default function () {\n  http.get('https://quickpizza.grafana.com');\n  sleep(1);\n}\n```\n\nThe steady-state stage (the middle stage) is where your baseline data comes from. Make it long enough, at least 1 minute, so the metrics stabilize and reflect consistent system behavior rather than warm-up effects."
+        },
+        {
+          "type": "markdown",
+          "content": "You now have a runnable script whose traffic shape matches ramp, hold, and ramp down."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you add checks so you measure correctness as well as speed."
+    }
+  ]
+}

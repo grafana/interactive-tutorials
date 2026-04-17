@@ -1,0 +1,44 @@
+{
+  "id": "establish-k6-baseline-add-checks",
+  "title": "Add checks to your script",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you use the `check` API so every response validates correctness, not just latency."
+    },
+    {
+      "type": "section",
+      "id": "add-response-checks",
+      "title": "Validate responses",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll wire checks that record pass rate without aborting the load test when a single response fails."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open `baseline.js` and update the import statement to include `check`:\n\n```javascript\nimport http from 'k6/http';\nimport { check, sleep } from 'k6';\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the default function, assign the HTTP response to a variable and add checks after the request:\n\n```javascript\nexport default function () {\n  const res = http.get('https://quickpizza.grafana.com');\n\n  check(res, {\n    'status is 200': (r) => r.status === 200,\n    'response body is not empty': (r) => r.body.length > 0,\n  });\n\n  sleep(1);\n}\n```\n\nEach check has a descriptive name and a predicate returning true or false. Failed checks do not stop the test; k6 aggregates pass rate across the run."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Save the file. Your complete `baseline.js` should now look like this:\n\n```javascript\nimport http from 'k6/http';\nimport { check, sleep } from 'k6';\n\nexport const options = {\n  stages: [\n    { duration: '30s', target: 20 },\n    { duration: '1m', target: 20 },\n    { duration: '30s', target: 0 },\n  ],\n};\n\nexport default function () {\n  const res = http.get('https://quickpizza.grafana.com');\n\n  check(res, {\n    'status is 200': (r) => r.status === 200,\n    'response body is not empty': (r) => r.body.length > 0,\n  });\n\n  sleep(1);\n}\n```\n\nWhen you run the test, the summary includes check pass rate alongside HTTP metrics."
+        },
+        {
+          "type": "markdown",
+          "content": "You now measure both performance and functional correctness in the same script."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you run the test and read the k6 summary output."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "id": "establish-k6-baseline-add-thresholds",
+  "title": "Add thresholds to your script",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you add `thresholds` so k6 exits non-zero when latency, errors, or check pass rate violate your baseline."
+    },
+    {
+      "type": "section",
+      "id": "configure-thresholds",
+      "title": "Configure thresholds",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll attach quantitative gates that CI systems can trust using the process exit code."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open `baseline.js` and add a `thresholds` map inside `options`:\n\n```javascript\nexport const options = {\n  stages: [\n    { duration: '30s', target: 20 },\n    { duration: '1m', target: 20 },\n    { duration: '30s', target: 0 },\n  ],\n  thresholds: {\n    http_req_duration: ['p(95)<500'],\n    http_req_failed: ['rate<0.01'],\n  },\n};\n```\n\n`p(95)<500` fails if more than 5% of observations exceed 500 ms. `rate<0.01` fails if more than 1% of requests error. Adjust the numbers to match the headroom plan from your baseline table."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Optionally guard correctness with a checks threshold:\n\n```javascript\nthresholds: {\n  http_req_duration: ['p(95)<500'],\n  http_req_failed: ['rate<0.01'],\n  checks: ['rate>0.99'],\n},\n```\n\n`checks: ['rate>0.99']` fails if overall check pass rate drops below 99%."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Save the file. A complete example:\n\n```javascript\nimport http from 'k6/http';\nimport { check, sleep } from 'k6';\n\nexport const options = {\n  stages: [\n    { duration: '30s', target: 20 },\n    { duration: '1m', target: 20 },\n    { duration: '30s', target: 0 },\n  ],\n  thresholds: {\n    http_req_duration: ['p(95)<500'],\n    http_req_failed: ['rate<0.01'],\n    checks: ['rate>0.99'],\n  },\n};\n\nexport default function () {\n  const res = http.get('https://quickpizza.grafana.com');\n\n  check(res, {\n    'status is 200': (r) => r.status === 200,\n    'response body is not empty': (r) => r.body.length > 0,\n  });\n\n  sleep(1);\n}\n```\n\nYou can stack multiple expressions per metric, for example `http_req_duration: ['p(95)<500', 'p(99)<1000']`."
+        },
+        {
+          "type": "markdown",
+          "content": "Your script now fails fast when the baseline regresses instead of only printing numbers."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you prove thresholds pass under normal settings and fail when deliberately broken."
+    }
+  ]
+}

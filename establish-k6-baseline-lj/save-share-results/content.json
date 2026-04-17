@@ -1,0 +1,90 @@
+{
+  "id": "establish-k6-baseline-save-share-results",
+  "title": "Save and share results in k6 Cloud",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you authenticate the k6 CLI against Grafana Cloud, stream a local run to k6 Cloud, and review the saved run in the browser."
+    },
+    {
+      "type": "section",
+      "id": "cli-cloud-stream",
+      "title": "Stream results from your machine",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll log in with a personal token and stack slug, then execute locally while uploading metrics."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In Grafana Cloud, open **Testing & synthetics** > **Performance** > **Settings** and copy your API token and stack slug.\n\nRun login locally (replace placeholders yourself; do not share tokens):\n\n```bash\nk6 cloud login --token <YOUR_API_TOKEN> --stack <YOUR_STACK_SLUG>\n```\n\nRefer to [Tokens and CLI authentication](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/tokens-and-cli-authentication/) if you need more detail."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Execute the baseline while streaming metrics:\n\n```bash\nk6 cloud run --local-execution baseline.js\n```\n\n`--local-execution` keeps the load on your machine while persisting results to Grafana Cloud. This differs from a fully cloud-hosted run that uploads the script to Grafana infrastructure."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Copy the run URL printed near the end of the output, for example:\n\n```text\noutput: cloud (https://acmecorp.grafana.net/a/k6-app/runs/123456)\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "The CLI portion is complete once you have a cloud run URL."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "review-in-ui",
+      "title": "Review the run in Grafana Cloud",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the saved run and confirm overview, thresholds, and checks match what you saw locally."
+        },
+        {
+          "type": "multistep",
+          "content": "In the main menu, navigate to **Testing & synthetics > Performance**.",
+          "requirements": ["navmenu-open"],
+          "skippable": true,
+          "steps": [
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']" },
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app']" }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Paste the run URL into your browser (or locate the same run in the project list) and sign in to Grafana Cloud if prompted."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review **Performance Overview** for response time trends, request rates, and other headline metrics from the streamed run."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab THRESHOLDS']",
+          "content": "Select the **Thresholds** tab and confirm each threshold shows the expected pass or fail state."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open the **Checks** tab to inspect per-check pass rates. Share the URL with teammates so everyone references the same baseline artifact."
+        },
+        {
+          "type": "markdown",
+          "content": "You can now compare future runs against this stored baseline directly inside Grafana Cloud k6."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have finished the hands-on milestones. Continue to the wrap-up for suggested next paths."
+    }
+  ]
+}

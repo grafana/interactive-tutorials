@@ -1,0 +1,79 @@
+{
+  "id": "establish-k6-baseline-validate-thresholds",
+  "title": "Validate thresholds work",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you prove thresholds behave correctly: they pass when metrics are healthy and fail with a non-zero exit code when intentionally violated."
+    },
+    {
+      "type": "section",
+      "id": "verify-passing",
+      "title": "Verify passing thresholds",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll confirm the happy path exits with code 0 before you deliberately break latency."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run the test:\n\n```bash\nk6 run baseline.js\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "At the top of the summary, open the **THRESHOLDS** section and confirm each expression shows a pass marker:\n\n```text\nTHRESHOLDS\n  checks\n    ✓ 'rate>0.99' rate=100.00%\n\n  http_req_duration\n    ✓ 'p(95)<500' p(95)=54.42ms\n\n  http_req_failed\n    ✓ 'rate<0.01' rate=0.00%\n```\n\nA ✓ beside each row means the threshold succeeded. The `rate>0.99` check on **checks** enforces overall check pass rate, not p99 latency."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Print the shell exit status (bash example):\n\n```bash\necho $?\n```\n\nYou should see `0`, meaning k6 considered the run successful."
+        },
+        {
+          "type": "markdown",
+          "content": "Passing thresholds now line up with a zero exit code on your machine."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "verify-failing",
+      "title": "Verify failing thresholds",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll tighten latency unrealistically so k6 must fail, then restore your real threshold."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Temporarily edit `baseline.js` so `http_req_duration` cannot pass, for example:\n\n```javascript\nthresholds: {\n  http_req_duration: ['p(95)<1'],\n  http_req_failed: ['rate<0.01'],\n  checks: ['rate>0.99'],\n},\n```\n\nNo real HTTP call finishes under 1 ms, so this should fail."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run again:\n\n```bash\nk6 run baseline.js\n```\n\nThe **THRESHOLDS** section should show a failure on latency:\n\n```text\nTHRESHOLDS\n  checks\n    ✓ 'rate>0.99' rate=100.00%\n\n  http_req_duration\n    ✗ 'p(95)<1' p(95)=54.42ms\n\n  http_req_failed\n    ✓ 'rate<0.01' rate=0.00%\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Check the exit code:\n\n```bash\necho $?\n```\n\nExpect **`99`**, k6's threshold failure exit code, which CI systems treat as a failed build."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Restore your real latency threshold before continuing, for example:\n\n```javascript\nhttp_req_duration: ['p(95)<500'],\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "You proved thresholds flip between pass and fail exactly when metrics cross your boundaries."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you stream the same script to Grafana Cloud k6 for storage and sharing."
+    }
+  ]
+}

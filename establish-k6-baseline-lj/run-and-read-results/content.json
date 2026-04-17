@@ -1,0 +1,59 @@
+{
+  "id": "establish-k6-baseline-run-and-read-results",
+  "title": "Run the load test and read results",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you execute `baseline.js` and focus on the summary lines that matter for a baseline: duration, failures, checks, and throughput."
+    },
+    {
+      "type": "section",
+      "id": "run-and-interpret",
+      "title": "Run and interpret the summary",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll confirm the test completes cleanly before you treat any numbers as a benchmark."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open your terminal and run:\n\n```bash\nk6 run baseline.js\n```\n\nk6 prints live progress while the scenario executes."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "When the test completes, review **`http_req_duration`**. The summary lists aggregations similar to:\n\n```text\nhttp_req_duration..: avg=180ms  min=95ms\n                     med=165ms  max=850ms\n                     p(90)=280ms  p(95)=350ms\n```\n\n- `avg` is easy to skew with outliers.\n- `p(90)` and `p(95)` describe most users' experience.\n- If `max` dwarfs `p(95)`, a small slice of requests is much slower."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review **`http_req_failed`** for error rate:\n\n```text\nhttp_req_failed................: 0.00%   0 out of 1200\n```\n\nFor a healthy baseline this should stay at or near zero."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review **`checks`** under **TOTAL RESULTS** on newer k6 versions:\n\n```text\nchecks_total.......: 2400    10.00/s\nchecks_succeeded...: 100.00% 2400 out of 2400\nchecks_failed......: 0.00%   0 out of 2400\n\n✓ status is 200\n✓ response body is not empty\n```\n\n100% `checks_succeeded` means every response satisfied your predicates."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review **`iterations`** for throughput:\n\n```text\niterations.....................: 1200    10.00/s\n```\n\nThe per-second figure approximates completed iterations per second during the run."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Confirm the run looks stable: checks succeed, errors are negligible, and latency percentiles are not wildly noisy. Investigate anomalies before recording a baseline.\n\nPercentiles are more reliable than averages for baselines. An average of 200 ms could hide a few 2 s responses; p95 surfaces that risk."
+        },
+        {
+          "type": "markdown",
+          "content": "You can now read the summary well enough to pick baseline numbers in the next milestone."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you extract concrete baseline values from these metrics."
+    }
+  ]
+}
