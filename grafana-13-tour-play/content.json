@@ -13,35 +13,116 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "Grafana SQL expressions let you use SQL to query and transform panel query results on the server after those queries run, and before the panel renders."
+          "content": "Grafana SQL expressions let you use SQL to query and transform panel query results on the server after those queries run, and before the panel renders.\n\nYou’ll open the **SQL Expressions Showcase** on Play, look around at the ready-made examples, change one line of SQL to filter a chart, then open a panel that joins two queries together."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?orgId=1&from=now-6h&to=now&timezone=utc",
+          "content": "**SQL Expressions Showcase** — Open this dashboard to try SQL expressions hands-on."
+        },
+        {
+          "type": "markdown",
+          "content": "## Overview of the SQL Expressions Showcase dashboard\n\n\n\nLet's give you a quick tour of this dashboard!"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-2'] section[data-testid='data-testid Panel header Documentation: Basic SELECT']",
+          "content": "Have a read through the different documentation text panels, such as **Documentation: Basic SELECT**. This panel explains the basic SQL operations used in the example panels below, along with example queries and use cases.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-3'] section[data-testid='data-testid Panel header Base Query (A) - Total CPU Usage']",
+          "content": "This panel shows our base query, without SQL expressions applied.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-4'] section[data-testid='data-testid Panel header 1. SQL: Basic SELECT * (Passthrough)']",
+          "content": "This panel shows our base query with SQL expressions applied.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll past the other numbered panels and read the corresponding documentation panel above. When something looks useful, feel free to hover over the panel, click the three-dot icon, and select the **Edit** button to view the underlying query and SQL expression.\n\nTo continue the guide, go back to the dashboard view.\n\n## Update a SQL expression \n\nLet's go ahead and update an existing SQL expression."
         },
         {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/d/mapr4nb/sql-expressions-showcase?editPanel=4",
-          "content": "**SQL Expressions Showcase** — Open this dashboard to try SQL expressions hands-on."
+          "content": "Navigate to  **1. SQL: Basic SELECT * (Passthrough)** panel."
         },
         {
           "type": "code-block",
+          "code": "SELECT time, __value__ FROM A WHERE __value__ > 0.4",
           "reftarget": "div[data-testid='data-testid Code editor container']",
           "language": "sql",
-          "code": "SELECT * FROM A WHERE __value__ > 1.33",
-          "content": "Add this SQL expression to filter values above 1.33"
+          "content": "Find the SQL expression that currently says `SELECT * FROM A`. Replace the whole line with the line above. It keeps the time column and the metric column, but drops points where the value is 0.4 or below."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Run query",
-          "content": "Click **Run query** to execute the SQL expression.",
-          "tooltip": "Execute the expression and see filtered results in the panel.",
-          "requirements": [
-            "exists-reftarget"
-          ]
+          "content": "Click **Run query** to execute the SQL expression."
         },
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "Congratulations! You've written your first SQL expression with Grafana!"
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header 1. SQL: Basic SELECT * (Passthrough)'] div[data-testid='data-testid panel content']",
+          "content": "The chart should update. If it looks empty, try a smaller number than 0.4 and run again.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "## Combining two queries with SQL expressions"
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?editPanel=13",
+          "content": "Navigate to  **7. SQL: INNER JOIN Two Queries** panel."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='query-editor-rows']>div:nth-child(1) input[data-testid='data-testid Select a data source']",
+          "content": "This panel has two regular queries, marked as A and B, both coming from the **grafanacloud-play-prom** data source.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Code editor container']",
+          "content": "Look at the SQL expression at the bottom of the query list. It joins query A and query B on matching timestamps by the time column. On this demo dashboard, both queries hit Prometheus; on your own dashboard, A and B can come from different data sources in the same panel, and the SQL still starts with `FROM A` and `FROM B`.",
+          "requirements": [
+            "on-page:/d/mapr4nb/sql-expressions-showcase"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "In this example, query A is CPU usage, and query B is the same CPU curve multiplied by 0.75, so the join is easy to see. \n\nWhen you want to go deeper (supported data sources, limits, alerting), head over to the [SQL expressions](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/query-transform-data/sql-expressions/) documentation for more guidance."
+        },
+        {
+          "type": "markdown",
+          "content": "Congratulations! You are now familiar with SQL expressions! You changed one filter on a live panel and saw how two queries can be merged in SQL, whether they use the same data source or different ones."
         }
       ]
     },
