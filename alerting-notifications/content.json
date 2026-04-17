@@ -1,0 +1,75 @@
+{
+  "id": "alerting-notifications",
+  "title": "Configure alert notifications",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Notification settings control where your alert notifications go when the alert fires. You can use the default notification policy for quick setup, or configure custom routing based on labels.\n\nIn this guide, you'll configure the notification settings for your alert rule and verify a contact point is available."
+    },
+    {
+      "type": "section",
+      "id": "configure-contact-point",
+      "title": "Select a contact point",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll select the contact point that receives notifications when this alert fires."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='contact-point-picker']",
+          "content": "In the **Configure notifications** section, locate the **Contact point** picker. Select the contact point where you want alert notifications delivered.\n\nNotifications for firing alerts are routed to the selected contact point.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[aria-label='View or create contact points']",
+          "content": "If you don't have a contact point yet, click **View or create contact points** to create one.\n\nChoose the integration that matches your team's workflow:\n\n| Integration | Setup |\n|-------------|-------|\n| **Email** | Enter your email address — simplest option |\n| **Slack** | Provide a webhook URL for your channel |\n| **PagerDuty** | Add your routing key for on-call escalation |\n| **Microsoft Teams** | Provide a webhook URL for your team channel |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "Your contact point is selected. Grafana will deliver notifications to this destination when the alert fires."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-routing-options",
+      "title": "Review routing options",
+      "requirements": ["section-completed:configure-contact-point"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll review optional routing settings that control how notifications are grouped and timed."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule step-5'] button[aria-expanded]",
+          "content": "Optionally, expand **Muting, grouping and timings** to configure advanced routing.\n\nThe defaults are fine for most alerts. These options let you:\n\n- **Mute timings** — Suppress notifications during maintenance windows\n- **Group by** — Bundle related alerts into a single notification\n- **Timing overrides** — Adjust group wait and repeat intervals",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "For your first alert, the default grouping and timing settings work well:\n\n- **Override grouping** — Keep defaults (groups related alerts into one notification)\n- **Override timings** — Keep defaults (standard group wait and repeat intervals)\n\nYou can fine-tune these later as you learn how your alerts behave in practice."
+        },
+        {
+          "type": "markdown",
+          "content": "Your notification routing is configured. The defaults handle grouping and timing automatically."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've configured notification settings for your alert rule. The notification policy routes alerts to the right contact point, and the contact point delivers them through your preferred channel."
+    }
+  ]
+}

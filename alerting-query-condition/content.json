@@ -1,0 +1,90 @@
+{
+  "id": "alerting-query-condition",
+  "title": "Define your alert query and condition",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The query is the foundation of your alert rule — it defines what data Grafana monitors. The condition defines when the alert fires based on that data.\n\nIn this guide, you'll build an alert query using the query builder and configure the threshold condition that triggers the alert."
+    },
+    {
+      "type": "section",
+      "id": "build-query",
+      "title": "Build your alert query",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll select a data source and build the query that fetches the data you want to monitor."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the **Define query and alert condition** section, locate the query editor.\n\nThe default data source is pre-selected. Change it if needed to match where your data is stored:\n\n| If you're alerting on | Select |\n|-----------------------|--------|\n| Infrastructure metrics | Your Prometheus or Mimir data source |\n| Logs | Your Loki data source |"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Build your query using the query builder:\n\n**For metrics (Prometheus/Mimir):**\n- Click **Metric** and select or search for your metric name, for example, `node_cpu_seconds_total`.\n- Add label filters to narrow the scope, for example, `mode != \"idle\"` to exclude idle CPU time.\n- Apply functions as needed, for example, `rate()` and `avg by (instance)()` for average CPU per host.\n\n**For logs (Loki):**\n- Enter a log query using LogQL, for example, `{job=\"myapp\"} |= \"error\"` for error logs.\n- Use metric queries for rate-based alerts, for example, `rate({job=\"myapp\"} |= \"error\" [5m])`."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run queries",
+          "content": "Click **Run queries** to preview the data your query returns.\n\nVerify that the results match what you expect to monitor. You should see data points for each dimension (host, service, etc.) you want to alert on.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your query now fetches the data Grafana will monitor. Next, you'll configure the condition that determines when the alert fires."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "set-condition",
+      "title": "Set the alert condition",
+      "requirements": ["section-completed:build-query"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll configure the condition that determines when your alert fires using the simplified alert condition editor."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule step-2'] button:contains('Is above')",
+          "content": "Below the query editor, locate the **Alert condition** area. It reads \"WHEN QUERY\" followed by a condition dropdown.\n\nClick **Is above** to change the comparison operator. Choose the operator that matches your alert:\n\n| If alerting on | Select |\n|----------------|--------|\n| High CPU, error rate, log count | **Is above** |\n| Low disk space, low memory | **Is below** |\n| Exact match | **Is equal to** |\n| Range | **Is within range** or **Is outside range** |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule step-2'] input[type='number']",
+          "content": "Enter your threshold value in the number field next to the condition operator.\n\n| Alert type | Example value | Notes |\n|------------|---------------|-------|\n| CPU percentage | `80` | Fires when CPU exceeds 80% |\n| Error rate | `10` | Fires when errors per minute exceed 10 |\n| Disk space (bytes) | `10000000000` | Fires when free space drops below ~10GB |\n| Log count | `50` | Fires when error logs exceed 50 in the evaluation window |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Preview alert rule condition",
+          "content": "Click **Preview alert rule condition** to test your condition against current data.\n\nThe preview shows which series would currently fire based on your threshold. Use this to validate your threshold before saving.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Adjust the threshold if needed based on the preview results.\n\nA good threshold gives you time to respond before the situation becomes critical. For metrics, if your normal CPU is 40-60%, alerting at 80% gives you warning. For logs, if your app normally logs 1-2 errors per minute, alerting at 10 catches real problems.\n\nFor more control over how the condition is evaluated, enable **Advanced options** at the top of this section to access the full Reduce and Threshold expression editors."
+        },
+        {
+          "type": "markdown",
+          "content": "Your alert condition is configured. Grafana will evaluate this threshold at every interval and fire the alert when the condition is met."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've built an alert query and configured its firing condition. The query fetches the data Grafana monitors, and the condition defines when that data indicates a problem worth alerting on."
+    }
+  ]
+}
