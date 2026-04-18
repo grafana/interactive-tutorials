@@ -1,0 +1,231 @@
+{
+  "id": "alert-activity",
+  "title": "Explore the Alert Activity page",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The Alert Activity page gives you a real-time view of firing and pending alert instances. You can filter, group, and drill into individual instances to investigate issues.\n\nIn this guide, you'll learn how to:\n- Open the Alert Activity page\n- Filter alerts by state and labels\n- Group alerts and adjust the time range\n- Investigate individual alert instances"
+    },
+    {
+      "type": "markdown",
+      "content": "Open the Alert Activity page from the main menu."
+    },
+    {
+      "type": "section",
+      "id": "navigate-to-alert-activity",
+      "title": "Navigate to Alert Activity",
+      "objectives": ["on-page:/alerting/alerts"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+          "content": "Click **Alerting** in the main menu.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/alerts",
+          "content": "Open the **Alerts** tab.",
+          "showMe": false,
+          "verify": "on-page:/alerting/alerts"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know how to open the Alert Activity page from the main menu."
+    },
+    {
+      "type": "markdown",
+      "content": "The page has three main areas: a filter sidebar on the left, controls at the top, and the alert workbench in the center."
+    },
+    {
+      "type": "section",
+      "id": "understand-the-layout",
+      "title": "Understand the page layout",
+      "requirements": ["on-page:/alerting/alerts"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Collapse sidebar'], button[aria-label='Expand sidebar']",
+          "content": "The **sidebar** holds the state, severity, and label filters. Collapse or reopen it when you need more workspace.",
+          "doIt": false,
+          "tooltip": "Toggle the filter sidebar to control your workspace."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='groups-container']",
+          "content": "The **workbench** shows alert rules on the left and state timelines on the right. The chart above it summarizes overall alert activity.",
+          "doIt": false,
+          "tooltip": "Each row is an alert rule with its instances nested underneath."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know where to find the sidebar, controls, and workbench on the page."
+    },
+    {
+      "type": "markdown",
+      "content": "The sidebar lets you quickly narrow down which alerts you see. Use the **State** filter to focus on firing or pending alerts, then clear the filter when you want the full view again."
+    },
+    {
+      "type": "section",
+      "id": "filter-by-state",
+      "title": "Filter by state",
+      "requirements": ["on-page:/alerting/alerts"],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **Do it** to show only firing alerts, then clear the filter to return to the full workbench.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button:has(span:contains('Firing'))",
+              "tooltip": "Filters the workbench to show only instances in the firing state."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Clear filters')",
+              "tooltip": "Removes the active state filter and restores the full list."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:has(span:contains('Pending'))",
+          "content": "Click **Pending** to focus on alerts that are still waiting to fire.",
+          "doIt": false,
+          "tooltip": "Pending alerts are evaluating as true but have not yet fired."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:has(span:contains('Critical'))",
+          "content": "If your alerts include severity labels, use **Critical** to focus on the highest-priority instances first.",
+          "doIt": false,
+          "tooltip": "Severity filters only appear when severity label values are present.",
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know how to use the sidebar to focus on specific alert states and clear filters."
+    },
+    {
+      "type": "markdown",
+      "content": "The controls bar at the top provides ad-hoc label filters, grouping, and a time picker. Use these to focus on specific alerts or organize the view."
+    },
+    {
+      "type": "section",
+      "id": "use-controls",
+      "title": "Use filters, group by, and time range",
+      "requirements": ["on-page:/alerting/alerts"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid template variable']:has(label[data-testid*='Label Filters'])",
+          "content": "Use **Filters** to add label-based filters, for example `severity = critical`.",
+          "doIt": false,
+          "tooltip": "Supports =, !=, =~, and !~ operators for flexible label matching.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid template variable']:has(label[data-testid*='Label Group by'])",
+          "content": "Use **Group by** to organize alerts by any label. Try `grafana_folder` to group alerts by folder.",
+          "doIt": false,
+          "tooltip": "Grouped alerts nest under collapsible headers with aggregate instance counts.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid TimePicker Open Button']",
+          "content": "Click the **time picker** to change the time range. Charts and instance data update to match.",
+          "doIt": false,
+          "tooltip": "Adjusts both the summary chart and per-rule state timelines."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know how to refine the view with label filters, grouping, and time range controls."
+    },
+    {
+      "type": "markdown",
+      "content": "Each row in the workbench represents an alert rule. Expand a rule to see its instances, then drill into one to see query results, state transitions, and notification history."
+    },
+    {
+      "type": "section",
+      "id": "investigate-instance",
+      "title": "Investigate an alert instance",
+      "requirements": ["on-page:/alerting/alerts"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:contains('ServiceHealth') > button[aria-label='Toggle group']",
+          "content": "Expand the **ServiceHealth** rule to see its alert instances.",
+          "doIt": true,
+          "tooltip": "Each rule row expands to show individual instances and their state timelines.",
+          "skippable": true
+        },
+        {
+          "type": "guided",
+          "content": "Start the guided walkthrough to open **Instance details** and inspect one alert instance. The drawer covers the guide, so follow the tooltips until it closes.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Open in sidebar']:contains('Instance details')",
+              "description": "Click **Instance details** to open the drawer."
+            },
+            {
+              "action": "hover",
+              "reftarget": "[role='dialog'] section[data-testid*='Panel header']:nth-match(1)",
+              "description": "Hover here to inspect the query visualization, including the evaluated metric data and thresholds."
+            },
+            {
+              "action": "hover",
+              "reftarget": "[role='dialog'] [role='radiogroup']",
+              "description": "Hover here to inspect the **History** filters. Use them to switch between **All**, **State changes**, and **Notifications**."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='dialog'] button[aria-label='Toggle notification details']:nth-match(1)",
+              "description": "Click a notification event to inspect its delivery details.",
+              "skippable": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Drawer close']",
+              "description": "Click the close control to return to the Alert Activity workbench."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Use **Instance details** to answer three questions:\n\n- **What data triggered this instance?** Check the query visualization and thresholds.\n- **How did the state change over time?** Use **History** to review transitions.\n- **Who was notified?** Open a notification event to inspect delivery details."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know how to expand a rule, open **Instance details**, and inspect its history."
+    },
+    {
+      "type": "markdown",
+      "content": "You now know how to:\n\n- Navigate to the Alert Activity page\n- Filter by state and labels using the sidebar\n- Use ad-hoc filters and group by to organize the view\n- Expand rules to see instances and their state timelines\n- Open the instance details drawer for investigation"
+    }
+  ]
+}
