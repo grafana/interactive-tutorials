@@ -1,0 +1,136 @@
+{
+    "id": "assistant-self-hosted",
+    "title": "Getting Started with Grafana Assistant for self-hosted Grafana",
+    "blocks": [
+        {
+            "type": "markdown",
+            "content": "Grafana Assistant is an AI-powered observability agent for Grafana that helps you monitor, troubleshoot, and manage your systems through natural language conversations. Instead of learning complex query languages or memorizing dashboard locations, you can ask simple questions like \"Show me CPU usage\" or \"Create a dashboard for my database.\""
+        },
+        {
+            "type": "markdown",
+            "content": "In this guide, you will configure and set up Grafana Assistant for your self-hosted Grafana instance.  \n\nFirst, go to the Grafana Assistant plugin, ensure it is installed, and configure it."
+        },
+        {
+            "type": "section",
+            "id": "open-grafana-assistant-plugin",
+            "title": "Go to Grafana Assistant plugin",
+            "autoCollapse": true,
+            "blocks": [
+                {
+                    "type": "markdown",
+                    "content": "You will open the plugin catalog and launch Grafana Assistant."
+                },
+                {
+                    "type": "interactive",
+                    "action": "navigate",
+                    "reftarget": "/plugins",
+                    "content": "Go to **Plugins**.",
+                    "verify": "on-page:/plugins"
+                },
+                {
+                    "type": "interactive",
+                    "action": "formfill",
+                    "reftarget": "div[data-testid='input-wrapper'] input[placeholder='Search Grafana plugins']",
+                    "targetvalue": "assistant",
+                    "content": "Search for **Grafana Assistant**.",
+                    "requirements": [
+                        "on-page:/plugins"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "div[data-testid='plugin-list'] a[href='/plugins/grafana-assistant-app']",
+                    "content": "Open **Grafana Assistant**.",
+                    "requirements": [
+                        "on-page:/plugins"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "action": "button",
+                    "reftarget": "Install",
+                    "content": "Click the \"Install\" button (Skip if already installed)",
+                    "skippable": true
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "id": "connect-to-grafana-cloud",
+            "title": "Connect to Grafana Cloud",
+            "requirements": [
+                "section-completed:open-grafana-assistant-plugin"
+            ],
+            "blocks": [
+                {
+                    "type": "markdown",
+                    "content": "Connect your self-hosted Grafana Assistant to Grafana Cloud; **Quick connect** is the simplest and recommended path."
+                },
+                {
+                    "type": "interactive",
+                    "action": "navigate",
+                    "reftarget": "/plugins/grafana-assistant-app?page=connection",
+                    "content": "Ensure you are on the Grafana Assistant **Connection** settings tab. If you do not see it, refresh the page, or click on the following button.",
+                    "hint": "If this URL does not open the right tab in your build, use **Record** to capture navigation that works, or click the **Connection** tab manually.",
+                    "verify": "on-page:/plugins/grafana-assistant-app"
+                },
+                {
+                    "type": "markdown",
+                    "content": "Clicking **Connect to Grafana Cloud** links your self-hosted Grafana Assistant to Grafana Assistant in your Grafana Cloud stack. Choose the **Organization** and **Stack**, then click **Authorize connection**."
+                },
+                {
+                    "type": "interactive",
+                    "action": "button",
+                    "reftarget": "Connect to Grafana Cloud",
+                    "content": "Click **Connect to Grafana Cloud**.",
+                    "requirements": [
+                        "on-page:/plugins/grafana-assistant-app"
+                    ],
+                    "hint": "Complete the **Connection** navigation step above if this button is not visible."
+                },
+                {
+                    "type": "markdown",
+                    "content": "Next, confirm that **Connection Settings** shows a green **Connected** state. The guide only checks that this page shows the success banner; it does not call Grafana Cloud for you."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "div[class*='connectionBanner']",
+                    "content": "Find the green **Connected** banner and your Grafana Assistant backend URL to confirm setup worked.",
+                    "requirements": [
+                        "on-page:/plugins/grafana-assistant-app"
+                    ],
+                    "objectives": [
+                        "exists-reftarget"
+                    ],
+                    "hint": "If there is no green **Connected** banner, the connection is not OK yet: finish **Quick connect** or **Save & connect** on manual config, fix any red error under **Connection Settings**, reload the page, or check network and credentials. This step completes only when that banner appears.",
+                    "doIt": false
+                }
+            ]
+        },
+        {
+            "type": "section",
+            "id": "launch-grafana-assistant",
+            "title": "Open Grafana Assistant",
+            "requirements": [
+                "section-completed:connect-to-grafana-cloud"
+            ],
+            "blocks": [
+                {
+                    "type": "markdown",
+                    "content": "You did it! Now it's time to try Grafana Assistant. After you go to Grafana Assistant, there will be some recommendations. Additionally, an example you can test out is asking \"What are my datasources?\"."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+                    "content": "Click on the Grafana Assistant button to open it.",
+                    "requirements": [
+                        "exists-reftarget"
+                    ]
+                }
+            ]
+        }
+    ]
+}
