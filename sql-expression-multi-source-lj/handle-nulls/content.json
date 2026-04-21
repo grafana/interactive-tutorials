@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sql-expression-multi-source-handle-nulls",
+  "title": "Handle NULL values with COALESCE",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "INNER JOIN excludes rows that don't match. In production, you often want to keep all rows and fill in defaults where data is missing. A FULL OUTER JOIN returns all rows from both queries, but columns without a match contain NULL. COALESCE replaces NULLs with a default value.\n\nTo handle NULLs, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Code editor container']",
+          "content": "Replace the SQL with a LEFT JOIN and COALESCE:\n\n```sql\nSELECT\n  A.time,\n  A.host,\n  A.cpu,\n  COALESCE(B.region, 'unknown') AS region,\n  COALESCE(B.role, 'unknown') AS role\nFROM A\nLEFT JOIN B ON A.host = B.host\n```",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Refresh** to execute."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In Table view, all rows from query A appear. If a host in query A doesn't exist in query B, the `region` and `role` columns show `unknown` instead of NULL.\n\nThis pattern is critical for alerting. If one data source returns no data and you're using SQL expressions in an alert rule, COALESCE prevents the entire expression from failing."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The COALESCE pattern is the recommended approach for production SQL expressions. Always explicitly name the columns you expect and provide defaults for columns that might be NULL.\n\nIn the next milestone, you validate the final results and save the panel."
+    }
+  ]
+}
