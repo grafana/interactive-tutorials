@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "tempo-data-source-configure-auth",
+  "title": "Configure authentication",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The Tempo data source supports three authentication methods: **Basic authentication**, **Forward OAuth Identity**, and **No Authentication**. Grafana Cloud Traces requires basic authentication with a Cloud Access Policy token.\n\nTo configure authentication, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#auth-method-select",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "In the **Authentication** section, select an authentication method from the drop-down:\n\n- **Basic authentication** — Enter a username and password. Use this for Grafana Cloud Traces.\n- **Forward OAuth Identity** — Forward the querying user's OAuth access token and OIDC ID token.\n- **No Authentication** — For Tempo instances with no authentication configured."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#basic-auth-user-input",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "For **Basic authentication**: in the **User** field, enter the username.\n\nFor **Grafana Cloud Traces**, enter your stack's numeric instance ID (shown in the Cloud Portal on the Tempo details page). For example, enter `123456`.\n\nFor self-managed Tempo, enter the username configured in your Tempo `server` block or reverse proxy.\n\n**Important:** Don't use your Grafana login credentials."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#basic-auth-password-input",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "In the **Password** field, enter the password.\n\nFor **Grafana Cloud Traces**, paste a Cloud Access Policy token with the `traces:read` scope.\n\nFor self-managed Tempo, enter the password configured in your Tempo `server` block or reverse proxy.\n\n**Security note:** Passwords and tokens are encrypted at rest by Grafana. Rotate access policy tokens periodically."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Optional: if your Tempo instance is multi-tenant, expand the **HTTP Headers** subsection and add a header:\n\n- **Header:** `X-Scope-OrgID`\n- **Value:** your tenant ID\n\nThis header is required on both the query path (configured here) and the write path (configured in your Alloy or OpenTelemetry Collector) so traces land in the correct tenant."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you save the data source and test the connection."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure the Tempo data source: Authentication](https://grafana.com/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#authentication)\n- [Grafana Cloud access policies](https://grafana.com/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/)\n- [Tempo multi-tenancy](https://grafana.com/docs/tempo/latest/operations/multitenancy/)"
+    }
+  ]
+}
