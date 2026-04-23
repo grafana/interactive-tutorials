@@ -317,7 +317,7 @@ Copy the `match` object from the `index.json` rule directly into `targeting.matc
 
 Within paths, step directory names are identical in both repos. The website markdown `pathfinder_data` frontmatter provides the authoritative mapping (e.g., `pathfinder_data: prometheus-lj/add-data-source`).
 
-Website learning path markdown location: `<website-repo>/content/docs/learning-paths/` (default local checkout: `/Users/davidallen/hax/website/content/docs/learning-paths/`)
+Website learning path markdown location: `<website-repo>/content/docs/learning-paths/` (default local checkout: `<path_to_local_clone>/website/content/docs/learning-paths/`)
 
 ---
 

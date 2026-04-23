@@ -32,13 +32,13 @@ migrated_at: "2026-03-09T00:00:00Z"
 ## Validator Result
 
 **BLOCKER: CLI unavailable.** The Pathfinder CLI was not found at either:
-- `/Users/davidallen/hax/interactive-tutorials/dist/cli/cli/index.js`
-- `/Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js`
+- `<path_to_local_clone>/interactive-tutorials/dist/cli/cli/index.js`
+- `<path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js`
 
-The `grafana-pathfinder-app` repo is checked out at `/Users/davidallen/hax/grafana-pathfinder-app/` but the CLI has not been built (no `dist/cli/` directory). To validate, run `yarn build` or the equivalent CLI build step in that repo, then re-run:
+The `grafana-pathfinder-app` repo is checked out at `<path_to_local_clone>/grafana-pathfinder-app/` but the CLI has not been built (no `dist/cli/` directory). To validate, run `yarn build` or the equivalent CLI build step in that repo, then re-run:
 
 ```bash
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js validate --package /Users/davidallen/hax/interactive-tutorials/k8s-cpu
+node <path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js validate --package <path_to_local_clone>/interactive-tutorials/k8s-cpu
 ```
 
 ## Flags for Manual Review

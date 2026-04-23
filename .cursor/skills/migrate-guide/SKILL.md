@@ -72,7 +72,7 @@ If no rule matches, the guide has no targeting — omit the `targeting` field.
 
 ### Website learning path markdown (read-only, optional)
 
-Location: `/Users/davidallen/hax/website/content/docs/learning-paths/`
+Location: `<path_to_local_clone>/website/content/docs/learning-paths/`
 
 If the hardcoded path does not exist (e.g., on another machine or in CI), the agent may shallow-clone the `grafana/website` repo into a temporary directory and use that path instead; the structure under `content/docs/learning-paths/` is the same as in a local checkout.
 
@@ -82,7 +82,7 @@ If the website repo is unavailable, apply fallback rules from `docs/manifest-ref
 
 ### journeys.yaml (read-only, optional)
 
-Location: `/Users/davidallen/hax/website/content/docs/learning-paths/journeys.yaml`
+Location: `<path_to_local_clone>/website/content/docs/learning-paths/journeys.yaml`
 
 Provides inter-journey category and relationship data.
 
@@ -280,7 +280,7 @@ Invoked on a `*-lj` directory (e.g., `prometheus-lj/`).
 
 #### 1. Locate website markdown
 
-Map the directory name to the website path by stripping `-lj` (e.g., `prometheus-lj` → `prometheus`). Check for `/Users/davidallen/hax/website/content/docs/learning-paths/<path-name>/`.
+Map the directory name to the website path by stripping `-lj` (e.g., `prometheus-lj` → `prometheus`). Check for `<path_to_local_clone>/website/content/docs/learning-paths/<path-name>/`.
 
 If not found, apply fallback rules and flag for manual review.
 

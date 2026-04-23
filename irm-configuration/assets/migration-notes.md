@@ -40,5 +40,5 @@ All INFO messages are expected — omitting `repository`, `language`, `schemaVer
 
 ## Surprises / Notes
 
-- The CLI path referenced in the skill (`dist/cli/cli/index.js` relative to the repo root) does not exist in this repo. The validator was found and run from `/Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js`.
+- The CLI path referenced in the skill (`dist/cli/cli/index.js` relative to the repo root) does not exist in this repo. The validator was found and run from `<path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js`.
 - `testEnvironment.tier` is `local` because the match expression contains only `urlPrefixIn` predicates — no `source` rule and no `targetPlatform: "cloud"`. This means the guide is expected to work on any locally-running Grafana instance with the IRM app installed, not just Grafana Cloud. Flag for manual review if Cloud-only targeting is intended.

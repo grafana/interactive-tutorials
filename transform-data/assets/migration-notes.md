@@ -51,7 +51,7 @@ Validation: PASS. All INFOs are expected (schema defaults for omitted optional f
 
 - The directory name (`transform-data`) does not match the `content.json` id (`find-transformations`) or the index.json URL path segment (`find-transformations`). This is a naming inconsistency in the repo but does not block migration — the manifest `id` correctly uses `find-transformations` from content.json.
 - Git authors for `content.json`: Tom Glenn, Isabel Matwawana. `author.name` was not included in manifest per convention (team field is sufficient for standalone guides; name is optional).
-- CLI was not found at `dist/cli/cli/index.js` relative to the repo root. Validation was run from the grafana-pathfinder-app checkout at `/Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js`.
+- CLI was not found at `dist/cli/cli/index.js` relative to the repo root. Validation was run from the grafana-pathfinder-app checkout at `<path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js`.
 
 ## TODO
 
