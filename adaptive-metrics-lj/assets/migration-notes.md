@@ -48,7 +48,7 @@ This is the only `type: "learning-journey"` rule in the recommender repo that re
 
 ## Flags for Manual Review
 
-- **`category` = `"data-availability"`** — adopted from sibling `adaptive-logs-lj` because website markdown at `/Users/davidallen/hax/website/content/docs/learning-paths/adaptive-metrics/` was not present on this machine. Verify against the website team's `journey.group` once available.
+- **`category` = `"data-availability"`** — adopted from sibling `adaptive-logs-lj` because the website markdown for the `adaptive-metrics` learning path was not available locally during migration. Verify against the website team's `journey.group` once available.
 - **Path-level `content.json` body** — written from analogy to `adaptive-logs-lj/content.json` and the existing `value-adaptive-metrics/content.json` since no `_index.md` was available. Reviewer should expand or replace prose with authoritative website copy when accessible.
 - **Step descriptions** — summarized rather than copied from website `index.md` `description` fields (none available). Reviewer should replace with authoritative descriptions from the Grafana website learning-paths content when it is accessible.
 
