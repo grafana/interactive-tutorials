@@ -9,12 +9,12 @@
             "type": "interactive",
             "action": "highlight",
             "reftarget": "[aria-label=\"Expand section: Adaptive Telemetry\"]",
-            "content": "Navigate to **Adaptive Telemetry**.",
+            "content": "Navigate to **Adaptive Telemetry** and expand the dropdown menu.",
             "requirements": ["navmenu-open", "exists-reftarget"]
         },
         {
             "type": "multistep",
-            "content": "Navigate to **Adaptive Metrics** > **Rules**.",
+            "content": "Navigate to **Adaptive Metrics** > **Metrics**.",
             "requirements": ["navmenu-open"],
             "steps": [{
                     "action": "highlight",
@@ -24,7 +24,7 @@
                 {
                     "action": "highlight",
                     "reftarget": "a[href=\"/a/grafana-adaptive-metrics-app/rule-management\"]",
-                    "tooltip": "Click Rules"
+                    "tooltip": "Click Metrics"
                 }
             ]
         },
@@ -33,7 +33,7 @@
             "action": "formfill",
             "reftarget": "input[placeholder=\"Metric name\"]",
             "targetvalue": "",
-            "content": "To filter the rules list for a specific metric, type part of the metric name under **Filter**.",
+            "content": "To filter the rules list for a specific metric, type part of the metric name under **Filter**. If you don't see any metric rules, click **skip** to continue.",
             "requirements": ["exists-reftarget", "on-page:/a/grafana-adaptive-metrics-app/rule-management"],
             "skippable": true
         },
@@ -47,10 +47,14 @@
         },
         {
             "type": "interactive",
-            "action": "button",
-            "reftarget": "Apply all recommendations",
-            "content": "Click **Apply all recommendations** to apply selected recommendations.",
-            "requirements": ["exists-reftarget", "on-page:/a/grafana-adaptive-metrics-app/rule-management"]
+            "action": "noop",
+            "content": "Find the recommendation row you want to apply, then use the per-row **Apply recommendation** action on that row. The current UI applies recommendations one at a time — there is no bulk \"apply all\" button.",
+            "requirements": ["on-page:/a/grafana-adaptive-metrics-app/rule-management"]
+        },
+        {
+            "type": "interactive",
+            "action": "noop",
+            "content": "Confirm the change in the **Apply recommendation** dialog. The rule is queued and takes effect after the aggregation delay."
         }
     ]
 }

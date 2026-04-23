@@ -7,7 +7,7 @@
         },
         {
             "type": "multistep",
-            "content": "Navigate to **Adaptive Metrics** > **Rules**.",
+            "content": "Navigate to **Adaptive Metrics** > **Metrics**.",
             "requirements": ["navmenu-open"],
             "steps": [{
                     "action": "highlight",
@@ -17,15 +17,21 @@
                 {
                     "action": "highlight",
                     "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-adaptive-metrics-app/rule-management']",
-                    "tooltip": "Click Rules"
+                    "tooltip": "Click Metrics"
                 }
             ]
         },
         {
             "type": "interactive",
+            "action": "noop",
+            "content": "On the **Metrics** tab, look for the more-actions kebab button (the vertical \u22ee icon) next to the **Segment** dropdown in the toolbar, and click it to open the menu.",
+            "requirements": ["on-page:/a/grafana-adaptive-metrics-app/rule-management"]
+        },
+        {
+            "type": "interactive",
             "action": "button",
             "reftarget": "Add new rule",
-            "content": "Click **Add new rule** to create a custom aggregation or drop rule.",
+            "content": "From the menu, choose **Add new rule** to create a custom aggregation or drop rule.",
             "requirements": ["exists-reftarget", "on-page:/a/grafana-adaptive-metrics-app/rule-management"]
         },
         {
@@ -69,7 +75,19 @@
         },
         {
             "type": "markdown",
-            "content": "From the **Keep labels** dropdown, select one or more labels you do not want to be aggregated, or toggle **All** to keep all labels. Then click **Save**."
+            "content": "Choose how the metric name should be matched: **Exact** for a single metric name, **Prefix** to match every metric whose name starts with the value you entered, or **Suffix** to match every metric whose name ends with it."
+        },
+        {
+            "type": "markdown",
+            "content": "From the **Keep labels** dropdown, select one or more labels you do not want to be aggregated, or toggle **All** to keep all labels."
+        },
+        {
+            "type": "markdown",
+            "content": "(Optional) Select **Disable recommendations** to stop Adaptive Metrics from generating new recommendations for the matched metrics. Use this when you want exempted metrics to be left untouched entirely."
+        },
+        {
+            "type": "markdown",
+            "content": "Click **Save** to create the exemption."
         }
     ]
 }
