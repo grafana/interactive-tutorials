@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "iis-web-server-configure-iis-counters",
+  "title": "Configure IIS to expose performance counters",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before Grafana Alloy can collect IIS metrics, you need to verify that the required IIS features and performance counters are available on your Windows Server.\n\nThe IIS integration relies on Windows performance counters to collect request, connection, and worker process metrics. Most of these counters are available by default when IIS is installed, but some require additional IIS role services."
+    },
+    {
+      "type": "markdown",
+      "content": "To verify and enable IIS performance counters, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open **PowerShell as Administrator** on your Windows Server."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify that IIS is installed and the required role services are enabled:\n\n```powershell\nGet-WindowsFeature Web-Server, Web-Request-Monitor, Web-Http-Logging, Web-Stat-Compression\n```\n\nAll listed features should show `[X]` (installed). If any feature shows `[ ]`, install it in the next step."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "If any features are missing, install them:\n\n```powershell\nInstall-WindowsFeature Web-Request-Monitor, Web-Http-Logging, Web-Stat-Compression\n```\n\n> **Tip:** The `Web-Request-Monitor` feature enables the IIS Request Monitor module, which provides detailed per-request metrics."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify that IIS performance counter categories are available:\n\n```powershell\n[System.Diagnostics.PerformanceCounterCategory]::Exists('Web Service')\n[System.Diagnostics.PerformanceCounterCategory]::Exists('W3SVC_W3WP')\n```\n\nBoth commands should return `True`. The `Web Service` category provides site-level metrics and `W3SVC_W3WP` provides worker process metrics."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify that at least one IIS site is running:\n\n```powershell\nGet-IISSite\n```\n\nYou should see at least one site with a status of `Started`. If no sites are running, the integration won't have any metrics to collect."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore\n\n- [IIS performance counters reference](https://learn.microsoft.com/en-us/iis/manage/provisioning-and-managing-iis/managing-iis-log-file-storage)\n- [Windows exporter IIS collector](https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.exporter.windows/)"
+    }
+  ]
+}

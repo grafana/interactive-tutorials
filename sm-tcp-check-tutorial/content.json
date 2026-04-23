@@ -1,0 +1,264 @@
+{
+  "id": "sm-tcp-check-tutorial",
+  "title": "How to Perform a TCP Check with Grafana Cloud Synthetic Monitoring",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this guide, you'll set up and run a TCP check in Grafana Cloud Synthetic Monitoring, including configuration and alerting.\n\n## Why Use TCP Checks?\n\nTCP checks let you monitor non-HTTP services like databases, mail servers, and message queues, catch failures before they impact users, and validate connectivity and response times globally."
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 1: Navigate to Synthetic Monitoring\n\nLet's start by navigating to the Testing & Synthetics section in Grafana Cloud. This is where you create and manage all your synthetic checks."
+    },
+    {
+      "type": "section",
+      "id": "navigate-synthetics",
+      "title": "Navigate to Synthetic Monitoring",
+      "objectives": [
+        "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
+          "content": "In the main menu, navigate to **Testing & Synthetics**.",
+          "requirements": [
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[id='pageContent'] a[href='/a/grafana-synthetic-monitoring-app/home']",
+          "content": "Click **Synthetics** to open the Synthetic Monitoring home page.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "objectives": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='action create check']",
+          "content": "Click **Create new check** to get started.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
+          "content": "Select **API Endpoint** as the check type. This is where you'll find HTTP, Ping, DNS, TCP, and Traceroute checks.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 2: Configure the TCP Check\n\nNow let's configure the TCP check. You'll give the check a name, set the request type to TCP, and specify the target host and port you want to monitor."
+    },
+    {
+      "type": "section",
+      "id": "configure-tcp-check",
+      "title": "Configure the TCP Check",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='checkEditor form job']",
+          "targetvalue": "Example:TCP",
+          "content": "Enter a **Job Name** for your check, we will use **Example:TCP**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('TCP')",
+          "content": "Set the **Request Type** to **TCP**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[name='target']",
+          "targetvalue": "smtp.gmail.com:587",
+          "content": "Enter your **Request Target** — the hostname and port to connect to, for example **smtp.gmail.com:587**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 3: Optional Parameters\n\nIn this section you can configure a query/response pair to validate the TCP handshake, set a timeout, and add labels to organize your check."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation uptime']",
+          "content": "Click **Uptime** to move to the next configuration section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "**Add query/response** to validate the TCP handshake. For example, set the query to `^220 ([^ ]+) ESMTP (.+)$` and the response to `EHLO prober\\r` to verify an SMTP server greeting.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Query/response"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[aria-label=\"Query to send 1\"]",
+              "targetvalue": "EHLO prober\\r"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[aria-label=\"Response to expect 1\"]",
+              "targetvalue": "^220 ([^ ]+) ESMTP (.+)$"
+            }
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[aria-label=\"timeout seconds input\"]",
+          "targetvalue": "10",
+          "content": "Optionally set a **Timeout**. If the check takes longer than this to run it will be marked as failed. A value of **10 seconds** is suitable for most services.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation labels']",
+          "content": "Move to the **Labels** section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Optionally add **Labels** to help organize and filter your checks.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[placeholder='name']",
+              "targetvalue": "env"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[placeholder='value']",
+              "targetvalue": "test"
+            }
+          ],
+          "skippable": true
+        }
+      ],
+      "id": "optional-parameters",
+      "title": "Configure Other Parameters"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 4: Select Probe Locations and Frequency\n\nProbes are monitoring agents distributed around the world that connect to your target over TCP. Selecting multiple locations gives you a global view of your service's availability and response time."
+    },
+    {
+      "type": "section",
+      "id": "configure-execution",
+      "title": "Select Probe Locations and Frequency",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation execution']",
+          "content": "Click **Execution** to move to the probe configuration section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[data-testid='checkEditor form probeLabel']:first-of-type",
+          "content": "Select one or more **Probe Locations** to run the TCP check from. Choose locations closest to your users or infrastructure to best reflect their experience.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id^='option-60000-radiogroup-']",
+          "content": "Optionally adjust the **Probe Frequency**. The default of 1 minute is suitable for most checks.",
+          "skippable": true,
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 5: Configure Alerting\n\nAlerting ensures you're notified as soon as a TCP connection starts failing. Set a threshold that reflects your service's tolerance for connectivity issues."
+    },
+    {
+      "type": "section",
+      "id": "configure-alerting",
+      "title": "Configure Alerting",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation alerting']",
+          "content": "Click **Alerting** to move to the alerting configuration section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox']",
+          "content": "Enable the **Probe Failed Executions** alert by clicking the checkbox.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor feat-adhoc-check testButton']",
+          "content": "Optionally click **Test** to validate the TCP check before saving.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor form submit']",
+          "content": "Click **Save** to create your TCP check. Grafana Cloud will begin executing it immediately."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Congratulations!\n\nYou've successfully set up a TCP check in Grafana Cloud Synthetic Monitoring. You can now:\n\n- View results in the out-of-the-box **Synthetic Monitoring dashboard**, showing uptime, reachability, average latency, and SSL chain expiry\n- Monitor **response latency by probe location** for deeper visibility into regional performance\n- Receive **alerts** the moment TCP connections start failing\n\nTo learn more, checkout our documentation to explore other check types such as HTTP, Ping, and DNS checks."
+    }
+  ]
+}

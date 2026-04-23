@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "kafka-monitoring-configure-jmx-exporter",
+  "title": "Configure Kafka JMX exporter",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Kafka exposes operational metrics through Java Management Extensions (JMX), which requires enabling JMX remote access on your Kafka brokers. JMX provides comprehensive visibility into broker performance, topic statistics, partition health, and other critical operational data that your monitoring tool can collect and forward to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "To configure JMX settings, you'll set the JMX port and authentication options based on your security requirements. The configuration typically involves setting environment variables that the Kafka broker reads during startup to enable JMX remote access."
+    },
+    {
+      "type": "markdown",
+      "content": "**On your Kafka broker server**, complete the following steps:\n\n1. Locate the Kafka configuration directory (typically `/opt/kafka/config` or `/etc/kafka`).\n1. Edit the `server.properties` file or create a `kafka-run-class.sh` override.\n1. Add or update the following JMX environment variables in your Kafka startup script or systemd service file:\n\n   ```bash\n   export JMX_PORT=9999\n   export KAFKA_JMX_OPTS=\"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.port=9999\"\n   ```\n\n1. If running multiple brokers, ensure each broker uses a unique JMX port or IP binding.\n1. Restart the Kafka broker service to apply the JMX configuration changes.\n1. Verify the JMX port is accessible: `telnet localhost 9999`."
+    },
+    {
+      "type": "markdown",
+      "content": "The JMX port responds to connection attempts and you can access JMX metrics from the Kafka broker. Repeat these steps for all brokers in your cluster."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you learn about the advantages of using Grafana Alloy for Kafka metrics collection."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Kafka JMX Metrics Reference](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-kafka/)"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Kafka integration troubleshooting](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/)\n- [Cannot connect to JMX port or metrics not appearing](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-kafka/#troubleshooting)"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "mongodb-integration-test-connection",
+  "title": "Test connection and verify metrics",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you restart the Grafana Alloy service with the MongoDB configuration and verify that metrics are successfully flowing to Grafana Cloud.\n\nTesting the connection ensures that Grafana Alloy can communicate with both your MongoDB instance and Grafana Cloud, confirming the complete observability pipeline."
+    },
+    {
+      "type": "markdown",
+      "content": "To test the connection and verify metrics, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Save your Grafana Alloy configuration file.\n\nEnsure all changes are saved to `/etc/alloy/config.alloy` (Linux), `$(brew --prefix)/etc/alloy/config.alloy` (macOS), or your custom configuration location."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Restart the Grafana Alloy service.\n\nOn a Linux machine, run:\n\n```bash\nsudo systemctl restart alloy\n```\n\nOn macOS, run:\n\n```bash\nbrew services restart grafana/grafana/alloy\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Check the service status to ensure Alloy is running properly.\n\nOn a Linux machine, run:\n\n```bash\nsudo systemctl status alloy\n```\n\nOn macOS, run:\n\n```bash\nbrew services info grafana/grafana/alloy\n```\n\nThe output should show `active (running)` status."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='test-connection-button']",
+          "requirements": ["exists-reftarget"],
+          "content": "In Grafana Cloud, click **Test connection**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "It might take up to a few minutes for the system to verify the connection.\n\nYou'll know the connection is working when you see `Integration is collecting data and sending it to Grafana Cloud`."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify metrics are appearing in Grafana Cloud:\n\n1. In Grafana Cloud navigate to **Explore**.\n2. Select your Prometheus data source.\n3. Query for MongoDB metrics using: `mongodb_up`\n\nIf the connection is successful, you should see a value of `1` indicating MongoDB is reachable."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In your next milestone, you'll install the pre-built MongoDB dashboards and alerts."
+    },
+    {
+      "type": "markdown",
+      "content": "---"
+    },
+    {
+      "type": "markdown",
+      "content": "### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Alloy isn't running after a reboot](/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#alloy-isnt-running-after-a-reboot)\n- [No metrics were found for this integration](/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#no-metrics-were-found-for-this-integration)\n- [Alloy was not able to reach your application Prometheus metrics endpoint](/docs/grafana-cloud/monitor-infrastructure/integrations/troubleshoot/install-troubleshoot-linux-alloy/#alloy-was-not-able-to-reach-your-application-prometheus-metrics-endpoint)"
+    }
+  ]
+}

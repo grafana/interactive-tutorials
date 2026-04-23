@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "influxdb-data-source-verify-influxdb",
+  "title": "Verify InfluxDB is accessible",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before you connect Grafana to InfluxDB, confirm that your InfluxDB instance is running and that you have the information Grafana needs to establish a connection."
+    },
+    {
+      "type": "markdown",
+      "content": "### Gather connection details\n\nThe credentials you need depend on which query language you plan to use. Collect the relevant values before proceeding:\n\n| Detail | Flux | InfluxQL | SQL | Example |\n|--------|------|----------|-----|---------|\n| **URL** | ✓ | ✓ | ✓ | `http://influxdb.example.com:8086` |\n| **Organization** | ✓ | | | `my-org` |\n| **Default bucket** | ✓ | | | `telegraf` |\n| **Token** | ✓ | | ✓ | `your-influxdb-api-token` |\n| **Database** | | ✓ | ✓ | `telegraf` |\n| **User** | | ✓ | | `grafana_reader` |\n| **Password** | | ✓ | | `••••••••` |\n\nThis path demonstrates connecting with Flux. If you're using InfluxQL or SQL, refer to [Configure the InfluxDB data source](/docs/grafana/latest/datasources/influxdb/configure/) for the settings specific to your query language."
+    },
+    {
+      "type": "markdown",
+      "content": "### Verify connectivity\n\nConfirm InfluxDB is reachable by running this command from your terminal:\n\n```bash\ncurl -s -o /dev/null -w \"%{http_code}\" http://YOUR_INFLUXDB_HOST:8086/health\n```\n\nA `200` response confirms that InfluxDB is healthy and accepting connections.\n\n**If InfluxDB is behind a firewall:** You'll need [Private Data Source Connect (PDC)](/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/) to allow Grafana Cloud to reach it. Set up PDC before continuing."
+    },
+    {
+      "type": "markdown",
+      "content": "### Create an API token (if needed)\n\nIf you don't have a read-only API token:\n\n1. Open the InfluxDB UI or CLI.\n2. Create a new token with **read** permissions on the bucket you want to query.\n3. Copy the token. You'll need it in the configuration milestone.\n\n**Security tip:** Use a token scoped to the minimum permissions Grafana needs (read access to specific buckets)."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll add InfluxDB as a data source in Grafana Cloud."
+    }
+  ]
+}

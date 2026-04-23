@@ -1,0 +1,173 @@
+{
+  "id": "play-carbon-intensity-tour",
+  "title": "Tour the UK Carbon Intensity Dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "## Introduction\n\nThis dashboard shows you a live snapshot of the UK's electricity generation mix and carbon intensity — updated every 30 minutes to reflect the current half-hour period.\n\nIt's built using the Grafana Infinity data source, which can pull data from any HTTP API, and JQ — a lightweight query language for reshaping JSON. Together they make it possible to go straight from a raw API response to a polished dashboard with no intermediate database required.\n\nAll the data comes from the UK Carbon Intensity API, a free public API maintained by National Grid."
+    },
+    {
+      "type": "section",
+      "id": "nations-breakdown",
+      "title": "Nations at a Glance",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "At the top of the dashboard you'll find a row of panels summarising carbon intensity for Great Britain as a whole and then breaking it down by nation."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header England']",
+          "content": "These panels show the current carbon intensity forecast and index (low - very high) for England, Scotland and Wales. Each one filters the data from the shared raw data table you'll meet in a moment.",
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "renewables-bar-gauge",
+      "title": "Renewables by Region",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Further down the dashboard there's a bar gauge that gives you an at-a-glance view of how much of the current generation mix comes from renewables — broken down by region across the whole of Great Britain."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Renewables by Region']",
+          "content": "The renewables figure here is calculated in the JQ expression as the sum of wind, solar, hydro and biomass for each region. The longer the bar, the greener the grid is in that part of the country.",
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## The Raw Data Table\n\nEvery other panel on the dashboard draws its data from a single source: the Raw Data table at the bottom. This is where the API is called and the JSON response is shaped into something Grafana can work with.\n\nLet's take a look at it."
+    },
+    {
+      "type": "section",
+      "id": "raw-data-table",
+      "title": "Raw Data Table",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-Raw Data']",
+          "content": "This table is the backbone of the dashboard. It makes a single call to the API and returns one row per region, with columns for the intensity forecast, index, and percentage of each fuel type in the generation mix. Every other panel references this table rather than making its own API call.",
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "edit-table-panel",
+      "title": "Inside the Infinity Query",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Now let's open the Raw Data panel and look at how the query is constructed. We'll see the Infinity data source configuration and the JQ expression that reshapes the API response into tabular form."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Raw Data panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Raw Data'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"query-editor-row\"] > :first-child",
+          "content": "Here's the Infinity query. It's configured to make a simple HTTP GET call to the API. The parser is set to **jq-backend**, which means the raw JSON response is handed straight to a JQ expression before any data reaches Grafana.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Let's open up the parsing options section so that we can see the JQ expression.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='infinity-query-row-collapse-show-parsing-options-&-result-fields'] svg",
+              "description": "Click here to open the parsing options section.",
+              "lazyRender": true
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='infinity-query-field-wrapper-rows/root'] textarea",
+          "content": "The JQ expression is where the heavy lifting happens.\n\nThe expression iterates over every region in the response, flattens the nested generation mix array into individual columns, and computes a renewables total on the fly. The result is a clean table that all the other panels can query using standard Grafana transformations.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Head back to the dashboard to continue the tour.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Regional Rows\n\nThe dashboard has a repeating row for each region returned by the API. Each row uses the same set of panels, but filters the shared Raw Data table to show only the figures for each specific region in turn.\n\nLet's zoom in on one of them."
+    },
+    {
+      "type": "section",
+      "id": "regional-row-example",
+      "title": "North East England",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid dashboard-row-wrapper-for-North East England']",
+          "content": "Here's the row for North East England. The panels here are identical in structure to every other regional row — a filter on the shortname field that picks out this region's data from the shared table. This pattern keeps the dashboard consistent and easy to maintain: update the JQ expression in the Raw Data table and every regional row benefits automatically.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Let's conclude our tour by exiting edit mode.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+              "description": "Click the Exit edit button."
+            }
+          ],
+          "completeEarly": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Further Resources\n\nWe hope this tour has given you a feel for what's possible with the Infinity data source and JQ. Here are some links to help you go further:\n\n- [UK Carbon Intensity API](https://carbon-intensity.github.io/api-definitions/#carbon-intensity-api-v2-0-0) — the free public API powering this dashboard.\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — documentation and installation guide for the plugin.\n- [JQ Playground](https://jqplay.org/) — experiment with JQ expressions interactively in your browser.\n- [JQ Manual](https://jqlang.org/manual/) — the full reference for the JQ language."
+    }
+  ]
+}

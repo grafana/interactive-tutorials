@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "infrastructure-alerting-build-your-query",
+  "title": "Build your alert query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The query is the foundation of your alert rule—it defines what data Grafana monitors. You'll use the query builder to construct a query that fetches the metric or log data you identified earlier."
+    },
+    {
+      "type": "markdown",
+      "content": "To build your alert query, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "In Grafana Cloud, navigate to **Alerts & IRM > Alerting > Alert rules** from the main menu.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href=\"/alerting/new/alerting\"]",
+          "content": "Click **+ New alert rule** in the upper right.\n\nThe alert rule creation form opens with sections for defining your query, conditions, evaluation behavior, and notifications.",
+          "requirements": ["exists-reftarget", "on-page:/alerting/list"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the **Define query and alert condition** section, locate the query editor.\n\nThe default data source is pre-selected. Change it if needed to match where your data is stored (Prometheus/Mimir for metrics, Loki for logs)."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Select the data source for your alert:\n\n| If you're alerting on | Select |\n|-----------------------|--------|\n| Infrastructure metrics | Your Prometheus or Mimir data source |\n| Logs | Your Loki data source |"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Build your query using the query builder:\n\n**For metrics (Prometheus/Mimir):**\n\n- Click **Metric** and select or search for your metric name.\n\n  For example, select `node_cpu_seconds_total` for CPU monitoring.\n\n- Add label filters to narrow the scope.\n\n  For example, add `mode != \"idle\"` to exclude idle CPU time.\n\n- Apply functions as needed.\n\n  For example, wrap with `rate()` and `avg by (instance)()` to get average CPU usage per host.\n\n**For logs (Loki):**\n\n- Enter a log query using LogQL.\n\n  For example, `{job=\"myapp\"} |= \"error\"` to find error logs.\n\n- Use metric queries for rate-based alerts.\n\n  For example, `rate({job=\"myapp\"} |= \"error\" [5m])` for error rate."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run queries",
+          "content": "Click **Run queries** to preview the data your query returns.\n\nVerify that the results match what you expect to monitor. You should see data points for each dimension (host, service, etc.) you want to alert on.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "If your query returns multiple time series (multi-dimensional), verify that each series is labeled distinctly.\n\n| If alerting on | Multi-dimensional example |\n|----------------|---------------------------|\n| Metrics | CPU across 5 hosts → 5 series, each with unique `instance` label |\n| Logs | Errors across 3 services → 3 series, each with unique `job` or `service` label |"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll set the conditions that determine when this alert fires."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Query and transform data](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/)\n- [Grafana-managed alert rules](https://grafana.com/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/)"
+    }
+  ]
+}

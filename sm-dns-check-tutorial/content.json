@@ -1,0 +1,247 @@
+{
+  "id": "sm-dns-check-tutorial",
+  "title": "How to Perform Real-Time DNS Monitoring in Grafana Cloud",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this guide, you'll set up and run a DNS check in Grafana Cloud Synthetic Monitoring, including configuration, selecting probe locations, and alerting\n\n### **Why Use DNS Checks?**\n\nDNS checks let you detect resolution failures and latency globally, catch security threats like DDoS attacks and DNS poisoning early, and validate that domains resolve correctly from multiple locations.\n\n"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 1: Navigate to Synthetic Monitoring\n\nLet's start by navigating to the Testing & Synthetics section in Grafana Cloud. This is where you create and manage all your synthetic checks."
+    },
+    {
+      "type": "section",
+      "id": "navigate-synthetics",
+      "title": "Navigate to Synthetic Monitoring",
+      "objectives": [
+        "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
+          "content": "In the main menu, navigate to **Testing & Synthetics**.",
+          "requirements": [
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[id='pageContent'] a[href='/a/grafana-synthetic-monitoring-app/home']",
+          "content": "Click **Synthetics** to open the Synthetic Monitoring home page.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "objectives": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='action create check']",
+          "content": "Click **Create new check** to get started.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
+          "content": "Select **API Endpoint** as the check type. This is where you'll find HTTP, Ping, DNS, TCP, and Traceroute checks.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 2: Configure the DNS Check\n\nNow let's configure the DNS check. You'll give it a name, set the request type to DNS, and specify the domain you want to monitor."
+    },
+    {
+      "type": "section",
+      "id": "configure-dns-check",
+      "title": "Configure the DNS Check",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='checkEditor form job']",
+          "targetvalue": "Example:DNS",
+          "content": "Enter a **Job Name** for your check, for example **Example:DNS**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('DNS')",
+          "content": "Set the **Request Type** to **DNS**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[name=\"target\"]",
+          "content": "Enter your **Request Target** — the domain name to resolve, for example **grafana.com**.",
+          "targetvalue": "grafana.com",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 3: Optional Parameters\n\nIn this section you can set the expected DNS response code, configure a timeout, and add labels to organize your check. These help ensure the check accurately detects failures."
+    },
+    {
+      "type": "section",
+      "id": "optional-parameters",
+      "title": "Configure Optional Parameters",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation uptime']",
+          "content": "Click **Uptime** to move to the next configuration section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Optionally set the **Valid Response Code**. We will keep **NOERROR** to confirm the DNS query returned a valid response. The check will fail if any other response code is returned."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[aria-label=\"timeout seconds input\"]",
+          "content": "Optionally set a **Timeout**. If the check takes longer than this to run it will be marked as failed. A value of **10 seconds** is suitable for most DNS checks.",
+          "targetvalue": "10",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation labels']",
+          "content": "Move to the **Labels** section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Optionally add **Labels** to help organize and filter your checks.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[placeholder='name']",
+              "targetvalue": "env"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[placeholder='value']",
+              "targetvalue": "test"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 4: Select Probe Locations and Frequency\n\nProbes are monitoring agents distributed around the world that send DNS queries to your target. Selecting multiple locations validates that your domain resolves correctly across different regions."
+    },
+    {
+      "type": "section",
+      "id": "configure-execution",
+      "title": "Select Probe Locations and Frequency",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation execution']",
+          "content": "Click **Execution** to move to the probe configuration section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[data-testid='checkEditor form probeLabel']:first-of-type",
+          "content": "Select one or more **Probe Locations** to run the DNS check from. Choose locations closest to your users or infrastructure to best reflect their experience.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id^='option-60000-radiogroup-']",
+          "content": "Optionally adjust the **Probe Frequency**. The default of 1 minute is suitable for most checks.",
+          "skippable": true,
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 5: Configure Alerting\n\nAlerting ensures you're notified as soon as DNS resolution starts failing. Set a threshold that reflects your tolerance for missed resolutions."
+    },
+    {
+      "type": "section",
+      "id": "configure-alerting",
+      "title": "Configure Alerting",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation alerting']",
+          "content": "Click **Alerting** to move to the alerting configuration section.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox']",
+          "content": "Enable the **Probe Failed Executions** alert by clicking the checkbox.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor feat-adhoc-check testButton']",
+          "content": "Optionally click **Test** to validate the DNS check before saving.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor form submit']",
+          "content": "Click **Save** to create your DNS check. Grafana Cloud will begin executing it immediately."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Congratulations!\n\nYou've successfully set up a DNS check in Grafana Cloud Synthetic Monitoring. You can now:\n\n- View results in the out-of-the-box **Synthetic Monitoring dashboard**, showing uptime, reachability, average latency, and frequency\n- Monitor **response latency and resource records by probe location** for deeper visibility into global DNS performance\n- Receive **alerts** the moment DNS resolution fails or returns unexpected results\n\nTo learn more, visit the documentation to explore other check types such as HTTP, Ping, and TCP checks."
+    }
+  ]
+}

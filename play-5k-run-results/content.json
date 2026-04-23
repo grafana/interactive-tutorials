@@ -1,0 +1,211 @@
+{
+  "id": "play-5k-run-results",
+  "title": "Analyzing 5K Run Results with Grafana Transformations",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A community 5K run produces a surprisingly minimal dataset: each finisher gets a position number and the Unix timestamp of when they crossed the line. That's it. No names, no calculated times, no groupings. This guide shows how Grafana transformations turn those two raw columns into a full race analysis — winner's time, median, mean, tail walker, and a histogram of when the pack finished — all without touching the data itself."
+    },
+    {
+      "type": "section",
+      "id": "race-at-a-glance",
+      "title": "The Race at a Glance",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Take a look at the headline stats across the top of the dashboard and consider what's interesting about them."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Winning Time']",
+          "content": "The winning time and tail walker time bookend the field. The tail walker is the volunteer who walks the full course at the back to make sure no runner gets left behind — their time is the official close of the event.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Mean Time']",
+          "content": "Mean and median times sit side by side. If the two are close together the field is evenly spread; a big gap suggests a long tail of slower runners pulling the mean up.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Combined Time']",
+          "content": "Combined Time is the most unusual stat here. It adds every runner's finish time together to give the total time a relay race would take if each runner had to wait for the previous one to finish. It's a fun illustration of what Grafana's **Sum** reducer can do with a field that wasn't designed to be summed.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "None of these stats exist in the raw data — they're all derived. Let's open the Results table to see how."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "results-table",
+      "title": "Inside the Results Table",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The Results table at the bottom of the dashboard is the engine room. Open it up and you'll find both the raw data source and the full chain of transforms that enrich it."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Results panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Results'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Queries tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Queries']",
+              "description": "Click the Queries tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"query-editor-row\"] > :first-child",
+          "content": "The data source is Infinity with type CSV and source Inline — the entire dataset lives inside the dashboard as a plain text string. Each row is just two numbers: a finishing position and a Unix timestamp. There are no column headers, no runner names, nothing else.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Transformations tab to see how the raw timestamps become useful race data.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Transformations']",
+              "description": "Click the Transformations tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "Six transformations run in sequence. The two most important are:\n\n**Calculate field — run_time**: subtracts the race start time (a fixed Unix timestamp representing 9:00am on race day) from each finisher's timestamp. This single step converts an absolute clock time into an elapsed race time in seconds. Every stat panel — winning time, mean, median, tail walker — is built on this derived field.\n\n**Calculate field — finish_bucket**: divides run_time by 300 (the number of seconds in 5 minutes) and then applies a floor function to round it down to a whole number. The result is a bucket index: 0 means the runner finished in the first 5 minutes, 1 in the second 5 minutes, and so on. This is the field that powers the Finishers by 5 Minute Period chart.\n\nThe remaining transforms handle type conversion, column reordering, and generating a sort key — useful plumbing, but the two calculate field steps above are where the real analysis happens."
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard to look at how the bucket data is used.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen how two raw columns become a rich dataset. Now let's look at how one panel turns that bucket field into a histogram."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "five-min-buckets",
+      "title": "Finishers by 5 Minute Period",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The bar chart next to the time series shows how the finishers were distributed across 5 minute windows. Let's open it and see the single transform that produces it."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Finishers by 5 Minute Period panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Finishers by 5 Minute Period'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Transformations tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Transformations']",
+              "description": "Click the Transformations tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "There's just one transform here: **Group by**. It takes the full list of runners (one row per finisher) and collapses it down by finish_bucket — counting how many runners share each bucket. The result is one row per 5 minute window with a count of how many people finished in that window. That's the entire bar chart, produced by a single transform applied to the bucket field calculated in the Results table."
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard and exit edit mode to wrap up.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+              "description": "Click here to exit edit mode.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've followed the data from a bare timestamp all the way to a histogram — and the original CSV never changed."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Further Reading\n\nGrafana transformations do the heavy lifting in this dashboard. Here are the docs for the specific features used:\n\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — how to load inline CSV, JSON, and remote APIs as a Grafana data source.\n- [Calculate field transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#calculate-field) — add derived columns using arithmetic, reducers, and unary functions like floor.\n- [Group by transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#group-by) — aggregate rows by a field value, with count, sum, mean and more.\n- [Convert field type transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#convert-field-type) — cast string columns to numbers or timestamps, including Unix epoch parsing.\n- [Reduce options in stat panels](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/stat/) — how first, last, mean, median and sum reducers work in the stat panel."
+    }
+  ]
+}

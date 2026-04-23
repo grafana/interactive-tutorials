@@ -1,0 +1,146 @@
+---
+description: Reusable JSON patterns for common Grafana UI elements in interactive guides. Consult when scaffolding content.json files or discovering selectors.
+globs:
+  - "**/content.json"
+---
+
+# Proven Patterns
+
+Reusable JSON structures for common Grafana UI elements. These were validated through real testing.
+
+> **IMPORTANT:** These are **templates**, not copy-paste solutions. You MUST use Playwright
+> browser tools to verify each selector exists on the actual page before using it. Selectors
+> can change between Grafana versions.
+
+---
+
+## Navigation Patterns
+
+### Multi-Level Menu Navigation
+
+Use `multistep` with `data-testid` nav links for **2-level navigation** (parent → child). Multisteps highlight each step, then click, allowing the nav section to expand before the next step.
+
+```json
+{
+  "type": "multistep",
+  "content": "Navigate to **Drilldown > Logs** from the main menu.",
+  "requirements": ["navmenu-open"],
+  "steps": [
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/drilldown']" },
+    { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-lokiexplore-app/explore']" }
+  ]
+}
+```
+
+> **Why this pattern works:**
+> - Uses `data-testid` (stable, intentional test hook)
+> - Uses `href` (predictable routes)
+> - Works whether menu sections are expanded or collapsed
+
+### Common Navigation Selectors
+
+| Destination | href | Full Selector |
+|-------------|------|---------------|
+| Connections | `/connections` | `a[data-testid='data-testid Nav menu item'][href='/connections']` |
+| Add new connection | `/connections/add-new-connection` | `a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']` |
+| Data sources | `/connections/datasources` | `a[data-testid='data-testid Nav menu item'][href='/connections/datasources']` |
+| Dashboards | `/dashboards` | `a[data-testid='data-testid Nav menu item'][href='/dashboards']` |
+| Explore | `/explore` | `a[data-testid='data-testid Nav menu item'][href='/explore']` |
+| Drilldown | `/drilldown` | `a[data-testid='data-testid Nav menu item'][href='/drilldown']` |
+| Alerting | `/alerting` | `a[data-testid='data-testid Nav menu item'][href='/alerting']` |
+| Observability | `/observability` | `a[data-testid='data-testid Nav menu item'][href='/observability']` |
+
+> **Don't use expand button selectors** (`button[aria-label*='section:']`). They **toggle** state and break navigation when the section is already expanded.
+
+---
+
+## Form Patterns
+
+### Search/Filter Input
+
+Use `aria-label` for search inputs, NOT `placeholder`:
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[aria-label=\"Search [description]\"]",
+  "targetvalue": "[search term]",
+  "content": "In the search box, type **[term]** to filter the results."
+}
+```
+
+### Text Input Fields
+
+```json
+{
+  "type": "interactive",
+  "action": "formfill",
+  "reftarget": "[aria-label=\"[Field label]\"]",
+  "targetvalue": "[value]",
+  "content": "Enter **[value]** in the [field name] field."
+}
+```
+
+---
+
+## Button Patterns
+
+| Scenario | Action | Selector |
+|----------|--------|----------|
+| Button with `data-testid` | `highlight` | `[data-testid="[value]"]` |
+| Button with stable text | `button` | Button text (e.g., `"Install"`) |
+| Icon-only button | `highlight` | `[aria-label="[description]"]` |
+
+---
+
+## Integration Setup Patterns
+
+### Alloy Installation Expand Button
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "[data-testid=\"agent-config-button\"]",
+  "content": "Click **Run Grafana Alloy** to expand the installation options."
+}
+```
+
+### Token Creation → Use Markdown
+
+Token dialogs have multiple paths (create new vs use existing). Use `markdown` since you can't predict the user's choice.
+
+### Test Connection → Use Markdown
+
+Conditional on real-world installation completing first.
+
+---
+
+## Data Source Patterns
+
+| Element | Selector |
+|---------|----------|
+| Add new data source button | `[data-testid='data-testid data-source-add-button']` |
+| Data source name input | `[data-testid='data-testid Data source settings page name input field']` |
+| Filter data sources | `[placeholder='Filter by name or type']` |
+| Search connections | `[aria-label='Search connections by name']` |
+| Connection tile | `a[href='/connections/datasources/[plugin-id]/']` |
+
+---
+
+## Quick Decision Guide
+
+| UI Element | Pattern to Use |
+|------------|----------------|
+| Navigate through menus | `multistep` with `navmenu-open` |
+| Search/filter input | `formfill` with `aria-label` or `placeholder` |
+| Button with stable text | `button` action |
+| Button with data-testid | `highlight` with data-testid |
+| Clickable card/tile | `highlight` with `a[href="..."]` |
+| Non-interactive numbered step | `noop` inside a `section` |
+| Manual step (show but don't auto-do) | interactive with `doIt: false` |
+| User chooses between options | `markdown` |
+| Action outside browser | `markdown` |
+| Button that may not exist yet | `markdown` |
+| Supplementary links section | `markdown` with `---` divider + H3 heading |

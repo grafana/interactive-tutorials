@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "billing-usage-learn-cost-calculations",
+  "title": "Learn how your cost is calculated",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Grafana Cloud uses different billing methodologies depending on the product or feature to offer predictable pricing."
+    },
+    {
+      "type": "markdown",
+      "content": "## Ninety-fifth percentile billing for metrics\n\nGrafana Cloud Metric ingestion is billed on the ninety-fifth percentile of activity each month, based on:\n\n- **Active series**: Unique time series receiving new data points within 30 minutes\n- **Data points per minute (DPM)**: How frequently data is sent to Grafana Cloud\n\nYour billable metrics usage is calculated as the maximum of either active series or total DPM:\n\n`usage = max(active_series, total_dpm / included_dpm)`"
+    },
+    {
+      "type": "markdown",
+      "content": "### Ninety-fifth percentile billing advantage\n\nGrafana Cloud uses ninety-fifth percentile billing for metrics, which provides significant advantages:\n\n- Forgives temporary usage spikes during incidents or deployments\n- Provides predictable monthly costs based on typical usage patterns\n- Eliminates billing for the top 5% of usage time each calendar month (approximately 36 hours)\n\nThis means if you normally send 6,000 active series but spike to 30,000 for 24 hours in a month, you're still billed at the 6,000 series rate."
+    },
+    {
+      "type": "markdown",
+      "content": "### Scrape interval impact on costs\n\nYour scrape interval directly affects DPM and costs:\n\n- **15-second interval**: 4 data points per minute (higher cost)\n- **30-second interval**: 2 data points per minute (medium cost)\n- **60-second interval**: 1 data point per minute (lower cost, recommended default)\n\nA recommended approach is to use a 1-minute scrape interval as the global default and only increase frequency for jobs that need higher resolution. For optimization strategies, refer to [Reduce metrics costs by adjusting your data points per minute (DPM)](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/reduce-costs/metrics-costs/adjust-data-points-per-minute/)."
+    },
+    {
+      "type": "markdown",
+      "content": "## Volume-based billing for logs and traces\n\nGrafana Cloud Logs, Traces, and Profiles are based on the amount of bytes received and retained each month.\n\n**Log usage billing factors:**\n- Gigabytes ingested per month\n- Retention period in 30-day increments (minimum 30 days)\n- Gigabytes queried per month: the fair use query policy allows querying up to 100X your ingested volume monthly without additional cost\n\nFor complete logs billing details, refer to [Understand your Grafana Cloud Logs invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/logs-invoice/).\n\n**Traces usage billing factors:**\n- Gigabytes ingested per month\n- Retention period in 30-day increments (minimum 30 days)\n\nFor complete traces billing details, refer to [Understand your Grafana Cloud Traces invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/traces-invoice/).\n\n**Profiles usage billing factors:**\n- Gigabytes ingested per month\n- Retention period in 30-day increments (minimum 30 days)\n\nFor complete profiles billing details, refer to [Understand your Grafana Cloud Profiles invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/profiles-invoice/)."
+    },
+    {
+      "type": "markdown",
+      "content": "## Specialized product billing\n\nEach specialized product has tailored billing models:\n\n- **Application Observability**: Billed by host hours with automatic host detection. For details, refer to [Understand your Application Observability invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/application-observability-invoice/).\n- **Frontend Observability**: Billed by session count with included traces and logs credits. For details, refer to [Understand your Frontend Observability invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/frontend-observability-invoice/).\n- **Incident Response & Management (IRM)**: Billed by the number of users that are part of an OnCall configuration or declaring or updating an Incident. For details, refer to [Understand your Grafana Cloud IRM invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/irm-invoice/).\n- **Kubernetes Monitoring**: Billed by active host and container hours for your Kubernetes environment. For details, refer to [Understand your Kubernetes Monitoring invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/kubernetes-monitoring-invoice/).\n- **Synthetic Monitoring**: Billed by test execution count with included metrics and logs credits. For details, refer to [Understand your Synthetic Monitoring invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/synthetic-monitoring-invoice/).\n- **Performance Testing**: Billed by Virtual User Hours (VUH) consumed per test, optional static IP addresses, and data retention. For details, refer to [Understand your Performance Testing invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/performance-testing-invoice/)."
+    },
+    {
+      "type": "markdown",
+      "content": "## Optimization strategies\n\nUnderstanding billing calculations helps you optimize costs:\n\n- Apply Adaptive Telemetry recommendations\n- Use cardinality management dashboards to identify high-cost metrics\n- Adjust scrape intervals based on actual monitoring needs\n- Monitor unused metrics for potential removal\n\nFor comprehensive cost management, refer to [Adaptive Telemetry](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/adaptive-telemetry/)."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll create a billing alert to proactively monitor your Grafana Cloud usage costs."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Reduce metrics costs by adjusting your data points per minute (DPM)](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/reduce-costs/metrics-costs/adjust-data-points-per-minute/)\n- [Analyze metrics usage with cardinality management dashboards](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/metrics-costs/prometheus-metrics-costs/cardinality-management/)\n- [Understand your Grafana Cloud Metrics invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/metrics-invoice/)\n- [Understand your Grafana Cloud Logs invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/logs-invoice/)\n- [Understand your Grafana Cloud Traces invoice](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-your-invoice/traces-invoice/)"
+    }
+  ]
+}

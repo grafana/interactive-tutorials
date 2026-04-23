@@ -1,0 +1,288 @@
+{
+  "id": "play-gb-railway-usage",
+  "title": "Tour the Great Britain Railway Station Usage Dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This dashboard turns the Office of Rail and Road's annual survey of entries, exits, and interchanges at every GB station — April 2024 to March 2025 — into an orange-on-black railway departure board. You'll see how an inline CSV powers every panel through Grafana's dashboard data source, how filter-by-value creates repeating station rows, and how calculated fields build percentage statistics that aren't in the original data."
+    },
+    {
+      "type": "section",
+      "id": "station-leaderboard",
+      "title": "The Station Leaderboard",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll explore how the top-ranked station rows are built from a single shared dataset using filter transformations."
+        },
+        {
+          "type": "markdown",
+          "content": "Each row in the leaderboard shows a single station's key figures: its name, total entries and exits, its main origin or destination, and the percentage of journeys that went to or from there. Every panel in the row references the shared Raw Data panel at the bottom, then uses a **Filter by value** transformation to isolate the single row matching the position you're looking at."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Main Origin/Destination']:nth-match(1)",
+          "content": "The Main Origin/Destination panel is the only titled panel in each row — it shows which station most passengers were travelling to or from.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Open the second row's Main Origin/Destination panel for editing to see how the filter works.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Main Origin/Destination']:nth-match(2) svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Transformations tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Transformations']",
+              "description": "Click the Transformations tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "There's a single transformation: **Filter by value**, which keeps only the row where entries_exits_rank equals 2 and discards all other stations. The stat panel then displays the main_origin_or_destination field from that one remaining row — that's a panel display setting, not a transform."
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard to continue.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "Every panel in every leaderboard row uses this same pattern — one filter value is all that changes between them."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "summary-charts",
+      "title": "Summary Charts",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll look at the bar gauges further down the dashboard that aggregate the station data by region and ticket type."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Entries and Exits by Region']",
+          "content": "This bar gauge groups every station by region and sums their total entries and exits. It uses three transforms in sequence: **Organize fields** (drop the columns not needed), **Group by** (sum total entries and exits for each region), and **Rows to fields** (pivot the result so each region becomes a separate bar).",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Stations with highest percentage of season ticket usage']",
+          "content": "This panel answers a different question: which stations rely most heavily on season ticket holders? The percentage isn't stored in the CSV — it's calculated inside Grafana using a **Calculate field** transformation that divides season ticket journeys by total journeys and multiplies by 100.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Stations with highest percentage of full price ticket usage']",
+          "content": "The companion panel does the same calculation for full-price tickets. Together these two panels reveal which stations serve primarily commuters (high season ticket share) versus leisure travellers (high full-price share).",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen the summary charts. Now let's open the Raw Data panel to see where all this data actually comes from."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "raw-data-panel",
+      "title": "Inside the Raw Data Panel",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the Raw Data panel to see how the Infinity data source loads a CSV directly into the dashboard without any external URL."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Raw Data panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Raw Data'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Queries tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Queries']",
+              "description": "Click the Queries tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"query-editor-row\"] > :first-child",
+          "content": "The Infinity query type is set to **CSV** with source **Inline**. The entire Office of Rail and Road dataset — over 2,400 station rows — is pasted directly into the panel as a CSV string. There's no external URL, no database, and no scheduled refresh: the data lives inside the dashboard JSON itself.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Transform data tab to see how the raw CSV is prepared.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Transformations']",
+              "description": "Click the Transformations tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "Three transforms clean up the raw CSV before any other panel can use it:\n\n1. **Organize fields** — reorders and renames columns to match the field names expected by downstream panels.\n2. **Convert field type** — casts the rank and entries/exits columns from strings to numbers so they can be sorted and calculated.\n3. **Sort by** — orders all rows by rank ascending, so rank 1 always appears first in every filtered view."
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard to continue.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen the data foundation. Next, open one of the statistic panels to see how it calculates a percentage that isn't in the original data."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "season-ticket-stats",
+      "title": "Calculating the Season Ticket Percentage",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the season ticket usage panel and follow its transformation chain to see how a derived percentage is built entirely inside Grafana."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Stations with highest percentage of season ticket usage panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Stations with highest percentage of season ticket usage'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "guided",
+          "content": "Switch to the Transformations tab.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Tab Transformations']",
+              "description": "Click the Transformations tab.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "The key steps in the transformation chain are:\n\n1. **Organize fields** — strips the table down to just the station name, season ticket count, and total entries/exits.\n2. **Calculate field** (used twice) — first divides season ticket journeys by total journeys to get a ratio, then multiplies by 100 to turn it into a readable percentage. The percentage isn't in the source data at all — Grafana computes it here.\n3. **Sort by** — orders stations from highest to lowest percentage so the most season-ticket-dependent stations appear at the top of the bar gauge.\n4. **Group by** — deduplicates the result to one row per station."
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard and exit edit mode to finish the tour.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+              "description": "Click here to exit edit mode.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've seen how a multi-step transform chain derives a statistic that simply doesn't exist in the source data."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Further Resources\n\nHere are the data sources and tools behind this dashboard:\n\n- [Office of Rail and Road — Station Usage data](https://dataportal.orr.gov.uk/station-usage) — the annual survey of entries, exits, and interchanges at every GB station.\n- [ORR Station Usage 2024–25 Statistical Release (PDF)](https://dataportal.orr.gov.uk/media/msigcn24/station-usage-2024-25-statistical-release.pdf) — the full analytical report accompanying the dataset.\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — the plugin used to load inline CSV (and any other HTTP or file source) into a dashboard.\n- [Grafana Transformations documentation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/) — reference for all the transform types used in this dashboard."
+    }
+  ]
+}

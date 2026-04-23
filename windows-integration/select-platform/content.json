@@ -1,4 +1,5 @@
 {
+  "schemaVersion": "1.0.0",
   "id": "windows-integration-select-platform",
   "title": "Select the Windows integration",
   "blocks": [
@@ -7,34 +8,36 @@
       "content": "Your first step on this journey is to select the Windows integration.\n\nMake sure you're signed in to your Grafana Cloud environment."
     },
     {
-      "type": "multistep",
-      "content": "Navigate to **Connections > Add new connection**.",
-      "requirements": ["navmenu-open"],
-      "steps": [
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
         {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']"
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Navigate to **Connections > Add new connection**.",
+          "requirements": ["navmenu-open"]
         },
         {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[aria-label=\"Search connections by name\"]",
+          "targetvalue": "Windows",
+          "content": "In the search box, type **Windows** to filter the integrations.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']"
+          "reftarget": "a[href=\"/connections/add-new-connection/windows-exporter\"]",
+          "content": "Click the **Windows** tile to select the integration.",
+          "requirements": ["exists-reftarget"]
         }
       ]
     },
     {
-      "type": "interactive",
-      "action": "formfill",
-      "reftarget": "[aria-label=\"Search connections by name\"]",
-      "targetvalue": "Windows",
-      "content": "In the search box, type **Windows** to filter the integrations.",
-      "requirements": ["exists-reftarget"]
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "a[href=\"/connections/add-new-connection/windows-exporter\"]",
-      "content": "Click the **Windows** tile to select the integration.",
-      "requirements": ["exists-reftarget"]
+      "type": "markdown",
+      "content": "> **Did you know?** Grafana Cloud uses the values you select to generate the commands you use to install Grafana Alloy on your Windows system."
     }
   ]
 }

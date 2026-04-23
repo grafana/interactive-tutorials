@@ -1,0 +1,148 @@
+{
+  "id": "fleet-management-onboarding",
+  "title": "Fleet Management: Onboard Your First Collector",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this guide, you'll deploy and connect a Grafana Alloy collector to Fleet Management. By the end, you'll have a running collector visible in your inventory."
+    },
+    {
+      "type": "section",
+      "id": "setup-terminal",
+      "title": "Set up terminal",
+      "blocks": [
+        {
+          "type": "terminal-connect",
+          "content": "First, connect to a terminal session. This is where you'll run the Alloy deployment command."
+        },
+        {
+          "type": "terminal",
+          "command": "docker ps",
+          "content": "Verify the terminal is working by running a quick command.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "With the terminal ready, you'll generate a token and deploy Alloy using the Fleet Management UI."
+    },
+    {
+      "type": "section",
+      "id": "deploy-collector",
+      "title": "Deploy a collector",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "content": "Open **Fleet Management** from the main menu."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='tab-fleet-inventory']",
+          "content": "Select the **Inventory** tab."
+        },
+        {
+          "type": "markdown",
+          "content": "The Inventory tab shows all connected collectors. You'll now generate a token and get the deployment command for a new collector."
+        },
+        {
+          "type": "guided",
+          "content": "Generate a token and copy the deployment command.",
+          "stepTimeout": 60000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='fleet-inventory-add-collector-button']",
+              "tooltip": "Opens the collector setup dialog",
+              "skippable": true
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='generate-token-name-input']",
+              "targetvalue": "new-token",
+              "tooltip": "Enter a name to identify this token",
+              "skippable": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='generate-token-submit-button']",
+              "tooltip": "Creates the token",
+              "skippable": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains(\"Copy to clipboard\"):nth-match(2)",
+              "tooltip": "Copies the deployment command",
+              "skippable": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label=\"Close\"]",
+              "tooltip": "Close the dialog when done"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Expand terminal']",
+          "content": "Expand the terminal panel.",
+          "tooltip": "Opens the terminal at full height",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "canvas.xterm-link-layer:nth-of-type(1)",
+          "content": "Paste the deployment command and press **Enter**.",
+          "tooltip": "Right-click or Ctrl+V to paste",
+          "doIt": false
+        },
+        {
+          "type": "terminal",
+          "command": "sudo systemctl status alloy",
+          "content": "Check that Alloy is running.",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The collector is now deployed. Head back to the inventory to confirm it appears."
+    },
+    {
+      "type": "section",
+      "id": "verify-collector",
+      "title": "Verify your collector",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/fleet-management/fleet-inventory",
+          "content": "Return to the **Fleet Inventory**. Refresh the page if needed."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid^=\"collector-row-\"]:nth-match(1)",
+          "content": "Select your collector to view its status and details.",
+          "tooltip": "Shows connection status and configuration"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your collector is now connected to Fleet Management. From here you can push configurations, monitor health, and manage collectors at scale."
+    }
+  ]
+}
