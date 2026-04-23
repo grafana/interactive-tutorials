@@ -70,7 +70,7 @@ No recommender rules found for `welcome-to-play`. This is expected -- the guide 
 ## Data Quality Issues
 
 - All three index.json rules share identical `description` text -- recommend differentiating them upstream
-- No website markdown exists for this guide at `/Users/davidallen/hax/website/content/docs/learning-paths/welcome-to-play/`
+- No website markdown exists for this guide at `<path_to_local_clone>/website/content/docs/learning-paths/welcome-to-play/`
 - No `journeys.yaml` entry exists for this guide
 - Step ordering was inferred from content (homepage first, then sub-pages) -- no weight data available
 - Each step has its own `pathfinder_data`-less mapping; directory names were used for matching

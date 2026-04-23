@@ -39,10 +39,10 @@ No `index.json` rule exists for `connect-prometheus-metrics`. This is not a migr
 
 ## Validator Result
 
-CLI unavailable — blocker. The `dist/cli/cli/index.js` file does not exist in the `grafana-pathfinder-app` checkout at `/Users/davidallen/hax/grafana-pathfinder-app`. The CLI source is present at `src/cli/` but has not been built. Run `npm run build` (or equivalent) in the pathfinder-app repo to build the CLI, then re-run:
+CLI unavailable — blocker. The `dist/cli/cli/index.js` file does not exist in the `grafana-pathfinder-app` checkout at `<path_to_local_clone>/grafana-pathfinder-app`. The CLI source is present at `src/cli/` but has not been built. Run `npm run build` (or equivalent) in the pathfinder-app repo to build the CLI, then re-run:
 
 ```bash
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js validate --package /Users/davidallen/hax/interactive-tutorials/connect-prometheus-metrics
+node <path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js validate --package <path_to_local_clone>/interactive-tutorials/connect-prometheus-metrics
 ```
 
 ## Surprises / Notes

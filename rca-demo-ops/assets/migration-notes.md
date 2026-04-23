@@ -36,7 +36,7 @@ No `index.json` rule exists for `rca-demo-ops`. This is not a migration error â€
 
 ## Validator Result
 
-Command: `node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js validate --package /Users/davidallen/hax/interactive-tutorials/rca-demo-ops`
+Command: `node <path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js validate --package <path_to_local_clone>/interactive-tutorials/rca-demo-ops`
 
 Result: PASS (exit 0)
 

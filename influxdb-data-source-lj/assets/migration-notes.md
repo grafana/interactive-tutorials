@@ -41,7 +41,7 @@ migrated_at: "2026-04-07T00:00:00Z"
 
 ## Flags for Manual Review
 
-- **No website markdown found**: `/Users/davidallen/hax/website/content/docs/learning-paths/influxdb-data-source/` does not exist. All fields that would normally derive from `_index.md` used fallback values.
+- **No website markdown found**: `<path_to_local_clone>/website/content/docs/learning-paths/influxdb-data-source/` does not exist. All fields that would normally derive from `_index.md` used fallback values.
 - **No recommender rules found**: No `learning-journey` type rules matching `influxdb-data-source` in the recommender. Targeting omitted.
 - **No index.json rule found**: No matching entry in index.json for this learning path.
 - **No journeys.yaml entry found**: `influxdb-data-source` is not listed in journeys.yaml. No journey links or related journeys available.

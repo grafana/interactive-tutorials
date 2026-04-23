@@ -25,7 +25,7 @@ step_count: 7
 - Also checked `featured.json` — no matching learning-journey rules.
 
 ### Website markdown
-- **Path:** `/Users/davidallen/hax/website/content/docs/learning-paths/detect-outages-synthetic-monitoring/`
+- **Path:** `<path_to_local_clone>/website/content/docs/learning-paths/detect-outages-synthetic-monitoring/`
 - **_index.md:** Read successfully. Extracted `journey.group: data-availability`, title, description.
 - **Step index.md files:** All 7 steps read. Extracted weight, description, pathfinder_data, side_journeys.
 - No `journey.links.to` in _index.md frontmatter (no recommends at path level).
