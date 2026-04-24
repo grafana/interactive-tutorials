@@ -5,6 +5,7 @@ permissions: {}
 on:
   pull_request:
     types:
+      - labeled
       - opened
       - synchronize
       - closed
@@ -14,7 +15,10 @@ on:
 jobs:
   deploy-pr-preview:
     uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@jdb/deploy-preview
-    if: "!github.event.pull_request.head.repo.fork"
+    if: >-
+      !github.event.pull_request.head.repo.fork &&
+      (contains(github.event.pull_request.labels.*.name, 'deploy-preview') ||
+      github.event.action == 'closed')
     permissions:
       contents: read
       id-token: write
