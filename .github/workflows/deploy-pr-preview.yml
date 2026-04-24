@@ -1,0 +1,30 @@
+name: Deploy PR preview
+
+permissions: {}
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
+    paths:
+      - "**/content.json"
+
+jobs:
+  deploy-pr-preview:
+    uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@jdb/deploy-preview
+    if: "!github.event.pull_request.head.repo.fork"
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+      statuses: write
+    with:
+      branch: ${{ github.head_ref }}
+      build_script: build-interactive-tutorials
+      event_number: ${{ github.event.number }}
+      image: grafana/docs-base:latest
+      repo: interactive-tutorials
+      sha: ${{ github.event.pull_request.head.sha }}
+      title: ${{ github.event.pull_request.title }}
