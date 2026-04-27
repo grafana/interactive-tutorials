@@ -9,8 +9,6 @@ on:
       - opened
       - synchronize
       - closed
-    paths:
-      - "**/content.json"
 
 jobs:
   deploy-pr-preview:
@@ -31,4 +29,12 @@ jobs:
       image: grafana/docs-base:latest
       repo: interactive-tutorials
       sha: ${{ github.event.pull_request.head.sha }}
+      sources: |
+        [{
+          "index_file": null,
+          "relative_prefix": "/docs/learning-paths/",
+          "repo": "interactive-tutorials",
+          "source_directory": ".",
+          "website_directory": "content/docs/learning-paths"
+        }]
       title: ${{ github.event.pull_request.title }}
