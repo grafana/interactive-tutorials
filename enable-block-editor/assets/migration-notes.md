@@ -30,10 +30,10 @@ migrated_at: "2026-03-09T00:00:00Z"
 
 ## Validator Result
 
-**CLI unavailable (blocker).** The Pathfinder CLI at `dist/cli/cli/index.js` was not found in either the `interactive-tutorials` repo or the `grafana-pathfinder-app` checkout at `/Users/davidallen/hax/grafana-pathfinder-app/dist/cli/`. The `dist/` directory exists but does not contain the CLI bundle — it appears the CLI has not been built. To complete Phase 1 validation, run `npm run build` (or equivalent) in the `grafana-pathfinder-app` checkout and then re-run:
+**CLI unavailable (blocker).** The Pathfinder CLI at `dist/cli/cli/index.js` was not found in either the `interactive-tutorials` repo or the `grafana-pathfinder-app` checkout at `<path_to_local_clone>/grafana-pathfinder-app/dist/cli/`. The `dist/` directory exists but does not contain the CLI bundle — it appears the CLI has not been built. To complete Phase 1 validation, run `npm run build` (or equivalent) in the `grafana-pathfinder-app` checkout and then re-run:
 
 ```bash
-node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js validate --package /Users/davidallen/hax/interactive-tutorials/enable-block-editor
+node <path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js validate --package <path_to_local_clone>/interactive-tutorials/enable-block-editor
 ```
 
 ## Surprises / Notes

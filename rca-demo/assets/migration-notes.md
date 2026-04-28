@@ -36,7 +36,7 @@ No `index.json` rule exists for `rca-demo`. This is not a migration error — ta
 
 ## Validator Result
 
-Command: `node /Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js validate --package /Users/davidallen/hax/interactive-tutorials/rca-demo`
+Command: `node <path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js validate --package <path_to_local_clone>/interactive-tutorials/rca-demo`
 
 Result: **PASS** (exit 0)
 
@@ -46,7 +46,7 @@ Warnings (all expected):
 
 ## Surprises / Notes
 
-- The `dist/cli/cli/index.js` was not present in the `interactive-tutorials` repo root (the path `interactive-tutorials/dist/cli/cli/index.js` does not exist). The validator was found at `/Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js`.
+- The `dist/cli/cli/index.js` was not present in the `interactive-tutorials` repo root (the path `interactive-tutorials/dist/cli/cli/index.js` does not exist). The validator was found at `<path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js`.
 - `rca-demo` is a demo-only guide (navigates to custom RCA demo dashboards and the `grafana-asserts-app`). It appears to be an internally-authored demo rather than a public-facing tutorial, which may explain the absence of an `index.json` rule.
 
 ## TODO

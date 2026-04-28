@@ -36,7 +36,7 @@ No files outside `github-data-source-lj/` were touched.
 - Used for `id` and `title` fields in each step manifest.
 
 ### Website markdown
-- Path: `/Users/davidallen/hax/website/content/docs/learning-paths/github-data-source/`
+- Path: `<path_to_local_clone>/website/content/docs/learning-paths/github-data-source/`
 - `_index.md`: title, description, journey.group (data-availability), journey.links.to (github-visualize)
 - All 6 step `index.md` files: weight, step number, pathfinder_data, description, side_journeys
 - All steps had `pathfinder_data` frontmatter — no directory name fallback needed.

@@ -45,7 +45,7 @@ All INFOs are expected schema defaults. Validation passed with no errors or warn
 
 - The `Cursor Agent` commit author was filtered from `author.name` as it is automation.
 - The `author.name` field contains two GitHub handles: `brendamuir` and `Jayclifford345`, identified from `git log --follow` on `content.json`.
-- The validator CLI was not present at `dist/cli/cli/index.js` in the interactive-tutorials repo root. It was found and run successfully from `/Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js`.
+- The validator CLI was not present at `dist/cli/cli/index.js` in the interactive-tutorials repo root. It was found and run successfully from `<path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js`.
 
 ## TODO
 

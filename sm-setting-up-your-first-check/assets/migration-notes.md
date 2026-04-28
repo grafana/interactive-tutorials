@@ -39,4 +39,4 @@ INFO messages (expected, non-blocking):
 
 - `Cursor Agent <cursoragent@cursor.com>` appeared in git history and was excluded as an automation author.
 - The `testEnvironment` tier is `cloud` (not `local`) because the match expression contains `targetPlatform: "cloud"`, even though no `source` predicate is present. No `instance` field is set (correct — `instance` is only set when a `source` value is available).
-- The CLI was not found at `dist/cli/cli/index.js` within the `interactive-tutorials` repo; it was found at `/Users/davidallen/hax/grafana-pathfinder-app/dist/cli/cli/index.js`.
+- The CLI was not found at `dist/cli/cli/index.js` within the `interactive-tutorials` repo; it was found at `<path_to_local_clone>/grafana-pathfinder-app/dist/cli/cli/index.js`.
