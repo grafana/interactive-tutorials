@@ -1,0 +1,63 @@
+{
+    "schemaVersion": "1.1.0",
+    "id": "adaptive-metrics-review-apply",
+    "title": "Review and apply recommendations",
+    "blocks": [{
+            "type": "markdown",
+            "content": "# Review and apply recommendations\n\nWhen the system identifies an opportunity to reduce cardinality, a recommendation appears on the Recommendations page. Your first action is to review the recommendation. If you agree with it, you can apply it, knowing your existing dashboards and alerts will continue to work seamlessly."
+        },
+        {
+            "type": "interactive",
+            "action": "highlight",
+            "reftarget": "[aria-label=\"Expand section: Adaptive Telemetry\"]",
+            "content": "Navigate to **Adaptive Telemetry** and expand the dropdown menu. If the menu is already expanded, skip this step.",
+            "requirements": ["navmenu-open", "exists-reftarget"],
+            "skippable": true
+
+        },
+        {
+            "type": "multistep",
+            "content": "Navigate to **Adaptive Metrics** > **Metrics**.",
+            "requirements": ["navmenu-open"],
+            "steps": [{
+                    "action": "highlight",
+                    "reftarget": "a[href=\"/a/grafana-adaptive-metrics-app/overview\"]",
+                    "tooltip": "Click Adaptive Metrics"
+                },
+                {
+                    "action": "highlight",
+                    "reftarget": "a[href=\"/a/grafana-adaptive-metrics-app/rule-management\"]",
+                    "tooltip": "Click Metrics"
+                }
+            ]
+        },
+        {
+            "type": "interactive",
+            "action": "formfill",
+            "reftarget": "input[placeholder=\"Metric name\"]",
+            "targetvalue": "",
+            "content": "To filter the rules list for a specific metric, type part of the metric name under **Filter**. If you don't see any metric rules, click **skip** to continue.",
+            "requirements": ["exists-reftarget", "on-page:/a/grafana-adaptive-metrics-app/rule-management"],
+            "skippable": true
+        },
+        {
+            "type": "markdown",
+            "content": "Under **Recommendation type**, select the type of rule recommendations you want to view (Add, Keep, Remove, or Update)."
+        },
+        {
+            "type": "markdown",
+            "content": "Expand a rule from the rules list to review the details, including **Recommended rule information** and **Metric usage stats**."
+        },
+        {
+            "type": "interactive",
+            "action": "noop",
+            "content": "Find the recommendation row you want to apply, then use the per-row **Apply recommendation** action on that row. The current UI applies recommendations one at a time — there is no bulk \"apply all\" button.",
+            "requirements": ["on-page:/a/grafana-adaptive-metrics-app/rule-management"]
+        },
+        {
+            "type": "interactive",
+            "action": "noop",
+            "content": "Confirm the change in the **Apply recommendation** dialog. The rule is queued and takes effect after the aggregation delay."
+        }
+    ]
+}
