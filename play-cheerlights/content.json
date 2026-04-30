@@ -28,7 +28,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Last Color Change']",
-          "content": "This panel shows how long ago the color last changed. It makes its own separate Infinity query asking for the single most recent feed entry, so it can display the timestamp as \"time from now\".",
+          "content": "This panel shows how long ago the color last changed. It reads from the shared Last 100 Changes table, sorts by time, and displays the most recent timestamp as \"time from now\".",
           "doIt": false,
           "lazyRender": true
         },
@@ -163,7 +163,7 @@
         },
         {
           "type": "markdown",
-          "content": "The data source here is **Dashboard** — not Infinity. It points to the Last 100 Changes panel by ID and receives that panel's already-fetched result with no second API call. The Last 100 by Color bar chart and the Color Changes per Hour panel use the same pattern."
+          "content": "The data source here is **Dashboard** — not Infinity. It points to the Last 100 Changes panel by ID and receives that panel's already-fetched result with no second API call. Every other panel on the dashboard uses this same pattern."
         },
         {
           "type": "guided",
@@ -180,7 +180,7 @@
         },
         {
           "type": "markdown",
-          "content": "Current Color, Last 100 by Color, and Color Changes per Hour all draw from the same single API result — none of them makes a separate call to ThingSpeak."
+          "content": "Every panel draws from that single API result — the ThingSpeak API is called exactly once per refresh cycle, no matter how many panels are on the dashboard."
         }
       ]
     },
