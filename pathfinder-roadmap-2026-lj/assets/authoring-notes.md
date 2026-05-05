@@ -25,7 +25,7 @@ All `image` blocks reference paths under `/media/docs/learning-journey/pathfinde
 
 Staged on Desktop:
 - `era-timeline.svg` → slide 01
-- `openfeature-faro-flow.svg` → slide 03
+- `experiment-analytics-flow-v2.svg` → slide 03 *(replaces the earlier `openfeature-faro-flow.svg`; we don't run Faro, the diagram now reflects the real RudderStack event flow)*
 - `recovery-ladder.svg` → slide 05
 - `coda-architecture.svg` → slide 07
 - `pathfinder-logo.svg` → cover + slide 08 (pulled from `grafana-pathfinder-app/src/img/logo.svg`)
