@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "**We've shipped a lot. Now the honest part.**\n\nThe sessions tell us where users hit the wall. Four recurring patterns:"
+      "content": "**We've shipped a lot. Now the honest part.**\n\nThe sessions and the support pings tell the same story: Pathfinder works *most* of the time, and the remaining failure modes follow a pattern. Four of them keep showing up."
     },
     {
       "type": "image",
@@ -13,7 +13,11 @@
     },
     {
       "type": "markdown",
-      "content": "- **UI churn** — selectors decay between Grafana releases. We patch, then patch again.\n- **Off the rails** — users branch out. The guide can't track them. The run ends.\n- **Weak selectors** — missing or low-quality `data-testid` forces a fall back to fragile CSS.\n- **No safety net** — when a step fails, the guide just stops. *No graceful recovery. Yet.*"
+      "content": "- **UI churn** — selectors decay between Grafana releases. We patch a guide, ship it, the UI moves, we patch again. *We can't out-author Grafana's release cadence.*\n- **Off the rails** — users branch out of the guide flow. The guide can't track them. The run silently ends. They never come back to finish.\n- **Weak selectors** — many components still have no `data-testid`, so we fall back to fragile CSS or text matching. Every fragile selector is a future bug.\n- **No safety net** — when a step fails, the guide just stops. There's no graceful fallback, no \"hop back to a known state\", no auto-retry beyond what `resolveWithRetry` already does. *The user just bounces.*"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n**Why this slide matters.** Every fix we ship downstream — auto-recovery, e2e, the testid push — is aimed at one of these four. Naming them honestly is how we hold ourselves to fixing them."
     }
   ]
 }

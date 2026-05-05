@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "**Safe compute for learners.**\n\nA proof of concept built on **Brokkr** — give learners a real, sandboxed Grafana environment they can break and rebuild, in 35 seconds."
+      "content": "**Safe compute for learners.**\n\nA proof of concept built on **Brokkr** — give every Pathfinder learner a real, sandboxed Grafana environment they can break and rebuild. Spin up in **~35 seconds**, lifetime **30 minutes**, then it disappears."
     },
     {
       "type": "image",
@@ -18,11 +18,11 @@
     },
     {
       "type": "markdown",
-      "content": "- **Server** — REST API · auth · PostgreSQL state\n- **Job Manager** — Kubernetes webhook spawning provisioning jobs\n- **Runner** *(`wsa`)* — Terraform from Jsonnet · state in S3\n- **Relay** — WebSocket→TCP proxy for secure SSH to ephemeral VMs\n- **Packer** — bakes the base image with providers pre-cached\n\n---\n\n**Status** &nbsp;·&nbsp; working POC &nbsp;·&nbsp; deployed on AWS EKS today"
+      "content": "**The components**\n\n- **Server** — REST API · auth · PostgreSQL state · capacity tracking\n- **Job Manager** — Kubernetes webhook spawning provisioning jobs in an isolated `coda-jobs` namespace\n- **Runner** *(`wsa`)* — generates Terraform from Jsonnet · manages state in S3\n- **Relay** — WebSocket→TCP proxy for secure SSH to ephemeral VMs (JWT-validated)\n- **Packer** — bakes the base image with providers pre-cached, so cold start is fast\n\n---\n\n**Status** &nbsp;·&nbsp; working POC &nbsp;·&nbsp; deployed on AWS EKS today &nbsp;·&nbsp; integrated with the Pathfinder `terminal` block"
     },
     {
       "type": "markdown",
-      "content": "```bash\n# Spin up a Loki+Grafana sandbox for the next learner:\nwsa create --template grafana-loki-demo\n```"
+      "content": "**Why this matters for Pathfinder.** Right now, the most powerful guides — anything that needs a real terminal, real Loki, real Alloy — bottom out at \"go install this locally\". Coda removes that step. The same package model that ships JSON guides ships *the environment they run against*.\n\n```bash\n# Spin up a Loki+Grafana sandbox for the next learner:\nwsa create --template grafana-loki-demo\n```\n\n*KillerCoda for Grafana — events, classroom training, certification practice, and the long tail of \"learn it by doing it\".*"
     }
   ]
 }

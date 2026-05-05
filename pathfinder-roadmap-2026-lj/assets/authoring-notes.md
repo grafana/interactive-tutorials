@@ -28,7 +28,8 @@ Staged on Desktop:
 - `experiment-analytics-flow-v2.svg` → slide 03 *(replaces the earlier `openfeature-faro-flow.svg`; we don't run Faro, the diagram now reflects the real RudderStack event flow)*
 - `recovery-ladder.svg` → slide 05
 - `coda-architecture.svg` → slide 07
-- `pathfinder-logo.svg` → cover + slide 08 (pulled from `grafana-pathfinder-app/src/img/logo.svg`)
+- `pathfinder-logo-v2.svg` → cover + slide 08 *(replaces the bare `pathfinder-logo.svg`; v2 is a presentation-grade lockup with icon + GRAFANA/PATHFINDER wordmark + path-trace motif)*
+- `pathfinder-banner.svg` → header on slide 01 + slide 08 *(wide banner version of the logo for milestone bookends)*
 - `grot-discouraged.svg` → slide 06 (pulled from `grafana-pathfinder-app/src/img/Grot-Emotions-Discouraged.svg`)
 - `coda-logo.png` → slide 07 (pulled from `grafana-coda-app/img/logo.png`)
 

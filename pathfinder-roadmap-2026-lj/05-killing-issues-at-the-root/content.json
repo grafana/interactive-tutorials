@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "**Three bets to fix this for good.**\n\nNot patches. Foundations."
+      "content": "**Three bets to fix this for good.**\n\nNot patches. Foundations. Each bet maps to one of the failure patterns from the previous slide — and each one builds on something we already shipped, rather than starting fresh."
     },
     {
       "type": "image",
@@ -13,7 +13,11 @@
     },
     {
       "type": "markdown",
-      "content": "**Bet 1 · Auto-recovery engine**  \nGraduated 0→4 fallback, building on the v2.5.0 resilience pipeline *(#716, #768)*.  \n*→ Most recoveries should be silent.*\n\n**Bet 2 · E2E testing for guides**  \nPlaywright harness + the `data-test-*` contract *(#540, #544)*.  \n*→ CI catches breakage before users do.*\n\n**Bet 3 · Carrot & stick on testids**  \nRepeat the v2.4.2 audit *(~100 testids, #711)* across the rest of Grafana.  \n*→ Reward thoughtful selectors. Refuse the rest.*"
+      "content": "**Bet 1 · Auto-recovery engine**  \nA graduated 0→4 fallback ladder, building on the v2.5.0 resilience pipeline *(#716, #768)*. Today's `resolveWithRetry` handles flaky selectors at Level 0; the rest of the ladder catches the cases where the user has wandered.  \n*→ Most recoveries should be silent. The user should never know we almost lost them.*\n\n**Bet 2 · E2E testing for guides**  \nA Playwright harness driven by the `data-test-*` contract *(#540, #544)*. Every guide gets exercised against a real Grafana before release.  \n*→ CI catches breakage before users do. Authors find out from a red check, not a support ticket.*\n\n**Bet 3 · Carrot & stick on testids**  \nThe v2.4.2 audit added ~100 stable testids *(#711)*. We need to repeat that pass across the rest of Grafana, and make Pathfinder *prefer* a thoughtful selector — refusing the bad ones at authoring time.  \n*→ Reward thoughtful selectors. Refuse the rest. The selector layer becomes a contract, not a guess.*"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n*Together, these turn Pathfinder from \"works most of the time\" into a surface we can **trust** with new flows, new teams, and new audiences.*"
     },
     {
       "type": "section",
@@ -45,7 +49,7 @@
         },
         {
           "type": "markdown",
-          "content": "**What you saw.** Pathfinder and the Assistant share the sidebar — two AI surfaces in one panel without fighting for screen real estate. The integration story we want to keep building."
+          "content": "**What you saw.** Pathfinder and the Assistant share the sidebar — two AI surfaces in one panel without fighting for screen real estate. Pathfinder's MCP integration *(v2.1.0)* already lets the Assistant launch guides, validate JSON, and create templates. The integration story we want to keep building."
         }
       ]
     }
