@@ -1,0 +1,28 @@
+{
+  "id": "pathfinder-roadmap-coda",
+  "title": "Coda: KillerCoda for Grafana",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**Safe compute for learners.**\n\nA proof of concept built on **Brokkr** — give learners a real, sandboxed Grafana environment they can break and rebuild, in 35 seconds."
+    },
+    {
+      "type": "image",
+      "src": "/media/docs/learning-journey/pathfinder-roadmap-2026/coda-logo.png",
+      "alt": "Grafana Coda logo — TODO upload to CDN from grafana-coda-app/img/logo.png"
+    },
+    {
+      "type": "image",
+      "src": "/media/docs/learning-journey/pathfinder-roadmap-2026/coda-architecture.svg",
+      "alt": "Coda architecture: Pathfinder UI calls the Coda Server, which talks to the Job Manager (K8s webhook), which spawns a Runner that uses Terraform and Jsonnet to provision an AWS EC2 VM. A Relay tunnel proxies SSH from the UI to the VM."
+    },
+    {
+      "type": "markdown",
+      "content": "- **Server** — REST API, auth, PostgreSQL state\n- **Job Manager** — Kubernetes webhook that spawns provisioning jobs\n- **Runner (`wsa`)** — generates Terraform from Jsonnet, manages state in S3\n- **Relay** — WebSocket→TCP proxy for secure SSH to ephemeral VMs\n- **Packer** — bakes the base image with providers pre-cached\n\n**Status:** working POC, deployed to AWS EKS today."
+    },
+    {
+      "type": "markdown",
+      "content": "```bash\n# Spin up a Loki+Grafana sandbox for the next learner:\nwsa create --template grafana-loki-demo\n```"
+    }
+  ]
+}
