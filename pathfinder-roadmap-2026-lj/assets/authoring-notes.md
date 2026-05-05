@@ -21,21 +21,20 @@ This package is a Pathfinder learning path that doubles as a slide deck for an i
 
 ## Asset checklist (before the talk)
 
-The `image` blocks reference paths under `/media/docs/learning-journey/pathfinder-roadmap-2026/` that follow the existing Grafana docs CDN convention. The actual SVG / PNG files need to be uploaded to that path. SVG sources live in this folder (`assets/img/`):
+All `image` blocks reference paths under `/media/docs/learning-journey/pathfinder-roadmap-2026/` (the standard Grafana docs CDN convention). Assets live on `~/Desktop/` and need to be uploaded to the static site under that prefix before the talk.
 
-| File in `assets/img/` | Referenced by | Action |
-|----------------------|---------------|--------|
-| `era-timeline.svg` | 01-where-we-are | Upload as `era-timeline.svg` |
-| `openfeature-faro-flow.svg` | 03-experiments-with-maria | Upload as `openfeature-faro-flow.svg` |
-| `recovery-ladder.svg` | 05-killing-issues-at-the-root | Upload as `recovery-ladder.svg` |
-| `coda-architecture.svg` | 07-introducing-coda | Upload as `coda-architecture.svg` |
+Staged on Desktop:
+- `era-timeline.svg` → slide 01
+- `openfeature-faro-flow.svg` → slide 03
+- `recovery-ladder.svg` → slide 05
+- `coda-architecture.svg` → slide 07
+- `pathfinder-logo.svg` → cover + slide 08 (pulled from `grafana-pathfinder-app/src/img/logo.svg`)
+- `grot-discouraged.svg` → slide 06 (pulled from `grafana-pathfinder-app/src/img/Grot-Emotions-Discouraged.svg`)
+- `coda-logo.png` → slide 07 (pulled from `grafana-coda-app/img/logo.png`)
 
 Captures still to take:
-- `pathfinder-logo.svg` (cover + thank-you slides) — staged on `~/Desktop/pathfinder-logo.svg`, pulled from `grafana-pathfinder-app/src/img/logo.svg`
 - `kiosk-mode.png` (slide 02) — fresh capture of Pathfinder running in kiosk mode with the GrafanaCON 2026 banner
 - `selector-health.png` (slide 04) — capture of the Selector Health Badge in the block editor
-- `grot-discouraged.svg` (slide 06) — staged on `~/Desktop/grot-discouraged.svg`, pulled from `grafana-pathfinder-app/src/img/Grot-Emotions-Discouraged.svg`
-- `coda-logo.png` (slide 07) — staged on `~/Desktop/coda-logo.png`, pulled from `grafana-coda-app/img/logo.png`
 
 If any image src 404s on stage, the surrounding markdown blocks summarise the slide so the talk continues.
 
