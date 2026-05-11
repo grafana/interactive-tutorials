@@ -163,6 +163,34 @@ description: Edge cases, troubleshooting patterns, and debugging techniques for 
 }
 ```
 
+### Lazy-Rendered Element Edge Cases
+
+**Symptoms**: "Element not found" errors on long tables, paginated lists, or dashboard rows below the fold. Steps that target virtualized content fail intermittently — sometimes the user has scrolled to the right place, sometimes not.
+
+**Cause**: Virtualized containers do not render off-screen elements. `exists-reftarget` waits for the element but cannot scroll on its own.
+
+**Solution**: Use a `guided` block with `lazyRender: true` on the step. Optionally set `scrollContainer` to the CSS selector of the scrolling parent (default `.scrollbar-view`). The engine scrolls the target into view before highlighting it. User-paced detection (`guided` rather than plain `interactive`) avoids racing the scroll.
+
+```json
+{
+  "type": "guided",
+  "content": "Open the row for the service below the fold.",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
+      "lazyRender": true,
+      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
+      "description": "Click checkoutservice"
+    }
+  ]
+}
+```
+
+**Diagnostic**: open DevTools and scroll the container manually. If the element appears in the DOM only after scrolling, the target is lazy-rendered and needs `lazyRender: true`.
+
+See also: dashboard-specific lazy-render rule in `.cursor/skills/autogen-guide-dashboard/dashboard-guide-rules.md`.
+
 ### Navigation and Routing Issues
 
 #### Problem: SPA Navigation Timing
@@ -204,6 +232,28 @@ description: Edge cases, troubleshooting patterns, and debugging techniques for 
   "content": "View Grafana documentation"
 }
 ```
+
+#### Problem: `openGuide` does not auto-launch the target guide
+
+**Cause**: Guide id typo, the legacy `?doc=` query was used instead of the `openGuide` field, or the docs panel was closed before navigation completed.
+
+**Solution**:
+
+- Always use the `openGuide` field on a `navigate` interactive block (not `?doc=` in the URL).
+- Format: `"bundled:<guide-id>"` for bundled guides, or a full docs URL.
+- The handler dispatches `auto-launch-tutorial` after the navigation settles. If the docs panel has been popped out, the panel's listener still receives the event.
+
+```json
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/connections/datasources/new",
+  "openGuide": "bundled:add-prometheus-datasource",
+  "content": "Open **Add data source** and the Prometheus guide will load automatically."
+}
+```
+
+**Diagnostic**: grep the bundled guides directory for the id you used; if no match, you have a typo or the guide hasn't been bundled yet.
 
 ## Troubleshooting Patterns
 
@@ -337,6 +387,26 @@ description: Edge cases, troubleshooting patterns, and debugging techniques for 
   ]
 }
 ```
+
+#### Problem: `popout` step fails with invalid `targetvalue`
+
+**Symptoms**: Step fails immediately with a schema validation error or runtime "PopoutHandler requires targetvalue of 'sidebar' or 'floating'".
+
+**Cause**: Missing `targetvalue`, or a value other than the two allowed literals.
+
+**Solution**: Always set `targetvalue` to exactly `"sidebar"` or `"floating"`. The schema rejects everything else, including capitalised variants like `"Sidebar"`.
+
+```json
+// Good
+{ "type": "interactive", "action": "popout", "targetvalue": "floating", "content": "..." }
+
+// Bad — schema rejects
+{ "type": "interactive", "action": "popout", "content": "..." }                    // missing
+{ "type": "interactive", "action": "popout", "targetvalue": "Sidebar", "content": "..." } // wrong case
+{ "type": "interactive", "action": "popout", "targetvalue": "popout", "content": "..." }  // wrong value
+```
+
+`popout` is also not usable inside `guided` blocks — there is no DOM interaction to detect.
 
 ### Performance and Scalability Issues
 
