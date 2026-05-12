@@ -1,0 +1,235 @@
+{
+  "id": "play-cheerlights",
+  "title": "Tour the CheerLights Dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "CheerLights is a global IoT project: anyone anywhere can change the color of every participating light simultaneously by posting a color name to the CheerLights Discord server. This dashboard tracks those color changes in near real-time — one Infinity query loads the last 100 events into a table panel, and every other panel borrows from that table rather than calling the API again."
+    },
+    {
+      "type": "section",
+      "id": "at-a-glance",
+      "title": "The Dashboard at a Glance",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Look at the headline panels to get a feel for what the dashboard tracks."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Current Color']",
+          "content": "This stat panel shows the color the global CheerLights network is displaying right now. The background color updates to match — driven by value mappings that translate the color name into a hex code.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Last Color Change']",
+          "content": "This panel shows how long ago the color last changed. It reads from the shared Last 100 Changes table, sorts by time, and displays the most recent timestamp as \"time from now\".",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Last 100 by Color']",
+          "content": "This bar chart counts how many of the last 100 color changes were each color, sorted by frequency. It doesn't query the API itself — it reads directly from the Last 100 Changes table you'll explore in the next section.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Those three panels give you the current state at a glance. Now let's look at where the core data actually comes from."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "last-100-table",
+      "title": "Inside the Last 100 Changes Table",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the Last 100 Changes table panel to see how Infinity loads data from the ThingSpeak API and makes it available to the rest of the dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Last 100 Changes']",
+          "content": "This table is the data foundation for the whole dashboard. It queries the ThingSpeak API once and returns the last 100 color change events, with the color name, hex code, and timestamp for each entry.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Open the Last 100 Changes panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Last 100 Changes'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Queries']",
+          "content": "Click the Queries tab.",
+          "doIt": true,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "The data source is Infinity, configured to make an HTTP GET request to the ThingSpeak API in JSON mode. The root selector .feeds navigates into the JSON response to extract the array of feed entries. Each entry becomes one row in the table — color name, hex code, and timestamp."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click here to return to the dashboard.",
+          "doIt": true,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "The table makes one API call on every refresh. The rest of the dashboard builds on that single result."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "dashboard-datasource",
+      "title": "Reusing Data Across Panels",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll see how the Current Color panel reads from the table rather than making its own API call."
+        },
+        {
+          "type": "guided",
+          "content": "Open the Current Color panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Current Color'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Queries']",
+          "content": "Click the Queries tab.",
+          "doIt": true,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "The data source here is **Dashboard** — not Infinity. It points to the Last 100 Changes panel by ID and receives that panel's already-fetched result with no second API call. Every other panel on the dashboard uses this same pattern."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click here to return to the dashboard.",
+          "doIt": true,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Every panel draws from that single API result — the ThingSpeak API is called exactly once per refresh cycle, no matter how many panels are on the dashboard."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "changes-per-hour",
+      "title": "Color Changes per Hour",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll open the Color Changes per Hour panel to see how a chain of transformations buckets raw timestamps into hourly counts without modifying the source data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Color Changes per Hour']",
+          "content": "This bar chart groups the last 100 color changes by the hour they occurred and counts how many fell in each window. There's no hour field in the raw data — it's constructed entirely by the transformation chain.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "guided",
+          "content": "Open the Color Changes per Hour panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Color Changes per Hour'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Transformations']",
+          "content": "Click the Transformations tab.",
+          "doIt": true,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Five transformations run in sequence to produce the hourly buckets:\n\n**Calculate field — hours**: divides the raw Unix timestamp (in milliseconds) by 3,600,000 to get a fractional hour value.\n\n**Calculate field — hour**: applies a floor function to that fractional value, rounding down to a whole number. Every change in the same clock hour now shares the same integer.\n\n**Calculate field — hour_ts**: multiplies the floored hour back by 3,600,000 to produce a clean on-the-hour timestamp in milliseconds.\n\n**Convert field type**: converts hour_ts from a number to a Grafana timestamp field so the bar chart can treat it as a time axis.\n\n**Group by**: counts the number of color changes sharing each hour_ts value, collapsing all rows within the same hour into a single count — that's what the bars plot."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click here to return to the dashboard.",
+          "doIt": true,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "You've traced how a raw timestamp becomes an hourly bucket using nothing but Grafana transformations."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Further Resources\n\nHere are some links to help you go further with the ideas in this dashboard:\n\n- [CheerLights project](https://cheerlights.com/) — the global IoT color-synchronization project this dashboard visualizes.\n- [Lighting up your dashboards: how to visualize the CheerLights IoT project in Grafana Cloud](https://grafana.com/blog/lighting-up-your-dashboards-how-to-visualize-the-cheerlights-iot-project-in-grafana-cloud/) — a blog post walking through how this dashboard was built.\n- [CheerLights Discord](https://discord.gg/cheerlights) — where you can post a color name to change every participating CheerLights device in the world simultaneously.\n- [ThingSpeak API documentation](https://www.mathworks.com/help/thingspeak/rest-api.html) — the REST API used to record and retrieve CheerLights color change events.\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — the plugin that lets Grafana query any HTTP API or inline data with no intermediate database.\n- [Dashboard data source](https://grafana.com/docs/grafana/latest/datasources/dashboard/) — how to use the built-in Dashboard data source to share query results between panels.\n- [Grafana Transformations reference](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/) — documentation for the calculate field, convert field type, group by, and sort by transforms used in this dashboard."
+    }
+  ]
+}
