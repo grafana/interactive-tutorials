@@ -129,7 +129,8 @@ jobs:
           #   shared          — served separately under guides/
           #   guides          — legacy staging dir created earlier in this job
           #   packages        — the staging dir we are building right now
-          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages"
+          #   courses         — published separately as bucket/courses/
+          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages courses"
 
           for dir in */; do
             dir="${dir%/}"
@@ -185,5 +186,23 @@ jobs:
           # bucket/packages/... — same pattern as path: guides → bucket/guides/...
           path: packages
           # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
+          service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
+
+      # ── Courses deploy ────────────────────────────────────────────────────────
+      # Aggregates per-course and per-badge JSON into courses/oss.json and
+      # courses/cloud.json, then publishes the whole courses/ tree. The plugin
+      # only fetches the platform index files; per-course files travel along
+      # for direct authoring-tool access.
+
+      - name: Build courses platform indexes
+        run: node pathfinder-app/dist/cli/cli/index.js build-courses courses/ -o courses/
+
+      - name: 'Publish courses to GCS'
+        uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
+        with:
+          bucket: interactive-learning-${{ env.DEPLOY_ENV }}
+          # Lands at bucket/courses/... — same pattern as path: guides / packages.
+          path: courses
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
