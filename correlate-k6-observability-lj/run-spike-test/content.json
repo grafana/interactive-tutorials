@@ -1,0 +1,22 @@
+{
+  "id": "correlate-k6-observability-run-spike-test",
+  "title": "Run the spike test in Grafana Cloud k6",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone you run a spike profile against the shared QuickPizza target and capture the exact window you will analyze downstream.\n\nTo run the test, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "## Create the script\n\n1. In Grafana Cloud, open **Testing & synthetics** → **Performance testing** (k6), then start a **New test** (or open the script editor for a new cloud test—wording can vary slightly by stack).\n1. Replace the editor contents with the script below. It ramps virtual users (VUs) quickly, holds load, then ramps down.\n\n```javascript\nimport http from 'k6/http';\nimport { check, sleep } from 'k6';\n\nexport const options = {\n  stages: [\n    { duration: '30s', target: 5 },    // warm up\n    { duration: '1m',  target: 100 }, // spike to 100 VUs\n    { duration: '30s', target: 100 }, // hold the spike\n    { duration: '1m',  target: 5 },   // recover\n    { duration: '30s', target: 0 },   // ramp down\n  ],\n};\n\nexport default function () {\n  const res = http.get('https://quickpizza.grafana.com/api/pizza');\n  check(res, { 'status is 200': (r) => r.status === 200 });\n  sleep(1);\n}\n```\n\nIf your organization blocks outbound calls, point `http.get` at the URL your administrators provide and keep the same `stages` so the spike shape matches the rest of the path."
+    },
+    {
+      "type": "markdown",
+      "content": "## Run and anchor the window\n\n1. Click **Run** (or your stack’s equivalent) and wait until the test finishes.\n1. Write down the **exact test start time in UTC**. Every Explore step in the next milestones uses a range that covers roughly **5 minutes before** that time through **15 minutes after** the scheduled end (add buffer if your run queue delayed start).\n\nYou do not need automated log export; a single line in your notes is enough."
+    },
+    {
+      "type": "markdown",
+      "content": "## Read the k6 results\n\nBefore you leave k6, answer these from the results view:\n\n- Did all thresholds pass?\n- What was the **p95** `http_req_duration` (milliseconds)?\n- What was the **peak VU count** and at what **minute offset** from start did it occur?\n- Did latency show a **trend** (for example steadily increasing) across the run?\n\n**Reflection:** If every threshold passed, does that prove production readiness? Write one or two sentences you could defend in a review."
+    }
+  ]
+}

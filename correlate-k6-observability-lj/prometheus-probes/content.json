@@ -1,0 +1,22 @@
+{
+  "id": "correlate-k6-observability-prometheus-probes",
+  "title": "Compare probe latency in Prometheus",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Synthetic probes measure the endpoint from multiple regions. They often diverge from k6’s numbers because path, DNS, TLS, geography, and concurrency differ. Your job is to see whether user-visible latency spiked in the same window as the test.\n\nTo analyze probe metrics, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "## Open Explore with Prometheus\n\n1. Open **Explore** and select your Prometheus-compatible data source (demo stacks sometimes use a name like `grafanacloud-demoinfra-prom`; yours may differ).\n1. Set the time range to cover your test window from the previous milestone (include warm-up and cool-down).\n1. Run this query and switch to a **Time series** visualization:\n\n```promql\nprobe_http_duration_seconds\n```\n\nIf the metric is absent, ask your administrator which metric exposes **synthetic HTTP latency** for the quickpizza checks and substitute it while keeping the same questions."
+    },
+    {
+      "type": "markdown",
+      "content": "## Interpret regional probes\n\nFrom the chart, answer:\n\n- Did any probe region show a latency spike during the test window?\n- Which **region** peaked highest?\n- Which region was **slowest to recover** toward baseline?\n- Roughly how does the worst probe peak compare to k6’s p95 (for example, higher by an order of magnitude)?\n\n**Reflection:** Why might probes report higher latency than k6 even when both target the same URL?"
+    },
+    {
+      "type": "markdown",
+      "content": "## Sustained versus transient degradation\n\nRun:\n\n```promql\nprobe_duration_seconds\n```\n\n(or the closest probe-phase metric your environment exposes).\n\nAnswer:\n\n- Did latency return to baseline by the end of your selected range?\n- If you were a user in the slowest-recovering region, how many minutes of degraded experience would you infer from the chart?\n\nIn the next milestone you validate whether errors accompanied the latency change."
+    }
+  ]
+}

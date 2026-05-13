@@ -1,0 +1,22 @@
+{
+  "id": "correlate-k6-observability-tempo-traces",
+  "title": "Trace slow and error spans in Tempo",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Traces connect user-visible latency to **which** span consumed the time. You already anchored the incident window; now you locate representative error and slow paths.\n\nTo query traces, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "## Open Explore with Tempo\n\n1. Open **Explore** and select your Tempo data source (for example `grafanacloud-demoinfra-traces`).\n1. Apply the same absolute time range as metrics and logs."
+    },
+    {
+      "type": "markdown",
+      "content": "## Error spans\n\nRun:\n\n```traceql\n{ status = error }\n```\n\nNote how many traces match and which **span names** recur.\n\nThen narrow to slow error spans:\n\n```traceql\n{ span:duration > 200ms && status = error }\n```\n\nOpen one trace into the waterfall view and record:\n\n- **Root span** name and total duration.\n- Which **child span** consumed the most time.\n- Roughly what **percentage** of total trace time that child represents."
+    },
+    {
+      "type": "markdown",
+      "content": "## Scope to the service\n\nRun:\n\n```traceql\n{ resource.service.name = \"quickpizza\" && span:duration > 200ms }\n```\n\nIf the resource attribute differs in your stack, substitute the value your services use.\n\n**Reflection:** The root span duration should often be in the same ballpark as k6’s HTTP request timing. If it diverges, what explanations are plausible (client-side timing, connection reuse, redirects, missing instrumentation, clock skew)?"
+    }
+  ]
+}

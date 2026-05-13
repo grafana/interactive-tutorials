@@ -1,0 +1,18 @@
+{
+  "id": "correlate-k6-observability-synthesize-findings",
+  "title": "Postmortem narrative and reflection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You now have numbers from k6, Prometheus, Loki, and Tempo for the same incident window. The deliverable is a concise narrative a team could paste into a postmortem or readiness review.\n\nComplete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "## Fill the narrative template\n\nPaste the template into your notes and replace the bracketed placeholders with your measurements:\n\n---\n\nOn **[DATE]** at **[TIME UTC]**, a k6 spike test ramped quickpizza to **100** VUs.\n\nk6 reported all thresholds **[PASSING or FAILING]** — p95 = **[___]** ms.\n\n**Trend:** [one sentence on whether latency drifted across the run].\n\nPrometheus probe metrics showed **[region(s)]** reaching approximately **[___]** s peak latency — about **[N]×** compared with a calm baseline before the test. **[Region]** recovered slowest.\n\nLoki showed **[approximate count]** error-class lines; the dominant message pattern was **[short paraphrase]**.\n\nTempo highlighted **[span name]** as the most expensive child span in the trace you inspected, representing about **[___]%** of total trace time.\n\n---\n\nKeep wording factual; save opinions for the reflection list below."
+    },
+    {
+      "type": "markdown",
+      "content": "## Reflection questions\n\nAnswer in your notes before you finish:\n\n1. The lab scenario used a lenient p95 threshold relative to the observed p95. Does that threshold reflect real production risk? What would you set instead, and why?\n1. The scripted spike lasts only a few minutes. What failure mode might require **30–60 minutes** of sustained load to appear?\n1. If a probe region stayed elevated **15 minutes after** VUs returned to zero, what does that suggest about recovery behavior?\n1. How would you change the k6 `stages` to probe the **same** failure mode under a **gradual ramp** (soak) instead of a sudden spike?\n1. If you could show engineering **one** k6 metric and **one** log line from this run, which would you pick to justify a go/no-go decision?\n\n## Completion checklist\n\n- Test ran and results recorded\n- Probe latency spike confirmed in Prometheus\n- Error class identified in Loki\n- Slow span located in a Tempo waterfall\n- Postmortem narrative completed\n- All five reflection questions answered"
+    }
+  ]
+}
