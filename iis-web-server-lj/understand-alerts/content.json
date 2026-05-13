@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "iis-web-server-understand-alerts",
+  "title": "About IIS integration pre-built alerts",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The IIS integration provides pre-built alerts that notify you when common issues occur. In this step, you'll become familiar with these alerts and learn how to respond to each one."
+    },
+    {
+      "type": "markdown",
+      "content": "> **Did you know?** If your IIS server is functioning properly, you won't receive any alerts. No news is good news!"
+    },
+    {
+      "type": "markdown",
+      "content": "## IIS alerts"
+    },
+    {
+      "type": "markdown",
+      "content": "### IISHighRequestErrorRate\n\n**Description:** High HTTP 5xx error rate\n\n**What this means:** A significant percentage of requests are returning server-side errors. This could indicate application crashes, database connectivity issues, misconfigured handlers, or insufficient server resources.\n\n**What to do:** Check the IIS logs and Windows Event Viewer for error details. Review recent deployments or configuration changes. Verify that backend dependencies (databases, APIs) are reachable and responding."
+    },
+    {
+      "type": "markdown",
+      "content": "### IISHighConnectionCount\n\n**Description:** High number of active connections\n\n**What this means:** The server is approaching its connection limit. This could be caused by a traffic surge, slow response times causing connections to pile up, or a denial-of-service condition.\n\n**What to do:** Check if the traffic increase is legitimate. Review request processing times for bottlenecks. Consider scaling out to additional servers or increasing connection limits if the traffic is expected."
+    },
+    {
+      "type": "markdown",
+      "content": "### IISWorkerProcessHighMemory\n\n**Description:** Worker process memory usage is high\n\n**What this means:** An IIS worker process is consuming more memory than expected. This often indicates a memory leak in the application or excessive caching. If left unchecked, the worker process may crash or be recycled, interrupting active requests.\n\n**What to do:** Identify which application pool is affected. Review application code for memory leaks. Consider adjusting the application pool's private memory limit or recycling schedule as a temporary mitigation."
+    },
+    {
+      "type": "markdown",
+      "content": "### IISWorkerProcessHighCPU\n\n**Description:** Worker process CPU usage is high\n\n**What this means:** A worker process is consuming excessive CPU resources. This could be caused by an infinite loop, expensive computation, or a surge in request volume.\n\n**What to do:** Identify the application pool consuming the most CPU. Profile the application to find CPU-intensive operations. Check for runaway processes and verify that request volume is within expected ranges."
+    },
+    {
+      "type": "markdown",
+      "content": "### IISApplicationPoolDown\n\n**Description:** An application pool has stopped\n\n**What this means:** An IIS application pool is no longer running. All sites and applications assigned to this pool are unavailable. This can be caused by repeated worker process failures, configuration errors, or identity authentication issues.\n\n**What to do:** Check the Windows Event Viewer for the reason the application pool stopped. Verify the application pool identity credentials. Restart the application pool and monitor for recurring failures."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore\n\n- [Introduction to Grafana Alerting](https://grafana.com/docs/grafana/latest/alerting)\n- [Create an alert rule](https://grafana.com/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule)"
+    }
+  ]
+}

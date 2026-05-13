@@ -1,0 +1,293 @@
+---
+description: Decision trees, code smells, and quality checklists for authoring Pathfinder interactive guides. Companion to authoring-guide.mdc and the docs/ reference layer.
+globs:
+  - "**/content.json"
+---
+
+# Pathfinder Authoring Best Practices
+
+A decision-tree-style companion to [authoring-guide.mdc](authoring-guide.mdc). This file answers "which block / action / requirement should I use here?" — it does **not** restate the canonical rules. For those, follow the links below.
+
+## 1. Source of Truth
+
+| What | Where |
+|------|-------|
+| 18 + 3 critical rules (all blocking) | [AGENTS.md — Critical Rules](../AGENTS.md#critical-rules) |
+| Block type & property reference | [docs/json-guide-reference.md](../docs/json-guide-reference.md) |
+| Action type behavior | [docs/interactive-actions.md](../docs/interactive-actions.md) |
+| Requirement & objective vocabulary | [docs/requirements-reference.md](../docs/requirements-reference.md) |
+| Selector patterns | [docs/selectors-and-testids.md](../docs/selectors-and-testids.md) |
+| Guided block deep dive | [docs/guided-interactions.md](../docs/guided-interactions.md) |
+| Manifest fields | [docs/manifest-reference.md](../docs/manifest-reference.md) |
+| Pathfinder app schema (authoritative) | `grafana-pathfinder-app/src/types/json-guide.schema.ts` |
+
+If a doc here disagrees with the schema, the schema wins.
+
+---
+
+## 2. When to Use Which Block
+
+### 2.1 Content blocks
+
+```
+What kind of content?
+  ├─ Formatted prose, lists, code samples → markdown
+  ├─ Raw HTML (migration only)             → html         (avoid for new content)
+  ├─ Image                                 → image        (require alt text)
+  └─ Embedded video                        → video        (YouTube or native)
+```
+
+### 2.2 Interactive vs Multistep vs Guided
+
+```
+How does the user perform the action?
+  ├─ Single click / fill / navigate                 → interactive
+  ├─ Two+ actions, the SYSTEM performs them auto    → multistep
+  ├─ Two+ actions, the USER performs them manually  → guided
+  │   (also required when CSS :hover must trigger,
+  │    or when the target is virtualised — lazyRender)
+  └─ One step that wraps a multistep                → BAD — multistep singleton
+```
+
+### 2.3 Structural blocks
+
+```
+Need to group steps?                  → section (unique kebab-case id)
+Branch on runtime state?              → conditional
+  ├─ display: "inline"  → prose with hidden/shown branches
+  └─ display: "section" → each branch gets its own "Do" button + title
+Add AI customization?                 → assistantEnabled on the block (preferred),
+                                        or assistant wrapper (legacy format)
+Choose-your-own-adventure decision    → grot-guide  (block editor only — CLI-excluded)
+```
+
+### 2.4 Assessment blocks
+
+```
+Knowledge check?                       → quiz
+  ├─ Must answer correctly to advance  → completionMode: "correct-only"
+  └─ Reveal answer after N tries       → completionMode: "max-attempts", maxAttempts: N
+Capture user input as a variable?      → input
+  ├─ Free text                          → inputType: "text"
+  ├─ Checkbox                           → inputType: "boolean"
+  └─ Datasource picker                  → inputType: "datasource", datasourceFilter: "..."
+```
+
+### 2.5 Specialized blocks
+
+```
+Insert code into a Monaco editor?     → code-block (not formfill)
+Shell command demo?                   → terminal           (needs is-terminal-active)
+Open the terminal session itself?     → terminal-connect   (place before terminal blocks)
+Choose-your-own-adventure tree?       → grot-guide         (block editor, not CLI)
+```
+
+---
+
+## 3. When to Use Which Action
+
+### 3.1 Click, fill, navigate, hover, noop, popout
+
+```
+What does the step do?
+  ├─ Click a button by visible text   → action: "button",    reftarget: "Save & test"
+  ├─ Click anything else (CSS)        → action: "highlight", reftarget: "<selector>"
+  ├─ Fill a field                     → action: "formfill",  reftarget + targetvalue
+  ├─ Change page                      → action: "navigate",  reftarget: "/path"
+  │   └─ Open another guide after     → add openGuide: "bundled:<id>"
+  ├─ Reveal :hover-hidden UI          → action: "hover"      (use guided for real :hover)
+  ├─ Informational pause              → action: "noop"       (reftarget optional)
+  └─ Toggle docs panel position       → action: "popout"     (targetvalue required:
+                                                              "sidebar" | "floating")
+```
+
+### 3.2 `popout` vs `navigate`
+
+`popout` operates on the docs panel; `navigate` operates on the Grafana page. They are unrelated — `popout` does not change the URL.
+
+### 3.3 `openGuide` (cross-guide handoff)
+
+Prefer the `openGuide` field on a `navigate` interactive block over appending `?doc=` to the URL. The query-string form is back-compat only.
+
+```json
+{ "action": "navigate", "reftarget": "/connections/datasources/new",
+  "openGuide": "bundled:add-prometheus-datasource" }
+```
+
+### 3.4 `formfill` regex patterns
+
+When `validateInput: true`, `targetvalue` is regex-aware:
+
+| Pattern | Matches |
+|---------|---------|
+| `prometheus` | exact string |
+| `^https?://` | strings starting with `http://` or `https://` |
+| `monitoring$` | strings ending with `monitoring` |
+| `/^[a-z][a-z0-9-]*$/i` | full regex with flags |
+
+Use `validateInput: false` (default) when you want to accept any non-empty value.
+
+### 3.5 Lazy-rendered targets
+
+`lazyRender` lives on the **step**, not on the block. Always wrap a lazy-rendered target in a `guided` block — user-paced detection avoids racing the scroll.
+
+```json
+{ "action": "button", "reftarget": "...", "lazyRender": true,
+  "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view" }
+```
+
+---
+
+## 4. When to Use Which Requirement
+
+```
+Element on the page?
+  ├─ Nav menu item                      → "navmenu-open"
+  ├─ Existing element                   → (exists-reftarget auto-applied — don't add)
+  └─ All form fields filled correctly   → "form-valid"
+
+User location?
+  └─ On a specific page                 → "on-page:/path"
+
+User identity / permissions?
+  ├─ Authenticated                      → "is-logged-in"
+  ├─ Editor or higher                   → "is-editor"
+  ├─ Grafana admin                      → "is-admin"
+  ├─ Specific org role                  → "has-role:<role>"
+  └─ Specific permission                → "has-permission:<perm>"  (most specific — wins)
+
+Resources?
+  ├─ At least one data source           → "has-datasources"
+  ├─ Data source exists (by name/type)  → "has-datasource:<name>"        (no connectivity)
+  ├─ Data source exists AND tested      → "datasource-configured:<name>" (slower)
+  ├─ Plugin installed                   → "has-plugin:<id>"              (may be disabled)
+  ├─ Plugin enabled                     → "plugin-enabled:<id>"
+  ├─ Any dashboard                      → "dashboard-exists"
+  └─ Specific dashboard by title        → "has-dashboard-named:<title>"
+
+User-collected variables?
+  └─ Variable matches expected value    → "var-<name>:<value>"
+
+Environment?
+  ├─ Grafana version ≥ X                → "min-version:<x.y.z>"
+  ├─ Cloud / OSS / Play                 → "in-environment:<env>"
+  └─ Feature flag enabled               → "has-feature:<toggle>"
+
+Rendering context?
+  └─ Pathfinder app vs website          → "renderer:pathfinder" | "renderer:website"
+
+Flow / order?
+  ├─ Previous section finished          → "section-completed:<id>"
+  └─ Terminal session active            → "is-terminal-active"
+```
+
+> `exists-reftarget` is auto-applied by the engine. Never add it manually.
+
+---
+
+## 5. When to Use Which Objective
+
+Objectives use the same vocabulary as requirements but their behavior is different.
+
+| | Requirement | Objective |
+|---|------------|-----------|
+| Failure | Step is disabled with "Fix this" UI | Step auto-completes |
+| Use for | Preconditions the user must meet | Outcomes the user has already achieved |
+| Composition | All must pass | All must pass (auto-complete is all-or-nothing) |
+
+```
+Skip when already done?
+  ├─ Data source already configured     → "objectives": ["has-datasource:prometheus"]
+  ├─ Plugin already installed           → "objectives": ["plugin-enabled:<id>"]
+  ├─ Already on target page             → "objectives": ["on-page:/dashboards"]
+  └─ Dashboard already created          → "objectives": ["has-dashboard-named:My Dashboard"]
+```
+
+Section-level objectives bubble to all child steps: if the section's objectives are met, the whole section is marked complete.
+
+---
+
+## 6. Code Smells (Canonical List)
+
+These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rules) with patterns that aren't outright illegal but consistently hurt guides.
+
+1. **Multistep singleton** — `multistep` with one step. Use plain `interactive`.
+2. **Focus-before-formfill** — `highlight` on an input with `doIt: true` is a no-op. Use `formfill`, or set `doIt: false`.
+3. **Manually added `exists-reftarget`** — it's auto-applied; remove the manual entry.
+4. **Markdown `##` headers in place of sections** — restructure as `section` blocks with bookend markdown.
+5. **Leading markdown title duplicating the guide title** — remove. The frame renders the title.
+6. **Brittle CSS selectors** — `.css-xyz`, deep nesting, `nth-of-type` without a stable parent. Use `data-testid`, button text, or semantic attributes.
+7. **Plain `interactive` on a below-fold / virtualised target** — convert to `guided` + `lazyRender: true`.
+8. **`popout` without a valid `targetvalue`** — must be exactly `"sidebar"` or `"floating"`.
+9. **Legacy `?doc=` query string** — use the `openGuide` field on the navigate step.
+10. **Admin-only step without `skippable`** — non-admins get stuck. Add `skippable: true` with a helpful hint.
+11. **No first-action page anchor** — the first action should establish page context via `on-page`, `navigate`, or a clear highlight.
+12. **Missing `verify` on state-changing actions** — saves, creates, navigations should verify.
+13. **Bold the word "button"** — write "Click **Save**" not "Click the **Save** button".
+14. **`grot-guide` hand-edits without screenId integrity** — every CTA / option `screenId` must point to an existing screen `id`.
+15. **`input` `variableName` not a valid JS identifier** — schema enforces; pick simple camelCase.
+
+---
+
+## 7. Quality Checklist (Pre-Merge)
+
+Run through this before opening the PR.
+
+**Structure**
+- [ ] `id`, `title`, `blocks` present at root
+- [ ] Sections grouped via `section` blocks, not markdown `##`
+- [ ] All `section` / `input` ids are unique kebab-case
+- [ ] `schemaVersion` is `"1.1.0"` if set (or omitted)
+- [ ] Each section has 1-sentence "what you'll do" intro markdown and "what you learned" summary markdown
+- [ ] No leading markdown title that duplicates the guide title
+
+**Requirements & objectives**
+- [ ] Nav menu interactions have `navmenu-open`
+- [ ] Page-specific actions have `on-page:/path`
+- [ ] Admin steps have `is-admin` or the appropriate `has-role` / `has-permission`
+- [ ] Expensive setup sections have `objectives` (auto-complete if already done)
+- [ ] No manual `exists-reftarget`
+
+**Actions**
+- [ ] Each action targets the right thing (button by text vs CSS vs formfill vs navigate)
+- [ ] `popout` steps have `targetvalue: "sidebar"` or `"floating"`
+- [ ] `openGuide` used (not legacy `?doc=`) when chaining a guide after navigation
+- [ ] State-changing actions (save / create / navigate) have `verify`
+
+**Selectors**
+- [ ] `data-testid` > semantic (`href`/`aria-*`/`id`) > text-by-action > `:contains` / `:has`
+- [ ] No auto-generated CSS classes, no `nth-of-type` without a stable parent
+
+**Resilience**
+- [ ] Any step targeting a virtualised container uses a `guided` block + `lazyRender: true`
+- [ ] Admin / permission-gated steps are `skippable: true` with a hint
+- [ ] No multistep singletons; no focus-before-formfill
+
+**Content**
+- [ ] Tooltips under 250 characters, single sentence, don't name the element
+- [ ] Only bold GUI item names — not the word "button"
+- [ ] Action-focused prose ("Save your dashboard" not "The save button can be clicked")
+
+**Validation**
+- [ ] Run the local schema check from a Pathfinder CLI checkout: `node {pathfinder-app}/dist/cli/cli/index.js validate --packages .`
+
+---
+
+## 8. Canonical References
+
+| Need | Go to |
+|------|-------|
+| Critical rules (all blocking) | [AGENTS.md — Critical Rules](../AGENTS.md#critical-rules) |
+| Authoring how-to (the practice) | [authoring-guide.mdc](authoring-guide.mdc) |
+| Block types & properties | [docs/json-guide-reference.md](../docs/json-guide-reference.md) |
+| Action types | [docs/interactive-actions.md](../docs/interactive-actions.md) |
+| All requirement types | [docs/requirements-reference.md](../docs/requirements-reference.md) |
+| Selector catalog | [docs/selectors-and-testids.md](../docs/selectors-and-testids.md), [selector-library.mdc](selector-library.mdc) |
+| Guided block deep dive | [docs/guided-interactions.md](../docs/guided-interactions.md) |
+| Manifest authoring | [docs/manifest-reference.md](../docs/manifest-reference.md) |
+| Workflow templates | [common-workflows.mdc](common-workflows.mdc) |
+| Validated UI patterns | [proven-patterns.mdc](proven-patterns.mdc) |
+| Complete worked example | [complete-example-tutorial.mdc](complete-example-tutorial.mdc) |
+| Edge cases & troubleshooting | [edge-cases-and-troubleshooting.mdc](edge-cases-and-troubleshooting.mdc) |
+| PR review protocol | [review-guide-pr.mdc](review-guide-pr.mdc) |
+| Dashboard-specific authoring rules | [skills/autogen-guide-dashboard/dashboard-guide-rules.md](skills/autogen-guide-dashboard/dashboard-guide-rules.md) |

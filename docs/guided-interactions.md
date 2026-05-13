@@ -196,6 +196,28 @@ Individual steps can declare their own requirements:
 }
 ```
 
+### Per-step `lazyRender` and `scrollContainer`
+
+When a step targets an element inside a virtualized container (long table, paginated list, below-fold dashboard row), set `lazyRender: true` on that step. Optionally set `scrollContainer` to the CSS selector of the scrolling parent (default `.scrollbar-view`). The engine scrolls the target into view before highlighting it.
+
+```json
+{
+  "type": "guided",
+  "content": "Open the row for the service that is below the fold.",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
+      "lazyRender": true,
+      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
+      "description": "Click checkoutservice"
+    }
+  ]
+}
+```
+
+A plain `interactive` block targeting a virtualized element will fail intermittently because `exists-reftarget` waits but cannot scroll. Prefer `guided` with `lazyRender: true`.
+
 ## Integration with sections
 
 Guided blocks integrate seamlessly with sections. When a section's "Do section" execution reaches a guided block:
@@ -320,13 +342,14 @@ Unlike automated steps, guided interactions do not block the page. Users can int
 
 - **Form fill actions**: not supported in guided mode
 - **Navigate actions**: incompatible with guided model (user would leave the page)
+- **Popout actions**: not supported in guided mode — single-button action with no user interaction to detect
 - **Nested guided**: guided steps inside guided steps are not supported
 
 ---
 
 ## See Also
 
-- [JSON Guide Format](json-guide-format.md) - Root structure and block overview
-- [Interactive Types](interactive-types.md) - When to use each type
+- [JSON Guide Reference](json-guide-reference.md) - Block types, properties, and guide structure
+- [Interactive Actions](interactive-actions.md) - Action type behavior
 - [Requirements Reference](requirements-reference.md) - All supported requirements
 - [Selectors Reference](selectors-and-testids.md) - Stable selector patterns

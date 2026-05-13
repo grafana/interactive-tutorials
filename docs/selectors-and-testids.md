@@ -161,6 +161,28 @@ Finds elements that contain specific descendant elements.
 }
 ```
 
+### `:text()` Pseudo-Selector
+
+Finds elements by **direct text content** only (does not match descendant text, unlike `:contains()`).
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "button:text('Save Dashboard')",
+  "content": "Click the save button"
+}
+```
+
+**Difference from `:contains()`:**
+
+| Selector | Matches |
+|----------|---------|
+| `div:contains('Save')` | Any `div` whose subtree contains "Save" (including nested children) |
+| `button:text('Save')` | Only buttons whose own direct text nodes contain "Save" |
+
+Use `:text()` when `:contains()` matches too many elements due to nested text.
+
 ### Combined Complex Selectors
 
 The most powerful feature: combining `:has()` and `:contains()`.
@@ -239,6 +261,32 @@ Some UI elements only appear when hovering over their parent containers (e.g., T
 
 ---
 
+## Lazy-Rendered Selectors
+
+Some Grafana surfaces virtualize their content — long tables, dashboard rows below the fold, paginated lists. The target element does not exist in the DOM until the user (or the engine) scrolls it into view. `exists-reftarget` waits, but it cannot scroll on its own.
+
+Set `lazyRender: true` on the step and optionally `scrollContainer` (CSS selector of the scrolling parent, defaults to `.scrollbar-view`) to let the engine scroll the target into view before highlighting or acting.
+
+```json
+{
+  "type": "guided",
+  "content": "Open the panel for service `checkoutservice` (scroll to find it).",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
+      "lazyRender": true,
+      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
+      "description": "Click checkoutservice"
+    }
+  ]
+}
+```
+
+Use a `guided` block (not a plain `interactive`) for these targets — the user-paced detection avoids racing the scroll. See [JSON Guide Reference — Step Structure](json-guide-reference.md#step-structure).
+
+---
+
 ## Inputs and Form Fields
 
 ### Text Inputs
@@ -309,6 +357,7 @@ Some pseudo-classes are **not supported**. Use alternatives:
 |----------------------------------|-------------------------------------------|------------------------------------|
 | `:has()`                         | Chrome 105+, Safari 17.2+, Firefox 140+   | Automatic JS fallback              |
 | `:contains()`                    | Not natively supported (jQuery extension) | Automatic JS fallback              |
+| `:text()`                        | Custom implementation                     | Uses direct text node matching     |
 | `:nth-match()`                   | Custom implementation                     | Uses `querySelectorAll` internally |
 | `:nth-child()`, `:nth-of-type()` | All browsers                              | Standard CSS                       |
 
@@ -350,6 +399,6 @@ input[id='connection-url']
 
 ## See Also
 
-- [Interactive Types](interactive-types.md) - When to use each action type
-- [JSON Block Properties](json-block-properties.md) - Complete property reference
+- [Interactive Actions](interactive-actions.md) - Action type behavior
+- [JSON Guide Reference](json-guide-reference.md) - Block types and property reference
 - [Requirements Reference](requirements-reference.md) - Requirement conditions

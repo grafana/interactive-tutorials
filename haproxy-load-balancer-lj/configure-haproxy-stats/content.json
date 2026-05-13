@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "haproxy-load-balancer-configure-haproxy-stats",
+  "title": "Configure HAProxy to expose the stats endpoint",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before Grafana Alloy can collect HAProxy metrics, you need to enable the HAProxy stats endpoint. This endpoint exposes real-time metrics about frontends, backends, and individual servers in a format that Alloy can scrape.\n\nThis step happens on your HAProxy server, not in the Grafana Cloud UI."
+    },
+    {
+      "type": "markdown",
+      "content": "## Enable the stats endpoint\n\nOpen your HAProxy configuration file (typically `/etc/haproxy/haproxy.cfg`) and add a `listen stats` section:\n\n```\nlisten stats\n    bind *:8404\n    stats enable\n    stats uri /stats\n    stats refresh 10s\n```\n\nThis configuration:\n- Binds the stats endpoint to port 8404\n- Enables the stats page at `/stats`\n- Refreshes stats every 10 seconds"
+    },
+    {
+      "type": "markdown",
+      "content": "## Enable the Prometheus endpoint\n\nThe HAProxy integration uses the Prometheus-compatible metrics endpoint. Add the following to the same `listen stats` section or as a separate frontend:\n\n```\nfrontend prometheus\n    bind *:8405\n    http-request use-service prometheus-exporter if { path /metrics }\n    no log\n```\n\n**Note:** The built-in Prometheus exporter requires HAProxy 2.0 or later. If you are running an older version, you need to use an external exporter."
+    },
+    {
+      "type": "markdown",
+      "content": "## Reload HAProxy\n\nAfter saving the configuration changes, reload HAProxy to apply them:\n\n```\nsudo systemctl reload haproxy\n```\n\nVerify the endpoint is accessible by running:\n\n```\ncurl http://localhost:8405/metrics\n```\n\nYou should see Prometheus-formatted metrics. If the endpoint is not reachable, check that the port is open in your firewall and that HAProxy reloaded without errors (`sudo systemctl status haproxy`)."
+    }
+  ]
+}

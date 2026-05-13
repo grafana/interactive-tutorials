@@ -8,7 +8,7 @@ description: Architecture overview of the interactive guide system including con
 
 The interactive guide system is a React-based framework for creating guided, executable documentation within Grafana. It transforms structured **JSON guides** into interactive experiences with real Grafana UI manipulation.
 
-> **Documentation**: See [docs/json-guide-format.md](../docs/json-guide-format.md) for the complete JSON format reference.
+> **Documentation**: See [docs/json-guide-reference.md](../docs/json-guide-reference.md) for the complete JSON format reference.
 
 ## Content Pipeline
 
@@ -32,23 +32,30 @@ Interactive UI with Grafana Integration
 JsonBlock (union type)
 ├── Content Blocks
 │   ├── markdown - Formatted text content
+│   ├── html - Raw HTML (sanitized; migration only)
 │   ├── image - Embedded images
 │   └── video - YouTube/native video
 │
 ├── Interactive Blocks
-│   ├── interactive - Single action (highlight, button, formfill, navigate, hover)
+│   ├── interactive - Single action (highlight, button, formfill, navigate, hover, noop, popout)
 │   ├── multistep - Automated multi-action sequence
-│   └── guided - User-performed sequence with detection
+│   ├── guided - User-performed sequence with detection
+│   ├── code-block - Insert code into Monaco editor
+│   ├── terminal - Shell command with Copy/Exec
+│   └── terminal-connect - Open and connect to a Coda terminal VM
 │
 ├── Structural Blocks
 │   ├── section - Grouped steps with "Do Section"
 │   ├── conditional - Runtime condition branching
-│   └── assistant - AI customization wrapper
+│   ├── assistant - AI customization wrapper
+│   └── grot-guide - Hand-authored choose-your-own-adventure tree (block editor only)
 │
 └── Assessment Blocks
     ├── quiz - Knowledge check with choices
     └── input - Collect user response as variable
 ```
+
+Canonical set: `VALID_BLOCK_TYPES` in `grafana-pathfinder-app/src/types/json-guide.schema.ts`.
 
 ## Component Hierarchy
 
@@ -85,9 +92,13 @@ ContentRenderer
 | `FocusHandler`    | `highlight`  | Click + visual feedback              |
 | `ButtonHandler`   | `button`     | Text-based button finding            |
 | `FormFillHandler` | `formfill`   | Complex form interaction             |
-| `NavigateHandler` | `navigate`   | Internal/external navigation         |
+| `NavigateHandler` | `navigate`   | Internal/external navigation; also handles `openGuide` |
 | `HoverHandler`    | `hover`      | Trigger hover states                 |
+| `PopoutHandler`   | `popout`     | Toggle docs panel between sidebar and floating |
 | `GuidedHandler`   | `guided`     | User-performed action detection      |
+| _(no handler)_    | `noop`       | Informational step — state-only, no DOM action |
+
+`code-block` insertion is not a registered action handler. It runs from the `CodeBlock` React component via the `clearAndInsertCode` helper exported from `action-handlers/code-block-handler.ts`.
 
 ### Execution Flow
 
@@ -109,12 +120,13 @@ ContentRenderer
 
 ### Requirement Categories
 
-- **DOM**: `exists-reftarget`, `navmenu-open`
+- **DOM**: `exists-reftarget`, `navmenu-open`, `form-valid`, `is-terminal-active`
 - **Page**: `on-page:/path`
-- **User**: `is-admin`, `is-editor`, `has-role:X`, `has-permission:X`
-- **Data**: `has-datasources`, `has-datasource:X`, `has-plugin:X`
+- **User**: `is-logged-in`, `is-admin`, `is-editor`, `has-role:X`, `has-permission:X`
+- **Data**: `has-datasources`, `has-datasource:X`, `datasource-configured:X`, `dashboard-exists`, `has-dashboard-named:X`
+- **Plugin**: `has-plugin:X`, `plugin-enabled:X`
 - **Flow**: `section-completed:id`, `var-name:value`
-- **System**: `has-feature:X`, `min-version:X`, `in-environment:X`
+- **System**: `has-feature:X`, `min-version:X`, `in-environment:X`, `renderer:X`
 
 ## Key Design Patterns
 
@@ -140,6 +152,8 @@ ContentRenderer
 - **DataSourceService**: Data source checking
 - **Permission System**: User role validation
 - **Theme System**: Visual styling adaptation
+- **Coda Terminal Service**: VM provisioning and terminal session lifecycle (used by `terminal` and `terminal-connect`)
+- **Docs Panel**: Listens for `pathfinder-request-pop-out` / `pathfinder-request-dock` (used by `popout`) and `auto-launch-tutorial` (used by `navigate` + `openGuide`)
 
 ## Performance
 

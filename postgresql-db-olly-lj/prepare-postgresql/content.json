@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "postgresql-db-olly-prepare-postgresql",
+  "title": "Prepare your PostgreSQL database",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll prepare your PostgreSQL database for monitoring. This involves enabling the `pg_stat_statements` extension, creating a dedicated monitoring user, and adjusting query tracking settings for complete query capture."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "To prepare your PostgreSQL database instance for Database Observability, complete the following steps:"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Add `pg_stat_statements` to `shared_preload_libraries` in your `postgresql.conf` file and restart PostgreSQL to apply the change."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Create the extension in each database you want to monitor:\n\n```sql\nCREATE EXTENSION IF NOT EXISTS pg_stat_statements;\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify the extension is installed:\n\n```sql\nSELECT * FROM pg_extension WHERE extname = 'pg_stat_statements';\n```\n\nExpected result: One row confirming the extension exists."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Set `pg_stat_statements.track` to `all` in your `postgresql.conf` file:\n\n```\npg_stat_statements.track = all\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify the setting:\n\n```sql\nSHOW pg_stat_statements.track;\n```\n\nExpected result: Value is `all`."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Increase `track_activity_query_size` to `4096` in your `postgresql.conf` file to capture complete query text."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify the setting:\n\n```sql\nSHOW track_activity_query_size;\n```\n\nExpected result: `4kB` (4096)."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Create a dedicated monitoring user and grant the required roles:\n\n```sql\nCREATE USER \"db-o11y\" WITH PASSWORD '<DB_O11Y_PASSWORD>';\nGRANT pg_monitor TO \"db-o11y\";\nGRANT pg_read_all_stats TO \"db-o11y\";\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Replace the password with a strong value."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify that the monitoring user can query `pg_stat_statements`:\n\n```sql\n-- run with the db-o11y user\nSELECT * FROM pg_stat_statements LIMIT 1;\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Disable tracking of queries executed by the monitoring user:\n\n```sql\nALTER ROLE \"db-o11y\" SET pg_stat_statements.track = 'none';\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Grant object-level privileges for schema details and explain plans. Connect to each database and grant access to the schemas you want to monitor:\n\n```sql\nGRANT USAGE ON SCHEMA public TO \"db-o11y\";\nGRANT SELECT ON ALL TABLES IN SCHEMA public TO \"db-o11y\";\n```\n\nAlternatively, grant read access to all objects:\n\n```sql\nGRANT pg_read_all_data TO \"db-o11y\";\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "You've prepared your PostgreSQL database for Database Observability monitoring."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll configure Grafana Alloy with the Database Observability components."
+    }
+  ]
+}

@@ -23,7 +23,7 @@ This phase follows the Phase 0 pattern from the skill-memory convention (`.curso
 
 Read `{guide_dir}/assets/manifest.yaml`. Extract:
 
-- `dashboard.uid` and `dashboard.source_sha256` — for drift detection
+- `dashboard.uid` and `input_sha256` — for drift detection
 - `guide.sections` — the section IDs from the previous run
 - `guide.selector_quality` — the previous selector quality breakdown
 - `files` — paths to all analysis artifacts
@@ -42,13 +42,13 @@ Re-fetch or re-read the dashboard JSON using the same approach as SKILL.md Phase
 
 ### 1M.2 Compute the new hash
 
-Use the same targeted hash as the original run (panels and variables only — not the full JSON, to avoid false drift on cosmetic changes):
+Run the extraction script to re-extract the dashboard and get the current drift hash:
 
 ```bash
-jq -c '{panels: [.panels[] | {title, type, gridPos}], templating: [.templating.list[] | {name, type}]}' {guide_dir}/assets/dashboard-source.json | shasum -a 256
+python .cursor/tools/extract_dashboard.py {guide_dir}/assets/dashboard-source.json > {guide_dir}/assets/dashboard-extraction.json
 ```
 
-Compare the hex digest with `input_sha256` from the manifest.
+The script outputs a `driftHash` field (SHA-256 of panels+variables structure) that matches the algorithm used during the original generation run. Compare the `driftHash` value with `input_sha256` from the manifest.
 
 ### 1M.3 Branch on drift
 
@@ -88,12 +88,15 @@ You are analyzing a Grafana dashboard JSON export that has been UPDATED since th
 {paste the guide.panels array from assets/manifest.yaml here}
 ```
 
-**Current dashboard JSON** (read this — it's the source of truth):
+**Current dashboard extraction** (read this — precomputed selectors, grades, fold positions, variable bindings, and driftHash from extract_dashboard.py):
+{guide_dir}/assets/dashboard-extraction.json
+
+**Current dashboard JSON** (read this for educational context — query expressions, thresholds, legends):
 {guide_dir}/assets/dashboard-source.json
 
 **Your task:**
-1. Parse the current dashboard JSON fully (same as a fresh extraction)
-2. Compare the current panels against the structured panels roster from the manifest (title, type, gridPos.y):
+1. Read `dashboard-extraction.json` — panel inventory, selector grades, fold positions, and variable bindings are already computed; DO NOT re-grade or re-count from scratch
+2. Compare the current panels (from dashboard-extraction.json) against the structured panels roster from the manifest (title, type, gridPos.y):
    - **Added panels**: in the current JSON but not in the roster
    - **Removed panels**: in the roster but not in the current JSON
    - **Modified panels**: title, type, gridPos, queries, or variables changed — including gridPos.y changes that flip above-fold ↔ below-fold

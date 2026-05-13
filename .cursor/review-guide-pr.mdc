@@ -56,6 +56,14 @@ Actions that target elements specific to a page should include `on-page:/path` i
 
 The guide's `title` property is rendered by the app frame. A leading markdown block like `"content": "## My Guide Title"` duplicates it. The first block should be introductory content, not a title.
 
+### 1.7 `popout` Without Valid `targetvalue`
+
+Any interactive block with `"action": "popout"` MUST set `targetvalue` to exactly `"sidebar"` or `"floating"`. The schema rejects everything else, including missing values and case variations like `"Sidebar"`. `popout` is also not allowed inside `guided` blocks.
+
+### 1.8 Below-Fold or Virtualized Targets Without `lazyRender`
+
+A plain `interactive` step targeting a virtualized container (long tables, paginated lists, dashboard rows below the fold) will fail intermittently — `exists-reftarget` waits but cannot scroll. Convert to a `guided` block with `lazyRender: true` on the step (and `scrollContainer` if the scrolling parent isn't `.scrollbar-view`).
+
 ## 2. Structural Validation
 
 ### 2.1 Root Structure
@@ -82,7 +90,11 @@ All `id` properties across the guide (sections, inputs) must be unique. Duplicat
 
 ### 2.4 Block Type Validity
 
-Every block must have a valid `type`. Interactive blocks must have a valid `action`. Verify `reftarget` is present for all actions except `noop`.
+Every block must have a valid `type`. Interactive blocks must have a valid `action`. Verify `reftarget` is present for all actions except `noop` and `popout`.
+
+### 2.5 Schema Version
+
+If `schemaVersion` is present, it MUST be `"1.1.0"`. Older `"1.0.0"` guides are grandfathered for read but new content should not use them. The field can be omitted — the schema default applies.
 
 ## 3. Content Quality
 
@@ -147,6 +159,10 @@ Steps requiring `is-admin` in a guide targeting mixed audiences should be `"skip
 
 The first interactive action in a guide should establish the user's page context via `on-page` requirement, `navigate` action, or `highlight` action to the right page. Users may have multiple guide tabs open and navigate away.
 
+### 4.6 Legacy `?doc=` Query String
+
+`navigate` actions that chain to another guide should set `openGuide: "bundled:<guide-id>"` on the interactive block. Appending `?doc=` to the URL still works for back-compat but should be replaced with the `openGuide` field on new content.
+
 ## 5. CODEOWNERS Check
 
 - **New guide**: recommend the PR author add their handle to `.github/CODEOWNERS` for the guide directory
@@ -171,6 +187,7 @@ When you need more detail during review:
 - **Full requirement types**: [docs/requirements-reference.md](../docs/requirements-reference.md)
 - **Selector details**: [docs/selectors-and-testids.md](../docs/selectors-and-testids.md)
 - **Guided block specifics**: [docs/guided-interactions.md](../docs/guided-interactions.md)
-- **All block properties**: [docs/json-block-properties.md](../docs/json-block-properties.md)
+- **All block properties**: [docs/json-guide-reference.md](../docs/json-guide-reference.md)
 - **Authoring best practices**: [authoring-guide.mdc](authoring-guide.mdc)
+- **Decision trees & code smells**: [best-practices.mdc](best-practices.mdc)
 - **Edge cases**: [edge-cases-and-troubleshooting.mdc](edge-cases-and-troubleshooting.mdc)

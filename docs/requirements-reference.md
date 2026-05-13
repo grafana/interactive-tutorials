@@ -362,11 +362,30 @@ This requirement is evaluated differently by different rendering tools, allowing
 
 ---
 
+## Terminal Requirements
+
+### `is-terminal-active`
+
+**Purpose**: Verifies that a Coda terminal session is connected and active. Use this requirement on `terminal` blocks to ensure the user has an active terminal before attempting to execute commands.
+
+```json
+{
+  "type": "terminal",
+  "command": "curl -s http://localhost:9090/api/v1/status/config | jq .",
+  "requirements": ["is-terminal-active"],
+  "content": "Check the Prometheus configuration."
+}
+```
+
+**Note**: Place a `terminal-connect` block before any `terminal` blocks to give users a way to establish the connection.
+
+---
+
 ## Variable Requirements
 
 ### `var-<variableName>:<expectedValue>`
 
-**Purpose**: Checks if a guide response variable has a specific value. Variables are set by [input blocks](./json-guide-format.md#input-block).
+**Purpose**: Checks if a guide response variable has a specific value. Variables are set by [input blocks](./json-guide-reference.md#input-block).
 
 ```json
 {
@@ -383,6 +402,7 @@ This requirement is evaluated differently by different rendering tools, allowing
 - `var-termsAccepted:true` -- boolean variable must be `true`
 - `var-experienceLevel:advanced` -- text variable must equal `"advanced"`
 - `var-datasourceName:prometheus` -- variable must match specific value
+- `var-datasourceName:*` -- wildcard, passes if variable has any non-empty value
 
 **Used with conditional blocks:**
 
@@ -395,7 +415,7 @@ This requirement is evaluated differently by different rendering tools, allowing
 }
 ```
 
-See [variable substitution](./json-guide-format.md#variable-substitution) for more details.
+See [variable substitution](./json-guide-reference.md#variable-substitution) for more details.
 
 ---
 
@@ -498,7 +518,7 @@ Objectives declare what a guide step will accomplish. They use the same syntax a
 
 ### Syntax Rules
 
-- Fixed types (`is-admin`, `is-logged-in`, `is-editor`, `exists-reftarget` *(auto-applied)*, `navmenu-open`, `has-datasources`, `dashboard-exists`, `form-valid`) cannot have arguments
+- Fixed types (`is-admin`, `is-logged-in`, `is-editor`, `exists-reftarget` *(auto-applied)*, `navmenu-open`, `has-datasources`, `dashboard-exists`, `form-valid`, `is-terminal-active`) cannot have arguments
 - Parameterized types (`has-datasource:X`, `on-page:/path`, `var-name:value`) require an argument after the colon
 - Path arguments (e.g., `on-page:`) should start with `/`
 - Version arguments (e.g., `min-version:`) should be semver format (e.g., `11.0.0`)
@@ -532,6 +552,7 @@ Objectives declare what a guide step will accomplish. They use the same syntax a
 | `is-editor`        | User has at least Editor role          |
 | `has-datasources`  | At least one data source is configured |
 | `dashboard-exists` | At least one dashboard exists          |
+| `is-terminal-active` | Coda terminal session is connected   |
 
 ### Parameterized Requirements
 
@@ -549,7 +570,7 @@ Objectives declare what a guide step will accomplish. They use the same syntax a
 | `in-environment:<env>`               | Running in a specific environment                      |
 | `min-version:<version>`              | Grafana version meets minimum requirement              |
 | `section-completed:<sectionId>`      | Another section has been completed                     |
-| `var-<name>:<value>`                 | Guide variable has expected value                      |
+| `var-<name>:<value>`                 | Guide variable has expected value (`*` = any non-empty) |
 | `renderer:<renderer>`                | Rendering context matches (`pathfinder` or `website`)  |
 
 ---
@@ -594,7 +615,6 @@ localStorage.setItem('grafana-docs-debug', 'true');
 
 ## See Also
 
-- [JSON Guide Format](json-guide-format.md) - Root structure overview
-- [Interactive Types](interactive-types.md) - Block and action types
-- [JSON Block Properties](json-block-properties.md) - Complete property reference
+- [JSON Guide Reference](json-guide-reference.md) - Block types, properties, and guide structure
+- [Interactive Actions](interactive-actions.md) - Action type behavior
 - [Selectors Reference](selectors-and-testids.md) - Stable selector patterns

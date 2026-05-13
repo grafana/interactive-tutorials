@@ -85,9 +85,14 @@ Use multistep or guided:
 }
 ```
 
+## Lazy-Rendered Containers
+
+Virtualized tables, paginated lists, and dashboard rows below the fold do not render off-screen elements. Set `lazyRender: true` on the step (and optionally `scrollContainer` — default `.scrollbar-view`) to scroll the target into view first. Use a `guided` block, not plain `interactive` — user-paced detection avoids racing the scroll. See [docs/json-guide-reference.md — Step Structure](../docs/json-guide-reference.md#step-structure).
+
 ## Performance Tips
 
 - Engine tries native `querySelector()` first, falls back to JS parsing
 - Use specific base selectors to narrow scope
 - Prefer `data-testid` for speed and stability
 - Test in target browsers when using `:has()` on older Firefox
+- For virtualized targets, set `lazyRender: true` so the engine scrolls them into view
