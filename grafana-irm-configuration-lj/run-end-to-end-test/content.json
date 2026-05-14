@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "grafana-irm-configuration-run-end-to-end-test",
+  "title": "Test your IRM configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you test your configuration to verify that IRM creates an Alert group from a firing alert and executes escalation and notification steps as expected."
+    },
+    {
+      "type": "markdown",
+      "content": "{{< admonition type=\"note\" >}}\nBefore you test, configure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/manage/notifications/notification-rules/) so you receive notifications through your preferred channels. The default notification method is your Grafana Cloud account email. If you're testing against a production alert rule, duplicate the rule first or revert any changes immediately after testing using the **Versions** tab.\n{{< /admonition >}}\n\nTo test your setup from an alert rule, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "1. Trigger the alert rule to fire:\n   1. In **Alerting** > **Alert rules**, locate the rule connected to your IRM contact point.\n   1. Open the rule and click **Edit** to lower the conditions so the rule fires (for example, set CPU > `5%`).\n   1. If necessary, lower the evaluation period to `1 minute` so it fires quickly.\n   1. Save the rule, wait one evaluation cycle, and confirm the rule shows a firing state.\n1. Verify the new Alert group in IRM:\n   1. In the IRM navigation menu, click **Alert Groups**.\n   1. Locate the new Alert group created by the firing rule.\n   1. Open the Alert group details.\n1. In the timeline, verify escalation chain selection, the correct on-call user identification, and first notification attempts.\n1. If you configured wait and escalation steps, wait for the delay to elapse and verify the next steps fire.\n1. When you're ready, acknowledge the Alert group to stop further escalation and notifications.\n1. Restore the alert rule conditions and confirm it returns to a non-firing (OK) state after the next evaluation."
+    },
+    {
+      "type": "markdown",
+      "content": "If you don't have an alert rule connected to IRM, you can run a partial test by sending a demo alert from the integration page:\n\n1. In the IRM navigation menu, click **Integrations** and open your Grafana Alerting integration.\n1. Click **Send demo alert**.\n1. Review and optionally customize the demo alert payload, then click **Send Alert**.\n1. Verify escalation and notification steps execute as expected.\n1. When you're ready, acknowledge and resolve the Alert group."
+    },
+    {
+      "type": "markdown",
+      "content": "When your test is successful, you observe the following:\n\n- A new Alert group appears in **IRM** > **Alert Groups** within a few seconds of the alert firing.\n- The Alert group timeline shows escalation chain selection, on-call user identification based on your schedule, notification attempts with timestamps, and escalation steps progressing on the configured delays.\n- You receive notifications through your configured channels (email, mobile app, Slack, SMS, etc.) at the expected times.\n- When you acknowledge the Alert group, the timeline shows the acknowledgment and all further escalation and notifications stop."
+    },
+    {
+      "type": "markdown",
+      "content": "If your test doesn't produce the expected results, work through these checks:\n\nIf no Alert group is created after the rule fires, confirm in **Alerting** > **Alert rules** that the rule shows a **Firing** state and that the evaluation period has elapsed since you made changes. In the alert rule, verify the IRM contact point is listed in the **Contact points** section. Then in **Alerting** > **Contact points**, open your IRM contact point and review **Recent delivery attempts** for errors.\n\nIf the Alert group appears but you don't receive notifications, check **IRM** > **Settings** > **Personal notification rules** and confirm you have active rules and that your preferred channels (phone, mobile app) are connected. For mobile push, confirm the IRM mobile app is installed and signed in. For SMS or phone calls, verify your phone number is verified in your notification preferences.\n\nIf the timeline doesn't show expected escalation steps, in **IRM** > **Escalation chains** confirm the chain attached to your integration includes the expected steps and wait intervals. If the chain references a schedule, verify the schedule has active on-call users for the current time period. Look for any error messages in the timeline, especially \"No one on-call\" or similar.\n\nIn the final milestone, you review what you accomplished and plan next steps."
+    }
+  ]
+}
