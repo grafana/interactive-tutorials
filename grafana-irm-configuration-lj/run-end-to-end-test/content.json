@@ -9,7 +9,7 @@
     },
     {
       "type": "markdown",
-      "content": "{{< admonition type=\"note\" >}}\nBefore you test, configure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/manage/notifications/notification-rules/) so you receive notifications through your preferred channels. The default notification method is your Grafana Cloud account email. If you're testing against a production alert rule, duplicate the rule first or revert any changes immediately after testing using the **Versions** tab.\n{{< /admonition >}}\n\nTo test your setup from an alert rule, complete the following steps:"
+      "content": "{{< admonition type=\"note\" >}}\nBefore you test, configure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) so you receive notifications through your preferred channels. The default notification method is your Grafana Cloud account email. If you're testing against a production alert rule, duplicate the rule first or revert any changes immediately after testing using the **Versions** tab.\n{{< /admonition >}}\n\nTo test your setup from an alert rule, complete the following steps:"
     },
     {
       "type": "markdown",
@@ -17,15 +17,42 @@
     },
     {
       "type": "markdown",
-      "content": "If you don't have an alert rule connected to IRM, you can run a partial test by sending a demo alert from the integration page:\n\n1. In the IRM navigation menu, click **Integrations** and open your Grafana Alerting integration.\n1. Click **Send demo alert**.\n1. Review and optionally customize the demo alert payload, then click **Send Alert**.\n1. Verify escalation and notification steps execute as expected.\n1. When you're ready, acknowledge and resolve the Alert group."
+      "content": "If you don't have an alert rule connected to IRM, you can run a partial test by sending a demo alert from the integration page."
+    },
+    {
+      "type": "guided",
+      "content": "Send a demo alert and view the resulting Alert group.",
+      "requirements": ["navmenu-open"],
+      "stepTimeout": 45000,
+      "skippable": true,
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/integrations\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Open the integrations list and select your Grafana Alerting integration."
+        },
+        {
+          "action": "button",
+          "reftarget": "[data-pathfinder=\"send-demo-alert-button\"]",
+          "tooltip": "Trigger a demo alert. Review and optionally customize the payload."
+        },
+        {
+          "action": "button",
+          "reftarget": "[data-pathfinder=\"submit-send-alert-button\"]",
+          "tooltip": "Confirm and send the demo alert."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/alert-groups\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Open Alert groups to see the demo alert and its escalation timeline."
+        }
+      ]
     },
     {
       "type": "markdown",
-      "content": "When your test is successful, you observe the following:\n\n- A new Alert group appears in **IRM** > **Alert Groups** within a few seconds of the alert firing.\n- The Alert group timeline shows escalation chain selection, on-call user identification based on your schedule, notification attempts with timestamps, and escalation steps progressing on the configured delays.\n- You receive notifications through your configured channels (email, mobile app, Slack, SMS, etc.) at the expected times.\n- When you acknowledge the Alert group, the timeline shows the acknowledgment and all further escalation and notifications stop."
-    },
-    {
-      "type": "markdown",
-      "content": "If your test doesn't produce the expected results, work through these checks:\n\nIf no Alert group is created after the rule fires, confirm in **Alerting** > **Alert rules** that the rule shows a **Firing** state and that the evaluation period has elapsed since you made changes. In the alert rule, verify the IRM contact point is listed in the **Contact points** section. Then in **Alerting** > **Contact points**, open your IRM contact point and review **Recent delivery attempts** for errors.\n\nIf the Alert group appears but you don't receive notifications, check **IRM** > **Settings** > **Personal notification rules** and confirm you have active rules and that your preferred channels (phone, mobile app) are connected. For mobile push, confirm the IRM mobile app is installed and signed in. For SMS or phone calls, verify your phone number is verified in your notification preferences.\n\nIf the timeline doesn't show expected escalation steps, in **IRM** > **Escalation chains** confirm the chain attached to your integration includes the expected steps and wait intervals. If the chain references a schedule, verify the schedule has active on-call users for the current time period. Look for any error messages in the timeline, especially \"No one on-call\" or similar.\n\nIn the final milestone, you review what you accomplished and plan next steps."
+      "content": "When your test is successful, you observe the following:\n\n- A new Alert group appears in **IRM** > **Alert Groups** within a few seconds of the alert firing.\n- The Alert group timeline shows escalation chain selection, on-call user identification based on your schedule, notification attempts with timestamps, and escalation steps progressing on the configured delays.\n- You receive notifications through your configured channels (email, mobile app, Slack, SMS) at the expected times.\n- When you acknowledge the Alert group, the timeline shows the acknowledgment and all further escalation and notifications stop.\n\nIf your test doesn't produce the expected results, check the troubleshooting links at the bottom of this page.\n\nIn the final milestone, you review what you accomplished and plan next steps."
     }
   ]
 }
