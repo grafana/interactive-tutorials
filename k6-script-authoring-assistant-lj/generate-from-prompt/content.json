@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "k6-script-authoring-assistant-generate-from-prompt",
+  "title": "Generate a script from a plain-language prompt",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This milestone is hands-on with **QuickPizza** at `https://quickpizza.grafana.com`. You do not need your own API or credentials to complete the steps.\n\nYou open Grafana Assistant, choose **k6 Script Authoring**, paste a starter prompt, then continue in the Cloud script editor when possible."
+    },
+    {
+      "type": "section",
+      "id": "open-performance-and-assistant",
+      "title": "Open Performance and Grafana Assistant",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You will open **Testing & synthetics**, go to **Performance**, then open Grafana Assistant from the toolbar."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
+          "content": "In the main menu, select **Testing & synthetics**.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app']",
+          "content": "Select **Performance** (Grafana Cloud k6).",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "content": "Open **Assistant** from the top toolbar.",
+          "hint": "If you do not see the Assistant control, confirm Assistant is enabled for your stack or ask your administrator."
+        },
+        {
+          "type": "markdown",
+          "content": "You should now see the Assistant panel and be in the Grafana Cloud k6 Performance area."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "script-authoring-and-prompt",
+      "title": "Choose k6 Script Authoring and paste the QuickPizza prompt",
+      "requirements": ["section-completed:open-performance-and-assistant"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You will select **k6 Script Authoring** in the Assistant mode selector, then paste the example prompt in your own words if you prefer."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the Assistant panel, open the **mode selector** (bottom of the panel) and choose **k6 Script Authoring**.\n\nPaste a prompt that names QuickPizza, success criteria, pacing, and a short run length. For example:\n\n> Create a minimal k6 HTTP test for `https://quickpizza.grafana.com` that checks for a 200 response, uses `sleep(1)` between iterations, and runs for 10 iterations.\n\nTreat the reply as a **draft**. Wording can differ by stack and model.\n\nFor product details and optional OpenAPI context, refer to [Use k6 Script Authoring mode](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/k6-script-authoring-mode/#write-a-new-test)."
+        },
+        {
+          "type": "markdown",
+          "content": "You should see Assistant return a k6 script draft you can copy or continue with in the script editor."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "cloud-script-editor-and-verify",
+      "title": "Open the script editor and smoke-check (recommended)",
+      "requirements": ["section-completed:script-authoring-and-prompt"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You will ask Assistant to open the Cloud script editor, pick a k6 project, then save or run a short test from the UI."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Ask Assistant to open the k6 script editor—for example: **Open the k6 script editor.** Assistant asks which k6 project should hold the test; pick the project you want.\n\nIn the editor, use **Create** to save or **Create and Run** for a short smoke run. Refer to [Open the k6 script editor](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/k6-script-authoring-mode/#open-the-k6-script-editor) and [Use the script editor](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/script-editor/).\n\nOptional: if you have an OpenAPI or Swagger spec, attach or paste it in the same thread before or after the prompt so the draft has fewer placeholder `// TODO:` comments."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review the draft and confirm it includes a request to `https://quickpizza.grafana.com` (or paths under that host), at least one `check()` for status 200, `sleep(1)` or equivalent pacing, and sensible `options` for a short run."
+        },
+        {
+          "type": "markdown",
+          "content": "You should have validated the draft in Cloud or be ready to copy it for an optional local check."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "optional-local-k6-run",
+      "title": "Optional: local k6 smoke run",
+      "requirements": ["section-completed:cloud-script-editor-and-verify"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "If you use a local file instead of only Cloud runs, you will smoke-test with the k6 CLI."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Copy the script into a file such as `quickpizza-assistant.js`, then run:\n\n```bash\nk6 run --iterations 1 quickpizza-assistant.js\n```\n\nSkip this section if you stay entirely in the script editor."
+        },
+        {
+          "type": "markdown",
+          "content": "You can skip local CLI work when Cloud-only validation is enough for your team."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone on the learning path, you either discover endpoints from your stack's telemetry or stay on QuickPizza for conversion and improvement steps.\n\nContinue on [Discover real endpoints and generate a script](https://grafana.com/docs/learning-paths/k6-script-authoring-assistant/discover-generate/) when you are ready."
+    }
+  ]
+}
