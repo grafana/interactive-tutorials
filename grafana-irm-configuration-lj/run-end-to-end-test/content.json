@@ -9,15 +9,43 @@
     },
     {
       "type": "markdown",
-      "content": "{{< admonition type=\"note\" >}}\nBefore you test, configure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) so you receive notifications through your preferred channels. The default notification method is your Grafana Cloud account email. If you're testing against a production alert rule, duplicate the rule first or revert any changes immediately after testing using the **Versions** tab.\n{{< /admonition >}}\n\nTo test your setup from an alert rule, complete the following steps:"
+      "content": "{{< admonition type=\"note\" >}}\nBefore you test, configure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) so you receive notifications through your preferred channels. The default notification method is your Grafana Cloud account email. If you're testing against a production alert rule, duplicate the rule first or revert any changes immediately after testing using the **Versions** tab.\n{{< /admonition >}}\n\nTo trigger the alert rule from Grafana Alerting, complete the following steps:"
     },
     {
       "type": "markdown",
-      "content": "1. Trigger the alert rule to fire:\n   1. In **Alerting** > **Alert rules**, locate the rule connected to your IRM contact point.\n   1. Open the rule and click **Edit** to lower the conditions so the rule fires (for example, set CPU > `5%`).\n   1. If necessary, lower the evaluation period to `1 minute` so it fires quickly.\n   1. Save the rule, wait one evaluation cycle, and confirm the rule shows a firing state.\n1. Verify the new Alert group in IRM:\n   1. In the IRM navigation menu, click **Alert Groups**.\n   1. Locate the new Alert group created by the firing rule.\n   1. Open the Alert group details.\n1. In the timeline, verify escalation chain selection, the correct on-call user identification, and first notification attempts.\n1. If you configured wait and escalation steps, wait for the delay to elapse and verify the next steps fire.\n1. When you're ready, acknowledge the Alert group to stop further escalation and notifications.\n1. Restore the alert rule conditions and confirm it returns to a non-firing (OK) state after the next evaluation."
+      "content": "1. In **Alerting** > **Alert rules**, locate the rule connected to your IRM contact point.\n1. Open the rule and click **Edit** to lower the conditions so the rule fires (for example, set CPU > `5%`).\n1. If necessary, lower the evaluation period to `1 minute` so it fires quickly.\n1. Save the rule, wait one evaluation cycle, and confirm the rule shows a firing state."
     },
     {
       "type": "markdown",
-      "content": "If you don't have an alert rule connected to IRM, you can run a partial test by sending a demo alert from the integration page."
+      "content": "After the rule fires, verify the resulting Alert group in IRM and acknowledge it:"
+    },
+    {
+      "type": "guided",
+      "content": "Verify and acknowledge the new Alert group.",
+      "requirements": ["navmenu-open"],
+      "stepTimeout": 45000,
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/alert-groups\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Open the Alert groups list in IRM."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid=\"integration-url\"]:nth-match(1) a",
+          "tooltip": "Open the most recent Alert group to view its details and timeline."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "button:text(\"Acknowledge\")",
+          "tooltip": "Acknowledge the Alert group to stop further escalation and notifications."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "On the Alert group details page, review the timeline to verify escalation chain selection, on-call user identification, notification attempts, and any wait and escalation steps you configured. After acknowledging, restore the alert rule conditions and confirm the rule returns to a non-firing (OK) state after the next evaluation.\n\nIf you don't have an alert rule connected to IRM, you can run a partial test by sending a demo alert from the integration page:"
     },
     {
       "type": "guided",

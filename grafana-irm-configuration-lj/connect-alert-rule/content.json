@@ -5,11 +5,60 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this milestone, you update or create an alert rule so IRM can receive alerts from Grafana Alerting. For firing alerts to create IRM Alert groups, the alert rule must include the IRM contact point you created in the previous milestone.\n\nTo add the IRM contact point to an existing alert rule, complete the following steps:"
+      "content": "In this milestone, you update an existing alert rule so IRM can receive alerts from Grafana Alerting. For firing alerts to create IRM Alert groups, the alert rule must include the IRM contact point you created in the previous milestone.\n\nTo open the alert rules list in Grafana Alerting, complete the following steps:"
+    },
+    {
+      "type": "guided",
+      "content": "Open the alert rules list and find your rule.",
+      "requirements": ["navmenu-open"],
+      "stepTimeout": 45000,
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/alerting\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Expand the alerting section in the navigation menu."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/alerting/list\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Open the alert rules list."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "input[data-testid=\"search-query-input\"]",
+          "skippable": true,
+          "tooltip": "Search by name, label, or folder to find the rule you want to connect to IRM."
+        }
+      ]
     },
     {
       "type": "markdown",
-      "content": "1. In your Grafana Cloud stack, click **Alerting** > **Alert rules**.\n1. Locate the rule you want to update.\n1. Click the rule name to open its edit view.\n1. Scroll to the **Contact points** section.\n1. Add the IRM contact point. Leave any existing contact points if you still need their notifications.\n1. Click **Save rule**."
+      "content": "Click the rule name or **Edit** on the rule row to open the rule edit view, then follow the steps below to add the IRM contact point:"
+    },
+    {
+      "type": "guided",
+      "content": "Add the IRM contact point to the alert rule.",
+      "stepTimeout": 45000,
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid=\"routing-options-contact-point\"]",
+          "skippable": true,
+          "tooltip": "In the notifications step, select Contact point routing. Skip this step if the rule already uses contact point routing."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid=\"contact-point-picker\"]",
+          "tooltip": "Open the contact point picker and choose the IRM contact point you created in the previous milestone."
+        },
+        {
+          "action": "button",
+          "reftarget": "button[data-testid=\"save-rule\"]",
+          "tooltip": "Save the rule. The IRM contact point is now wired to this alert rule."
+        }
+      ]
     },
     {
       "type": "markdown",
