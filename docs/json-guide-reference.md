@@ -520,7 +520,7 @@ Self-contained choose-your-own-adventure decision tree. Users start on a welcome
 **Integrity rules:**
 
 - Every `screenId` (in CTAs and options) MUST resolve to an existing screen `id`. The Zod schema rejects dangling references.
-- All `href` values must use `http://` or `https://`.
+- `href` values must be safe URLs: use `https://` (or `http://`) for external docs and Grafana Play links. For **Open in Grafana** links that navigate within the user's stack, use a root-relative path starting with `/` (for example `/connections/add-new-connection/mysql`). The schema accepts these via `SafeUrlSchema` resolution; Pathfinder opens them in the stack context.
 
 ### See Also
 
