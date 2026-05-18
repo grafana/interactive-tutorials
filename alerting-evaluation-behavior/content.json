@@ -1,0 +1,87 @@
+{
+  "id": "alerting-evaluation-behavior",
+  "title": "Set alert evaluation behavior",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Evaluation behavior determines how often Grafana checks your alert condition and how long the condition must persist before firing. Getting this right prevents alert noise from brief spikes while still catching real incidents.\n\nIn this guide, you'll configure the evaluation group, interval, and pending period for your alert rule."
+    },
+    {
+      "type": "section",
+      "id": "configure-evaluation-group",
+      "title": "Configure the evaluation group",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll select or create an evaluation group that determines how often Grafana runs your alert query."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='group-picker']",
+          "content": "In the **Set evaluation behavior** section, locate the evaluation group picker.\n\nIf the picker is disabled, you need to select a folder first in the **Add folder and labels** section above.\n\nEvaluation groups batch rules that share the same evaluation interval. Group related rules together so they're checked on the same schedule.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule new-evaluation-group-button']",
+          "content": "If you don't have an existing group, click **New evaluation group** to create one. Choose a name and set the **Evaluation interval** — how often Grafana runs your query.\n\n| Urgency | Interval | Use case |\n|---------|----------|----------|\n| Critical | `1m` | Host down, service unavailable |\n| Standard | `5m` | CPU high, error rate elevated |\n| Low priority | `10m` | Disk trending full, memory creeping up |\n\nShorter intervals detect issues faster but increase query load on your data sources.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "Your evaluation group and interval are configured. Grafana will check your alert condition at this frequency."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "set-pending-period",
+      "title": "Set the pending period",
+      "requirements": ["section-completed:configure-evaluation-group"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll configure how long the alert condition must persist before the alert fires."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#eval-for-input",
+          "content": "Locate the **Pending period** field. This controls how long the condition must be true before the alert fires.\n\nThis prevents brief spikes during deployments or temporary load from triggering notifications.\n\n| Alert type | Pending period | Why |\n|------------|----------------|-----|\n| CPU spike | `5m` | Filters brief spikes during deployments |\n| Error burst | `2m` | Catches sustained patterns, not single errors |\n| Disk full | `10m` | Disk usage changes slowly, longer window is fine |\n| Service down | `1m` | Outages need fast detection |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#keep-firing-for-input",
+          "content": "Optionally, configure **Keep firing for** — how long the alert continues firing after the condition is no longer met. The default is `0s` (fires stop immediately).\n\nThis is useful if your metric is intermittent. For example, if CPU briefly drops below the threshold during a sustained spike, a keep-firing-for period prevents the alert from flapping.\n\n| Interval | Pending | Checks before fire |\n|----------|---------|-------------------|\n| `1m` | `5m` | 5 consecutive |\n| `5m` | `10m` | 2 consecutive |\n| `1m` | `0s` | 1 (fires immediately) |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:contains('Configure no data and error handling')",
+          "content": "Optionally, expand **Configure no data and error handling** to control what happens when a query returns no data or errors.\n\nThe defaults are usually fine, but you may want to change the behavior for queries that legitimately return no data at times.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your pending period is configured. This noise-reduction layer ensures that only sustained conditions trigger alerts."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've configured your alert's evaluation behavior. The evaluation interval controls how often Grafana checks, and the pending period controls how long a condition must persist before firing. Together, they balance fast detection against alert noise."
+    }
+  ]
+}
