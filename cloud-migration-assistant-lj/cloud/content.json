@@ -1,0 +1,133 @@
+{
+  "id": "cloud-migration-assistant-cloud",
+  "title": "Migrate to Grafana Cloud — Cloud steps",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This guide covers the steps you perform in your Grafana Cloud instance during a migration: generating a migration token, verifying migrated resources, and activating alert rules."
+    },
+    {
+      "type": "section",
+      "title": "Generate a migration token",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll generate a secure token that authenticates your self-managed instance with this Grafana Cloud stack."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/migrate-to-cloud']",
+          "content": "Open the navigation menu and select **Administration** > **General** > **Migrate to Grafana Cloud**.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Generate a migration token",
+          "content": "Click **Generate a migration token**.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Copy the migration token and store it securely — you need it to connect your self-managed instance."
+        },
+        {
+          "type": "markdown",
+          "content": "You generated a migration token that your self-managed instance uses to authenticate with Grafana Cloud."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Verify migrated resources",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll verify that dashboards, data sources, and alerting resources transferred correctly to your Cloud stack."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Complete the **Connect to Grafana Cloud**, **Build a migration snapshot**, and **Upload resources to Grafana Cloud** sections in the self-managed guide before continuing."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Navigate to **Dashboards** and verify that your folder structure is preserved and dashboards appear in their expected locations.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open a migrated dashboard and confirm that visualizations render correctly, data source connections work, and queries return expected data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Navigate to **Connections** and verify your data sources were migrated with their credentials.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+          "content": "Navigate to **Alerting** > **Alert rules** and verify that migrated alert rules are present in a paused state.",
+          "requirements": ["navmenu-open"],
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "You verified that dashboards, data sources, and alert rules transferred correctly to Grafana Cloud."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Activate alert rules",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll resume paused alert rules so they begin evaluating in Grafana Cloud — skip this section if you did not migrate alerting resources."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+          "content": "Navigate to **Alerting** > **Alert rules**.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Before resuming rules here, disable or silence the corresponding alerts in your self-managed instance to prevent duplicate notifications.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Locate the folder containing your migrated alert rules, click its **Actions** menu, and select **Resume all rule evaluation**. Repeat for each folder with paused rules.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify that resumed alert rules show a **Normal** state and that notifications reach the correct contact points.",
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "You activated alert rules in Grafana Cloud and confirmed they evaluate and notify correctly."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You completed the cloud-side migration steps: token generation, resource verification, and alert rule activation."
+    }
+  ]
+}
