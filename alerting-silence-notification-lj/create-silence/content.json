@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-silence-notification-create-silence",
+  "title": "Create a silence",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now you'll create a silence that suppresses notifications for alert instances matching specific labels."
+    },
+    {
+      "type": "markdown",
+      "content": "To create a silence, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "a:has-text('Add Silence'), a:has-text('Create silence')",
+          "content": "Click **Add Silence** (or **Create silence** if no silences exist yet).\n\nThe silence creation form opens.",
+          "requirements": ["on-page:/alerting/silences"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#duration",
+          "content": "Set the **Duration** for the silence.\n\nThe duration automatically adjusts the end time. Choose a window that covers your maintenance or deployment — for example, `2h` for a two-hour window.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/silence/new"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#matcher-0-label",
+          "content": "In the **Label** field, enter the name of the label to match.\n\nFor example, type `team` or `alertname` to target specific alert instances.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#matcher-0-value",
+          "content": "In the **Value** field, enter the label value to match.\n\nFor example, if you entered `team` as the label, type `database` to silence all alerts where `team=database`.\n\nCheck the **Affected alert instances** section below — it updates to show which alerts this silence will match.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#comment",
+          "content": "Add a **Comment** explaining why you're creating this silence.\n\nFor example: \"Planned database maintenance window\" or \"Deploying v2.4 to production\". Comments help teammates understand the reason for the suppression.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button:has-text('Save silence')",
+          "content": "Click **Save silence** to activate the silence.\n\nThe Silences page updates to show your new silence with its remaining duration.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your silence is now active. In the next milestone, you verify it's working correctly."
+    }
+  ]
+}

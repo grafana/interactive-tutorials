@@ -1,0 +1,53 @@
+{
+  "id": "create-alert-rule-set-evaluation",
+  "title": "Set evaluation behavior",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Configure how often Grafana checks your rule and how long the condition must persist before the alert fires."
+    },
+    {
+      "type": "section",
+      "id": "evaluation-settings",
+      "title": "Configure evaluation group and pending period",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Create a new evaluation group. Click **New evaluation group**, enter a name and interval, then click **Create**.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "New evaluation group"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid alert-rule new-evaluation-group-name']",
+              "targetvalue": "tutorial-group-1m"
+            },
+            {
+              "action": "button",
+              "reftarget": "1m"
+            },
+            {
+              "action": "button",
+              "reftarget": "Create"
+            }
+          ],
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='eval-for-input']",
+          "targetvalue": "5m",
+          "content": "Set the **Pending period** to **5m**. The condition must persist for 5 minutes of consecutive checks before the alert fires. This prevents notifications from temporary spikes.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your evaluation timing is configured. Next, you'll choose how the rule handles missing data or query failures."
+    }
+  ]
+}
