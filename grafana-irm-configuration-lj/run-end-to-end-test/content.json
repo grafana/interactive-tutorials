@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "grafana-irm-configuration-run-end-to-end-test",
+  "title": "Test your IRM configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you test your configuration to verify that IRM creates an Alert group from a firing alert and executes escalation and notification steps as expected."
+    },
+    {
+      "type": "markdown",
+      "content": "{{< admonition type=\"note\" >}}\nBefore you test, configure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) so you receive notifications through your preferred channels. The default notification method is your Grafana Cloud account email. If you're testing against a production alert rule, duplicate the rule first or revert any changes immediately after testing using the **Versions** tab.\n{{< /admonition >}}\n\nTo trigger the alert rule from Grafana Alerting, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "1. In **Alerting** > **Alert rules**, locate the rule connected to your IRM contact point.\n1. Open the rule and click **Edit** to lower the conditions so the rule fires (for example, set CPU > `5%`).\n1. If necessary, lower the evaluation period to `1 minute` so it fires quickly.\n1. Save the rule, wait one evaluation cycle, and confirm the rule shows a firing state."
+    },
+    {
+      "type": "markdown",
+      "content": "After the rule fires, verify the resulting Alert group in IRM and acknowledge it:"
+    },
+    {
+      "type": "guided",
+      "content": "Verify and acknowledge the new Alert group.",
+      "requirements": ["navmenu-open"],
+      "stepTimeout": 45000,
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/alert-groups\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Open the Alert groups list in IRM."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid=\"integration-url\"]:nth-match(1) a",
+          "tooltip": "Open the most recent Alert group to view its details and timeline."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "button:text(\"Acknowledge\")",
+          "tooltip": "Acknowledge the Alert group to stop further escalation and notifications."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "On the Alert group details page, review the timeline to verify escalation chain selection, on-call user identification, notification attempts, and any wait and escalation steps you configured. After acknowledging, restore the alert rule conditions and confirm the rule returns to a non-firing (OK) state after the next evaluation.\n\nIf you don't have an alert rule connected to IRM, you can run a partial test by sending a demo alert from the integration page:"
+    },
+    {
+      "type": "guided",
+      "content": "Send a demo alert and view the resulting Alert group.",
+      "requirements": ["navmenu-open"],
+      "stepTimeout": 45000,
+      "skippable": true,
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/integrations\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Open the integrations list and select your Grafana Alerting integration."
+        },
+        {
+          "action": "button",
+          "reftarget": "[data-pathfinder=\"send-demo-alert-button\"]",
+          "tooltip": "Trigger a demo alert. Review and optionally customize the payload."
+        },
+        {
+          "action": "button",
+          "reftarget": "[data-pathfinder=\"submit-send-alert-button\"]",
+          "tooltip": "Confirm and send the demo alert."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/alert-groups\"]",
+          "requirements": ["navmenu-open"],
+          "tooltip": "Open Alert groups to see the demo alert and its escalation timeline."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "When your test is successful, you observe the following:\n\n- A new Alert group appears in **IRM** > **Alert Groups** within a few seconds of the alert firing.\n- The Alert group timeline shows escalation chain selection, on-call user identification based on your schedule, notification attempts with timestamps, and escalation steps progressing on the configured delays.\n- You receive notifications through your configured channels (email, mobile app, Slack, SMS) at the expected times.\n- When you acknowledge the Alert group, the timeline shows the acknowledgment and all further escalation and notifications stop.\n\nIf your test doesn't produce the expected results, check the troubleshooting links at the bottom of this page.\n\nIn the final milestone, you review what you accomplished and plan next steps."
+    }
+  ]
+}
