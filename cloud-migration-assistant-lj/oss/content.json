@@ -1,0 +1,208 @@
+{
+  "id": "cloud-migration-assistant-oss",
+  "title": "Migrate to Grafana Cloud — Self-managed steps",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This guide walks you through the steps performed on your self-managed Grafana instance: connecting to Grafana Cloud, building a migration snapshot, and uploading your resources."
+    },
+    {
+      "type": "section",
+      "title": "Verify prerequisites",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll confirm your environment meets the requirements for a successful migration."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Verify you have Grafana server administrator access on this self-managed instance and Admin role access on your target Grafana Cloud stack."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Confirm this instance has internet access. If you use a highly available setup, scale down to a single replica before migrating."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "If your network uses an allowlist, add the required Grafana Cloud IPs and URLs. Refer to the [Grafana Cloud Migration Assistant documentation](https://grafana.com/docs/grafana/latest/administration/migrate-to-grafana-cloud/) for the current list."
+        },
+        {
+          "type": "markdown",
+          "content": "You confirmed your environment is ready for migration."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Connect to Grafana Cloud",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll connect this self-managed instance to your Grafana Cloud stack using the migration token generated in the Cloud guide."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/migrate-to-cloud']",
+          "content": "Open the navigation menu and select **Administration** > **General** > **Migrate to Grafana Cloud**.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='migrate-to-cloud-connect-session-modal-button']",
+          "content": "Click **Migrate this instance to Cloud**.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Paste the migration token from your Cloud instance into the **Migration token** field and click **Connect to this Stack**."
+        },
+        {
+          "type": "markdown",
+          "content": "You connected your self-managed instance to Grafana Cloud and can now build a migration snapshot."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Build a migration snapshot",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll select which resources to migrate and create a snapshot of their current state."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > label [data-testid^='migrate-to-cloud-configure-snapshot-checkbox-resource-'])",
+          "content": "Review the available resource types: dashboards, folders, data sources, app plugins, panel plugins, library panels, and alerting resources.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Select the checkbox next to each resource type you want to migrate. Dependencies are automatically included when you select a resource that requires them."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='migrate-to-cloud-configure-snapshot-build-snapshot-button']",
+          "content": "Click **Build snapshot**.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Wait for the snapshot to complete. The interface displays progress as resources are captured."
+        },
+        {
+          "type": "markdown",
+          "content": "You created a snapshot of your selected resources, ready for upload to Grafana Cloud."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Upload resources to Grafana Cloud",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll upload the snapshot to transfer your resources to Grafana Cloud with real-time progress tracking."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='migrate-to-cloud-summary-upload-snapshot-button']",
+          "content": "Click **Upload snapshot** to begin the transfer.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Monitor the real-time progress as the **Status** column updates for each resource. Successfully migrated resources show **Uploaded to cloud**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "For any resources with errors, expand the error details to understand what requires manual resolution."
+        },
+        {
+          "type": "markdown",
+          "content": "You uploaded your resources to Grafana Cloud and can now verify them in your Cloud instance using the Cloud guide."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Re-migrate alert rules as active (optional)",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll optionally re-migrate alert rules in their original active state instead of manually resuming them in Cloud."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Edit your Grafana configuration file (`grafana.ini` or `custom.ini`) and add:\n\n```ini\n[cloud_migration]\nalert_rules_state = unchanged\n```",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Save the configuration file and restart your Grafana instance.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/admin/migrate-to-cloud']",
+          "content": "Navigate back to **Administration** > **General** > **Migrate to Grafana Cloud**.",
+          "requirements": ["navmenu-open"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='migrate-to-cloud-summary-reconfigure-snapshot-button']",
+          "content": "Click **Reconfigure snapshot** to return to the resource selection screen.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='migrate-to-cloud-configure-snapshot-build-snapshot-button']",
+          "content": "Select your resources and click **Build snapshot** to create a new snapshot with the updated alert rule state.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='migrate-to-cloud-summary-upload-snapshot-button']",
+          "content": "Click **Upload snapshot** to re-upload your resources. Alert rules are migrated in their original state without creating duplicates.",
+          "requirements": ["on-page:/admin/migrate-to-cloud"],
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "You re-migrated alert rules in their original active state, avoiding the need to manually resume them in Cloud."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You completed the self-managed migration steps. Switch to the Cloud guide to verify your resources and activate alert rules in Grafana Cloud."
+    }
+  ]
+}
