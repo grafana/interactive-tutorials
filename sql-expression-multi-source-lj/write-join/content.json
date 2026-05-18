@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sql-expression-multi-source-write-join",
+  "title": "Write an INNER JOIN",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now write a SQL JOIN that combines CPU metrics from query A with host metadata from query B. The `host` column is common to both.\n\nTo write the JOIN, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Code editor container']",
+          "content": "Replace the SQL in the expression editor with:\n\n```sql\nSELECT\n  A.time,\n  A.host,\n  A.cpu,\n  B.region,\n  B.role\nFROM A\nINNER JOIN B ON A.host = B.host\n```",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Refresh** to execute the JOIN."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In Table view, you should see a combined result with columns from both queries: `time`, `host`, `cpu`, `region`, and `role`. Each CPU metric row is now enriched with the region and role from the metadata table.\n\nRows where `host` doesn't match between A and B are excluded because INNER JOIN returns only matching rows."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The multi-column JOIN capability is what sets SQL expressions apart from transformations. With transformations, you can only join on a single field. With SQL, you could join on `host` AND `time`, apply WHERE filters, or add CASE WHEN logic.\n\nIn the next milestone, you add NULL handling with COALESCE."
+    }
+  ]
+}

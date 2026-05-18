@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "combine-multi-source-data-add-second-query",
+  "title": "Add a second query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now add a second query to simulate data from a different backend. In a real scenario, this might be PostgreSQL, Loki, or a second Prometheus instance.\n\nTo add the second query, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid query-tab-add-query']",
+          "content": "Click **Add query** to add a new query row."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-row']:last-child input[data-testid='data-testid Select a data source']",
+          "content": "In query row **B**, click the data source dropdown and select **grafana-testdata-datasource**.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-row']:last-child [aria-label='Test Data Query scenario select container']",
+          "content": "In the **Scenario** dropdown, select **CSV Content**.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the text area that appears, paste the following CSV data:\n\n```\ntime,errors\n2025-01-01T00:00:00Z,5\n2025-01-01T01:00:00Z,12\n2025-01-01T02:00:00Z,3\n2025-01-01T03:00:00Z,8\n2025-01-01T04:00:00Z,15\n2025-01-01T05:00:00Z,2\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click the **Refresh** button to execute the queries."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You should now see two separate time series in the panel: query A (Random Walk) and query B (CSV Content). Each returns its own result set, identified by its RefID. The data isn't combined yet.\n\nIn the next milestone, you inspect the raw data to understand its shape before combining it."
+    }
+  ]
+}

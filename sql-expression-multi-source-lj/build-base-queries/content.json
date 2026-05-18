@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sql-expression-multi-source-build-base-queries",
+  "title": "Build two base queries",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "SQL expressions operate on the results of other queries. You need at least two queries to JOIN. In this milestone, you create a panel with Mixed data source and add two TestData queries that simulate different backends.\n\nTo build the base queries, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click **Dashboards** in the left-side menu.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "multistep",
+          "content": "Click **New** and select **New Dashboard**.",
+          "requirements": ["on-page:/dashboards"],
+          "steps": [
+            { "action": "button", "reftarget": "New" },
+            { "action": "highlight", "reftarget": "a[href='/dashboard/new']" }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click **+ Add visualization**. If you see an **Add** drawer instead, click the **Panel** card.\n\nThe panel editor opens."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "content": "Click the **Data source** dropdown and search for `Mixed`.",
+          "targetvalue": "Mixed",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Select **Mixed** from the results."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-row']:first-child input[data-testid='data-testid Select a data source']",
+          "content": "In query row **A**, select **grafana-testdata-datasource**.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-label='Test Data Query scenario select container']",
+          "content": "Set the **Scenario** to **CSV Content** and paste the following data:\n\n```\ntime,host,cpu\n2025-01-01T00:00:00Z,web-1,45\n2025-01-01T01:00:00Z,web-2,72\n2025-01-01T02:00:00Z,web-1,38\n2025-01-01T03:00:00Z,web-3,91\n2025-01-01T04:00:00Z,web-2,65\n```",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid query-tab-add-query']",
+          "content": "Click **Add query** to add a second query row."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-row']:last-child input[data-testid='data-testid Select a data source']",
+          "content": "In query row **B**, select **grafana-testdata-datasource**.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Set the **Scenario** to **CSV Content** and paste the following data:\n\n```\nhost,region,role\nweb-1,us-east,frontend\nweb-2,eu-west,api\nweb-3,us-east,backend\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Refresh** to execute both queries."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You should see two separate result sets. Query A contains time-series CPU metrics with a `host` column. Query B contains a host-to-region mapping table. The `host` column is common to both — you'll JOIN on it later.\n\nIn the next milestone, you hide these base queries from the visualization."
+    }
+  ]
+}
