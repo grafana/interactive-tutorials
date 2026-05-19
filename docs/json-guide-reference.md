@@ -282,7 +282,7 @@ Shows different content based on runtime condition evaluation. Conditions use re
 | `whenTrue` | JsonBlock[] | ✅ | — | Blocks shown when ALL conditions pass |
 | `whenFalse` | JsonBlock[] | ✅ | — | Blocks shown when ANY condition fails |
 | `description` | string | ❌ | — | Author note (not shown to users) |
-| `reftarget` | string | ❌ | — | CSS selector for `exists-reftarget` auto-check |
+| `reftarget` | string | ❌ | — | CSS selector for `exists-reftarget` check |
 | `display` | `"inline"` \| `"section"` | ❌ | `"inline"` | Display mode for branch content |
 | `whenTrueSectionConfig` | object | ❌ | — | Section config for pass branch (when display is section) |
 | `whenFalseSectionConfig` | object | ❌ | — | Section config for fail branch (when display is section) |
@@ -344,7 +344,7 @@ Highlights elements and **waits for user** to perform actions. See [Guided Inter
 | `objectives` | string[] | ❌ | — | Objectives tracked |
 | `skippable` | boolean | ❌ | `false` | Allow skipping |
 
-**Supported guided actions:** `hover`, `button`, `highlight` (formfill and navigate not supported).
+**Supported guided actions:** `hover`, `button`, `highlight`, `formfill` (navigate not supported).
 
 **Key differences from multistep:**
 - **Multistep**: System performs all actions automatically

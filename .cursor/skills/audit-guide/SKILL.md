@@ -216,7 +216,6 @@ You are the **Structural Audit** phase of the audit-guide skill. Read the follow
 **Apply every check in lint.md against every entry in audit-input.json.** Also apply:
 
 - Critical rule 4 (no multistep singletons) — flag any `multistep` block with `len(steps) == 1`
-- Critical rule 5 (`exists-reftarget` is auto-applied) — flag any block where `requirements` contains `exists-reftarget`
 - Critical rule 17 (no focus-before-formfill) — flag any `interactive` with `action: "highlight"` targeting an input/textarea selector with `doIt` true or unset
 - Critical rule 18 (`schemaVersion` is optional but if set must be `"1.1.0"`)
 - Critical rule 19 (`popout` requires `targetvalue` of exactly `"sidebar"` or `"floating"`)

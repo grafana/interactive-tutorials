@@ -65,7 +65,7 @@ Watch for:
 - **Wrapper mismatch** -- `data-testid` may be on a containing `<div>`, not on the `<input>` itself
 - **Library components that don't forward** -- a `@grafana/ui` or third-party component may accept `data-testid` in its props but not apply it to the underlying DOM element
 
-When you see `data-testid` in source, note these risks in the extraction report. The grade stays Green (it's the best signal available) but add a caveat that live testing should confirm the selector works. The guide system's `exists-reftarget` auto-check will catch mismatches at runtime.
+When you see `data-testid` in source, note these risks in the extraction report. The grade stays Green (it's the best signal available) but add a caveat that live testing should confirm the selector works. The guide system's `exists-reftarget` requirement will catch mismatches at runtime.
 
 ---
 

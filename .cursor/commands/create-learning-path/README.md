@@ -49,7 +49,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 
 - Never use `description` — use `content`
 - Never use `formvalue` — use `targetvalue`
-- Never add `exists-reftarget` to requirements — it's auto-applied
+- Include `exists-reftarget` in requirements for steps with a `reftarget` (repo convention)
 - Never use position-based selectors (`:nth-child`, `:first-of-type`)
 - Never use non-standard CSS (`:contains()`, `:has-text()`)
 - Never use data-dependent selectors — use `^=` starts-with patterns

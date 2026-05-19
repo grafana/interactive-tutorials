@@ -33,7 +33,7 @@ Requirements control when interactive elements become enabled. They are specifie
 
 **Purpose**: Verifies the target element specified in `reftarget` exists on the page.
 
-> **Note**: This requirement is automatically applied by the plugin for all DOM interactions. You don't need to add it manually -- it's included here for reference.
+> **Note**: Include `exists-reftarget` in the `requirements` array for steps that target a CSS selector. This is the repo-wide convention across all guides.
 
 ```json
 {
@@ -451,8 +451,6 @@ All requirements in the array must pass. Use multiple entries for AND logic.
 }
 ```
 
-> **Note**: `exists-reftarget` is automatically applied to all DOM actions, so it doesn't need to be included in these combinations.
-
 ### Common Combinations
 
 **Navigation actions**:
@@ -518,7 +516,7 @@ Objectives declare what a guide step will accomplish. They use the same syntax a
 
 ### Syntax Rules
 
-- Fixed types (`is-admin`, `is-logged-in`, `is-editor`, `exists-reftarget` *(auto-applied)*, `navmenu-open`, `has-datasources`, `dashboard-exists`, `form-valid`, `is-terminal-active`) cannot have arguments
+- Fixed types (`is-admin`, `is-logged-in`, `is-editor`, `exists-reftarget`, `navmenu-open`, `has-datasources`, `dashboard-exists`, `form-valid`, `is-terminal-active`) cannot have arguments
 - Parameterized types (`has-datasource:X`, `on-page:/path`, `var-name:value`) require an argument after the colon
 - Path arguments (e.g., `on-page:`) should start with `/`
 - Version arguments (e.g., `min-version:`) should be semver format (e.g., `11.0.0`)

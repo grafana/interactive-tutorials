@@ -90,7 +90,7 @@ The most common case. Each panel has a unique `title` that maps directly to a st
 }
 ```
 
-**Below-fold panels** (`gridPos.y >= 8`) **must** use `guided` blocks with `lazyRender: true`. Grafana lazy-renders panels — panels below the viewport do not exist in the DOM until the user scrolls to them. The `exists-reftarget` auto-requirement only waits; it cannot scroll the page. Without `lazyRender: true`, the element will never appear and the step will fail with "Element not found."
+**Below-fold panels** (`gridPos.y >= 8`) **must** use `guided` blocks with `lazyRender: true`. Grafana lazy-renders panels — panels below the viewport do not exist in the DOM until the user scrolls to them. The `exists-reftarget` requirement only waits; it cannot scroll the page. Without `lazyRender: true`, the element will never appear and the step will fail with "Element not found."
 
 ```json
 // Dashboard JSON
@@ -243,7 +243,7 @@ Given a panel from the dashboard JSON, derive its best selector:
      If count == 1:
        → Grade: Green
        → Selector: `section[data-testid='data-testid Panel header {title}']`
-       → If above fold: use plain interactive block (exists-reftarget auto-waits)
+       → If above fold: use plain interactive block (exists-reftarget waits for the element)
        → If below fold: MUST use guided block with lazyRender: true
          (exists-reftarget only waits — it cannot scroll; without lazyRender
          Grafana never renders the panel and the selector times out)

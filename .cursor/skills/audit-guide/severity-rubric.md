@@ -11,7 +11,7 @@ A blocking finding means the guide either **fails at runtime** or **violates a c
 | Phase | Examples |
 |-------|----------|
 | Structural | Invalid JSON; unknown block type; unknown action; missing required field (`reftarget` on non-noop/non-popout, `targetvalue` on `popout`); `popout` `targetvalue` not `"sidebar"` or `"floating"`; `schemaVersion` set to something other than `"1.1.0"` |
-| Structural | Critical rules 4, 5, 17, 19, 21 violations (multistep singleton, manual `exists-reftarget`, focus-before-formfill, `popout` validation, lazy-render missing) |
+| Structural | Critical rules 4, 17, 19, 21 violations (multistep singleton, focus-before-formfill, `popout` validation, lazy-render missing) |
 | Semantic | Critical rules 1, 2, 3, 6, 7, 13 violations (missing `navmenu-open`, fragile selectors, leading markdown title, markdown headers in place of sections, missing page requirements, `doIt: true` on secret fields) |
 | Semantic | Dangling `section-completed:<id>` (referenced section does not exist) |
 | Semantic | Dangling `var-<name>` requirement (no upstream `input` block defines the variable) |

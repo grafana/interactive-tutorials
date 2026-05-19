@@ -196,7 +196,7 @@ The most common section pattern. Tab click → fields → conditional fields wit
 }
 ```
 
-Key things: section bookends (intro + summary), tab-click before fields, `skippable: true` with `hint` on conditional fields, `doIt: false` on secrets, no `exists-reftarget`, concise tooltips that don't name the highlighted element.
+Key things: section bookends (intro + summary), tab-click before fields, `skippable: true` with `hint` on conditional fields, `doIt: false` on secrets, include `exists-reftarget` in requirements for selector-targeting steps, concise tooltips that don't name the highlighted element.
 
 ### Example B: Card grid selection
 
@@ -676,7 +676,7 @@ After all section sub-agents complete:
      --sections {guide_dir}/assets/section-*.json \
      --output {guide_dir}/content.json
    ```
-   The script validates: unique section IDs, no multistep singletons, no exists-reftarget, tooltip lengths, section bookends, step counts, and no noop-only sections.
+   The script validates: unique section IDs, no multistep singletons, tooltip lengths, section bookends, step counts, and no noop-only sections.
 4. **If validation fails**: fix the flagged issues in the section JSON files and re-run.
 5. **Spot-check**: read the first and last sections to verify structure and bookends.
 

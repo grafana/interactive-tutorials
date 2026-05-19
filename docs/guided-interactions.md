@@ -340,7 +340,6 @@ Unlike automated steps, guided interactions do not block the page. Users can int
 
 ### Limitations
 
-- **Form fill actions**: not supported in guided mode
 - **Navigate actions**: incompatible with guided model (user would leave the page)
 - **Popout actions**: not supported in guided mode — single-button action with no user interaction to detect
 - **Nested guided**: guided steps inside guided steps are not supported

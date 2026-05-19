@@ -22,7 +22,6 @@ Validation checks (exit 1 on failure):
   - JSON parse validity for all inputs
   - Section IDs are unique
   - No multistep singletons (multistep with 1 step = error)
-  - No exists-reftarget in requirements
   - Tooltip length <= 250 chars
   - Section bookend check (first block is markdown, last block is markdown)
   - Step count per section (warn if <3 or >10 interactive steps)
@@ -111,18 +110,6 @@ def validate_guide(guide: dict) -> tuple[list, list]:
             if not section_id:
                 errors.append(f"Section at index {i} ('{section_title}'): missing 'id'")
 
-            # Requirements check: no exists-reftarget
-            requirements = block.get("requirements", [])
-            for req in requirements:
-                if isinstance(req, str) and req.startswith("exists-reftarget"):
-                    errors.append(
-                        f"Section '{section_id}': 'exists-reftarget' in requirements is auto-applied — remove it"
-                    )
-                elif isinstance(req, dict) and req.get("type") == "exists-reftarget":
-                    errors.append(
-                        f"Section '{section_id}': 'exists-reftarget' in requirements is auto-applied — remove it"
-                    )
-
             section_blocks = block.get("blocks", [])
             interactive_steps = [b for b in section_blocks if is_interactive(b)]
             targeting_steps = [b for b in interactive_steps if is_targeting(b)]
@@ -207,14 +194,6 @@ def validate_block(block: dict, location: str) -> tuple[list, list]:
                 errors.append(
                     f"{location}, guided step {k}: tooltip exceeds 250 chars"
                 )
-
-    # Interactive blocks: check exists-reftarget
-    if block_type == "interactive":
-        reftarget = block.get("reftarget", "")
-        if reftarget and "exists-reftarget" in str(block.get("requirements", [])):
-            errors.append(
-                f"{location}: 'exists-reftarget' in requirements is auto-applied — remove it"
-            )
 
     return errors, warnings
 

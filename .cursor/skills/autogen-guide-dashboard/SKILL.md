@@ -457,7 +457,7 @@ After all section sub-agents complete:
      --sections {guide_dir}/assets/section-*.json \
      --output {guide_dir}/content.json
    ```
-   The script validates: unique section IDs, no multistep singletons, no exists-reftarget, tooltip lengths, section bookends, step counts, and no noop-only sections.
+   The script validates: unique section IDs, no multistep singletons, tooltip lengths, section bookends, step counts, and no noop-only sections.
 5. **If validation fails**: fix the flagged issues in the section JSON files and re-run.
 6. **Spot-check**: read the first and last sections to verify structure and bookends.
 
