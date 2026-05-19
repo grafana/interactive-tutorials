@@ -7,242 +7,307 @@
       "content": "# Grafana IRM Setup and Configuration\n\nThis tutorial guides you through the process of setting up Grafana IRM for on-call notifications, including on-call schedules, escalation chains, and integrations.\n\nFor a more detailed walkthrough, including a summary of the value and components of IRM, please see the [Configure Grafana IRM Learning Path](https://grafana.com/docs/learning-journeys/grafana-irm-configuration/)."
     },
     {
-      "type": "markdown",
-      "content": "## Section 1: Create an On-call Schedule\n\nIn this milestone, you create a basic schedule that uses a single rotation with team members taking turns to be on-call. This schedule lets you route alerts sent to your escalation chain based on the current on-call assignment.\n\nSchedules provide a structured way to manage team on-call coverage and automate shift handoffs. When used in escalation chains IRM resolves who is on-call for a schedule and sends alert notifications to the appropriate users."
-    },
-    {
-      "type": "guided",
-      "content": "Create a new, empty on-call schedule.",
-      "requirements": ["navmenu-open", "exists-reftarget"],
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "create-on-call-schedule",
+      "title": "Create an on-call schedule",
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "Create an on-call schedule so IRM can route alerts based on who's covering each shift."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/schedules\"]",
-          "requirements": ["navmenu-open", "exists-reftarget"],
-          "tooltip": "Navigate to **Schedules** in the IRM navigation menu."
+          "requirements": ["navmenu-open"],
+          "content": "Open **Schedules** from the IRM navigation menu."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"new-schedule-button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Click to create a new schedule."
+          "content": "Click to create a new schedule."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"create-web-schedule-button\"]",
-          "tooltip": "Select **Set up on-call rotation schedule**."
+          "content": "Select **Set up on-call rotation schedule**."
         },
         {
-          "action": "highlight",
+          "type": "interactive",
+          "action": "formfill",
           "reftarget": "[data-pathfinder=\"schedule-name\"]",
-          "tooltip": "Enter a name for the schedule (for example, `Production SRE`)."
+          "targetvalue": "Production SRE",
+          "content": "Enter a name for the schedule (for example, `Production SRE`)."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"save-schedule-button\"]",
-          "tooltip": "Click **Create Schedule**."
+          "content": "Click **Create Schedule**."
+        },
+        {
+          "type": "markdown",
+          "content": "Your schedule is created. Next, add a rotation so it actually covers someone."
         }
       ]
     },
     {
-      "type": "guided",
-      "content": "Create an on-call rotation for the schedule.",
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "create-on-call-rotation",
+      "title": "Add a rotation to your schedule",
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "Add a rotation so team members take turns being on-call across the week."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid=\"schedule-rotations\"] button:first-of-type",
-          "requirements": ["exists-reftarget"],
           "skippable": true,
-          "tooltip": "Click to create a new rotation. If this button is disabled, you can skip and proceed to the next step."
+          "content": "Add a new rotation. If this button is disabled, skip this step."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-pathfinder=\"add-user-select\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Click to add users to this rotation. Select at least one user."
+          "doIt": false,
+          "content": "Add at least one user to this rotation."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"save-rotation-button\"]",
-          "tooltip": "Create the rotation."
+          "content": "Create the rotation."
+        },
+        {
+          "type": "markdown",
+          "content": "Your schedule now has an on-call rotation IRM can route alerts to."
         }
       ]
     },
     {
-      "type": "markdown",
-      "content": "## Section 2: Create an Escalation Chain\n\nIn this milestone, you create a basic escalation chain as the next step of your alert flow.\n\nEscalation chains define a sequence of notification steps for Alert groups: **who** gets notified, **when** they get notified, and what to do if an Alert group remains unacknowledged.\nA well-designed escalation chain ensures timely attention from the right people while avoiding unnecessary noise."
-    },
-    {
-      "type": "guided",
-      "content": "Create a new escalation chain.",
-      "requirements": ["navmenu-open", "exists-reftarget"],
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "create-escalation-chain",
+      "title": "Create an escalation chain",
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "An escalation chain defines who gets notified, in what order, and how long IRM waits before escalating."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/escalations\"]",
-          "requirements": ["navmenu-open", "exists-reftarget"],
-          "tooltip": "Navigate to **Escalation chains** in the IRM navigation menu."
+          "requirements": ["navmenu-open"],
+          "content": "Open **Escalation chains** from the IRM navigation menu."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"new-escalation-chain-button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Click to create a new escalation chain."
+          "content": "Create a new escalation chain."
         },
         {
-          "action": "button",
+          "type": "interactive",
+          "action": "formfill",
           "reftarget": "[data-pathfinder=\"escalation-chain-name-input\"]",
-          "tooltip": "Enter a descriptive name for the escalation chain (for example, `Production - Default`)."
+          "targetvalue": "Production - Default",
+          "content": "Enter a descriptive name for the chain (for example, `Production - Default`)."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"save-escalation-chain-button\"]",
-          "tooltip": "Click to create the escalation chain."
+          "content": "Save the escalation chain."
+        },
+        {
+          "type": "markdown",
+          "content": "You have a named escalation chain. Next, configure the notification steps inside it."
         }
       ]
     },
     {
-      "type": "guided",
-      "content": "Configure steps for your escalation chain.",
-      "stepTimeout": 45000,
+      "type": "section",
+      "id": "configure-escalation-chain-steps",
+      "title": "Configure escalation chain steps",
       "skippable": true,
-      "steps": [
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "Configure the sequence of steps IRM runs through when an alert hits this chain."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-pathfinder=\"timeline-item-1\"]",
-          "tooltip": "Click to add your first escalation step."
+          "content": "Add your first escalation step."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "div:text(\"Notify users from on-call schedule\")",
-          "tooltip": "Add a notification step to notify users from the on-call schedule."
+          "content": "Choose **Notify users from on-call schedule**."
         },
         {
-          "action": "highlight",
+          "type": "interactive",
+          "action": "formfill",
           "reftarget": "div[data-testid=\"input-wrapper\"] input[placeholder=\"Select Schedule\"]",
-          "tooltip": "Select the on-call schedule you previously created."
+          "targetvalue": "Production SRE",
+          "content": "Select the on-call schedule you created earlier."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-pathfinder=\"timeline-item-2\"]",
-          "tooltip": "Add a second step to the escalation chain."
+          "content": "Add a second step to the chain."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "div:text(\"Wait\")",
-          "tooltip": "Add a wait step, and configure a wait time of 5 minutes."
+          "content": "Add a **Wait** step and configure it for 5 minutes."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-pathfinder=\"timeline-item-3\"]",
-          "tooltip": "Finally, add a step to notify users in case of escalation."
+          "content": "Add a third step to escalate further if no one acknowledges."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "div:text(\"Notify users\")",
-          "tooltip": "Select the user(s) you want to escalate to."
+          "content": "Pick **Notify users** and select who to escalate to."
+        },
+        {
+          "type": "markdown",
+          "content": "Your chain now runs notify → wait → escalate."
         }
       ]
     },
     {
-      "type": "markdown",
-      "content": "## Section 3: Connect Grafana Alerting as an Integration\n\nIn this milestone, you connect the Grafana Alerting integration for IRM. This integration is the foundation of your IRM setup. It allows you to send Grafana Cloud alert rules to IRM for automatic grouping, routing, escalation, and notification."
-    },
-    {
-      "type": "guided",
-      "content": "Create a new Grafana Alerting integration.",
-      "requirements": ["navmenu-open", "exists-reftarget"],
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "create-integration",
+      "title": "Create a Grafana Alerting integration",
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "Connect Grafana Alerting as an integration so its alert rules flow into IRM for grouping, routing, and escalation."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/integrations\"]",
-          "requirements": ["navmenu-open", "exists-reftarget"],
-          "tooltip": "Navigate to **Integrations** in the IRM navigation menu."
+          "requirements": ["navmenu-open"],
+          "content": "Open **Integrations** from the IRM navigation menu."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"add-integration-button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Click to create a new integration."
+          "content": "Add a new integration."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-pathfinder=\"integration-grafanaalerting\"]",
-          "tooltip": "Select **Grafana Alerting** from the list."
+          "content": "Pick **Grafana Alerting** from the list."
         },
         {
-          "action": "highlight",
+          "type": "interactive",
+          "action": "formfill",
           "reftarget": "[data-pathfinder=\"integration-name-input\"]",
-          "tooltip": "Enter a descriptive name (for example, `Production SRE alerts`)."
+          "targetvalue": "Production SRE alerts",
+          "content": "Enter a descriptive name (for example, `Production SRE alerts`)."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid=\"data-testid radio-button\"]:nth-match(2)",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Select to create a new contact point for this integration."
+          "content": "Choose to create a new contact point for this integration."
         },
         {
-          "action": "highlight",
+          "type": "interactive",
+          "action": "formfill",
           "reftarget": "[data-pathfinder=\"new-contact-point-input\"]",
-          "tooltip": "Enter a descriptive contact point name (for example, `Production IRM`)."
+          "targetvalue": "Production IRM",
+          "content": "Enter a contact point name (for example, `Production IRM`)."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"save-integration-button\"]",
-          "tooltip": "Click **Create Integration**."
+          "content": "Click **Create Integration**."
+        },
+        {
+          "type": "markdown",
+          "content": "Grafana Alerting is now wired into IRM through a dedicated contact point."
         }
       ]
     },
     {
-      "type": "guided",
-      "content": "Associate the integration with your escalation chain.",
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "associate-integration-with-chain",
+      "title": "Associate the integration with your escalation chain",
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "Tell the integration which escalation chain to use when it receives an alert."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-pathfinder=\"route-heading-0\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Select the first route."
+          "content": "Open the default route."
         },
         {
-          "action": "highlight",
+          "type": "interactive",
+          "action": "formfill",
           "reftarget": "[data-testid=\"escalation-chain-select\"]",
-          "tooltip": "Select the dropdown to choose an escalation chain."
+          "targetvalue": "Production - Default",
+          "content": "Select the escalation chain you created earlier."
         },
         {
-          "action": "highlight",
-          "reftarget": "[data-pathfinder=\"escalation-chain-option-0\"]",
-          "tooltip": "Select your escalation chain."
+          "type": "markdown",
+          "content": "Alerts flowing through this integration will now follow your escalation chain."
         }
       ]
     },
     {
-      "type": "guided",
-      "content": "Test your integration by sending a demo alert.",
-      "stepTimeout": 45000,
+      "type": "section",
+      "id": "send-demo-alert",
+      "title": "Send a demo alert",
       "skippable": true,
-      "steps": [
+      "blocks": [
         {
+          "type": "markdown",
+          "content": "Send a demo alert to confirm the integration, route, and chain are all wired up end-to-end."
+        },
+        {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"send-demo-alert-button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Click to send a demo alert."
+          "content": "Click to send a demo alert."
         },
         {
+          "type": "interactive",
           "action": "button",
           "reftarget": "[data-pathfinder=\"submit-send-alert-button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Confirm with **Send alert**."
+          "content": "Confirm with **Send alert**."
         },
         {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/alert-groups\"]",
-          "requirements": ["navmenu-open", "exists-reftarget"],
-          "tooltip": "View your demo alert from the **Alert groups** page."
+          "requirements": ["navmenu-open"],
+          "content": "Open **Alert groups** to see your demo alert come through."
+        },
+        {
+          "type": "markdown",
+          "content": "If your demo alert shows up in **Alert groups**, your IRM configuration is working."
         }
       ]
     },
@@ -252,4 +317,3 @@
     }
   ]
 }
-
