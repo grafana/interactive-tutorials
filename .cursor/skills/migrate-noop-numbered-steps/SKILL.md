@@ -54,12 +54,15 @@ to:
 }
 ```
 
-Preserve all other fields if present, except remove `action: "noop"`. Preserve block order and learner-facing content.
+Preserve block order and learner-facing content. Preserve only fields that are valid on `markdown` blocks.
+
+Important: `markdown` blocks cannot carry `requirements`, `objectives`, `reftarget`, `targetvalue`, or interactive-only fields. If a converted `noop` block has any of those fields, remove them during conversion and call that out before the manual testing checkpoint.
 
 Do not change:
 
 - Real interactive actions such as `highlight`, `button`, `formfill`, `navigate`, `hover`, or `popout`.
-- Selectors, `reftarget`, `targetvalue`, `requirements`, `objectives`, IDs, manifests, path ordering, or prose.
+- Selectors, `reftarget`, `targetvalue`, `requirements`, or `objectives` on blocks that remain interactive.
+- IDs, manifests, path ordering, or prose.
 - `noop` examples in docs, snippets, or non-target paths.
 
 ## Workflow
@@ -84,6 +87,7 @@ Do not change:
    - Parse all `<path>/**/content.json` files as JSON.
    - Confirm zero remaining `action: "noop"` in the target path.
    - Confirm every changed block is exactly an allowed conversion.
+   - Confirm converted `markdown` blocks contain only keys allowed by the Pathfinder schema: `type`, `id`, `content`, `assistantEnabled`, `assistantId`, `assistantType`, and `authorNote`.
    - Run `git diff --check`.
    - Run Pathfinder CLI validation if available:
 
