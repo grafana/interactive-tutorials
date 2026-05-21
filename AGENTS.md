@@ -69,8 +69,18 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 
 | Path | Purpose |
 |------|---------|
-| [shared/snippets/](shared/snippets/) | Pre-tested JSON blocks for common Grafana UI patterns (nav, save dashboard, datasource picker, tab navigation, drilldown nav, etc.) — copy and adapt rather than writing from scratch |
+| [shared/snippets/](shared/snippets/) | Pre-tested JSON blocks for common Grafana UI patterns (nav, save dashboard, datasource picker, tab navigation, drilldown nav, etc.). Authors can copy and adapt, or guides published to the Pathfinder app can reference them live as a single source of truth. See [shared/snippets/README.md](shared/snippets/README.md). |
 | [shared/templates/tutorial-datasources.json](shared/templates/tutorial-datasources.json) | Reusable tutorial data source template |
+
+### Working with snippets
+
+Each snippet is a flat `shared/snippets/<id>.json` file with `id`, `title`, `description`, and `blocks`. The body is the source of truth — `shared/snippets/index.json` is generated. After adding, renaming, or editing snippet metadata, regenerate the index:
+
+```bash
+python3 scripts/build-snippets-index.py
+```
+
+The script validates that every body has the required fields and that `id` matches the filename. CI runs the same script in check mode.
 
 ## Commands
 

@@ -255,3 +255,30 @@ jobs:
           repository.json
           graph.json
         retention-days: 30
+
+  validate-snippets-index:
+    name: Validate shared/snippets/index.json is in sync
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+      with:
+        persist-credentials: false
+        submodules: false
+
+    - name: Set up Python
+      uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+      with:
+        python-version: '3.x'
+
+    - name: Regenerate index and check for drift
+      run: |
+        python3 scripts/build-snippets-index.py
+        if ! git diff --exit-code shared/snippets/index.json; then
+          echo "::error::shared/snippets/index.json is out of sync with the snippet bodies."
+          echo "Run 'python3 scripts/build-snippets-index.py' locally and commit the result."
+          exit 1
+        fi
