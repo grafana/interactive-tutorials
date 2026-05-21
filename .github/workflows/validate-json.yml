@@ -256,8 +256,8 @@ jobs:
           graph.json
         retention-days: 30
 
-  validate-snippets-index:
-    name: Validate shared/snippets/index.json is in sync
+  validate-snippet-bodies:
+    name: Validate shared/snippets/*.json bodies build a catalog
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -274,11 +274,9 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Regenerate index and check for drift
-      run: |
-        python3 scripts/build-snippets-index.py
-        if ! git diff --exit-code shared/snippets/index.json; then
-          echo "::error::shared/snippets/index.json is out of sync with the snippet bodies."
-          echo "Run 'python3 scripts/build-snippets-index.py' locally and commit the result."
-          exit 1
-        fi
+    - name: Run snippet catalog builder
+      # The catalog itself is not committed (deploy regenerates it). Running
+      # the builder here validates that every snippet body has the required
+      # fields and that the id matches its filename — fails fast on bad
+      # authoring before the file ever reaches the deploy job.
+      run: python3 scripts/build-snippets-index.py
