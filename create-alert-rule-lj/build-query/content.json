@@ -17,19 +17,22 @@
           "reftarget": "input[data-testid='data-testid Select a data source']",
           "targetvalue": "grafanacloud-play-prom",
           "content": "Select **grafanacloud-play-prom** as your data source. This is the tutorial Prometheus instance you installed in the previous step.",
-          "requirements": ["exists-reftarget"]
+          "requirements": ["on-page:/alerting/new/alerting"]
         },
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "In the query editor, select a metric to monitor. Use the **Metric** dropdown to search for and select `quickpizza_server_http_request_duration_seconds_sum`.\n\nThis metric tracks how long HTTP requests take in the Quick Pizza application."
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid metric select']",
+          "targetvalue": "quickpizza_server_http_request_duration_seconds_sum",
+          "content": "In the query editor, use the **Metric** dropdown to search for and select `quickpizza_server_http_request_duration_seconds_sum`. This metric tracks how long HTTP requests take in the Quick Pizza application.",
+          "requirements": ["on-page:/alerting/new/alerting"]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='data-testid alert-rule preview-button']",
           "content": "Click **Preview** to verify your query returns data. You should see one or more time series in the preview panel.",
-          "requirements": ["exists-reftarget"]
+          "requirements": ["on-page:/alerting/new/alerting"]
         }
       ]
     },
