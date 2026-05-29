@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "build-dashboard-sdk-verify-output",
+  "title": "Verify the output",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Your `dashboard.json` file should now exist in your project directory. Before deploying it, verify that the JSON is valid and contains the expected structure.\n\nTo verify your dashboard JSON, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "1. Check that `dashboard.json` exists:\n\n   ```bash\n   ls -la dashboard.json\n   ```\n\n1. Inspect the JSON structure. Look for these key fields:\n\n   ```bash\n   cat dashboard.json | python3 -m json.tool | head -30\n   ```\n\n   You should see:\n   - `\"title\": \"My SDK Dashboard\"` — the dashboard title\n   - `\"uid\": \"my-sdk-dashboard\"` — the stable identifier\n   - `\"tags\": [\"generated\", \"foundation-sdk\"]` — your tags\n   - `\"panels\": [...]` — an array containing your two panels"
+    },
+    {
+      "type": "markdown",
+      "content": "1. Verify the panels are present:\n\n   ```bash\n   cat dashboard.json | python3 -c \"import json,sys; d=json.load(sys.stdin); print(f'Panel count: {len(d.get(\\\"panels\\\", []))}'); [print(f'  - {p[\\\"title\\\"]} ({p[\\\"type\\\"]})') for p in d.get('panels', [])]\"\n   ```\n\n   Expected output:\n   ```\n   Panel count: 2\n     - Version (stat)\n     - Request Rate (timeseries)\n   ```"
+    },
+    {
+      "type": "markdown",
+      "content": "## What to check\n\n| Field | Expected value |\n|-------|---------------|\n| `title` | My SDK Dashboard |\n| `uid` | my-sdk-dashboard |\n| `tags` | [\"generated\", \"foundation-sdk\"] |\n| `panels` length | 2 |\n| Panel 1 type | stat |\n| Panel 2 type | timeseries |\n\nIf all fields match, your dashboard JSON is valid and deployment-ready. You can commit this file to Git, import it into Grafana manually, or deploy it with Terraform (covered in the next learning path).\n\nIn the next milestone, you review what you've accomplished."
+    }
+  ]
+}

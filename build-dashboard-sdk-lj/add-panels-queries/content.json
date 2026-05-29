@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "build-dashboard-sdk-add-panels-queries",
+  "title": "Add panels and queries",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A dashboard without panels is an empty page. Each panel has a visualization type (stat, time series, table) and one or more data queries that fetch the data to display.\n\nYou add panels using `WithPanel`, passing in a type-specific panel builder. Each panel needs a data source reference and at least one query target.\n\nTo add panels to your dashboard, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "## Go\n\nUpdate your `main.go` to import the panel and query packages, define a data source reference, and add panels to the builder:\n\n```go\npackage main\n\nimport (\n  \"encoding/json\"\n  \"log\"\n  \"os\"\n\n  \"github.com/grafana/grafana-foundation-sdk/go/cog\"\n  \"github.com/grafana/grafana-foundation-sdk/go/common\"\n  \"github.com/grafana/grafana-foundation-sdk/go/dashboard\"\n  \"github.com/grafana/grafana-foundation-sdk/go/stat\"\n  \"github.com/grafana/grafana-foundation-sdk/go/testdata\"\n  \"github.com/grafana/grafana-foundation-sdk/go/timeseries\"\n)\n\nfunc main() {\n  testdataRef := dashboard.DataSourceRef{\n    Type: cog.ToPtr(\"grafana-testdata-datasource\"),\n    Uid:  cog.ToPtr(\"testdata\"),\n  }\n\n  builder := dashboard.NewDashboardBuilder(\"My SDK Dashboard\").\n    Uid(\"my-sdk-dashboard\").\n    Tags([]string{\"generated\", \"foundation-sdk\"}).\n    Refresh(\"5m\").\n    Time(\"now-1h\", \"now\").\n    Timezone(common.TimeZoneBrowser).\n    WithPanel(\n      stat.NewPanelBuilder().\n        Title(\"Version\").\n        Datasource(testdataRef).\n        ReduceOptions(common.NewReduceDataOptionsBuilder().\n          Calcs([]string{\"lastNotNull\"}).\n          Fields(\"/.*//\")).\n        WithTarget(\n          testdata.NewDataqueryBuilder().\n            ScenarioId(\"csv_content\").\n            CsvContent(\"version\\nv1.0.0\"),\n        ),\n    ).\n    WithPanel(\n      timeseries.NewPanelBuilder().\n        Title(\"Request Rate\").\n        Datasource(testdataRef).\n        WithTarget(\n          testdata.NewDataqueryBuilder().\n            ScenarioId(\"random_walk\"),\n        ),\n    )\n}\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "## TypeScript\n\nUpdate your `index.ts` with panel and query imports, a data source reference, and panels:\n\n```typescript\nimport { DashboardBuilder, DataSourceRef } from '@grafana/grafana-foundation-sdk/dashboard';\nimport { PanelBuilder as StatPanelBuilder } from '@grafana/grafana-foundation-sdk/stat';\nimport { PanelBuilder as TimeseriesPanelBuilder } from '@grafana/grafana-foundation-sdk/timeseries';\nimport { DataqueryBuilder } from '@grafana/grafana-foundation-sdk/testdata';\nimport { ReduceDataOptionsBuilder } from '@grafana/grafana-foundation-sdk/common';\n\nconst testdataRef: DataSourceRef = {\n  type: 'grafana-testdata-datasource',\n  uid: 'testdata',\n};\n\nconst builder = new DashboardBuilder('My SDK Dashboard')\n  .uid('my-sdk-dashboard')\n  .tags(['generated', 'foundation-sdk'])\n  .refresh('5m')\n  .time({ from: 'now-1h', to: 'now' })\n  .timezone('browser')\n  .withPanel(\n    new StatPanelBuilder()\n      .title('Version')\n      .datasource(testdataRef)\n      .reduceOptions(\n        new ReduceDataOptionsBuilder().calcs(['lastNotNull']).fields('/.*/')\n      )\n      .withTarget(\n        new DataqueryBuilder().scenarioId('csv_content').csvContent('version\\nv1.0.0')\n      )\n  )\n  .withPanel(\n    new TimeseriesPanelBuilder()\n      .title('Request Rate')\n      .datasource(testdataRef)\n      .withTarget(\n        new DataqueryBuilder().scenarioId('random_walk')\n      )\n  );\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "## Key concepts\n\n| Concept | Role |\n|---------|---------|\n| **DataSourceRef** | Points to the data source by type and UID |\n| **PanelBuilder** | Creates a specific visualization (stat, timeseries, table, etc.) |\n| **DataqueryBuilder** | Defines what data a panel fetches |\n| **WithTarget** | Attaches a query to a panel |\n| **ReduceOptions** | Controls how time series data is reduced to a single value |\n\nThe `testdata` data source is built into every Grafana instance, making it ideal for testing without external dependencies.\n\nIn the next milestone, you build the dashboard object and export it as JSON."
+    }
+  ]
+}
