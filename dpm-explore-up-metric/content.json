@@ -40,14 +40,29 @@
       ],
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Data source picker select container']",
-          "requirements": [
-            "on-page:/explore",
-            "exists-reftarget"
+          "type": "multistep",
+          "content": "Open the data source picker and choose a Prometheus data source. **Do it** selects the first Prometheus option in the list. If your stack has more than one Prometheus data source, choose the one that contains the scraped metrics you want to inspect.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Open the data source picker."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"data-source-card\"]:has(small:contains(\"Prometheus\")) button:nth-match(1)",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Select the first Prometheus data source in the list."
+            }
           ],
-          "content": "Open the data source picker and choose the Prometheus data source that contains your scraped metrics. If the right Prometheus data source is already selected, keep it."
+          "requirements": [
+            "on-page:/explore"
+          ]
         },
         {
           "type": "markdown",
@@ -71,12 +86,12 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='QueryEditorModeToggle'] label[for^='option-code-radiogroup']",
+          "reftarget": "div[data-testid='QueryEditorModeToggle'] input[id^='option-code-radiogroup']",
           "requirements": [
             "on-page:/explore",
             "exists-reftarget"
           ],
-          "content": "Switch the query editor to **Code** mode."
+          "content": "Select **Code** mode. If Code is already selected, this action keeps it selected."
         },
         {
           "type": "interactive",
