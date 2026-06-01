@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "grafana-irm-configuration-connect-alert-rule",
+  "title": "Connect an alert rule to IRM",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you update an existing alert rule so IRM can receive alerts from Grafana Alerting. For firing alerts to create IRM Alert groups, the alert rule must include the IRM contact point you created in the previous milestone.\n\nTo open the alert rules list in Grafana Alerting, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-alert-rules-list",
+      "title": "Open the alert rules list",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Open the alert rules list and find your rule.",
+          "requirements": ["navmenu-open"],
+          "stepTimeout": 45000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/alerting\"]",
+              "requirements": ["navmenu-open"],
+              "tooltip": "Expand the alerting section in the navigation menu."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/alerting/list\"]",
+              "requirements": ["navmenu-open"],
+              "tooltip": "Open the alert rules list."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "input[data-testid=\"search-query-input\"]",
+              "skippable": true,
+              "tooltip": "Search by name, label, or folder to find the rule you want to connect to IRM."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Click the rule name or **Edit** on the rule row to open the rule edit view, then follow the steps below to add the IRM contact point:"
+    },
+    {
+      "type": "section",
+      "id": "add-irm-contact-point",
+      "title": "Add the IRM contact point to the rule",
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Add the IRM contact point to the alert rule.",
+          "stepTimeout": 45000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid=\"routing-options-contact-point\"]",
+              "skippable": true,
+              "tooltip": "In the notifications step, select Contact point routing. Skip this step if the rule already uses contact point routing."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid=\"contact-point-picker\"]",
+              "tooltip": "Open the contact point picker and choose the IRM contact point you created in the previous milestone."
+            },
+            {
+              "action": "button",
+              "reftarget": "button[data-testid=\"save-rule\"]",
+              "tooltip": "Save the rule. The IRM contact point is now wired to this alert rule."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "If you don't have an existing alert rule that you can modify, consider one of these options:\n\n- Duplicate an existing rule and modify the duplicate.\n- Use the [TestData data source](/docs/grafana-cloud/connect-externally-hosted/data-sources/testdata/) to create a temporary test rule.\n\nIf neither option works, you can still proceed to the next milestone and use the **Send demo alert** function in IRM to complete a limited configuration test.\n\nIn the next milestone, you trigger an alert to test your setup and verify escalation, schedule resolution, and notification delivery."
+    }
+  ]
+}
