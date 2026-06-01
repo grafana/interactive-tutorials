@@ -29,9 +29,30 @@
         },
         {
           "type": "interactive",
+          "action": "noop",
+          "content": "Leave the **Label filters** empty. You want to watch every Quick Pizza service, so you don't narrow the query to a single service here. Instead, you'll group by service in a later step."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Operations",
+          "content": "Click **+ Operations** and choose **Range > Rate**, then keep `$__rate_interval`. Rate turns the ever-growing counter into a per-second value so you see current behavior.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Operations",
+          "content": "Click **+ Operations** again and choose **Aggregations > Sum**. In the **By label** field on the Sum operation, add `job`. This gives you one line per service, so when the alert fires you know which service is slow.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='data-testid alert-rule preview-button']",
-          "content": "Click **Preview** to verify your query returns data. You should see one or more time series in the preview panel.",
+          "content": "Click **Preview** to verify your query returns data. You should see one line per Quick Pizza service in the preview panel.",
           "requirements": ["on-page:/alerting/new/alerting"]
         }
       ]
