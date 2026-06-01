@@ -9,39 +9,47 @@
     },
     {
       "type": "markdown",
-      "content": "For this example, you configure a 24-hour daily handoff rotation:\n\n![On-call schedule creation screen with three users rotating daily between a 24-hour shift](/media/docs/grafana-cloud/alerting-and-irm/screenshot-grafana-irm-on-call-schedule-lj.png)\n\nTo create a new schedule, complete the following steps:"
+      "content": "For this example, you configure a 24-hour daily handoff rotation:\n\n![On-call schedule creation screen with three users rotating daily between a 24-hour shift](https://grafana.com/media/docs/grafana-cloud/alerting-and-irm/screenshot-grafana-irm-on-call-schedule-lj.png)\n\nTo create a new schedule, complete the following steps:"
     },
     {
-      "type": "guided",
-      "content": "Create a new on-call schedule.",
-      "requirements": ["navmenu-open"],
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "create-new-schedule",
+      "title": "Create a new on-call schedule",
+      "blocks": [
         {
-          "action": "highlight",
-          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/schedules\"]",
+          "type": "guided",
+          "content": "Create a new on-call schedule.",
           "requirements": ["navmenu-open"],
-          "tooltip": "Open the schedule list from the IRM navigation menu."
-        },
-        {
-          "action": "button",
-          "reftarget": "[data-pathfinder=\"new-schedule-button\"]",
-          "tooltip": "Start creating a new schedule."
-        },
-        {
-          "action": "button",
-          "reftarget": "[data-pathfinder=\"create-web-schedule-button\"]",
-          "tooltip": "Choose a guided on-call rotation setup."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "[data-pathfinder=\"schedule-name\"]",
-          "tooltip": "Enter a descriptive name for the schedule (for example, `Production SRE`)."
-        },
-        {
-          "action": "button",
-          "reftarget": "[data-pathfinder=\"save-schedule-button\"]",
-          "tooltip": "Save the schedule. The rotation configuration modal opens automatically."
+          "stepTimeout": 45000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/schedules\"]",
+              "requirements": ["navmenu-open"],
+              "tooltip": "Open the schedule list from the IRM navigation menu."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-pathfinder=\"new-schedule-button\"]",
+              "tooltip": "Start creating a new schedule."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-pathfinder=\"create-web-schedule-button\"]",
+              "tooltip": "Choose a guided on-call rotation setup."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-pathfinder=\"schedule-name\"]",
+              "targetvalue": "Production SRE",
+              "tooltip": "Enter a descriptive name for the schedule (for example, `Production SRE`)."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-pathfinder=\"save-schedule-button\"]",
+              "tooltip": "Save the schedule. The rotation configuration modal opens automatically."
+            }
+          ]
         }
       ]
     },
@@ -50,31 +58,38 @@
       "content": "Now configure a single rotation layer. The first user in the rotation is on call when the schedule starts."
     },
     {
-      "type": "guided",
-      "content": "Add a rotation layer to your schedule.",
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "add-rotation-layer",
+      "title": "Add a rotation layer",
+      "blocks": [
         {
-          "action": "highlight",
-          "reftarget": "div[data-testid=\"schedule-rotations\"] button:first-of-type",
-          "skippable": true,
-          "tooltip": "Add a new rotation. Skip this step if the rotation editor is already open."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "[data-pathfinder=\"add-user-select\"]",
-          "tooltip": "Select at least one responder. Drag to reorder; the top user is first on-call."
-        },
-        {
-          "action": "button",
-          "reftarget": "[data-pathfinder=\"save-rotation-button\"]",
-          "tooltip": "Save the rotation."
+          "type": "guided",
+          "content": "Add a rotation layer to your schedule.",
+          "stepTimeout": 45000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"schedule-rotations\"] button:first-of-type",
+              "skippable": true,
+              "tooltip": "Add a new rotation. Skip this step if the rotation editor is already open."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-pathfinder=\"add-user-select\"]",
+              "tooltip": "Select at least one responder. Drag to reorder; the top user is first on-call."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-pathfinder=\"save-rotation-button\"]",
+              "tooltip": "Save the rotation."
+            }
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "{{< admonition type=\"tip\" >}}\nAdd yourself as the current on-call user for initial testing to avoid sending notifications to teammates. Make sure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) are configured so you actually receive the test notifications.\n{{< /admonition >}}\n\nTo verify the schedule, return to **Schedules** and locate the new schedule. View **Final schedule** to confirm rotation coverage and timing, and verify **On-call now** shows the expected user.\n\nIn the next milestone, you create an escalation chain that routes alerts to the current on-call responder from this schedule."
+      "content": "> **Tip:** Add yourself as the current on-call user for initial testing to avoid sending notifications to teammates. Make sure your [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) are configured so you actually receive the test notifications.\n\nTo verify the schedule, return to **Schedules** and locate the new schedule. View **Final schedule** to confirm rotation coverage and timing, and verify **On-call now** shows the expected user.\n\nIn the next milestone, you create an escalation chain that routes alerts to the current on-call responder from this schedule."
     }
   ]
 }

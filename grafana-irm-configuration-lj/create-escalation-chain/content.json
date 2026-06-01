@@ -9,34 +9,42 @@
     },
     {
       "type": "markdown",
-      "content": "For this example, you configure an escalation chain that notifies the current on-call user, then escalates to the broader team after 5 minutes if the alert remains unacknowledged:\n\n![Escalation chain that notifies the current on-call user from the selected schedule and then escalates to the rest of the team if unacknowledged after 5 minutes](/media/docs/grafana-cloud/alerting-and-irm/screenshot-grafana-irm-escalatino-chain-with-schedule-lj.png)\n\nTo create the escalation chain, complete the following steps:"
+      "content": "For this example, you configure an escalation chain that notifies the current on-call user, then escalates to the broader team after 5 minutes if the alert remains unacknowledged:\n\n![Escalation chain that notifies the current on-call user from the selected schedule and then escalates to the rest of the team if unacknowledged after 5 minutes](https://grafana.com/media/docs/grafana-cloud/alerting-and-irm/screenshot-grafana-irm-escalatino-chain-with-schedule-lj.png)\n\nTo create the escalation chain, complete the following steps:"
     },
     {
-      "type": "guided",
-      "content": "Create a new escalation chain.",
-      "requirements": ["navmenu-open"],
-      "stepTimeout": 45000,
-      "steps": [
+      "type": "section",
+      "id": "create-new-escalation-chain",
+      "title": "Create a new escalation chain",
+      "blocks": [
         {
-          "action": "highlight",
-          "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/escalations\"]",
+          "type": "guided",
+          "content": "Create a new escalation chain.",
           "requirements": ["navmenu-open"],
-          "tooltip": "Open the escalation chains list from the IRM navigation menu."
-        },
-        {
-          "action": "button",
-          "reftarget": "[data-pathfinder=\"new-escalation-chain-button\"]",
-          "tooltip": "Start creating a new chain."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "[data-pathfinder=\"escalation-chain-name-input\"]",
-          "tooltip": "Enter a descriptive name (for example, `Production - Default`)."
-        },
-        {
-          "action": "button",
-          "reftarget": "[data-pathfinder=\"save-escalation-chain-button\"]",
-          "tooltip": "Save the chain so you can add steps to it."
+          "stepTimeout": 45000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/escalations\"]",
+              "requirements": ["navmenu-open"],
+              "tooltip": "Open the escalation chains list from the IRM navigation menu."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-pathfinder=\"new-escalation-chain-button\"]",
+              "tooltip": "Start creating a new chain."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-pathfinder=\"escalation-chain-name-input\"]",
+              "targetvalue": "Production - Default",
+              "tooltip": "Enter a descriptive name (for example, `Production - Default`)."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-pathfinder=\"save-escalation-chain-button\"]",
+              "tooltip": "Save the chain so you can add steps to it."
+            }
+          ]
         }
       ]
     },
@@ -45,51 +53,58 @@
       "content": "Now add the notification, wait, and escalation steps. The first step pages the on-call user from your schedule, the second waits 5 minutes, and the third escalates to the broader team."
     },
     {
-      "type": "guided",
-      "content": "Add steps to your escalation chain.",
-      "stepTimeout": 45000,
-      "skippable": true,
-      "steps": [
+      "type": "section",
+      "id": "add-escalation-chain-steps",
+      "title": "Add steps to your escalation chain",
+      "blocks": [
         {
-          "action": "highlight",
-          "reftarget": "[data-pathfinder=\"timeline-item-1\"]",
-          "tooltip": "Add the first escalation step."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "div:text(\"Notify users from on-call schedule\")",
-          "tooltip": "Choose to notify users from an on-call schedule."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "div[data-testid=\"input-wrapper\"] input[placeholder=\"Select Schedule\"]",
-          "tooltip": "Select the schedule you created in the previous milestone."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "[data-pathfinder=\"timeline-item-2\"]",
-          "tooltip": "Add a second step to introduce a wait."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "div:text(\"Wait\")",
-          "tooltip": "Choose Wait, then set the wait time to `5 minutes`."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "[data-pathfinder=\"timeline-item-3\"]",
-          "tooltip": "Add a third step to escalate when no one acknowledges."
-        },
-        {
-          "action": "highlight",
-          "reftarget": "div:text(\"Notify users\")",
-          "tooltip": "Choose Notify users, then select the broader team to escalate to."
+          "type": "guided",
+          "content": "Add steps to your escalation chain.",
+          "stepTimeout": 45000,
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-pathfinder=\"timeline-item-1\"]",
+              "tooltip": "Add the first escalation step."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:text(\"Notify users from on-call schedule\")",
+              "tooltip": "Choose to notify users from an on-call schedule."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"input-wrapper\"] input[placeholder=\"Select Schedule\"]",
+              "tooltip": "Select the schedule you created in the previous milestone."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-pathfinder=\"timeline-item-2\"]",
+              "tooltip": "Add a second step to introduce a wait."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:text(\"Wait\")",
+              "tooltip": "Choose Wait, then set the wait time to `5 minutes`."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-pathfinder=\"timeline-item-3\"]",
+              "tooltip": "Add a third step to escalate when no one acknowledges."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:text(\"Notify users\")",
+              "tooltip": "Choose Notify users, then select the broader team to escalate to."
+            }
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "{{< admonition type=\"note\" >}}\nFor each notification step, you can choose **Default** or **Important** notification rules. **Important** is for critical, time-sensitive alerts. If you're not sure which to pick, set **Default** for now and update later. Make sure team members configure their [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) for both rule sets.\n{{< /admonition >}}\n\nYour escalation chain now routes Alert groups to the current on-call responder from your schedule, waits 5 minutes, then escalates to the broader team if unacknowledged.\n\nIn the next milestone, you connect Grafana Alerting as the alert source that feeds this escalation chain."
+      "content": "> **Note:** For each notification step, you can choose **Default** or **Important** notification rules. **Important** is for critical, time-sensitive alerts. If you're not sure which to pick, set **Default** for now and update later. Make sure team members configure their [personal notification rules](/docs/grafana-cloud/alerting-and-irm/irm/notify-responders/personal-notification-rules/) for both rule sets.\n\nYour escalation chain now routes Alert groups to the current on-call responder from your schedule, waits 5 minutes, then escalates to the broader team if unacknowledged.\n\nIn the next milestone, you connect Grafana Alerting as the alert source that feeds this escalation chain."
     }
   ]
 }

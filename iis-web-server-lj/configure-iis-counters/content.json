@@ -16,28 +16,23 @@
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "interactive",
-          "action": "noop",
+          "type": "markdown",
           "content": "Open **PowerShell as Administrator** on your Windows Server."
         },
         {
-          "type": "interactive",
-          "action": "noop",
+          "type": "markdown",
           "content": "Verify that IIS is installed and the required role services are enabled:\n\n```powershell\nGet-WindowsFeature Web-Server, Web-Request-Monitor, Web-Http-Logging, Web-Stat-Compression\n```\n\nAll listed features should show `[X]` (installed). If any feature shows `[ ]`, install it in the next step."
         },
         {
-          "type": "interactive",
-          "action": "noop",
+          "type": "markdown",
           "content": "If any features are missing, install them:\n\n```powershell\nInstall-WindowsFeature Web-Request-Monitor, Web-Http-Logging, Web-Stat-Compression\n```\n\n> **Tip:** The `Web-Request-Monitor` feature enables the IIS Request Monitor module, which provides detailed per-request metrics."
         },
         {
-          "type": "interactive",
-          "action": "noop",
+          "type": "markdown",
           "content": "Verify that IIS performance counter categories are available:\n\n```powershell\n[System.Diagnostics.PerformanceCounterCategory]::Exists('Web Service')\n[System.Diagnostics.PerformanceCounterCategory]::Exists('W3SVC_W3WP')\n```\n\nBoth commands should return `True`. The `Web Service` category provides site-level metrics and `W3SVC_W3WP` provides worker process metrics."
         },
         {
-          "type": "interactive",
-          "action": "noop",
+          "type": "markdown",
           "content": "Verify that at least one IIS site is running:\n\n```powershell\nGet-IISSite\n```\n\nYou should see at least one site with a status of `Started`. If no sites are running, the integration won't have any metrics to collect."
         }
       ]
