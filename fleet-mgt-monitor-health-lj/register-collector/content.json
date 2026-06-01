@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "fleet-mgt-monitor-health-register-collector",
+  "title": "Register a collector with Grafana Fleet Management",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you register a collector in Fleet Management by adding the `remotecfg` code block to the Grafana Alloy configuration file.\n\nYou can set attributes for a collector in both the `remotecfg` block and the Fleet Management user interface. Attributes describe the collector's purpose or environment, such as `role`, `environment`, `cluster`, or `team`."
+    },
+    {
+      "type": "markdown",
+      "content": "To register a collector with Fleet Management, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"tab-api-access\"]",
+          "content": "Click the **API** tab."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"api-access-page\"] > h3 + br + p + div",
+          "content": "Make note of the Fleet Management service **Base URL**.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"api-access-page\"] > h3 + br + br + p + div",
+          "content": "Make note of the **Instance ID**.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Open the Grafana Alloy configuration file on the machine where Alloy runs."
+        },
+        {
+          "type": "markdown",
+          "content": "Copy the following `remotecfg` code block and paste it at the end of the `config.alloy` file.\n\n```alloy\nremotecfg {\n    url = \"<SERVICE_URL>\"\n    basic_auth {\n        username      = \"<USERNAME>\"\n        password      = \"<PASSWORD>\"\n    }\n\n    id             = constants.hostname\n    attributes     = {\"cluster\" = \"dev\", \"namespace\" = \"otlp-dev\"}\n    poll_frequency = \"5m\"\n}\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Set `url` to the Fleet Management service URL, `username` to the instance ID, and `password` to the access token you created in the previous milestone."
+        },
+        {
+          "type": "markdown",
+          "content": "Save your changes to the Alloy configuration file."
+        },
+        {
+          "type": "markdown",
+          "content": "Add `GCLOUD_RW_API_KEY = \"<Enter-access-policy-token>\"` to the Grafana Alloy service environment variables file. For macOS, also set `GCLOUD_FM_LOG_PATH = $PWD/alloy.log`."
+        },
+        {
+          "type": "markdown",
+          "content": "Save your changes to the environment variables file and restart the Grafana Alloy service."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"tab-fleet-inventory\"]",
+          "content": "Return to the **Inventory** tab and confirm that the collector you registered is listed."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you learn how to view the health status of a collector."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Add remote attributes](/docs/grafana-cloud/send-data/fleet-management/set-up/onboard-collectors/standalone-installations/#add-remote-attributes)\n- [Onboard collectors deployed in Kubernetes to Fleet Management](/docs/grafana-cloud/send-data/fleet-management/set-up/onboard-collectors/kubernetes/)"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Collector isn't in Inventory](/docs/grafana-cloud/send-data/fleet-management/set-up/onboard-collectors/onboard-troubleshooting/#collector-isnt-in-inventory)\n- [Collector was deleted from Inventory](/docs/grafana-cloud/send-data/fleet-management/set-up/onboard-collectors/onboard-troubleshooting/#collector-was-deleted-from-inventory)"
+    }
+  ]
+}
