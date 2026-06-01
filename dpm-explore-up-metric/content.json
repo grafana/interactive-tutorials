@@ -9,29 +9,62 @@
     {
       "type": "section",
       "id": "query-up-dpm",
-      "title": "Query DPM for up",
+      "title": "Open Explore with the up DPM query",
       "requirements": [
         "has-datasource:prometheus"
       ],
       "blocks": [
         {
           "type": "markdown",
-          "content": "In this section, you will open Explore with an instant Prometheus query that counts samples for the `up` metric over the last minute."
+          "content": "In this section, you will open Explore with an instant Prometheus query that counts samples for the `up` metric over the last minute. The query is shown here so you can copy it manually if your Explore state is different:\n\n```promql\nsort_desc(count_over_time({__name__=\"up\"}[1m]))\n```\n\nThe `up` metric is created by scrape-based Prometheus collection. If your metrics are pushed through OTLP instead of scraped, you might not have `up`; use another scraped metric name for this check."
         },
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/explore?schemaVersion=1&panes={\"dpm\":{\"datasource\":\"__default\",\"queries\":[{\"refId\":\"A\",\"expr\":\"sort_desc(count_over_time({__name__=\\\"up\\\"}[1m]))\",\"range\":false,\"instant\":true}],\"range\":{\"from\":\"now-1h\",\"to\":\"now\"},\"compact\":false}}&orgId=1",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22dpm%22%3A%7B%22datasource%22%3A%22__default%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22sort_desc%28count_over_time%28%7B__name__%3D%5C%22up%5C%22%7D%5B1m%5D%29%29%22%2C%22range%22%3Afalse%2C%22instant%22%3Atrue%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1",
           "verify": "on-page:/explore",
           "requirements": [
             "has-datasource:prometheus"
           ],
           "content": "Open **Explore** with the DPM query preloaded."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "choose-prometheus-datasource",
+      "title": "Choose a Prometheus data source",
+      "requirements": [
+        "has-datasource:prometheus",
+        "on-page:/explore"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Data source picker select container']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Use the Explore data source picker to choose a Prometheus data source. If a Prometheus data source is already selected, keep it."
         },
         {
           "type": "markdown",
-          "content": "If Explore did not use a Prometheus data source, use the data source picker in the Explore toolbar to select one. Keep the query type set to **Instant**, not **Range** or **Both**."
-        },
+          "content": "Keep the query type set to **Instant**, not **Range** or **Both**. Instant queries return a single value per series for the selected time."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "run-up-dpm-query",
+      "title": "Run the up DPM query",
+      "requirements": [
+        "has-datasource:prometheus",
+        "on-page:/explore"
+      ],
+      "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
@@ -59,23 +92,35 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "In this section, you will adapt the instant query for other metrics and learn when to avoid broad selectors."
+          "content": "In this section, you will adapt the instant query for other metrics and learn when to avoid broad selectors. Use an exact metric name when you know what you want to inspect:\n\n```promql\nsort_desc(count_over_time({__name__=\"your_metric_name\"}[1m]))\n```"
         },
         {
           "type": "markdown",
-          "content": "Use an exact metric name when you know what you want to inspect:\n\n```promql\nsort_desc(count_over_time({__name__=\"your_metric_name\"}[1m]))\n```"
+          "content": "You can also use a regex matcher to inspect a family of metric names. This can be useful during exploration, but it can be expensive because Grafana may need to scan many metric names and series. Start exact, keep the `[1m]` lookback small, and broaden only when the result set is manageable.\n\nTry this instant regex example in the local test environment:\n\n```promql\nsort_desc(count_over_time({__name__=~\"up|prometheus_build_info\"}[1m]))\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22dpm%22%3A%7B%22datasource%22%3A%22__default%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22sort_desc(count_over_time(%7B__name__%3D~%5C%22up%7Cprometheus_build_info%5C%22%7D%5B1m%5D))%22%2C%22range%22%3Afalse%2C%22instant%22%3Atrue%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1",
+          "verify": "on-page:/explore",
+          "requirements": [
+            "has-datasource:prometheus"
+          ],
+          "content": "Load the instant regex DPM query in Explore."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Run the regex query and compare the returned series."
         },
         {
           "type": "markdown",
-          "content": "Use a regex matcher only when you need to inspect a family of metrics:\n\n```promql\nsort_desc(count_over_time({__name__=~\"your_metric_prefix_.*\"}[1m]))\n```"
-        },
-        {
-          "type": "markdown",
-          "content": "Regex matchers can be expensive because they may scan many metric names and series. Start with an exact metric name, keep the `[1m]` lookback small, and broaden the selector only when the result set is manageable."
-        },
-        {
-          "type": "markdown",
-          "content": "You have learned how to adapt the DPM query and when regex selectors can add query cost."
+          "content": "You have learned how to adapt the DPM query, how to keep it instant, and when regex selectors can add query cost."
         }
       ]
     },
