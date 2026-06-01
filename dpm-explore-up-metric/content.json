@@ -8,25 +8,25 @@
     },
     {
       "type": "section",
-      "id": "query-up-dpm",
-      "title": "Open Explore with the up DPM query",
+      "id": "open-explore",
+      "title": "Open Explore",
       "requirements": [
         "has-datasource:prometheus"
       ],
       "blocks": [
         {
           "type": "markdown",
-          "content": "In this section, you will open Explore with an instant Prometheus query that counts samples for the `up` metric over the last minute. The query is shown here so you can copy it manually if your Explore state is different:\n\n```promql\nsort_desc(count_over_time({__name__=\"up\"}[1m]))\n```\n\nThe `up` metric is created by scrape-based Prometheus collection. If your metrics are pushed through OTLP instead of scraped, you might not have `up`; use another scraped metric name for this check."
+          "content": "Start from Explore so you can choose the Prometheus data source that contains the metric series you want to inspect."
         },
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/explore?schemaVersion=1&panes=%7B%22dpm%22%3A%7B%22datasource%22%3A%22__default%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22sort_desc%28count_over_time%28%7B__name__%3D%5C%22up%5C%22%7D%5B1m%5D%29%29%22%2C%22range%22%3Afalse%2C%22instant%22%3Atrue%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1",
+          "reftarget": "/explore",
           "verify": "on-page:/explore",
           "requirements": [
             "has-datasource:prometheus"
           ],
-          "content": "Open **Explore** with the DPM query preloaded."
+          "content": "Open **Explore**."
         }
       ]
     },
@@ -47,12 +47,73 @@
             "on-page:/explore",
             "exists-reftarget"
           ],
-          "doIt": false,
-          "content": "Use the Explore data source picker to choose a Prometheus data source. If a Prometheus data source is already selected, keep it."
+          "content": "Open the data source picker and choose the Prometheus data source that contains your scraped metrics. If the right Prometheus data source is already selected, keep it."
         },
         {
           "type": "markdown",
-          "content": "Keep the query type set to **Instant**, not **Range** or **Both**. Instant queries return a single value per series for the selected time."
+          "content": "Use a Prometheus or Mimir data source backed by scraped metrics. The `up` metric is created by scrape-based Prometheus collection. If your metrics are pushed through OTLP instead of scraped, you might not have `up`; use another scraped metric name for this check."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "enter-up-dpm-query",
+      "title": "Enter the up DPM query",
+      "requirements": [
+        "has-datasource:prometheus",
+        "on-page:/explore"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "This instant query counts samples for the `up` metric over the last minute. Copy it manually if you prefer to paste the query yourself:\n\n```promql\nsort_desc(count_over_time({__name__=\"up\"}[1m]))\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='QueryEditorModeToggle'] label[for^='option-code-radiogroup']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Switch the query editor to **Code** mode."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "sort_desc(count_over_time({__name__=\"up\"}[1m]))",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Add the `up` DPM query to the query editor."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid prometheus options'] button[aria-expanded='false']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "hint": "If the options are already expanded, skip this step.",
+          "content": "Open **Options** for the Prometheus query."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "fieldset[data-testid='data-testid prometheus type'] label[for^='option-instant-radiogroup']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Select **Instant** so the query returns one value per series."
+        },
+        {
+          "type": "markdown",
+          "content": "Use **Instant**, not **Range** or **Both**. Instant queries return a single value per series for the selected time."
         }
       ]
     },
@@ -73,11 +134,11 @@
             "on-page:/explore",
             "exists-reftarget"
           ],
-          "content": "Click **Run query**."
+          "content": "Run the instant query."
         },
         {
           "type": "markdown",
-          "content": "You have run an instant query with a 1-minute lookback. A value near `1` means about one sample per minute. A value near `4` means about one sample every 15 seconds."
+          "content": "A value near `1` means about one sample per minute. A value near `4` means about one sample every 15 seconds."
         }
       ]
     },
@@ -92,7 +153,7 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "In this section, you will adapt the instant query for other metrics and learn when to avoid broad selectors. Use an exact metric name when you know what you want to inspect:\n\n```promql\nsort_desc(count_over_time({__name__=\"your_metric_name\"}[1m]))\n```"
+          "content": "To inspect a specific metric, first find its metric name. In Explore, click **Metrics browser** and search by integration, service, or metric prefix. You can also use **Metrics Drilldown** to browse active metrics, filter by labels, and copy a metric name back into Explore. Start with one exact metric name when you know what you want to inspect:\n\n```promql\nsort_desc(count_over_time({__name__=\"your_metric_name\"}[1m]))\n```"
         },
         {
           "type": "markdown",
@@ -100,13 +161,14 @@
         },
         {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/explore?schemaVersion=1&panes=%7B%22dpm%22%3A%7B%22datasource%22%3A%22__default%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22sort_desc(count_over_time(%7B__name__%3D~%5C%22up%7Cprometheus_build_info%5C%22%7D%5B1m%5D))%22%2C%22range%22%3Afalse%2C%22instant%22%3Atrue%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%2C%22compact%22%3Afalse%7D%7D&orgId=1",
-          "verify": "on-page:/explore",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "sort_desc(count_over_time({__name__=~\"up|prometheus_build_info\"}[1m]))",
           "requirements": [
-            "has-datasource:prometheus"
+            "on-page:/explore",
+            "exists-reftarget"
           ],
-          "content": "Load the instant regex DPM query in Explore."
+          "content": "Replace the query with the instant regex DPM example."
         },
         {
           "type": "interactive",
