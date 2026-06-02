@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-first-rule-query-build-query",
+  "title": "Build your query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The query defines what data Grafana monitors. You'll select a data source, build the query that fetches the data you want to watch, and preview the results.\n\nIn this milestone, you build your alert query using the query builder."
+    },
+    {
+      "type": "section",
+      "id": "select-data-source",
+      "title": "Select your data source",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the **Define query and alert condition** section, locate the query editor.\n\nThe default data source is pre-selected. Change it if needed to match where your data is stored:\n\n| If you're alerting on | Select |\n|-----------------------|--------|\n| Infrastructure metrics | Your Prometheus or Mimir data source |\n| Logs | Your Loki data source |"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "build-the-query",
+      "title": "Build the query",
+      "requirements": ["section-completed:select-data-source"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Build your query using the query builder:\n\n**For metrics (Prometheus/Mimir):**\n- Click **Metric** and select or search for your metric name, for example, `node_cpu_seconds_total`.\n- Add label filters to narrow the scope, for example, `mode != \"idle\"` to exclude idle CPU time.\n- Apply functions as needed, for example, `rate()` and `avg by (instance)()` for average CPU per host.\n\n**For logs (Loki):**\n- Enter a log query using LogQL, for example, `{job=\"myapp\"} |= \"error\"` for error logs.\n- Use metric queries for rate-based alerts, for example, `rate({job=\"myapp\"} |= \"error\" [5m])`."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run queries",
+          "content": "Click **Run queries** to preview the data your query returns.\n\nVerify that the results match what you expect to monitor. You should see data points for each dimension (host, service, and so on) you want to alert on.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your query now fetches the data Grafana monitors. You've completed the query path.\n\nIn the next path, you learn how to set the condition that determines when your alert fires."
+        }
+      ]
+    }
+  ]
+}
