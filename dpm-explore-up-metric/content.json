@@ -1,0 +1,209 @@
+{
+  "id": "dpm-explore-up-metric",
+  "title": "Explore DPM with the up metric",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Use this guide to estimate data points per minute (DPM) for a familiar Prometheus metric. DPM measures how often each active series sends data to Grafana Cloud, so unexpectedly high DPM can increase ingestion volume and cost."
+    },
+    {
+      "type": "section",
+      "id": "open-explore",
+      "title": "Open Explore",
+      "requirements": [
+        "has-datasource:prometheus"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Start from Explore so you can choose the Prometheus data source that contains the metric series you want to inspect."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore",
+          "verify": "on-page:/explore",
+          "requirements": [
+            "has-datasource:prometheus"
+          ],
+          "content": "Open **Explore**."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "choose-prometheus-datasource",
+      "title": "Choose a Prometheus data source",
+      "requirements": [
+        "has-datasource:prometheus",
+        "on-page:/explore"
+      ],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Open the data source picker and choose a Prometheus data source. **Do it** selects the first Prometheus option in the list. If your stack has more than one Prometheus data source, choose the one that contains the scraped metrics you want to inspect.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Open the data source picker."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"data-source-card\"]:has(small:contains(\"Prometheus\")) button:nth-match(1)",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Select the first Prometheus data source in the list."
+            }
+          ],
+          "requirements": [
+            "on-page:/explore"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Use a Prometheus or Mimir data source backed by scraped metrics. The `up` metric is created by scrape-based Prometheus collection. If your metrics are pushed through OTLP instead of scraped, you might not have `up`; use another scraped metric name for this check."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "enter-up-dpm-query",
+      "title": "Enter the up DPM query",
+      "requirements": [
+        "has-datasource:prometheus",
+        "on-page:/explore"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='QueryEditorModeToggle'] label:contains('Code')",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Select **Code** mode. If Code is already selected, this action keeps it selected."
+        },
+        {
+          "type": "markdown",
+          "content": "This instant query counts samples for the `up` metric over the last minute. Copy it manually if you prefer to paste the query yourself:\n\n```promql\nsort_desc(count_over_time({__name__=\"up\"}[1m]))\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "sort_desc(count_over_time({__name__=\"up\"}[1m]))",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Add the `up` DPM query to the query editor."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid prometheus options'] button[aria-expanded='false']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "hint": "If the options are already expanded, skip this step.",
+          "content": "Open **Options** for the Prometheus query."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "fieldset[data-testid='data-testid prometheus type'] label:contains('Instant')",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Select **Instant** so the query returns one value per series."
+        },
+        {
+          "type": "markdown",
+          "content": "Use **Instant**, not **Range** or **Both**. Instant queries return a single value per series for the selected time."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "run-up-dpm-query",
+      "title": "Run the up DPM query",
+      "requirements": [
+        "has-datasource:prometheus",
+        "on-page:/explore"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Run the instant query."
+        },
+        {
+          "type": "markdown",
+          "content": "A value near `1` means about one sample per minute. A value near `4` means about one sample every 15 seconds."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "advanced-dpm-options",
+      "title": "Try advanced DPM queries",
+      "requirements": [
+        "has-datasource:prometheus",
+        "on-page:/explore"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "To inspect a specific metric, first find its metric name. In Explore, click **Metrics browser** and search by integration, service, or metric prefix. You can also use **Metrics Drilldown** to browse active metrics, filter by labels, and copy a metric name back into Explore. Start with one exact metric name when you know what you want to inspect:\n\n```promql\nsort_desc(count_over_time({__name__=\"your_metric_name\"}[1m]))\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "You can also use a regex matcher to inspect a family of metric names. This can be useful during exploration, but it can be expensive because Grafana may need to scan many metric names and series. Start exact, keep the `[1m]` lookback small, and broaden only when the result set is manageable.\n\nTry this instant regex example in the local test environment:\n\n```promql\nsort_desc(count_over_time({__name__=~\"up|prometheus_build_info\"}[1m]))\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "sort_desc(count_over_time({__name__=~\"up|prometheus_build_info\"}[1m]))",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Replace the query with the instant regex DPM example."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Run the regex query and compare the returned series."
+        },
+        {
+          "type": "markdown",
+          "content": "You have learned how to adapt the DPM query, how to keep it instant, and when regex selectors can add query cost."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "More to explore:\n\n- [Reduce metrics costs by adjusting DPM](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/reduce-costs/metrics-costs/adjust-data-points-per-minute/)\n- [Data points per minute in Grafana Cloud](https://grafana.com/blog/data-points-per-minute-in-grafana-cloud-what-you-need-to-know-about-dpm/)\n- [dpm-finder](https://github.com/grafana-ps/dpm-finder) for larger metric scans through the Prometheus HTTP API"
+    }
+  ]
+}
