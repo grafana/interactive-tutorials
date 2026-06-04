@@ -1,0 +1,205 @@
+{
+  "id": "fleet-mgt-staged-rollout",
+  "title": "Stage a remote configuration rollout using Fleet Management attributes",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Rolling out a new pipeline to your entire collector fleet at once is risky. A misconfigured pipeline can silently drop telemetry or break collectors in production before you can react.\n\nUsing the `env` attribute with regular expression matching, you can roll out a pipeline gradually — starting with dev, expanding to staging, then releasing to production in controlled stages. At any point, you can deactivate the pipeline with a single click to halt the rollout.\n\nThis guide assumes your collectors are already registered with Fleet Management. If you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set — the first section is just a quick verification check."
+    },
+    {
+      "type": "section",
+      "id": "tag-collectors",
+      "title": "Verify your collectors have env attributes",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Before you can stage a rollout, each collector needs an `env` attribute value such as `dev`, `staging`, `prod-eu`, or `prod-us`.\n\nIf you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your collectors already have `env` attributes and you can skip to the next section after a quick check. If you haven't, the steps below will get you set up."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
+          "content": "Open **Fleet Management** from the navigation menu.",
+          "requirements": ["navmenu-open"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='tab-fleet-inventory']",
+          "content": "Click the **Inventory** tab and check the **Attributes** column. If your collectors already show `env` values, you're done with this section.",
+          "tooltip": "The Attributes column shows all local and remote attributes currently assigned to each collector.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "markdown",
+          "content": "If collectors are missing `env` values, select the collectors you want to tag by clicking their checkboxes. Then:\n\n1. Click **Edit remote attributes** to open the bulk edit dialog.\n2. Click **Add remote attributes** to expand the form.\n3. In the **Key** field, type `env`.\n4. In the **Value** field, type the environment name, for example `dev`.\n5. Click **Apply changes**.\n\nRepeat for each environment group, using values such as `staging`, `prod-eu`, and `prod-us`."
+        },
+        {
+          "type": "markdown",
+          "content": "Your collectors are tagged and ready. Fleet Management can now use the `env` attribute to target specific environments when assigning pipelines."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-pipeline-dev",
+      "title": "Create the pipeline and target dev first",
+      "requirements": ["section-completed:tag-collectors"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll create a configuration pipeline and use a regular expression matching attribute to deploy it only to your `dev` collectors."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='fleet-management-page'] button[data-testid='tab-remote-configuration']",
+          "content": "Click the **Remote configuration** tab.",
+          "tooltip": "The Remote configuration tab lists all configuration pipelines and lets you create, edit, activate, and deactivate them.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='remote-configuration-page'] button[data-testid='remote-configuration-create-button']",
+          "content": "Click **Create configuration pipeline** to open the pipeline wizard.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "guided",
+          "content": "Select the pipeline type and give it a name.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Card heading']:contains('Custom configuration') button:contains('Custom configuration')",
+              "description": "Select **Custom configuration** to write your own Alloy pipeline.",
+              "tooltip": "Use Custom configuration to define any Alloy pipeline from scratch."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='pipeline-name-input']",
+              "targetvalue": "linux_node_metrics_v2",
+              "doIt": false,
+              "description": "Give the pipeline a descriptive name, for example `linux_node_metrics_v2`. Include a version suffix so you can distinguish it from the pipeline it replaces.",
+              "tooltip": "A version suffix makes it easy to run the old and new pipeline side by side during a rollout."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:text('Next')",
+              "description": "Click **Next** to open the pipeline editor."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Write or paste your Alloy configuration in the editor. The editor validates syntax as you type."
+        },
+        {
+          "type": "guided",
+          "content": "Validate your configuration and advance to the attribute matching step.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Test configuration pipeline",
+              "description": "Click **Test configuration pipeline** to validate your Alloy syntax before saving.",
+              "tooltip": "Testing catches syntax errors and component mismatches before the pipeline reaches any collector."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:text('Next')",
+              "description": "Click **Next** to go to the **Assign configuration pipeline** step."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder*='Key' i]",
+          "content": "In the **Key** dropdown, select or type `env`.",
+          "doIt": false,
+          "tooltip": "This is the attribute key you assigned to your collectors. Pipeline matching compares this key against each collector's attribute set.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder*='Value' i]",
+          "content": "Set the **Operator** to `=~` (regular expression) and type `dev` in the **Value** field. The collector list on the right updates in real time — only collectors with `env=dev` will appear.",
+          "doIt": false,
+          "tooltip": "The =~ operator enables regex matching, so later you can expand dev to dev|staging without creating a new pipeline.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save** to activate the pipeline. Fleet Management immediately begins deploying it to your `dev` collectors on their next poll.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your pipeline is now running in dev. Monitor your dev collectors in the Inventory tab and in your dashboards before expanding the rollout."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "expand-rollout",
+      "title": "Expand the rollout to staging and production",
+      "requirements": ["section-completed:create-pipeline-dev"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll incrementally expand the pipeline's matching expression to include staging and then production environments."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Find your pipeline in the **Remote configuration** list and click the edit icon to reopen the wizard. Editing a pipeline takes you back into the wizard where you can update the matching attributes without changing the pipeline configuration content.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "markdown",
+          "content": "Navigate to the **Assign configuration pipeline** step. Update the matching attribute value to include staging:\n\n- **Value:** `dev|staging`\n\nThe collector list updates to show collectors matching either `dev` or `staging`. Click **Save** to deploy the pipeline to staging.\n\nWait and verify that staging collectors are receiving the configuration and behaving as expected."
+        },
+        {
+          "type": "markdown",
+          "content": "When staging looks healthy, edit the pipeline again and expand the regex to include your first production environment:\n\n- **Value:** `dev|staging|prod-eu`\n\nSave and monitor. Then repeat for your remaining production environments:\n\n- **Value:** `dev|staging|prod-eu|prod-us`\n\nEach expansion is a low-risk incremental step. If a problem appears at any stage, you can deactivate the pipeline before it reaches more of your fleet."
+        },
+        {
+          "type": "markdown",
+          "content": "Your pipeline is now deployed across all environments. You've completed the staged rollout using the `env` attribute."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "rollback",
+      "title": "Roll back if problems occur",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll learn how to immediately halt a rollout if a pipeline causes problems."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the **Remote configuration** list, locate the **Active** toggle next to the pipeline you want to halt. Deactivating stops delivery immediately — no editing or attribute changes needed.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "markdown",
+          "content": "Click the **Active** toggle to deactivate the pipeline. Fleet Management stops sending this configuration to matched collectors on their next poll.\n\nYou don't need to change matching attributes or delete the pipeline — the deactivated pipeline stays in the list so you can reactivate it or use it as a reference when troubleshooting.\n\n> **Tip:** Use Fleet Management's [**Pipelines history**](/docs/grafana-cloud/send-data/fleet-management/manage-fleet/pipelines/view-pipeline-history/) feature to review what changed and restore a previous version if needed."
+        },
+        {
+          "type": "markdown",
+          "content": "You've learned how to deactivate a pipeline to halt a rollout instantly. Pairing this with a staged rollout strategy means problems can be caught in dev or staging before they reach production, and any production issues can be stopped with a single click."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now have a repeatable strategy for safely rolling out configuration pipelines to your collector fleet. Use the `env` attribute and regex matching to control the blast radius of each change, and the **Active** toggle as your emergency stop.\n\nTo learn about related deployment patterns such as A/B testing, canary deployments, and blue-green environments, refer to [Streamline your workflows](/docs/grafana-cloud/send-data/fleet-management/streamline-workflows/)."
+    }
+  ]
+}
