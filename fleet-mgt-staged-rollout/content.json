@@ -7,19 +7,6 @@
       "content": "Rolling out a new pipeline to your entire collector fleet at once is risky. A misconfigured pipeline can silently drop telemetry or break collectors in production before you can react.\n\nUsing the `env` attribute with regular expression matching, you can roll out a pipeline gradually — starting with dev, expanding to staging, then releasing to production in controlled stages. At any point, you can deactivate the pipeline with a single click to halt the rollout.\n\nThis guide assumes your collectors are already registered with Fleet Management. If you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set — the first section is just a quick verification check."
     },
     {
-      "type": "conditional",
-      "conditions": ["renderer:pathfinder"],
-      "whenTrue": [
-        {
-          "type": "interactive",
-          "action": "popout",
-          "targetvalue": "floating",
-          "content": "Pop this guide out so you can keep it visible while you work."
-        }
-      ],
-      "whenFalse": []
-    },
-    {
       "type": "section",
       "id": "tag-collectors",
       "title": "Verify your collectors have env attributes",
@@ -29,13 +16,12 @@
           "content": "Before you can stage a rollout, each collector needs an `env` attribute value such as `dev`, `staging`, `prod-eu`, or `prod-us`.\n\nIf you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your collectors already have `env` attributes and you can skip to the next section after a quick check. If you haven't, the steps below will get you set up."
         },
         {
-          "type": "multistep",
-          "content": "Navigate to **Connections** > **Fleet Management**.",
-          "requirements": ["navmenu-open"],
-          "steps": [
-            { "action": "highlight", "reftarget": "button[aria-label*='section: Connections']" },
-            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']" }
-          ]
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/fleet-management",
+          "verify": "on-page:/a/grafana-collector-app/fleet-management",
+          "objectives": ["on-page:/a/grafana-collector-app/fleet-management"],
+          "content": "Open **Fleet Management**."
         },
         {
           "type": "interactive",
@@ -54,27 +40,65 @@
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "td input[type='checkbox']:nth-match(1)",
+          "type": "guided",
           "content": "If collectors are missing `env` values, select the collectors you want to tag by checking their checkboxes.",
-          "doIt": false,
-          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "td input[type='checkbox']:nth-match(1)",
+              "lazyRender": true,
+              "description": "Check the collectors you want to tag."
+            }
+          ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label='Edit remote attributes']",
-          "content": "Click **Edit remote attributes** to open the bulk edit tool.",
-          "tooltip": "This button appears in the toolbar once at least one collector is selected.",
-          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
-        },
+          "type": "markdown",
+          "content": "Your collectors are tagged and ready. Fleet Management can now use the `env` attribute to target specific environments when assigning pipelines."
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button:contains('Add remote attributes')",
-          "content": "Click **Add remote attributes** to expand the form.",
-          "tooltip": "The dialog has three sections — Add, Remove, and Replace. Expand Add remote attributes to create new key-value pairs."
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out so you can keep it visible while you work."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "section",
+      "id": "add-env-attributes",
+      "title": "Add env attributes in the bulk edit dialog",
+      "requirements": ["section-completed:tag-collectors"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll use the bulk edit dialog to assign `env` attribute values to the collectors you selected."
+        },
+        {
+          "type": "guided",
+          "content": "Open the bulk edit dialog and expand the Add remote attributes section.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Edit remote attributes']",
+              "description": "Click **Edit remote attributes** to open the bulk edit dialog.",
+              "tooltip": "This button appears in the toolbar once at least one collector is selected."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Add remote attributes')",
+              "description": "Click **Add remote attributes** to expand the form.",
+              "tooltip": "The dialog has three sections — Add, Remove, and Replace. Expand Add remote attributes to create new key-value pairs."
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -110,7 +134,7 @@
       "type": "section",
       "id": "create-pipeline-dev",
       "title": "Create the pipeline and target dev first",
-      "requirements": ["section-completed:tag-collectors"],
+      "requirements": ["section-completed:add-env-attributes"],
       "blocks": [
         {
           "type": "markdown",
