@@ -16,23 +16,50 @@
           "content": "Before you can stage a rollout, each collector needs an `env` attribute value such as `dev`, `staging`, `prod-eu`, or `prod-us`.\n\nIf you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your collectors already have `env` attributes and you can skip to the next section after a quick check. If you haven't, the steps below will get you set up."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']",
-          "content": "Open **Fleet Management** from the navigation menu.",
-          "requirements": ["navmenu-open"]
+          "type": "multistep",
+          "content": "Navigate to **Connections** > **Fleet Management**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
+            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']" }
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='tab-fleet-inventory']",
-          "content": "Click the **Inventory** tab and check the **Attributes** column. If your collectors already show `env` values, you're done with this section.",
+          "content": "Click the **Inventory** tab.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "th:contains('Attributes')",
+          "content": "Check the **Attributes** column. If your collectors already show `env` values, you're done with this section.",
+          "doIt": false,
           "tooltip": "The Attributes column shows all local and remote attributes currently assigned to each collector.",
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "td input[type='checkbox']:nth-match(1)",
+          "content": "If collectors are missing `env` values, select the collectors you want to tag by checking their checkboxes.",
+          "doIt": false,
+          "tooltip": "Check individual rows to build a group, or use the header checkbox to select every collector on the page at once.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Edit remote attributes']",
+          "content": "Click **Edit remote attributes** to open the bulk edit dialog.",
+          "tooltip": "This button appears in the toolbar once at least one collector is selected.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
           "type": "markdown",
-          "content": "If collectors are missing `env` values, select the collectors you want to tag by clicking their checkboxes. Then:\n\n1. Click **Edit remote attributes** to open the bulk edit dialog.\n2. Click **Add remote attributes** to expand the form.\n3. In the **Key** field, type `env`.\n4. In the **Value** field, type the environment name, for example `dev`.\n5. Click **Apply changes**.\n\nRepeat for each environment group, using values such as `staging`, `prod-eu`, and `prod-us`."
+          "content": "In the dialog:\n\n1. Click **Add remote attributes** to expand the form.\n2. In the **Key** field, type `env`.\n3. In the **Value** field, type the environment name, for example `dev`.\n4. Click **Apply changes**.\n\nRepeat for each environment group, using values such as `staging`, `prod-eu`, and `prod-us`."
         },
         {
           "type": "markdown",
