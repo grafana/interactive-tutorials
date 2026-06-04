@@ -4,17 +4,13 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Rolling out a new pipeline to your entire collector fleet at once is risky. A misconfigured pipeline can silently drop telemetry or break collectors in production before you can react.\n\nUsing the `env` attribute with regular expression matching, you can roll out a pipeline gradually — starting with dev, expanding to staging, then releasing to production in controlled stages. At any point, you can deactivate the pipeline with a single click to halt the rollout.\n\nThis guide assumes your collectors are already registered with Fleet Management. If you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set — the first section is just a quick verification check."
+      "content": "Rolling out a new pipeline to your entire collector fleet at once is risky. A misconfigured pipeline can silently drop telemetry or break collectors in production before you can react.\n\nUsing the `env` attribute with regular expression matching, you can roll out a pipeline gradually — starting with dev, expanding to staging, then releasing to production in controlled stages. At any point, you can deactivate the pipeline with a single click to halt the rollout.\n\nThis guide assumes your collectors are already registered with Fleet Management. If you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set — the first section is just a quick verification check. If not, the steps below will get you set up."
     },
     {
       "type": "section",
-      "id": "tag-collectors",
+      "id": "check-collector-attributes",
       "title": "Verify your collectors have env attributes",
       "blocks": [
-        {
-          "type": "markdown",
-          "content": "Before you can stage a rollout, each collector needs an `env` attribute value such as `dev`, `staging`, `prod-eu`, or `prod-us`.\n\nIf you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your collectors already have `env` attributes and you can skip to the next section after a quick check. If you haven't, the steps below will get you set up."
-        },
         {
           "type": "interactive",
           "action": "navigate",
@@ -40,21 +36,8 @@
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
-          "type": "guided",
-          "content": "If collectors are missing `env` values, select the collectors you want to tag by checking their checkboxes.",
-          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "td input[type='checkbox']:nth-match(1)",
-              "lazyRender": true,
-              "description": "Check the collectors you want to tag."
-            }
-          ]
-        },
-        {
           "type": "markdown",
-          "content": "Your collectors are tagged and ready. Fleet Management can now use the `env` attribute to target specific environments when assigning pipelines."
+          "content": "If your collectors are properly categorized, you can skip ahead to the next milestone. If any are missing `env` values, continue with the steps below to add the attribute."
         }
       ]
     },
@@ -66,7 +49,7 @@
           "type": "interactive",
           "action": "popout",
           "targetvalue": "floating",
-          "content": "Pop this guide out so you can keep it visible while you work."
+          "content": "Pop this guide out so you can keep it visible while you continue working."
         }
       ],
       "whenFalse": []
@@ -74,59 +57,31 @@
     {
       "type": "section",
       "id": "add-env-attributes",
-      "title": "Add env attributes in the bulk edit dialog",
-      "requirements": ["section-completed:tag-collectors"],
+      "title": "Add the `env` attribute with the bulk edit tool",
+      "requirements": ["section-completed:check-collector-attributes"],
       "blocks": [
         {
-          "type": "markdown",
-          "content": "You'll use the bulk edit dialog to assign `env` attribute values to the collectors you selected."
-        },
-        {
-          "type": "guided",
-          "content": "Open the bulk edit dialog and expand the Add remote attributes section.",
-          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[aria-label='Edit remote attributes']",
-              "description": "Click **Edit remote attributes** to open the bulk edit dialog.",
-              "tooltip": "This button appears in the toolbar once at least one collector is selected."
-            },
-            {
-              "action": "highlight",
-              "reftarget": "button:contains('Add remote attributes')",
-              "description": "Click **Add remote attributes** to expand the form.",
-              "tooltip": "The dialog has three sections — Add, Remove, and Replace. Expand Add remote attributes to create new key-value pairs."
-            }
-          ]
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "td input[type='checkbox']:nth-match(1)",
+          "content": "Select the collectors you want to tag by checking their checkboxes.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[placeholder='Select or type attribute name']",
-          "content": "In the **Key** field, type `env`.",
-          "doIt": false,
-          "tooltip": "You can select an existing attribute name or type a new one. Attribute keys are case-sensitive."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "input[placeholder='Select or type attribute value']",
-          "content": "In the **Value** field, type the environment name, for example `dev`.",
-          "doIt": false,
-          "tooltip": "Attribute values are also case-sensitive. Use consistent casing across your fleet so regex matching works as expected."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button:text('Apply changes')",
-          "content": "Click **Apply changes** to save the attribute to all selected collectors.",
-          "doIt": false,
-          "tooltip": "Apply changes updates all selected collectors in bulk. The button is disabled until at least one key-value pair is filled in."
+          "reftarget": "button[aria-label='Edit remote attributes']",
+          "content": "Click **Edit remote attributes** to open the bulk edit dialog.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
           "type": "markdown",
-          "content": "Repeat for each environment group, using values such as `staging`, `prod-eu`, and `prod-us` according to your deployment strategy. Once your collectors are tagged and ready, Fleet Management can use the `env` attribute to target specific environments when assigning pipelines."
+          "content": "In the dialog, click **Add remote attributes** to expand and complete the form:\n\n1. In the **Key** field, type `env`.\n\n2. In the **Value** field, type the environment name, for example `dev`.\n\n3. Click **Apply changes** to save the attribute to all selected collectors."
+        },
+        {
+          "type": "markdown",
+          "content": "Repeat the selection and assignment for each environment group, using values such as `staging`, `prod-eu`, and `prod-us` according to your deployment strategy. Once your collectors are tagged and ready, Fleet Management can use the `env` attribute to target specific environments when assigning pipelines."
         }
       ]
     },
