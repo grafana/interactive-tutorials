@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Rolling out a new pipeline to your entire collector fleet at once is risky. A misconfigured pipeline can silently drop telemetry or break collectors in production before you can react.\n\nUsing the `env` attribute with regular expression matching, you can roll out a pipeline gradually — starting with dev, expanding to staging, then releasing to production in controlled stages. At any point, you can deactivate the pipeline with a single click to halt the rollout.\n\nThis guide assumes your collectors are already registered with Fleet Management. If you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set — the first section is just a quick verification check. If not, the steps below will get you set up."
+      "content": "Rolling out a new pipeline to your entire collector fleet at once is risky. A misconfigured pipeline can silently drop telemetry or break collectors in production before you can react.\n\nUsing the `env` attribute with regular expression matching, you can roll out a pipeline gradually — starting with dev, expanding to staging, then releasing to production in controlled stages. At any point, you can deactivate the pipeline with a single click to halt the rollout.\n\nThis guide assumes your collectors are already registered with Fleet Management. If you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set, and the first section is a quick verification check. If you've not added the `env` attribute, the steps below will get you set up."
     },
     {
       "type": "section",
@@ -30,14 +30,9 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "th:contains('Attributes')",
-          "content": "Check the **Attributes** column. If your collectors already show `env` values, you're done with this section.",
+          "content": "Check the **Attributes** column. If your collectors already show `env` values, you're done with this section and can skip ahead to the next milestone. If any collectors are missing `env` values, continue with the steps below to add the attribute.",
           "doIt": false,
-          "tooltip": "The Attributes column shows all local and remote attributes currently assigned to each collector.",
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
-        },
-        {
-          "type": "markdown",
-          "content": "If your collectors are properly categorized, you can skip ahead to the next milestone. If any are missing `env` values, continue with the steps below to add the attribute."
         }
       ]
     },
@@ -57,7 +52,7 @@
     {
       "type": "section",
       "id": "add-env-attributes",
-      "title": "Add the `env` attribute with the bulk edit tool",
+      "title": "Add the env attribute with the bulk edit tool",
       "requirements": ["section-completed:check-collector-attributes"],
       "blocks": [
         {
@@ -84,6 +79,19 @@
           "content": "Repeat the selection and assignment for each environment group, using values such as `staging`, `prod-eu`, and `prod-us` according to your deployment strategy. Once your collectors are tagged and ready, Fleet Management can use the `env` attribute to target specific environments when assigning pipelines."
         }
       ]
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back into the sidebar to continue working."
+        }
+      ],
+      "whenFalse": []
     },
     {
       "type": "section",
