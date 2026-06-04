@@ -7,6 +7,19 @@
       "content": "Rolling out a new pipeline to your entire collector fleet at once is risky. A misconfigured pipeline can silently drop telemetry or break collectors in production before you can react.\n\nUsing the `env` attribute with regular expression matching, you can roll out a pipeline gradually — starting with dev, expanding to staging, then releasing to production in controlled stages. At any point, you can deactivate the pipeline with a single click to halt the rollout.\n\nThis guide assumes your collectors are already registered with Fleet Management. If you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set — the first section is just a quick verification check."
     },
     {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out so you can keep it visible while you work."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
       "type": "section",
       "id": "tag-collectors",
       "title": "Verify your collectors have env attributes",
@@ -20,7 +33,7 @@
           "content": "Navigate to **Connections** > **Fleet Management**.",
           "requirements": ["navmenu-open"],
           "steps": [
-            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
+            { "action": "highlight", "reftarget": "button[aria-label*='section: Connections']" },
             { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-collector-app/fleet-management']" }
           ]
         },
@@ -46,24 +59,50 @@
           "reftarget": "td input[type='checkbox']:nth-match(1)",
           "content": "If collectors are missing `env` values, select the collectors you want to tag by checking their checkboxes.",
           "doIt": false,
-          "tooltip": "Check individual rows to build a group, or use the header checkbox to select every collector on the page at once.",
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[aria-label='Edit remote attributes']",
-          "content": "Click **Edit remote attributes** to open the bulk edit dialog.",
+          "content": "Click **Edit remote attributes** to open the bulk edit tool.",
           "tooltip": "This button appears in the toolbar once at least one collector is selected.",
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
-          "type": "markdown",
-          "content": "In the dialog:\n\n1. Click **Add remote attributes** to expand the form.\n2. In the **Key** field, type `env`.\n3. In the **Value** field, type the environment name, for example `dev`.\n4. Click **Apply changes**.\n\nRepeat for each environment group, using values such as `staging`, `prod-eu`, and `prod-us`."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:contains('Add remote attributes')",
+          "content": "Click **Add remote attributes** to expand the form.",
+          "tooltip": "The dialog has three sections — Add, Remove, and Replace. Expand Add remote attributes to create new key-value pairs."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select or type attribute name']",
+          "content": "In the **Key** field, type `env`.",
+          "doIt": false,
+          "tooltip": "You can select an existing attribute name or type a new one. Attribute keys are case-sensitive."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select or type attribute value']",
+          "content": "In the **Value** field, type the environment name, for example `dev`.",
+          "doIt": false,
+          "tooltip": "Attribute values are also case-sensitive. Use consistent casing across your fleet so regex matching works as expected."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Apply changes')",
+          "content": "Click **Apply changes** to save the attribute to all selected collectors.",
+          "doIt": false,
+          "tooltip": "Apply changes updates all selected collectors in bulk. The button is disabled until at least one key-value pair is filled in."
         },
         {
           "type": "markdown",
-          "content": "Your collectors are tagged and ready. Fleet Management can now use the `env` attribute to target specific environments when assigning pipelines."
+          "content": "Repeat for each environment group, using values such as `staging`, `prod-eu`, and `prod-us` according to your deployment strategy. Once your collectors are tagged and ready, Fleet Management can use the `env` attribute to target specific environments when assigning pipelines."
         }
       ]
     },
