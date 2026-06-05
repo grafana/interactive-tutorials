@@ -143,7 +143,7 @@ Use `validateInput: false` (default) when you want to accept any non-empty value
 ```
 Element on the page?
   ├─ Nav menu item                      → "navmenu-open"
-  ├─ Existing element                   → (exists-reftarget auto-applied — don't add)
+  ├─ Existing element                   → "exists-reftarget" (include for selector-targeting steps)
   └─ All form fields filled correctly   → "form-valid"
 
 User location?
@@ -181,7 +181,7 @@ Flow / order?
   └─ Terminal session active            → "is-terminal-active"
 ```
 
-> `exists-reftarget` is auto-applied by the engine. Never add it manually.
+> `exists-reftarget` is the standard requirement for selector-targeting steps — include it in `requirements` for any block or step with a `reftarget`.
 
 ---
 
@@ -213,7 +213,7 @@ These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rule
 
 1. **Multistep singleton** — `multistep` with one step. Use plain `interactive`.
 2. **Focus-before-formfill** — `highlight` on an input with `doIt: true` is a no-op. Use `formfill`, or set `doIt: false`.
-3. **Manually added `exists-reftarget`** — it's auto-applied; remove the manual entry.
+3. **(reserved)** — formerly "manually added `exists-reftarget`"; this is no longer a smell.
 4. **Markdown `##` headers in place of sections** — restructure as `section` blocks with bookend markdown.
 5. **Leading markdown title duplicating the guide title** — remove. The frame renders the title.
 6. **Brittle CSS selectors** — `.css-xyz`, deep nesting, `nth-of-type` without a stable parent. Use `data-testid`, button text, or semantic attributes.
@@ -246,7 +246,6 @@ Run through this before opening the PR.
 - [ ] Page-specific actions have `on-page:/path`
 - [ ] Admin steps have `is-admin` or the appropriate `has-role` / `has-permission`
 - [ ] Expensive setup sections have `objectives` (auto-complete if already done)
-- [ ] No manual `exists-reftarget`
 
 **Actions**
 - [ ] Each action targets the right thing (button by text vs CSS vs formfill vs navigate)

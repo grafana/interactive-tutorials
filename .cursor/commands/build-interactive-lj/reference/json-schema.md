@@ -268,17 +268,17 @@ User performs action manually, no "Do it" button:
 
 ## Requirements Reference
 
-| Requirement | When to Use | Auto-Applied? |
-|-------------|-------------|---------------|
-| `exists-reftarget` | Any DOM interaction (highlight, formfill, button, hover) | ✅ Yes (don't add manually) |
-| `navmenu-open` | Navigation menu elements (ensures menu is expanded) | No |
-| `on-page:/path` | Page-specific actions (checks current URL) | No |
-| `section-completed:id` | Sequential dependencies between sections | No |
-| `is-admin` | Admin-only features | No |
-| `has-datasource:type` | When a specific data source is needed | No |
-| `has-plugin:id` | When a specific plugin must be installed | No |
+| Requirement | When to Use | Notes |
+|-------------|-------------|-------|
+| `exists-reftarget` | Any DOM interaction (highlight, formfill, button, hover) | Include for selector-targeting steps |
+| `navmenu-open` | Navigation menu elements (ensures menu is expanded) | — |
+| `on-page:/path` | Page-specific actions (checks current URL) | — |
+| `section-completed:id` | Sequential dependencies between sections | — |
+| `is-admin` | Admin-only features | — |
+| `has-datasource:type` | When a specific data source is needed | — |
+| `has-plugin:id` | When a specific plugin must be installed | — |
 
-> ⚠️ **Important:** `exists-reftarget` is auto-applied by Pathfinder. Never add it manually to interactive blocks.
+> `exists-reftarget` is the standard convention for selector-targeting steps. Include it in the `requirements` array for any block or step with a `reftarget`.
 
 ---
 
@@ -423,7 +423,7 @@ Before proceeding to selector discovery, verify EACH content.json file:
 - [ ] Instruction text uses `"content"` (NOT `"description"`)
 - [ ] Formfill actions use `"targetvalue"` (NOT `"formvalue"`)
 - [ ] Navigation steps use `"multistep"` blocks
-- [ ] Interactive blocks do NOT have `"requirements": ["exists-reftarget"]` (it's auto-applied)
+- [ ] Interactive blocks that target a CSS selector include `exists-reftarget` in their requirements array (repo convention)
 - [ ] Interactive blocks have empty `"reftarget": ""` (selectors added in Step 5)
 
 ### Supplementary Content:

@@ -15,7 +15,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 2. **Use stable selectors** -- prefer `data-testid`, button text, and semantic attributes over CSS classes
 3. **No markdown titles in guides** -- the guide `title` is rendered by the app frame; a leading `## Title` duplicates it
 4. **No multistep singletons** -- a `multistep` with one step must be a plain `interactive` block
-5. **`exists-reftarget` is auto-applied** -- never add it manually to requirements
+5. **Include `exists-reftarget` for selector-targeting steps** -- the repo convention is to list `exists-reftarget` in the `requirements` array for any block or step with a `reftarget`.
 6. **Use sections, not markdown headers** -- group steps with `section` blocks, not `##` headings
 7. **Include page requirements** -- page-specific actions need `on-page:/path`
 8. **Verify state changes** -- use `verify` after save/create operations
