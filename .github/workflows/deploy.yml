@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           ref: ${{ github.event_name == 'push' && github.ref || github.event.inputs.branch }}
           persist-credentials: false
@@ -81,7 +81,7 @@ jobs:
           find guides -type f
 
       - name: Push files to GCS
-        uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
+        uses: grafana/shared-workflows/actions/push-to-gcs@bc692dca3f6e354bc565ae8f6e622f24a6162b66 # push-to-gcs/v0.3.1
         with:
           bucket: interactive-learning-${{ env.DEPLOY_ENV }}
           path: guides
@@ -94,7 +94,7 @@ jobs:
       # package tree to bucket/packages/. The guides/ deploy above is unchanged.
 
       - name: Checkout pathfinder-app CLI
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: grafana/grafana-pathfinder-app
           ref: main
@@ -102,7 +102,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: '22'
           cache: 'npm'
@@ -129,7 +129,8 @@ jobs:
           #   shared          — served separately under guides/
           #   guides          — legacy staging dir created earlier in this job
           #   packages        — the staging dir we are building right now
-          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages"
+          #   courses         — published separately as bucket/courses/
+          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages courses"
 
           for dir in */; do
             dir="${dir%/}"
@@ -183,12 +184,31 @@ jobs:
           find packages -maxdepth 1 -type f
 
       - name: 'Publish Pathfinder repo: Push packages to GCS'
-        uses: grafana/shared-workflows/actions/push-to-gcs@0527786f572985731b4bde3684d82567abe8e979 # push-to-gcs/v0.3.0
+        uses: grafana/shared-workflows/actions/push-to-gcs@bc692dca3f6e354bc565ae8f6e622f24a6162b66 # push-to-gcs/v0.3.1
         with:
           bucket: interactive-learning-${{ env.DEPLOY_ENV }}
           # path: packages with default parent: true causes files to land at
           # bucket/packages/... — same pattern as path: guides → bucket/guides/...
           path: packages
           # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
+          service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
+
+      # ── Courses deploy ────────────────────────────────────────────────────────
+      # Aggregates per-course and per-badge JSON into courses/oss.json and
+      # courses/cloud.json, then publishes the whole courses/ tree. The plugin
+      # only fetches the platform index files; per-course files travel along
+      # for direct authoring-tool access.
+
+      - name: Build courses platform indexes
+        continue-on-error: true
+        run: node pathfinder-app/dist/cli/cli/index.js build-courses courses/ -o courses/
+
+      - name: 'Publish courses to GCS'
+        uses: grafana/shared-workflows/actions/push-to-gcs@bc692dca3f6e354bc565ae8f6e622f24a6162b66 # push-to-gcs/v0.3.1
+        with:
+          bucket: interactive-learning-${{ env.DEPLOY_ENV }}
+          # Lands at bucket/courses/... — same pattern as path: guides / packages.
+          path: courses
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com

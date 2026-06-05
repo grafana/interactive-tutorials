@@ -772,6 +772,22 @@ description: Reusable workflow templates for common interactive guide patterns i
 }
 ```
 
+### Navigate + Open Another Guide Pattern
+
+Chain to a follow-up guide automatically after navigating. Use the `openGuide` field on the `navigate` step instead of the legacy `?doc=` query param.
+
+```json
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/connections/datasources/new",
+  "openGuide": "bundled:add-prometheus-datasource",
+  "content": "Open **Add data source** — the Prometheus walkthrough will load in the sidebar automatically."
+}
+```
+
+Use this for cross-guide handoffs (e.g., a Quickstart guide hands off to a deeper Prometheus setup guide). The handler fires an `auto-launch-tutorial` event after the navigation settles.
+
 ## Permission-Aware Patterns
 
 ### Admin vs User Workflows
@@ -908,6 +924,28 @@ description: Reusable workflow templates for common interactive guide patterns i
   "content": "Review connection settings if test failed"
 }
 ```
+
+### Lazy-Rendered Target Recovery Pattern
+
+A plain `interactive` step that intermittently fails on a virtualized list or below-fold dashboard panel is usually a lazy-rendering problem — the element doesn't exist in the DOM until scrolled into view. Convert the step to a `guided` block with `lazyRender: true`. User-paced detection (`guided`) avoids racing the scroll.
+
+```json
+{
+  "type": "guided",
+  "content": "Open the row for `checkoutservice` (it may be below the fold).",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
+      "lazyRender": true,
+      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
+      "description": "Click checkoutservice"
+    }
+  ]
+}
+```
+
+If `lazyRender` doesn't help, the scroll container selector is probably wrong — open DevTools, locate the actual scrolling parent (usually a `<div>` with overflow auto and the `scrollbar-view` class), and set `scrollContainer` explicitly.
 
 ## AI Content Generation Guidelines
 

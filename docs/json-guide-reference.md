@@ -42,6 +42,7 @@ Every JSON guide has these fields:
 | `code-block` | Interactive | Insert code into Monaco editor | Queries, configs for code editors |
 | `terminal` | Interactive | Shell command with Copy/Exec | Coda terminal commands |
 | `terminal-connect` | Interactive | Connect to Coda terminal | Establish terminal session |
+| `grot-guide` | Structural | Choose-your-own-adventure decision tree | Hand-authored branching guides (block editor only — CLI-excluded) |
 
 ---
 
@@ -57,6 +58,7 @@ Actions are used in `interactive`, `multistep`, and `guided` blocks. See [Intera
 | `navigate` | Navigate to URL | URL path | — |
 | `hover` | Hover over element | CSS selector | — |
 | `noop` | Informational step (no action) | Optional | — |
+| `popout` | Toggle docs panel between sidebar and floating | — | `"sidebar"` or `"floating"` (required) |
 
 ---
 
@@ -175,10 +177,10 @@ A single interactive step with "Show me" and "Do it" buttons.
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
 | `type` | string | ✅ | — | Must be `"interactive"` |
-| `action` | string | ✅ | — | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop` |
-| `reftarget` | string | ✅\* | — | Target reference (\*optional for `noop`) |
+| `action` | string | ✅ | — | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
+| `reftarget` | string | ✅\* | — | Target reference (\*optional for `noop` and `popout`) |
 | `content` | string | ✅ | — | Markdown description shown to user |
-| `targetvalue` | string | ❌ | — | Value for `formfill` actions |
+| `targetvalue` | string | ❌\* | — | Value for `formfill` actions; required for `popout` (must be `"sidebar"` or `"floating"`) |
 | `tooltip` | string | ❌ | — | Tooltip shown when element is highlighted |
 | `requirements` | string[] | ❌ | — | Preconditions that must pass |
 | `objectives` | string[] | ❌ | — | Conditions that auto-complete the step when met |
@@ -204,6 +206,7 @@ A single interactive step with "Show me" and "Do it" buttons.
 |----------|------|---------|-------------|
 | `completeEarly` | boolean | `false` | Mark step complete before action finishes |
 | `verify` | string | — | Post-action verification (e.g., `"on-page:/path"`) |
+| `openGuide` | string | — | Guide to open in sidebar after a `navigate` action completes. Format: `"bundled:guide-id"` or a docs URL. Replaces the legacy `?doc=` query param. |
 
 **Formfill-Specific:**
 
@@ -212,13 +215,14 @@ A single interactive step with "Show me" and "Do it" buttons.
 | `validateInput` | boolean | `false` | Require input to match `targetvalue` pattern |
 | `formHint` | string | — | Hint shown when form validation fails |
 
-When `validateInput` is `true`, `targetvalue` is treated as a regex if it starts with `^` or `$`, or is enclosed in `/pattern/` syntax.
+`targetvalue` supports three regex patterns when `validateInput` is `true`: anchored prefix (`^pattern`), anchored suffix (`pattern$`), or fully wrapped (`/pattern/flags`). Plain strings are treated as exact-match.
 
 | `targetvalue` | Matches |
 |---------------|---------|
 | `prometheus` | Exact string "prometheus" |
-| `^https?://` | Strings starting with http:// or https:// |
-| `/^[a-z]+$/` | Lowercase letters only |
+| `^https?://` | Strings starting with `http://` or `https://` |
+| `monitoring$` | Strings ending with `monitoring` |
+| `/^[a-z][a-z0-9-]*$/i` | Case-insensitive kebab-case identifier |
 
 **Rendering Properties:**
 
@@ -449,6 +453,79 @@ Renders a button that opens and connects to a Coda terminal session. Place befor
 | `vmApp` | string | ❌ | — | App name for sample-app template (e.g., `"nginx"`, `"mysql"`) |
 | `vmScenario` | string | ❌ | — | Scenario name for alloy-scenario template |
 
+### Grot Guide Block
+
+Self-contained choose-your-own-adventure decision tree. Users start on a welcome screen, click a CTA, answer questions, and arrive at result screens with curated links.
+
+> **Authoring**: `grot-guide` blocks are excluded from the Pathfinder CLI. They are designed for the dedicated decision-tree editor. Hand-edit the JSON only when necessary; every `screenId` reference is schema-validated and dangling references will fail validation.
+
+```json
+{
+  "type": "grot-guide",
+  "welcome": {
+    "title": "Pick your starting point",
+    "body": "What do you want to do first?",
+    "ctas": [
+      { "text": "Create a dashboard", "screenId": "dashboard" },
+      { "text": "Connect a data source", "screenId": "datasource" }
+    ]
+  },
+  "screens": [
+    {
+      "type": "question",
+      "id": "dashboard",
+      "title": "Which kind of dashboard?",
+      "options": [
+        { "text": "From scratch", "screenId": "from-scratch" },
+        { "text": "From a template", "screenId": "from-template" }
+      ]
+    },
+    {
+      "type": "result",
+      "id": "from-scratch",
+      "title": "Build it from scratch",
+      "body": "You'll add panels and queries one by one.",
+      "links": [
+        { "type": "docs", "title": "Build a dashboard", "linkText": "Read the docs", "href": "https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/" }
+      ]
+    },
+    {
+      "type": "result",
+      "id": "from-template",
+      "title": "Start from a template",
+      "body": "Import a dashboard from Grafana.com."
+    },
+    {
+      "type": "result",
+      "id": "datasource",
+      "title": "Connect a data source",
+      "body": "Wire Grafana up to your metrics or logs backend."
+    }
+  ]
+}
+```
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `type` | string | ✅ | Must be `"grot-guide"` |
+| `welcome` | object | ✅ | Welcome screen: `{ title, body, ctas: [{ text, screenId }] }` (`body` is markdown; `ctas` has ≥1 entry) |
+| `screens` | array | ✅ | Question and result screens (≥1 entry) |
+| `id` | string | ❌ | Stable identifier |
+
+**Screen types:**
+
+- **Question screen** — `{ type: "question", id, title, options: [{ text, screenId }] }` — branches to another screen by id.
+- **Result screen** — `{ type: "result", id, title, body, links?: [{ type?, title, linkText, href }] }` — terminal node with optional curated links.
+
+**Integrity rules:**
+
+- Every `screenId` (in CTAs and options) MUST resolve to an existing screen `id`. The Zod schema rejects dangling references.
+- `href` values must be safe URLs: use `https://` (or `http://`) for external docs and Grafana Play links. For **Open in Grafana** links that navigate within the user's stack, use a root-relative path starting with `/` (for example `/connections/add-new-connection/mysql`). The schema accepts these via `SafeUrlSchema` resolution; Pathfinder opens them in the stack context.
+
+### See Also
+
+- Pathfinder source: `src/types/json-guide.types.ts:533-625` (types), `src/types/json-guide.schema.ts:481-590` (schema), `src/cli/utils/block-registry.ts:80` (CLI exclusion).
+
 ---
 
 ## Assessment Blocks
@@ -580,9 +657,9 @@ Steps used in `multistep` and `guided` blocks:
 
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
-| `action` | string | ✅ | — | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop` |
-| `reftarget` | string | ✅\* | — | Target reference (\*optional for `noop`) |
-| `targetvalue` | string | ❌ | — | Value for `formfill` actions (supports regex patterns) |
+| `action` | string | ✅ | — | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
+| `reftarget` | string | ✅\* | — | Target reference (\*optional for `noop` and `popout`) |
+| `targetvalue` | string | ❌\* | — | Value for `formfill` (regex-aware); required for `popout` (`"sidebar"` or `"floating"`) |
 | `requirements` | string[] | ❌ | — | Requirements for this specific step |
 | `tooltip` | string | ❌ | — | Tooltip shown during multistep execution |
 | `description` | string | ❌ | — | Description shown in guided steps panel |
@@ -713,10 +790,14 @@ import {
   JsonQuizBlock, JsonQuizChoice, JsonInputBlock,
   // Code and terminal blocks
   JsonCodeBlockBlock, JsonTerminalBlock, JsonTerminalConnectBlock,
+  // Decision tree
+  JsonGrotGuideBlock, GrotGuideWelcome, GrotGuideCta, GrotGuideScreen,
+  GrotGuideQuestionScreen, GrotGuideResultScreen, GrotGuideOption,
+  GrotGuideLinkItem,
 } from '../types/json-guide.types';
 ```
 
-Type guards: `isMarkdownBlock`, `isHtmlBlock`, `isImageBlock`, `isVideoBlock`, `isSectionBlock`, `isConditionalBlock`, `isAssistantBlock`, `isInteractiveBlock`, `isMultistepBlock`, `isGuidedBlock`, `isQuizBlock`, `isInputBlock`, `isCodeBlockBlock`, `isTerminalBlock`, `isTerminalConnectBlock`, `hasAssistantEnabled`.
+Type guards: `isMarkdownBlock`, `isHtmlBlock`, `isImageBlock`, `isVideoBlock`, `isSectionBlock`, `isConditionalBlock`, `isAssistantBlock`, `isInteractiveBlock`, `isMultistepBlock`, `isGuidedBlock`, `isQuizBlock`, `isInputBlock`, `isCodeBlockBlock`, `isTerminalBlock`, `isTerminalConnectBlock`, `isGrotGuideBlock`, `hasAssistantEnabled`.
 
 Zod schemas: `JsonGuideSchema`, `JsonGuideSchemaStrict`, `JsonBlockSchema`, `CURRENT_SCHEMA_VERSION` from `src/types/json-guide.schema.ts`.
 

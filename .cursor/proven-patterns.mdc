@@ -129,6 +129,74 @@ Conditional on real-world installation completing first.
 
 ---
 
+## Popout Patterns
+
+### Pop out into a floating window
+
+```json
+{
+  "type": "interactive",
+  "action": "popout",
+  "targetvalue": "floating",
+  "content": "Pop this guide out into a floating window so you can work in Grafana side-by-side."
+}
+```
+
+### Dock back into the sidebar
+
+```json
+{
+  "type": "interactive",
+  "action": "popout",
+  "targetvalue": "sidebar",
+  "content": "Dock the guide back into the sidebar to free up screen space."
+}
+```
+
+> `targetvalue` MUST be `"sidebar"` or `"floating"` — any other value is rejected by the schema.
+
+---
+
+## Open Guide After Navigate Pattern
+
+Chain to a follow-up guide when the user lands on a new page.
+
+```json
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/connections/datasources/new",
+  "openGuide": "bundled:add-prometheus-datasource",
+  "content": "Go to **Add data source** and pick up the Prometheus guide."
+}
+```
+
+> Prefer `openGuide` over appending `?doc=` to the URL. The query-string form is back-compat only.
+
+---
+
+## Lazy-Rendered Target Pattern
+
+Targets inside virtualized containers (tables, paginated lists, below-fold dashboard rows) need `lazyRender: true` so the engine scrolls them into view. Always wrap the step in a `guided` block — user-paced detection avoids racing the scroll.
+
+```json
+{
+  "type": "guided",
+  "content": "Open the row for `checkoutservice` (it may be below the fold).",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
+      "lazyRender": true,
+      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
+      "description": "Click checkoutservice"
+    }
+  ]
+}
+```
+
+---
+
 ## Quick Decision Guide
 
 | UI Element | Pattern to Use |
@@ -144,3 +212,6 @@ Conditional on real-world installation completing first.
 | Action outside browser | `markdown` |
 | Button that may not exist yet | `markdown` |
 | Supplementary links section | `markdown` with `---` divider + H3 heading |
+| Toggle docs panel mode | `popout` with `targetvalue: "sidebar"` or `"floating"` |
+| Chain to another guide after navigate | `navigate` + `openGuide: "bundled:..."` |
+| Target inside virtualized scroll | `guided` block with step `lazyRender: true` |

@@ -712,3 +712,118 @@ Use guided blocks when users need to perform actions manually:
   ]
 }
 ````
+
+### Code Block Example
+
+Use `code-block` to insert syntax-highlighted code into a Monaco editor. Unlike `formfill`, it clears existing content and uses Monaco-aware insertion.
+
+```json
+{
+  "type": "code-block",
+  "reftarget": "textarea[data-testid='query-editor']",
+  "language": "promql",
+  "code": "rate(http_requests_total[5m])",
+  "content": "Insert this PromQL query to compute the per-second request rate."
+}
+```
+
+### Terminal + Terminal Connect Example
+
+`terminal-connect` opens a VM session; `terminal` blocks then have a place to execute commands. Always place `terminal-connect` before the first `terminal` block.
+
+```json
+[
+  {
+    "type": "terminal-connect",
+    "content": "Open a sandbox VM to follow along with the commands in this section.",
+    "vmTemplate": "vm-aws-sample-app",
+    "vmApp": "nginx",
+    "buttonText": "Open sandbox"
+  },
+  {
+    "type": "terminal",
+    "command": "curl -s http://localhost/health | jq .",
+    "content": "Check that the sample app is responding.",
+    "requirements": ["is-terminal-active"]
+  }
+]
+```
+
+### Grot Guide Example (Decision Tree)
+
+`grot-guide` is hand-authored in the dedicated decision-tree editor and is excluded from the Pathfinder CLI. Every `screenId` reference is schema-validated.
+
+```json
+{
+  "type": "grot-guide",
+  "welcome": {
+    "title": "What do you want to set up first?",
+    "body": "Pick a starting point — you can always come back.",
+    "ctas": [
+      { "text": "A dashboard", "screenId": "dashboard" },
+      { "text": "A data source", "screenId": "datasource" }
+    ]
+  },
+  "screens": [
+    {
+      "type": "question",
+      "id": "dashboard",
+      "title": "From scratch or from a template?",
+      "options": [
+        { "text": "From scratch", "screenId": "from-scratch" },
+        { "text": "Browse templates", "screenId": "from-template" }
+      ]
+    },
+    {
+      "type": "result",
+      "id": "from-scratch",
+      "title": "Build it yourself",
+      "body": "Add panels and queries one by one.",
+      "links": [
+        { "type": "docs", "title": "Build a dashboard", "linkText": "Read the docs", "href": "https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/" }
+      ]
+    },
+    {
+      "type": "result",
+      "id": "from-template",
+      "title": "Browse templates",
+      "body": "Import a pre-built dashboard from Grafana.com."
+    },
+    {
+      "type": "result",
+      "id": "datasource",
+      "title": "Connect a data source",
+      "body": "Wire Grafana up to your metrics or logs backend."
+    }
+  ]
+}
+```
+
+### Popout Action Example
+
+```json
+{
+  "type": "interactive",
+  "action": "popout",
+  "targetvalue": "floating",
+  "content": "Pop this guide out into a floating window so you can keep it visible while you work."
+}
+```
+
+`targetvalue` must be `"sidebar"` or `"floating"` — the schema rejects anything else.
+
+### Navigate with `openGuide` Example
+
+Chain to a follow-up guide automatically after navigation finishes.
+
+```json
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/connections/datasources/new",
+  "openGuide": "bundled:add-prometheus-datasource",
+  "content": "Open **Add data source** and pick up the Prometheus walkthrough from there."
+}
+```
+
+Prefer `openGuide` over appending `?doc=` to the URL — the query-string form is back-compat only.

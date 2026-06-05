@@ -1,5 +1,5 @@
 ---
-description: Reference for authoring, editing, or creating interactive guide content.json files. Includes block types, actions, requirements, selectors, best practices, and code smells.
+description: Reference for authoring, editing, or creating interactive guide content.json files. Includes block types (including grot-guide decision trees), actions, requirements, selectors, best practices, and code smells.
 globs:
   - "**/content.json"
 ---
@@ -20,6 +20,8 @@ globs:
 | Guide patterns | [tutorial-patterns.mdc](tutorial-patterns.mdc) |
 | Full example guide | [complete-example-tutorial.mdc](complete-example-tutorial.mdc) |
 | Edge cases | [edge-cases-and-troubleshooting.mdc](edge-cases-and-troubleshooting.mdc) |
+| Best practices & decision trees | [best-practices.mdc](best-practices.mdc) |
+| Grot Guide (decision tree) block | [docs/json-guide-reference.md#grot-guide-block](../docs/json-guide-reference.md#grot-guide-block) |
 | Manifest (package metadata) | [docs/manifest-reference.md](../docs/manifest-reference.md) |
 | Migration record (historical) | [docs/history/migration-record.md](../docs/history/migration-record.md) |
 
@@ -52,6 +54,7 @@ globs:
 | `code-block`  | Interactive | Insert code into Monaco editor       | reftarget, code, language         |
 | `terminal`    | Interactive | Shell command with Copy/Exec         | command, content                  |
 | `terminal-connect` | Interactive | Connect to Coda terminal session | content, vmTemplate              |
+| `grot-guide`  | Structural  | Choose-your-own-adventure decision tree | welcome, screens (block editor only — CLI-excluded) |
 
 ## Action Types & Decision Tree
 
@@ -68,6 +71,11 @@ Fill a form field:
 Navigate:
   └─ Change page                 → action: "navigate",   reftarget: "/path"
   └─ With verification           → add verify: "on-page:/path"
+  └─ Open another guide after    → add openGuide: "bundled:guide-id"
+
+Toggle docs panel mode:
+  └─ Pop out into floating window → action: "popout",     targetvalue: "floating"
+  └─ Dock back into sidebar       → action: "popout",     targetvalue: "sidebar"
 
 Reveal hover-hidden UI:
   └─ Automated hover+click       → type: "multistep"     with hover + button steps
@@ -178,6 +186,30 @@ Example: `"reftarget": "div[data-cy='item']:has(h3:contains('Service')) button[d
 | Automation is reliable            | `multistep` |
 | Speed is important                | `multistep` |
 
+## Lazy-Rendered Targets
+
+Virtualized containers (tables, paginated lists, dashboard rows below the fold) keep off-screen elements out of the DOM until scrolled into view. `exists-reftarget` waits but cannot scroll. Set `lazyRender: true` on the step (and optionally `scrollContainer`, default `.scrollbar-view`) so the engine scrolls the target into view before highlighting or acting.
+
+Use a `guided` block, not a plain `interactive` — user-paced detection avoids racing the scroll.
+
+```json
+{
+  "type": "guided",
+  "content": "Open the row for `checkoutservice` (it may be below the fold).",
+  "steps": [
+    {
+      "action": "button",
+      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
+      "lazyRender": true,
+      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
+      "description": "Click checkoutservice"
+    }
+  ]
+}
+```
+
+See [docs/json-guide-reference.md — Step Structure](../docs/json-guide-reference.md#step-structure). Dashboard authors: see also [`skills/autogen-guide-dashboard/dashboard-guide-rules.md` — Lazy Rendering](skills/autogen-guide-dashboard/dashboard-guide-rules.md).
+
 ## Best Practices
 
 ### Defensive Design
@@ -229,6 +261,14 @@ Use `verify` for actions that change state (save, create, navigate).
 
 Make admin-only steps `skippable: true` with helpful hints. Use `objectives` to auto-complete already-done steps. Provide alternative workflows for different permissions.
 
+### Use `openGuide` after Navigation
+
+When a step navigates to a page that has its own follow-up guide, set `openGuide: "bundled:<guide-id>"` on the `navigate` step. The Pathfinder app loads the target guide in the sidebar after navigation completes. Prefer `openGuide` over appending `?doc=` to the URL — `openGuide` is the supported field and the legacy query param will eventually be removed.
+
+### Use `popout` Sparingly
+
+`popout` interrupts the user's flow by switching the docs panel between sidebar and floating modes. Reserve it for guides that genuinely benefit from a floating window (long terminal walkthroughs, side-by-side query authoring). Always pair it with prose that explains why you're switching.
+
 ## Code Smells to Avoid
 
 ### Multistep Singletons
@@ -255,6 +295,14 @@ Every interactive step that touches the DOM should have contextual requirements 
 
 Never use auto-generated CSS classes, bare `div`/`span`, or `nth-of-type` without a stable parent. Prefer `data-testid`, button text, or semantic attributes.
 
+### Plain Interactive on Below-Fold Targets
+
+A plain `interactive` step targeting a virtualized list, paginated table, or dashboard row below the fold will fail intermittently — `exists-reftarget` waits but cannot scroll. Convert to a `guided` block with `lazyRender: true` on the step.
+
+### Legacy `?doc=` Query String
+
+Don't author new guides that append `?doc=...` to a navigate URL. Use `openGuide: "bundled:<guide-id>"` on the interactive block instead. The `?doc=` form is back-compat only.
+
 ## Quality Checklist
 
 Before finalizing a guide:
@@ -272,6 +320,9 @@ Before finalizing a guide:
 - [ ] No multistep singletons
 - [ ] No focus-before-formfill pattern
 - [ ] User-centric language per style guide
+- [ ] `popout` steps have `targetvalue: "sidebar"` or `"floating"` (no other values are valid)
+- [ ] `openGuide` used (not legacy `?doc=`) when chaining a guide after `navigate`
+- [ ] `lazyRender: true` on any step targeting virtualized content (tables, below-fold panels, long lists) — and the step is inside a `guided` block
 
 ## Schema Validation
 

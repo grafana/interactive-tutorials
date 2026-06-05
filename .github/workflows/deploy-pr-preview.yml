@@ -9,12 +9,10 @@ on:
       - opened
       - synchronize
       - closed
-    paths:
-      - "**/content.json"
 
 jobs:
   deploy-pr-preview:
-    uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@jdb/deploy-preview
+    uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@main
     if: >-
       !github.event.pull_request.head.repo.fork &&
       (contains(github.event.pull_request.labels.*.name, 'deploy-preview') ||
@@ -31,4 +29,12 @@ jobs:
       image: grafana/docs-base:latest
       repo: interactive-tutorials
       sha: ${{ github.event.pull_request.head.sha }}
+      sources: |
+        [{
+          "index_file": null,
+          "relative_prefix": "/docs/learning-paths/",
+          "repo": "interactive-tutorials",
+          "source_directory": ".",
+          "website_directory": "content/docs/learning-paths"
+        }]
       title: ${{ github.event.pull_request.title }}

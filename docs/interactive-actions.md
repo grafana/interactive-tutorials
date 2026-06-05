@@ -5,7 +5,7 @@ How each action type behaves at runtime, target semantics, and when to use each.
 ## Concepts
 
 - **"Show me" and "Do it" buttons**: Each interactive step renders two buttons controlled by the `showMe` (boolean, default `true`) and `doIt` (boolean, default `true`) properties. "Show me" highlights the target without changing state; "Do it" performs the action (click, fill, navigate) and marks the step completed. These are **not** action types — they are button visibility controls on the step.
-- **Action types**: The actual action is set via the `action` property: `highlight`, `button`, `formfill`, `navigate`, `hover`, or `noop`.
+- **Action types**: The actual action is set via the `action` property: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, or `popout`.
 - **Targets**: Depending on the action, `reftarget` is either a CSS selector, button text, a URL/path, or a section container selector.
 
 ---
@@ -98,6 +98,22 @@ Use `validateInput: true` to require the input to match a pattern:
 }
 ```
 
+### Opening a guide after navigation
+
+Set `openGuide` on a `navigate` step to automatically open another guide in the docs sidebar once navigation completes. Format is `"bundled:<guide-id>"` for guides shipped with Pathfinder, or a full docs URL.
+
+```json
+{
+  "type": "interactive",
+  "action": "navigate",
+  "reftarget": "/connections/datasources/new",
+  "openGuide": "bundled:add-prometheus-datasource",
+  "content": "Go to **Add data source** and follow the Prometheus guide."
+}
+```
+
+`openGuide` replaces the legacy `?doc=` query-string approach. The handler dispatches an `auto-launch-tutorial` event after the navigation finishes; the docs panel resolves the id and loads the guide.
+
 ## hover
 
 - **Purpose**: Trigger hover states on elements to reveal UI that appears only on hover.
@@ -142,6 +158,35 @@ Use `validateInput: true` to require the input to match a pattern:
   "tooltip": "This confirms the connection test passed."
 }
 ```
+
+## popout
+
+- **Purpose**: Toggle the docs panel between docked (sidebar) and floating (movable window) modes. Operates on the panel, not on a DOM element.
+- **reftarget**: Not used.
+- **targetvalue**: **Required**. Must be `"sidebar"` (dock back into the Grafana sidebar) or `"floating"` (pop out into a movable floating window). Any other value is rejected by the schema.
+- **Show**: No separate "Show me" preview. Single-button action, modelled after `navigate`'s "Go there" pattern.
+- **Do**: Dispatches a `pathfinder-request-pop-out` or `pathfinder-request-dock` custom event on `document`. The docs panel listens for the event and switches mode.
+- **Use when**: A guide benefits from being visible alongside Grafana in a separate window (long terminal walkthroughs, side-by-side query authoring), or when you want to dock the floating window back when finished.
+
+```json
+{
+  "type": "interactive",
+  "action": "popout",
+  "targetvalue": "floating",
+  "content": "Pop this guide out into a floating window so you can keep it visible while working in Grafana."
+}
+```
+
+```json
+{
+  "type": "interactive",
+  "action": "popout",
+  "targetvalue": "sidebar",
+  "content": "Dock the guide back into the sidebar."
+}
+```
+
+> `popout` is not supported inside `guided` blocks — there is no DOM interaction to detect.
 
 ---
 
