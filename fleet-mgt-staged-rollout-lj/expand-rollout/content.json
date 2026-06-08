@@ -16,17 +16,35 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "In the **Remote configuration** list, find your pipeline and click the edit icon to reopen the wizard. Editing a pipeline takes you back into the wizard where you can update the matching attributes without changing the pipeline configuration content.",
+          "action": "highlight",
+          "reftarget": "[data-testid^='remote-config-edit-pipeline-']:nth-match(1)",
+          "content": "Click the Edit icon next to the pipeline you want to expand to the next environment. This reopens the wizard so you can update the matching attributes.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management/remote-configuration"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Next')",
+          "content": "Click **Next** to advance to the attribute assignment step."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select Value']",
+          "content": "Add `staging`, or the appropriate value for your deployment, to the value field. The resulting value `dev|staging` matches all collectors where `env` is either `dev` or `staging`. The collector list updates in real time.",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save** to deploy the pipeline to staging.",
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
         },
         {
           "type": "markdown",
-          "content": "Navigate to the **Assign configuration pipeline** step. Update the matching attribute value to include staging:\n\n- **Value:** `dev|staging`\n\nThe collector list updates to show collectors matching either `dev` or `staging`. Click **Save** to deploy the pipeline to staging.\n\nWait and verify that staging collectors are receiving the configuration and behaving as expected."
-        },
-        {
-          "type": "markdown",
-          "content": "When staging looks healthy, edit the pipeline again and expand the regex to include your first production environment:\n\n- **Value:** `dev|staging|prod-eu`\n\nSave and monitor. Then repeat for your remaining production environments:\n\n- **Value:** `dev|staging|prod-eu|prod-us`\n\nEach expansion is a low-risk incremental step. If a problem appears at any stage, you can deactivate the pipeline before it reaches more of your fleet."
+          "content": "Wait and verify that staging collectors are receiving the configuration and behaving as expected. When staging looks healthy, repeat these steps and expand the regex to cover each production environment in turn:\n\n- `dev|staging|prod-eu`\n- `dev|staging|prod-eu|prod-us`\n\nEach expansion is a low-risk incremental step. If a problem appears at any stage, you can deactivate the pipeline before it reaches more of your fleet."
         }
       ]
     },
