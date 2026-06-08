@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "fleet-mgt-staged-rollout-verify-env-attributes",
+  "title": "Verify your collectors have env attributes",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before you can target specific environments with a pipeline, each collector must have an `env` attribute set. In this milestone, you'll check whether your collectors already have `env` values, and add them in bulk if they don't.\n\nIf you've completed the [Categorize a collector fleet](bundled:categorize-collector-fleet-lj) learning path, your `env` attributes are already set — the first section is a quick verification check."
+    },
+    {
+      "type": "section",
+      "id": "check-collector-attributes",
+      "title": "Verify your collectors have env attributes",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/fleet-management",
+          "verify": "on-page:/a/grafana-collector-app/fleet-management",
+          "objectives": ["on-page:/a/grafana-collector-app/fleet-management"],
+          "content": "Open **Fleet Management**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='tab-fleet-inventory']",
+          "content": "Click the **Inventory** tab.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "th:contains('Attributes')",
+          "content": "Check the **Attributes** column. If your collectors already show `env` values, you're done with this section and can skip ahead to the next milestone. If any collectors are missing `env` values, continue with the steps below to add the attribute.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out so you can keep it visible while you continue working."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "section",
+      "id": "add-env-attributes",
+      "title": "Add the env attribute with the bulk edit tool",
+      "requirements": ["section-completed:check-collector-attributes"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "td input[type='checkbox']:nth-match(1)",
+          "content": "Select the collectors you want to tag by checking their checkboxes.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Edit remote attributes']",
+          "content": "Click **Edit remote attributes** to open the bulk edit dialog.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "markdown",
+          "content": "In the dialog, click **Add remote attributes** to expand and complete the form:\n\n1. In the **Key** field, type `env`.\n\n2. In the **Value** field, type the environment name, for example `dev`.\n\n3. Click **Apply changes** to save the attribute to all selected collectors."
+        },
+        {
+          "type": "markdown",
+          "content": "Repeat the selection and assignment for each environment group, using values such as `staging`, `prod-eu`, and `prod-us` according to your deployment strategy. Once your collectors are tagged and ready, Fleet Management can use the `env` attribute to target specific environments when assigning pipelines."
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back into the sidebar to continue working."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll roll out a pipeline to your development environment first."
+    }
+  ]
+}
