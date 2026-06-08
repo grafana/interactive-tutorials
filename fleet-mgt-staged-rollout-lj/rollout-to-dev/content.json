@@ -5,52 +5,75 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "You'll create a configuration pipeline assignment using a regular expression attribute to deploy it only to your `dev` collectors. Starting in dev lets you validate the pipeline before it reaches staging or production."
+      "content": "You'll assign a configuration pipeline using a regular expression attribute to deploy it only to your `dev` collectors. Starting in dev lets you validate the pipeline before it reaches staging or production."
     },
     {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "div[data-testid='fleet-management-page'] button[data-testid='tab-remote-configuration']",
-      "content": "Click the **Remote configuration** tab.",
-      "tooltip": "The Remote configuration tab lists all configuration pipelines and lets you create, edit, activate, and deactivate them.",
-      "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+      "type": "markdown",
+      "content": "To roll out the pipeline to your development environment, complete the following steps:"
     },
     {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "button[data-testid^='remote-config-edit-pipeline-']:nth-match(1)",
-      "content": "Click the Edit icon next to the pipeline you want to roll out.",
-      "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "button:text('Next')",
-      "content": "Click **Next** to advance to the attribute assignment step.",
-      "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "input[placeholder*='Key' i]",
-      "content": "In the **Key** dropdown, select or type `env`.",
-      "doIt": false,
-      "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "input[placeholder*='Value' i]",
-      "content": "Set the **Operator** to `=~`, which enables regex matching, so you can expand the rollout later without creating a new pipeline. Type `dev` in the **Value** field. The collector list updates in real time — only collectors with `env=dev` appear.",
-      "doIt": false,
-      "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
-    },
-    {
-      "type": "interactive",
-      "action": "button",
-      "reftarget": "Save",
-      "content": "Click **Save** to roll out the pipeline. Fleet Management immediately begins deploying it to your `dev` collectors on their next poll.",
-      "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='fleet-management-page'] button[data-testid='tab-remote-configuration']",
+          "content": "Click the **Remote configuration** tab.",
+          "tooltip": "The Remote configuration tab lists all configuration pipelines and lets you create, edit, activate, and deactivate them.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid^='remote-config-edit-pipeline-']:nth-match(1)",
+          "content": "Click the Edit icon next to the pipeline you want to roll out.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Next')",
+          "content": "Click **Next** to advance to the attribute assignment step.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='fleet-inventory-filter-button']",
+          "content": "If your pipeline already has attribute rows with values filled in, click **+** to add a new empty row. Skip this step if there's already an empty **Select Attribute** field visible.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select Attribute']",
+          "content": "In the **Select Attribute** dropdown, select or type `env`.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Set the **Operator** to `=~`. This enables regex matching so you can expand the rollout later by editing the value — without creating a new pipeline.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select Value']",
+          "content": "Type `dev` in the **Select Value** field. The collector list updates in real time — only collectors with `env=dev` appear.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save** to roll out the pipeline. Fleet Management immediately begins deploying it to your `dev` collectors on their next poll.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        }
+      ]
     },
     {
       "type": "markdown",
