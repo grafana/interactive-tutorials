@@ -22,15 +22,17 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 env:
   DEPLOY_ENV: ${{ github.event_name == 'push' && 'prod' || github.event.inputs.environment }}
 
 jobs:
-  deploy:
-    name: Deploy to GCS
+  deploy-guides:
+    name: Deploy guides/ to GCS
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -42,13 +44,14 @@ jobs:
         uses: grafana/shared-workflows/actions/login-to-gcs@6a97ef28077dbb66da3582aad604aef980cd1787 # login-to-gcs/v0.3.0
         id: login-to-gcs
         with:
-          # login-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
+          # login-to-gcs accepts only 'dev' or 'prod'; map 'ops' to 'prod'
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
 
-      # ── Tooling ───────────────────────────────────────────────────────────────
-      # The pathfinder CLI is built once and reused below to generate the snippet
-      # catalog (shared/snippets/index.json) and the package repository.json.
-
+      # NOTE: build-snippets runs the pathfinder-app@main CLI inside this trusted
+      # job so the generated guides/shared/snippets/index.json can be pushed
+      # alongside the rest of guides/. This is a remaining un-sandboxed CLI
+      # invocation in a credentialed job; sandboxing it would require routing
+      # snippets through build-packages and is tracked as follow-up work.
       - name: Checkout pathfinder-app CLI
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -75,11 +78,7 @@ jobs:
       - name: Prepare tutorial files
         run: |
           mkdir -p guides
-          
-          # Copy index.json
           cp index.json guides/
-          
-          # Copy shared folder (snippets, templates, etc.)
           cp -r shared guides/
 
           # Generate the snippet catalog from the bodies. The snippet bodies are
@@ -88,24 +87,19 @@ jobs:
           # shared/snippets/index.json is gitignored and not committed.
           node pathfinder-app/dist/cli/cli/index.js build-snippets guides/shared/snippets -o guides/shared/snippets/index.json
 
-          # Copy kiosk rules (static JSON served as-is)
           if [ -d kiosk ]; then
             cp -r kiosk guides/
           fi
 
-          # Copy all tutorial directories (containing content.json)
-          # LEGACY: unstyled.html files are also copied for backward compatibility,
-          # but the HTML format is deprecated. Only content.json is respected going forward.
+          # LEGACY: unstyled.html files travel alongside content.json for
+          # backward compatibility; the HTML format is deprecated.
           find . \( -name "unstyled.html" -o -name "content.json" \) -type f \
             | sed 's|/[^/]*$||' \
             | sort -u \
             | while read -r dir; do
-            # Skip excluded folders
             if [[ "$dir" != "." && "$dir" != "./docs"* && "$dir" != "./shared"* ]]; then
               mkdir -p "guides/$dir"
-              # Copy JSON files (primary format)
               cp "$dir"/*.json "guides/$dir/" 2>/dev/null || true
-              # LEGACY: Copy HTML files for backward compatibility only
               cp "$dir"/*.html "guides/$dir/" 2>/dev/null || true
             fi
           done
@@ -118,13 +112,46 @@ jobs:
         with:
           bucket: interactive-learning-${{ env.DEPLOY_ENV }}
           path: guides
-          # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
 
-      # ── Pathfinder package deploy ─────────────────────────────────────────────
-      # Builds repository.json from all migrated packages and publishes the full
-      # package tree to bucket/packages/. The guides/ deploy above is unchanged.
+  # Sandboxed: executes the pathfinder-app CLI from ref: main. Deliberately
+  # holds no id-token so a compromised ref cannot mint a GCS OIDC token.
+  # Artifacts produced here are integrity-checked by publish-packages before push.
+  build-packages:
+    name: Build Pathfinder packages and courses
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ github.event_name == 'push' && github.ref || github.event.inputs.branch }}
+          persist-credentials: false
+
+      - name: Checkout pathfinder-app CLI
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: grafana/grafana-pathfinder-app
+          ref: main
+          path: pathfinder-app
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: pathfinder-app/package-lock.json
+
+      - name: Pathfinder repo CLI tools dependencies
+        working-directory: pathfinder-app
+        run: npm ci
+
+      - name: Pathfinder repo CLI tools
+        working-directory: pathfinder-app
+        run: npm run build:cli
 
       - name: Build Pathfinder Repo
         run: |
@@ -156,10 +183,8 @@ jobs:
             fi
           done
 
-          # Build repository.json co-located inside packages/ so that "path"
-          # entries (e.g. "alerting-101/") resolve as siblings of repository.json
-          # on the CDN. No --exclude flag needed here: pathfinder-app/ was never
-          # copied into packages/.
+          # repository.json must live inside packages/ so "path" entries
+          # resolve as siblings on the CDN.
           node pathfinder-app/dist/cli/cli/index.js build-repository packages/ -o packages/repository.json
 
           echo "Guide directories staged under packages/:"
@@ -172,48 +197,120 @@ jobs:
         continue-on-error: true
         run: node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:packages/repository.json > packages/graph.json
 
-      - name: Validate packages before publish
-        run: node pathfinder-app/dist/cli/cli/index.js validate --packages packages/
+      - name: Build courses platform indexes
+        continue-on-error: true
+        run: node pathfinder-app/dist/cli/cli/index.js build-courses courses/ -o courses/
 
-      - name: Verify files before push
+      - name: Upload packages artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: pathfinder-packages
+          path: packages/
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: Upload courses artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: pathfinder-courses
+          path: courses/
+          retention-days: 1
+          if-no-files-found: warn
+
+  publish-packages:
+    name: Publish packages/ and courses/ to GCS
+    runs-on: ubuntu-latest
+    needs: build-packages
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Login to GCS
+        uses: grafana/shared-workflows/actions/login-to-gcs@6a97ef28077dbb66da3582aad604aef980cd1787 # login-to-gcs/v0.3.0
+        with:
+          environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
+
+      - name: Download packages artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: pathfinder-packages
+          path: packages
+
+      # Courses are optional: build-courses runs with continue-on-error in the
+      # sandbox, the upload uses if-no-files-found: warn, and this download
+      # tolerates a missing artifact. The push step below is gated on courses/
+      # actually containing files.
+      - name: Download courses artifact
+        continue-on-error: true
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: pathfinder-courses
+          path: courses
+
+      # Integrity gate. Runs in this trusted job using only plain shell + jq —
+      # NOT the pathfinder-app CLI, which was the binary that produced these
+      # artifacts in the untrusted job and therefore cannot vouch for them.
+      # The intent is to catch tampering (malformed JSON, missing top-level
+      # files, unexpected blow-up in artifact size) before handing bytes to
+      # push-to-gcs. This is necessarily shallow — deep schema validation
+      # would re-introduce a CLI dependency — but it raises the bar from
+      # "no check at all" to "the artifact has to at least look like a
+      # well-formed package set."
+      - name: Integrity check artifacts
         run: |
-          echo "Files in packages/ directory:"
-          ls -la packages/ | head -20
+          set -euo pipefail
+
+          echo "── packages/ ────────────────────────────────────────────────"
+          test -f packages/repository.json || { echo "❌ packages/repository.json missing"; exit 1; }
+          jq -e 'type == "object" and (.packages | type == "array") and (.packages | length > 0)' \
+            packages/repository.json > /dev/null \
+            || { echo "❌ packages/repository.json malformed or empty .packages array"; exit 1; }
+          echo "✅ repository.json well-formed with $(jq '.packages | length' packages/repository.json) packages"
+
+          # Optional graph.json: if present, must parse.
+          if [ -f packages/graph.json ]; then
+            jq -e 'type == "object"' packages/graph.json > /dev/null \
+              || { echo "❌ packages/graph.json present but not valid JSON object"; exit 1; }
+            echo "✅ graph.json well-formed"
+          else
+            echo "⚠️  graph.json absent (optional)"
+          fi
+
+          # Sanity bound: catch a runaway artifact (e.g. CLI vacuuming up
+          # unrelated paths). 500 MB is well above any plausible real value.
+          PKG_BYTES=$(du -sb packages | cut -f1)
+          echo "packages/ size: ${PKG_BYTES} bytes"
+          if [ "${PKG_BYTES}" -gt 524288000 ]; then
+            echo "❌ packages/ exceeds 500 MB sanity bound — refusing to publish"
+            exit 1
+          fi
+
           echo ""
-          echo "Checking for repository.json:"
-          test -f packages/repository.json && echo "✅ repository.json exists" || echo "❌ repository.json MISSING"
-          echo "Checking for graph.json:"
-          test -f packages/graph.json && echo "✅ graph.json exists" || echo "⚠️  graph.json missing (optional)"
-          echo ""
-          echo "Top-level files that will be pushed:"
-          find packages -maxdepth 1 -type f
+          echo "── courses/ ─────────────────────────────────────────────────"
+          if [ -d courses ] && [ -n "$(ls -A courses 2>/dev/null)" ]; then
+            for f in courses/*.json; do
+              [ -e "$f" ] || continue
+              jq -e 'type' "$f" > /dev/null \
+                || { echo "❌ $f is not valid JSON"; exit 1; }
+            done
+            echo "✅ courses/ contents parse as JSON"
+          else
+            echo "⚠️  courses/ absent or empty — skipping courses push"
+          fi
 
       - name: 'Publish Pathfinder repo: Push packages to GCS'
         uses: grafana/shared-workflows/actions/push-to-gcs@bc692dca3f6e354bc565ae8f6e622f24a6162b66 # push-to-gcs/v0.3.1
         with:
           bucket: interactive-learning-${{ env.DEPLOY_ENV }}
-          # path: packages with default parent: true causes files to land at
-          # bucket/packages/... — same pattern as path: guides → bucket/guides/...
           path: packages
-          # push-to-gcs only accepts 'dev' or 'prod', map 'ops' accordingly
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
 
-      # ── Courses deploy ────────────────────────────────────────────────────────
-      # Aggregates per-course and per-badge JSON into courses/oss.json and
-      # courses/cloud.json, then publishes the whole courses/ tree. The plugin
-      # only fetches the platform index files; per-course files travel along
-      # for direct authoring-tool access.
-
-      - name: Build courses platform indexes
-        continue-on-error: true
-        run: node pathfinder-app/dist/cli/cli/index.js build-courses courses/ -o courses/
-
       - name: 'Publish courses to GCS'
+        if: ${{ hashFiles('courses/**') != '' }}
         uses: grafana/shared-workflows/actions/push-to-gcs@bc692dca3f6e354bc565ae8f6e622f24a6162b66 # push-to-gcs/v0.3.1
         with:
           bucket: interactive-learning-${{ env.DEPLOY_ENV }}
-          # Lands at bucket/courses/... — same pattern as path: guides / packages.
           path: courses
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
