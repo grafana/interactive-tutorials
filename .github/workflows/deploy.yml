@@ -172,6 +172,9 @@ jobs:
         continue-on-error: true
         run: node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:packages/repository.json > packages/graph.json
 
+      - name: Build selector registry
+        run: python3 .github/scripts/build_selector_registry.py packages/selector-registry.json
+
       - name: Validate packages before publish
         run: node pathfinder-app/dist/cli/cli/index.js validate --packages packages/
 
@@ -184,6 +187,8 @@ jobs:
           test -f packages/repository.json && echo "✅ repository.json exists" || echo "❌ repository.json MISSING"
           echo "Checking for graph.json:"
           test -f packages/graph.json && echo "✅ graph.json exists" || echo "⚠️  graph.json missing (optional)"
+          echo "Checking for selector-registry.json:"
+          test -f packages/selector-registry.json && echo "✅ selector-registry.json exists" || echo "❌ selector-registry.json MISSING"
           echo ""
           echo "Top-level files that will be pushed:"
           find packages -maxdepth 1 -type f
