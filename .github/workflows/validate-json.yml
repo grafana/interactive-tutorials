@@ -85,6 +85,19 @@ jobs:
       working-directory: pathfinder-app
       run: npm run build:cli
 
+    # Validates every shared snippet body against the snippet schema. build-snippets
+    # exits non-zero on any invalid body (missing description, id/filename mismatch,
+    # nested snippet-ref, etc.), so this catches broken snippets at PR time rather
+    # than at deploy. Output goes to a throwaway path — the real catalog is rebuilt
+    # during deploy.
+    - name: Validate snippet bodies
+      run: |
+        if [ -d shared/snippets ]; then
+          node pathfinder-app/dist/cli/cli/index.js build-snippets shared/snippets -o /tmp/snippets-index.json
+        else
+          echo "No shared/snippets directory; skipping."
+        fi
+
     # NOTE: this validates _only directories with content.json_
     # Post-migration, if all directories are enforced to have manifest.json, this
     # job can be removed as redundant to the other validate-packages job.
