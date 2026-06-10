@@ -80,7 +80,7 @@ Consult these during the workflow:
 
 ### Action types
 
-`highlight` · `button` · `formfill` · `hover` · `navigate` · `noop`
+`highlight` · `button` · `formfill` · `hover` · `navigate` · `noop` · `popout`
 
 ### Selector priority
 
