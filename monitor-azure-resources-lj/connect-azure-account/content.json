@@ -1,0 +1,80 @@
+{
+  "id": "monitor-azure-resources-connect-azure-account",
+  "title": "Connect to Azure account",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll establish the connection between your Azure account and Grafana Cloud using the service principal you created in the previous milestone.\n\nTo connect your Azure account to Grafana Cloud, complete the following steps on the **Create new credential** page."
+    },
+    {
+      "type": "section",
+      "id": "connect-azure-account-steps",
+      "title": "Connect to Azure account",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[name=\"name\"]",
+          "targetvalue": "production-azure-monitoring",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-csp-app/azure/configuration/azure-metrics-serverless/create"],
+          "content": "In the **Name** field, enter a descriptive name for your credential.\n\nFor example, enter `production-azure-monitoring` or `azure-us-east-account`."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[name=\"client_id\"]",
+          "targetvalue": "12345678-1234-1234-1234-123456789012",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-csp-app/azure/configuration/azure-metrics-serverless/create"],
+          "content": "In the **Client id** field, paste the `appId` value from the service principal output."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[name=\"client_secret\"]",
+          "targetvalue": "",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-csp-app/azure/configuration/azure-metrics-serverless/create"],
+          "content": "In the **Client secret** field, paste the `password` value from the service principal output.\n\nThis is the secret password generated when you created the service principal."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[name=\"tenant_id\"]",
+          "targetvalue": "87654321-4321-4321-4321-210987654321",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-csp-app/azure/configuration/azure-metrics-serverless/create"],
+          "content": "In the **Tenant id** field, paste the `tenant` value from the service principal output."
+        },
+        {
+          "type": "section",
+          "id": "add-azure-tags-optional",
+          "title": "(Optional) Add Azure tags",
+          "blocks": [
+            {
+              "type": "interactive",
+              "action": "formfill",
+              "reftarget": "input#tags-input",
+              "targetvalue": "Environment",
+              "doIt": false,
+              "requirements": ["on-page:/a/grafana-csp-app/azure/configuration/azure-metrics-serverless/create"],
+              "content": "In the **Tags** section, add Azure-formatted tags to organize and filter your metrics.\n\nEnter a tag name in the tags field.\n\nFor example, enter `Environment`."
+            },
+            {
+              "type": "interactive",
+              "action": "button",
+              "reftarget": "Add",
+              "requirements": ["on-page:/a/grafana-csp-app/azure/configuration/azure-metrics-serverless/create"],
+              "content": "Click **Add** to add the tag.\n\nThese tags must match the tags configured on your Azure resources."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The connection information is entered and ready to be used for metric collection.\n\nIn your next milestone, you'll configure which metrics to collect from your Azure environment."
+    }
+  ]
+}
