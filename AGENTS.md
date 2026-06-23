@@ -5,7 +5,7 @@ description: Overview of this repository and task routing for AI agents.
 
 # Interactive Guides Repository
 
-This repository contains interactive Grafana guides in JSON format. Each guide lives in its own directory with a `content.json` file defining the guide structure, and an optional `index.json` entry controls where the guide is recommended.
+This repository contains interactive Grafana guides in JSON format. Each guide lives in its own directory with a `content.json` file defining the guide structure and a `manifest.json` file whose `targeting.match` controls where the guide is recommended. (`index.json` is frozen and no longer edited per guide -- a CI check fails any PR that changes it.)
 
 Full reference documentation lives in `docs/`. AI-oriented references live in `.cursor/`.
 
@@ -44,7 +44,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Decision trees & code smells | [best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), `docs/` |
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
-| Write index.json entry | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `index.json` |
+| Make a guide recommended | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
 | Write/edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Understand the system | [system-architecture.mdc](.cursor/system-architecture.mdc) | `docs/` |
 
