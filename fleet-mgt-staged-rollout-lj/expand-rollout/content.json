@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "fleet-mgt-staged-rollout-expand-rollout",
+  "title": "Expand the rollout to staging and production",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Once dev looks healthy, you'll incrementally expand the pipeline's matching expression to include staging and then production environments. Because you set the operator to `=~` in the previous milestone, you can broaden the rollout by editing the regex value — no new pipeline needed."
+    },
+    {
+      "type": "markdown",
+      "content": "To expand the rollout, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid^='remote-config-edit-pipeline-']:nth-match(1)",
+          "content": "Click the Edit icon next to the pipeline you want to expand to the next environment. This reopens the wizard so you can update the matching attributes.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management/remote-configuration"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Next')",
+          "content": "Click **Next** to advance to the attribute assignment step."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the same value field for the `env` attribute, add `staging`. The resulting value `dev|staging` matches all collectors where `env` is either `dev` or `staging`. The collector list updates in real time."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save** to deploy the pipeline to staging.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"]
+        },
+        {
+          "type": "markdown",
+          "content": "Wait and verify that staging collectors are receiving the configuration and behaving as expected. When staging looks healthy, repeat these steps and expand the regex to cover each production environment in turn:\n\n- `dev|staging|prod-eu`\n- `dev|staging|prod-eu|prod-us`\n\nEach expansion is a low-risk incremental step. If a problem appears at any stage, you can deactivate the pipeline before it reaches more of your fleet."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your pipeline is now deployed across all environments. In the next milestone, you'll learn how to halt the rollout immediately if a problem occurs."
+    }
+  ]
+}
