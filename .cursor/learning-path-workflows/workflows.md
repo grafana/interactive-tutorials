@@ -9,13 +9,18 @@ Make sure you have:
 - The **website** and **interactive-tutorials** repositories cloned locally in the same Cursor workspace
 - **Playwright MCP** configured in Cursor (the AI uses this to discover CSS selectors)
 - Access to `https://learn.grafana.net/` (the test environment)
+- Understanding of what a selector is. A selector is a way to identify an element on a webpage so that scripts can interact with it. Think of it like a street address: the more precise and stable it is, the better the directions to get there, even if some landmarks change.
+  In the context of interactive learning paths, selectors are used to identify buttons, menu items, text boxes, or other parts of the Grafana Cloud UI so interactive guides can highlight the element ("Show me") or take action on behalf of the user ("Do it").
+  The command in this workflow prompts an AI agent to find the necessary selectors in the Grafana Cloud application code, but you need to test what it gives you to make sure the selectors work and are durable across variations in the stack's data.
 
 ## What the command produces
 
-`/create-learning-path` generates files in the **interactive-tutorials** repo under `[slug]-lj/`:
+`/create-learning-path` generates all files in the **interactive-tutorials** repo under `[slug]-lj/`:
 
-- `content.json` and `manifest.json` at the path level
-- `[milestone]/content.json` and `[milestone]/manifest.json` for each milestone
+- `content.json`, `manifest.json`, and `website.yaml` at the path level
+- `[milestone]/content.json`, `[milestone]/manifest.json`, and `[milestone]/website.yaml` for each milestone
+
+The `website.yaml` files are used to create deploy previews so you can see the non-interactive path before it's published to the Learning Hub.
 
 ## Run the command
 
@@ -40,11 +45,11 @@ The AI validates that both repos are accessible, reads the canonical Grafana doc
 
 **Your role:** Review and approve the proposed milestones before the AI writes anything.
 
-### Phase 2: Content and manifest generation
+### Phase 2: Content, manifest, and website metadata generation
 
-The AI creates `content.json` files for every milestone (interactive blocks for UI steps, markdown blocks for conceptual content) and generates `manifest.json` files with the correct dependency chains.
+The AI creates `content.json` files for every milestone (interactive blocks for UI steps, markdown blocks for conceptual content), generates `manifest.json` files with the correct dependency chains, and creates `website.yaml` files with metadata required to publish to the website.
 
-**Your role:** None — this phase is fully automated.
+**Your role:** This phase is mostly automated. The agent might ask you to supply some of the `website.yaml` values if it can't derive them on its own.
 
 ### Phase 3: Selector discovery
 
@@ -57,6 +62,9 @@ The AI uses Playwright to inspect the DOM at `learn.grafana.net` and find stable
 The AI tells you which `content.json` to import into the Pathfinder Block Editor at `learn.grafana.net/?pathfinder-dev=true`. You click through the "Show me" and "Do it" buttons and report any failures. The AI fixes broken selectors based on your feedback.
 
 **Your role:** This is the most hands-on phase. Test every interactive step and report exactly what fails — for example, "Show me on step 3 highlights the wrong element" or "Do it on step 5 doesn't click anything."
+
+> [!IMPORTANT]
+> Test the `content.json` files or the resulting PR in multiple stacks and environments. If you only test in `learn.grafana.net`, you might miss some gotchas, such as permissions required to access a feature or UI variations if the feature is already configured. Use the `ops` environment, your own staff stack, or any other environment you have access to. Aim to test widely to ensure the guide is as unbreakable as possible.
 
 ### Phase 5: Wrap-up
 
