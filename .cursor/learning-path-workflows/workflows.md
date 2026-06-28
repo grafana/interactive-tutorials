@@ -80,9 +80,9 @@ The AI uses Playwright to inspect the DOM at `learn.grafana.net` and find stable
 
 ### Phase 4: Testing
 
-The AI tells you which `content.json` to import into the Pathfinder Block Editor at `learn.grafana.net/?pathfinder-dev=true`. You click through the "Show me" and "Do it" buttons and report any failures. The AI fixes broken selectors based on your feedback.
+Use the Block Builder **PR review tool** (dev tools, pathfinder-app 1.4.5+) to load milestone `content.json` files from the `interactive-tutorials` PR under review — do not copy-paste JSON manually unless the tool is unavailable. Test one milestone at a time at `learn.grafana.net/?pathfinder-dev=true`. Click through every **Show me** and **Do it** step and report failures.
 
-**Your role:** This is the most hands-on phase. Test every interactive step and report exactly what fails — for example, "Show me on step 3 highlights the wrong element" or "Do it on step 5 doesn't click anything."
+**Your role:** Navigate to each milestone's starting page, open the PR review tool, select the milestone, and test every interactive step. Report exactly what fails — for example, "Show me on step 3 highlights the wrong element" or "Do it on step 5 doesn't click anything."
 
 ### Phase 5: Wrap-up
 
@@ -102,3 +102,4 @@ The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, a
 | --- | --- | --- |
 | `/build-interactive-lj` | Existing milestone markdown in website repo | `content.json` + `manifest.json` files, updated website markdown |
 | `/create-learning-path` | Feature description (no existing markdown) | `content.json` + `manifest.json` files, new website markdown |
+| `/review-learning-path-pr` | Open LP PR in `interactive-tutorials` | Pending GitHub review, inline blockers, submitted verdict |
