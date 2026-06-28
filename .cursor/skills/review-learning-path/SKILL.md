@@ -342,7 +342,7 @@ For each milestone in path `milestones` (skip terminal-only e.g. external CLI):
 3. Dedupe to [one comment per root cause](reference-checks.md#one-comment-per-root-cause) before posting.
 4. Add inline comments via GraphQL `addPullRequestReviewComment` — **Always inline** + runtime failures only.
 5. Merge Playwright + Pathfinder evidence, and merge code fix + runtime symptom when they share a root cause (never two inline threads on the same file for the same bug).
-6. Write `.cursor/pr-review-state/pr-{n}-review-body.md` with **Review body only** findings, passed milestones, and retest notes. Apply the [generated-file frontmatter](SKILL.md#generated-files).
+6. Write `.cursor/pr-review-state/pr-{n}-review-body.md` with **Review body only** findings, passed milestones, and retest notes. List all merge blockers under one **Must fix before merge** section (no split "should fix" tier for **Always inline** items). Apply the [generated-file frontmatter](SKILL.md#generated-files).
 7. Update state: `comment_count`, `"phase": 7`.
 
 **Example inline tone:**
