@@ -1,5 +1,5 @@
 ---
-name: review-learning-path-pr
+name: review-learning-path
 description: >-
   Guide a reviewer through a full learning path PR review in interactive-tutorials —
   per-milestone audit, path consistency, Playwright, Pathfinder PR review tool, and
@@ -12,11 +12,71 @@ Interactive, phase-by-phase review of a `{slug}-lj/` pull request. The **agent n
 
 **Entry command:** [/review-learning-path-pr](../../commands/review-learning-path-pr.md)
 
+**Do NOT read external reference files upfront.** Each phase loads its own references on demand. Everything the orchestrator needs to start is inline below.
+
+**Skill memory:** This skill does **not** use the per-guide `assets/manifest.yaml` convention ([skill-memory.md](../skill-memory.md)). PR-scoped state lives in `.cursor/pr-review-state/` so reviews survive across branches and do not write into author package directories.
+
+**Severity:** [finding severity routing](reference-checks.md#finding-severity-routing) in this skill **supersedes** [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for Phase 3 bucketing and Phase 7 inline vs body decisions. audit-guide blocking/warning/info still applies during Phase 1; re-tag findings with this skill's routing before Phase 7.
+
 **Checklists:** [reference-checks.md](reference-checks.md) · **GitHub API:** [github-review.md](github-review.md)
 
 **Related:** [audit-guide](../audit-guide/SKILL.md) · [review-guide-pr.mdc](../../review-guide-pr.mdc)
 
 **Example:** [PR #403](https://github.com/grafana/interactive-tutorials/pull/403) (`monitor-azure-resources-lj`)
+
+---
+
+## Workflow overview
+
+```
+Input (PR URL or number)
+  │
+  ├─ Phase 0: Get PR & checkout ── orchestrator (gh, infer path_dir)
+  │
+  ├─ Phase 1: Per-milestone audit ── dispatch audit-guide per milestone (parallel OK)
+  │
+  ├─ Phase 2: Path consistency ──── orchestrator (manifest, framing, website.yaml)
+  │
+  ├─ Phase 3: Findings doc ──────── orchestrator → pr-{n}-findings.md
+  │    Checkpoint: reviewer approves live testing
+  │
+  ├─ Phase 4: Pending GitHub review
+  │
+  ├─ Phase 5: Playwright DOM ────── orchestrator (reviewer logs in first)
+  │
+  ├─ Phase 6: Pathfinder PR tool ── reviewer reports pass/fail/N/A per milestone
+  │
+  ├─ Phase 7: Consolidate comments ─ orchestrator → inline + review-body.md
+  │
+  ├─ Phase 8: Reviewer approval ─── orchestrator
+  │
+  └─ Phase 9: Submit ────────────── orchestrator (workflow ends)
+       Phase 10: optional post-submit follow-ups
+```
+
+---
+
+## Inputs
+
+- **Required**: `pr_number` or GitHub PR URL for `grafana/interactive-tutorials` — supplied by the reviewer at Phase 0.
+- **Optional**: `path_dir` — `{slug}-lj/` package directory. Inferred from changed files; confirm with reviewer if ambiguous.
+- **Optional**: `website_slug` — companion path slug (`{path_dir}` minus `-lj`). Inferred when `website` repo is in workspace.
+- **Optional**: `learn_host` — live test host (default `learn.grafana.net`).
+- **Optional**: `waive_live_testing` — reviewer explicitly accepts static-only review; skip Phases 5–6.
+
+If the user invokes `/review-learning-path-pr` with no arguments, start Phase 0 and ask for the PR.
+
+---
+
+## Safety invariants
+
+These rules are **inviolable** during a review run:
+
+1. **Never modify author `content.json` or `manifest.json`.** Read-only on guide JSON.
+2. **Never post GitHub inline comments before Phase 7** (unless reviewer waives live testing and approves static-only inline at Phase 3).
+3. **Never submit a review before Phase 8 approval** from the reviewer.
+4. **Never commit `audit-guide` artifacts** (`{milestone}/assets/`) or `.cursor/pr-review-state/` to the author's branch.
+5. **One pending GitHub review per PR review cycle** — workflow ends at Phase 9 submit.
 
 ---
 
@@ -93,7 +153,7 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 ### Agent steps
 
 1. List milestones from path `manifest.json` `milestones` array **plus** any changed milestone dirs.
-2. Run audit-guide on each milestone directory (parallel OK). Skip framing-only packages not in path `milestones` unless PR changed them.
+2. Dispatch [audit-guide](../audit-guide/SKILL.md) on each milestone directory (Explore sub-agent or Task, parallel OK). Skip framing-only packages not in path `milestones` unless PR changed them.
 3. Apply every row in [reference-checks.md § content](reference-checks.md#milestone-contentjson-checks).
 4. Tag each finding with severity from [finding severity routing](reference-checks.md#finding-severity-routing) (`inline` / `defer` / `body`).
 5. Summarize per milestone: verdict, blocking count, top issues (file + rule + fix + severity).
@@ -155,6 +215,8 @@ Write `pr-{n}-findings.md` using [finding severity routing](reference-checks.md#
 - **Waived / N/A** — terminal milestones; fresh-stack retest notes e.g. install
 
 Each listed finding includes severity tag and source phase (1, 2, 5, or 6).
+
+Apply the [generated-file frontmatter](SKILL.md#generated-files) to `pr-{n}-findings.md`.
 
 Update state: `"phase": 3`.
 
@@ -280,7 +342,7 @@ For each milestone in path `milestones` (skip terminal-only e.g. external CLI):
 3. Dedupe to [one comment per root cause](reference-checks.md#one-comment-per-root-cause) before posting.
 4. Add inline comments via GraphQL `addPullRequestReviewComment` — **Always inline** + runtime failures only.
 5. Merge Playwright + Pathfinder evidence, and merge code fix + runtime symptom when they share a root cause (never two inline threads on the same file for the same bug).
-6. Write `.cursor/pr-review-state/pr-{n}-review-body.md` with **Review body only** findings, passed milestones, and retest notes. List all merge blockers under one **Must fix before merge** section (no split "should fix" tier for **Always inline** items).
+6. Write `.cursor/pr-review-state/pr-{n}-review-body.md` with **Review body only** findings, passed milestones, and retest notes. Apply the [generated-file frontmatter](SKILL.md#generated-files).
 7. Update state: `comment_count`, `"phase": 7`.
 
 **Example inline tone:**
@@ -366,13 +428,27 @@ For each milestone in path `milestones` (skip terminal-only e.g. external CLI):
 
 ---
 
-## Artifacts
+## Generated files
 
-| File | Phase |
-|---|---|
-| `.cursor/pr-review-state/pr-{n}.json` | 0+ |
-| `.cursor/pr-review-state/pr-{n}-findings.md` | 3 |
-| `.cursor/pr-review-state/pr-{n}-review-body.md` | 7 → 9 |
+Deliverables for the reviewer. Write under `.cursor/pr-review-state/` — **never commit to the PR branch.**
+
+| File | Phase | Purpose |
+|---|---|---|
+| `pr-{n}.json` | 0+ | Machine-readable review state ([schema](github-review.md#state-file-schema)) |
+| `pr-{n}-findings.md` | 3 | Merged static + consistency findings |
+| `pr-{n}-review-body.md` | 7 → 9 | Final review body (GitHub UI does not show pending body) |
+
+Every generated markdown file in `.cursor/pr-review-state/` **must** start with:
+
+```markdown
+---
+disclaimer: Auto-generated by review-learning-path skill. Do not edit manually.
+notice: To regenerate, re-run the skill from the relevant phase.
+pr_number: {n}
+---
+```
+
+Do not add this frontmatter to `pr-{n}.json`.
 
 ---
 

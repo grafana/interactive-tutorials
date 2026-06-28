@@ -2,6 +2,8 @@
 
 Detailed checklists referenced from [SKILL.md](SKILL.md). The agent uses these during Phases 1–2; findings land in `pr-{n}-findings.md`, not on GitHub until Phase 7. Phase 3 buckets findings using [finding severity routing](#finding-severity-routing); Phase 7 applies that routing plus [GitHub comment policy](#github-comment-policy).
 
+**Note:** [finding severity routing](#finding-severity-routing) supersedes [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for this workflow. audit-guide blocking/warning/info labels from Phase 1 are inputs only — re-tag before Phase 7.
+
 ---
 
 ## Finding severity routing
