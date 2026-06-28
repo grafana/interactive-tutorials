@@ -80,6 +80,7 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
   "pending_review_node_id": "PRR_kwDOPf9q6c8AAAABERITuA",
   "pending_review_id": 12345678,
   "comment_count": 3,
+  "recommended_verdict": "REQUEST_CHANGES",
   "pathfinder": {
     "navigate-azure-config": "pass",
     "connect-azure-account": "pass",
@@ -109,7 +110,8 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
 | `pathfinder` | Phase 6 | Keys = milestone slug; values = `pass`, `fail step N — …`, or `N/A — …` |
 | `playwright` | Phase 5 | Per-milestone selector results: `exists`, `missing`, `below-fold` |
 | `comment_count` | Phase 7 | Inline comments added to pending review |
-| `verdict` | Phase 9 | `REQUEST_CHANGES`, `COMMENT`, or `APPROVE` |
+| `recommended_verdict` | Phase 7 | Agent default: `REQUEST_CHANGES`, `COMMENT`, or `APPROVE` |
+| `verdict` | Phase 8–9 | Reviewer-confirmed verdict (may override `recommended_verdict`) |
 | `review_url` | Phase 9 | URL returned by `submitPullRequestReview` |
 
 Omit fields until the phase that populates them. On resume (see SKILL.md § Resume), read `phase` and `status` to pick up where the review left off.

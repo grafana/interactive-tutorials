@@ -197,3 +197,39 @@ Dedupe before posting. Apply these rules in order:
 | Code fix in PR (`depends`, manifest, noop, framing) | No fixed template | — |
 
 **Never inline:** pass-only, N/A-only, `FROM AUDIT:` dumps, duplicate threads for the same root cause on the same file, items still in **Defer** that Pathfinder passed.
+
+---
+
+## Verdict selection (Phases 8–9)
+
+The reviewer chooses the GitHub review event at Phase 8. The agent **recommends** a default from findings; the reviewer confirms or overrides before Phase 9 submit.
+
+### Decision tree
+
+```
+After Phase 7 — any Always inline finding OR Phase 5–6 runtime failure with inline comment?
+  Yes → recommend REQUEST_CHANGES
+  No  → any Review body only items (companion website, retest notes, deferred nits, shell UX)?
+          Yes → recommend COMMENT
+          No  → recommend APPROVE
+```
+
+### When to use each verdict
+
+| Verdict | Use when | Inline comments | Body |
+|---|---|---|---|
+| **REQUEST_CHANGES** | Merge blockers remain in this PR — runtime fails, broken `depends`/manifest, framing in path, Pathfinder CLI validate failure | Yes — one per root cause for **Always inline** items | **Must fix before merge** lists every blocker; companion website / retest notes in separate sections |
+| **COMMENT** | No merge blockers in this PR, but useful feedback before or after merge | Usually none; optional for minor non-blocking code notes | Companion website checklist, fresh-stack retest, deferred authoring nits, Pathfinder shell UX follow-ups |
+| **APPROVE** | Static + live testing passed; you would merge as-is | None | Brief summary of passed milestones; optional polish follow-ups |
+
+### Rules
+
+1. **Do not recommend APPROVE** if any **Always inline** finding is open or any Phase 5–6 failure was inlined in Phase 7.
+2. **Do not recommend REQUEST_CHANGES** with zero inline comments unless the reviewer explicitly waives inline at Phase 8 — **Always inline** items belong on the diff, not body-only.
+3. **COMMENT** is correct for “mergeable package PR, website/sync work separate” — common for LP reviews where `website.yaml` is present but learn.grafana.net pages are not wired yet.
+4. **N/A with fresh-stack caveat** (e.g. install button missing) does not by itself require REQUEST_CHANGES — put in body under author retest; use REQUEST_CHANGES only if live steps actually failed.
+5. Agent states recommended verdict at end of Phase 7 and again at Phase 8 opening; reviewer must confirm explicitly before submit.
+
+### Phase 8 prompt (agent)
+
+> Recommended verdict: **{REQUEST_CHANGES | COMMENT | APPROVE}** — {one-sentence reason}. Confirm or override, then say **submit** when ready.

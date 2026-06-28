@@ -343,7 +343,8 @@ For each milestone in path `milestones` (skip terminal-only e.g. external CLI):
 4. Add inline comments via GraphQL `addPullRequestReviewComment` — **Always inline** + runtime failures only.
 5. Merge Playwright + Pathfinder evidence, and merge code fix + runtime symptom when they share a root cause (never two inline threads on the same file for the same bug).
 6. Write `.cursor/pr-review-state/pr-{n}-review-body.md` with **Review body only** findings, passed milestones, and retest notes. List all merge blockers under one **Must fix before merge** section (no split "should fix" tier for **Always inline** items). Apply the [generated-file frontmatter](SKILL.md#generated-files).
-7. Update state: `comment_count`, `"phase": 7`.
+7. Recommend a default [verdict](reference-checks.md#verdict-selection-phases-89) from findings (`REQUEST_CHANGES`, `COMMENT`, or `APPROVE`) with a one-sentence reason. Store in state: `"recommended_verdict"`.
+8. Update state: `comment_count`, `"phase": 7`.
 
 **Example inline tone:**
 
@@ -353,28 +354,32 @@ For each milestone in path `milestones` (skip terminal-only e.g. external CLI):
 
 **Tell the reviewer:**
 
-> Draft ready: **{comment_count}** inline comments + review body saved to `pr-{n}-review-body.md`. GitHub won't show the pending body in the UI — I'll paste it here if you want to read it. Reply **show body** or open the file, then tell me edits or **approve** with verdict (`REQUEST_CHANGES` / `COMMENT` / `APPROVE`).
+> Draft ready: **{comment_count}** inline comments + review body saved to `pr-{n}-review-body.md`. Recommended verdict: **{recommended_verdict}** — {reason}. GitHub won't show the pending body in the UI — reply **show body** or open the file, then confirm or override the verdict at Phase 8.
 
-**Wait for:** body review + explicit approval (Phase 8).
+**Wait for:** body review, then Phase 8.
 
 ---
 
 ## Phase 8: Reviewer approval
 
-**Goal:** Reviewer approves verdict and final body text.
+**Goal:** Reviewer confirms or overrides the recommended [verdict](reference-checks.md#verdict-selection-phases-89) and final body text.
 
 ### Tell the reviewer
 
-> Phase 8 — approval checkpoint. Confirm:
+> Phase 8 — approval checkpoint. Recommended verdict: **{recommended_verdict}** — {reason}.
+>
+> Confirm:
 > 1. Inline comments look correct on GitHub **Files changed**
 > 2. Review body text (chat or `pr-{n}-review-body.md`)
-> 3. Verdict: REQUEST_CHANGES / COMMENT / APPROVE
+> 3. Verdict: keep **{recommended_verdict}** or override (`REQUEST_CHANGES` / `COMMENT` / `APPROVE`)
 
 ### Agent steps
 
-1. Print full review body in chat if requested.
-2. Apply reviewer edits to `-review-body.md`.
-3. **Do not submit** until reviewer says **submit** or **publish**.
+1. Apply [verdict selection](reference-checks.md#verdict-selection-phases-89) rules — do not recommend APPROVE if **Always inline** blockers were inlined in Phase 7.
+2. Print full review body in chat if requested.
+3. Apply reviewer edits to `-review-body.md`.
+4. Store confirmed verdict in state: `"verdict"` (may differ from `recommended_verdict`).
+5. **Do not submit** until reviewer says **submit** or **publish** with explicit verdict.
 
 ### Checkpoint
 
@@ -456,7 +461,7 @@ Do not add this frontmatter to `pr-{n}.json`.
 
 | Topic | Doc |
 |---|---|
-| All checklists + severity routing | [reference-checks.md](reference-checks.md) |
+| All checklists + severity routing + verdict selection | [reference-checks.md](reference-checks.md) |
 | GitHub GraphQL | [github-review.md](github-review.md) |
 | Manifest fields | [docs/manifest-reference.md](../../../docs/manifest-reference.md) |
 | Recommendations | [how-to-write-recommendations.mdc](../../how-to-write-recommendations.mdc) |
