@@ -14,7 +14,7 @@ Interactive, phase-by-phase review of a `{slug}-lj/` pull request. The **agent n
 
 **Do NOT read external reference files upfront.** Each phase loads its own references on demand. Everything the orchestrator needs to start is inline below.
 
-**Skill memory:** This skill does **not** use the per-guide `assets/manifest.yaml` convention ([skill-memory.md](../skill-memory.md)). PR-scoped state lives in `.cursor/pr-review-state/` so reviews survive across branches and do not write into author package directories.
+**Skill memory:** Review-owned state lives in `.cursor/pr-review-state/` (gitignored). Phase 1 dispatches [audit-guide](../audit-guide/SKILL.md), which **writes** `{milestone}/assets/` inside package directories on the checked-out PR branch. Those files are not review-owned state — see [Commit safety](#commit-safety). Snapshot before audit, delete new audit files before leaving Phase 1, and verify `git status` stays clean.
 
 **Severity:** [finding severity routing](reference-checks.md#finding-severity-routing) in this skill **supersedes** [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for Phase 3 bucketing and Phase 7 inline vs body decisions. audit-guide blocking/warning/info still applies during Phase 1; re-tag findings with this skill's routing before Phase 7.
 
@@ -75,8 +75,52 @@ These rules are **inviolable** during a review run:
 1. **Never modify author `content.json` or `manifest.json`.** Read-only on guide JSON.
 2. **Never post GitHub inline comments before Phase 7** (unless reviewer waives live testing and approves static-only inline at Phase 3).
 3. **Never submit a review before Phase 8 approval** from the reviewer.
-4. **Never commit `audit-guide` artifacts** (`{milestone}/assets/`) or `.cursor/pr-review-state/` to the author's branch.
+4. **Never commit review artifacts** — `.cursor/pr-review-state/` (gitignored) or audit-guide output under `{milestone}/assets/`. Mandatory cleanup and verification: [Commit safety](#commit-safety).
 5. **One pending GitHub review per PR review cycle** — workflow ends at Phase 9 submit.
+
+---
+
+## Commit safety
+
+This skill runs on the **author's checked-out branch** (`gh pr checkout`). Ask: *under what circumstances could a review artifact get committed?*
+
+| Artifact | Where written | Risk | Mitigation |
+|---|---|---|---|
+| Findings, review body, state JSON | `.cursor/pr-review-state/` | Staged by mistake | `.gitignore` |
+| audit-guide reports | `{milestone}/assets/` | Untracked `??` files staged with PR fixes | Snapshot + mandatory cleanup (Phase 1); gitignore audit filenames |
+| Pre-existing package `assets/` | Author/migrate (e.g. `migration-notes.md`) | Deleted by careless cleanup | Snapshot — never delete files that existed before Phase 1 |
+
+**Never commit:** audit-guide outputs, `.cursor/pr-review-state/`, or any file created only during this review run.
+
+### Phase 1 snapshot (before audit-guide)
+
+For each milestone directory to audit, record existing asset paths in state:
+
+```bash
+find {milestone}/assets -type f 2>/dev/null | sort
+```
+
+Store as `pre_review_assets.{milestone-slug}` in `pr-{n}.json`.
+
+### Phase 1 cleanup (mandatory — before Phase 1 checkpoint)
+
+After extracting findings from each audit report:
+
+1. Copy `audit-report.md` to `.cursor/pr-review-state/pr-{n}/audits/{milestone-slug}/` if you need a local audit trail (optional).
+2. Under each audited `{milestone}/assets/`, **delete every file not listed** in that milestone's `pre_review_assets` snapshot (includes all audit-guide outputs: `audit-input.json`, `*-report.md`, `manifest.yaml` when new, `history/`).
+3. Remove empty `assets/` directories only if the directory did not exist in the snapshot.
+
+**Do not advance past Phase 1** until verification passes:
+
+```bash
+git status --porcelain -- {path_dir}
+```
+
+Must show **no untracked** (`??`) audit-guide paths under milestone `assets/`. Report remaining paths to the reviewer and clean up before continuing.
+
+### Re-verify before Phase 4
+
+Run the same `git status` check on `{path_dir}` after Phase 3. Live testing does not write into package dirs, but confirm no audit artifacts reappeared.
 
 ---
 
@@ -165,12 +209,13 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 ### Agent steps
 
 1. List milestones from path `manifest.json` `milestones` array **plus** any changed milestone dirs.
-2. Dispatch [audit-guide](../audit-guide/SKILL.md) on each milestone directory (Explore sub-agent or Task, parallel OK). Skip framing-only packages not in path `milestones` unless PR changed them.
-3. Apply every row in [reference-checks.md § content](reference-checks.md#milestone-contentjson-checks).
-4. Tag each finding with severity from [finding severity routing](reference-checks.md#finding-severity-routing) (`inline` / `defer` / `body`).
-5. Summarize per milestone: verdict, blocking count, top issues (file + rule + fix + severity).
-6. **Do not** post to GitHub. **Do not** use `FROM AUDIT:` prefixes anywhere.
-7. **audit-guide side effects:** audit-guide writes `{milestone}/assets/` (reports, manifest). Do not commit these files. Do not edit them. Optional: delete `{milestone}/assets/` after Phase 3 if the reviewer wants a clean working tree.
+2. **Snapshot** — for each milestone, record existing `assets/` file paths in state (`pre_review_assets`). See [Commit safety](#commit-safety).
+3. Dispatch [audit-guide](../audit-guide/SKILL.md) on each milestone directory (Explore sub-agent or Task, parallel OK). Skip framing-only packages not in path `milestones` unless PR changed them.
+4. Apply every row in [reference-checks.md § content](reference-checks.md#milestone-contentjson-checks).
+5. Tag each finding with severity from [finding severity routing](reference-checks.md#finding-severity-routing) (`inline` / `defer` / `body`).
+6. Summarize per milestone: verdict, blocking count, top issues (file + rule + fix + severity).
+7. **Mandatory cleanup** — remove audit-guide files not in the Phase 1 snapshot. Verify `git status` on `{path_dir}`. See [Commit safety](#commit-safety).
+8. **Do not** post to GitHub. **Do not** use `FROM AUDIT:` prefixes anywhere.
 
 ### Checkpoint
 
@@ -244,6 +289,8 @@ Each listed finding includes severity tag and source phase (1, 2, 5, or 6).
 Apply the [generated-file frontmatter](SKILL.md#generated-files) to `pr-{n}-findings.md`.
 
 Update state: `"phase": 3`.
+
+**Re-verify commit safety** — `git status --porcelain -- {path_dir}` shows no untracked audit-guide files under milestone `assets/`. See [Commit safety](#commit-safety).
 
 ### Checkpoint
 
@@ -502,7 +549,7 @@ Start only after setup **ready**. For each milestone in path `milestones` (skip 
 
 ## Anti-patterns
 
-**Do not:** submit mid-process · `FROM AUDIT:` on GitHub · pass/N/A inline comments · cap comment count · assume Playwright = main browser · manual JSON paste when PR review tool works · UI submit without pasting body · continue after Phase 9 on same pending review · duplicate inline threads on the same file for the same root cause · navigate to or load Block Builder milestones before Phase 6 setup **ready** · smoke-test or repeat the first milestone before the formal Phase 6 loop · start Phase 6 milestone prompts before the reviewer confirms PR review tool setup.
+**Do not:** submit mid-process · `FROM AUDIT:` on GitHub · pass/N/A inline comments · cap comment count · assume Playwright = main browser · manual JSON paste when PR review tool works · UI submit without pasting body · continue after Phase 9 on same pending review · duplicate inline threads on the same file for the same root cause · navigate to or load Block Builder milestones before Phase 6 setup **ready** · smoke-test or repeat the first milestone before the formal Phase 6 loop · start Phase 6 milestone prompts before the reviewer confirms PR review tool setup · **leave Phase 1 without audit cleanup and git status verification** · delete pre-existing author `assets/` files (e.g. `migration-notes.md`).
 
 **Do:** one pending review · defer authoring nits when Pathfinder passed · fresh-stack retest in body · GraphQL submit · save body locally for preview.
 
@@ -517,6 +564,7 @@ Deliverables for the reviewer. Write under `.cursor/pr-review-state/` — **neve
 | `pr-{n}.json` | 0+ | Machine-readable review state ([schema](github-review.md#state-file-schema)) |
 | `pr-{n}-findings.md` | 3 | Merged static + consistency findings |
 | `pr-{n}-review-body.md` | 7 → 9 | Final review body (GitHub UI does not show pending body) |
+| `pr-{n}/audits/{milestone}/` | 1 (optional) | Copied audit reports before milestone cleanup |
 
 Every generated markdown file in `.cursor/pr-review-state/` **must** start with:
 

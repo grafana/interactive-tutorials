@@ -76,6 +76,9 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
   "head_branch": "monitor-azure-interactive",
   "head_commit": "0c11708cf74e306935d2583b97b7e6a4665ab3a5",
   "learn_host": "learn.grafana.net",
+  "pre_review_assets": {
+    "navigate-azure-config": ["assets/migration-notes.md"]
+  },
   "phase": 7,
   "status": "in_progress",
   "pending_review_node_id": "PRR_kwDOPf9q6c8AAAABERITuA",
@@ -105,6 +108,7 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
 | Field | When set | Notes |
 |---|---|---|
 | `pull_request_node_id` | Phase 0 | PR GraphQL node ID from `gh pr view --json id`; used as `pullRequestId` in Phase 4 |
+| `pre_review_assets` | Phase 1 (before audit) | Map of milestone slug → list of `assets/` file paths that existed before audit-guide ran |
 | `phase` | Each phase completion | Integer 0–10 |
 | `status` | Phase 0 → `"in_progress"`; Phase 9 → `"submitted"` | |
 | `pending_review_node_id` | Phase 4 | GraphQL node ID for inline comments + submit |
