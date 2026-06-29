@@ -102,4 +102,4 @@ The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, a
 | --- | --- | --- |
 | `/build-interactive-lj` | Existing milestone markdown in website repo | `content.json` + `manifest.json` files, updated website markdown |
 | `/create-learning-path` | Feature description (no existing markdown) | `content.json` + `manifest.json` files, new website markdown |
-| `/review-learning-path-pr` | Open LP PR in `interactive-tutorials` | Pending GitHub review, inline blockers, submitted verdict |
+| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Guided review: findings doc, live testing, GitHub review with inline blockers and submitted verdict |
