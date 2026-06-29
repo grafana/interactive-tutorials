@@ -14,7 +14,7 @@ mutation($input: AddPullRequestReviewInput!) {
 }
 ```
 
-Variables: `pullRequestId` (PR node ID), `body: "Review in progress."` — omit `event`.
+Variables: `pullRequestId` (PR GraphQL node ID from state `pull_request_node_id`, fetched in Phase 0 via `gh pr view --json id`), `body: "Review in progress."` — omit `event`.
 
 ## Add inline comment to pending review
 
@@ -69,6 +69,7 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
 {
   "pr_number": 403,
   "pr_url": "https://github.com/grafana/interactive-tutorials/pull/403",
+  "pull_request_node_id": "PR_kwDOPf9q6c8AAAAA1234567",
   "repo": "grafana/interactive-tutorials",
   "path_dir": "monitor-azure-resources-lj",
   "website_slug": "monitor-azure-resources",
@@ -103,6 +104,7 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
 
 | Field | When set | Notes |
 |---|---|---|
+| `pull_request_node_id` | Phase 0 | PR GraphQL node ID from `gh pr view --json id`; used as `pullRequestId` in Phase 4 |
 | `phase` | Each phase completion | Integer 0–10 |
 | `status` | Phase 0 → `"in_progress"`; Phase 9 → `"submitted"` | |
 | `pending_review_node_id` | Phase 4 | GraphQL node ID for inline comments + submit |

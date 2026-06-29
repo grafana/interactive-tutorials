@@ -130,13 +130,13 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 ### Agent steps
 
 1. Parse PR number from URL or `#403` input.
-2. Run `gh pr view {n} --repo grafana/interactive-tutorials --json number,title,headRefName,headRefOid,url,files`.
+2. Run `gh pr view {n} --repo grafana/interactive-tutorials --json number,title,headRefName,headRefOid,url,files,id`.
 3. Tell the reviewer: PR title, number, branch, HEAD sha.
 4. Check out: `gh pr checkout {n}` (or fetch + checkout).
 5. Infer `{path_dir}` from changed files (directory ending in `-lj`). If ambiguous, **ask**.
 6. Infer `website_slug` = `{path_dir}` minus `-lj` if `website` repo is in workspace.
 7. List milestones under `{path_dir}/` and path root files.
-8. Write `.cursor/pr-review-state/pr-{n}.json` (see [github-review.md](github-review.md)).
+8. Write `.cursor/pr-review-state/pr-{n}.json` with `pull_request_node_id` from the `id` field (GraphQL node ID for Phase 4). See [github-review.md](github-review.md).
 
 ### Checkpoint
 
@@ -273,8 +273,8 @@ Update state: `"phase": 3`.
 
 ### Agent steps
 
-1. GraphQL `addPullRequestReview` (no `event`), body: `Review in progress.`
-2. Store `pending_review_id` and `pending_review_node_id` in state file.
+1. GraphQL `addPullRequestReview` (no `event`), body: `Review in progress.` Use `pullRequestId: {pull_request_node_id}` from state (set in Phase 0).
+2. Store `pending_review_id` and `pending_review_node_id` from the mutation response in state file.
 3. **Do not** add inline comments yet (Phase 7).
 
 See [github-review.md](github-review.md).
