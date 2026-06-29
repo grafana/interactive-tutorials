@@ -47,6 +47,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 
 ## Anti-patterns
 
+- In `content.json` blocks, use `content` for instruction text — not `description`. The `description` field belongs in `website.yaml` (see `docs/website-yaml-reference.md`).
 - Never use `formvalue` — use `targetvalue`
 - Include `exists-reftarget` in requirements for steps with a `reftarget` (repo convention)
 - Never use position-based selectors (`:nth-child`, `:first-of-type`)
