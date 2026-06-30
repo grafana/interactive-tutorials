@@ -35,19 +35,30 @@
         },
         {
           "type": "interactive",
-          "action": "noop",
+          "action": "highlight",
+          "reftarget": "button:has(span > svg[data-testid='icon-angle-down'])",
+          "doIt": false,
           "content": "Click **New** and select **New dashboard**."
         },
         {
-          "type": "interactive",
-          "action": "noop",
-          "content": "Open the panel editor by doing one of the following:\n\n- If you see an **Add visualization** button or placeholder, click it.\n- If you see a **+** icon in the top toolbar, click it and select **Visualization**.\n\nEither option opens the panel editor."
+          "type": "multistep",
+          "content": "Add a panel and open the panel editor: click the **Panel** placeholder, then click **Edit visualization**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid sidebar add new panel']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid edit pane configure panel button']"
+            }
+          ]
         },
         {
           "type": "interactive",
-          "action": "formfill",
+          "action": "highlight",
           "reftarget": "[data-testid='data-testid Select a data source']",
-          "targetvalue": "Infinity",
+          "doIt": false,
           "content": "In the query section at the bottom of the screen, click the **Data source** dropdown and search for your Infinity data source."
         },
         {
@@ -57,11 +68,18 @@
         },
         {
           "type": "interactive",
-          "action": "formfill",
-          "reftarget": "[data-testid='infinity-query-url-input']",
-          "targetvalue": "https://thingspeak.com/channels/38629/feed.json",
+          "action": "highlight",
+          "reftarget": "[data-testid='infinity-query-field-wrapper-url']",
           "doIt": false,
           "content": "In the **URL** field, enter the URL of the JSON data you want to visualize.\n\nFor example: `https://thingspeak.com/channels/38629/feed.json`"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='infinity-query-field-wrapper-parser'] input[role='combobox']",
+          "doIt": false,
+          "skippable": true,
+          "content": "In the **Parser** dropdown, select **Frontend**.\n\nThe default parser is **JSONata**. Selecting **Frontend** lets you use plain field names in the **Rows/Root** and column selectors in the next steps."
         },
         {
           "type": "interactive",
@@ -71,7 +89,10 @@
         },
         {
           "type": "interactive",
-          "action": "noop",
+          "action": "highlight",
+          "reftarget": "[data-testid='infinity-query-field-wrapper-rows/root']",
+          "doIt": false,
+          "skippable": true,
           "content": "In the **Rows/Root** field, enter a row name.\n\nFor example, enter `feeds`. This tells the Infinity data source which section of the JSON contains the records you want to visualize."
         },
         {
