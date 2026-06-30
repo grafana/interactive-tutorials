@@ -59,9 +59,9 @@ The AI uses Playwright to inspect the DOM at `learn.grafana.net` and find stable
 
 ### Phase 4: Testing
 
-The AI tells you which `content.json` to import into the Pathfinder Block Editor at `learn.grafana.net/?pathfinder-dev=true`. You click through the "Show me" and "Do it" buttons and report any failures. The AI fixes broken selectors based on your feedback.
+Use the Block Builder **PR review tool** (dev tools, pathfinder-app 1.4.5+) to load milestone `content.json` files from the `interactive-tutorials` PR under review — do not copy-paste JSON manually unless the tool is unavailable. Test one milestone at a time at `learn.grafana.net/?pathfinder-dev=true`. Click through every **Show me** and **Do it** step and report failures.
 
-**Your role:** This is the most hands-on phase. Test every interactive step and report exactly what fails — for example, "Show me on step 3 highlights the wrong element" or "Do it on step 5 doesn't click anything."
+**Your role:** Navigate to each milestone's starting page, open the PR review tool, select the milestone, and test every interactive step. Report exactly what fails — for example, "Show me on step 3 highlights the wrong element" or "Do it on step 5 doesn't click anything."
 
 > [!IMPORTANT]
 > Test the `content.json` files or the resulting PR in multiple stacks and environments. If you only test in `learn.grafana.net`, you might miss some gotchas, such as permissions required to access a feature or UI variations if the feature is already configured. Use the `ops` environment, your own staff stack, or any other environment you have access to. Aim to test widely to ensure the guide is as unbreakable as possible.
@@ -95,3 +95,11 @@ Run the command and provide the learning path slug when asked:
 
 The learning path slug is mysql-data-source.
 ```
+
+## Quick reference
+
+| Command | Starting point | Key output |
+| --- | --- | --- |
+| `/build-interactive-lj` | Existing milestone markdown in website repo | `content.json` + `manifest.json` files, updated website markdown |
+| `/create-learning-path` | Feature description (no existing markdown) | `content.json` + `manifest.json` + `website.yaml` files |
+| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Guided review: findings doc, live testing, GitHub review with inline blockers and submitted verdict |

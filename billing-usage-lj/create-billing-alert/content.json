@@ -1,129 +1,114 @@
 {
-  "schemaVersion": "1.0.0",
   "id": "billing-usage-create-billing-alert",
-  "title": "Create a billing alert",
+  "title": "Create a usage alert",
   "blocks": [
     {
       "type": "markdown",
-      "content": "Setting up proactive billing alerts helps prevent unexpected charges by notifying you when usage exceeds defined thresholds. These alerts act as an early warning system, giving you time to investigate and address high usage before it significantly impacts your bill."
+      "content": "Usage alerts notify you when your spend or consumption approaches a threshold, so you can act before an overage shows up on your invoice. You create them directly in the **Usage Alerts** tab of the Cost Management and Billing app, without needing full access to Grafana Alerting."
     },
     {
       "type": "markdown",
-      "content": "Billing alerts can be created for overall usage or for specific telemetry data like metrics, logs, or traces. Setting up alerts for product-level usage helps you quickly identify which service is driving increased costs."
+      "content": "To create alerts, you need the permissions granted by the **Usage alerts admin** role. Refer to [Manage access to the Cost Management and Billing app](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/set-up/cost-management-billing-rbac/)."
     },
     {
       "type": "section",
-      "autoCollapse": false,
+      "id": "create-usage-alert",
+      "title": "Create a cost or usage alert",
       "blocks": [
         {
           "type": "markdown",
-          "content": "In the Billing/Usage dashboard, identify a panel for which you want to create an alert."
+          "content": "In this section, you'll open the alert builder and set a budget on your global spend, choose alert levels, and pick where Grafana sends the notification."
+        },
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out into a floating window so it stays visible when the **Create usage alert** drawer opens."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-cmab-app/usage-alerts",
+          "content": "Go to the **Usage Alerts** tab of the Cost Management and Billing app.",
+          "verify": "on-page:/a/grafana-cmab-app/usage-alerts"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a, button:contains('Create usage alert')",
+          "content": "Click **Create usage alert** to open the alert builder. If you already have alerts, the same control is labeled **+ Create usage alert**.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage-alerts"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('Global usage')",
+          "content": "Keep **Global usage** selected to alert on your total Grafana Cloud spend. You can also choose attributed stack usage or anomaly detection.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage-alerts"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#product-selector",
+          "content": "Leave **Product** set to **Global spend** for a budget alert, or pick a specific product such as Metrics, Logs, or Traces to alert on that product's usage.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage-alerts"],
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#threshold-input-global-spend",
+          "targetvalue": "1000",
+          "content": "Enter your monthly budget in US dollars (USD), for example `1000`. Grafana alerts you as your spend approaches this amount.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage-alerts"],
+          "skippable": true
         },
         {
           "type": "markdown",
-          "content": "Click the panel menu (⋮) on the chosen panel, then select **More…** > **New alert rule**."
+          "content": "Alert levels decide how close to the budget you get notified. Select one or more preset levels, such as 50%, 70%, 85%, and 95% of the threshold, or add a custom level to fine-tune when Grafana warns you."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#contact-point-selector",
+          "content": "Choose a **Contact point** for the notification. If you don't have one yet, click **View or create contact points** to set one up.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage-alerts"],
+          "doIt": false,
+          "skippable": true
         },
         {
           "type": "markdown",
-          "content": "The following image shows how to navigate to the **New alert rule** menu option from a panel."
-        },
-        {
-          "type": "image",
-          "src": "https://grafana.com/media/docs/learning-journey/billing-usage/alert-creation.png",
-          "alt": "Example showing how to navigate from a panel to alert creation"
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid alert-rule name-field']",
-          "content": "Enter a descriptive name for your alert rule, such as `Monthly Billing Alert`.",
-          "doIt": false
-        },
-        {
-          "type": "markdown",
-          "content": "The **Define query and alert condition** fields are prepopulated with the alert query expression from the dashboard panel."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid alert-rule step-2'] input[type='number']",
-          "content": "In the **Threshold** field of the **Define query and alert condition** section, set a threshold value. For example, enter `1000` to alert when month-to-date billable usage exceeds $1,000.",
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid alert-rule preview-button']",
-          "content": "Click **Preview** to test that the alert fires based on your threshold value.",
-          "doIt": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='add-labels-button']",
-          "content": "Click **Add labels** to categorize your alert for searching, silencing, or routing to a notification policy.",
-          "doIt": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='folder-picker']",
-          "content": "Select a **folder** to store your alert rule.",
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='group-picker']",
-          "content": "Configure the [evaluation group and interval](https://grafana.com/docs/grafana-cloud/alerting-and-irm/alerting/alerting-rules/create-grafana-managed-rule/#configure-alert-evaluation-behavior) to set how frequently the alert condition is checked.",
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "#eval-for-input",
-          "content": "Set the **Pending period** — the duration the condition must be met before the alert fires. Selecting \"None\" triggers the alert immediately.",
-          "doIt": false
-        },
-        {
-          "type": "markdown",
-          "content": "Complete the following steps to configure notification routing:"
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='contact-point-picker']",
-          "content": "Choose or [create a contact point](https://grafana.com/docs/grafana-cloud/alerting-and-irm/alerting/configure-notifications/manage-contact-points/) for receiving alert notifications.",
-          "doIt": false
-        },
-        {
-          "type": "markdown",
-          "content": "Notification policies are configured separately from alert rules. If you need to route alerts to different teams based on labels, use **Notification configuration** and open the **Notification policies** tab. Refer to the [notification policies documentation](https://grafana.com/docs/grafana-cloud/alerting-and-irm/alerting/configure-notifications/create-notification-policy/) for details."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='save-rule']",
-          "content": "Click **Save rule** to create the alert rule.",
-          "doIt": false
+          "content": "Review your settings, then click **Create alerts** to save. The alert becomes active immediately and begins monitoring."
         }
       ]
     },
     {
-      "type": "markdown",
-      "content": "To verify your alert works correctly:\n\n1. Navigate to **Alerts & IRM** > **Alerting** > **Alert rules** in the left navigation.\n2. Find your alert rule and click **Edit**.\n3. Use the **Test rule** feature to verify the alert triggers correctly."
+      "type": "image",
+      "src": "https://grafana.com/media/docs/learning-journey/billing-usage/create-usage-alert.png",
+      "alt": "The Create new usage alerts drawer, showing the alert type, product, and threshold options"
     },
     {
       "type": "markdown",
-      "content": "## Best practices for billing alerts\n\nWhen setting up billing alerts, consider these recommendations:\n\n- **Set multiple thresholds**: Create alerts for different spending levels (for example, 50%, 75%, and 90% of your budget)\n- **Alert on trends**: Set up alerts for rapid usage increases, not just absolute values\n- **Product-specific alerts**: Create separate alerts for metrics, logs, and traces to quickly identify cost drivers\n- **Team notifications**: Route alerts to the teams responsible for the services generating costs\n- **Documentation**: Include runbooks or links in alert notifications to help responders take action"
+      "content": "## Other alert types\n\nThe builder also supports two more options at the top of the drawer:\n\n- **Attributed usage**: Alert on a specific team or service using your [cost attribution](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/cost-attributions/) labels. This option appears only when cost attribution is configured.\n- **Anomaly Detection**: Alert when Metrics, Logs, or Traces usage deviates from a historical baseline instead of a fixed threshold. Choose a sensitivity and, optionally, alert on unexpected drops. Refer to [Create anomaly alerts](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/usage-cost-alerts/anomaly-alerts/)."
     },
     {
       "type": "markdown",
-      "content": "In the next milestone, you'll complete your journey and learn about additional cost management resources."
+      "content": "## Best practices\n\nWhen setting up usage alerts, consider these recommendations:\n\n- **Set multiple levels**: Use several percentages, such as 50%, 75%, and 90%, so you get early warning before reaching the threshold.\n- **Alert per product**: Create separate alerts for Metrics, Logs, and Traces to quickly identify which product drives a cost increase.\n- **Use attribution**: Route attributed-usage alerts to the team responsible for the spend.\n- **Watch for drops**: Anomaly alerts with drop detection can catch telemetry that silently stops arriving."
     },
     {
       "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Set up usage alerts](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/set-up-usage-alerts/)\n- [Reduce costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/reduce-costs/)\n- [Grafana alerting](https://grafana.com/docs/grafana-cloud/alerting-and-irm/alerting/)"
+      "content": "To review or change an alert later, return to the **Usage Alerts** tab and select it. Refer to [Manage existing alerts](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/usage-cost-alerts/manage-alerts/)."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll complete your journey and find additional cost management resources."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Create usage and cost alerts](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/usage-cost-alerts/create-alerts/)\n- [Analyze and reduce costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/)\n- [Grafana Alerting](https://grafana.com/docs/grafana-cloud/alerting-and-irm/alerting/)"
     }
   ]
 }

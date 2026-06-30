@@ -16,10 +16,11 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 | Audit an existing guide | [audit-guide](.cursor/skills/audit-guide/SKILL.md) skill | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md), [best-practices.mdc](.cursor/best-practices.mdc) |
 | Update / modify an existing guide | [update-guide](.cursor/skills/update-guide/SKILL.md) skill | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Review a guide PR | [.cursor/review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc) |
+| Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md) |
 | Decision trees & code smells | [.cursor/best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/](docs/) |
 | Create a new guide | [/new](.cursor/commands/new.md) command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate a guide | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
-| Write recommender entry | [.cursor/how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | [`index.json`](index.json) |
+| Make a guide recommended | [.cursor/how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
 | Write / edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Understand the system | [.cursor/system-architecture.mdc](.cursor/system-architecture.mdc) | [docs/](docs/) |
 | Generate / migrate from source | [autogen-guide](.cursor/skills/autogen-guide/SKILL.md), [autogen-guide-dashboard](.cursor/skills/autogen-guide-dashboard/SKILL.md), [migrate-guide](.cursor/skills/migrate-guide/SKILL.md) | [shared/critical-rules.md](.cursor/skills/shared/critical-rules.md) |

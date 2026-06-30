@@ -5,7 +5,7 @@ description: Overview of this repository and task routing for AI agents.
 
 # Interactive Guides Repository
 
-This repository contains interactive Grafana guides in JSON format. Each guide lives in its own directory with a `content.json` file defining the guide structure, and an optional `index.json` entry controls where the guide is recommended.
+This repository contains interactive Grafana guides in JSON format. Each guide lives in its own directory with a `content.json` file defining the guide structure and a `manifest.json` file whose `targeting.match` controls where the guide is recommended. (`index.json` is frozen and no longer edited per guide -- a CI check fails any PR that changes it.)
 
 Full reference documentation lives in `docs/`. AI-oriented references live in `.cursor/`.
 
@@ -41,10 +41,11 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Audit an existing guide | [audit-guide](.cursor/skills/audit-guide/SKILL.md) skill | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md), [best-practices.mdc](.cursor/best-practices.mdc) |
 | Update/modify an existing guide | [update-guide](.cursor/skills/update-guide/SKILL.md) skill | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Review a guide PR | [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc), `docs/` |
+| Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Decision trees & code smells | [best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), `docs/` |
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
-| Write index.json entry | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `index.json` |
+| Make a guide recommended | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
 | Write/edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Understand the system | [system-architecture.mdc](.cursor/system-architecture.mdc) | `docs/` |
 
@@ -80,4 +81,5 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/lint](.cursor/commands/lint.md) | Validate guide JSON structure |
 | [/check](.cursor/commands/check.md) | Check guide quality against best practices |
 | [/attack](.cursor/commands/attack.md) | Find issues by simulating confused users |
+| [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
 | [/build-interactive-lj](.cursor/commands/build-interactive-lj/README.md) | Multi-phase learning journey builder |

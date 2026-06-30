@@ -168,17 +168,19 @@ The first interactive action in a guide should establish the user's page context
 - **New guide**: recommend the PR author add their handle to `.github/CODEOWNERS` for the guide directory
 - **Existing guide**: check that a CODEOWNERS entry exists; if missing, advise the author that repo owners can add it
 
-## 6. index.json Entry Check
+## 6. Recommendation targeting check
 
-If `index.json` is modified:
+`index.json` is **frozen** -- a CI check (`.github/workflows/freeze-index-json.yml`) fails any PR that modifies it. Targeting now lives in each guide's `manifest.json` under `targeting.match`.
 
-- Entry `id` must match the guide's `content.json` `id`
-- `type` must be `"docs-page"`
-- `urlPrefix` must match where the guide should be recommended
-- `title` and `description` should be present and accurate
-- `url` must follow the pattern `https://github.com/grafana/interactive-tutorials/tree/main/DIRECTORY_NAME`
+For a standalone guide (or a `*-lj` path root), check the `manifest.json`:
 
-If a **new** guide is added but `index.json` is not modified, note that an index entry will be needed for the guide to appear in recommendations.
+- `id` must match the guide's `content.json` `id`
+- `targeting.match` should include the URL(s) where the guide is recommended (`urlPrefix` or `urlPrefixIn`)
+- Cloud-only guides should include `{ "targetPlatform": "cloud" }`
+- `description` and `category` should be present and accurate
+- LJ step guides omit `targeting` (targeting lives at the path level)
+
+If the PR modifies `index.json`, flag it: that change will fail the freeze check, and the targeting belongs in `manifest.json` instead. See [how-to-write-recommendations.mdc](how-to-write-recommendations.mdc) and [docs/manifest-reference.md](../docs/manifest-reference.md).
 
 ## 7. Deep Reference Links
 
@@ -191,3 +193,10 @@ When you need more detail during review:
 - **Authoring best practices**: [authoring-guide.mdc](authoring-guide.mdc)
 - **Decision trees & code smells**: [best-practices.mdc](best-practices.mdc)
 - **Edge cases**: [edge-cases-and-troubleshooting.mdc](edge-cases-and-troubleshooting.mdc)
+
+## 8. Learning path PR reviews
+
+For `-lj` path PRs (multiple milestones, manifest chains, live testing), use the dedicated workflow — not this single-guide checklist alone:
+
+- **Command:** [/review-learning-path-pr](commands/review-learning-path-pr.md)
+- **Skill:** [review-learning-path](skills/review-learning-path/SKILL.md)
