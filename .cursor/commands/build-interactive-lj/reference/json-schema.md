@@ -10,7 +10,6 @@ This document defines the structure and field requirements for `content.json` fi
 
 ```json
 {
-  "schemaVersion": "1.0.0",
   "id": "[learning-path-slug]-[milestone-slug]",
   "title": "[Milestone Title]",
   "blocks": [
@@ -23,7 +22,7 @@ This document defines the structure and field requirements for `content.json` fi
 
 | Field | Type | Required | Description | Example |
 |-------|------|----------|-------------|---------|
-| `schemaVersion` | string | ✅ Yes | Always `"1.0.0"` | `"1.0.0"` |
+| `schemaVersion` | string | Optional | Omit it and the parser defaults to `"1.1.0"`. If you include it, the value MUST be `"1.1.0"` — any other value (for example `"1.0.0"`) fails validation. | `"1.1.0"` |
 | `id` | string | ✅ Yes | Format: `[learning-path-slug]-[milestone-slug]` (kebab-case) | `"billing-usage-navigate-to-billing-dashboard"` |
 | `title` | string | ✅ Yes | Human-readable milestone title from source markdown | `"Navigate to the billing dashboard"` |
 | `blocks` | array | ✅ Yes | Array of content blocks (see below) | `[{...}, {...}]` |
@@ -32,7 +31,6 @@ This document defines the structure and field requirements for `content.json` fi
 
 ```json
 {
-  "schemaVersion": "1.0.0",
   "id": "billing-usage-business-value",
   "title": "Understand the business value",
   "blocks": [
