@@ -32,8 +32,9 @@ status: incomplete
 | `category` | Website `_index.md` `journey.group` | `take-action` |
 | `author.name` | Git / path author | `bonnywelsford-source` |
 | `author.team` | Convention (learning path) | `Grafana Documentation` |
-| `targeting` | Recommender + index.json | **None found** — omitted |
-| `testEnvironment.tier` | Default (no match rules) | `cloud` |
+| `targeting` | Recommender rule (`testing-synthetics-cloud.json`) | `{"and": [{"urlPrefix": "/a/k6-app"}, {"targetPlatform": "cloud"}]}` |
+| `startingLocation` | Recommender match `urlPrefix` | `/a/k6-app` |
+| `testEnvironment.tier` | Recommender match (`targetPlatform: cloud`) | `cloud` |
 | `milestones` | Website step `weight` ordering (100–800) | 8 steps |
 | `depends` | Website `_index.md` prerequisites | `["run-first-k6-test-lj"]` |
 | `suggests` | Website `related_journeys` + prerequisite gap | `establish-k6-baseline-lj`, `k6-script-authoring-assistant-lj`, `create-availability-slo-lj` |
@@ -52,7 +53,15 @@ status: incomplete
 
 ## Recommender Rules
 
-No matching rules in `grafana-recommender/internal/configs/state_recommendations/` for `find-k6-limits`. Add a learning-journey rule in a follow-up PR (for example alongside `run-first-k6-test` in `testing-synthetics-cloud.json`).
+Added in `grafana-recommender` PR (`testing-synthetics-cloud.json`):
+
+- **URL:** `https://grafana.com/docs/learning-paths/find-k6-limits/`
+- **Match:** `{"and": [{"urlPrefix": "/a/k6-app"}, {"targetPlatform": "cloud"}]}`
+- **Type:** `learning-journey`
+
+## Validation
+
+- [x] Pathfinder CLI `validate --package find-k6-limits-lj` — PASS (after targeting added)
 
 ## Dangling References
 
@@ -63,18 +72,7 @@ No matching rules in `grafana-recommender/internal/configs/state_recommendations
 | `k6-script-authoring-assistant-lj` | Exists |
 | `create-availability-slo-lj` | Exists |
 
-## Content Removed During Migration
-
-- Path landing image: `![Stepped stress load shape…](find-k6-limits-stress-load-shape.svg)` — website-relative asset; prose referencing "diagram below" removed with it
-- Hugo shortcodes: `docs/box`, `docs/icon-heading`, `admonition` wrappers (inner content preserved as **Note:** / **Tip:** prose)
-- End-journey `cta.image` — website front matter only; not rendered in Pathfinder content.json
-
-## Validation
-
-- [ ] TODO(review): Pathfinder CLI not available locally — run `node {pathfinder-app}/dist/cli/cli/index.js validate --package find-k6-limits-lj` before merge
-
 ## TODO
 
-- [ ] TODO(review): Add recommender learning-journey rule for `https://grafana.com/docs/learning-paths/find-k6-limits/`
 - [ ] TODO(review): Migrate `establish-k6-baseline-lj` and consider moving it from `suggests` to `depends`
 - [ ] TODO(review): Optional website follow-up — wire milestone markdown to `pathfinder_data` + `{{< pathfinder/json >}}` (not required for package to exist)
