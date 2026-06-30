@@ -1,6 +1,6 @@
 # /create-learning-path
 
-Create a complete interactive learning path from scratch. Produces `content.json` and `manifest.json` files in the interactive-tutorials repo, and creates website markdown with `pathfinder_data` and `{{< pathfinder/json >}}`.
+Create a complete interactive learning path from scratch. Produces `content.json`, `manifest.json`, and `website.yaml` files in the interactive-tutorials repo.
 
 > **Adding interactivity to an existing learning path?** Use `/build-interactive-lj` instead.
 
@@ -18,12 +18,12 @@ The user provides:
 
 Follow these phases in order:
 
-1. **Validate environment.** Confirm both the `website` and `interactive-tutorials` repos are accessible in the workspace and Playwright MCP is available.
-2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch. Track which pages you read — these go into the path `_index.md` front matter as `source_docs`.
-3. **Propose path options.** Review existing paths in `website/content/docs/learning-paths/` for structural patterns. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
+1. **Validate environment.** Confirm both the `website` and `interactive-tutorials` repo are accessible in the workspace and Playwright MCP is available.
+2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch.
+3. **Propose path options.** Review existing paths in `interactive-tutorials/[slug]-lj` for structural patterns. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
 4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content.
-5. **Create website markdown.** Create `_index.md` and every `[milestone]/index.md` from scratch with full Hugo front matter, `pathfinder_data`, and `{{< pathfinder/json >}}` body. Refer to `reference/frontmatter-schema.md` for the complete front matter templates.
-6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`.
+5. **Create website metadata files.** Create `website.yaml` for the path and each milestone. Refer to `docs/website-yaml-reference.md`.
+6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. Where fields can't be derived, ask the user to provide values before generating.
 7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
 8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
 9. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
@@ -47,7 +47,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 
 ## Anti-patterns
 
-- Never use `description` — use `content`
+- In `content.json` blocks, use `content` for instruction text — not `description`. The `description` field belongs in `website.yaml` (see `docs/website-yaml-reference.md`).
 - Never use `formvalue` — use `targetvalue`
 - Include `exists-reftarget` in requirements for steps with a `reftarget` (repo convention)
 - Never use position-based selectors (`:nth-child`, `:first-of-type`)
@@ -64,7 +64,7 @@ Consult these during the workflow:
 
 | Document | When |
 | --- | --- |
-| `reference/frontmatter-schema.md` | Creating website front matter (field reference, CTA types, templates) |
+| `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
 | `../build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
 | `../build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
@@ -80,7 +80,7 @@ Consult these during the workflow:
 
 ### Action types
 
-`highlight` · `button` · `formfill` · `hover` · `navigate` · `noop`
+`highlight` · `button` · `formfill` · `hover` · `navigate` · `noop` · `popout`
 
 ### Selector priority
 

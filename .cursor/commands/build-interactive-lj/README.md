@@ -18,9 +18,9 @@ Follow these phases in order:
 
 1. **Validate environment.** Confirm both the `website` and `interactive-tutorials` repos are accessible in the workspace and Playwright MCP is available.
 2. **Read existing milestones and feature docs.** Locate the learning path in `website/content/docs/learning-paths/[slug]/`. List every milestone directory. Then read the canonical Grafana docs for every product/feature referenced in the milestones — these are the authoritative source for all factual claims.
-3. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks.
+3. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks. **Exception: the `business-value` milestone gets markdown blocks only — no interactive blocks, sections, or guided blocks.**
 4. **Update website markdown.** Add `pathfinder_data: [slug]-lj/[milestone]` to each milestone `index.md` front matter and replace the body with `{{< pathfinder/json >}}`. Do the same for the path `_index.md` (use `pathfinder_data: [slug]-lj`).
-5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`.
+5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. **Exception: exclude `business-value` from the path-level `milestones` array.** The `business-value` milestone still gets its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a registered stop on the path.
 6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
 7. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
 8. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
@@ -33,12 +33,14 @@ For background on how this command relates to `/create-learning-path`, refer to 
 
 1. **Read all canonical feature docs before writing content.** Identify every Grafana product/feature referenced in the milestones. Read the docs pages in full from the local `website` repo first, then WebFetch. These docs are the authoritative source for all factual claims — never rely on training data.
 2. **Scaffold ALL milestones.** Every milestone needs a `content.json`, including conceptual, intro, and conclusion pages. Pathfinder tracks progress through every milestone.
-3. **Include supplementary content from frontmatter.** Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each `index.md` and add them as markdown blocks at the end of the `blocks` array.
-4. **Use Playwright for selectors.** Never guess. Always inspect the actual DOM at `learn.grafana.net`.
-5. **User handles all Pathfinder testing.** Tell the user which `content.json` to import into the Block Editor. Wait for their feedback. Never import JSON or click interactive buttons yourself.
-6. **Ask before fixing.** When the user reports a broken selector, explain the problem and proposed fix, then wait for approval.
-7. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
-8. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
+3. **`business-value` is markdown-only.** The `business-value` milestone always uses markdown blocks exclusively. Never add interactive, section, guided, or multistep blocks to it.
+4. **Exclude `business-value` from the path manifest.** Do not include the `business-value` milestone in the path-level `manifest.json` `milestones` array. It has its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a path stop. The path's `milestones` array starts with the first interactive milestone.
+5. **Include supplementary content from frontmatter.** Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each `index.md` and add them as markdown blocks at the end of the `blocks` array.
+6. **Use Playwright for selectors.** Never guess. Always inspect the actual DOM at `learn.grafana.net`.
+7. **User handles all Pathfinder testing.** Tell the user which `content.json` to import into the Block Editor. Wait for their feedback. Never import JSON or click interactive buttons yourself.
+8. **Ask before fixing.** When the user reports a broken selector, explain the problem and proposed fix, then wait for approval.
+9. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
+10. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
 
 ---
 
@@ -76,7 +78,7 @@ Consult these during the workflow:
 
 ### Action types
 
-`highlight` · `button` · `formfill` · `hover` · `navigate` · `noop`
+`highlight` · `button` · `formfill` · `hover` · `navigate` · `noop` · `popout`
 
 ### Selector priority
 
