@@ -262,10 +262,15 @@ jobs:
 
           echo "── packages/ ────────────────────────────────────────────────"
           test -f packages/repository.json || { echo "❌ packages/repository.json missing"; exit 1; }
-          jq -e 'type == "object" and (.packages | type == "array") and (.packages | length > 0)' \
+          # build-repository emits a flat object keyed by package name, e.g.
+          #   { "adaptive-logs-lj": { "path": "adaptive-logs-lj/", ... }, ... }
+          # NOT a { "packages": [...] } wrapper. Require a non-empty object whose
+          # every entry is itself an object carrying a "path" (the field that
+          # makes a CDN sibling resolve), which keeps this a tampering tripwire.
+          jq -e 'type == "object" and (length > 0) and (all(.[]; type == "object" and has("path")))' \
             packages/repository.json > /dev/null \
-            || { echo "❌ packages/repository.json malformed or empty .packages array"; exit 1; }
-          echo "✅ repository.json well-formed with $(jq '.packages | length' packages/repository.json) packages"
+            || { echo "❌ packages/repository.json malformed or empty"; exit 1; }
+          echo "✅ repository.json well-formed with $(jq 'length' packages/repository.json) packages"
 
           # Optional graph.json: if present, must parse.
           if [ -f packages/graph.json ]; then
