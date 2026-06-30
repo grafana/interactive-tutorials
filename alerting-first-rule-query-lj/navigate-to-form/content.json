@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-first-rule-query-navigate-to-form",
+  "title": "Navigate to the alert rule form",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A clear, descriptive name is the first thing responders see when an alert fires. A good name tells them immediately what's wrong without opening the alert details.\n\nIn this milestone, you'll open the alert rule creation form and give your rule a name."
+    },
+    {
+      "type": "section",
+      "id": "open-alert-form",
+      "title": "Open the alert rule form",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll navigate to the alert rule creation form where you define a new alert."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/",
+          "verify": "on-page:/",
+          "content": "Start from the Grafana home page, then use the main menu to find **Alert rules**."
+        },
+        {
+          "type": "multistep",
+          "content": "Expand **Alerting** in the main menu, then open **Alert rules**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label*='section: Alerting']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/alerting/new/alerting']",
+          "content": "Click **+ New alert rule** to open the alert rule creation form.",
+          "requirements": ["on-page:/alerting/list"],
+          "verify": "on-page:/alerting/new/alerting"
+        },
+        {
+          "type": "markdown",
+          "content": "You're now on the alert rule creation form."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "set-alert-name",
+      "title": "Set the alert rule name",
+      "requirements": ["section-completed:open-alert-form"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll enter a descriptive name for your alert rule that tells responders exactly what triggered it."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Give your alert rule a name']",
+          "content": "Enter a descriptive name in the **Alert rule name** field.\n\nA good alert name clearly identifies what's being monitored and what condition triggers the alert.",
+          "tooltip": "Responders see this name first when the alert fires.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Use a naming pattern that includes the signal, the scope, and the condition:\n\n| Pattern | Example |\n|---------|--------|\n| Signal + scope | `High CPU usage - Linux servers` |\n| Signal + service | `Error rate spike - API gateway` |\n| Signal + threshold | `Disk space critical - Database servers` |\n| Log pattern + scope | `OOM errors - Production pods` |"
+        },
+        {
+          "type": "markdown",
+          "content": "A descriptive name helps responders triage alerts quickly, especially when multiple alerts fire at once.\n\nIn the next milestone, you learn how to build the query that defines what your alert monitors."
+        }
+      ]
+    }
+  ]
+}

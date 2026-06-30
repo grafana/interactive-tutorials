@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-create-silence-create-silence",
+  "title": "Create a silence",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You'll open the silence form, set a time window, add label matchers that select which alerts to suppress, verify the affected instances, and submit.\n\nIn this milestone, you create a silence from start to finish."
+    },
+    {
+      "type": "section",
+      "id": "open-silence-form",
+      "title": "Open the silence form",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/",
+          "verify": "on-page:/",
+          "content": "Start from the Grafana home page, then use the main menu to find **Silences**."
+        },
+        {
+          "type": "multistep",
+          "content": "Expand **Alerting** in the main menu, then open **Silences**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label*='section: Alerting']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/silences']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href*='/alerting/silence/new']",
+          "content": "Click **Add silence** to open the silence creation form.",
+          "requirements": ["on-page:/alerting/silences"],
+          "verify": "on-page:/alerting/silence/new"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "set-time-window",
+      "title": "Set the silence time window",
+      "requirements": ["section-completed:open-silence-form"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the **Silence start and end** picker, set when the silence begins and ends. For a maintenance window, set the start to now and the end to when the work finishes."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#duration",
+          "content": "Alternatively, set the **Duration** field and Grafana calculates the end time for you.\n\nUse a duration that matches the work, for example, `2h` for a short maintenance window or `1d` for a longer migration. Valid units: `y`, `M`, `w`, `d`, `h`, `m`, `s`.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/silence/new"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-matchers",
+      "title": "Add label matchers",
+      "requirements": ["section-completed:set-time-window"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#matcher-0-label",
+          "content": "Under **Refine affected alerts**, enter the label name to match in the **Label** field, for example, `severity` or `team`.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/silence/new"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#matcher-0-value",
+          "content": "Enter the matching value in the **Value** field, for example, `warning` or `database`. The operator defaults to equals (`=`); change it if you need a regex or not-equals match.\n\nOnly alerts whose labels match every matcher you add are silenced. The more matchers you add, the narrower the silence.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/silence/new"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:contains('Add matcher')",
+          "content": "Click **Add matcher** to add another label matcher if you need to narrow the silence further.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/silence/new"],
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "verify-and-submit",
+      "title": "Verify affected instances and submit",
+      "requirements": ["section-completed:add-matchers"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review the **Affected alert instances** preview below the matchers. It lists the alert instances your matchers currently select.\n\nIf the preview is empty or includes alerts you didn't intend to silence, adjust your matchers before submitting."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#comment",
+          "content": "Enter a **Comment** describing why you're creating the silence, for example, `Database upgrade maintenance window`. This helps your team understand the silence later.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/silence/new"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save silence",
+          "content": "Click **Save silence** to create the silence.\n\nNotifications for matching alerts are now suppressed until the silence expires. Evaluation continues, so you keep a record of what fired during the window.",
+          "requirements": ["on-page:/alerting/silence/new"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your silence is active. Matching alerts won't notify anyone until the window ends, then notifications resume automatically.\n\nYou've created a silence from start to finish."
+        }
+      ]
+    }
+  ]
+}

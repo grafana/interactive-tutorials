@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-first-rule-labels-configure-labels-evaluation",
+  "title": "Configure labels and evaluation behavior",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You'll organize your alert into a folder, set how often Grafana evaluates it, and add labels that control routing.\n\nIn this milestone, you select an evaluation group, set the pending period, and add labels."
+    },
+    {
+      "type": "section",
+      "id": "select-folder",
+      "title": "Select a folder",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Select folder",
+          "content": "In the **Set evaluation behavior** section, click **Select folder** to choose or create a folder for your alert rule.\n\nFolders organize alert rules by team, service, or purpose, and they determine who has permission to manage the rules inside them.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "configure-evaluation-group",
+      "title": "Configure the evaluation group",
+      "requirements": ["section-completed:select-folder"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='group-picker']",
+          "content": "Locate the evaluation group picker. Evaluation groups batch rules that share the same evaluation interval.\n\nIf the picker is disabled, select a folder first.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule new-evaluation-group-button']",
+          "content": "If you don't have an existing group, click **New evaluation group** to create one. Choose a name and set the **Evaluation interval** — how often Grafana runs your query.\n\n| Urgency | Interval | Use case |\n|---------|----------|----------|\n| Critical | `1m` | Host down, service unavailable |\n| Standard | `5m` | CPU high, error rate elevated |\n| Low priority | `10m` | Disk trending full, memory creeping up |\n\nShorter intervals detect issues faster but increase query load on your data sources.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "set-pending-period",
+      "title": "Set the pending period",
+      "requirements": ["section-completed:configure-evaluation-group"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#eval-for-input",
+          "content": "Locate the **Pending period** field. This controls how long the condition must be true before the alert fires, which prevents brief spikes from triggering notifications.\n\n| Alert type | Pending period | Why |\n|------------|----------------|-----|\n| CPU spike | `5m` | Filters brief spikes during deployments |\n| Error burst | `2m` | Catches sustained patterns, not single errors |\n| Disk full | `10m` | Disk usage changes slowly, longer window is fine |\n| Service down | `1m` | Outages need fast detection |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-labels",
+      "title": "Add labels",
+      "requirements": ["section-completed:set-pending-period"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add labels",
+          "content": "Scroll to the **Add labels** section and click **Add labels** to add categorization labels.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Add labels as key-value pairs. Common labels include:\n\n| Key | Example values | Purpose |\n|-----|----------------|--------|\n| `severity` | `critical`, `warning`, `info` | Controls urgency and routing |\n| `team` | `platform`, `database`, `frontend` | Routes to the right responders |\n| `service` | `api-gateway`, `payment-service` | Identifies the affected service |\n| `environment` | `production`, `staging` | Distinguishes alert context |"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Labels drive notification routing. For example, notification policies can:\n\n- Route `severity: critical` to PagerDuty for immediate response\n- Route `severity: warning` to a Slack channel for awareness\n- Route `team: database` to the database team's on-call\n\nChoose labels that match your notification policy matchers."
+        },
+        {
+          "type": "markdown",
+          "content": "Your alert now has a folder, an evaluation schedule, a pending period, and routing labels.\n\nIn the next path, you learn how to configure no-data handling, select a contact point, and save your rule."
+        }
+      ]
+    }
+  ]
+}

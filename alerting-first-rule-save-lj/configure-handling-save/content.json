@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-first-rule-save-configure-handling-save",
+  "title": "Configure handling, notifications, and save",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You'll finish your alert rule by setting how it handles missing data, choosing where notifications go, adding a summary, and saving.\n\nIn this milestone, you configure handling options, select a contact point, add an annotation, and save your rule."
+    },
+    {
+      "type": "section",
+      "id": "configure-handling",
+      "title": "Configure no-data and error handling",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:contains('Configure no data and error handling')",
+          "content": "In the evaluation behavior area, expand **Configure no data and error handling** to control what happens when a query returns no data or errors.\n\nThe defaults are usually fine, but change the behavior for queries that legitimately return no data at times — for example, set **No data** to **Normal** so a quiet log stream doesn't fire an alert.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "select-contact-point",
+      "title": "Select a contact point",
+      "requirements": ["section-completed:configure-handling"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='contact-point-picker']",
+          "content": "In the **Configure notifications** section, locate the **Contact point** picker. Select the contact point where you want alert notifications delivered.\n\nNotifications for firing alerts are routed to the selected contact point.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[aria-label='View or create contact points']",
+          "content": "If you don't have a contact point yet, click **View or create contact points** to create one.\n\nChoose the integration that matches your team's workflow:\n\n| Integration | Setup |\n|-------------|-------|\n| **Email** | Enter your email address — simplest option |\n| **Slack** | Provide a webhook URL for your channel |\n| **PagerDuty** | Add your routing key for on-call escalation |\n| **Microsoft Teams** | Provide a webhook URL for your team channel |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-annotation",
+      "title": "Add a summary annotation",
+      "requirements": ["section-completed:select-contact-point"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='annotation-value-0']",
+          "content": "In the **Configure notification message** section, locate the **Summary** field. The summary is the first line responders see in Slack, PagerDuty, email, and other channels. Keep it brief and use template variables to make it dynamic.\n\n| If alerting on | Example summary |\n|----------------|------------------|\n| CPU usage | `CPU usage is high on {{ $labels.instance }}` |\n| Error rate | `Error rate elevated for {{ $labels.job }}` |\n| Disk space | `Disk space low on {{ $labels.instance }}` |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "save-rule",
+      "title": "Save and activate the rule",
+      "requirements": ["section-completed:add-annotation"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='save-rule']",
+          "content": "Click **Save** to save and activate your alert rule.\n\nYour alert rule is now saved and active. Grafana immediately begins evaluating it at your specified interval.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "**Your alert rule is saved and actively monitoring.** When the condition is met and persists past your pending period, the alert fires and notifications are sent to your contact point.\n\nYou've created a complete alert rule from query to notification."
+        }
+      ]
+    }
+  ]
+}
