@@ -1,0 +1,65 @@
+{
+  "id": "create-alert-rule-build-query",
+  "title": "Build your query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Select the tutorial data source and build a query that monitors request duration for the Quick Pizza application."
+    },
+    {
+      "type": "section",
+      "id": "select-datasource-and-query",
+      "title": "Select data source and build query",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "targetvalue": "grafanacloud-play-prom",
+          "content": "Select **grafanacloud-play-prom** as your data source. This is the tutorial Prometheus instance you installed in the previous step.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid metric select']",
+          "targetvalue": "quickpizza_server_http_request_duration_seconds_sum",
+          "content": "In the query editor, use the **Metric** dropdown to search for and select `quickpizza_server_http_request_duration_seconds_sum`. This metric tracks how long HTTP requests take in the Quick Pizza application.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Leave the **Label filters** empty. You want to watch every Quick Pizza service, so you don't narrow the query to a single service here. Instead, you'll group by service in a later step."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Operations",
+          "content": "Click **+ Operations** and choose **Range > Rate**, then keep `$__rate_interval`. Rate turns the ever-growing counter into a per-second value so you see current behavior.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Operations",
+          "content": "Click **+ Operations** again and choose **Aggregations > Sum**. The operation appears as **Sum by**. Click **+ Label** and select `job`. This gives you one line per service, so when the alert fires you know which service is slow. If you leave the label blank, `sum by()` collapses every service into a single line.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid alert-rule preview-button']",
+          "content": "Click **Preview alert rule condition** to verify your query returns data. You should see one line per Quick Pizza service in the preview panel.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your query selects the data to monitor. Next, you'll set the condition that determines when the alert fires."
+    }
+  ]
+}

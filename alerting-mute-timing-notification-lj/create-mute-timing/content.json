@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-mute-timing-notification-create-mute-timing",
+  "title": "Create a mute timing",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now you'll create a time interval that defines when notifications should be suppressed."
+    },
+    {
+      "type": "markdown",
+      "content": "To create a time interval, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "a:has-text('New time interval')",
+          "content": "Click **New time interval**.\n\nThe time interval creation form opens.",
+          "requirements": ["on-page:/alerting/routes/mute-timing"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='mute-timing-name']",
+          "content": "Enter a descriptive **Name** for this time interval.\n\nFor example: `weekend-quiet-hours` or `friday-maintenance-window`. Use a name that clearly communicates when and why notifications are suppressed.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/routes/mute-timing/new"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='mute-timing-starts-at']",
+          "content": "Enter the **Start time** in HH:MM format.\n\nFor example, `22:00` for 10 PM. This is when suppression begins each day the interval is active.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='mute-timing-ends-at']",
+          "content": "Enter the **End time** in HH:MM format.\n\nFor example, `06:00` for 6 AM. Together with the start time, this defines the daily suppression window.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='mute-timing-weekdays']",
+          "content": "Optionally, specify which **Days of the week** this interval applies to.\n\nFor example, enter `saturday, sunday` for weekend-only suppression. Leave blank to apply every day of the week.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button:has-text('Save time interval')",
+          "content": "Click **Save time interval** to create the interval.\n\nThe Time intervals page updates to show your new interval. It isn't active yet — you still need to attach it to a notification policy.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your time interval is created. In the next milestone, you'll attach it to a notification policy as a mute timing so it starts suppressing notifications."
+    }
+  ]
+}
