@@ -1,77 +1,93 @@
 {
-  "id": "billing-usage-identify-cost-sources",
-  "title": "Identify the source of billable activity",
-  "blocks": [
-    {
-      "type": "markdown",
-      "content": "Understanding which products contribute to your monthly costs helps you make informed decisions about optimization and resource allocation. The Usage tab breaks your spend down by product so you can quickly find your largest cost drivers."
-    },
-    {
-      "type": "section",
-      "id": "find-cost-drivers",
-      "title": "Find your largest cost drivers",
-      "blocks": [
-        {
-          "type": "markdown",
-          "content": "In this section, you'll use the Usage tab to compare per-product cost and spot your biggest cost drivers."
+    "id": "billing-usage-identify-cost-sources",
+    "title": "Identify the source of billable activity",
+    "blocks": [{
+            "type": "markdown",
+            "content": "Understanding which products contribute to your monthly costs helps you make informed decisions about optimization and resource allocation. The Usage tab breaks your spend down by product so you can quickly find your largest cost drivers."
         },
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/a/grafana-cmab-app/usage",
-          "content": "Open the **Usage** tab of the Cost Management and Billing app.",
-          "verify": "on-page:/a/grafana-cmab-app/usage"
+            "type": "section",
+            "id": "find-cost-drivers",
+            "title": "Find your largest cost drivers",
+            "blocks": [{
+                    "type": "markdown",
+                    "content": "In this section, you'll use the Usage tab to compare per-product cost and spot your biggest cost drivers."
+                },
+                {
+                    "type": "interactive",
+                    "action": "navigate",
+                    "reftarget": "/a/grafana-cmab-app/usage",
+                    "content": "Open the **Usage** tab of the Cost Management and Billing app.",
+                    "verify": "on-page:/a/grafana-cmab-app/usage"
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "h2:contains('Product Breakdown')",
+                    "content": "Scroll to the **Product Breakdown** section. It lists each billable product, such as Metrics, Logs, Traces, Profiles, and k6, with its current usage and cost. Compare the costs to find which products consume most of your budget. You can also compare the selected period against an earlier one to see how each product's spend is trending.",
+                    "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
+                    "doIt": false
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[id='dropdown-trigger-month-to-date']",
+                    "content": "Use the **for** dropdown to choose the billing period you want to view, such as the current month to date.",
+                    "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
+                    "doIt": false,
+                    "skippable": true
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[id='dropdown-trigger-month-to-date-last-month']",
+                    "content": "In the **compared with** dropdown, pick an a period to compare against. Each product row then shows its change versus that period, so you can spot where spend is rising or falling.",
+                    "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
+                    "doIt": false,
+                    "skippable": true
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[data-testid='data-testid Tab Attributions']",
+                    "content": "Use the **Attributions** tab to break usage down by team or service, once you've configured cost attribution labels.",
+                    "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
+                    "doIt": false
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[data-testid='data-testid Tab Cardinality']",
+                    "content": "Use the **Cardinality** tab to find high-cardinality metrics that inflate your metrics cost.",
+                    "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
+                    "doIt": false
+                },
+                {
+                    "type": "markdown",
+                    "content": "You compared per-product cost in the Product Breakdown and found where to dig deeper with attributions and cardinality."
+                }
+            ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "h2:contains('Product Breakdown')",
-          "content": "Scroll to the **Product Breakdown** section. It lists each billable product, such as Metrics, Logs, Traces, Profiles, and k6, with its current usage and cost. Compare the costs to find which products consume most of your budget.",
-          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
-          "doIt": false
+            "type": "image",
+            "src": "https://grafana.com/media/docs/learning-journey/billing-usage/product-breakdown.png",
+            "alt": "The Product Breakdown section of the Usage tab, showing overage and usage for each Grafana Cloud product"
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Attributions']",
-          "content": "Use the **Attributions** tab to break usage down by team or service, once you've configured cost attribution labels.",
-          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
-          "doIt": false
+            "type": "markdown",
+            "content": "When you compare products, look for:\n\n- **Primary cost drivers**: The products that consume most of your budget.\n- **Usage patterns**: Whether costs are steady or fluctuate significantly.\n- **Growth trends**: The products whose cost is increasing over time.\n\nFor example, a team running large load tests might find that k6 Virtual User Hours (VUh) is its primary cost driver, while a logging-heavy team sees Logs at the top."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Cardinality']",
-          "content": "Use the **Cardinality** tab to find high-cardinality metrics that inflate your metrics cost.",
-          "requirements": ["exists-reftarget", "on-page:/a/grafana-cmab-app/usage"],
-          "doIt": false
+            "type": "markdown",
+            "content": "To attribute spend to teams or services, configure attribution labels first; refer to [Attribute costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/cost-attributions/)."
         },
         {
-          "type": "markdown",
-          "content": "You compared per-product cost in the Product Breakdown and found where to dig deeper with attributions and cardinality."
+            "type": "markdown",
+            "content": "In the next milestone, you'll attribute this spend to the teams or services responsible for it."
+        },
+        {
+            "type": "markdown",
+            "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Attribute costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/cost-attributions/)\n- [Analyze and reduce costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/)"
         }
-      ]
-    },
-    {
-      "type": "image",
-      "src": "https://grafana.com/media/docs/learning-journey/billing-usage/product-breakdown.png",
-      "alt": "The Product Breakdown section of the Usage tab, showing overage and usage for each Grafana Cloud product"
-    },
-    {
-      "type": "markdown",
-      "content": "When you compare products, look for:\n\n- **Primary cost drivers**: The products that consume most of your budget.\n- **Usage patterns**: Whether costs are steady or fluctuate significantly.\n- **Growth trends**: The products whose cost is increasing over time.\n\nFor example, a team running large load tests might find that k6 Virtual User Hours (VUh) is its primary cost driver, while a logging-heavy team sees Logs at the top."
-    },
-    {
-      "type": "markdown",
-      "content": "To attribute spend to teams or services, configure attribution labels first; refer to [Attribute costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/cost-attributions/)."
-    },
-    {
-      "type": "markdown",
-      "content": "In the next milestone, you'll learn how these costs are calculated so you can make informed optimization decisions."
-    },
-    {
-      "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Attribute costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/cost-attributions/)\n- [Analyze and reduce costs](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/)"
-    }
-  ]
+    ]
 }
