@@ -278,7 +278,8 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 
 Write `pr-{n}-findings.md` using [finding severity routing](reference-checks.md#finding-severity-routing):
 
-- **Merge blockers (always inline)** — dedupe by root cause; static + any Phase 5–6 failures if live testing already ran
+- **Runtime blockers (always inline)** — dedupe by root cause; Phase 5–6 failures; manifest/depends/framing breaks; selector fails live
+- **Selector notes** — audit rule 2 / `:contains()` findings; apply [selector decision tree](reference-checks.md#selector-decision-tree) — body-only when Pathfinder passed and fallback is justified
 - **Live-test candidates** — selectors and milestones for Playwright + Pathfinder
 - **Defer until after Pathfinder** — findings in the **Defer** column only
 - **Review body only** — companion website, CODEOWNERS, editorial, passed-milestone notes
@@ -445,16 +446,31 @@ Start only after setup **ready**. For each milestone in path `milestones` (skip 
 
 1. Re-fetch PR HEAD if author may have pushed; reconcile resolved threads.
 2. From `pr-{n}-findings.md`, promote **Defer** items to inline only if Phase 5–6 failed; drop deferred items Pathfinder passed.
-3. Dedupe to [one comment per root cause](reference-checks.md#one-comment-per-root-cause) before posting.
-4. Add inline comments via GraphQL `addPullRequestReviewComment` — **Always inline** + runtime failures only.
-5. Merge Playwright + Pathfinder evidence, and merge code fix + runtime symptom when they share a root cause (never two inline threads on the same file for the same bug).
-6. Write `.cursor/pr-review-state/pr-{n}-review-body.md` with **Review body only** findings, passed milestones, and retest notes. List all merge blockers under one **Must fix before merge** section (no split "should fix" tier for **Always inline** items). Apply the [generated-file frontmatter](SKILL.md#generated-files).
-7. Recommend a default [verdict](reference-checks.md#verdict-selection-phases-89) from findings (`REQUEST_CHANGES`, `COMMENT`, or `APPROVE`) with a one-sentence reason. Store in state: `"recommended_verdict"`.
-8. Update state: `comment_count`, `"phase": 7`.
+3. Re-tag audit-only `:contains()` findings with the [selector decision tree](reference-checks.md#selector-decision-tree) — do **not** inline when Pathfinder passed and no stable selector exists in DOM.
+4. Dedupe to [one comment per root cause](reference-checks.md#one-comment-per-root-cause) before posting.
+5. Add inline comments via GraphQL `addPullRequestReviewComment` — **Always inline** + runtime failures only. **Ask the reviewer to confirm** before inlining any finding that is audit-only (no live failure).
+6. Merge Playwright + Pathfinder evidence, and merge code fix + runtime symptom when they share a root cause (never two inline threads on the same file for the same bug).
+7. Write `.cursor/pr-review-state/pr-{n}-review-body.md` with **Review body only** findings, passed milestones, and retest notes. List runtime merge blockers under **Must fix before merge**; put justified `:contains()` fallbacks and selector polish under **Optional follow-ups**. Apply the [generated-file frontmatter](SKILL.md#generated-files).
+8. Recommend a default [verdict](reference-checks.md#verdict-selection-phases-89) from findings (`REQUEST_CHANGES`, `COMMENT`, or `APPROVE`) with a one-sentence reason. If all Pathfinder milestones passed and no runtime blockers remain, default to **COMMENT** or **APPROVE**, not REQUEST_CHANGES. Store in state: `"recommended_verdict"`.
+9. Update state: `comment_count`, `"phase": 7`.
 
-**Example inline tone:**
+### Comment tone (required)
 
-> **Blocker** — verified on `learn.grafana.net` @ `{sha}` (Playwright DOM + Pathfinder PR review tool). …
+Write like a human reviewer, not an audit dump.
+
+- Lead with what you tested and the outcome (pass/fail), not rule numbers.
+- Use **Blocker** only for runtime failures or broken manifest/depends/framing — not for audit-only `:contains()` when Pathfinder passed.
+- For selector polish: one plain sentence; link [docs/selectors-and-testids.md](../../../docs/selectors-and-testids.md) when relevant; default to **review body**, not inline, when the step passed live.
+- Do **not** use a fixed template such as `verified on learn.grafana.net @ {sha} (Playwright DOM + Pathfinder PR review tool)` on every comment — mention the host/sha once in the review body if useful.
+- Acknowledge author context when known (e.g. test IDs tried first and failed).
+
+**Bad (canned):**
+
+> **Blocker** — verified on `learn.grafana.net` @ `934a2c3` (Playwright DOM + Pathfinder PR review tool). Replace `h2:contains('Total Cost')`…
+
+**Good (human):**
+
+> This step passed on learn, but if you have a `data-testid` on this heading from Block Editor, prefer that over `:contains()` — otherwise the current selector matches our fallback order in the selectors doc.
 
 ### Checkpoint
 
