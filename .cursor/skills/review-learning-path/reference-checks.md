@@ -4,6 +4,8 @@ Detailed checklists referenced from [SKILL.md](SKILL.md). The agent uses these d
 
 **Note:** [finding severity routing](#finding-severity-routing) supersedes [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for this workflow. audit-guide blocking/warning/info labels from Phase 1 are inputs only — re-tag before Phase 7.
 
+**Selector authority for LP reviews:** Follow [docs/selectors-and-testids.md](../../../docs/selectors-and-testids.md) priority order (`data-testid` > semantic > `:contains()` > `:has()` > CSS classes). Do **not** apply [build-interactive-lj/reference/selector-patterns.md](../../commands/build-interactive-lj/reference/selector-patterns.md) autogen rules ("never `:contains()`") when reviewing hand-authored or live-captured guides — that workflow targets source-to-guide generation, not PR review.
+
 ---
 
 ## Finding severity routing
@@ -14,18 +16,42 @@ Use this table when writing `pr-{n}-findings.md` (Phase 3) and when deciding inl
 |---|---|---|
 | Playwright / Pathfinder runtime fail | Section bookends (rule 14) | Companion website drift |
 | Outdated `data-testid` / UI label (valid pattern, wrong target) | `on-page` when step might still run | Passed milestones + deferred nits |
-| Broken `depends` chain or framing in path `milestones` | `lazyRender` when target might scroll into view | Fresh-stack retest notes (N/A on credentialed stack) |
-| First hands-on `depends` references framing ID | Skippable flag when step is permission-gated and passed | Pathfinder app shell UX |
+| `:contains()` when stable `data-testid` or semantic attr verified in DOM | `lazyRender` when target might scroll into view | `:contains()` fallback per [selectors doc](../../../docs/selectors-and-testids.md) when Pathfinder passed and no stable selector exists |
+| Broken `depends` chain or framing in path `milestones` | Skippable flag when step is permission-gated and passed | Fresh-stack retest notes (N/A on credentialed stack) |
+| First hands-on `depends` references framing ID | Admin-only steps without `skippable` if step passed | Pathfinder app shell UX |
 | Missing `exists-reftarget`, `navmenu-open` | Missing `verify` if save step passed live | Editorial / tooltip / vocabulary |
-| Fragile selectors | Admin-only steps without `skippable` if step passed | CODEOWNERS reminder |
-| `noop` misuse, multistep singleton, focus-before-formfill | — | — |
-| Missing `startingLocation` on interactive milestone | Missing objectives when resource already exists | Audit-guide warnings with no runtime impact |
-| Pathfinder CLI validate failure | — | Product UX not fixable in JSON |
+| CSS-class-only or auto-generated class selectors | — | Audit-guide warnings with no runtime impact |
+| `noop` misuse, multistep singleton, focus-before-formfill | — | CODEOWNERS reminder |
+| Missing `startingLocation` on interactive milestone | Missing objectives when resource already exists | Product UX not fixable in JSON |
+| Pathfinder CLI validate failure | — | — |
 | `index.json` modified, invalid `testEnvironment.tier` | — | — |
 | Secrets auto-filled (`doIt: true`) | — | — |
 | Path root / manifest `id` mismatch | — | — |
 
-**After Pathfinder:** promote deferred items to inline only if live test failed or static issue is clearly wrong regardless of runtime (e.g. fragile selector that happened to match today).
+**After Pathfinder:** promote deferred items to inline only if live test failed or static issue is clearly wrong regardless of runtime (e.g. author used `:contains()` when Playwright confirmed a `data-testid` on the same element).
+
+### Selector decision tree
+
+Apply after Phase 5–6 when re-tagging audit-guide rule 2 / "fragile selector" findings:
+
+```
+Selector finding from audit
+  │
+  ├─ Pathfinder or Playwright fail on this step? → Always inline
+  │
+  ├─ Stable data-testid or semantic attr available in DOM
+  │    and author used :contains() instead? → Always inline
+  │
+  ├─ :contains() on heading/button per docs/selectors-and-testids.md
+  │    priority 3, Pathfinder passed, no stable selector in DOM? → Review body only
+  │
+  ├─ :contains() in virtualised/below-fold context (rule 21)? → Defer;
+  │    promote to inline only if Pathfinder fails
+  │
+  └─ CSS class / nth-only selector? → Defer; promote if Pathfinder fails
+```
+
+When the author notes test IDs were tried first and failed, treat `:contains()` as justified fallback unless live testing or DOM inspection proves otherwise.
 
 ---
 
@@ -196,7 +222,7 @@ Dedupe before posting. Apply these rules in order:
 | One comment per root cause (rules above) | Passed milestones, deferred nits, companion website, retest notes | Follow-up issue tracking |
 | Code fix in PR (`depends`, manifest, noop, framing) | No fixed template | — |
 
-**Never inline:** pass-only, N/A-only, `FROM AUDIT:` dumps, duplicate threads for the same root cause on the same file, items still in **Defer** that Pathfinder passed.
+**Never inline:** pass-only, N/A-only, `FROM AUDIT:` dumps, duplicate threads for the same root cause on the same file, items still in **Defer** that Pathfinder passed, audit-only `:contains()` fallback findings when Pathfinder passed (see [selector decision tree](#selector-decision-tree)).
 
 ---
 
@@ -209,9 +235,11 @@ The reviewer chooses the GitHub review event at Phase 8. The agent **recommends*
 ```
 After Phase 7 — any Always inline finding OR Phase 5–6 runtime failure with inline comment?
   Yes → recommend REQUEST_CHANGES
-  No  → any Review body only items (companion website, retest notes, deferred nits, shell UX)?
-          Yes → recommend COMMENT
-          No  → recommend APPROVE
+  No  → all Pathfinder milestones passed AND remaining findings are audit-only selector warnings or body-only nits?
+          Yes → recommend COMMENT (or APPROVE if nothing worth saying)
+          No  → any Review body only items (companion website, retest notes, deferred nits, shell UX)?
+                  Yes → recommend COMMENT
+                  No  → recommend APPROVE
 ```
 
 ### When to use each verdict
