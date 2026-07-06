@@ -1,0 +1,73 @@
+{
+  "id": "rca-workbench-investigation-explore-timeline",
+  "title": "Explore the investigation timeline",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you explore the RCA Workbench timeline to understand the sequence of insights and events during the incident.\n\nThe timeline provides a chronological view of insights firing across your selected entities. This helps you identify the first failure, trace cascading effects, and understand how issues propagated through your system."
+    },
+    {
+      "type": "section",
+      "id": "explore-timeline",
+      "title": "Explore the timeline",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll use the Timeline view to identify the sequence of events during the incident."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='assertions-timeline-tab']",
+          "content": "In RCA Workbench, ensure you're in the **Timeline** view.",
+          "requirements": ["on-page:/a/grafana-asserts-app/assertions", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Expand the entities on the left panel to show individual insights."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Scan the timeline from left to right to identify the earliest insight that fired."
+        },
+        {
+          "type": "markdown",
+          "content": "Look for:\n\n- **Amend insights** (blue) — Deployments or configuration changes\n- **Failure insights** (red) — Service or infrastructure failures\n- **Saturation insights** (yellow/red) — Resources approaching limits\n\nStart with blue amend insights. A recent deployment or config change that immediately precedes red failure insights is one of the most common root causes. If no amend insights appear, look for the earliest saturation insight, which may indicate gradual resource exhaustion that eventually triggered failures."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Note the time of the first insight, as this is often the root cause or trigger."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Look for cascading failures by examining insights that fired shortly after the first one."
+        },
+        {
+          "type": "markdown",
+          "content": "For example, if a saturation insight fires on a database node at 14:02 and failure insights begin appearing on upstream API services at 14:04, the database is likely the origin. A gap of seconds to a few minutes between the first insight and downstream failures is a common cascading pattern."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click and drag on the timeline to zoom into specific time periods for detailed analysis."
+        },
+        {
+          "type": "markdown",
+          "content": "You explored the timeline to identify the sequence of events and potential cascading failures."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll analyze correlated metrics to identify performance degradation."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [RCA workbench](/docs/grafana-cloud/knowledge-graph/troubleshoot-infra-apps/workbench/)\n- [Insights reference](/docs/grafana-cloud/knowledge-graph/reference/about-base-insights/)"
+    }
+  ]
+}
