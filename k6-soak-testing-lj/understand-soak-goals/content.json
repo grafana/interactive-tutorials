@@ -1,0 +1,10 @@
+{
+  "id": "k6-soak-testing-understand-soak-goals",
+  "title": "The value of soak testing",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Average-load and baseline tests show how the system behaves under expected traffic for a short window. [Soak testing](https://grafana.com/docs/k6/latest/testing-guides/test-types/soak-testing/) reuses that load level and holds the plateau longer so degradation that needs time to accumulate becomes visible.\n\nStress and spike tests answer overload and burst questions. Soak testing answers a duration question: does performance or stability drift when load stays near average levels for hours?\n\n## Problems short runs miss\n\nA five-minute stress run cannot expose a leak that adds 50 MB per hour. A ten-minute breakpoint ramp may not reveal a connection pool that loses handles only under sustained traffic. Those defects need a longer plateau at moderate load.\n\nCommon patterns soak tests target:\n\n- **Memory leaks**: Allocations that are never freed. Server memory climbs; `http_req_duration` in k6 may rise if garbage-collection pauses or queueing increase. Confirm with application memory metrics on the system under test.\n- **Connection pool limits**: Connections acquired but not returned under certain errors. Short tests look healthy; after hours, new requests block and latency or errors increase.\n- **Log and disk fill**: Verbose logging or temp files that grow without rotation. Performance can change suddenly when disk space runs out.\n- **Gradual latency creep**: Fragmented indexes, full caches, or backlog growth. p95 drifts upward slowly enough that point-in-time alerts never fire.\n\n## How soak differs from other test types\n\nIn k6 docs, soak is a variation of **average-load** testing: same ramp-up and ramp-down pattern, longer plateau. Load stays near the average level you measured in baseline work, not at stress-test peaks.\n\nIn the next milestone, you design a soak profile with that longer plateau."
+    }
+  ]
+}
