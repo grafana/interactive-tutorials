@@ -1,14 +1,16 @@
 ---
 name: review-learning-path
 description: >-
-  Guide a reviewer through a full learning path PR review in interactive-tutorials —
-  per-milestone audit, path consistency, Playwright, Pathfinder PR review tool, and
-  GitHub submit. Use when the user runs /review-learning-path-pr.
+  Guide a reviewer through a learning path PR in interactive-tutorials — nine phases
+  from checkout through audit, live testing, and GitHub submit. Use when the user
+  runs /review-learning-path-pr.
 ---
 
 # Review learning path PR
 
-Interactive, phase-by-phase review of a `{slug}-lj/` pull request. The **agent narrates each step**, runs automated checks, and **prompts the reviewer for input** at checkpoints. Read-only on guide JSON.
+Guide a reviewer through a `{slug}-lj/` pull request in **nine phases** — static audit, path checks, live testing, and GitHub submit. Narrate each step, run automated checks, and **pause at every checkpoint** for the reviewer's reply. Read-only on guide JSON.
+
+**Terminology:** Say **learning path** or **path** in reviewer messages; use `{path_dir}` (package directory) in agent notes. A **draft review** is the GitHub pending review that holds comments until submit.
 
 **Entry command:** [/review-learning-path-pr](../../commands/review-learning-path-pr.md)
 
@@ -18,7 +20,7 @@ Interactive, phase-by-phase review of a `{slug}-lj/` pull request. The **agent n
 
 **Severity:** [finding severity routing](reference-checks.md#finding-severity-routing) in this skill **supersedes** [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for Phase 3 bucketing and Phase 7 inline vs body decisions. audit-guide blocking/warning/info still applies during Phase 1; re-tag findings with this skill's routing before Phase 7.
 
-**Checklists:** [reference-checks.md](reference-checks.md) · **GitHub API:** [github-review.md](github-review.md)
+**Checklists:** [reference-checks.md](reference-checks.md) · [learning-hub-standards.md](learning-hub-standards.md) · **GitHub API:** [github-review.md](github-review.md)
 
 **Related:** [audit-guide](../audit-guide/SKILL.md) · [review-guide-pr.mdc](../../review-guide-pr.mdc)
 
@@ -37,14 +39,13 @@ Input (PR URL or number)
   │
   ├─ Phase 2: Path consistency ──── orchestrator (manifest, framing, website.yaml)
   │
-  ├─ Phase 3: Findings doc ──────── orchestrator → pr-{n}-findings.md
-  │    Checkpoint: reviewer approves live testing
+  ├─ Phase 3: Findings doc ──────── merge static results; choose live test or static-only
   │
-  ├─ Phase 4: Pending GitHub review
+  ├─ Phase 4: Draft GitHub review ─ then Playwright login (or Phase 7 if static-only)
   │
-  ├─ Phase 5: Playwright DOM ────── orchestrator (reviewer logs in first)
+  ├─ Phase 5: Playwright DOM ────── skipped when static-only
   │
-  ├─ Phase 6: Pathfinder PR tool ── reviewer reports pass/fail/N/A per milestone
+  ├─ Phase 6: Pathfinder PR tool ── skipped when static-only
   │
   ├─ Phase 7: Consolidate comments ─ orchestrator → inline + review-body.md
   │
@@ -60,7 +61,7 @@ Input (PR URL or number)
 
 - **Required**: `pr_number` or GitHub PR URL for `grafana/interactive-tutorials` — supplied by the reviewer at Phase 0.
 - **Optional**: `path_dir` — `{slug}-lj/` package directory. Inferred from changed files; confirm with reviewer if ambiguous.
-- **Optional**: `website_slug` — companion path slug (`{path_dir}` minus `-lj`). Inferred when `website` repo is in workspace.
+- **Optional**: `website_slug` — `{path_dir}` minus `-lj`. When the `website` repo is in workspace, use only to **read** legacy markdown for conversion-review context ([PR #416](https://github.com/grafana/interactive-tutorials/pull/416)). Not a second PR target.
 - **Optional**: `learn_host` — live test host (default `learn.grafana.net`).
 - **Optional**: `waive_live_testing` — reviewer explicitly accepts static-only review; skip Phases 5–6.
 
@@ -73,10 +74,10 @@ If the user invokes `/review-learning-path-pr` with no arguments, start Phase 0 
 These rules are **inviolable** during a review run:
 
 1. **Never modify author `content.json` or `manifest.json`.** Read-only on guide JSON.
-2. **Never post GitHub inline comments before Phase 7** (unless reviewer waives live testing and approves static-only inline at Phase 3).
+2. **Never post GitHub inline comments before Phase 7.**
 3. **Never submit a review before Phase 8 approval** from the reviewer.
-4. **Never commit review artifacts** — `.cursor/pr-review-state/` (gitignored) or audit-guide output under `{milestone}/assets/`. Mandatory cleanup and verification: [Commit safety](#commit-safety).
-5. **One pending GitHub review per PR review cycle** — workflow ends at Phase 9 submit.
+4. **Never commit review artifacts** — `.cursor/pr-review-state/` (gitignored) or audit-guide output under `{milestone}/assets/`. See [Commit safety](#commit-safety).
+5. **One draft review per cycle** — after Phase 9 submit, start a new cycle for major follow-ups.
 
 ---
 
@@ -100,7 +101,7 @@ For each milestone directory to audit, record existing asset paths in state:
 find {milestone}/assets -type f 2>/dev/null | sort
 ```
 
-Store as `pre_review_assets.{milestone-slug}` in `pr-{n}.json`.
+Store under `pre_review_assets` in `pr-{n}.json` — a map of milestone slug → file path list. See [github-review.md](github-review.md#state-file-schema).
 
 ### Phase 1 cleanup (mandatory — before Phase 1 checkpoint)
 
@@ -126,28 +127,39 @@ Run the same `git status` check on `{path_dir}` after Phase 3. Live testing does
 
 ## How this skill runs
 
-1. Agent announces the current **phase**, what it is doing, and why.
-2. Agent executes agent-side work (audit, `gh`, Playwright, draft files).
-3. Agent stops at the **checkpoint** and prompts the reviewer for input or approval.
-4. **Do not advance** until the checkpoint is satisfied.
-5. **Do not post GitHub review comments** until Phase 7 (after Phases 1–6 unless reviewer waives live testing).
+1. Announce the **phase** (number and name), what you're doing, and why — keep it to 2–3 sentences.
+2. Do agent-side work (audit, `gh`, Playwright, draft files).
+3. Stop at the **checkpoint** — one message, one ask. **Do not advance** until the reviewer replies.
+4. Post nothing to GitHub until **Phase 7**.
 
-### Reviewer voice
+**Never batch phases.** If the reviewer says "keep going," pause at the next checkpoint anyway and confirm before continuing.
 
-Use short, direct prompts. One ask per checkpoint. Address the reviewer as **you**. Include the phase number. Say what you need and what happens next.
+---
 
-| Phase | Agent | You |
-|---|---|---|
-| 0 | Fetch PR, checkout branch | Share PR URL/number; confirm path |
-| 1–2 | Audit + consistency checks | Skim summary; flag anything missed |
-| 3 | Write findings doc | Approve live testing |
-| 4 | Create pending GitHub review | — |
-| 5 | Playwright DOM (after you log in) | Log in to Playwright browser; reply **ready** |
-| 6 | Record Pathfinder results | Set up PR review tool; test each milestone; report pass/fail/N/A |
-| 7 | Draft inline comments + body | — |
-| 8 | — | Review draft; confirm verdict |
-| 9 | Submit review | Reply **submit** |
-| 10 | Optional follow-ups | — |
+## Checkpoint format
+
+Every phase ends with the same shape. Keep messages short and scannable.
+
+| Section | What to include |
+|---|---|
+| **Header** | `Phase {n} of 9 complete` + one-line outcome |
+| **Summary** | Up to 5 bullets — counts, pass/fail, top issues. Point to `pr-{n}-findings.md` instead of pasting long lists |
+| **Your turn** | Exactly **one** action — a reply keyword or a short answer |
+| **Up next** | One sentence preview of the next phase |
+
+**Reply keywords**
+
+| Keyword | When |
+|---|---|
+| `yes` | Confirm and continue (Phases 0–3, 4 static-only, 5, 6 wrap-up) |
+| `ready` | Playwright logged in (after Phase 4) or PR review tool loaded (Phase 6 setup) |
+| `static-only` | Skip live testing at Phase 3 |
+| `pass` / `fail step N — …` / `N/A — …` | Per-milestone result in Phase 6 |
+| `show body` | Print review body in chat (Phases 7–8) |
+| `submit` | Publish review with verdict (Phase 8) |
+| `resume` / `start fresh` | Pick up saved state or restart |
+
+**Tone:** Address the reviewer as **you**. Use plain language — no rule numbers in chat unless they ask. Say when a phase went cleanly (*no blockers found*, *all milestones passed*). Use **draft review** (not "pending review") in reviewer-facing messages.
 
 ---
 
@@ -155,7 +167,9 @@ Use short, direct prompts. One ask per checkpoint. Address the reviewer as **you
 
 If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell the reviewer:
 
-> I found an in-progress review for PR #{n} (phase {phase}, status {status}). Would you like to **resume** from phase {phase + 1}, or **start fresh**?
+> **Resume?** I have an in-progress review for PR #{n} — stopped after phase {phase} ({status}).
+>
+> Reply **resume** to pick up from phase {next}, or **start fresh** to begin again.
 
 ---
 
@@ -165,9 +179,9 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 
 ### Tell the reviewer
 
-> **Phase 0 — Get the PR**
+> **Phase 0 of 9 — Get the PR**
 >
-> Share the GitHub PR for this learning path — a URL or number (for example `#403`) in `grafana/interactive-tutorials`. I'll fetch it and check out the branch.
+> Share the PR for this learning path — a GitHub URL or number (like `#403`) from `grafana/interactive-tutorials`. I'll check out the branch and identify the package.
 
 **Wait for the PR** before continuing.
 
@@ -179,20 +193,21 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 4. Check out: `gh pr checkout {n}` (or fetch + checkout).
 5. Infer `{path_dir}` from changed files (directory ending in `-lj`). If ambiguous, **ask**.
 6. Infer `website_slug` = `{path_dir}` minus `-lj` if `website` repo is in workspace.
-7. List milestones under `{path_dir}/` and path root files.
-8. Write `.cursor/pr-review-state/pr-{n}.json` with `pull_request_node_id` from the `id` field (GraphQL node ID for Phase 4). See [github-review.md](github-review.md).
+7. Infer `pr_type` — `new`, `conversion`, or `update` per [reference-checks.md § PR type](reference-checks.md#pr-type-phase-0).
+8. List milestones under `{path_dir}/` and path root files.
+9. Write `.cursor/pr-review-state/pr-{n}.json` with `pull_request_node_id` from the `id` field (GraphQL node ID for Phase 4). See [github-review.md](github-review.md).
 
 ### Checkpoint
 
-**Confirm with reviewer:**
-
-> **Phase 0 complete**
+> **Phase 0 of 9 complete** — PR #{n} checked out on `{head_branch}` @ `{short_sha}`.
 >
-> - Branch: `{head_branch}` @ `{short_sha}`
 > - Path: `{path_dir}` ({M} milestones)
-> - Website slug: `{website_slug}` (or none in workspace)
+> - Type: `{pr_type}`
+> - Legacy slug (read-only): `{website_slug}` *(or website repo not in workspace)*
 >
-> Does that look right? Reply **yes** to start the static audit, or tell me what to fix.
+> **Your turn:** Reply **yes** if this looks right, or tell me what to fix.
+>
+> **Up next:** Static audit of each milestone — read-only, nothing posted to GitHub.
 
 ---
 
@@ -202,65 +217,62 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 
 ### Tell the reviewer
 
-> **Phase 1 — Static audit**
+> **Phase 1 of 9 — Static audit**
 >
-> I'm running audit-guide on each milestone under `{path_dir}`. This is read-only — nothing goes to GitHub yet.
+> I'm running audit-guide on each milestone in `{path_dir}`. This only reads files — nothing goes to GitHub yet.
 
 ### Agent steps
 
 1. List milestones from path `manifest.json` `milestones` array **plus** any changed milestone dirs.
 2. **Snapshot** — for each milestone, record existing `assets/` file paths in state (`pre_review_assets`). See [Commit safety](#commit-safety).
 3. Dispatch [audit-guide](../audit-guide/SKILL.md) on each milestone directory (Explore sub-agent or Task, parallel OK). Skip framing-only packages not in path `milestones` unless PR changed them.
-4. Apply every row in [reference-checks.md § content](reference-checks.md#milestone-contentjson-checks).
-5. Tag each finding with severity from [finding severity routing](reference-checks.md#finding-severity-routing) (`inline` / `defer` / `body`).
+4. Apply every row in [reference-checks.md § content](reference-checks.md#milestone-contentjson-checks). Scan milestone prose against [learning-hub-standards.md § common pitfalls](learning-hub-standards.md#common-pitfalls) and [§ task milestones](learning-hub-standards.md#task-milestones-hands-on-guides).
+5. Tag each finding with [finding severity routing](reference-checks.md#finding-severity-routing) — **Always inline**, **Defer**, or **Review body only**.
 6. Summarize per milestone: verdict, blocking count, top issues (file + rule + fix + severity).
 7. **Mandatory cleanup** — remove audit-guide files not in the Phase 1 snapshot. Verify `git status` on `{path_dir}`. See [Commit safety](#commit-safety).
 8. **Do not** post to GitHub. **Do not** use `FROM AUDIT:` prefixes anywhere.
 
 ### Checkpoint
 
-**Tell the reviewer:**
-
-> **Phase 1 complete** — {X} milestones audited, {B} blocking patterns across {N} milestones.
+> **Phase 1 of 9 complete** — audited {X} milestones.
 >
-> Top findings:
-> [bullet list]
+> - {B} blocking patterns across {N} milestones *(or: No blocking patterns found)*
+> - Top issues: [up to 5 bullets — file, issue, severity]
 >
-> Anything you already know is wrong or out of scope?
-
-**Wait for:** acknowledgment or additions, then Phase 2.
+> **Your turn:** Reply **yes** to continue, or flag anything I missed or that's out of scope.
+>
+> **Up next:** Path-level checks — manifest, `website.yaml`, Learning Hub structure.
 
 ---
 
 ## Phase 2: Path-level consistency
 
-**Goal:** Validate path root `content.json`, manifests, `website.yaml`, depends chain, framing rules, targeting, website alignment, CODEOWNERS.
+**Goal:** Validate path root `content.json`, manifests, package `website.yaml`, depends chain, framing rules, targeting, Learning Hub structure, optional legacy website read, CODEOWNERS.
 
 ### Tell the reviewer
 
-> **Phase 2 — Path consistency**
+> **Phase 2 of 9 — Path consistency**
 >
-> I'm checking path root content, manifests, `website.yaml`, the dependency chain, framing rules, targeting, and companion website alignment.
+> I'm checking the path root, manifests, `website.yaml`, dependency chain, and Learning Hub standards. If this is a conversion PR and the website repo is available, I'll compare against legacy source too.
 
 ### Agent steps
 
 1. Run Pathfinder CLI if available: `validate --packages {path_dir}` (record pass/fail).
-2. Walk [reference-checks.md](reference-checks.md): [path root content.json](reference-checks.md#path-root-contentjson), [website.yaml](reference-checks.md#websiteyaml), framing, valid manifests, depends chain, targeting, companion website, CODEOWNERS.
-3. Compare path `milestones` to peer LPs (depends chain, no framing in array, first hands-on `depends: []`).
-4. Tag each finding with [severity routing](reference-checks.md#finding-severity-routing).
-5. Note companion website gaps separately (body later, not package blockers unless PR claims sync done).
+2. Walk [reference-checks.md](reference-checks.md): [path root content.json](reference-checks.md#path-root-contentjson), [Learning Hub structure](reference-checks.md#learning-hub-structure-phase-2) (full detail in [learning-hub-standards.md](learning-hub-standards.md)), [`website.yaml`](reference-checks.md#websiteyaml), framing, valid manifests, depends chain, targeting, [supplementary content](reference-checks.md#supplementary-content), [CODEOWNERS](reference-checks.md#codeowners), [legacy website source](reference-checks.md#legacy-website-source-optional-read-only) (when `pr_type` is `conversion`), [PR type](reference-checks.md#pr-type-phase-0) checks.
+3. Spot-check outbound links from `side_journeys`, `related_journeys`, and `cta.troubleshooting` per [learning-hub-standards.md § outbound links](learning-hub-standards.md#outbound-link-verification).
+4. Compare path `milestones` to peer LPs (depends chain, no framing in array, first hands-on `depends: []`).
+5. Tag each finding with [severity routing](reference-checks.md#finding-severity-routing).
+6. Note `website.yaml` gaps and conversion mapping issues in findings (review body — not separate website PR blockers).
 
 ### Checkpoint
 
-**Tell the reviewer:**
-
-> **Phase 2 complete**
+> **Phase 2 of 9 complete** — path consistency pass done.
 >
-> [pass/fail bullets — framing, depends chain, targeting, website.yaml, companion website]
+> - [2–4 bullets: framing, depends chain, `website.yaml`, CLI validate, legacy source if checked]
 >
-> Ready for me to write the findings doc?
-
-**Wait for:** yes.
+> **Your turn:** Reply **yes** and I'll write the findings doc.
+>
+> **Up next:** Merge Phases 1–2 into `pr-{n}-findings.md`.
 
 ---
 
@@ -270,7 +282,7 @@ If `.cursor/pr-review-state/pr-{n}.json` exists, read `phase` and `status`. Tell
 
 ### Tell the reviewer
 
-> **Phase 3 — Findings doc**
+> **Phase 3 of 9 — Findings doc**
 >
 > I'm merging the audit and consistency results into `.cursor/pr-review-state/pr-{n}-findings.md`.
 
@@ -282,8 +294,8 @@ Write `pr-{n}-findings.md` using [finding severity routing](reference-checks.md#
 - **Selector notes** — audit rule 2 / `:contains()` findings; apply [selector decision tree](reference-checks.md#selector-decision-tree) — body-only when Pathfinder passed and fallback is justified
 - **Live-test candidates** — selectors and milestones for Playwright + Pathfinder
 - **Defer until after Pathfinder** — findings in the **Defer** column only
-- **Review body only** — companion website, CODEOWNERS, editorial, passed-milestone notes
-- **Waived / N/A** — terminal milestones; fresh-stack retest notes e.g. install
+- **Review body only** — `website.yaml` metadata gaps, Learning Hub editorial (boilerplate, prerequisites, CTA type, troubleshooting), CODEOWNERS, editorial, passed-milestone notes
+- **Waived / N/A** — terminal milestones; fresh-stack retest notes; stack-state caveats per [live testing prerequisites](reference-checks.md#live-testing-prerequisites-phases-56)
 
 Each listed finding includes severity tag and source phase (1, 2, 5, or 6).
 
@@ -295,29 +307,37 @@ Update state: `"phase": 3`.
 
 ### Checkpoint
 
-**Tell the reviewer:**
-
-> **Phase 3 complete** — findings doc is ready.
+> **Phase 3 of 9 complete** — findings doc is ready.
 >
-> - Blockers before live test: [short list or none]
+> - Blockers before live test: [short list or *none*]
 > - Milestones to live-test: [list]
-> - Deferring until Pathfinder: [list]
+> - Deferred until Pathfinder: [list or *none*]
 >
-> Open `pr-{n}-findings.md` for full detail. Reply **yes** to create the pending GitHub review and start live testing.
+> Full detail: `.cursor/pr-review-state/pr-{n}-findings.md`
+>
+> **Your turn:** Reply **yes** and tell me your test stack — for example `learn.grafana.net shared`, `fresh Cloud stack`, or `Azure credentialed`. Install and credential paths often need more than the default learn stack.
+>
+> Or reply **static-only** to skip live testing (Phases 5–6).
+>
+> **Up next:** Draft GitHub review — then Playwright and Pathfinder *(or straight to comments if static-only)*.
 
-**Wait for:** yes. Offer to skip Phases 5–6 only if you explicitly accept a static-only review.
+Record the reviewer's reply in state:
+- **yes** + stack description → `stack_state`
+- **static-only** → `waive_live_testing: true`
+
+See [live testing prerequisites](reference-checks.md#live-testing-prerequisites-phases-56).
 
 ---
 
-## Phase 4: Pending GitHub review
+## Phase 4: Draft GitHub review
 
-**Goal:** One pending review to hold all inline comments until submit.
+**Goal:** Create one GitHub draft review (pending until submit) to hold inline comments.
 
 ### Tell the reviewer
 
-> **Phase 4 — Pending GitHub review**
+> **Phase 4 of 9 — Draft GitHub review**
 >
-> I'm creating a pending review on PR #{n}. Inline comments stay hidden from the author until we submit at the end.
+> I'm creating a draft review on PR #{n}. Comments stay hidden from the author until we submit at the end.
 
 ### Agent steps
 
@@ -329,106 +349,119 @@ See [github-review.md](github-review.md).
 
 ### Checkpoint
 
-**Tell the reviewer:**
+Use one of these messages depending on state.
 
-> **Phase 4 complete** — pending review is created.
+**Static-only** (`waive_live_testing: true`):
+
+> **Phase 4 of 9 complete** — draft review created on PR #{n}.
 >
-> Next up is live testing on `{learn_host}`. Reply **yes** when you're ready for the Playwright pass.
+> **Your turn:** Reply **yes** to draft GitHub comments from static findings.
+>
+> **Up next:** Phase 7 — inline comments and review body *(live testing skipped)*.
 
-**Wait for:** yes before starting Phase 5.
+**Live testing** (default):
+
+> **Phase 4 of 9 complete** — draft review created on PR #{n}.
+>
+> **Your turn:** Log into the **Playwright** browser with Okta *(separate from your everyday browser)* and open `{learn_host}`. Reply **ready** when you're logged in.
+>
+> Stack: `{stack_state}`
+>
+> **Up next:** Phase 5 — DOM check for selectors.
+
+**Wait for:** `yes` (static-only → Phase 7) or `ready` (live testing → Phase 5). Do not run Playwright until the reviewer replies **ready**.
 
 ---
 
 ## Phase 5: Playwright DOM verification
 
-**Goal:** Verify selectors exist on `learn.grafana.net` @ PR HEAD.
+**Goal:** Verify selectors exist on `{learn_host}` @ PR HEAD for the recorded stack state.
 
 ### Tell the reviewer
 
-> **Phase 5 — Playwright DOM check**
+> **Phase 5 of 9 — Playwright DOM check**
 >
-> I'll verify selectors in the **Playwright browser** (separate from your normal browser — you'll need to log in with Okta).
->
-> Reply **ready** when you're logged in to `{learn_host}` in Playwright.
+> Checking selectors on `{learn_host}` for stack: `{stack_state}`.
 
-**Wait for:** `ready`. **Do not navigate or run Playwright until the reviewer replies.**
+The reviewer should already be logged in from Phase 4. If they reply **ready** before you send this, acknowledge and begin agent steps.
 
 ### Agent steps
 
 For each **interactive milestone** in path order:
 
-1. Navigate to `startingLocation`.
-2. Check each `reftarget`: exists / missing / below-fold.
-3. Record results @ `{head_sha}`.
+1. Derive start URL — first `on-page:/path` in milestone blocks, else path manifest `startingLocation` ([reference](reference-checks.md#milestone-start-url-phase-6)).
+2. Navigate to that URL (or milestone-specific page from `on-page` requirements).
+3. Check each `reftarget`: exists / missing / below-fold / **state-dependent** (present only after prior setup).
+4. Record results @ `{head_sha}` and `stack_state`.
+5. If a selector is missing, check whether [live testing prerequisites](reference-checks.md#live-testing-prerequisites-phases-56) explain it (pre-credential UI, fresh-stack install) before treating as blocker.
 
-**Do not** post pass-only GitHub comments. **Do not** open Block Editor, load guides, or start Pathfinder testing — that is Phase 6 only.
+**Do not** post pass-only GitHub comments. **Do not** open Block Editor, load guides, or start Pathfinder — that is Phase 6 only.
 
 ### Checkpoint
 
-**Tell the reviewer:**
-
-> **Phase 5 complete**
+> **Phase 5 of 9 complete** — DOM check done @ `{short_sha}`.
 >
-> - Failures: [list or none]
-> - Below fold (may still pass Pathfinder): [list or none]
+> - Failures: [list or *none*]
+> - Below fold *(may still pass Pathfinder)*: [list or *none*]
 >
-> Next is Pathfinder testing with the PR review tool. Reply **yes** when you want setup instructions.
+> **Your turn:** Reply **yes** to continue to Pathfinder setup.
+>
+> **Up next:** Phase 6 — PR review tool setup, then Show me / Do it per milestone.
 
-**Wait for:** yes before opening Phase 6. **Do not** preview, navigate to, or load any milestone in Block Builder yet.
+**Wait for:** `yes` before sending Phase 6 setup instructions.
 
 ---
 
 ## Phase 6: Pathfinder interactivity (PR review tool)
 
-**Goal:** You exercise Show me / Do it for each milestone; the agent records results.
+**Goal:** Reviewer exercises Show me / Do it for each milestone; agent records results.
 
 ### Tell the reviewer (setup only — no milestone testing yet)
 
-> **Phase 6 — Pathfinder (PR review tool)**
+> **Phase 6 of 9 — Pathfinder PR review tool**
 >
-> Set this up in your browser (not Playwright):
-> 1. Open `{learn_host}/plugins/grafana-pathfinder-app?dev=true`
-> 2. Block Editor → dev tools → **PR review tool**
+> In your **normal browser** (not Playwright):
+> 1. Open `{learn_host}/plugins/grafana-pathfinder-app?dev=true` *(Pathfinder 1.4.5+)*
+> 2. **?** → Debug → Block Editor → dev tools → **PR review tool**
 > 3. Point it at PR #{n} in `grafana/interactive-tutorials`
 >
-> Reply **ready** when the PR review tool is loaded. I won't ask you to test any milestone until you do.
+> Test milestones **in path order** on: `{stack_state}`. See [live testing prerequisites](reference-checks.md#live-testing-prerequisites-phases-56) if install or credential steps need a specific stack.
+>
+> Reply **ready** when the tool is loaded. I won't ask you to test a milestone until you do.
 
 **Wait for:** `ready`.
 
-**Do not before `ready`:** navigate to a milestone `startingLocation`, load a guide in Block Builder, run Show me / Do it, or repeat setup instructions. **Do not** smoke-test the first milestone during Phase 5 or between phases.
+**Do not before `ready`:** navigate to a milestone, load a guide in Block Editor, run Show me / Do it, or smoke-test the first milestone.
 
 ### Per-milestone loop
 
-Start only after setup **ready**. For each milestone in path `milestones` (skip terminal-only, e.g. external CLI):
+Start only after setup **ready**. For each milestone in path `milestones` (skip terminal-only, e.g. external CLI) **in order**:
 
 **Prompt reviewer (one milestone at a time — never repeat a milestone already reported):**
 
 > **Milestone {i} of {M}: `{milestone-id}`**
 >
-> Open `{startingLocation}` in learn, then run every **Show me** and **Do it** in the PR review tool.
+> Open `{derived_start_url}`, then run every **Show me** and **Do it** in the PR review tool.
 >
-> Reply when you're done:
-> - **pass** — all steps worked
-> - **fail step N —** what happened
-> - **N/A —** reason (for example, resource already on your stack)
+> If earlier milestones used `doIt: false` on save or credential steps, run **Do it** on those before testing downstream UI — or note the stack was already configured.
+>
+> **Your turn:** Reply **pass**, **fail step N —** *what happened*, or **N/A —** *reason*.
 
 **Agent:** record in `pr-{n}.json` → `pathfinder.{milestone-slug}`. Advance to the next milestone only after the reviewer replies.
 
-**Do not** post inline pass/N/A comments. N/A with stack caveat → note for review body (author fresh-stack retest).
+**Do not** post inline pass/N/A comments. N/A with stack caveat → note for review body ([fresh-stack retest](reference-checks.md#live-testing-prerequisites-phases-56), credentialed retest).
 
 ### Checkpoint
 
-**Tell the reviewer:**
-
-> **Phase 6 complete**
+> **Phase 6 of 9 complete** — Pathfinder testing done.
 >
-> - Passed: [list]
-> - Failed: [list]
-> - N/A: [list]
+> - Passed: [list or *none*]
+> - Failed: [list or *none*]
+> - N/A: [list or *none*]
 >
-> Next I'll draft GitHub comments (failures only). Reply **yes** to continue.
-
-**Wait for:** yes.
+> **Your turn:** Reply **yes** and I'll draft GitHub comments *(failures and blockers only)*.
+>
+> **Up next:** Inline comments + review body.
 
 ---
 
@@ -438,9 +471,9 @@ Start only after setup **ready**. For each milestone in path `milestones` (skip 
 
 ### Tell the reviewer
 
-> **Phase 7 — Draft GitHub comments**
+> **Phase 7 of 9 — Draft GitHub comments**
 >
-> I'm adding inline comments for blockers and writing the review body. Pass-only and deferred nits won't get inline comments.
+> I'm adding inline comments for blockers and writing the review body. Steps that passed won't get inline comments.
 
 ### Agent steps
 
@@ -456,13 +489,13 @@ Start only after setup **ready**. For each milestone in path `milestones` (skip 
 
 ### Comment tone (required)
 
-Write like a human reviewer, not an audit dump.
+Write like a human reviewer talking to the author — not an audit report.
 
-- Lead with what you tested and the outcome (pass/fail), not rule numbers.
-- Use **Blocker** only for runtime failures or broken manifest/depends/framing — not for audit-only `:contains()` when Pathfinder passed.
-- For selector polish: one plain sentence; link [docs/selectors-and-testids.md](../../../docs/selectors-and-testids.md) when relevant; default to **review body**, not inline, when the step passed live.
-- Do **not** use a fixed template such as `verified on learn.grafana.net @ {sha} (Playwright DOM + Pathfinder PR review tool)` on every comment — mention the host/sha once in the review body if useful.
-- Acknowledge author context when known (e.g. test IDs tried first and failed).
+- Lead with what you tested and what happened.
+- Reserve **Blocker** for runtime failures or broken manifest/depends/framing — not audit-only `:contains()` when Pathfinder passed.
+- Selector polish: one plain sentence; link [selectors-and-testids.md](../../../docs/selectors-and-testids.md) when helpful; put in the **review body** when the step passed live.
+- Mention host/sha once in the review body if useful — don't repeat on every inline comment.
+- Acknowledge author context when you have it (for example, test IDs tried first and failed).
 
 **Bad (canned):**
 
@@ -474,48 +507,44 @@ Write like a human reviewer, not an audit dump.
 
 ### Checkpoint
 
-**Tell the reviewer:**
-
-> **Phase 7 complete**
+> **Phase 7 of 9 complete** — comments drafted.
 >
-> - **{comment_count}** inline comments drafted
-> - Review body saved to `pr-{n}-review-body.md`
+> - **{comment_count}** inline comment(s) on the PR
+> - Review body: `.cursor/pr-review-state/pr-{n}-review-body.md`
 > - Recommended verdict: **{recommended_verdict}** — {reason}
 >
-> GitHub won't show the pending body in the UI. Reply **show body** to read it here, or open the file. Then we'll confirm at Phase 8.
-
-**Wait for:** body review, then Phase 8.
+> GitHub won't show the draft review body in the UI. Reply **show body** to read it here, or open the file.
+>
+> **Your turn:** Skim inline comments on **Files changed**, then continue to Phase 8.
+>
+> **Up next:** Your approval before we submit.
 
 ---
 
 ## Phase 8: Reviewer approval
 
-**Goal:** Reviewer confirms or overrides the recommended [verdict](reference-checks.md#verdict-selection-phases-89) and final body text.
-
-### Tell the reviewer
-
-> **Phase 8 — Approve and submit**
->
-> Recommended verdict: **{recommended_verdict}** — {reason}
->
-> Please confirm:
-> 1. Inline comments look right on GitHub **Files changed**
-> 2. Review body text (here or in `pr-{n}-review-body.md`)
-> 3. Verdict — keep **{recommended_verdict}** or choose `REQUEST_CHANGES` / `COMMENT` / `APPROVE`
->
-> Reply **submit** with your final verdict when you're ready to publish.
-
-### Agent steps
-
-1. Apply [verdict selection](reference-checks.md#verdict-selection-phases-89) rules — do not recommend APPROVE if **Always inline** blockers were inlined in Phase 7.
-2. Print full review body in chat if requested.
-3. Apply reviewer edits to `-review-body.md`.
-4. Store confirmed verdict in state: `"verdict"` (may differ from `recommended_verdict`).
-5. **Do not submit** until reviewer says **submit** or **publish** with explicit verdict.
+**Goal:** Reviewer confirms verdict and review body before submit.
 
 ### Checkpoint
 
-**Wait for:** explicit "submit" / "publish" with verdict.
+> **Phase 8 of 9 — Approve and submit**
+>
+> Recommended verdict: **{recommended_verdict}** — {reason}
+>
+> Before we publish:
+> 1. Inline comments on GitHub **Files changed**
+> 2. Review body — reply **show body** or open `pr-{n}-review-body.md`
+> 3. Verdict — keep **{recommended_verdict}** or override with `REQUEST_CHANGES`, `COMMENT`, or `APPROVE`
+>
+> **Your turn:** Reply **submit** with your final verdict *(for example `submit COMMENT`)*.
+
+### Agent steps
+
+1. Apply [verdict selection](reference-checks.md#verdict-selection-phases-89) — do not recommend **APPROVE** if **Always inline** blockers were posted in Phase 7.
+2. Print the full review body in chat when the reviewer replies **show body**.
+3. Apply reviewer edits to `pr-{n}-review-body.md`.
+4. Store confirmed verdict in state as `verdict` (may differ from `recommended_verdict`).
+5. **Do not submit** until the reviewer replies **submit** or **publish** with an explicit verdict.
 
 ---
 
@@ -525,7 +554,7 @@ Write like a human reviewer, not an audit dump.
 
 ### Tell the reviewer
 
-> **Phase 9 — Submitting review**
+> **Phase 9 of 9 — Submitting**
 >
 > Publishing as **{verdict}**…
 
@@ -539,7 +568,7 @@ Write like a human reviewer, not an audit dump.
 
 > **Review submitted:** {url}
 >
-> This review cycle is complete. For follow-up after the author pushes, use Phase 10 or start a new review.
+> This cycle is complete. For follow-up after the author pushes, use Phase 10 or start a new review.
 
 **Stop.** Do not add to the same pending review after submit.
 
@@ -565,9 +594,26 @@ Write like a human reviewer, not an audit dump.
 
 ## Anti-patterns
 
-**Do not:** submit mid-process · `FROM AUDIT:` on GitHub · pass/N/A inline comments · cap comment count · assume Playwright = main browser · manual JSON paste when PR review tool works · UI submit without pasting body · continue after Phase 9 on same pending review · duplicate inline threads on the same file for the same root cause · navigate to or load Block Builder milestones before Phase 6 setup **ready** · smoke-test or repeat the first milestone before the formal Phase 6 loop · start Phase 6 milestone prompts before the reviewer confirms PR review tool setup · **leave Phase 1 without audit cleanup and git status verification** · delete pre-existing author `assets/` files (e.g. `migration-notes.md`).
+**Do not**
 
-**Do:** one pending review · defer authoring nits when Pathfinder passed · fresh-stack retest in body · GraphQL submit · save body locally for preview.
+- Batch multiple phases in one message or skip checkpoints
+- Post to GitHub before Phase 7, or submit before Phase 8 approval
+- Use `FROM AUDIT:` prefixes or pass/N/A inline comments
+- Assume Playwright is the reviewer's everyday browser
+- Load Block Editor or test milestones before Phase 6 **ready**
+- Smoke-test or repeat milestones outside the Phase 6 loop
+- Leave Phase 1 without audit cleanup and a clean `git status`
+- Delete pre-existing author `assets/` (for example `migration-notes.md`)
+- Request website-repo changes (`pathfinder_data`, shortcodes) as merge blockers
+- Treat Pathfinder pass on `doIt: false` save steps as proof of post-setup UI without a stack-state retest
+- Submit from the GitHub UI without pasting the review body — it will be blank
+
+**Do**
+
+- One draft review per cycle; GraphQL submit with body from `pr-{n}-review-body.md`
+- Defer authoring nits to the review body when Pathfinder passed
+- Note fresh-stack retest caveats in the review body
+- Dedupe inline comments to one thread per root cause
 
 ---
 
@@ -579,7 +625,7 @@ Deliverables for the reviewer. Write under `.cursor/pr-review-state/` — **neve
 |---|---|---|
 | `pr-{n}.json` | 0+ | Machine-readable review state ([schema](github-review.md#state-file-schema)) |
 | `pr-{n}-findings.md` | 3 | Merged static + consistency findings |
-| `pr-{n}-review-body.md` | 7 → 9 | Final review body (GitHub UI does not show pending body) |
+| `pr-{n}-review-body.md` | 7 → 9 | Final review body (GitHub UI does not show draft review body) |
 | `pr-{n}/audits/{milestone}/` | 1 (optional) | Copied audit reports before milestone cleanup |
 
 Every generated markdown file in `.cursor/pr-review-state/` **must** start with:
@@ -601,7 +647,11 @@ Do not add this frontmatter to `pr-{n}.json`.
 | Topic | Doc |
 |---|---|
 | All checklists + severity routing + verdict selection | [reference-checks.md](reference-checks.md) |
+| Learning Hub editorial + structure (internal course adapted) | [learning-hub-standards.md](learning-hub-standards.md) |
 | GitHub GraphQL | [github-review.md](github-review.md) |
 | Manifest fields | [docs/manifest-reference.md](../../../docs/manifest-reference.md) |
+| `website.yaml` fields | [docs/website-yaml-reference.md](../../../docs/website-yaml-reference.md) |
+| LP authoring workflow (single-repo model) | [learning-path-workflows/workflows.md](../../learning-path-workflows/workflows.md) |
+| Legacy front matter → `website.yaml` (read-only) | [frontmatter-schema.md](../../commands/create-learning-path/reference/frontmatter-schema.md) |
 | Recommendations | [how-to-write-recommendations.mdc](../../how-to-write-recommendations.mdc) |
 | 21 critical rules | [AGENTS.md](../../../AGENTS.md) |

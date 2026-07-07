@@ -1,10 +1,14 @@
-# Reference checks (review-learning-path-pr)
+# Reference checks
 
-Detailed checklists referenced from [SKILL.md](SKILL.md). The agent uses these during Phases 1–2; findings land in `pr-{n}-findings.md`, not on GitHub until Phase 7. Phase 3 buckets findings using [finding severity routing](#finding-severity-routing); Phase 7 applies that routing plus [GitHub comment policy](#github-comment-policy).
+Checklists for [review-learning-path/SKILL.md](SKILL.md) Phases 1–2. Findings land in `pr-{n}-findings.md` first — not on GitHub until Phase 7.
 
-**Note:** [finding severity routing](#finding-severity-routing) supersedes [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for this workflow. audit-guide blocking/warning/info labels from Phase 1 are inputs only — re-tag before Phase 7.
+**Note:** [finding severity routing](#finding-severity-routing) supersedes [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for this workflow. Re-tag audit-guide labels before Phase 7. Phase 3 buckets findings; Phase 7 applies [GitHub comment policy](#github-comment-policy).
 
 **Selector authority for LP reviews:** Follow [docs/selectors-and-testids.md](../../../docs/selectors-and-testids.md) priority order (`data-testid` > semantic > `:contains()` > `:has()` > CSS classes). Do **not** apply [build-interactive-lj/reference/selector-patterns.md](../../commands/build-interactive-lj/reference/selector-patterns.md) autogen rules ("never `:contains()`") when reviewing hand-authored or live-captured guides — that workflow targets source-to-guide generation, not PR review.
+
+**Publishing model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** LP PRs are **single-repo** (`interactive-tutorials` only). Metadata in package `website.yaml`; prose in `content.json`. The website repo is **read-only** for conversion — never expect `pathfinder_data` or website markdown updates in the LP PR.
+
+**Learning Hub standards:** [learning-hub-standards.md](learning-hub-standards.md) — adapted from `website/content/internal/docs/learning-hub/reviewing-learning-journeys/`. Phase 2 walks the full doc; Phase 1 applies milestone prose checks and [common pitfalls](learning-hub-standards.md#common-pitfalls).
 
 ---
 
@@ -14,19 +18,21 @@ Use this table when writing `pr-{n}-findings.md` (Phase 3) and when deciding inl
 
 | Always inline (merge blocker) | Defer until Pathfinder (Phase 5–6) | Review body only |
 |---|---|---|
-| Playwright / Pathfinder runtime fail | Section bookends (rule 14) | Companion website drift |
+| Playwright / Pathfinder runtime fail | Section bookends (rule 14) | `website.yaml` metadata gaps (non-blocking polish) |
 | Outdated `data-testid` / UI label (valid pattern, wrong target) | `on-page` when step might still run | Passed milestones + deferred nits |
 | `:contains()` when stable `data-testid` or semantic attr verified in DOM | `lazyRender` when target might scroll into view | `:contains()` fallback per [selectors doc](../../../docs/selectors-and-testids.md) when Pathfinder passed and no stable selector exists |
-| Broken `depends` chain or framing in path `milestones` | Skippable flag when step is permission-gated and passed | Fresh-stack retest notes (N/A on credentialed stack) |
-| First hands-on `depends` references framing ID | Admin-only steps without `skippable` if step passed | Pathfinder app shell UX |
-| Missing `exists-reftarget`, `navmenu-open` | Missing `verify` if save step passed live | Editorial / tooltip / vocabulary |
-| CSS-class-only or auto-generated class selectors | — | Audit-guide warnings with no runtime impact |
-| `noop` misuse, multistep singleton, focus-before-formfill | — | CODEOWNERS reminder |
-| Missing `startingLocation` on interactive milestone | Missing objectives when resource already exists | Product UX not fixable in JSON |
-| Pathfinder CLI validate failure | — | — |
-| `index.json` modified, invalid `testEnvironment.tier` | — | — |
-| Secrets auto-filled (`doIt: true`) | — | — |
+| Broken `depends` chain or framing in path `milestones` | Skippable flag when step is permission-gated and passed | State-dependent selector (missing on pre-setup stack) |
+| First hands-on `depends` references framing ID | Admin-only steps without `skippable` if step passed | Fresh-stack retest notes (N/A on credentialed stack) |
+| Missing `exists-reftarget`, `navmenu-open` | Missing `verify` if save step passed live | Pathfinder app shell UX |
+| CSS-class-only or auto-generated class selectors | Vague step copy when Pathfinder passed | Editorial / tooltip / vocabulary |
+| `noop` misuse, multistep singleton, focus-before-formfill | Missing `success` + troubleshooting on verification (Pathfinder passed) | CODEOWNERS reminder |
+| Missing `startingLocation` on **path** manifest when path has interactive milestones | — | Landing boilerplate, logo, screenshot, milestone count |
+| Pathfinder CLI validate failure | — | `related_journeys` wording, missing value framing |
+| `index.json` modified, invalid `testEnvironment.tier` | — | Product UX not fixable in JSON |
+| Secrets auto-filled (`doIt: true`) | — | Audit-guide warnings with no runtime impact |
 | Path root / manifest `id` mismatch | — | — |
+| Hard cross-path artifact dependency in step copy | — | — |
+| Hallucinated / 404 outbound link in `website.yaml` supplementary fields | — | — |
 
 **After Pathfinder:** promote deferred items to inline only if live test failed or static issue is clearly wrong regardless of runtime (e.g. author used `:contains()` when Playwright confirmed a `data-testid` on the same element).
 
@@ -78,11 +84,13 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 
 Also apply [review-guide-pr.mdc](../../review-guide-pr.mdc) blocking rules.
 
+**Learning Hub prose (Phase 1 editorial):** When auditing milestone copy, also scan [learning-hub-standards.md § task milestones](learning-hub-standards.md#task-milestones-hands-on-guides) and [common pitfalls](learning-hub-standards.md#common-pitfalls). Vague instructions and missing section context are **Review body** unless Pathfinder fails on the step.
+
 ---
 
 ## Framing milestones
 
-Framing packages may exist in the repo for the website Learning Path but must **not** appear in path `manifest.json` `milestones`.
+Framing packages may exist in the package (with `website.yaml` for Learning Hub publish) but must **not** appear in path `manifest.json` `milestones`.
 
 **Common framing:** `business-value`, `advantages`, `welcome`, markdown-only intro milestones.
 
@@ -98,35 +106,59 @@ Framing packages may exist in the repo for the website Learning Path but must **
 
 ## Path root `content.json`
 
-Phase 2 only (not a full audit-guide run). Read `{path_dir}/content.json` alongside path manifest and companion website.
+Phase 2 only (not a full audit-guide run). Read `{path_dir}/content.json` alongside path manifest and package `website.yaml`.
 
 | Check | Fail if |
 |---|---|
 | Root structure | Missing `id`, `title`, or non-empty `blocks` |
 | `id` | Does not match path `manifest.json` `id` |
 | Title duplicate | Leading markdown block duplicates `title` (same as milestone rule) |
-| Before you begin | Prerequisites missing or contradict first hands-on milestone / website `_index.md` Before you begin |
+| Before you begin | Prerequisites missing or contradict first hands-on milestone (compare path `content.json` only — not legacy website `_index.md`) |
 | Env prerequisites | Cloud tier, tokens, CLI, or integrations required by milestones not listed here |
-| Framing in JSON | Path `content.json` duplicates website-only framing that belongs in separate packages |
+| Framing in JSON | Path `content.json` duplicates framing that belongs in separate milestone packages |
 | Datasource / setup | Path intro claims resources the first milestone creates without saying user needs them first |
+| Prose only in legacy markdown | Conversion PR: milestone body prose exists in website `index.md` but is missing from `content.json` blocks |
 
-Severity: `id` mismatch → **Always inline**. Before you begin drift → **Review body** (inline if PR claims website sync done). Editorial intro prose → **Review body**.
+Severity: `id` mismatch → **Always inline**. Prose not captured in package → **Always inline** on conversion PRs. Before you begin gaps → **Review body**. Editorial intro prose → **Review body**.
+
+Full prerequisite and boilerplate criteria: [learning-hub-standards.md § path landing](learning-hub-standards.md#path-landing-page) and [§ before you begin](learning-hub-standards.md#before-you-begin-prerequisites).
+
+---
+
+## Learning Hub structure (Phase 2)
+
+Walk [learning-hub-standards.md](learning-hub-standards.md) in path order after manifest/depends checks. Summary:
+
+| Area | Key checks | Default severity |
+|---|---|---|
+| [Path landing](learning-hub-standards.md#path-landing-page) | `website.yaml` identity, boilerplate sections in path `content.json`, logo | **Review body** |
+| [Prerequisites](learning-hub-standards.md#before-you-begin-prerequisites) | Complete, specific, Grafana Cloud first, match milestones | **Review body** |
+| [Milestone order](learning-hub-standards.md#milestone-types-and-order) | Value framing exists, 5–10 hands-on milestones typical, `end-journey` with `conclusion` | **Review body** |
+| [CTA types](learning-hub-standards.md#cta-types-websiteyaml) | `success` on verification only | **Review body** |
+| [Side / related journeys](learning-hub-standards.md#side-journeys) | Valid destinations, no LP links in `side_journeys`, soft `related_journeys` | **Review body** |
+| [Troubleshooting](learning-hub-standards.md#troubleshooting-on-verification-steps) | Present when steps verify outcomes | **Review body**; 404 links → **Always inline** |
+| [Standalone](learning-hub-standards.md#standalone-principle) | No hard deps on other paths' artifacts | **Always inline** in step copy |
+| [Outbound links](learning-hub-standards.md#outbound-link-verification) | Spot-check troubleshooting and conversion URLs | **Always inline** on 404 |
+| [Videos](learning-hub-standards.md#videos) | Do not flag missing; verify if present | **Review body** |
 
 ---
 
 ## `website.yaml`
 
-Path root `{path_dir}/website.yaml` configures the companion Learning Path on grafana.com. Per-milestone `website.yaml` files configure milestone pages.
+Package `website.yaml` files are the **authoritative** Learning Hub metadata for deploy previews and publish ([docs/website-yaml-reference.md](../../../docs/website-yaml-reference.md)). They replace legacy website front matter — no companion website PR is required.
 
 | Check | Fail if |
 |---|---|
-| Path root file | Missing when path has framing milestone dirs (`business-value`, etc.) or website companion slug exists |
-| `menuTitle` / `description` | Missing or empty on path root `website.yaml` |
-| `journey` metadata | Missing `group`, `skill`, or layout fields peer LPs include |
-| Slug alignment | Website path slug ≠ `{path_dir}` minus `-lj` when companion exists |
-| Milestone pages | Milestone dir in path `milestones` missing `website.yaml` when peer LPs include one for same step type |
+| Path root file | Missing when peer LPs include path-level `website.yaml` (including paths with framing dirs like `business-value/`) |
+| Required path fields | Missing `menuTitle`, `description`, `weight`, `step`, `journey` (`group`, `skill`, `source`, `logo`), or path-level `cta` per [website-yaml-reference.md](../../../docs/website-yaml-reference.md) |
+| Step-level files | Milestone in path `milestones` missing `website.yaml` when peer LPs include one for the same step type |
+| Step required fields | Missing `menuTitle`, `description`, `step`, `layout`, or `cta.type` on milestone `website.yaml` |
+| Slug convention | `{path_dir}` minus `-lj` should match the legacy website folder name when converting an existing path (for read-only source lookup only) |
+| Supplementary metadata | `side_journeys`, `cta.troubleshooting`, or `related_journeys` present in legacy front matter but absent from package `website.yaml` when conversion PR |
+| CTA type | Verification milestone missing `cta.type: success` or final step not `conclusion` (see [CTA types](learning-hub-standards.md#cta-types-websiteyaml)) |
+| Troubleshooting | `success` milestone without `cta.troubleshooting.items` when step verifies an outcome (see [troubleshooting](learning-hub-standards.md#troubleshooting-on-verification-steps)) |
 
-Severity: missing path root `website.yaml` when framing dirs exist → **Review body** (package OK if website PR is separate). Wrong slug or broken journey metadata → **Review body** unless PR bundles website changes.
+Severity: missing path or milestone `website.yaml` when peers have them → **Review body** (request in this PR — not a separate website PR). Broken required fields → **Review body**; promote to **Always inline** only if deploy preview or publish would fail. Conversion mapping gaps → **Review body**. Hallucinated supplementary links → **Always inline**.
 
 ---
 
@@ -156,7 +188,7 @@ node {pathfinder-app}/dist/cli/cli/index.js validate --packages {path_dir}
 | `type` | Not `"guide"` |
 | `targeting` | Present on step guides (path level only) |
 | `depends` / `recommends` | Unknown IDs or wrong chain |
-| `startingLocation` | Missing on interactive milestones |
+| `startingLocation` | On **path** manifest when peers include it; **omit on step guides** (path-level only per [manifest-reference.md](../../../docs/manifest-reference.md)) |
 | `testEnvironment.tier` | Invalid (e.g. `"play"` — use `"cloud"`) |
 
 ### Dependency chain (peer LP pattern)
@@ -174,16 +206,86 @@ node {pathfinder-app}/dist/cli/cli/index.js validate --packages {path_dir}
 
 ---
 
-## Companion website (separate repo)
+## Legacy website source (optional, read-only)
 
-When `website` repo + slug available:
+When the `website` repo is in the workspace, you may read `content/docs/learning-paths/{website_slug}/` for **conversion context only**. Never flag missing website writes.
 
-- Milestone pages: `pathfinder_data: {path_dir}/{milestone}` + pathfinder JSON shortcode
-- Path `_index.md`: `pathfinder_data: {path_dir}`; Before you begin matches path `content.json`
-- Framing: shared snippet vs path package (e.g. `case-for-o11y`)
-- Doc drift between website markdown and package content
+| Check | When to apply | Severity |
+|---|---|---|
+| Prose captured in `content.json` | Conversion or migrate PR | **Always inline** if body prose exists only in legacy `index.md` |
+| `website.yaml` vs source front matter | Conversion PR | **Review body** — map per [frontmatter-schema.md](../../commands/create-learning-path/reference/frontmatter-schema.md) |
+| Legacy `pathfinder_data` or `{{< pathfinder/json >}}` | Any | **Never flag** — legacy artifacts; LP PRs do not modify website markdown |
+| Drift between unchanged legacy markdown and package | Any | **Never flag** as merge blocker — legacy markdown is intentionally unchanged |
+| Framing source | Converted path with `business-value/` | **Review body** if legacy used a shared snippet but package has its own milestone dir (or vice versa) |
 
-Gaps → review body, not package inline blockers unless PR claims website sync is done.
+**Do not** request a companion website PR, `pathfinder_data` wiring, or shortcode insertion as part of LP package review.
+
+---
+
+## PR type (Phase 0)
+
+Infer from PR title, changed files, and presence of legacy website source. Record in `pr-{n}.json` → `pr_type`.
+
+| Type | Signals | Phase 2 emphasis |
+|---|---|---|
+| **new** | New `{slug}-lj/` directory; no legacy website folder | `website.yaml` completeness; path root `content.json` |
+| **conversion** | Touches `website.yaml` + prose-heavy markdown blocks; author used `/build-interactive-lj` | [Legacy website source](#legacy-website-source-optional-read-only); prose captured in `content.json` |
+| **update** | Changes existing package milestones/manifests only | Standard audit + live retest of touched milestones |
+
+---
+
+## Live testing prerequisites (Phases 5–6)
+
+Apply before interpreting Playwright or Pathfinder results. See also [workflows.md § Phase 4](../../learning-path-workflows/workflows.md).
+
+### Stack state
+
+| Path pattern | Minimum stack state | False-pass risk |
+|---|---|---|
+| Install / bootstrap milestone | **Fresh** Grafana Cloud stack | Install button missing when resource already exists (shows **Uninstall**) |
+| Connect + configure cloud credentials | **Real** credential saved (not just `doIt: false` highlights) | UI tabs or panels absent in pre-setup state (e.g. Services tab before credential) |
+| Permission-gated steps | Stack with required RBAC roles | `exists-reftarget` fails for users without role — use `skippable` |
+| Default learn.grafana.net | Shared demo stack | May not match fresh-stack or credentialed flows |
+
+Record in state: `stack_state` (free text, e.g. `learn.grafana.net shared`, `fresh cloud`, `azure credentialed`).
+
+### Pathfinder pass ≠ resource created
+
+Steps with `doIt: false` on secrets or **Create/Save** can **pass** Pathfinder without mutating stack state. A later milestone that assumes post-setup UI is only valid if prior milestones actually ran **Do it** on save steps or the stack was pre-configured.
+
+When a selector is missing on a shared stack but the author claims post-setup UI, note in review body: **retest on stack matching learner state** — do not dismiss as author error without that retest.
+
+### Multi-environment testing
+
+Encourage testing beyond the default learn host when the path touches permissions, install flows, or state-dependent UI ([workflows.md](../../learning-path-workflows/workflows.md)). Record N/A with environment caveat in review body.
+
+### Milestone start URL (Phase 6)
+
+LP step manifests usually **omit** `startingLocation`. Derive the page to open:
+
+1. First `on-page:/path` in the milestone's interactive blocks (preferred)
+2. Path manifest `startingLocation`
+3. Ask the reviewer if ambiguous
+
+---
+
+## Supplementary content
+
+| Check | Fail if | Severity |
+|---|---|---|
+| `side_journeys` / troubleshooting duplicated | Same links in milestone `website.yaml` **and** trailing markdown blocks in `content.json` | **Review body** — pick one source; duplication causes drift |
+| `side_journeys` only in `website.yaml` | Conversion PR omitted links that learners see in package UI | **Review body** |
+| Recap references framing | `end-journey` claims milestones not in path `manifest.json` `milestones` | **Review body** |
+
+---
+
+## CODEOWNERS
+
+| Check | Fail if |
+|---|---|
+| New path directory | `{path_dir}/` not added to `.github/CODEOWNERS` when PR introduces a new `*-lj/` package |
+
+Severity: **Review body** reminder — not a merge blocker unless repo policy requires it in the same PR.
 
 ---
 
@@ -219,7 +321,7 @@ Dedupe before posting. Apply these rules in order:
 | Inline comment | Review body | Conversation |
 |---|---|---|
 | **Always inline** column + Phase 5–6 failures | **Review body only** column | Pathfinder app shell UX not caused by this PR's JSON |
-| One comment per root cause (rules above) | Passed milestones, deferred nits, companion website, retest notes | Follow-up issue tracking |
+| One comment per root cause (rules above) | Passed milestones, deferred nits, `website.yaml` polish, retest notes | Follow-up issue tracking |
 | Code fix in PR (`depends`, manifest, noop, framing) | No fixed template | — |
 
 **Never inline:** pass-only, N/A-only, `FROM AUDIT:` dumps, duplicate threads for the same root cause on the same file, items still in **Defer** that Pathfinder passed, audit-only `:contains()` fallback findings when Pathfinder passed (see [selector decision tree](#selector-decision-tree)).
@@ -237,7 +339,7 @@ After Phase 7 — any Always inline finding OR Phase 5–6 runtime failure with 
   Yes → recommend REQUEST_CHANGES
   No  → all Pathfinder milestones passed AND remaining findings are audit-only selector warnings or body-only nits?
           Yes → recommend COMMENT (or APPROVE if nothing worth saying)
-          No  → any Review body only items (companion website, retest notes, deferred nits, shell UX)?
+          No  → any Review body only items (`website.yaml` gaps, retest notes, deferred nits, shell UX)?
                   Yes → recommend COMMENT
                   No  → recommend APPROVE
 ```
@@ -246,18 +348,20 @@ After Phase 7 — any Always inline finding OR Phase 5–6 runtime failure with 
 
 | Verdict | Use when | Inline comments | Body |
 |---|---|---|---|
-| **REQUEST_CHANGES** | Merge blockers remain in this PR — runtime fails, broken `depends`/manifest, framing in path, Pathfinder CLI validate failure | Yes — one per root cause for **Always inline** items | **Must fix before merge** lists every blocker; companion website / retest notes in separate sections |
-| **COMMENT** | No merge blockers in this PR, but useful feedback before or after merge | Usually none; optional for minor non-blocking code notes | Companion website checklist, fresh-stack retest, deferred authoring nits, Pathfinder shell UX follow-ups |
+| **REQUEST_CHANGES** | Merge blockers remain in this PR — runtime fails, broken `depends`/manifest, framing in path, Pathfinder CLI validate failure | Yes — one per root cause for **Always inline** items | **Must fix before merge** lists every blocker; `website.yaml` / retest notes in separate sections |
+| **COMMENT** | No merge blockers in this PR, but useful feedback before or after merge | Usually none; optional for minor non-blocking code notes | `website.yaml` completeness, fresh-stack retest, deferred authoring nits, Pathfinder shell UX follow-ups |
 | **APPROVE** | Static + live testing passed; you would merge as-is | None | Brief summary of passed milestones; optional polish follow-ups |
 
 ### Rules
 
 1. **Do not recommend APPROVE** if any **Always inline** finding is open or any Phase 5–6 failure was inlined in Phase 7.
 2. **Do not recommend REQUEST_CHANGES** with zero inline comments unless the reviewer explicitly waives inline at Phase 8 — **Always inline** items belong on the diff, not body-only.
-3. **COMMENT** is correct for “mergeable package PR, website/sync work separate” — common for LP reviews where `website.yaml` is present but learn.grafana.net pages are not wired yet.
+3. **COMMENT** is correct for “mergeable package PR with `website.yaml` polish or conversion mapping nits” — not because a separate website PR is still needed.
 4. **N/A with fresh-stack caveat** (e.g. install button missing) does not by itself require REQUEST_CHANGES — put in body under author retest; use REQUEST_CHANGES only if live steps actually failed.
 5. Agent states recommended verdict at end of Phase 7 and again at Phase 8 opening; reviewer must confirm explicitly before submit.
 
 ### Phase 8 prompt (agent)
 
-> Recommended verdict: **{REQUEST_CHANGES | COMMENT | APPROVE}** — {one-sentence reason}. Confirm or override, then say **submit** when ready.
+At Phase 8 opening, state the recommendation in plain language:
+
+> Recommended verdict: **{REQUEST_CHANGES | COMMENT | APPROVE}** — {one sentence why}. Confirm or override, then reply **submit** when ready.
