@@ -612,10 +612,11 @@ Knowledge assessment with single or multiple choice questions.
 | `multiSelect` | boolean | ❌ | `false` | Allow multiple answers (checkboxes) |
 | `completionMode` | string | ❌ | `"correct-only"` | `"correct-only"` or `"max-attempts"` |
 | `maxAttempts` | number | ❌ | `3` | Attempts before revealing (max-attempts mode) |
+| `shuffle` | boolean | ❌ | **`true`** | Randomize choice order for each learner. Set to `false` to preserve authored order. **Important:** if your question or hint references answer positions (e.g. "select the top option"), set `shuffle: false`. |
 | `requirements` | string[] | ❌ | — | Requirements for this quiz |
 | `skippable` | boolean | ❌ | `false` | Allow skipping |
 
-**Choice Properties:** `id` (string, required), `text` (string, required), `correct` (boolean), `hint` (string — shown when this wrong choice is selected).
+**Choice Properties:** `id` (string, required), `text` (string, required), `correct` (boolean), `hint` (string — shown when this wrong choice is selected), `pinned` (boolean — when `true`, this choice stays in its authored position even when `shuffle` is enabled; useful for "None of the above" style answers).
 
 **Multi-select example:**
 
