@@ -379,6 +379,25 @@ This requirement is evaluated differently by different rendering tools, allowing
 
 **Note**: Place a `terminal-connect` block before any `terminal` blocks to give users a way to establish the connection.
 
+### `coda-exit-zero:<command>`
+
+**Purpose**: Runs a shell command against the learner's active Coda challenge VM. The requirement passes if and only if the command exits with status 0. Used as the `successCriteria` value in [challenge blocks](./json-guide-reference.md#challenge-block).
+
+```json
+{
+  "type": "challenge",
+  "successCriteria": "coda-exit-zero:systemctl is-active alloy && echo ok",
+  "brief": "Fix the Alloy configuration so the service starts successfully."
+}
+```
+
+**Examples**:
+- `coda-exit-zero:cat /tmp/result | grep 'success'` — passes if the file contains "success"
+- `coda-exit-zero:systemctl is-active alloy` — passes if the alloy service is running
+- `coda-exit-zero:python3 /tmp/solution.py` — passes if the script exits cleanly
+
+**Note**: This requirement is only meaningful inside a `challenge` block's `successCriteria` field. It does not apply to `requirements` arrays on standard blocks.
+
 ---
 
 ## Variable Requirements
@@ -570,6 +589,7 @@ Objectives declare what a guide step will accomplish. They use the same syntax a
 | `section-completed:<sectionId>`      | Another section has been completed                     |
 | `var-<name>:<value>`                 | Guide variable has expected value (`*` = any non-empty) |
 | `renderer:<renderer>`                | Rendering context matches (`pathfinder` or `website`)  |
+| `coda-exit-zero:<command>`           | Shell command exits 0 against the learner's Coda challenge VM |
 
 ---
 
