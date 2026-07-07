@@ -44,6 +44,7 @@ Every JSON guide has these fields:
 | `terminal-connect` | Interactive | Connect to Coda terminal | Establish terminal session |
 | `grot-guide` | Structural | Choose-your-own-adventure decision tree | Hand-authored branching guides (block editor only — CLI-excluded) |
 | `snippet-ref` | Structural | Reference to a pre-authored shared snippet | Editor-only; resolved at parse time via Snippet Picker (CLI-excluded) |
+| `challenge` | Interactive | CTF/Coda-VM challenge for hands-on learning | Hand-authored or editor only; not available via CLI `add-block` |
 
 ---
 
@@ -544,6 +545,43 @@ A reference to a pre-authored shared snippet resolved at parse time. This is the
 | `snippetId` | string | ✅ | Kebab-case identifier for the shared snippet to include |
 
 > **Authoring**: `snippet-ref` blocks are excluded from the Pathfinder CLI (`CLI_EXCLUDED_BLOCK_TYPES`). Use the editor's Snippet Picker to insert them, or hand-author the JSON if the snippet ID is known.
+
+---
+
+## Challenge Block
+
+A CTF/Coda-VM challenge block for challenge-based learning. The learner is given a brief, a terminal environment, and must satisfy a success criterion (typically a shell command that exits 0). `challenge` is part of the `JsonBlock` runtime union but is not currently available via the CLI `add-block` command — hand-author the JSON or use the editor. Check with the Pathfinder team for current editor support.
+
+```json
+{
+  "type": "challenge",
+  "mode": "coda",
+  "title": "Fix the broken configuration",
+  "brief": "The Alloy configuration file has an error. Find and fix it so the agent restarts successfully.",
+  "successCriteria": "coda-exit-zero:systemctl is-active alloy && echo ok",
+  "setupScript": "#!/bin/bash\necho 'broken' > /etc/alloy/config.alloy",
+  "hintLevels": [
+    "Check /etc/alloy/config.alloy for syntax errors.",
+    "Use `alloy fmt` to identify the specific line.",
+    "The closing brace on line 12 is missing."
+  ],
+  "failureMessage": "The Alloy service is not running. Review the configuration and try again."
+}
+```
+
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `type` | string | ✅ | — | Must be `"challenge"` |
+| `successCriteria` | string | ✅ | — | Requirement token that determines pass/fail. Typically `coda-exit-zero:<command>` — see [Requirements Reference](requirements-reference.md#coda-exit-zero) |
+| `mode` | `"coda"` \| `"standard"` | ❌ | `"coda"` | `coda` uses a Coda VM environment; `standard` is a plain challenge without a VM |
+| `title` | string | ❌ | — | Challenge heading shown to the learner |
+| `brief` | string | ❌ | — | Challenge description and instructions (supports markdown) |
+| `setupScript` | string | ❌ | — | Shell script run to initialize the VM environment before the learner starts. Prefer over `setupCommands` |
+| `setupCommands` | string[] | ❌ | — | Array of setup commands (deprecated — prefer `setupScript`) |
+| `hintLevels` | string[] | ❌ | — | Progressive hints revealed one at a time as the learner requests them |
+| `failureMessage` | string | ❌ | — | Message shown when the learner's attempt fails |
+
+> **Authoring**: `challenge` blocks must be hand-authored or created via the editor — the Pathfinder CLI `add-block` command does not support them today.
 
 ---
 
