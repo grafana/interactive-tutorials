@@ -802,6 +802,24 @@ If the variable is not set, `[not set]` is displayed as a fallback.
 
 ## Common Property Patterns
 
+### Editor-Only Annotation: `authorNote`
+
+Every block type supports an optional `authorNote` field. It is an editor-only annotation that is stripped before the guide is published — it never appears to learners. Use it to leave authoring notes, TODOs, or rationale directly inline with a block.
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+  "content": "Click **Dashboards**.",
+  "authorNote": "TODO: verify the nav testid still matches after the sidebar redesign"
+}
+```
+
+| Property | Type | Available on | Description |
+|----------|------|-------------|-------------|
+| `authorNote` | string | All block types | Editor-only inline note. Stripped on export; never shown to learners. |
+
 ### Requirements Array
 
 Requirements are specified as string arrays. All must pass for the element to be enabled:
