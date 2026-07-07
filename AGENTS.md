@@ -28,7 +28,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 15. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
 16. **`skippable: true` for conditional steps** -- use for permission-gated steps and optional/conditional fields
 17. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` instead, or set `doIt: false`
-18. **`schemaVersion` is optional** -- if included, use `"schemaVersion": "1.1.0"`; the schema defaults to `"1.1.0"` when omitted
+18. **`schemaVersion` is optional and not enforced** -- the schema accepts any string value including `"1.0.0"` (used by the majority of shipped guides) and `"1.1.0"`. Prefer `"1.1.0"` for new guides but do not change existing guides solely to update this field
 19. **`popout` requires `targetvalue`** -- `popout` actions MUST set `targetvalue` to exactly `"sidebar"` or `"floating"`; the schema rejects any other value, and `popout` is not allowed inside `guided` blocks
 20. **Use `openGuide`, not `?doc=`** -- to chain a follow-up guide after a `navigate` step, set `openGuide: "bundled:<guide-id>"` on the interactive block; the legacy `?doc=` query param is back-compat only
 21. **`lazyRender` for virtualised targets** -- any step targeting a virtualised container (long tables, paginated lists, dashboard rows below the fold) MUST be inside a `guided` block with `lazyRender: true` on the step; plain `interactive` will fail because `exists-reftarget` cannot scroll
