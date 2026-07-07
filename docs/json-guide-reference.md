@@ -43,6 +43,7 @@ Every JSON guide has these fields:
 | `terminal` | Interactive | Shell command with Copy/Exec | Coda terminal commands |
 | `terminal-connect` | Interactive | Connect to Coda terminal | Establish terminal session |
 | `grot-guide` | Structural | Choose-your-own-adventure decision tree | Hand-authored branching guides (block editor only — CLI-excluded) |
+| `snippet-ref` | Structural | Reference to a pre-authored shared snippet | Editor-only; resolved at parse time via Snippet Picker (CLI-excluded) |
 
 ---
 
@@ -525,6 +526,24 @@ Self-contained choose-your-own-adventure decision tree. Users start on a welcome
 ### See Also
 
 - Pathfinder source: `src/types/json-guide.types.ts:533-625` (types), `src/types/json-guide.schema.ts:481-590` (schema), `src/cli/utils/block-registry.ts:80` (CLI exclusion).
+
+### Snippet Ref Block
+
+A reference to a pre-authored shared snippet resolved at parse time. This is the 17th registered block type, alongside `grot-guide`, it is excluded from the Pathfinder CLI — it must be authored through the Snippet Picker in the block editor or by hand-writing the JSON.
+
+```json
+{
+  "type": "snippet-ref",
+  "snippetId": "my-shared-snippet"
+}
+```
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `type` | string | ✅ | Must be `"snippet-ref"` |
+| `snippetId` | string | ✅ | Kebab-case identifier for the shared snippet to include |
+
+> **Authoring**: `snippet-ref` blocks are excluded from the Pathfinder CLI (`CLI_EXCLUDED_BLOCK_TYPES`). Use the editor's Snippet Picker to insert them, or hand-author the JSON if the snippet ID is known.
 
 ---
 
