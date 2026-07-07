@@ -29,7 +29,7 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 
 | Document | Purpose |
 |----------|---------|
-| [docs/json-guide-reference.md](docs/json-guide-reference.md) | All 16 block types and their properties |
+| [docs/json-guide-reference.md](docs/json-guide-reference.md) | All 17 registered block types and their properties (plus `challenge`, a runtime-only block type in the `JsonBlock` union — 18 total in the union) |
 | [docs/interactive-actions.md](docs/interactive-actions.md) | Action type behavior: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
 | [docs/requirements-reference.md](docs/requirements-reference.md) | All requirement types (fixed + parameterized) |
 | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns and pseudo-selectors |
