@@ -2,9 +2,9 @@
 
 Learning Hub expectations for path reviews — adapted from `website/content/internal/docs/learning-hub/reviewing-learning-journeys/`.
 
-Use in **Phase 1** (milestone prose and step quality) and **Phase 2** (path landing, milestones, CTAs, links).
+Use in **Phase 1** static pass (milestone prose, path landing, CTAs, links).
 
-**Severity:** tag every finding with [reference-checks.md § finding severity routing](reference-checks.md#finding-severity-routing) only. This doc describes *what* to check, not how to route comments.
+**Routing:** tag findings with [reference-checks.md § finding routing](reference-checks.md#finding-routing). **Default tier: internal** (reviewer workbook only). Do not post LH editorial to GitHub unless live testing failed or the reviewer promotes at Phase 3.
 
 **Package model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** Legacy Hugo `index.md` / `_index.md` front matter maps to package `website.yaml`; body prose maps to `content.json` markdown blocks. Do not expect website-repo markdown updates in the LP PR.
 
@@ -74,7 +74,7 @@ Every path should show a compelling end-result screenshot when possible (dashboa
 | Check | Notes |
 |---|---|
 | No motivating visual at all | Note in review body |
-| Image shows outcome the path does not deliver | Misleading — route via [finding severity routing](reference-checks.md#finding-severity-routing) |
+| Image shows outcome the path does not deliver | Misleading — route via [finding routing](reference-checks.md#finding-routing) |
 | Outdated UI in screenshot | Note in review body |
 | Valid `cta.image` on path `website.yaml` or markdown image with working URL | OK |
 
@@ -214,7 +214,7 @@ Destination `side_journeys` = **next steps** after completing the path (docs or 
 | "Consider taking X to learn dashboards" | Step prose: "Open the dashboard you created in [other path]" |
 | User may already have skills — can skip recommendation | User cannot complete without artifacts from another path |
 
-Hard dependency on another path's artifacts — route via [finding severity routing](reference-checks.md#finding-severity-routing).
+Hard dependency on another path's artifacts — route via [finding routing](reference-checks.md#finding-routing).
 
 ---
 
@@ -239,7 +239,7 @@ cta:
 | Check | Notes |
 |---|---|
 | Verification step with `cta.type: success` but no `cta.troubleshooting` | Editorial |
-| Troubleshooting links point to non-existent pages | Verify URL in Phase 2; route via [finding severity routing](reference-checks.md#finding-severity-routing) |
+| Troubleshooting links point to non-existent pages | Verify URL in Phase 1; route via [finding routing](reference-checks.md#finding-routing) |
 | Generic troubleshooting link that does not match the failure mode | Editorial |
 | Legacy front matter had troubleshooting but conversion omitted it | Editorial |
 
@@ -263,7 +263,7 @@ Every path must be completable with:
 | `depends` or prose assumes artifact only created in another LP | Destination links to logical next paths |
 | Prerequisites list another LP as required | "Consider taking X first" on landing |
 
-Scan milestone `content.json` interactive copy and path root prerequisites for cross-path artifact references. Route via [finding severity routing](reference-checks.md#finding-severity-routing).
+Scan milestone `content.json` interactive copy and path root prerequisites for cross-path artifact references. Route via [finding routing](reference-checks.md#finding-routing).
 
 ---
 
@@ -273,12 +273,12 @@ Verify links that point **outside** the package: `side_journeys`, `related_journ
 
 | Check | Notes |
 |---|---|
-| Suspected 404 or wrong product area | Note in findings; fetch URL in Phase 2 when conversion-heavy or links look AI-generated |
-| Confirmed 404 after fetch | Route via [finding severity routing](reference-checks.md#finding-severity-routing) |
+| Suspected 404 or wrong product area | Note in workbook; fetch URL in Phase 1 when conversion-heavy or links look AI-generated |
+| Confirmed 404 after fetch | Route via [finding routing](reference-checks.md#finding-routing) |
 | Page exists but title does not match link text | Editorial |
 | Deprecated / archived doc when current page exists | Editorial |
 
-During Phase 2, spot-check high-risk links on **conversion** PRs and any milestone with `cta.troubleshooting` or `side_journeys`. A suspected bad link is not a merge blocker until you confirm 404.
+During Phase 1, spot-check high-risk links on **conversion** PRs and any milestone with `cta.troubleshooting` or `side_journeys`. A suspected bad link is not posted until you confirm 404.
 
 ---
 
@@ -297,7 +297,7 @@ If `content.json` or markdown embeds video:
 
 ## Common pitfalls
 
-Quick scan during Phases 1–2 (route via [finding severity routing](reference-checks.md#finding-severity-routing)):
+Quick scan during Phase 1 (route via [finding routing](reference-checks.md#finding-routing)):
 
 | Pitfall | Where to look |
 |---|---|

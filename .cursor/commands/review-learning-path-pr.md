@@ -2,6 +2,8 @@
 
 Review a learning path pull request in `grafana/interactive-tutorials`. Walk the reviewer through **one phase at a time** — narrate what you're doing, **stop at each checkpoint**, and **wait for their reply**. Never batch phases.
 
+**This is not a full AI review.** The agent guides; the reviewer smoke-tests in Block Editor and decides what to post.
+
 When invoked, read and follow **[review-learning-path/SKILL.md](../skills/review-learning-path/SKILL.md)** in order.
 
 LP PRs are **single-repo** (`interactive-tutorials` only). Metadata lives in package `website.yaml`; the website repo is read-only for conversion ([PR #416](https://github.com/grafana/interactive-tutorials/pull/416)). Learning Hub criteria: [learning-hub-standards.md](../skills/review-learning-path/learning-hub-standards.md).
@@ -10,16 +12,15 @@ LP PRs are **single-repo** (`interactive-tutorials` only). Metadata lives in pac
 
 ## First message to the reviewer
 
-> I'll guide you through this learning path PR review **one phase at a time** (Phases 0–9, plus optional Phase 10 post-submit). I'll pause after each phase for your input — please don't skip ahead.
+> I'll help you review this learning path PR **one phase at a time**. You will smoke-test each milestone in Block Editor; I'll run static checks and draft comments for you to approve before anything posts to GitHub.
 >
 > | Phase | What happens |
 > |---|---|
 > | 0 | Check out the PR |
-> | 1–2 | Static audit + path checks |
-> | 3 | Findings doc — choose live testing or **`static-only: <reason>`** |
-> | 4 | Draft GitHub review |
-> | 5–6 | Live testing *(Playwright + Pathfinder)* |
-> | 7–9 | Comments, your approval, submit |
+> | 1 | Static pass (audit + path checks → internal workbook) |
+> | 2 | Live test (required Playwright DOM check + Block Editor smoke test per milestone) |
+> | 3 | Draft comments + summary in chat; you approve before posting |
+> | 4 | Submit |
 >
 > **Phase 0:** Share the PR — a GitHub URL or number (like `#403`) from `grafana/interactive-tutorials`.
 
