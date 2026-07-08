@@ -2,7 +2,7 @@
 
 Checklists for [review-learning-path/SKILL.md](SKILL.md) Phases 1–2. Findings land in `pr-{n}-findings.md` first — not on GitHub until Phase 7.
 
-**Note:** [finding severity routing](#finding-severity-routing) supersedes [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for this workflow. Re-tag audit-guide labels before Phase 7. Phase 3 buckets findings; Phase 7 applies [GitHub comment policy](#github-comment-policy).
+**Note:** [finding severity routing](#finding-severity-routing) supersedes [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for this workflow. Re-tag audit-guide labels before Phase 7. Phase 3 buckets findings; Phase 7 applies [GitHub comment policy](#github-comment-policy-phase-7).
 
 **Selector authority for LP reviews:** Follow [docs/selectors-and-testids.md](../../../docs/selectors-and-testids.md) priority order (`data-testid` > semantic > `:contains()` > `:has()` > CSS classes). Do **not** apply [build-interactive-lj/reference/selector-patterns.md](../../commands/build-interactive-lj/reference/selector-patterns.md) autogen rules ("never `:contains()`") when reviewing hand-authored or live-captured guides — that workflow targets source-to-guide generation, not PR review.
 
@@ -32,7 +32,7 @@ Use this table when writing `pr-{n}-findings.md` (Phase 3) and when deciding inl
 | Secrets auto-filled (`doIt: true`) | — | Audit-guide warnings with no runtime impact |
 | Path root / manifest `id` mismatch | — | — |
 | Hard cross-path artifact dependency in step copy | — | — |
-| Hallucinated / 404 outbound link in `website.yaml` supplementary fields | — | — |
+| Confirmed 404 outbound link in `website.yaml` supplementary fields (verified in Phase 2) | — | Suspected bad outbound link (not yet verified) |
 
 **After Pathfinder:** promote deferred items to inline only if live test failed or static issue is clearly wrong regardless of runtime (e.g. author used `:contains()` when Playwright confirmed a `data-testid` on the same element).
 
@@ -127,19 +127,19 @@ Full prerequisite and boilerplate criteria: [learning-hub-standards.md § path l
 
 ## Learning Hub structure (Phase 2)
 
-Walk [learning-hub-standards.md](learning-hub-standards.md) in path order after manifest/depends checks. Summary:
+Walk [learning-hub-standards.md](learning-hub-standards.md) in path order after manifest/depends checks. **Severity:** tag every finding with [finding severity routing](#finding-severity-routing) only — do not use severity columns in `learning-hub-standards.md`.
 
-| Area | Key checks | Default severity |
-|---|---|---|
-| [Path landing](learning-hub-standards.md#path-landing-page) | `website.yaml` identity, boilerplate sections in path `content.json`, logo | **Review body** |
-| [Prerequisites](learning-hub-standards.md#before-you-begin-prerequisites) | Complete, specific, Grafana Cloud first, match milestones | **Review body** |
-| [Milestone order](learning-hub-standards.md#milestone-types-and-order) | Value framing exists, 5–10 hands-on milestones typical, `end-journey` with `conclusion` | **Review body** |
-| [CTA types](learning-hub-standards.md#cta-types-websiteyaml) | `success` on verification only | **Review body** |
-| [Side / related journeys](learning-hub-standards.md#side-journeys) | Valid destinations, no LP links in `side_journeys`, soft `related_journeys` | **Review body** |
-| [Troubleshooting](learning-hub-standards.md#troubleshooting-on-verification-steps) | Present when steps verify outcomes | **Review body**; 404 links → **Always inline** |
-| [Standalone](learning-hub-standards.md#standalone-principle) | No hard deps on other paths' artifacts | **Always inline** in step copy |
-| [Outbound links](learning-hub-standards.md#outbound-link-verification) | Spot-check troubleshooting and conversion URLs | **Always inline** on 404 |
-| [Videos](learning-hub-standards.md#videos) | Do not flag missing; verify if present | **Review body** |
+| Area | Key checks |
+|---|---|
+| [Path landing](learning-hub-standards.md#path-landing-page) | `website.yaml` identity, boilerplate sections in path `content.json`, logo |
+| [Prerequisites](learning-hub-standards.md#before-you-begin-prerequisites) | Complete, specific, Grafana Cloud first, match milestones |
+| [Milestone order](learning-hub-standards.md#milestone-types-and-order) | Value framing exists, 5–10 hands-on milestones typical, `end-journey` with `conclusion` |
+| [CTA types](learning-hub-standards.md#cta-types-websiteyaml) | `success` on verification only |
+| [Side / related journeys](learning-hub-standards.md#side-journeys) | Valid destinations, no LP links in `side_journeys`, soft `related_journeys` |
+| [Troubleshooting](learning-hub-standards.md#troubleshooting-on-verification-steps) | Present when steps verify outcomes |
+| [Standalone](learning-hub-standards.md#standalone-principle) | No hard deps on other paths' artifacts |
+| [Outbound links](learning-hub-standards.md#outbound-link-verification) | Spot-check `side_journeys`, `related_journeys`, `cta.troubleshooting` on conversion PRs |
+| [Videos](learning-hub-standards.md#videos) | Do not flag missing; verify if present |
 
 ---
 
@@ -158,7 +158,7 @@ Package `website.yaml` files are the **authoritative** Learning Hub metadata for
 | CTA type | Verification milestone missing `cta.type: success` or final step not `conclusion` (see [CTA types](learning-hub-standards.md#cta-types-websiteyaml)) |
 | Troubleshooting | `success` milestone without `cta.troubleshooting.items` when step verifies an outcome (see [troubleshooting](learning-hub-standards.md#troubleshooting-on-verification-steps)) |
 
-Severity: missing path or milestone `website.yaml` when peers have them → **Review body** (request in this PR — not a separate website PR). Broken required fields → **Review body**; promote to **Always inline** only if deploy preview or publish would fail. Conversion mapping gaps → **Review body**. Hallucinated supplementary links → **Always inline**.
+Severity: missing path or milestone `website.yaml` when peers have them → **Review body** (request in this PR — not a separate website PR). Broken required fields → **Review body**; promote to **Always inline** only if deploy preview or publish would fail. Conversion mapping gaps → **Review body**. Suspected bad supplementary links → **Review body** until Phase 2 confirms 404 → **Always inline**.
 
 ---
 
@@ -230,7 +230,32 @@ Infer from PR title, changed files, and presence of legacy website source. Recor
 |---|---|---|
 | **new** | New `{slug}-lj/` directory; no legacy website folder | `website.yaml` completeness; path root `content.json` |
 | **conversion** | Touches `website.yaml` + prose-heavy markdown blocks; author used `/build-interactive-lj` | [Legacy website source](#legacy-website-source-optional-read-only); prose captured in `content.json` |
-| **update** | Changes existing package milestones/manifests only | Standard audit + live retest of touched milestones |
+| **update** | Changes existing package milestones/manifests only | Phase 2 emphasizes PR-touched milestones; Phases 5–6 test PR-touched interactive milestones first (full path optional at reviewer request) |
+
+---
+
+## Static-only reviews (Phase 3)
+
+`static-only` skips Phases 5–6. Use sparingly — it does not verify selectors or Pathfinder interactivity.
+
+### When static-only is allowed
+
+| Situation | Allowed? |
+|---|---|
+| **new** or **conversion** PR with interactive milestones in path `milestones` | **No** — require live testing |
+| **update** PR touching only markdown / `website.yaml` with no interactive changes | Yes, with reason |
+| Merged or closed PR (practice / archaeology) | Yes, with reason |
+| Reviewer lacks stack access but author already live-tested | Yes, with reason — cap verdict at **COMMENT** |
+
+### Required when accepting static-only
+
+1. Record `waive_live_testing: true` and `static_only_reason` (reviewer's stated reason) in `pr-{n}.json`.
+2. At Phase 3, reject bare `static-only` on **new** / **conversion** interactive PRs — tell the reviewer live testing is required.
+3. Prompt format: `static-only: <reason>` (for example `static-only: merged PR dogfood`).
+
+### Verdict cap
+
+**Never recommend APPROVE** when `waive_live_testing` is true. Cap at **COMMENT**. The review body must include a **Not live-tested** section listing every interactive milestone in path `milestones` that was not run in Phases 5–6.
 
 ---
 
@@ -335,6 +360,11 @@ The reviewer chooses the GitHub review event at Phase 8. The agent **recommends*
 ### Decision tree
 
 ```
+waive_live_testing is true (static-only)?
+  Yes → recommend COMMENT only (never APPROVE)
+        review body must list Not live-tested milestones
+  No  → continue below
+
 After Phase 7 — any Always inline finding OR Phase 5–6 runtime failure with inline comment?
   Yes → recommend REQUEST_CHANGES
   No  → all Pathfinder milestones passed AND remaining findings are audit-only selector warnings or body-only nits?
@@ -354,7 +384,7 @@ After Phase 7 — any Always inline finding OR Phase 5–6 runtime failure with 
 
 ### Rules
 
-1. **Do not recommend APPROVE** if any **Always inline** finding is open or any Phase 5–6 failure was inlined in Phase 7.
+1. **Do not recommend APPROVE** if any **Always inline** finding is open, any Phase 5–6 failure was inlined in Phase 7, or `waive_live_testing` is true.
 2. **Do not recommend REQUEST_CHANGES** with zero inline comments unless the reviewer explicitly waives inline at Phase 8 — **Always inline** items belong on the diff, not body-only.
 3. **COMMENT** is correct for “mergeable package PR with `website.yaml` polish or conversion mapping nits” — not because a separate website PR is still needed.
 4. **N/A with fresh-stack caveat** (e.g. install button missing) does not by itself require REQUEST_CHANGES — put in body under author retest; use REQUEST_CHANGES only if live steps actually failed.

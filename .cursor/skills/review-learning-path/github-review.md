@@ -79,6 +79,7 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
   "learn_host": "learn.grafana.net",
   "stack_state": "learn.grafana.net shared — no Azure credentials configured",
   "waive_live_testing": false,
+  "static_only_reason": null,
   "pre_review_assets": {
     "navigate-azure-config": ["assets/migration-notes.md"]
   },
@@ -114,10 +115,11 @@ Written at Phase 0; updated through Phase 9. **Never commit to the author's bran
 | `website_slug` | Phase 0 | `{path_dir}` minus `-lj`; optional read-only legacy source lookup when `website` repo is in workspace |
 | `pr_type` | Phase 0 | `new`, `conversion`, or `update` — drives Phase 2 emphasis |
 | `stack_state` | Phase 3 | Free-text description of host + stack used for Phases 5–6 |
-| `waive_live_testing` | Phase 3 | `true` when reviewer replies **static-only** — skip Phases 5–6 |
+| `waive_live_testing` | Phase 3 | `true` when reviewer replies **`static-only: <reason>`** — skip Phases 5–6 |
+| `static_only_reason` | Phase 3 | Reviewer's stated reason when `waive_live_testing` is true |
 | `learn_host` | Phase 0 | Default `learn.grafana.net` |
 | `pre_review_assets` | Phase 1 (before audit) | Map of milestone slug → list of `assets/` file paths that existed before audit-guide ran |
-| `phase` | Each phase completion | Integer 0–10 |
+| `phase` | Each phase completion | Integer **0–9** for the main workflow; **10** for optional post-submit follow-up |
 | `status` | Phase 0 → `"in_progress"`; Phase 9 → `"submitted"` | |
 | `pending_review_node_id` | Phase 4 | GraphQL node ID for the draft review — inline comments + submit |
 | `pending_review_id` | Phase 4 | REST/database ID if needed |

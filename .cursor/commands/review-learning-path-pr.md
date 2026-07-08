@@ -10,13 +10,13 @@ LP PRs are **single-repo** (`interactive-tutorials` only). Metadata lives in pac
 
 ## First message to the reviewer
 
-> I'll guide you through this learning path PR review **one phase at a time**. I'll pause after each phase for your input — please don't skip ahead.
+> I'll guide you through this learning path PR review **one phase at a time** (Phases 0–9, plus optional Phase 10 post-submit). I'll pause after each phase for your input — please don't skip ahead.
 >
 > | Phase | What happens |
 > |---|---|
 > | 0 | Check out the PR |
 > | 1–2 | Static audit + path checks |
-> | 3 | Findings doc — choose live testing or **static-only** |
+> | 3 | Findings doc — choose live testing or **`static-only: <reason>`** |
 > | 4 | Draft GitHub review |
 > | 5–6 | Live testing *(Playwright + Pathfinder)* |
 > | 7–9 | Comments, your approval, submit |

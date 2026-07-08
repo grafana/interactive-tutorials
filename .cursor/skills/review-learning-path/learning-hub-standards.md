@@ -2,7 +2,9 @@
 
 Learning Hub expectations for path reviews — adapted from `website/content/internal/docs/learning-hub/reviewing-learning-journeys/`.
 
-Use in **Phase 1** (milestone prose and step quality) and **Phase 2** (path landing, milestones, CTAs, links). Tag findings with [finding severity routing](reference-checks.md#finding-severity-routing) — most items are review-body feedback, not merge blockers.
+Use in **Phase 1** (milestone prose and step quality) and **Phase 2** (path landing, milestones, CTAs, links).
+
+**Severity:** tag every finding with [reference-checks.md § finding severity routing](reference-checks.md#finding-severity-routing) only. This doc describes *what* to check, not how to route comments.
 
 **Package model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** Legacy Hugo `index.md` / `_index.md` front matter maps to package `website.yaml`; body prose maps to `content.json` markdown blocks. Do not expect website-repo markdown updates in the LP PR.
 
@@ -32,8 +34,6 @@ Learning paths teach **by doing** in sequence. Documentation answers lookup ques
 | Steps without context or motivation | Missing path framing |
 | Milestone reads like a doc page pasted into JSON | Editorial — suggest restructuring |
 
-Severity: **Review body** unless the path has no interactive milestones at all.
-
 ---
 
 ## Path landing page
@@ -42,28 +42,28 @@ Check path root `content.json` and `website.yaml` together.
 
 ### `website.yaml` identity
 
-| Check | Fail if | Severity |
-|---|---|---|
-| `menuTitle`, `description` | Missing or `description` duplicates `menuTitle` | **Review body** |
-| `journey.group` | Not one of `onboarding`, `data-availability`, `query-and-visualize`, `take-action` | **Review body** |
-| `journey.skill` | Missing (renders as `TBD`) or clearly wrong for path complexity | **Review body** |
-| `journey.logo` | Missing, broken `src`, or generic Grafana logo when a feature icon exists | **Review body** |
-| `step` | Not `1` at path level | **Review body** |
-| `cta.type` | Not `start` with `title` + `cta_text` | **Review body** |
-| `related_journeys` | Legacy landing had soft recommendations but package omits them (conversion PR) | **Review body** |
-| `related_journeys` copy | Heading implies **required** prior path ("you must complete…") instead of soft background | **Review body** — conflicts with [standalone principle](#standalone-principle) |
+| Check | Fail if |
+|---|---|
+| `menuTitle`, `description` | Missing or `description` duplicates `menuTitle` |
+| `journey.group` | Not one of `onboarding`, `data-availability`, `query-and-visualize`, `take-action` |
+| `journey.skill` | Missing (renders as `TBD`) or clearly wrong for path complexity |
+| `journey.logo` | Missing, broken `src`, or generic Grafana logo when a feature icon exists |
+| `step` | Not `1` at path level |
+| `cta.type` | Not `start` with `title` + `cta_text` |
+| `related_journeys` | Legacy landing had soft recommendations but package omits them (conversion PR) |
+| `related_journeys` copy | Heading implies **required** prior path ("you must complete…") instead of soft background — conflicts with [standalone principle](#standalone-principle) |
 
 Common logo paths: `/static/img/menu/grafana2.svg` (generic), `/static/img/menu/cloud-dashboards.svg`, `/img/docs/logos/icon-alerting.svg` (verify path exists in website static assets).
 
 ### Path `content.json` body
 
-| Section | Required text / structure | Severity |
-|---|---|---|
-| Introduction | Motivating overview of what the path teaches | **Review body** |
-| `## Here's what to expect` | Outcomes list — what user can do after completing | **Review body** if missing |
-| `## Before you begin` | See [prerequisites](#before-you-begin-prerequisites) | **Review body**; promote if prerequisites would block users |
-| `## Troubleshooting` | Exact boilerplate: "If you get stuck, we've got your back! Where appropriate, troubleshooting information is just a click away." | **Review body** |
-| `## More to explore` | Exact boilerplate: "We understand you might want to explore other capabilities not strictly on this path. We'll provide you opportunities where it makes sense." | **Review body** |
+| Section | Required text / structure |
+|---|---|
+| Introduction | Motivating overview of what the path teaches |
+| `## Here's what to expect` | Outcomes list — what user can do after completing |
+| `## Before you begin` | See [prerequisites](#before-you-begin-prerequisites) |
+| `## Troubleshooting` | Exact boilerplate: "If you get stuck, we've got your back! Where appropriate, troubleshooting information is just a click away." |
+| `## More to explore` | Exact boilerplate: "We understand you might want to explore other capabilities not strictly on this path. We'll provide you opportunities where it makes sense." |
 
 Do **not** put milestone-specific troubleshooting or side-path links on the path landing — those belong on step `website.yaml` ([side journeys](#side-journeys) / [troubleshooting](#troubleshooting-on-verification-steps)).
 
@@ -71,11 +71,11 @@ Do **not** put milestone-specific troubleshooting or side-path links on the path
 
 Every path should show a compelling end-result screenshot when possible (dashboard, alert, data flowing). Conversion PRs sometimes drop website-relative images — note in review body rather than blocking merge when prose and steps are otherwise sound.
 
-| Check | Severity |
+| Check | Notes |
 |---|---|
-| No motivating visual at all | **Review body** |
-| Image shows outcome the path does not deliver | **Always inline** (misleading) |
-| Outdated UI in screenshot | **Review body** |
+| No motivating visual at all | Note in review body |
+| Image shows outcome the path does not deliver | Misleading — route via [finding severity routing](reference-checks.md#finding-severity-routing) |
+| Outdated UI in screenshot | Note in review body |
 | Valid `cta.image` on path `website.yaml` or markdown image with working URL | OK |
 
 ---
@@ -102,8 +102,6 @@ Path root `content.json` `## Before you begin` must set users up for success.
 - No **hard** dependency on completing another learning path (see [standalone principle](#standalone-principle))
 - Nothing omitted that would block users mid-path
 
-Severity: gaps → **Review body**; prerequisite contradicts what milestones actually need → **Review body** with strong merge recommendation.
-
 ---
 
 ## Milestone types and order
@@ -116,7 +114,7 @@ Broad guidelines (not hard rules):
 |---|---|
 | 5 or fewer | OK for focused paths |
 | 5–10 | Typical |
-| More than 12 | Consider splitting — **Review body** |
+| More than 12 | Consider splitting |
 
 Count path `manifest.json` `milestones` entries (hands-on only; exclude framing dirs).
 
@@ -124,11 +122,11 @@ Count path `manifest.json` `milestones` entries (hands-on only; exclude framing 
 
 Every path should open with **why** before **how**. In packages this is usually a framing directory (`business-value`, `value-*`, `advantages-*`) with markdown-only `content.json` — **not** listed in path `milestones`.
 
-| Check | Severity |
+| Check | Notes |
 |---|---|
-| No framing milestone and first hands-on jumps straight to steps without intro context | **Review body** |
-| Framing ID incorrectly listed in path `milestones` | **Always inline** (see [framing milestones](reference-checks.md#framing-milestones)) |
-| Value milestone is generic / no clear problem statement | **Review body** |
+| No framing milestone and first hands-on jumps straight to steps without intro context | Editorial |
+| Framing ID incorrectly listed in path `milestones` | See [framing milestones](reference-checks.md#framing-milestones) |
+| Value milestone is generic / no clear problem statement | Editorial |
 
 ### Task milestones (hands-on guides)
 
@@ -137,12 +135,12 @@ Each hands-on milestone in path `milestones` should have:
 1. **Introduction** — context for what the user will do and why (section intro markdown or opening blocks)
 2. **Actionable steps** — specific UI instructions in interactive blocks
 
-| Red flag | Severity |
+| Red flag | Notes |
 |---|---|
-| Steps with no introductory context | **Review body** |
-| Vague copy ("configure the settings") | **Review body** |
-| Missing sign-in or navigation when UI assumes logged-in state | **Defer** → inline if Pathfinder fails |
-| Assumed expertise not listed in path prerequisites | **Review body** |
+| Steps with no introductory context | Editorial |
+| Vague copy ("configure the settings") | Editorial |
+| Missing sign-in or navigation when UI assumes logged-in state | Defer until Pathfinder |
+| Assumed expertise not listed in path prerequisites | Editorial |
 
 **Good step copy:** "Click **Create alert rule**", "Enter `production` in the **Environment** field".
 
@@ -150,12 +148,12 @@ Each hands-on milestone in path `milestones` should have:
 
 Final milestone should close the path.
 
-| Check | Fail if | Severity |
-|---|---|---|
-| Exists | No `end-journey/` (or `end-<topic>/`) with `cta.type: conclusion` | **Review body** |
-| Summary | No recap of what the user accomplished | **Review body** |
-| Next steps | No related docs/paths in `side_journeys` or body markdown | **Review body** |
-| `menuTitle` | Not "Destination reached!" (or peer-consistent variant) | **Review body** |
+| Check | Fail if |
+|---|---|
+| Exists | No `end-journey/` (or `end-<topic>/`) with `cta.type: conclusion` |
+| Summary | No recap of what the user accomplished |
+| Next steps | No related docs/paths in `side_journeys` or body markdown |
+| `menuTitle` | Not "Destination reached!" (or peer-consistent variant) |
 
 `end-journey` recap must reference only milestones in path `manifest.json` `milestones` — not framing packages excluded from the array.
 
@@ -172,10 +170,10 @@ Final milestone should close the path.
 
 **Use `success` sparingly** — only when explicit verification matters (data flowing, connection working, alert fired). Obvious UI confirmations (button clicked, dialog closed) stay `continue`.
 
-| Check | Severity |
+| Check | Notes |
 |---|---|
-| Verification milestone uses `continue` instead of `success` | **Review body** |
-| Non-verification milestone uses `success` without reason | **Review body** |
+| Verification milestone uses `continue` instead of `success` | Editorial |
+| Non-verification milestone uses `success` without reason | Editorial |
 
 ---
 
@@ -201,7 +199,7 @@ Defined in step `website.yaml` → `side_journeys` (rendered by website; may als
 | Verification | 0–1 |
 | Conclusion | 1–3 |
 
-Duplication between `website.yaml` `side_journeys` and trailing `content.json` markdown → **Review body** ([supplementary content](reference-checks.md#supplementary-content)).
+Duplication between `website.yaml` `side_journeys` and trailing `content.json` markdown — see [supplementary content](reference-checks.md#supplementary-content).
 
 ---
 
@@ -216,7 +214,7 @@ Destination `side_journeys` = **next steps** after completing the path (docs or 
 | "Consider taking X to learn dashboards" | Step prose: "Open the dashboard you created in [other path]" |
 | User may already have skills — can skip recommendation | User cannot complete without artifacts from another path |
 
-Hard dependency on another path's artifacts → **Always inline** when found in interactive step copy or requirements.
+Hard dependency on another path's artifacts — route via [finding severity routing](reference-checks.md#finding-severity-routing).
 
 ---
 
@@ -238,12 +236,12 @@ cta:
         link: /docs/grafana-cloud/send-data/troubleshooting/
 ```
 
-| Check | Severity |
+| Check | Notes |
 |---|---|
-| Verification step with `cta.type: success` but no `cta.troubleshooting` | **Review body** |
-| Troubleshooting links point to non-existent pages | **Always inline** if URL is 404 |
-| Generic troubleshooting link that does not match the failure mode | **Review body** |
-| Legacy front matter had troubleshooting but conversion omitted it | **Review body** |
+| Verification step with `cta.type: success` but no `cta.troubleshooting` | Editorial |
+| Troubleshooting links point to non-existent pages | Verify URL in Phase 2; route via [finding severity routing](reference-checks.md#finding-severity-routing) |
+| Generic troubleshooting link that does not match the failure mode | Editorial |
+| Legacy front matter had troubleshooting but conversion omitted it | Editorial |
 
 Troubleshooting links must point to **existing** documentation. If no doc exists, flag for author to create or pick a real page — do not accept hallucinated URLs.
 
@@ -265,9 +263,7 @@ Every path must be completable with:
 | `depends` or prose assumes artifact only created in another LP | Destination links to logical next paths |
 | Prerequisites list another LP as required | "Consider taking X first" on landing |
 
-Scan milestone `content.json` interactive copy and path root prerequisites for cross-path artifact references.
-
-Severity: hard dependency in step instructions → **Always inline**; soft recommendation wording that sounds mandatory → **Review body**.
+Scan milestone `content.json` interactive copy and path root prerequisites for cross-path artifact references. Route via [finding severity routing](reference-checks.md#finding-severity-routing).
 
 ---
 
@@ -275,13 +271,14 @@ Severity: hard dependency in step instructions → **Always inline**; soft recom
 
 Verify links that point **outside** the package: `side_journeys`, `related_journeys`, `cta.troubleshooting`, and documentation URLs in markdown blocks.
 
-| Check | Severity |
+| Check | Notes |
 |---|---|
-| 404 or redirect to wrong product area | **Always inline** |
-| Page exists but title does not match link text | **Review body** |
-| Deprecated / archived doc when current page exists | **Review body** |
+| Suspected 404 or wrong product area | Note in findings; fetch URL in Phase 2 when conversion-heavy or links look AI-generated |
+| Confirmed 404 after fetch | Route via [finding severity routing](reference-checks.md#finding-severity-routing) |
+| Page exists but title does not match link text | Editorial |
+| Deprecated / archived doc when current page exists | Editorial |
 
-During Phase 2, spot-check high-risk links (troubleshooting, conversion-copied URLs). Full link audit is optional unless the PR is conversion-heavy or author used AI-generated URLs.
+During Phase 2, spot-check high-risk links on **conversion** PRs and any milestone with `cta.troubleshooting` or `side_journeys`. A suspected bad link is not a merge blocker until you confirm 404.
 
 ---
 
@@ -296,26 +293,24 @@ If `content.json` or markdown embeds video:
 - Reflects current UI
 - Supplements — does not replace — written steps
 
-Severity: broken or misleading video → **Review body**.
-
 ---
 
 ## Common pitfalls
 
-Quick scan during Phases 1–2:
+Quick scan during Phases 1–2 (route via [finding severity routing](reference-checks.md#finding-severity-routing)):
 
-| Pitfall | Where to look | Default severity |
-|---|---|---|
-| Missing landing screenshot | Path `content.json` / `website.yaml` | **Review body** |
-| Vague instructions | Milestone interactive copy | **Review body** |
-| Missing sign-in / first UI step | First hands-on milestone | **Defer** |
-| Broken or outdated references | Links, menu labels, feature names | **Always inline** if step breaks live |
-| Assumed expertise | Steps vs path prerequisites | **Review body** |
-| Orphan links (404) | `website.yaml` supplementary fields | **Always inline** |
-| Scope creep | Milestone tries to teach too much | **Review body** |
-| Abrupt ending | Missing or thin `end-journey` | **Review body** |
-| Made-up procedures | Steps not verified against product | **Always inline** if Pathfinder fails |
-| Path reads like docs | Long reference sections, no doing | **Review body** |
+| Pitfall | Where to look |
+|---|---|
+| Missing landing screenshot | Path `content.json` / `website.yaml` |
+| Vague instructions | Milestone interactive copy |
+| Missing sign-in / first UI step | First hands-on milestone |
+| Broken or outdated references | Links, menu labels, feature names |
+| Assumed expertise | Steps vs path prerequisites |
+| Orphan links (404) | `website.yaml` supplementary fields |
+| Scope creep | Milestone tries to teach too much |
+| Abrupt ending | Missing or thin `end-journey` |
+| Made-up procedures | Steps not verified against product |
+| Path reads like docs | Long reference sections, no doing |
 
 ---
 
