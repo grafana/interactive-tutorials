@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "interactive-dashboards-chain-variables",
+  "title": "Chain variables together",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Chained variables create dependent relationships where the options available in one variable depend on the selections made in another. This pattern enables cascading filters that help users drill down through hierarchical data structures."
+    },
+    {
+      "type": "markdown",
+      "content": "Cascading filter patterns are common in multi-tier filtering scenarios such as region > cluster > namespace > pod. Each level narrows the available options based on the previous selection, creating an intuitive navigation experience through your infrastructure or data hierarchy.\n\nTo create chained variables, complete the following steps:"
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out so you can keep it visible while you work through this milestone, including when the **Query Variable** editor opens."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll create a parent variable and a child variable whose query references the parent selection."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Edit dashboard button']",
+          "content": "Open your dashboard and click **Edit**.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar options button']",
+          "content": "In the right sidebar, click **Dashboard options** (gear icon).",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Create your first-level (parent) variable if you don't already have one.\n\nFor example, in the **Variables** section click **Add variable**, choose **Query**, name it `region`, and enter query `label_values(region)`. Click **Save** when finished."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid add variable button']",
+          "content": "In the **Variables** section of the pane, click **Add variable** to create a dependent (child) variable.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid variable type query'] button",
+          "content": "Click **Query** to choose the query variable type.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid variable name input']",
+          "targetvalue": "cluster",
+          "content": "Name your dependent variable.\n\nFor example, enter `cluster`.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Query Variable editor open button']",
+          "content": "Under **Query options**, click **Open variable editor**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Under **Query type**, select **Classic query** so the **Query** field appears.\n\nIn the **Query** field, reference the parent variable to filter results.\n\nFor example, use `label_values(up{region=\"$region\"}, cluster)`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Query Variable editor close button']",
+          "content": "Click **Close** to finish configuring the query.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Save dashboard button']",
+          "content": "Click **Save** to save the dashboard with your chained variables.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Test the cascading behavior by changing the parent variable selection. The dependent variable options should update automatically.\n\nRepeat to add additional levels—for example, a `namespace` variable that depends on `cluster`."
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar to continue to the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "Selecting a value in the parent variable updates the available options in dependent variables, creating a cascading filter experience.\n\nIn the next milestone, you learn how to configure variable display options to control how variables appear to your users."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Chained variable examples](https://grafana.com/docs/grafana/latest/visualizations/dashboards/variables/add-template-variables/#grafana-play-dashboard-examples)"
+    }
+  ]
+}
