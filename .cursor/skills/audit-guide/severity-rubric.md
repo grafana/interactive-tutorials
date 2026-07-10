@@ -39,6 +39,8 @@ A warning finding means the guide **degrades user experience** but does not hard
 | Semantic | Tooltip names the highlighted element (e.g., "Click the **Save** button" when the button is already highlighted) |
 | Semantic | Code smell from best-practices.mdc §6 not already covered above |
 | Semantic | Missing section bookends (intro markdown + summary markdown around a `section`) |
+| Semantic | In-section intro markdown that may render as a numbered step (first child is "You'll…" / action-preview markdown before interactives) — confirm in Block Editor; LP review posts inline when confirmed |
+| Semantic | False `noop` (learner click/type/open instruction with no `reftarget`) — prefer `markdown` or a real highlight |
 | Semantic | Legacy `?doc=` query string used instead of `openGuide` field (rule 20) |
 | Adversarial | Step content is technically correct but reads as instructions to a developer, not an end-user |
 | Adversarial | Tooltip uses Grafana jargon a beginner won't know |

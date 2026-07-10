@@ -160,14 +160,15 @@ Combines the former Phases 1–2 and workbook write.
 
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk all [reference-checks.md](reference-checks.md) checklists + [learning-hub-standards.md](learning-hub-standards.md).
-3. Run Pathfinder CLI validate if available.
-4. Tag every finding with [finding routing](reference-checks.md#finding-routing): **post inline**, **internal**, or **discard**.
-5. Write `pr-{n}-findings.md` — header: *"Reviewer workbook — internal only. Do not paste to PR."*
-   - **Verify in Block Editor** — items that need live test to confirm
+3. **Always scan** for [section intro markdown that may number as a step](reference-checks.md#section-intro-markdown-numbered-as-step) and [false noops](reference-checks.md#noop-and-non-interactive-steps). Put matches under **Verify in Block Editor**.
+4. Run Pathfinder CLI validate if available.
+5. Tag every finding with [finding routing](reference-checks.md#finding-routing): **post inline**, **internal**, or **discard**.
+6. Write `pr-{n}-findings.md` — header: *"Reviewer workbook — internal only. Do not paste to PR."*
+   - **Verify in Block Editor** — items that need live test to confirm (include section-intro markdown and false-noop candidates)
    - **Post inline if confirmed** — static compliance issues (broken depends, id mismatch, CLI fail)
    - **Internal** — nits, LH editorial, selector polish, `website.yaml` gaps
-6. Mandatory audit cleanup; verify `git status`.
-7. **Do not** cite rule numbers or blocking counts in chat.
+7. Mandatory audit cleanup; verify `git status`.
+8. **Do not** cite rule numbers or blocking counts in chat.
 
 ### Checkpoint
 
@@ -238,7 +239,9 @@ For each milestone in scope (path order; skip prose-only / terminal):
 >
 > If earlier milestones used `doIt: false` on save or credential steps, run **Do it** on those before testing downstream UI, or note the stack was already configured.
 >
-> **Your turn:** Reply **pass**, **fail step N —** *what happened*, or **N/A —** *reason*.
+> {If workbook flagged this milestone for section-intro markdown:} Watch whether the first "You'll…" (or similar) line inside the section is numbered as step 1. Say so in your reply if it is.
+>
+> **Your turn:** Reply **pass**, **fail step N —** *what happened*, **partial —** *what failed / what passed*, or **N/A —** *reason*.
 
 Record in `pathfinder.{milestone-slug}`. Advance only after reviewer replies.
 

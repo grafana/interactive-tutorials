@@ -48,6 +48,10 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 
 > The first hands-on milestone depends on `business-value`, which isn't in the path milestones array. That will break the depends chain for learners. Should be `"depends": []`.
 
+**Good (section intro numbered as a step, path-wide):**
+
+> The "You'll …" markdown inside the section shows as a numbered step in Pathfinder. Same pattern in create-custom, use-variables-queries, and chain-variables. Move those intros outside the section (or drop them if the section title is enough).
+
 ---
 
 ## Summary body template

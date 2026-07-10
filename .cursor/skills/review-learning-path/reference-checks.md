@@ -18,7 +18,8 @@ Tag every finding when writing the workbook. Only **post inline** items may beco
 
 | Post inline | Internal (workbook only) | Discard |
 |---|---|---|
-| Block Editor / Playwright runtime fail (reviewer-reported) | Section bookends when live passed | Audit noise with no runtime impact |
+| Block Editor / Playwright runtime fail (reviewer-reported) | Section bookends missing when live passed | Audit noise with no runtime impact |
+| In-section intro markdown confirmed numbered as a step in Block Editor | In-section intro markdown (static detect only; not yet live-confirmed) | |
 | Broken `depends` chain or framing in path `milestones` | `website.yaml` metadata gaps | CODEOWNERS reminder |
 | Missing `exists-reftarget`, `navmenu-open` **when live fails** | `:contains()` fallback when live passed | Pathfinder shell UX |
 | Outdated `data-testid` when live fails | LH editorial (boilerplate, prerequisites, CTA) | Passed-milestone notes |
@@ -62,6 +63,7 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | `schemaVersion` not `"1.1.0"` when present | post inline |
 | Markdown `##` / `###` for grouping | internal |
 | Section bookends missing (rule 14) | internal until live fails |
+| In-section intro markdown that may number as a step | **internal** until Block Editor confirms; then **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)) |
 | Missing `exists-reftarget`, `navmenu-open` | internal until live fails |
 | Missing `on-page` | internal until live fails |
 | `lazyRender` missing on virtualized targets | internal until live fails |
@@ -70,6 +72,42 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | Missing `verify` on save | internal until live fails |
 
 LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — default **internal**.
+
+---
+
+## Section intro markdown numbered as a step
+
+Recurring Pathfinder UX issue (seen across multiple LP PRs, including interactive dashboards and Infinity JSON): a one-sentence "what you'll do" markdown block as the **first child inside a `section`** shows up in Block Editor as a numbered step (for example "1. You'll open a dashboard…") instead of unnumbered prose.
+
+Docs sometimes say in-section `markdown` is unnumbered. **Treat Block Editor as source of truth.** If the reviewer sees a number on that block, flag it.
+
+### Phase 1 — static detect (workbook)
+
+For every interactive `section`, check the first block:
+
+| Detect when first in-section block is `markdown` and… | Example |
+|---|---|
+| Content starts with `You'll ` / `You will ` | `You'll customize how a variable appears…` |
+| Content is a one-sentence action preview before the first interactive | `In this section, open Edit and add a variable.` |
+| Content restates the section goal without teaching a concept | Same pattern under different wording |
+
+Write under **Verify in Block Editor** in `pr-{n}-findings.md`. Note every milestone that matches (path-wide pattern is common). Do **not** post from static detect alone.
+
+Missing bookends (no intro/summary at all) stay a separate **internal** finding. This check is the opposite problem: intro exists but Pathfinder treats it like a step.
+
+### Phase 2 — confirm
+
+When prompting Block Editor for a flagged milestone, ask the reviewer to notice whether the section's first "You'll…" (or similar) line is numbered.
+
+| Live result | Route |
+|---|---|
+| Numbered as a step | **Post inline** |
+| Unnumbered prose | Discard this finding for that milestone |
+
+### Phase 3 — comment shape
+
+- **One path-wide inline** when the same pattern appears in multiple milestones. Anchor on the first clear example; list the other milestone slugs in the comment body.
+- Fix: move the intro markdown **outside** (before) the `section` block, or drop it if the section title is enough. Keep a one-sentence summary bookend (outside or after the section) so rule 14 intent is preserved without a fake step 1.
 
 ---
 
@@ -196,6 +234,8 @@ New path not in CODEOWNERS → **discard** (mention in workbook only if reviewer
 ## noop and non-interactive steps
 
 `noop` misuse → **post inline** if it breaks interactivity; else **internal**.
+
+**False noops (learner actions without `reftarget`):** steps that tell the learner to click, type, or open UI but use `action: "noop"` with no selector. Prefer `markdown` (or a real highlight). When confirmed in Block Editor or obvious from JSON → **post inline**. Deduplicate path-wide like section-intro markdown.
 
 ---
 
