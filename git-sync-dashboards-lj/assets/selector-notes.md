@@ -34,6 +34,12 @@ New dashboards from `/dashboard/new` open the **standard** Save dashboard drawer
 | Add panel | `[data-testid='data-testid sidebar add new panel']` |
 | Edit visualization | `[data-testid='data-testid edit pane configure panel button']` |
 
+## Pathfinder dock / undock bookends
+
+- `create-new-dashboard` ends with `popout` → `sidebar` so the next milestone starts docked.
+- Save milestones (`save-dashboard-git`, `save-with-commit`, `save-with-pr`) start with dock → then undock to `floating` for the save drawer, and dock again at the end.
+- Popout steps are behind `renderer:pathfinder` conditionals (hidden in plain markdown viewers).
+
 ## UI drift vs original learning path markdown
 
 Original LP described **Workflow** radios (**Push to main** / **Push to a new branch**) and a single **Path** field.
