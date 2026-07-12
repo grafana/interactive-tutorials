@@ -86,6 +86,8 @@ Path: `.cursor/pr-review-state/pr-{n}.json`
   "stack_state": "learn.grafana.net shared",
   "waive_live_testing": false,
   "static_only_reason": null,
+  "reuse_live": false,
+  "reuse_live_notes": null,
   "pre_review_assets": {},
   "phase": 3,
   "status": "in_progress",
@@ -110,12 +112,14 @@ Path: `.cursor/pr-review-state/pr-{n}.json`
 | `pull_request_node_id` | Phase 0 | For GraphQL mutations |
 | `pr_type` | Phase 0 | `new`, `conversion`, `update` |
 | `stack_state` | Phase 1 end | Stack used in Phase 2 |
-| `waive_live_testing` | Phase 1 end | Skips Phase 2 |
+| `waive_live_testing` | Phase 1 end | Skips Phase 2 (`static-only`) |
 | `static_only_reason` | Phase 1 end | Required when waived |
+| `reuse_live` | Phase 1 end or Phase 2 setup | Prior Block Editor evidence; skips per-milestone re-test |
+| `reuse_live_notes` | With `reuse_live` | Required notes (what/where/who/when) |
 | `pre_review_assets` | Phase 1 | Map milestone slug → asset paths before audit |
 | `phase` | Each phase | Integer **0–4** |
 | `pending_review_node_id` | Phase 3 | After chat approval, when posting |
-| `pathfinder` | Phase 2 | Block Editor smoke test results per milestone |
+| `pathfinder` | Phase 2 | Block Editor smoke test results per milestone (includes `pass (reused — …)` when reuse-live) |
 | `playwright` | Phase 2 | Required DOM check results per milestone |
 | `comment_count` | Phase 3 | Approved inline comments posted |
 | `verdict` | Phase 4 | Reviewer-chosen GitHub event |

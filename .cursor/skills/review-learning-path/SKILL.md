@@ -65,6 +65,7 @@ Input (PR URL or number)
 - **Required**: `pr_number` or GitHub PR URL for `grafana/interactive-tutorials`.
 - **Optional**: `path_dir`, `website_slug`, `learn_host` (default `learn.grafana.net`).
 - **Optional**: `waive_live_testing` — skip Phase 2. Requires `static-only: <reason>` at Phase 1 end. See [static-only reviews](reference-checks.md#static-only-reviews).
+- **Optional**: `reuse_live` — record prior Block Editor evidence and skip per-milestone re-test. Requires `reuse-live: <notes>`. See [reuse-live](reference-checks.md#reuse-live-prior-evidence).
 
 ---
 
@@ -104,7 +105,7 @@ Re-verify commit safety after Phase 1 before Phase 2.
 | **Your turn** | Exactly one action |
 | **Up next** | One sentence |
 
-**Reply keywords:** `yes` · `ready` · `static-only: <reason>` · `pass` / `fail step N — …` / `N/A — …` · `post all` / `post 1,2` / `skip` · `show summary` · `submit COMMENT` · `resume` / `start fresh`
+**Reply keywords:** `yes` · `ready` · `static-only: <reason>` · `reuse-live: <notes>` · `pass` / `fail step N — …` / `partial — …` / `N/A — …` · `post all` / `post 1,2` / `skip` · `show summary` · `submit COMMENT` · `resume` / `start fresh`
 
 **Tone:** Plain language. No audit jargon in chat. Say when things went cleanly.
 
@@ -181,11 +182,13 @@ Combines the former Phases 1–2 and workbook write.
 >
 > Or **`static-only: <reason>`** to skip live testing (not on **new** / **conversion** interactive PRs).
 >
-> **Up next:** Block Editor smoke test with required Playwright DOM check per milestone *(or draft review if static-only)*.
+> Or **`reuse-live: <notes>`** when Block Editor evidence already exists (author dogfood, earlier in-thread pass). See [reuse-live](reference-checks.md#reuse-live-prior-evidence).
+>
+> **Up next:** Block Editor smoke test with required Playwright DOM check per milestone *(or draft review if static-only / reuse-live)*.
 
-Record: `stack_state` or `waive_live_testing` + `static_only_reason`.
+Record: `stack_state`, or `waive_live_testing` + `static_only_reason`, or `reuse_live` + `reuse_live_notes` (+ `stack_state` when known).
 
-**Reject** bare `static-only` and static-only on **new** / **conversion** with interactive milestones.
+**Reject** bare `static-only` and static-only on **new** / **conversion** with interactive milestones. **Reject** bare `reuse-live` (notes required).
 
 ---
 
@@ -194,6 +197,8 @@ Record: `stack_state` or `waive_live_testing` + `static_only_reason`.
 **Goal:** Reviewer smoke-tests each milestone. **Required Playwright DOM check** runs before each milestone's Block Editor test.
 
 Skipped when `waive_live_testing` is true → jump to Phase 3.
+
+Skipped when `reuse_live` is true → record prior evidence, fill `pathfinder` from notes / workbook, jump to Phase 3. Do **not** re-prompt per milestone. See [reuse-live](reference-checks.md#reuse-live-prior-evidence).
 
 ### Setup (tell the reviewer once)
 
@@ -210,8 +215,10 @@ Skipped when `waive_live_testing` is true → jump to Phase 3.
 > Stack: `{stack_state}`
 >
 > Reply **ready** when both are set up. I won't ask you to test a milestone until you do.
+>
+> Or **`reuse-live: <notes>`** if Block Editor was already run for this PR (dogfood / resume) and you have evidence to record.
 
-**Wait for:** `ready`.
+**Wait for:** `ready` or `reuse-live: <notes>`.
 
 ### Milestone scope
 
@@ -361,7 +368,8 @@ Not a numbered phase. New review cycle for major author pushes. Use REST inline 
 - List blockers/nits in the summary body
 - Cite blocking counts or audit severity in reviewer chat
 - Recommend APPROVE when `waive_live_testing` is true
-- Skip required Playwright DOM check per milestone (unless static-only)
+- Recommend APPROVE when `reuse_live` is true (prior evidence is not a fresh second-reviewer pass in this session)
+- Skip required Playwright DOM check per milestone (unless static-only or reuse-live)
 - Submit from GitHub UI without pasting summary (body will be blank)
 
 **Do**

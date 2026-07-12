@@ -72,6 +72,8 @@ Thanks for the PR. I smoke-tested this on {stack_state} in Block Editor.
 {If no issues: "Looks good to merge from my testing."}
 
 {If static-only: one sentence that interactive milestones were not live-tested.}
+
+{If reuse-live: one sentence that Block Editor results were reused from prior evidence, not re-run in this session.}
 ```
 
 **Target length:** 3–5 sentences. Never paste the workbook into the summary.
@@ -87,6 +89,7 @@ The agent offers a suggestion; **you** choose the GitHub event at Phase 4.
 | Live-tested, no inline comments posted | APPROVE or COMMENT |
 | Live-tested, posted inline comments on real issues | COMMENT, or REQUEST_CHANGES if you want to block merge |
 | Static-only review | COMMENT only (never APPROVE) |
+| Reuse-live (prior evidence, not a fresh pass this session) | COMMENT only (never APPROVE) |
 | Unsure | COMMENT is always safe |
 
 Do not use REQUEST_CHANGES unless you intend to block merge. Most LP reviews end as APPROVE or COMMENT.

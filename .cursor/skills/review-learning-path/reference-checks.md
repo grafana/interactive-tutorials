@@ -213,6 +213,34 @@ Record `waive_live_testing: true` and `static_only_reason`. Never suggest APPROV
 
 ---
 
+## Reuse-live (prior evidence)
+
+`reuse-live: <notes>` records Block Editor evidence that already exists so Phase 2 does not re-test every milestone. **Not** the same as static-only: you are claiming live evidence, not skipping it.
+
+### When to use
+
+| Situation | Use `reuse-live`? |
+|---|---|
+| Author dogfooding the skill as reviewer after already smoke-testing while authoring | Yes |
+| Resume mid-review; Block Editor results already in the workbook / chat | Yes |
+| Cold second-reviewer pass with no prior live test this PR | **No** — run Phase 2 normally |
+| Want to skip live testing with no prior evidence | **No** — that is `static-only` (and forbidden on new/conversion interactive) |
+
+### Rules
+
+1. **Notes required.** Reject bare `reuse-live`. Notes must say what was tested, where (stack), and by whom when (e.g. `reuse-live: author smoke-tested all interactive milestones on learn.grafana.net during authoring 2026-07-10`).
+2. **Allowed on new/conversion.** Unlike static-only, reuse-live is valid on interactive new/conversion PRs when prior evidence exists.
+3. **Accepted at** Phase 1 checkpoint or Phase 2 setup (instead of `ready`).
+4. **Agent steps when accepted:**
+   - Set `reuse_live: true`, `reuse_live_notes: "<notes>"`, and `stack_state` if mentioned.
+   - Fill `pathfinder.{milestone}` for interactive milestones in scope as `pass (reused — <short notes>)` unless notes call out a fail/partial; copy any known fails into the workbook.
+   - Skip Playwright DOM loop and per-milestone Block Editor prompts.
+   - Jump to Phase 3. Do not invent Show me / Do it results beyond what notes claim.
+5. **Verdict:** never suggest **APPROVE** when `reuse_live` is true. Cap at **COMMENT**. A fresh second-reviewer Phase 2 can still APPROVE later.
+6. **Summary:** one sentence that live results were reused from prior evidence (do not pretend this session re-ran Block Editor).
+
+---
+
 ## Live testing prerequisites (Phase 2)
 
 ### Stack state
@@ -308,6 +336,7 @@ The **reviewer** chooses the GitHub event. The agent suggests in plain language 
 | Live-tested, zero inline comments posted | APPROVE or COMMENT |
 | Live-tested, posted inline on real issues | COMMENT; REQUEST_CHANGES only if reviewer wants to block |
 | Static-only | COMMENT only |
+| Reuse-live | COMMENT only (never APPROVE) |
 | Unsure | COMMENT |
 
 REQUEST_CHANGES is rare. Do not run a decision tree. Do not list blockers in the summary to justify a verdict.
