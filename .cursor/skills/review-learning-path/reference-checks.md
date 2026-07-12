@@ -97,12 +97,17 @@ Missing bookends (no intro/summary **around** the section at all) stay a separat
 
 ### Phase 2 — confirm
 
-When prompting Block Editor for a flagged milestone, ask the reviewer to notice whether the section's first "You'll…" (or similar) line is numbered.
+On **every** interactive milestone Block Editor prompt, ask the reviewer to scan the section step list for false step numbers — not only when Phase 1 flagged the milestone:
+
+- Intro prose numbered as step 1 (for example "You'll …")
+- Learner-action `noop`s numbered as interactive steps
 
 | Live result | Route |
 |---|---|
-| Numbered as a step | **Post inline** |
-| Unnumbered prose | Discard this finding for that milestone |
+| Numbered as a step (intro or false noop) | **Post inline** |
+| Unnumbered prose / accepted noop only | Discard this finding for that milestone |
+
+Same scan applies to [false noops](#noop-and-non-interactive-steps) even when static detect missed a wording variant.
 
 ### Phase 3 — comment shape
 
@@ -270,6 +275,8 @@ When obvious from JSON or confirmed in Block Editor → **post inline**. Dedupli
 | Optional `reftarget` to draw attention without requiring a click | Look-at context only; copy must not say “click / enter / select …” |
 
 Route: accepted `noop` → no finding. False noop → **post inline**.
+
+Phase 2 always asks the reviewer to scan for numbered learner-action noops (see [section intro Phase 2](#phase-2--confirm)), even when static detect missed them.
 
 ---
 

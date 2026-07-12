@@ -239,7 +239,7 @@ For each milestone in scope (path order; skip prose-only / terminal):
 >
 > If earlier milestones used `doIt: false` on save or credential steps, run **Do it** on those before testing downstream UI, or note the stack was already configured.
 >
-> {If workbook flagged this milestone for section-intro markdown:} Watch whether the first "You'll…" (or similar) line inside the section is numbered as step 1. Say so in your reply if it is.
+> Also scan the section step list for **false step numbers**: intro prose numbered as step 1 (for example "You'll …"), or learner-action `noop`s numbered as interactive steps. Say so in your reply if you see either.
 >
 > **Your turn:** Reply **pass**, **fail step N —** *what happened*, **partial —** *what failed / what passed*, or **N/A —** *reason*.
 
