@@ -264,20 +264,18 @@ When a tab has no `data-testid`, use `:contains()` pseudo-selector with `doIt: f
 
 Key things: `action: "button"` with the tab label text. If the text isn't unique on the page, use `"reftarget": "div[role='tab']:contains('Network')"` or similar structural selector. Always `doIt: false` when the selector is fragile.
 
-### Example E: noop for complex concepts
+### Example E: markdown for complex concepts
 
-When no single element can be targeted but the user needs context.
+When no single element can be targeted but the user needs context. Prefer `markdown` over `noop` so Pathfinder does not number the prose as a step. Use `noop` only for an intentional numbered pause that is not a click/type instruction.
 
 ```json
 {
-  "type": "interactive",
-  "action": "noop",
-  "content": "**Proxy Settings** offer three modes: **Default** (uses environment vars), **None** (direct), and **URL** (custom proxy). Select **URL** to see proxy fields.",
-  "skippable": true
+  "type": "markdown",
+  "content": "**Proxy Settings** offer three modes: **Default** (uses environment vars), **None** (direct), and **URL** (custom proxy). Choose **URL** when you need custom proxy fields."
 }
 ```
 
-Key things: `noop` when there's no sensible element to highlight. Keep it brief. Use `skippable` if the information isn't essential to the guide flow.
+Key things: `markdown` for explanation without a selector. Do not use `noop` as a flaky-selector fallback or for “click / enter / select …” copy. Keep it brief.
 
 ---
 

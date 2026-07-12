@@ -247,9 +247,29 @@ New path not in CODEOWNERS → **discard** (mention in workbook only if reviewer
 
 ## noop and non-interactive steps
 
-`noop` misuse → **post inline** if it breaks interactivity; else **internal**.
+`noop` creates a **numbered** step with no automation. It is not a fallback for missing selectors.
 
-**False noops (learner actions without `reftarget`):** steps that tell the learner to click, type, or open UI but use `action: "noop"` with no selector. Prefer `markdown` (or a real highlight). When confirmed in Block Editor or obvious from JSON → **post inline**. Deduplicate path-wide like section-intro markdown.
+### Reject (false noop) → prefer `markdown` or a real interactive step
+
+| Pattern | Use instead |
+|---|---|
+| Learner action with no `reftarget` (open, click, type, fill, select, hover, save) | `markdown`, or restore `highlight` / `button` / `formfill` / `guided` if you have a stable selector |
+| Flaky-selector workaround (“Pathfinder can’t highlight this, so noop”) | `markdown` (or `highlight` + `doIt: false` when a selector exists) |
+| Observation / confirmation / pure explanation that should not be numbered | `markdown` |
+| Outside a `section` | `markdown` |
+
+Examples of false noops: “Open a dashboard…”, “In the **Label** field, enter…”, “Hover the panel menu, then click **Edit**.”
+
+When obvious from JSON or confirmed in Block Editor → **post inline**. Deduplicate path-wide (one comment listing milestones).
+
+### Accept `noop` only when
+
+| Pattern | Notes |
+|---|---|
+| Intentional numbered pause that is **not** a click/type instruction | e.g. “Wait for the query to finish”, “Confirm the preview looks right before you continue” |
+| Optional `reftarget` to draw attention without requiring a click | Look-at context only; copy must not say “click / enter / select …” |
+
+Route: accepted `noop` → no finding. False noop → **post inline**.
 
 ---
 

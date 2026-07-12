@@ -52,6 +52,10 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 
 > The "You'll …" markdown inside the section shows as a numbered step in Pathfinder. Same pattern in create-custom, use-variables-queries, and chain-variables. Move those intros outside the section (or drop them if the section title is enough).
 
+**Good (false noop):**
+
+> These steps tell the learner to open the variable and fill Label / Display / Multi-value, but they use `noop` with no selector, so Pathfinder still numbers them as interactive steps. Prefer markdown (or restore highlight if you have a stable selector). Same pattern on the open-dashboard and panel-menu Edit noops in the earlier milestones.
+
 ---
 
 ## Summary body template
