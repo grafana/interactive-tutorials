@@ -23,7 +23,7 @@ Validation checks (exit 1 on failure):
   - Section IDs are unique
   - No multistep singletons (multistep with 1 step = error)
   - Tooltip length <= 250 chars
-  - Section bookend check (first block is markdown, last block is markdown)
+  - Section bookend check (intro markdown immediately before each section, summary immediately after; warn if in-section "You'll…" intro looks like a fake step)
   - Step count per section (warn if <3 or >10 interactive steps)
   - No noop-only sections (all interactive steps are noop)
 """
@@ -114,18 +114,30 @@ def validate_guide(guide: dict) -> tuple[list, list]:
             interactive_steps = [b for b in section_blocks if is_interactive(b)]
             targeting_steps = [b for b in interactive_steps if is_targeting(b)]
             noop_steps = [b for b in interactive_steps if is_noop(b)]
-
-            # Section bookends
             non_empty_blocks = [b for b in section_blocks if b.get("type") != "section"]
-            if non_empty_blocks:
-                if non_empty_blocks[0].get("type") != "markdown":
+
+            # In-section "You'll…" intros often number as step 1 in Pathfinder
+            if non_empty_blocks and non_empty_blocks[0].get("type") == "markdown":
+                intro = (non_empty_blocks[0].get("content") or "").lstrip()
+                if intro.startswith(("You'll ", "You will ", "In this section")):
                     warnings.append(
-                        f"Section '{section_id}': first block should be markdown intro (bookend missing)"
+                        f"Section '{section_id}': first in-section markdown looks like an "
+                        f"action-preview intro (may number as step 1) — move outside the section"
                     )
-                if non_empty_blocks[-1].get("type") != "markdown":
-                    warnings.append(
-                        f"Section '{section_id}': last block should be markdown summary (bookend missing)"
-                    )
+
+            # Outside bookends: markdown immediately before / after this section in parent blocks
+            prev_block = blocks[i - 1] if i > 0 else None
+            next_block = blocks[i + 1] if i + 1 < len(blocks) else None
+            if not prev_block or prev_block.get("type") != "markdown":
+                warnings.append(
+                    f"Section '{section_id}': missing intro markdown immediately before the section "
+                    f"(rule 14 bookend)"
+                )
+            if not next_block or next_block.get("type") != "markdown":
+                warnings.append(
+                    f"Section '{section_id}': missing summary markdown immediately after the section "
+                    f"(rule 14 bookend)"
+                )
 
             # Step count
             n_interactive = len(interactive_steps)

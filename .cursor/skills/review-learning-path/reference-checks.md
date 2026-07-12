@@ -62,8 +62,8 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 |---|---|
 | `schemaVersion` not `"1.1.0"` when present | post inline |
 | Markdown `##` / `###` for grouping | internal |
-| Section bookends missing (rule 14) | internal until live fails |
-| In-section intro markdown that may number as a step | **internal** until Block Editor confirms; then **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)) |
+| Section bookends missing (rule 14) — no intro/summary **around** the section | internal until live fails |
+| In-section intro markdown that may number as a step | **internal** until Block Editor confirms; then **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)). Prefer bookends **outside** the section per rule 14. |
 | Missing `exists-reftarget`, `navmenu-open` | internal until live fails |
 | Missing `on-page` | internal until live fails |
 | `lazyRender` missing on virtualized targets | internal until live fails |
@@ -93,7 +93,7 @@ For every interactive `section`, check the first block:
 
 Write under **Verify in Block Editor** in `pr-{n}-findings.md`. Note every milestone that matches (path-wide pattern is common). Do **not** post from static detect alone.
 
-Missing bookends (no intro/summary at all) stay a separate **internal** finding. This check is the opposite problem: intro exists but Pathfinder treats it like a step.
+Missing bookends (no intro/summary **around** the section at all) stay a separate **internal** finding. Correct placement is **outside** the `section` (intro immediately before, summary immediately after). This check is the opposite problem: intro exists **inside** the section and Pathfinder treats it like a step.
 
 ### Phase 2 — confirm
 
@@ -113,9 +113,23 @@ When prompting Block Editor for a flagged milestone, ask the reviewer to notice 
 
 ## Framing milestones
 
-Framing packages must **not** appear in path `manifest.json` `milestones`. First hands-on `depends` must not reference framing IDs.
+Framing packages may live in the path directory for the website Learning Path, but must **not** appear in path `manifest.json` `milestones`. First hands-on `depends` must not reference framing IDs.
 
 Framing in path `milestones` or broken depends → **post inline**.
+
+### Framing vs not framing
+
+Framing is about **role**, not “markdown-only.”
+
+| Kind | Examples | In path `milestones`? |
+|---|---|---|
+| **Framing** (value / why intro) | `business-value`, `value-*`, `advantages-*`, `welcome` | No — keep the package + `website.yaml` if the website needs it; omit from Pathfinder `milestones` |
+| **Not framing** (path destination) | `end-journey`, `end-<topic>` | Yes |
+| **Case-by-case** | Prose conceptual packages such as `understanding-*` | Only if they are a Pathfinder path step learners must complete. If they are website-only conceptual framing, treat as framing (omit from `milestones`, first hands-on `depends: []`) |
+
+Do **not** auto-flag every markdown-only `milestones` entry. `end-journey` is normally prose-only and correctly listed.
+
+When a prose milestone is ambiguous, note it under **Internal** as “is this framing?” for the reviewer. Promote to **post inline** only after the reviewer confirms it is framing (or it matches a known framing name above).
 
 ---
 

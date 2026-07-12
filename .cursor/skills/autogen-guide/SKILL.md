@@ -196,7 +196,7 @@ The most common section pattern. Tab click → fields → conditional fields wit
 }
 ```
 
-Key things: section bookends (intro + summary), tab-click before fields, `skippable: true` with `hint` on conditional fields, `doIt: false` on secrets, include `exists-reftarget` in requirements for selector-targeting steps, concise tooltips that don't name the highlighted element.
+Key things: section bookends (intro markdown immediately before each section, summary immediately after — not inside), tab-click before fields, `skippable: true` with `hint` on conditional fields, `doIt: false` on secrets, include `exists-reftarget` in requirements for selector-targeting steps, concise tooltips that don't name the highlighted element.
 
 ### Example B: Card grid selection
 
@@ -624,11 +624,10 @@ You are generating ONE section of a Pathfinder interactive guide as a JSON objec
 
 **Your task:**
 1. Return a single JSON object: `{"type": "section", "id": "{section_id}", ...}`
-2. First block: brief intro markdown (what the user will do in this section)
+2. Do **not** put intro/summary markdown inside the section (Pathfinder may number in-section markdown as a step). Interactive steps only inside the section.
 3. If a tab click is needed, that's the first interactive step
 4. Generate steps for each field per the action decision tree
-5. Last block: brief summary markdown (what the user configured)
-6. Return ONLY the section JSON object — no wrapper, no root structure
+5. Return ONLY the section JSON object — no wrapper, no root structure. The orchestrator places 1-sentence intro markdown immediately before this section and summary markdown immediately after (rule 14).
 
 **Also return** a brief text summary: step count, any selectors you're uncertain about, any fields you omitted and why.
 ```

@@ -42,7 +42,7 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 
 **Bad (nit that should stay internal):**
 
-> Section bookends missing per rule 14. Add a one-sentence intro and summary markdown inside the section block.
+> Section bookends missing. Add a one-sentence intro and summary markdown inside the section block.
 
 **Good (compliance, still human):**
 

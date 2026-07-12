@@ -412,11 +412,10 @@ You are generating ONE section of a Pathfinder interactive guide for a Grafana d
 
 **Your task:**
 1. Return a single JSON object: `{"type": "section", "id": "{section_id}", ...}`
-2. First block: brief intro markdown (what the user will explore in this section)
+2. Do **not** put intro/summary markdown inside the section (Pathfinder may number in-section markdown as a step). Interactive steps only inside the section.
 3. If a row needs expanding, that's the first interactive step
 4. Generate steps for each key panel per the action decision tree
-5. Last block: brief summary markdown (what the user learned)
-6. Return ONLY the section JSON object — no wrapper, no root structure
+5. Return ONLY the section JSON object — no wrapper, no root structure. The orchestrator places 1-sentence intro markdown immediately before this section and summary markdown immediately after (rule 14).
 
 **Also return** a brief text summary: step count, any selectors you're uncertain about, any panels you omitted and why.
 ```

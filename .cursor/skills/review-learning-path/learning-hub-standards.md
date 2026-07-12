@@ -120,19 +120,20 @@ Count path `manifest.json` `milestones` entries (hands-on only; exclude framing 
 
 ### Value milestone (framing)
 
-Every path should open with **why** before **how**. In packages this is usually a framing directory (`business-value`, `value-*`, `advantages-*`) with markdown-only `content.json` — **not** listed in path `milestones`.
+Every path should open with **why** before **how**. In packages this is usually a framing directory (`business-value`, `value-*`, `advantages-*`, `welcome`) with markdown-only `content.json` — **not** listed in path `milestones`. See [framing vs not framing](reference-checks.md#framing-vs-not-framing): `end-journey` stays in `milestones`; markdown-only alone does not mean framing.
 
 | Check | Notes |
 |---|---|
 | No framing milestone and first hands-on jumps straight to steps without intro context | Editorial |
 | Framing ID incorrectly listed in path `milestones` | See [framing milestones](reference-checks.md#framing-milestones) |
 | Value milestone is generic / no clear problem statement | Editorial |
+| Ambiguous prose package (e.g. `understanding-*`) in `milestones` | Internal until reviewer confirms framing vs path step |
 
 ### Task milestones (hands-on guides)
 
 Each hands-on milestone in path `milestones` should have:
 
-1. **Introduction** — context for what the user will do and why (section intro markdown or opening blocks)
+1. **Introduction** — context for what the user will do and why (opening markdown and/or bookends **outside** each `section`, not “You'll …” as the first in-section child)
 2. **Actionable steps** — specific UI instructions in interactive blocks
 
 | Red flag | Notes |
