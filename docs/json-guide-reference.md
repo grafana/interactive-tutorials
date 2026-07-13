@@ -43,6 +43,8 @@ Every JSON guide has these fields:
 | `terminal` | Interactive | Shell command with Copy/Exec | Coda terminal commands |
 | `terminal-connect` | Interactive | Connect to Coda terminal | Establish terminal session |
 | `grot-guide` | Structural | Choose-your-own-adventure decision tree | Hand-authored branching guides (block editor only — CLI-excluded) |
+| `snippet-ref` | Structural | Reference to a pre-authored shared snippet | Editor-only; resolved at parse time via Snippet Picker (CLI-excluded) |
+| `challenge` | Interactive | CTF/Coda-VM challenge for hands-on learning | Hand-authored or editor only; not available via CLI `add-block` |
 
 ---
 
@@ -526,6 +528,61 @@ Self-contained choose-your-own-adventure decision tree. Users start on a welcome
 
 - Pathfinder source: `src/types/json-guide.types.ts:533-625` (types), `src/types/json-guide.schema.ts:481-590` (schema), `src/cli/utils/block-registry.ts:80` (CLI exclusion).
 
+### Snippet Ref Block
+
+A reference to a pre-authored shared snippet resolved at parse time. This is the 17th registered block type, alongside `grot-guide`, it is excluded from the Pathfinder CLI — it must be authored through the Snippet Picker in the block editor or by hand-writing the JSON.
+
+```json
+{
+  "type": "snippet-ref",
+  "snippetId": "my-shared-snippet"
+}
+```
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `type` | string | ✅ | Must be `"snippet-ref"` |
+| `snippetId` | string | ✅ | Kebab-case identifier for the shared snippet to include |
+
+> **Authoring**: `snippet-ref` blocks are excluded from the Pathfinder CLI (`CLI_EXCLUDED_BLOCK_TYPES`). Use the editor's Snippet Picker to insert them, or hand-author the JSON if the snippet ID is known.
+
+---
+
+## Challenge Block
+
+A CTF/Coda-VM challenge block for challenge-based learning. The learner is given a brief, a terminal environment, and must satisfy a success criterion (typically a shell command that exits 0). `challenge` is part of the `JsonBlock` runtime union but is not currently available via the CLI `add-block` command — hand-author the JSON or use the editor. Check with the Pathfinder team for current editor support.
+
+```json
+{
+  "type": "challenge",
+  "mode": "coda",
+  "title": "Fix the broken configuration",
+  "brief": "The Alloy configuration file has an error. Find and fix it so the agent restarts successfully.",
+  "successCriteria": "coda-exit-zero:systemctl is-active alloy && echo ok",
+  "setupScript": "#!/bin/bash\necho 'broken' > /etc/alloy/config.alloy",
+  "hintLevels": [
+    "Check /etc/alloy/config.alloy for syntax errors.",
+    "Use `alloy fmt` to identify the specific line.",
+    "The closing brace on line 12 is missing."
+  ],
+  "failureMessage": "The Alloy service is not running. Review the configuration and try again."
+}
+```
+
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `type` | string | ✅ | — | Must be `"challenge"` |
+| `successCriteria` | string | ✅ | — | Requirement token that determines pass/fail. Typically `coda-exit-zero:<command>` — see [Requirements Reference](requirements-reference.md#coda-exit-zero) |
+| `mode` | `"coda"` \| `"standard"` | ❌ | `"coda"` | `coda` uses a Coda VM environment; `standard` is a plain challenge without a VM |
+| `title` | string | ❌ | — | Challenge heading shown to the learner |
+| `brief` | string | ❌ | — | Challenge description and instructions (supports markdown) |
+| `setupScript` | string | ❌ | — | Shell script run to initialize the VM environment before the learner starts. Prefer over `setupCommands` |
+| `setupCommands` | string[] | ❌ | — | Array of setup commands (deprecated — prefer `setupScript`) |
+| `hintLevels` | string[] | ❌ | — | Progressive hints revealed one at a time as the learner requests them |
+| `failureMessage` | string | ❌ | — | Message shown when the learner's attempt fails |
+
+> **Authoring**: `challenge` blocks must be hand-authored or created via the editor — the Pathfinder CLI `add-block` command does not support them today.
+
 ---
 
 ## Assessment Blocks
@@ -555,10 +612,11 @@ Knowledge assessment with single or multiple choice questions.
 | `multiSelect` | boolean | ❌ | `false` | Allow multiple answers (checkboxes) |
 | `completionMode` | string | ❌ | `"correct-only"` | `"correct-only"` or `"max-attempts"` |
 | `maxAttempts` | number | ❌ | `3` | Attempts before revealing (max-attempts mode) |
+| `shuffle` | boolean | ❌ | **`true`** | Randomize choice order for each learner. Set to `false` to preserve authored order. **Important:** if your question or hint references answer positions (e.g. "select the top option"), set `shuffle: false`. |
 | `requirements` | string[] | ❌ | — | Requirements for this quiz |
 | `skippable` | boolean | ❌ | `false` | Allow skipping |
 
-**Choice Properties:** `id` (string, required), `text` (string, required), `correct` (boolean), `hint` (string — shown when this wrong choice is selected).
+**Choice Properties:** `id` (string, required), `text` (string, required), `correct` (boolean), `hint` (string — shown when this wrong choice is selected), `pinned` (boolean — when `true`, this choice stays in its authored position even when `shuffle` is enabled; useful for "None of the above" style answers).
 
 **Multi-select example:**
 
@@ -743,6 +801,24 @@ If the variable is not set, `[not set]` is displayed as a fallback.
 ---
 
 ## Common Property Patterns
+
+### Editor-Only Annotation: `authorNote`
+
+Every block type supports an optional `authorNote` field. It is an editor-only annotation that is stripped before the guide is published — it never appears to learners. Use it to leave authoring notes, TODOs, or rationale directly inline with a block.
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+  "content": "Click **Dashboards**.",
+  "authorNote": "TODO: verify the nav testid still matches after the sidebar redesign"
+}
+```
+
+| Property | Type | Available on | Description |
+|----------|------|-------------|-------------|
+| `authorNote` | string | All block types | Editor-only inline note. Stripped on export; never shown to learners. |
 
 ### Requirements Array
 
