@@ -291,13 +291,14 @@ Record in `pathfinder.{milestone-slug}`. Advance only after reviewer replies.
 1. From workbook + Phase 2 results, identify **every author-facing change** as **post inline** ([finding routing](reference-checks.md#finding-routing)). Examples:
    - Runtime failures in Block Editor / Playwright (when live also failed)
    - Framing in path `milestones`, broken depends, id mismatch, CLI validate fail
-   - Confirmed false noops; in-section “You'll…” numbered as a step
+   - Confirmed false noops; in-section “You'll…” intros; **missing required section bookends**
+   - Required `website.yaml` / Learning Hub structure the author must change
    - Secrets auto-filled, confirmed 404, prose missing on conversion
 2. Draft those as **short inline comments on the file** (path-wide OK). Never leave an author fix only in the workbook or in chat as “tell the author to…”.
 3. **Drop all internal and discard tier items** unless the reviewer explicitly promotes one.
 4. Apply [selector decision tree](reference-checks.md#selector-decision-tree) — do not post selector nits when smoke test passed.
 5. Draft numbered inline comments in chat using [comment-style.md](comment-style.md). **No em dashes.** Max 3 sentences each.
-6. Draft summary in chat using [summary template](comment-style.md#summary-body-template). No bulleted blocker lists. No workbook dump.
+6. Draft summary in chat using [summary template](comment-style.md#summary-body-template). No bulleted blocker lists. No workbook dump. When any interactive path milestone lacks a Phase 2 `pathfinder` result (static-only or partial), include the **Not live-tested** list (path `milestones` minus recorded results).
 7. **Zero comments + APPROVE is first-class** — when static + live passed and nothing is post-inline, suggest APPROVE. Do not invent nits.
 8. Offer [verdict guidance](comment-style.md#verdict-guidance-plain-language) in plain language.
 
@@ -375,7 +376,7 @@ Not a numbered phase. New review cycle for major author pushes. Use REST inline 
 - Post nits, LH editorial, or selector polish when smoke test passed
 - Use em dashes, rule numbers, or **Blocker** labels in GitHub text
 - Paste workbook contents into summary or inline comments
-- List blockers/nits in the summary body
+- List blockers/nits in the summary body (except the required **Not live-tested** milestone list)
 - Cite blocking counts or audit severity in reviewer chat
 - Recommend APPROVE when `waive_live_testing` is true
 - Recommend APPROVE when `reuse_live` is true (prior evidence is not a fresh second-reviewer pass in this session)

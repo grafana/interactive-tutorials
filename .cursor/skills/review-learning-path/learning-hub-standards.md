@@ -4,7 +4,7 @@ Learning Hub expectations for path reviews — adapted from `website/content/int
 
 Use in **Phase 1** static pass (milestone prose, path landing, CTAs, links).
 
-**Routing:** tag findings with [reference-checks.md § finding routing](reference-checks.md#finding-routing). **Default tier: internal** (reviewer workbook only). Do not post LH editorial to GitHub unless live testing failed or the reviewer promotes at Phase 3.
+**Routing:** tag findings with [reference-checks.md § finding routing](reference-checks.md#finding-routing). **Post inline** when the author must change structure or required fields. Keep pure wording polish in the workbook (**internal**) unless the reviewer promotes it.
 
 **Package model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** Legacy Hugo `index.md` / `_index.md` front matter maps to package `website.yaml`; body prose maps to `content.json` markdown blocks. Do not expect website-repo markdown updates in the LP PR.
 

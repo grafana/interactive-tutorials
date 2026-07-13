@@ -22,8 +22,8 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 
 | Tier | Post? |
 |---|---|
-| **Post inline** — anything the author should change (runtime fail, framing/depends, false noop, numbered “You'll…” intro, secrets, CLI validate, confirmed 404, conversion prose gap) | Yes — short comment on the file (path-wide OK) |
-| **Internal** — LH editorial, `website.yaml` polish, selector fallback when live passed, bookends when live passed | No — workbook only |
+| **Post inline** — anything the author should change (runtime fail, framing/depends, false noop, numbered “You'll…” intro, **missing required bookends**, required `website.yaml` / Learning Hub structure, secrets, CLI validate, confirmed 404, conversion prose gap) | Yes — short comment on the file (path-wide OK) |
+| **Internal** — wording polish, justified `:contains()` when live passed, selector polish when live passed, unverified links | No — workbook only |
 | **Discard** — passed-milestone notes, shell UX, CODEOWNERS reminder, audit noise | No |
 
 **Authors act on the diff.** If they should change a file, put a short inline on that file. Do not leave author fixes only in the reviewer workbook, and do not ask the reviewer to paste audit volume to the PR.
@@ -46,7 +46,11 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 
 **Bad (nit that should stay internal):**
 
-> Section bookends missing. Add a one-sentence intro and summary markdown inside the section block.
+> Consider renaming this tooltip synonym for consistency with peer paths.
+
+**Good (required bookends, author must change):**
+
+> This section is missing the one-sentence intro and summary markdown around it. Add those outside the section block (not inside).
 
 **Good (compliance, still human):**
 
@@ -64,7 +68,7 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 
 ## Summary body template
 
-Short acknowledgment only. No bulleted blocker or nit lists.
+Short acknowledgment. No bulleted blocker or nit lists of findings (those go inline). **Exception:** the **Not live-tested** list when any interactive milestone lacks a Phase 2 result.
 
 ```markdown
 Thanks for the PR. I smoke-tested this on {stack_state} in Block Editor.
@@ -73,14 +77,21 @@ Thanks for the PR. I smoke-tested this on {stack_state} in Block Editor.
 
 {If inline comments: "I left a few notes on the diff." — do not list them.}
 
-{If no issues: "Looks good to merge from my testing."}
-
-{If static-only: one sentence that interactive milestones were not live-tested.}
+{If no issues and fully live-tested: "Looks good to merge from my testing."}
 
 {If reuse-live: one sentence that Block Editor results were reused from prior evidence, not re-run in this session.}
+
+{If any interactive path milestone has no Phase 2 result (static-only or partial):}
+
+### Not live-tested
+
+- {milestone-slug}
+- {milestone-slug}
 ```
 
-**Target length:** 3–5 sentences. Never paste the workbook into the summary.
+Derive the list from path `milestones` minus milestones with recorded `pathfinder` results. See [static-only reviews](reference-checks.md#static-only-reviews).
+
+**Target length:** 3–5 sentences plus the Not live-tested list when required. Never paste the workbook into the summary.
 
 ---
 

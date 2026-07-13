@@ -411,11 +411,18 @@ You are generating ONE section of a Pathfinder interactive guide for a Grafana d
 **Step budget:** Generate 3–8 interactive steps for this section, with **at least 1 targeting step** (a step with a reftarget — highlight, button, or guided). If ALL panels in the section would be noop (e.g., all below-fold Red-grade), report this in your summary so the orchestrator can merge this section into an adjacent one. If the section has more panels than the budget allows, prioritize the most important ones and mention the rest in the intro or summary markdown.
 
 **Your task:**
-1. Return a single JSON object: `{"type": "section", "id": "{section_id}", ...}`
-2. Do **not** put intro/summary markdown inside the section (Pathfinder may number in-section markdown as a step). Interactive steps only inside the section.
+1. Return a **section package** (not a bare section):
+   ```json
+   {
+     "intro": {"type": "markdown", "content": "1-sentence what you'll do"},
+     "section": {"type": "section", "id": "{section_id}", "title": "...", "blocks": [/* interactive steps only */]},
+     "summary": {"type": "markdown", "content": "1-sentence what you learned"}
+   }
+   ```
+2. Do **not** put intro/summary markdown inside the section (Pathfinder may number in-section markdown as a step). Interactive steps only inside `section.blocks`.
 3. If a row needs expanding, that's the first interactive step
 4. Generate steps for each key panel per the action decision tree
-5. Return ONLY the section JSON object — no wrapper, no root structure. The orchestrator places 1-sentence intro markdown immediately before this section and summary markdown immediately after (rule 14).
+5. Return ONLY the section package JSON — no guide root. `assemble_guide.py` interleaves intro → section → summary.
 
 **Also return** a brief text summary: step count, any selectors you're uncertain about, any panels you omitted and why.
 ```
@@ -440,25 +447,27 @@ Use the `## Golden Example Routing` table in `dashboard-guide-rules.md` to selec
 
 After all section sub-agents complete:
 
-1. **Write each returned section JSON** to a temporary file: `{guide_dir}/assets/section-{section_id}.json`
-2. **Check for noop-only sections** (before assembly): if a section has zero targeting steps (every interactive step is `noop`), merge its blocks into the preceding section's tail (after summary markdown) rather than passing it to assembly. If the noop-only section is the *first* section, merge it into the *following* section's intro instead.
-3. **Add the closing summary markdown** to the shell as the final top-level block — ultra-short, 1–2 sentences max. Never recap every section or panel.
+1. **Write each returned section package** to a temporary file: `{guide_dir}/assets/section-{section_id}.json` (must include `intro`, `section`, and `summary`).
+2. **Check for noop-only sections** (before assembly): if a section has zero targeting steps (every interactive step is `noop`), merge its blocks into the preceding section's package (into `section.blocks`, after any prior content) rather than passing it to assembly. If the noop-only section is the *first* section, merge it into the *following* section's intro markdown / section body instead.
+3. **Write the guide-level closing summary** to `{guide_dir}/assets/closing.json` (not into the shell) — ultra-short, 1–2 sentences max. Never recap every section or panel.
    ```json
    {
      "type": "markdown",
      "content": "{1–2 sentences: one takeaway or next step — not a recap}"
    }
    ```
-4. **Run the assembly script** to assemble and validate:
+   Keep the shell as **opening blocks only**. Putting closing markdown in the shell before `--sections` yields `intro → closing → sections` and breaks rule 14 bookends.
+4. **Run the assembly script** to interleave bookends and validate:
    ```bash
    python .cursor/tools/assemble_guide.py \
      --shell {guide_dir}/assets/guide-shell.json \
      --sections {guide_dir}/assets/section-*.json \
+     --closing {guide_dir}/assets/closing.json \
      --output {guide_dir}/content.json
    ```
-   The script validates: unique section IDs, no multistep singletons, tooltip lengths, section bookends, step counts, and no noop-only sections.
-5. **If validation fails**: fix the flagged issues in the section JSON files and re-run.
-6. **Spot-check**: read the first and last sections to verify structure and bookends.
+   The script interleaves each package as intro → section → summary, appends `--closing` last, and **fails** (exit 1) on missing or misordered required bookends. Also validates unique section IDs, no multistep singletons, tooltip lengths, step counts, and no noop-only sections.
+5. **If validation fails**: fix the flagged issues in the section package files and re-run.
+6. **Spot-check**: read the assembled `blocks` array — each section must sit between its intro and summary markdown.
 
 ### 3.4 Orchestrator: Generate Selector Report
 

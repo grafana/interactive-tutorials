@@ -8,7 +8,7 @@ Checklists for [review-learning-path/SKILL.md](SKILL.md) Phase 1 (static pass). 
 
 **Publishing model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** LP PRs are single-repo. Package `website.yaml` is authoritative; website repo is read-only for conversion.
 
-**Learning Hub:** [learning-hub-standards.md](learning-hub-standards.md) — checks run in Phase 1; default tier is **internal** (workbook only).
+**Learning Hub:** [learning-hub-standards.md](learning-hub-standards.md) — checks run in Phase 1. Tag each finding with the routing table below (author-facing = post inline).
 
 ---
 
@@ -18,22 +18,25 @@ Tag every finding when writing the workbook. **Author-facing change requests alw
 
 | Post inline (author must change) | Internal (workbook only) | Discard |
 |---|---|---|
-| Block Editor / Playwright runtime fail (reviewer-reported) | Section bookends missing when live passed | Audit noise with no runtime impact |
-| Framing in path `milestones` / broken depends | `website.yaml` metadata gaps | CODEOWNERS reminder |
-| In-section intro markdown confirmed numbered as a step | In-section intro (static detect only; not yet live-confirmed) | Passed-milestone notes |
-| False `noop` (learner action, no `reftarget`) | `:contains()` fallback when live passed | Pathfinder shell UX |
-| Missing `exists-reftarget`, `navmenu-open` **when live fails** | LH editorial (boilerplate, prerequisites, CTA) | Fresh-stack retest notes (unless live failed) |
-| Outdated `data-testid` when live fails | Selector polish when live passed | Suspected bad link (unverified) |
-| `:contains()` when stable `data-testid` in DOM and live fails | Vague copy when live passed | |
-| Path root / manifest `id` mismatch | `related_journeys` wording | |
-| Pathfinder CLI validate failure | Editorial / tooltip / vocabulary | |
-| `index.json` modified, invalid `testEnvironment.tier` | Conversion `website.yaml` mapping gaps | |
-| Secrets auto-filled (`doIt: true`) | Missing troubleshooting on verification (when live passed) | |
-| Hard cross-path artifact dependency in step copy | Landing screenshot / milestone count notes | |
-| Confirmed 404 in `website.yaml` supplementary fields | Framing snippet alignment | |
+| Block Editor / Playwright runtime fail (reviewer-reported) | Selector polish when live passed | Audit noise with no runtime impact |
+| Framing in path `milestones` / broken depends | `:contains()` fallback when live passed and justified | CODEOWNERS reminder |
+| In-section intro markdown confirmed numbered as a step | Vague copy / tooltip synonym tweaks when live passed | Passed-milestone notes |
+| In-section intro that may number as a step (static detect) | Suspected bad link (unverified) | Pathfinder shell UX |
+| False `noop` (learner action, no `reftarget`) | Framing ambiguity (“is this framing?”) until confirmed | Fresh-stack retest notes (unless live failed) |
+| Missing required section bookends (rule 14) | Pure LH wording polish (boilerplate synonym) when structure is fine | |
+| Missing / broken required `website.yaml` identity fields (`menuTitle`, `description`, `journey.*`) | Overly broad `targeting.match` without impact | |
+| Learning Hub structure the author must change (missing path intro, wrong group/skill, hard cross-path deps, conversion prose gap) | Landing screenshot / milestone-count notes | |
+| Missing `exists-reftarget`, `navmenu-open` **when live fails** | | |
+| Outdated `data-testid` when live fails | | |
+| `:contains()` when stable `data-testid` in DOM and live fails | | |
+| Path root / manifest `id` mismatch | | |
+| Pathfinder CLI validate failure | | |
+| `index.json` modified, invalid `testEnvironment.tier` | | |
+| Secrets auto-filled (`doIt: true`) | | |
+| Confirmed 404 in `website.yaml` supplementary fields | | |
 | Prose only in legacy markdown (conversion PR) | | |
 
-**After live test:** promote **internal** items to **post inline** only when Block Editor or Playwright failed, or the issue is clearly wrong regardless of runtime (e.g. `id` mismatch, broken depends, framing, false noop).
+**After live test:** promote remaining **internal** polish to **post inline** when Block Editor or Playwright failed on that step, or when the reviewer confirms an ambiguity (e.g. framing).
 
 **Never:** paste the workbook (or agent paraphrases of it) to the author; leave an author fix only in the workbook; invent nits so the review “has comments.”
 
@@ -65,8 +68,8 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 |---|---|
 | `schemaVersion` not `"1.1.0"` when present | post inline |
 | Markdown `##` / `###` for grouping | internal |
-| Section bookends missing (rule 14) — no intro/summary **around** the section | internal until live fails |
-| In-section intro markdown that may number as a step | **internal** until Block Editor confirms; then **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)). Prefer bookends **outside** the section per rule 14. |
+| Section bookends missing (rule 14) — no intro/summary **around** the section | **post inline** |
+| In-section intro markdown that may number as a step | **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)). Prefer bookends **outside** the section per rule 14. |
 | Missing `exists-reftarget`, `navmenu-open` | internal until live fails |
 | Missing `on-page` | internal until live fails |
 | `lazyRender` missing on virtualized targets | internal until live fails |
@@ -74,7 +77,7 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | Secrets `doIt: true` | post inline |
 | Missing `verify` on save | internal until live fails |
 
-LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — default **internal**.
+LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — **post inline** when the author must change structure or required fields; **internal** for wording polish only.
 
 ---
 
@@ -94,9 +97,9 @@ For every interactive `section`, check the first block:
 | Content is a one-sentence action preview before the first interactive | `In this section, open Edit and add a variable.` |
 | Content restates the section goal without teaching a concept | Same pattern under different wording |
 
-Write under **Verify in Block Editor** in `pr-{n}-findings.md`. Note every milestone that matches (path-wide pattern is common). Do **not** post from static detect alone.
+Write under **Verify in Block Editor** in `pr-{n}-findings.md` when live testing. For the known `You'll ` / action-preview pattern, also queue a **post inline** (path-wide OK) — authors need the source fix without waiting on workbook paraphrases.
 
-Missing bookends (no intro/summary **around** the section at all) stay a separate **internal** finding. Correct placement is **outside** the `section` (intro immediately before, summary immediately after). This check is the opposite problem: intro exists **inside** the section and Pathfinder treats it like a step.
+Missing bookends (no intro/summary **around** the section at all) are a separate **post inline** finding. Correct placement is **outside** the `section` (intro immediately before, summary immediately after). This check is the opposite problem: intro exists **inside** the section and Pathfinder treats it like a step.
 
 ### Phase 2 — confirm
 
@@ -156,7 +159,7 @@ LH detail: [learning-hub-standards.md § path landing](learning-hub-standards.md
 
 ## Learning Hub structure (Phase 1)
 
-Walk [learning-hub-standards.md](learning-hub-standards.md) after manifest/depends checks. **Default tier: internal.** Only promote to post inline when live test fails or compliance issue (e.g. hard cross-path dependency in step copy).
+Walk [learning-hub-standards.md](learning-hub-standards.md) after manifest/depends checks. **Post inline** when the author must change structure or required fields. Keep pure wording polish **internal**.
 
 ---
 
@@ -164,7 +167,7 @@ Walk [learning-hub-standards.md](learning-hub-standards.md) after manifest/depen
 
 Package `website.yaml` is authoritative ([docs/website-yaml-reference.md](../../../docs/website-yaml-reference.md)).
 
-Missing fields vs peers → **internal**. Broken required fields that break publish → **post inline**. Confirmed 404 on supplementary links → **post inline**. Suspected bad links → **internal** until confirmed.
+Missing or broken **required** identity fields (`menuTitle`, `description`, `journey.group`, `journey.skill`, `journey.logo`) → **post inline**. Confirmed 404 on supplementary links → **post inline**. Optional peer-comparison polish and unverified links → **internal**.
 
 ---
 
@@ -188,7 +191,7 @@ Overly broad `targeting.match` → **internal**. No separate recommender PR.
 
 Never flag missing website writes, `pathfinder_data`, or legacy markdown drift.
 
-Prose not captured in package on conversion → **post inline**. Front matter mapping gaps → **internal**.
+Prose not captured in package on conversion → **post inline**. Front matter mapping gaps that break publish → **post inline**; optional wording → **internal**.
 
 ---
 
@@ -212,8 +215,17 @@ Prose not captured in package on conversion → **post inline**. Front matter ma
 | **update** with only markdown / `website.yaml` | Yes, with reason |
 | Practice / archaeology on merged PR | Yes, with reason |
 
-Record `waive_live_testing: true` and `static_only_reason`. Never suggest APPROVE when waived. Summary mentions live test was skipped (one sentence).
+Record `waive_live_testing: true` and `static_only_reason`. Never suggest APPROVE when waived.
 
+### Not live-tested disclosure (required)
+
+Whenever Phase 2 did not record a result for every interactive path milestone (static-only, partial live, or any other skip), the review summary **must** include a **Not live-tested** list:
+
+1. Start from interactive milestones in path `manifest.json` `milestones`.
+2. Subtract any milestone with a recorded Phase 2 result in `pathfinder.{milestone}` (including `pass (reused — …)` when `reuse_live` is true).
+3. List every remaining slug under a `### Not live-tested` heading in the summary body.
+
+Cap verdict at **COMMENT**. Do not use a single vague “milestones were not live-tested” sentence in place of the list.
 ---
 
 ## Reuse-live (prior evidence)
