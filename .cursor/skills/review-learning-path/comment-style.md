@@ -26,7 +26,7 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 | **Internal** — LH editorial, `website.yaml` polish, selector fallback when live passed, section bookends when live passed | No — workbook only |
 | **Discard** — passed-milestone notes, shell UX, CODEOWNERS reminder, audit noise | No |
 
-**Zero inline comments is valid** when live testing passed and you have nothing blocking.
+**Zero inline comments + APPROVE is a first-class outcome** for a clean path: static pass + Block Editor live test passed, and nothing in the post-inline tier. That is a complete review, not a skipped or incomplete one. Prefer APPROVE (or COMMENT with a short “looks good” summary). Do not invent nits to post.
 
 ---
 
@@ -86,7 +86,7 @@ The agent offers a suggestion; **you** choose the GitHub event at Phase 4.
 
 | Situation | Suggest |
 |---|---|
-| Live-tested, no inline comments posted | APPROVE or COMMENT |
+| Live-tested, no inline comments (clean path) | **APPROVE** (first-class). COMMENT also fine if you want a short acknowledgment only |
 | Live-tested, posted inline comments on real issues | COMMENT, or REQUEST_CHANGES if you want to block merge |
 | Static-only review | COMMENT only (never APPROVE) |
 | Reuse-live (prior evidence, not a fresh pass this session) | COMMENT only (never APPROVE) |

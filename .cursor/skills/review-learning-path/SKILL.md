@@ -288,7 +288,7 @@ Record in `pathfinder.{milestone-slug}`. Advance only after reviewer replies.
 3. Apply [selector decision tree](reference-checks.md#selector-decision-tree) — do not post selector nits when smoke test passed.
 4. Draft numbered inline comments in chat using [comment-style.md](comment-style.md). **No em dashes.** Max 3 sentences each.
 5. Draft summary in chat using [summary template](comment-style.md#summary-body-template). No bulleted blocker lists.
-6. **Zero comments is valid** — summary only, suggest APPROVE or COMMENT.
+6. **Zero comments + APPROVE is first-class** — when static + live passed and nothing is post-inline, suggest APPROVE (complete clean review). Do not invent nits.
 7. Offer [verdict guidance](comment-style.md#verdict-guidance-plain-language) in plain language.
 
 ### Checkpoint
