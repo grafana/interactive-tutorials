@@ -44,28 +44,38 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "In this section, you'll open **Connections**, add a data source, and verify the connection. The steps use **Prometheus** as an example — choose the data source that matches your environment."
+          "content": "In this section, you'll open **Connections**, add a data source, and verify the connection. The steps use **Prometheus** as an example \u2014 choose the data source that matches your environment."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/datasources']",
-          "requirements": ["navmenu-open", "exists-reftarget"],
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
           "content": "In the Grafana side menu, click **Connections > Data sources**."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid=\"data-testid data-source-add-button\"]",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
-          "content": "Click **Add new data source**."
+          "requirements": [
+            "on-page:/connections/datasources",
+            "exists-reftarget"
+          ],
+          "content": "Click **Add new data source**. Skip this step if you don't have permission to add data sources.",
+          "skippable": true
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[placeholder='Filter by name or type']",
           "targetvalue": "Prometheus",
-          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ],
           "content": "In the search field, enter `Prometheus` (or the name of the data source you chose from the docs).",
           "skippable": true
         },
@@ -73,7 +83,10 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "Prometheus",
-          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ],
           "content": "Select **Prometheus** from the list of data sources (or select your chosen data source).",
           "skippable": true
         },
@@ -86,10 +99,14 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "Save & test",
-          "requirements": ["exists-reftarget"],
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources/edit"
+          ],
           "content": "Click **Save & test** to verify the connection.",
           "doIt": false,
-          "skippable": true
+          "skippable": true,
+          "verify": "on-page:/connections/datasources/edit"
         },
         {
           "type": "markdown",
