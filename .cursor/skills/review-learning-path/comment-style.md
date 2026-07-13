@@ -22,9 +22,13 @@ Voice and formatting for GitHub inline comments and the review summary. The agen
 
 | Tier | Post? |
 |---|---|
-| **Post inline** — runtime fail, broken depends/manifest, compliance (secrets, CLI validate, confirmed 404, prose missing on conversion) | Yes, inline on the diff |
-| **Internal** — LH editorial, `website.yaml` polish, selector fallback when live passed, section bookends when live passed | No — workbook only |
+| **Post inline** — anything the author should change (runtime fail, framing/depends, false noop, numbered “You'll…” intro, secrets, CLI validate, confirmed 404, conversion prose gap) | Yes — short comment on the file (path-wide OK) |
+| **Internal** — LH editorial, `website.yaml` polish, selector fallback when live passed, bookends when live passed | No — workbook only |
 | **Discard** — passed-milestone notes, shell UX, CODEOWNERS reminder, audit noise | No |
+
+**Authors act on the diff.** If they should change a file, put a short inline on that file. Do not leave author fixes only in the reviewer workbook, and do not ask the reviewer to paste audit volume to the PR.
+
+**Phase 1 chat stays tiny:** one outcome sentence + at most 3 “verify live” bullets. The workbook absorbs the rest.
 
 **Zero inline comments + APPROVE is a first-class outcome** for a clean path: static pass + Block Editor live test passed, and nothing in the post-inline tier. That is a complete review, not a skipped or incomplete one. Prefer APPROVE (or COMMENT with a short “looks good” summary). Do not invent nits to post.
 

@@ -32,10 +32,10 @@ Help a **human reviewer** work through a `{slug}-lj/` pull request in **five pha
 | You (agent) | Reviewer (human) |
 |---|---|
 | Check out PR, run audit + path checks | Confirm path, choose test stack |
-| Write internal workbook | Skim workbook if curious; do not paste to author |
+| Write internal workbook; Phase 1 chat stays tiny (≤3 verify-live items) | Skim workbook if curious; never paste to author |
 | Required Playwright DOM check per milestone | Log into Playwright (Okta) |
 | Record DOM + smoke test results | Run Show me / Do it in Block Editor per milestone |
-| Draft inline comments + summary **in chat** | Approve, edit, or skip before GitHub post |
+| Draft **author-facing** fixes as short inline comments in chat | Approve, edit, or skip before GitHub post |
 | Post approved comments, submit when told | Choose APPROVE / COMMENT / REQUEST_CHANGES |
 
 ---
@@ -75,7 +75,8 @@ Input (PR URL or number)
 2. **Never post to GitHub before Phase 3 approval** from the reviewer.
 3. **Never submit before Phase 4** explicit `submit` from the reviewer.
 4. **Never commit review artifacts** — `.cursor/pr-review-state/` or audit-guide output under `{milestone}/assets/`.
-5. **Never paste the workbook to the author** — `pr-{n}-findings.md` is reviewer-private.
+5. **Never paste the workbook to the author** — `pr-{n}-findings.md` is reviewer-private. Author fixes go as short GitHub inline comments on the file, not workbook dumps or agent paraphrases of the audit.
+6. **Phase 1 chat stays tiny** — one outcome sentence + ≤3 “verify live” bullets. No audit volume in chat.
 
 ---
 
@@ -173,10 +174,17 @@ Combines the former Phases 1–2 and workbook write.
 
 ### Checkpoint
 
+Phase 1 chat stays **tiny**. Do not dump the workbook, audit counts, or author-facing fix lists into chat.
+
 > **Phase 1 complete** — static pass done.
 >
-> - {One plain sentence: e.g. "A few things to verify when you smoke-test" or "Looks clean statically."}
-> - Workbook: `.cursor/pr-review-state/pr-{n}-findings.md` *(for you, not the author)*
+> - {One plain sentence: e.g. "Looks clean statically." or "A few things to verify when you smoke-test."}
+> - **Verify live** (≤3 bullets, plain language only — omit this list if none):
+>   - {e.g. watch for "You'll…" numbered as step 1}
+>   - {e.g. Label/Display noops look like false steps}
+>   - {e.g. Services tab selector on credentialed stack}
+>
+> Workbook stays private (`.cursor/pr-review-state/pr-{n}-findings.md`). Do not paste it to the author.
 >
 > **Your turn:** Reply **yes** and your test stack (e.g. `learn.grafana.net shared`, `fresh Cloud stack`, `Azure credentialed`).
 >
@@ -280,16 +288,18 @@ Record in `pathfinder.{milestone-slug}`. Advance only after reviewer replies.
 
 ### Agent steps
 
-1. From workbook + Phase 2 results, identify **post inline** items only ([finding routing](reference-checks.md#finding-routing)):
-   - Runtime failures you or the reviewer hit in Block Editor
-   - Playwright missing selector **when** Block Editor also failed (merge into one comment)
-   - Static compliance: broken depends/framing, id mismatch, CLI validate fail, secrets auto-filled, confirmed 404, prose missing on conversion
-2. **Drop all internal and discard tier items** unless reviewer explicitly says to post one.
-3. Apply [selector decision tree](reference-checks.md#selector-decision-tree) — do not post selector nits when smoke test passed.
-4. Draft numbered inline comments in chat using [comment-style.md](comment-style.md). **No em dashes.** Max 3 sentences each.
-5. Draft summary in chat using [summary template](comment-style.md#summary-body-template). No bulleted blocker lists.
-6. **Zero comments + APPROVE is first-class** — when static + live passed and nothing is post-inline, suggest APPROVE (complete clean review). Do not invent nits.
-7. Offer [verdict guidance](comment-style.md#verdict-guidance-plain-language) in plain language.
+1. From workbook + Phase 2 results, identify **every author-facing change** as **post inline** ([finding routing](reference-checks.md#finding-routing)). Examples:
+   - Runtime failures in Block Editor / Playwright (when live also failed)
+   - Framing in path `milestones`, broken depends, id mismatch, CLI validate fail
+   - Confirmed false noops; in-section “You'll…” numbered as a step
+   - Secrets auto-filled, confirmed 404, prose missing on conversion
+2. Draft those as **short inline comments on the file** (path-wide OK). Never leave an author fix only in the workbook or in chat as “tell the author to…”.
+3. **Drop all internal and discard tier items** unless the reviewer explicitly promotes one.
+4. Apply [selector decision tree](reference-checks.md#selector-decision-tree) — do not post selector nits when smoke test passed.
+5. Draft numbered inline comments in chat using [comment-style.md](comment-style.md). **No em dashes.** Max 3 sentences each.
+6. Draft summary in chat using [summary template](comment-style.md#summary-body-template). No bulleted blocker lists. No workbook dump.
+7. **Zero comments + APPROVE is first-class** — when static + live passed and nothing is post-inline, suggest APPROVE. Do not invent nits.
+8. Offer [verdict guidance](comment-style.md#verdict-guidance-plain-language) in plain language.
 
 ### Checkpoint
 

@@ -14,27 +14,30 @@ Checklists for [review-learning-path/SKILL.md](SKILL.md) Phase 1 (static pass). 
 
 ## Finding routing
 
-Tag every finding when writing the workbook. Only **post inline** items may become GitHub comments (after reviewer approval at Phase 3).
+Tag every finding when writing the workbook. **Author-facing change requests always go on the GitHub diff as short inline comments** (path-wide OK) after Phase 3 approval. The workbook is reviewer-private scratch — never the channel for telling the author what to fix.
 
-| Post inline | Internal (workbook only) | Discard |
+| Post inline (author must change) | Internal (workbook only) | Discard |
 |---|---|---|
 | Block Editor / Playwright runtime fail (reviewer-reported) | Section bookends missing when live passed | Audit noise with no runtime impact |
-| In-section intro markdown confirmed numbered as a step in Block Editor | In-section intro markdown (static detect only; not yet live-confirmed) | |
-| Broken `depends` chain or framing in path `milestones` | `website.yaml` metadata gaps | CODEOWNERS reminder |
-| Missing `exists-reftarget`, `navmenu-open` **when live fails** | `:contains()` fallback when live passed | Pathfinder shell UX |
-| Outdated `data-testid` when live fails | LH editorial (boilerplate, prerequisites, CTA) | Passed-milestone notes |
-| `:contains()` when stable `data-testid` in DOM and live fails | Selector polish when live passed | Fresh-stack retest notes (unless live failed) |
-| Path root / manifest `id` mismatch | Vague copy when live passed | Suspected bad link (unverified) |
-| Pathfinder CLI validate failure | `related_journeys` wording | |
-| `index.json` modified, invalid `testEnvironment.tier` | Editorial / tooltip / vocabulary | |
-| Secrets auto-filled (`doIt: true`) | Conversion `website.yaml` mapping gaps | |
-| Hard cross-path artifact dependency in step copy | Missing troubleshooting on verification (when live passed) | |
-| Confirmed 404 in `website.yaml` supplementary fields | Landing screenshot / milestone count notes | |
-| Prose only in legacy markdown (conversion PR) | Framing snippet alignment | |
+| Framing in path `milestones` / broken depends | `website.yaml` metadata gaps | CODEOWNERS reminder |
+| In-section intro markdown confirmed numbered as a step | In-section intro (static detect only; not yet live-confirmed) | Passed-milestone notes |
+| False `noop` (learner action, no `reftarget`) | `:contains()` fallback when live passed | Pathfinder shell UX |
+| Missing `exists-reftarget`, `navmenu-open` **when live fails** | LH editorial (boilerplate, prerequisites, CTA) | Fresh-stack retest notes (unless live failed) |
+| Outdated `data-testid` when live fails | Selector polish when live passed | Suspected bad link (unverified) |
+| `:contains()` when stable `data-testid` in DOM and live fails | Vague copy when live passed | |
+| Path root / manifest `id` mismatch | `related_journeys` wording | |
+| Pathfinder CLI validate failure | Editorial / tooltip / vocabulary | |
+| `index.json` modified, invalid `testEnvironment.tier` | Conversion `website.yaml` mapping gaps | |
+| Secrets auto-filled (`doIt: true`) | Missing troubleshooting on verification (when live passed) | |
+| Hard cross-path artifact dependency in step copy | Landing screenshot / milestone count notes | |
+| Confirmed 404 in `website.yaml` supplementary fields | Framing snippet alignment | |
+| Prose only in legacy markdown (conversion PR) | | |
 
-**After live test:** promote **internal** items to **post inline** only when Block Editor or required Playwright DOM failed, or the issue is clearly wrong regardless of runtime (e.g. `id` mismatch, broken depends).
+**After live test:** promote **internal** items to **post inline** only when Block Editor or Playwright failed, or the issue is clearly wrong regardless of runtime (e.g. `id` mismatch, broken depends, framing, false noop).
 
-**Never post:** anything in **internal** or **discard** unless the reviewer explicitly promotes it at Phase 3.
+**Never:** paste the workbook (or agent paraphrases of it) to the author; leave an author fix only in the workbook; invent nits so the review “has comments.”
+
+**Never post:** anything still in **internal** or **discard** unless the reviewer explicitly promotes it at Phase 3.
 
 ### Selector decision tree
 
@@ -312,10 +315,10 @@ Phase 2 always asks the reviewer to scan for numbered learner-action noops (see 
 
 Apply [finding routing](#finding-routing) and [comment-style.md](comment-style.md).
 
-1. Draft all inline comment text **in chat** first.
+1. Every **author-facing** fix is a short inline on the file (path-wide OK). Draft those in chat first.
 2. Reviewer approves (`post all`, `post 1,2`, `skip`, or edits).
 3. Post only approved comments to draft review.
-4. Summary is short acknowledgment only. No bulleted lists.
+4. Summary is short acknowledgment only. No bulleted lists. No workbook content.
 
 ### Dedupe
 
@@ -323,7 +326,7 @@ Apply [finding routing](#finding-routing) and [comment-style.md](comment-style.m
 - Same root cause, multiple files → one per file, second references first.
 - Playwright DOM + Block Editor fail on same step → one merged comment.
 
-**Never post:** pass-only, N/A-only, internal tier, discard tier, em dashes, rule numbers.
+**Never post:** pass-only, N/A-only, internal tier, discard tier, em dashes, rule numbers. Never substitute a workbook dump for inline comments the author needs to act on.
 
 ---
 
