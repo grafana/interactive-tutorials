@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "beyla-tempo-instrument-application",
+  "title": "Instrument and test your application",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you instrument an application using Beyla running in a Docker container. You can use your own application, or if you don't have one, use the sample application provided."
+    },
+    {
+      "type": "markdown",
+      "content": "To instrument an application with Beyla, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll start an application, run Beyla beside it, and generate traffic so Beyla can emit traces."
+        },
+        {
+          "type": "markdown",
+          "content": "Start the application you want to instrument. If you don't have an application, run the following command to start a sample Go blog application:\n\n```bash\ndocker run --rm -d \\\n  --name goblog \\\n  -p 8443:8443 \\\n  mariomac/goblog:dev\n```\n\nThe sample application runs in the background and listens on port `8443`."
+        },
+        {
+          "type": "markdown",
+          "content": "Set your OTLP environment variables. Run the following commands, replacing the placeholders with the values you saved in the previous milestone:\n\n```bash\nexport OTEL_EXPORTER_OTLP_PROTOCOL=\"http/protobuf\"\nexport OTEL_EXPORTER_OTLP_ENDPOINT=\"https://otlp-gateway-prod-<REGION>.grafana.net/otlp\"\nexport OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Basic <YOUR_CREDENTIALS>\"\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Run the following command to start Beyla as a sidecar container. If you're using your own application, replace `container:goblog` with `container:<YOUR_CONTAINER_NAME>` and `BEYLA_OPEN_PORT=8443` with your application's port:\n\n```bash\ndocker run --rm \\\n  --pid=\"container:goblog\" \\\n  --privileged \\\n  -e BEYLA_OPEN_PORT=8443 \\\n  -e BEYLA_TRACE_PRINTER=text \\\n  -e OTEL_EXPORTER_OTLP_PROTOCOL \\\n  -e OTEL_EXPORTER_OTLP_ENDPOINT \\\n  -e OTEL_EXPORTER_OTLP_HEADERS \\\n  grafana/beyla:latest\n```\n\nBeyla requires administrative privileges. Ensure you have the necessary permissions to run Docker containers with `--privileged`."
+        },
+        {
+          "type": "markdown",
+          "content": "Open a new terminal window and generate application traffic from a browser or terminal. If using your own application, make a request to its listening port using the appropriate protocol. For example, for an HTTP application:\n\n```bash\ncurl http://localhost:<YOUR_PORT>/\n```\n\nIf using the sample application, run the following command:\n\n```bash\ncurl -k https://localhost:8443/\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Return to the terminal window where Beyla is running and verify the trace output. You should see output similar to the following:\n\n```text\n2026-02-02 14:03:53 (19.06ms) [200] GET /\n```\n\nThis output confirms that Beyla intercepted the request and generated a trace."
+        },
+        {
+          "type": "markdown",
+          "content": "You now have a running application with Beyla generating trace data from real requests."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you explore the distributed traces in Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Run Beyla as a Docker container](/docs/beyla/latest/setup/docker/)\n- [Beyla security, permissions, and capabilities](/docs/beyla/latest/security/)\n- [Configure Beyla options](/docs/beyla/latest/configure/options/)"
+    }
+  ]
+}
