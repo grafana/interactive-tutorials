@@ -1,0 +1,22 @@
+{
+  "id": "build-dashboard-sdk-export-json",
+  "title": "Export dashboard JSON",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Your dashboard is defined in code, but Grafana needs JSON. The final step is to call `build()` on your builder to validate the configuration and produce the dashboard object, then serialize it to JSON and write it to a file.\n\nTo export your dashboard as JSON, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "## Go\n\n1. Add the build and serialization logic to the end of your `main()` function in `main.go`:\n\n   ```go\n     dashboardObj, err := builder.Build()\n     if err != nil {\n       log.Fatalf(\"failed to build dashboard: %v\", err)\n     }\n\n     dashboardJson, err := json.MarshalIndent(dashboardObj, \"\", \"  \")\n     if err != nil {\n       log.Fatalf(\"failed to marshal: %v\", err)\n     }\n\n     err = os.WriteFile(\"dashboard.json\", dashboardJson, 0644)\n     if err != nil {\n       log.Fatalf(\"failed to write file: %v\", err)\n     }\n\n     log.Println(\"Dashboard written to dashboard.json\")\n   ```\n\n1. Run the program:\n\n   ```bash\n   go run main.go\n   ```"
+    },
+    {
+      "type": "markdown",
+      "content": "## TypeScript\n\n1. Add the build and serialization logic to the end of your `index.ts`:\n\n   ```typescript\n   import * as fs from 'fs';\n\n   const dashboardObj = builder.build();\n   const json = JSON.stringify(dashboardObj, null, 2);\n   fs.writeFileSync('dashboard.json', json, 'utf8');\n\n   console.log('Dashboard written to dashboard.json');\n   ```\n\n1. Run the program:\n\n   ```bash\n   npx ts-node index.ts\n   ```"
+    },
+    {
+      "type": "markdown",
+      "content": "## What build() does\n\n1. **Validates** all configuration values. Invalid settings produce an error instead of broken JSON.\n2. **Returns** the final dashboard object with all panels, queries, and settings resolved\n3. **Serializes** to standard Grafana dashboard JSON, the same format the Grafana UI produces when you export a dashboard\n\nYou should now have a `dashboard.json` file in your project directory.\n\nIn the next milestone, you verify the output is valid and review its structure."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "deploy-dashboard-terraform-run-terraform-plan",
+  "title": "Run terraform plan",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before deploying, always run `terraform plan` to preview what Terraform will do. This shows you exactly which resources will be created, updated, or destroyed, without making any changes to your Grafana instance.\n\nTo preview your deployment, complete the following steps:\n\n1. Run `terraform plan` from your `terraform` directory:\n\n   ```bash\n   terraform plan\n   ```\n\n1. Review the output. You should see something like:\n\n   ```\n   Terraform will perform the following actions:\n\n     # grafana_folder.dashboards_as_code will be created\n     + resource \"grafana_folder\" \"dashboards_as_code\" {\n         + id    = (known after apply)\n         + title = \"Dashboards as Code\"\n         + uid   = (known after apply)\n       }\n\n     # grafana_dashboard.my_dashboard will be created\n     + resource \"grafana_dashboard\" \"my_dashboard\" {\n         + config_json = jsonencode({...})\n         + folder      = (known after apply)\n         + id          = (known after apply)\n       }\n\n   Plan: 2 to add, 0 to change, 0 to destroy.\n   ```\n\n1. Confirm the plan shows:\n   - **2 to add** (the folder and the dashboard)\n   - **0 to change** (nothing existing is being modified)\n   - **0 to destroy** (nothing is being deleted)"
+    },
+    {
+      "type": "markdown",
+      "content": "## What to look for\n\n| Indicator | Meaning |\n|-----------|---------|\n| `+` (green) | Resource will be created |\n| `~` (yellow) | Resource will be updated in place |\n| `-` (red) | Resource will be destroyed |\n\nIf the plan looks correct, you're ready to apply. If something looks wrong (unexpected destroys or changes), review your configuration before proceeding.\n\nIn the next milestone, you apply the plan to deploy the dashboard to Grafana and verify it's working."
+    }
+  ]
+}
