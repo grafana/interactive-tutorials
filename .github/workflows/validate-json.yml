@@ -206,6 +206,15 @@ jobs:
           echo "✅ All packages have targeting defined"
         fi
 
+    # Learning Hub packaging conventions Pathfinder CLI does not cover:
+    # framing milestones must stay out of path milestones, first hands-on must
+    # not depend on framing, and website.yaml needs a non-empty description.
+    # Source of truth: .github/scripts/validate_learning_path_packages.py
+    # (docs: docs/website-yaml-reference.md; review skill Phase 2 checks).
+    - name: Validate learning path packaging conventions
+      run: |
+        python3 .github/scripts/validate_learning_path_packages.py
+
     # NOTE: validate --packages does not support --exclude, so we enumerate
     # package directories from manifest.json files and validate each directory.
     - name: Validate Pathfinder Packages

@@ -84,7 +84,9 @@ Also apply [review-guide-pr.mdc](../../review-guide-pr.mdc) blocking rules.
 
 Framing packages may exist in the repo for the website Learning Path but must **not** appear in path `manifest.json` `milestones`.
 
-**Common framing:** `business-value`, `advantages`, `welcome`, markdown-only intro milestones.
+**Common framing:** `business-value`, `advantages`, `welcome`, `understand-value` / `understand-baselines`, `value-*` / `value-of-*`, `how-it-works`, markdown-only intro milestones.
+
+**Not framing by prefix alone:** product teach steps such as `understand-alerts` or `understand-dashboards` stay in path `milestones`.
 
 **Flag when:**
 
@@ -93,6 +95,8 @@ Framing packages may exist in the repo for the website Learning Path but must **
 - Path `milestones` includes non–hands-on packages
 
 **OK:** Framing directories + `website.yaml` remain; `end-journey` and hands-on milestones stay in path `milestones`.
+
+**CI:** `.github/scripts/validate_learning_path_packages.py` (wired in `.github/workflows/validate-json.yml`) enforces framing-out-of-milestones, first-hands-on depends, and required `website.yaml` `description`. Prefer that script over re-deriving patterns during Phase 2.
 
 ---
 
@@ -122,6 +126,7 @@ Path root `{path_dir}/website.yaml` configures the companion Learning Path on gr
 |---|---|
 | Path root file | Missing when path has framing milestone dirs (`business-value`, etc.) or website companion slug exists |
 | `menuTitle` / `description` | Missing or empty on path root `website.yaml` |
+| Step `description` | Missing or empty on any step `website.yaml` present under the package |
 | `journey` metadata | Missing `group`, `skill`, or layout fields peer LPs include |
 | Slug alignment | Website path slug ≠ `{path_dir}` minus `-lj` when companion exists |
 | Milestone pages | Milestone dir in path `milestones` missing `website.yaml` when peer LPs include one for same step type |

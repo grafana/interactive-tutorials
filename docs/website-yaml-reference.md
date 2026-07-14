@@ -129,6 +129,24 @@ That would require:
   A step's analogous block is `side_journeys`.
 - Path-level `weight` values are spaced (for example, 100, 200, 300) so paths can be reordered without renumbering.
 - `description` should be a single sentence and avoid duplicating `menuTitle`.
+- Every path-level and step-level `website.yaml` **must** include a non-empty top-level `description`. CI enforces this via `.github/scripts/validate_learning_path_packages.py`.
+
+## CI packaging checks
+
+Pathfinder `validate` checks guide JSON. It does **not** enforce Learning Hub packaging rules that reviewers otherwise catch late. Run locally before opening an LP PR:
+
+```bash
+python3 .github/scripts/validate_learning_path_packages.py
+python3 .github/scripts/validate_learning_path_packages.py --path run-first-k6-test-lj
+```
+
+The script fails when:
+
+1. A framing / concept-intro package appears in path `manifest.json` `milestones` (for example `business-value`, `advantages`, `understand-value`). Keep the directory for the website; omit it from Pathfinder milestones.
+2. The first hands-on milestone `depends` on a framing package — use `"depends": []`.
+3. Path or step `website.yaml` is missing a non-empty `description`.
+
+Framing short-name patterns live in the script and in [`.cursor/skills/review-learning-path/reference-checks.md`](../.cursor/skills/review-learning-path/reference-checks.md) (Framing milestones).
 
 ## Minimal examples
 
