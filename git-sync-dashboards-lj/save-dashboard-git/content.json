@@ -18,14 +18,8 @@
         {
           "type": "interactive",
           "action": "popout",
-          "targetvalue": "sidebar",
-          "content": "If this guide is floating, dock it to the sidebar first."
-        },
-        {
-          "type": "interactive",
-          "action": "popout",
           "targetvalue": "floating",
-          "content": "Pop this guide out so it stays visible when the save drawer opens."
+          "content": "If this guide is docked, pop it out so it stays visible when the save drawer opens."
         }
       ],
       "whenFalse": []
@@ -70,30 +64,24 @@
           "doIt": false
         },
         {
-          "type": "interactive",
-          "action": "noop",
-          "content": "In **Folder**, select your Git Sync provisioned folder (it shows a **Provisioned** label).\n\nFor example, select `grafana-dashboards`.\n\nAfter you select it, the drawer shows Git Sync fields such as **Branch** and **Filename**."
+          "type": "markdown",
+          "content": "In **Folder**, select your Git Sync provisioned folder (it shows a **Provisioned** label).\n\nAfter you select it, the drawer shows Git Sync fields such as **Branch** and **Filename**."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "#provisioned-ref",
           "targetvalue": "main",
-          "content": "In the **Branch** field, enter `main` to commit directly to the main branch.\n\nIn later milestones, you'll use a new branch name to open a pull request instead.",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "doIt": false
+          "content": "After the Git Sync fields appear, in the **Branch** field, enter `main` to commit directly to the main branch.\n\nIn later milestones, you'll use a new branch name to open a pull request instead.",
+          "doIt": false,
+          "skippable": true
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "#folder-path",
           "targetvalue": "dashboards",
-          "content": "Optionally, in **Repository folder**, enter a subdirectory inside the repository.\n\nFor example, enter `dashboards`. Leave empty to save at the repository root.",
-          "requirements": [
-            "exists-reftarget"
-          ],
+          "content": "Optionally, in **Repository folder**, enter a subdirectory inside the repository.\n\nFor example, enter dashboards. Leave empty to save at the repository root.",
           "doIt": false,
           "skippable": true
         },
@@ -103,10 +91,8 @@
           "reftarget": "#dashboard-filename",
           "targetvalue": "http-monitoring.json",
           "content": "In the **Filename** field, enter the dashboard file name.\n\nFor example, enter `http-monitoring.json`.",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "doIt": false
+          "doIt": false,
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -114,21 +100,17 @@
           "reftarget": "#provisioned-resource-form-comment",
           "targetvalue": "Add HTTP request monitoring dashboard",
           "content": "In the **Comment** field, enter a commit message describing the new dashboard.\n\nFor example, enter `Add HTTP request monitoring dashboard`.",
-          "requirements": [
-            "exists-reftarget"
-          ],
           "doIt": false,
           "skippable": true
         },
         {
           "type": "interactive",
-          "action": "button",
+          "action": "highlight",
           "reftarget": "button[type='submit']",
-          "content": "In the **Provisioned dashboard** drawer, click **Save**.",
+          "content": "In the **Provisioned dashboard** drawer, scroll to the bottom if needed, then click **Save**.",
           "tooltip": "Commits the dashboard JSON to your connected repository.",
-          "requirements": [
-            "exists-reftarget"
-          ]
+          "doIt": false,
+          "skippable": true
         }
       ]
     },

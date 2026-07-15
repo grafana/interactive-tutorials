@@ -18,14 +18,8 @@
         {
           "type": "interactive",
           "action": "popout",
-          "targetvalue": "sidebar",
-          "content": "If this guide is floating, dock it to the sidebar first."
-        },
-        {
-          "type": "interactive",
-          "action": "popout",
           "targetvalue": "floating",
-          "content": "Pop this guide out so it stays visible when the **Provisioned dashboard** save drawer opens."
+          "content": "If this guide is docked, pop it out so it stays visible when the **Provisioned dashboard** save drawer opens."
         }
       ],
       "whenFalse": []
@@ -53,23 +47,34 @@
         },
         {
           "type": "markdown",
-          "content": "On the **Details** tab:\n\n1. Optionally confirm **Repository folder** (leave empty for the repo root), **Filename**, and **Comment**.\n2. Optionally open **Changes** to review the diff, then return to **Details**. Do this before setting **Branch** because switching tabs after setting a new branch can reset **Branch** to `main`.\n3. Enter a new **Branch** name that doesn't already exist, for example, `add-latency-metrics`, and then press **Enter** when **Press Enter to create new branch** appears.\n4. Confirm the field shows your new branch, not `main`. Don't switch tabs after this."
+          "content": "On the **Details** tab, optionally confirm **Repository folder** (leave empty for the repo root), **Filename**, and **Comment**."
+        },
+        {
+          "type": "markdown",
+          "content": "Optionally open **Changes** to review the diff, then return to **Details**. Do this before setting **Branch**, because switching tabs after setting a new branch can reset **Branch** to main."
+        },
+        {
+          "type": "markdown",
+          "content": "Enter a new **Branch** name that doesn't already exist, for example, add-latency-metrics. When **Press Enter to create new branch** appears, press Enter once."
+        },
+        {
+          "type": "markdown",
+          "content": "Confirm your new branch is selected in **Branch**, then stay on **Details**."
         },
         {
           "type": "interactive",
-          "action": "button",
+          "action": "highlight",
           "reftarget": "button[type='submit']",
-          "content": "Still on **Details**, with your new branch selected, click **Save**.\n\nA successful new-branch save opens a Git Sync preview page (URL includes `/dashboard/provisioning/`).",
+          "content": "Still on **Details**, with your new branch selected, scroll to the bottom of the drawer if needed, then click **Save**.\n\nA successful new-branch save opens a Git Sync preview page (URL includes /dashboard/provisioning/).",
           "tooltip": "Creates the branch and opens the pull request preview.",
-          "requirements": [
-            "exists-reftarget"
-          ]
+          "doIt": false,
+          "skippable": true
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Open pull request in GitHub",
-          "content": "On the Git Sync preview page, in the success banner, click **Open pull request in GitHub**.\n\nIf you are still on the normal dashboard edit page with no banner, the save used `main` — open **Save** again and keep the new branch selected through **Save**.",
+          "content": "On the Git Sync preview page, in the success banner, click **Open pull request in GitHub**.\n\nIf you are still on the normal dashboard edit page with no banner, the save used main — open **Save** again and keep the new branch selected through **Save**.",
           "tooltip": "Opens GitHub with a pre-filled pull request for your dashboard changes.",
           "requirements": [
             "exists-reftarget"

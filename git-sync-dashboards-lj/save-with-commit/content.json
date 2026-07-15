@@ -18,14 +18,8 @@
         {
           "type": "interactive",
           "action": "popout",
-          "targetvalue": "sidebar",
-          "content": "If this guide is floating, dock it to the sidebar first."
-        },
-        {
-          "type": "interactive",
-          "action": "popout",
           "targetvalue": "floating",
-          "content": "Pop this guide out so it stays visible when the **Provisioned dashboard** save drawer opens."
+          "content": "If this guide is docked, pop it out so it stays visible when the **Provisioned dashboard** save drawer opens."
         }
       ],
       "whenFalse": []
@@ -49,25 +43,10 @@
         },
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "In the **Provisioned dashboard** drawer, optionally check **Update default refresh value** to make the current refresh interval the new default.",
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "In the **Provisioned dashboard** drawer, optionally check **Update default variable values** to make the current variable values the new defaults.",
-          "skippable": true
-        },
-        {
-          "type": "interactive",
           "action": "formfill",
           "reftarget": "#folder-path",
           "targetvalue": "dashboards",
           "content": "In the **Provisioned dashboard** drawer, optionally confirm **Repository folder**. Leave empty for the repository root.",
-          "requirements": [
-            "exists-reftarget"
-          ],
           "doIt": false,
           "skippable": true
         },
@@ -77,9 +56,6 @@
           "reftarget": "#dashboard-filename",
           "targetvalue": "http-monitoring.json",
           "content": "In the **Provisioned dashboard** drawer, confirm **Filename**.\n\nFor example, `http-monitoring.json`.",
-          "requirements": [
-            "exists-reftarget"
-          ],
           "doIt": false,
           "skippable": true
         },
@@ -88,11 +64,9 @@
           "action": "formfill",
           "reftarget": "#provisioned-ref",
           "targetvalue": "main",
-          "content": "In the **Provisioned dashboard** drawer, enter `main` in **Branch**. This commits changes directly to the main branch without creating a pull request.",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "doIt": false
+          "content": "In the **Provisioned dashboard** drawer, confirm **Branch** is set to main. This commits changes directly to the main branch without creating a pull request.",
+          "doIt": false,
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -100,21 +74,17 @@
           "reftarget": "#provisioned-resource-form-comment",
           "targetvalue": "Add error rate visualization to HTTP monitoring dashboard",
           "content": "In the **Provisioned dashboard** drawer, optionally enter a **Comment** describing your changes.\n\nFor example, enter `Add error rate visualization to HTTP monitoring dashboard`.",
-          "requirements": [
-            "exists-reftarget"
-          ],
           "doIt": false,
           "skippable": true
         },
         {
           "type": "interactive",
-          "action": "button",
+          "action": "highlight",
           "reftarget": "button[type='submit']",
-          "content": "In the **Provisioned dashboard** drawer, click **Save**.",
+          "content": "In the **Provisioned dashboard** drawer, scroll to the bottom if needed, then click **Save**.",
           "tooltip": "Pushes your dashboard changes to the main branch.",
-          "requirements": [
-            "exists-reftarget"
-          ]
+          "doIt": false,
+          "skippable": true
         }
       ]
     },
