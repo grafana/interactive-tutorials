@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
         persist-credentials: false
         submodules: false
-      
+
     - name: Checkout validation scripts from main
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
@@ -28,20 +28,20 @@ jobs:
         sparse-checkout-cone-mode: false
         path: .github-trusted
         persist-credentials: false
-      
+
     - name: Validate index.json
       run: |
         echo "Validating index.json for well-formed JSON..."
-        
+
         # Check if index.json exists
         if [ ! -f "index.json" ]; then
           echo "❌ Error: index.json file not found"
           exit 1
         fi
-        
+
         # Validate JSON using the validation script
         python3 .github-trusted/.github/scripts/validate_json.py index.json
-        
+
         if [ $? -eq 0 ]; then
           echo "🎉 All validations passed! index.json is well-formed and properly structured."
         else
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
@@ -66,14 +66,17 @@ jobs:
       uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       with:
         repository: grafana/grafana-pathfinder-app
-        ref: main
+        # Pin: pathfinder main after e6dde89 (TypeScript 6.0.3) has package.json/lock out of
+        # sync (npm ci: Missing typescript@5.9.3). Revisit when upstream lockfile is fixed.
+        ref: 342121e6ef884afeddcc680f2a8f6ca60b687488
         path: pathfinder-app
         persist-credentials: false
 
     - name: Setup Node.js
       uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
       with:
-        node-version: '24'
+        # Track pathfinder-app's engines.node so `npm ci` runs on a compatible version.
+        node-version-file: pathfinder-app/package.json
         cache: 'npm'
         cache-dependency-path: pathfinder-app/package-lock.json
 
@@ -105,15 +108,15 @@ jobs:
       run: |
         echo "🔍 Finding and validating content.json files..."
         echo ""
-        
+
         PASSED=0
         FAILED=0
-        
+
         # Find and iterate through each content.json file
         while IFS= read -r file; do
           if [ -n "$file" ]; then
             echo "📄 Validating: $file"
-            
+
             if node pathfinder-app/dist/cli/cli/index.js validate --strict "$file"; then
               PASSED=$((PASSED + 1))
             else
@@ -125,12 +128,12 @@ jobs:
         done < <(find . -name "content.json" -type f \
                    -not -path "./pathfinder-app/*" \
                    -not -path "./shared/*")
-        
+
         echo ""
         echo "📊 Validation Summary:"
         echo "  ✅ Passed: $PASSED"
         echo "  ❌ Failed: $FAILED"
-        
+
         if [ $FAILED -gt 0 ]; then
           echo ""
           echo "❌ $FAILED guide(s) failed validation!"

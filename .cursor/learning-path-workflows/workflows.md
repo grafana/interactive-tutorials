@@ -6,7 +6,7 @@ Use the `/create-learning-path` command to build a new interactive learning path
 
 Make sure you have:
 
-- The **website** and **interactive-tutorials** repositories cloned locally in the same Cursor workspace
+- The **website** and **interactive-tutorials** repositories cloned locally in the same workspace
 - **Playwright MCP** configured in Cursor (the AI uses this to discover CSS selectors)
 - Access to `https://learn.grafana.net/` (the test environment)
 - Understanding of what a selector is. A selector is a way to identify an element on a webpage so that scripts can interact with it. Think of it like a street address: the more precise and stable it is, the better the directions to get there, even if some landmarks change.
@@ -41,7 +41,7 @@ Every session follows five phases. The AI handles most of the work — your main
 
 ### Phase 1: Setup and planning
 
-The AI validates that both repos are accessible, reads the canonical Grafana docs for the feature, and proposes milestones for your approval.
+The AI validates that both repos are accessible (the website repo is a read-only source — it's read from but never written to), reads the canonical Grafana docs for the feature, and proposes milestones for your approval.
 
 **Your role:** Review and approve the proposed milestones before the AI writes anything.
 
@@ -81,12 +81,12 @@ The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, a
 
 ## Appendix: Convert an existing learning path
 
-Use `/build-interactive-lj` when milestone markdown already exists in the website repo and you need to add interactivity. This workflow requires both the **website** and **interactive-tutorials** repositories in your Cursor workspace. The AI reads the existing milestones, creates `content.json` files with interactive blocks, and updates each `index.md` to use Pathfinder rendering.
+Use `/build-interactive-lj` when milestone markdown already exists in the website repo and you need to add interactivity. This workflow reads the existing learning path from the **website** repo and writes every generated file to the **interactive-tutorials** repo, so both repositories must be in your workspace — but the website repo is a read-only source. The AI reads the existing milestones and creates `content.json`, `manifest.json`, and `website.yaml` files. It never modifies the website repo: the existing markdown stays in place, and no `pathfinder_data` or `{{< pathfinder/json >}}` is added.
 
-The conversion command follows the same five phases as `/create-learning-path`. The only difference is Phase 1: instead of proposing new milestones, the AI locates the existing ones and uses them as its starting point.
+The conversion command follows the same five phases as `/create-learning-path`. The only difference is Phase 1: instead of proposing new milestones, the AI locates the existing ones and uses them as its starting point. The `website.yaml` files are derived from the front matter of the existing markdown.
 
-When complete, you'll open PRs in both the `interactive-tutorials` and `website` repos.
-Before opening PRs, verify that milestone IDs match between `content.json`, `manifest.json`, and website front matter. The AI runs this check automatically, but a quick manual scan catches edge cases.
+When complete, you'll open a single PR in the `interactive-tutorials` repo.
+Before opening the PR, verify that milestone IDs match between `content.json` and `manifest.json`. The AI runs this check automatically, but a quick manual scan catches edge cases.
 
 Run the command and provide the learning path slug when asked:
 
@@ -100,6 +100,6 @@ The learning path slug is mysql-data-source.
 
 | Command | Starting point | Key output |
 | --- | --- | --- |
-| `/build-interactive-lj` | Existing milestone markdown in website repo | `content.json` + `manifest.json` files, updated website markdown |
+| `/build-interactive-lj` | Existing milestone markdown in website repo (read-only source) | `content.json` + `manifest.json` + `website.yaml` files in interactive-tutorials |
 | `/create-learning-path` | Feature description (no existing markdown) | `content.json` + `manifest.json` + `website.yaml` files |
-| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Guided review: findings doc, live testing, GitHub review with inline blockers and submitted verdict |
+| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Human-guided review: static workbook, Block Editor smoke test, chat-approved inline comments, submit |

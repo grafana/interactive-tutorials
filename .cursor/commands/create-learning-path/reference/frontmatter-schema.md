@@ -1,14 +1,34 @@
-# Front Matter Schema Reference
+# Front matter schema reference (read-only source)
 
-This document defines the website `index.md` front matter fields for learning path milestones.
+This document describes the legacy website `index.md` front matter fields for learning path milestones. It is a **read-only source reference**: use it to understand and read the front matter of existing learning path markdown in the `website` repo when converting a path with `/build-interactive-lj`.
+
+Never write website markdown. These commands do not add `pathfinder_data`, insert the `{{< pathfinder/json >}}` shortcode, or otherwise modify the `website` repo. When converting, map the front matter fields described here into a `website.yaml` in the interactive-tutorials repo. Refer to `docs/website-yaml-reference.md` for the `website.yaml` field reference and to `../../learning-path-workflows/workflows.md` for the conversion workflow.
 
 For `content.json` schema (root structure, block types, action types, field reference), see `build-interactive-lj/reference/json-schema.md`.
 
 ---
 
-## Website Front Matter Schema
+## Mapping front matter to `website.yaml`
 
-Every page in a learning path has Hugo front matter and `{{< pathfinder/json >}}` as the body. There are two page types: the path overview (`_index.md`) and milestones (`index.md`).
+When converting a legacy learning path, read each source file and map its front matter into a `website.yaml`:
+
+| Source file | Maps to `website.yaml` |
+|-------------|------------------------|
+| Path overview `_index.md` | Path-level `<slug>-lj/website.yaml` |
+| Milestone `index.md` | Step-level `<slug>-lj/<milestone>/website.yaml` |
+
+Most fields carry over by name (`menuTitle`, `description`, `weight`, `step`, `journey`, `cta`, `related_journeys`, `side_journeys`). Two fields are legacy artifacts of Hugo/Pathfinder rendering and are **not** copied into `website.yaml`:
+
+- `pathfinder_data` — the interactive package is located by directory convention, so this pointer isn't needed.
+- `{{< pathfinder/json >}}` (page body) — the body is no longer rendered from the website; conceptual prose is captured in `content.json` markdown blocks instead.
+
+`title` from the source front matter maps to the content package title (`content.json` `title`); `website.yaml` uses `menuTitle` as its title field. Refer to `docs/website-yaml-reference.md` for which fields the website build actually consumes.
+
+---
+
+## Legacy website front matter schema
+
+In the legacy (pre-Pathfinder) format, every page in a learning path has Hugo front matter and `{{< pathfinder/json >}}` as the body. There are two page types: the path overview (`_index.md`) and milestones (`index.md`). The tables below describe the fields you'll read from existing markdown; the `{{< pathfinder/json >}}` body and `pathfinder_data` field are legacy artifacts you read but never write.
 
 ### Path Overview (`_index.md`) Fields
 
@@ -117,7 +137,11 @@ related_journeys:
 
 ---
 
-## Complete Example (Path Cover Page)
+## Complete examples (legacy source markdown)
+
+The examples below show existing website markdown as it appears in the `website` repo. When converting, you read these files — you don't create or edit them. The `pathfinder_data` field and `{{< pathfinder/json >}}` body are legacy artifacts; the front matter fields map into a `website.yaml` (refer to `docs/website-yaml-reference.md`), and the conceptual prose maps into `content.json` markdown blocks.
+
+### Path cover page
 
 **linux-server-integration-lj/content.json:**
 ```json
@@ -179,7 +203,7 @@ pathfinder_data: linux-server-integration-lj
 
 ---
 
-## Complete Example (Verification Milestone)
+### Verification milestone
 
 **content.json:**
 ```json
@@ -240,7 +264,7 @@ pathfinder_data: linux-server-integration-lj/install-alloy
 
 ---
 
-## Complete Example (Conclusion Milestone)
+### Conclusion milestone
 
 **content.json:**
 ```json

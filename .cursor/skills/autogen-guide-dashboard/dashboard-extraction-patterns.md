@@ -416,7 +416,7 @@ For each panel:
 - Best selector: `section[data-testid='data-testid Panel header {title}']`
 - Grade: Green | Yellow | Red
 - Guide treatment: highlight (above fold only) | guided-lazyRender (below fold, any grade) | guided-hover | noop
-- Lazy-render note: (if below fold: "MUST use guided + lazyRender: true — exists-reftarget cannot scroll"; if Red/Yellow + below fold: "nth-match unreliable, prefer noop or guided with lazyRender")
+- Lazy-render note: (if below fold: "MUST use guided + lazyRender: true — exists-reftarget cannot scroll"; if Red/Yellow + below fold: "nth-match unreliable, prefer markdown or guided with lazyRender")
 
 ### Concerns
 - (list any issues: duplicate titles, missing titles, very large panel count, etc.)

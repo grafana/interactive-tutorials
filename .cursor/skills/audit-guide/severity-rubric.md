@@ -12,7 +12,8 @@ A blocking finding means the guide either **fails at runtime** or **violates a c
 |-------|----------|
 | Structural | Invalid JSON; unknown block type; unknown action; missing required field (`reftarget` on non-noop/non-popout, `targetvalue` on `popout`); `popout` `targetvalue` not `"sidebar"` or `"floating"`; `schemaVersion` set to something other than `"1.1.0"` |
 | Structural | Critical rules 4, 17, 19, 21 violations (multistep singleton, focus-before-formfill, `popout` validation, lazy-render missing) |
-| Semantic | Critical rules 1, 2, 3, 6, 7, 13 violations (missing `navmenu-open`, fragile selectors, leading markdown title, markdown headers in place of sections, missing page requirements, `doIt: true` on secret fields) |
+| Semantic | Critical rules 1, 3, 6, 7, 13 violations (missing `navmenu-open`, leading markdown title, markdown headers in place of sections, missing page requirements, `doIt: true` on secret fields) |
+| Semantic | Rule 2 — CSS-class-only or auto-generated class selectors with no semantic fallback |
 | Semantic | Dangling `section-completed:<id>` (referenced section does not exist) |
 | Semantic | Dangling `var-<name>` requirement (no upstream `input` block defines the variable) |
 | Semantic | First-action page anchor missing — first interactive step has no `on-page` requirement and is not a `navigate` action |
@@ -33,10 +34,13 @@ A warning finding means the guide **degrades user experience** but does not hard
 | Structural | `validateInput: true` without `formHint` (silent rejection on bad input) |
 | Structural | Missing `verify` on a state-changing action (save, create, navigate) |
 | Semantic | Critical rules 8, 9, 10, 11, 12, 14, 15, 16 violations (missing verify on state changes, prose verbosity, button word usage, weak requirement→objective chain, tooltip naming the element, no section bookends, button-word bolding, non-skippable conditional steps) |
+| Semantic | Rule 2 — `:contains()` / `:has()` text-match selectors when [docs/selectors-and-testids.md](../../../docs/selectors-and-testids.md) priority 3–4 is the appropriate fallback (no stable `data-testid` in context). LP review skill may downgrade further when Pathfinder passes. |
 | Semantic | Tooltip > 250 chars or multi-sentence |
 | Semantic | Tooltip names the highlighted element (e.g., "Click the **Save** button" when the button is already highlighted) |
 | Semantic | Code smell from best-practices.mdc §6 not already covered above |
-| Semantic | Missing section bookends (intro markdown + summary markdown around a `section`) |
+| Semantic | Missing section bookends (intro markdown immediately before a `section` and summary immediately after). Do not require intro as the first child inside the section. |
+| Semantic | In-section intro markdown that may render as a numbered step (first child is "You'll…" / action-preview markdown before interactives) — confirm in Block Editor; LP review posts inline when confirmed. Prefer moving the intro outside the section. |
+| Semantic | False `noop` (learner click/type/open instruction with no `reftarget`) — prefer `markdown` or a real highlight |
 | Semantic | Legacy `?doc=` query string used instead of `openGuide` field (rule 20) |
 | Adversarial | Step content is technically correct but reads as instructions to a developer, not an end-user |
 | Adversarial | Tooltip uses Grafana jargon a beginner won't know |

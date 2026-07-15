@@ -1,31 +1,62 @@
-# Reference checks (review-learning-path-pr)
+# Reference checks
 
-Detailed checklists referenced from [SKILL.md](SKILL.md). The agent uses these during Phases 1–2; findings land in `pr-{n}-findings.md`, not on GitHub until Phase 7. Phase 3 buckets findings using [finding severity routing](#finding-severity-routing); Phase 7 applies that routing plus [GitHub comment policy](#github-comment-policy).
+Checklists for [review-learning-path/SKILL.md](SKILL.md) Phase 1 (static pass). Findings land in `pr-{n}-findings.md` — **reviewer workbook only**, never pasted to the author.
 
-**Note:** [finding severity routing](#finding-severity-routing) supersedes [audit-guide/severity-rubric.md](../audit-guide/severity-rubric.md) for this workflow. audit-guide blocking/warning/info labels from Phase 1 are inputs only — re-tag before Phase 7.
+**Comment voice:** [comment-style.md](comment-style.md)
+
+**Selector authority:** [docs/selectors-and-testids.md](../../../docs/selectors-and-testids.md). Do not apply build-interactive-lj autogen "never `:contains()`" rules to hand-authored guides.
+
+**Publishing model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** LP PRs are single-repo. Package `website.yaml` is authoritative; website repo is read-only for conversion.
+
+**Learning Hub:** [learning-hub-standards.md](learning-hub-standards.md) — checks run in Phase 1. Tag each finding with the routing table below (author-facing = post inline).
 
 ---
 
-## Finding severity routing
+## Finding routing
 
-Use this table when writing `pr-{n}-findings.md` (Phase 3) and when deciding inline vs body-only comments (Phase 7). When Pathfinder **passes** a step that had a static warning, move that finding from **Defer** to **Review body only** unless it is in the **Always inline** column.
+Tag every finding when writing the workbook. **Author-facing change requests always go on the GitHub diff as short inline comments** (path-wide OK) after Phase 3 approval. The workbook is reviewer-private scratch — never the channel for telling the author what to fix.
 
-| Always inline (merge blocker) | Defer until Pathfinder (Phase 5–6) | Review body only |
+| Post inline (author must change) | Internal (workbook only) | Discard |
 |---|---|---|
-| Playwright / Pathfinder runtime fail | Section bookends (rule 14) | Companion website drift |
-| Outdated `data-testid` / UI label (valid pattern, wrong target) | `on-page` when step might still run | Passed milestones + deferred nits |
-| Broken `depends` chain or framing in path `milestones` | `lazyRender` when target might scroll into view | Fresh-stack retest notes (N/A on credentialed stack) |
-| First hands-on `depends` references framing ID | Skippable flag when step is permission-gated and passed | Pathfinder app shell UX |
-| Missing `exists-reftarget`, `navmenu-open` | Missing `verify` if save step passed live | Editorial / tooltip / vocabulary |
-| Fragile selectors | Admin-only steps without `skippable` if step passed | CODEOWNERS reminder |
-| `noop` misuse, multistep singleton, focus-before-formfill | — | — |
-| Missing `startingLocation` on interactive milestone | Missing objectives when resource already exists | Audit-guide warnings with no runtime impact |
-| Pathfinder CLI validate failure | — | Product UX not fixable in JSON |
-| `index.json` modified, invalid `testEnvironment.tier` | — | — |
-| Secrets auto-filled (`doIt: true`) | — | — |
-| Path root / manifest `id` mismatch | — | — |
+| Block Editor / Playwright runtime fail (reviewer-reported) | Selector polish when live passed | Audit noise with no runtime impact |
+| Framing in path `milestones` / broken depends | `:contains()` fallback when live passed and justified | CODEOWNERS reminder |
+| In-section intro markdown confirmed numbered as a step | Vague copy / tooltip synonym tweaks when live passed | Passed-milestone notes |
+| In-section intro that may number as a step (static detect) | Suspected bad link (unverified) | Pathfinder shell UX |
+| False `noop` (learner action, no `reftarget`) | Framing ambiguity (“is this framing?”) until confirmed | Fresh-stack retest notes (unless live failed) |
+| Missing required section bookends (rule 14) | Pure LH wording polish (boilerplate synonym) when structure is fine | |
+| Missing / broken required `website.yaml` identity fields (`menuTitle`, `description`, `journey.*`) | Overly broad `targeting.match` without impact | |
+| Learning Hub structure the author must change (missing path intro, wrong group/skill, hard cross-path deps, conversion prose gap) | Landing screenshot / milestone-count notes | |
+| Missing `exists-reftarget`, `navmenu-open` **when live fails** | | |
+| Outdated `data-testid` when live fails | | |
+| `:contains()` when stable `data-testid` in DOM and live fails | | |
+| Path root / manifest `id` mismatch | | |
+| Pathfinder CLI validate failure | | |
+| `index.json` modified, invalid `testEnvironment.tier` | | |
+| Secrets auto-filled (`doIt: true`) | | |
+| Confirmed 404 in `website.yaml` supplementary fields | | |
+| Prose only in legacy markdown (conversion PR) | | |
 
-**After Pathfinder:** promote deferred items to inline only if live test failed or static issue is clearly wrong regardless of runtime (e.g. fragile selector that happened to match today).
+**After live test:** promote remaining **internal** polish to **post inline** when Block Editor or Playwright failed on that step, or when the reviewer confirms an ambiguity (e.g. framing).
+
+**Never:** paste the workbook (or agent paraphrases of it) to the author; leave an author fix only in the workbook; invent nits so the review “has comments.”
+
+**Never post:** anything still in **internal** or **discard** unless the reviewer explicitly promotes it at Phase 3.
+
+### Selector decision tree
+
+Apply after Phase 2 when deciding post inline vs internal:
+
+```
+Selector finding
+  │
+  ├─ Block Editor or Playwright fail on this step? → post inline
+  │
+  ├─ Stable data-testid in DOM but author used :contains()? → post inline
+  │
+  ├─ :contains() fallback per selectors doc, live passed, no stable selector? → internal (do not post)
+  │
+  └─ CSS class / nth-only, live passed? → discard
+```
 
 ---
 
@@ -33,74 +64,110 @@ Use this table when writing `pr-{n}-findings.md` (Phase 3) and when deciding inl
 
 Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 
-| Check | Block when |
+| Check | Route when |
 |---|---|
-| `schemaVersion` | Set to anything other than `"1.1.0"` (omit field instead) |
-| Structure | Markdown `##` / `###` used for grouping instead of `section` blocks |
-| Title duplicate | Leading `## Title` duplicates guide `title` |
-| Section bookends | Interactive `section` missing in-section intro + summary markdown (critical rule 14) |
-| `exists-reftarget` | Any step with `reftarget` missing it in `requirements` |
-| `navmenu-open` | Nav menu item steps missing it |
-| `on-page` | Page-specific steps missing `on-page:/path` |
-| `lazyRender` | Below-fold / virtualized targets in plain `interactive` without `guided` + `lazyRender: true` |
-| Multistep singleton | `multistep` with one step — must be plain `interactive` |
-| Focus-before-formfill | `highlight` on input with default `doIt: true` — use `formfill` or `doIt: false` |
-| `verify` | Save/create actions missing `verify` after state change |
-| Skippable | Optional sections described as skippable in prose but no `"skippable": true` |
-| `noop` misuse | See [noop rules](#noop-and-non-interactive-steps) |
-| Secrets | Automated fill of passwords/tokens/API keys — use `doIt: false` |
+| `schemaVersion` not `"1.1.0"` when present | post inline |
+| Markdown `##` / `###` for grouping | internal |
+| Section bookends missing (rule 14) — no intro/summary **around** the section | **post inline** |
+| In-section intro markdown that may number as a step | **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)). Prefer bookends **outside** the section per rule 14. |
+| Missing `exists-reftarget`, `navmenu-open` | internal until live fails |
+| Missing `on-page` | internal until live fails |
+| `lazyRender` missing on virtualized targets | internal until live fails |
+| Multistep singleton, focus-before-formfill, `noop` misuse | post inline if compliance; else internal |
+| Secrets `doIt: true` | post inline |
+| Missing `verify` on save | internal until live fails |
 
-Also apply [review-guide-pr.mdc](../../review-guide-pr.mdc) blocking rules.
+LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — **post inline** when the author must change structure or required fields; **internal** for wording polish only.
+
+---
+
+## Section intro markdown numbered as a step
+
+Recurring Pathfinder UX issue (seen across multiple LP PRs, including interactive dashboards and Infinity JSON): a one-sentence "what you'll do" markdown block as the **first child inside a `section`** shows up in Block Editor as a numbered step (for example "1. You'll open a dashboard…") instead of unnumbered prose.
+
+Docs sometimes say in-section `markdown` is unnumbered. **Treat Block Editor as source of truth.** If the reviewer sees a number on that block, flag it.
+
+### Phase 1 — static detect (workbook)
+
+For every interactive `section`, check the first block:
+
+| Detect when first in-section block is `markdown` and… | Example |
+|---|---|
+| Content starts with `You'll ` / `You will ` | `You'll customize how a variable appears…` |
+| Content is a one-sentence action preview before the first interactive | `In this section, open Edit and add a variable.` |
+| Content restates the section goal without teaching a concept | Same pattern under different wording |
+
+Write under **Verify in Block Editor** in `pr-{n}-findings.md` when live testing. For the known `You'll ` / action-preview pattern, also queue a **post inline** (path-wide OK) — authors need the source fix without waiting on workbook paraphrases.
+
+Missing bookends (no intro/summary **around** the section at all) are a separate **post inline** finding. Correct placement is **outside** the `section` (intro immediately before, summary immediately after). This check is the opposite problem: intro exists **inside** the section and Pathfinder treats it like a step.
+
+### Phase 2 — confirm
+
+On **every** interactive milestone Block Editor prompt, ask the reviewer to scan the section step list for false step numbers — not only when Phase 1 flagged the milestone:
+
+- Intro prose numbered as step 1 (for example "You'll …")
+- Learner-action `noop`s numbered as interactive steps
+
+| Live result | Route |
+|---|---|
+| Numbered as a step (intro or false noop) | **Post inline** |
+| Unnumbered prose / accepted noop only | Discard this finding for that milestone |
+
+Same scan applies to [false noops](#noop-and-non-interactive-steps) even when static detect missed a wording variant.
+
+### Phase 3 — comment shape
+
+- **One path-wide inline** when the same pattern appears in multiple milestones. Anchor on the first clear example; list the other milestone slugs in the comment body.
+- Fix: move the intro markdown **outside** (before) the `section` block, or drop it if the section title is enough. Keep a one-sentence summary bookend (outside or after the section) so rule 14 intent is preserved without a fake step 1.
 
 ---
 
 ## Framing milestones
 
-Framing packages may exist in the repo for the website Learning Path but must **not** appear in path `manifest.json` `milestones`.
+Framing packages may live in the path directory for the website Learning Path, but must **not** appear in path `manifest.json` `milestones`. First hands-on `depends` must not reference framing IDs.
 
-**Common framing:** `business-value`, `advantages`, `welcome`, markdown-only intro milestones.
+Framing in path `milestones` or broken depends → **post inline**.
 
-**Flag when:**
+### Framing vs not framing
 
-- Framing IDs listed in path `milestones`
-- First hands-on milestone `depends` references a framing ID — use `"depends": []`
-- Path `milestones` includes non–hands-on packages
+Framing is about **role**, not “markdown-only.”
 
-**OK:** Framing directories + `website.yaml` remain; `end-journey` and hands-on milestones stay in path `milestones`.
+| Kind | Examples | In path `milestones`? |
+|---|---|---|
+| **Framing** (value / why intro) | `business-value`, `value-*`, `advantages-*`, `welcome` | No — keep the package + `website.yaml` if the website needs it; omit from Pathfinder `milestones` |
+| **Not framing** (path destination) | `end-journey`, `end-<topic>` | Yes |
+| **Case-by-case** | Prose conceptual packages such as `understanding-*` | Only if they are a Pathfinder path step learners must complete. If they are website-only conceptual framing, treat as framing (omit from `milestones`, first hands-on `depends: []`) |
+
+Do **not** auto-flag every markdown-only `milestones` entry. `end-journey` is normally prose-only and correctly listed.
+
+When a prose milestone is ambiguous, note it under **Internal** as “is this framing?” for the reviewer. Promote to **post inline** only after the reviewer confirms it is framing (or it matches a known framing name above).
 
 ---
 
 ## Path root `content.json`
 
-Phase 2 only (not a full audit-guide run). Read `{path_dir}/content.json` alongside path manifest and companion website.
-
-| Check | Fail if |
+| Check | Route when |
 |---|---|
-| Root structure | Missing `id`, `title`, or non-empty `blocks` |
-| `id` | Does not match path `manifest.json` `id` |
-| Title duplicate | Leading markdown block duplicates `title` (same as milestone rule) |
-| Before you begin | Prerequisites missing or contradict first hands-on milestone / website `_index.md` Before you begin |
-| Env prerequisites | Cloud tier, tokens, CLI, or integrations required by milestones not listed here |
-| Framing in JSON | Path `content.json` duplicates website-only framing that belongs in separate packages |
-| Datasource / setup | Path intro claims resources the first milestone creates without saying user needs them first |
+| `id` mismatch with manifest | post inline |
+| Prose only in legacy `index.md` (conversion) | post inline |
+| Before you begin gaps | internal |
+| Editorial intro prose | internal |
 
-Severity: `id` mismatch → **Always inline**. Before you begin drift → **Review body** (inline if PR claims website sync done). Editorial intro prose → **Review body**.
+LH detail: [learning-hub-standards.md § path landing](learning-hub-standards.md#path-landing-page).
+
+---
+
+## Learning Hub structure (Phase 1)
+
+Walk [learning-hub-standards.md](learning-hub-standards.md) after manifest/depends checks. **Post inline** when the author must change structure or required fields. Keep pure wording polish **internal**.
 
 ---
 
 ## `website.yaml`
 
-Path root `{path_dir}/website.yaml` configures the companion Learning Path on grafana.com. Per-milestone `website.yaml` files configure milestone pages.
+Package `website.yaml` is authoritative ([docs/website-yaml-reference.md](../../../docs/website-yaml-reference.md)).
 
-| Check | Fail if |
-|---|---|
-| Path root file | Missing when path has framing milestone dirs (`business-value`, etc.) or website companion slug exists |
-| `menuTitle` / `description` | Missing or empty on path root `website.yaml` |
-| `journey` metadata | Missing `group`, `skill`, or layout fields peer LPs include |
-| Slug alignment | Website path slug ≠ `{path_dir}` minus `-lj` when companion exists |
-| Milestone pages | Milestone dir in path `milestones` missing `website.yaml` when peer LPs include one for same step type |
-
-Severity: missing path root `website.yaml` when framing dirs exist → **Review body** (package OK if website PR is separate). Wrong slug or broken journey metadata → **Review body** unless PR bundles website changes.
+Missing or broken **required** identity fields (`menuTitle`, `description`, `journey.group`, `journey.skill`, `journey.logo`) → **post inline**. Confirmed 404 on supplementary links → **post inline**. Optional peer-comparison polish and unverified links → **internal**.
 
 ---
 
@@ -110,126 +177,181 @@ Severity: missing path root `website.yaml` when framing dirs exist → **Review 
 node {pathfinder-app}/dist/cli/cli/index.js validate --packages {path_dir}
 ```
 
-### Path root (`type: "path"`)
-
-| Check | Fail if |
-|---|---|
-| `id` | Does not match path `content.json` `id` |
-| `type` | Not `"path"` or `"journey"` |
-| Required fields | Missing `description`, `category`, `author` |
-| `milestones` | Missing, empty, or IDs without package directories |
-| Milestone IDs | Any `milestones` entry missing `{path_dir}/{name}/content.json` |
-| Targeting | Missing or overly broad `targeting.match` |
-| `index.json` | PR modifies frozen `index.json` |
-
-### Each milestone (`type: "guide"`)
-
-| Check | Fail if |
-|---|---|
-| `id` | Does not match milestone `content.json` `id` |
-| `type` | Not `"guide"` |
-| `targeting` | Present on step guides (path level only) |
-| `depends` / `recommends` | Unknown IDs or wrong chain |
-| `startingLocation` | Missing on interactive milestones |
-| `testEnvironment.tier` | Invalid (e.g. `"play"` — use `"cloud"`) |
-
-### Dependency chain (peer LP pattern)
-
-- Each hands-on milestone `depends` on prior milestone in path `milestones` order
-- First hands-on: `"depends": []`
+CLI failure → **post inline**. Dependency chain: first hands-on `depends: []`.
 
 ---
 
 ## Targeting / recommender
 
-- `targeting.match` not overly broad (product-specific URL prefixes)
-- `targetPlatform: "cloud"` when cloud-only
-- No separate recommender PR — package manifest feeds `repository.json` after merge
+Overly broad `targeting.match` → **internal**. No separate recommender PR.
 
 ---
 
-## Companion website (separate repo)
+## Legacy website source (optional, read-only)
 
-When `website` repo + slug available:
+Never flag missing website writes, `pathfinder_data`, or legacy markdown drift.
 
-- Milestone pages: `pathfinder_data: {path_dir}/{milestone}` + pathfinder JSON shortcode
-- Path `_index.md`: `pathfinder_data: {path_dir}`; Before you begin matches path `content.json`
-- Framing: shared snippet vs path package (e.g. `case-for-o11y`)
-- Doc drift between website markdown and package content
+Prose not captured in package on conversion → **post inline**. Front matter mapping gaps that break publish → **post inline**; optional wording → **internal**.
 
-Gaps → review body, not package inline blockers unless PR claims website sync is done.
+---
+
+## PR type (Phase 0)
+
+| Type | Signals | Phase 1 emphasis | Phase 2 scope |
+|---|---|---|---|
+| **new** | New `{slug}-lj/` | `website.yaml`, path root | All interactive milestones |
+| **conversion** | Prose-heavy blocks, `/build-interactive-lj` | Legacy source compare | All interactive milestones |
+| **update** | Existing package changes only | Touched milestones | Touched interactive first |
+
+---
+
+## Static-only reviews
+
+`static-only: <reason>` at end of Phase 1 skips Phase 2.
+
+| Situation | Allowed? |
+|---|---|
+| **new** / **conversion** with interactive milestones | **No** |
+| **update** with only markdown / `website.yaml` | Yes, with reason |
+| Practice / archaeology on merged PR | Yes, with reason |
+
+Record `waive_live_testing: true` and `static_only_reason`. Never suggest APPROVE when waived.
+
+### Not live-tested disclosure (required)
+
+Whenever Phase 2 did not record a result for every interactive path milestone (static-only, partial live, or any other skip), the review summary **must** include a **Not live-tested** list:
+
+1. Start from interactive milestones in path `manifest.json` `milestones`.
+2. Subtract any milestone with a recorded Phase 2 result in `pathfinder.{milestone}` (including `pass (reused — …)` when `reuse_live` is true).
+3. List every remaining slug under a `### Not live-tested` heading in the summary body.
+
+Cap verdict at **COMMENT**. Do not use a single vague “milestones were not live-tested” sentence in place of the list.
+---
+
+## Reuse-live (prior evidence)
+
+`reuse-live: <notes>` records Block Editor evidence that already exists so Phase 2 does not re-test every milestone. **Not** the same as static-only: you are claiming live evidence, not skipping it.
+
+### When to use
+
+| Situation | Use `reuse-live`? |
+|---|---|
+| Author dogfooding the skill as reviewer after already smoke-testing while authoring | Yes |
+| Resume mid-review; Block Editor results already in the workbook / chat | Yes |
+| Cold second-reviewer pass with no prior live test this PR | **No** — run Phase 2 normally |
+| Want to skip live testing with no prior evidence | **No** — that is `static-only` (and forbidden on new/conversion interactive) |
+
+### Rules
+
+1. **Notes required.** Reject bare `reuse-live`. Notes must say what was tested, where (stack), and by whom when (e.g. `reuse-live: author smoke-tested all interactive milestones on learn.grafana.net during authoring 2026-07-10`).
+2. **Allowed on new/conversion.** Unlike static-only, reuse-live is valid on interactive new/conversion PRs when prior evidence exists.
+3. **Accepted at** Phase 1 checkpoint or Phase 2 setup (instead of `ready`).
+4. **Agent steps when accepted:**
+   - Set `reuse_live: true`, `reuse_live_notes: "<notes>"`, and `stack_state` if mentioned.
+   - Fill `pathfinder.{milestone}` for interactive milestones in scope as `pass (reused — <short notes>)` unless notes call out a fail/partial; copy any known fails into the workbook.
+   - Skip Playwright DOM loop and per-milestone Block Editor prompts.
+   - Jump to Phase 3. Do not invent Show me / Do it results beyond what notes claim.
+5. **Verdict:** never suggest **APPROVE** when `reuse_live` is true. Cap at **COMMENT**. A fresh second-reviewer Phase 2 can still APPROVE later.
+6. **Summary:** one sentence that live results were reused from prior evidence (do not pretend this session re-ran Block Editor).
+
+---
+
+## Live testing prerequisites (Phase 2)
+
+### Stack state
+
+| Path pattern | Minimum stack | False-pass risk |
+|---|---|---|
+| Install / bootstrap | Fresh Cloud stack | Install vs Uninstall button |
+| Connect + credentials | Real credential saved | Pre-setup UI missing |
+| Permission-gated | Required RBAC | `exists-reftarget` fails |
+| learn.grafana.net shared | Demo stack | May not match fresh/credentialed flows |
+
+Record `stack_state` in state.
+
+### Pathfinder pass ≠ resource created
+
+`doIt: false` on save steps can pass without mutating stack. Note in workbook if downstream UI assumes post-setup state.
+
+### Milestone start URL
+
+1. First `on-page:/path` in milestone blocks
+2. Path manifest `startingLocation`
+3. Ask reviewer if ambiguous
+
+---
+
+## Supplementary content
+
+Duplicated `side_journeys` in `website.yaml` and `content.json` → **internal**. Recap referencing framing not in path `milestones` → **internal**.
+
+---
+
+## CODEOWNERS
+
+New path not in CODEOWNERS → **discard** (mention in workbook only if reviewer asks).
 
 ---
 
 ## noop and non-interactive steps
 
-**Reject `noop` when:**
+`noop` creates a **numbered** step with no automation. It is not a fallback for missing selectors.
+
+### Reject (false noop) → prefer `markdown` or a real interactive step
 
 | Pattern | Use instead |
 |---|---|
-| Observation / confirmation | `markdown` |
+| Learner action with no `reftarget` (open, click, type, fill, select, hover, save) | `markdown`, or restore `highlight` / `button` / `formfill` / `guided` if you have a stable selector |
+| Flaky-selector workaround (“Pathfinder can’t highlight this, so noop”) | `markdown` (or `highlight` + `doIt: false` when a selector exists) |
+| Observation / confirmation / pure explanation that should not be numbered | `markdown` |
 | Outside a `section` | `markdown` |
-| Click/save with no `reftarget`, `verify`, or `on-page` | `button` / `highlight` + selector + `verify` |
-| Optional without `"skippable": true` | Add skippable or restructure |
-| Number padding only | `markdown` or merge steps |
 
-**Accept `noop`:** numbered in-section manual step the product cannot automate.
+Examples of false noops: “Open a dashboard…”, “In the **Label** field, enter…”, “Hover the panel menu, then click **Edit**.”
 
----
+When obvious from JSON or confirmed in Block Editor → **post inline**. Deduplicate path-wide (one comment listing milestones).
 
-## GitHub comment policy (Phase 7)
+### Accept `noop` only when
 
-Apply [finding severity routing](#finding-severity-routing) first. Only **Always inline** findings and runtime failures from Phases 5–6 become inline comments.
+| Pattern | Notes |
+|---|---|
+| Intentional numbered pause that is **not** a click/type instruction | e.g. “Wait for the query to finish”, “Confirm the preview looks right before you continue” |
+| Optional `reftarget` to draw attention without requiring a click | Look-at context only; copy must not say “click / enter / select …” |
 
-### One comment per root cause
+Route: accepted `noop` → no finding. False noop → **post inline**.
 
-Dedupe before posting. Apply these rules in order:
-
-1. **Same root cause, multiple files** — one inline per file that needs a code change, but each comment references the shared root cause (e.g. both `verify-data-collection` and `explore-data` cite the same missing tab). Do not restate the full diagnosis twice; second comment says "same root cause as `{other-milestone}`."
-2. **Same root cause, same file** — exactly **one** inline. Merge the fix and any runtime symptom into a single comment (e.g. `depends: []` fix + "complete previous step / steps paused" UX — do not post separate threads on the same manifest line).
-3. **Playwright + Pathfinder** — one comment per line with both evidence sources merged.
-4. **Symptom caused by fixable code** — inline the code fix; mention the UX symptom in that comment. Do not add a second inline for app-shell behavior that the code fix resolves.
-
-| Inline comment | Review body | Conversation |
-|---|---|---|
-| **Always inline** column + Phase 5–6 failures | **Review body only** column | Pathfinder app shell UX not caused by this PR's JSON |
-| One comment per root cause (rules above) | Passed milestones, deferred nits, companion website, retest notes | Follow-up issue tracking |
-| Code fix in PR (`depends`, manifest, noop, framing) | No fixed template | — |
-
-**Never inline:** pass-only, N/A-only, `FROM AUDIT:` dumps, duplicate threads for the same root cause on the same file, items still in **Defer** that Pathfinder passed.
+Phase 2 always asks the reviewer to scan for numbered learner-action noops (see [section intro Phase 2](#phase-2--confirm)), even when static detect missed them.
 
 ---
 
-## Verdict selection (Phases 8–9)
+## GitHub posting (Phase 3)
 
-The reviewer chooses the GitHub review event at Phase 8. The agent **recommends** a default from findings; the reviewer confirms or overrides before Phase 9 submit.
+Apply [finding routing](#finding-routing) and [comment-style.md](comment-style.md).
 
-### Decision tree
+1. Every **author-facing** fix is a short inline on the file (path-wide OK). Draft those in chat first.
+2. Reviewer approves (`post all`, `post 1,2`, `skip`, or edits).
+3. Post only approved comments to draft review.
+4. Summary is short acknowledgment only. No bulleted lists. No workbook content.
 
-```
-After Phase 7 — any Always inline finding OR Phase 5–6 runtime failure with inline comment?
-  Yes → recommend REQUEST_CHANGES
-  No  → any Review body only items (companion website, retest notes, deferred nits, shell UX)?
-          Yes → recommend COMMENT
-          No  → recommend APPROVE
-```
+### Dedupe
 
-### When to use each verdict
+- Same root cause, same file → one inline comment.
+- Same root cause, multiple files → one per file, second references first.
+- Playwright DOM + Block Editor fail on same step → one merged comment.
 
-| Verdict | Use when | Inline comments | Body |
-|---|---|---|---|
-| **REQUEST_CHANGES** | Merge blockers remain in this PR — runtime fails, broken `depends`/manifest, framing in path, Pathfinder CLI validate failure | Yes — one per root cause for **Always inline** items | **Must fix before merge** lists every blocker; companion website / retest notes in separate sections |
-| **COMMENT** | No merge blockers in this PR, but useful feedback before or after merge | Usually none; optional for minor non-blocking code notes | Companion website checklist, fresh-stack retest, deferred authoring nits, Pathfinder shell UX follow-ups |
-| **APPROVE** | Static + live testing passed; you would merge as-is | None | Brief summary of passed milestones; optional polish follow-ups |
+**Never post:** pass-only, N/A-only, internal tier, discard tier, em dashes, rule numbers. Never substitute a workbook dump for inline comments the author needs to act on.
 
-### Rules
+---
 
-1. **Do not recommend APPROVE** if any **Always inline** finding is open or any Phase 5–6 failure was inlined in Phase 7.
-2. **Do not recommend REQUEST_CHANGES** with zero inline comments unless the reviewer explicitly waives inline at Phase 8 — **Always inline** items belong on the diff, not body-only.
-3. **COMMENT** is correct for “mergeable package PR, website/sync work separate” — common for LP reviews where `website.yaml` is present but learn.grafana.net pages are not wired yet.
-4. **N/A with fresh-stack caveat** (e.g. install button missing) does not by itself require REQUEST_CHANGES — put in body under author retest; use REQUEST_CHANGES only if live steps actually failed.
-5. Agent states recommended verdict at end of Phase 7 and again at Phase 8 opening; reviewer must confirm explicitly before submit.
+## Verdict guidance (Phase 4)
 
-### Phase 8 prompt (agent)
+The **reviewer** chooses the GitHub event. The agent suggests in plain language ([comment-style.md](comment-style.md#verdict-guidance-plain-language)):
 
-> Recommended verdict: **{REQUEST_CHANGES | COMMENT | APPROVE}** — {one-sentence reason}. Confirm or override, then say **submit** when ready.
+| Situation | Suggest |
+|---|---|
+| Live-tested, zero inline comments posted | APPROVE or COMMENT |
+| Live-tested, posted inline on real issues | COMMENT; REQUEST_CHANGES only if reviewer wants to block |
+| Static-only | COMMENT only |
+| Reuse-live | COMMENT only (never APPROVE) |
+| Unsure | COMMENT |
+
+REQUEST_CHANGES is rare. Do not run a decision tree. Do not list blockers in the summary to justify a verdict.
