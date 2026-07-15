@@ -233,6 +233,7 @@ These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rule
 18. **Dock-then-undock popout bookends** — Two consecutive `popout` steps (sidebar, then floating) confuse learners. Use one conditional instruction such as "If this guide is docked, pop it out…"
 19. **Hard `exists-reftarget` after UI transitions** — Fields that appear after a drawer opens or a folder is selected may not exist when the step loads. Prefer `doIt: false`, `skippable: true`, and prose that waits for the UI; avoid blocking on `exists-reftarget` for post-transition targets.
 20. **Conditionally visible controls as required steps** — Don't document optional UI (checkboxes, fields) as numbered interactive steps unless they appear in the default happy path. Use optional markdown or omit the step.
+21. **Section bookends inside `section.blocks`** — Intro/summary markdown inside a section is numbered as step 1 / last step. Place the intro immediately before the `section` and the summary immediately after it.
 
 ---
 
@@ -245,7 +246,7 @@ Run through this before opening the PR.
 - [ ] Sections grouped via `section` blocks, not markdown `##`
 - [ ] All `section` / `input` ids are unique kebab-case
 - [ ] `schemaVersion` is `"1.1.0"` if set (or omitted)
-- [ ] Each section has 1-sentence "what you'll do" intro markdown and "what you learned" summary markdown
+- [ ] Each section has 1-sentence "what you'll do" intro markdown **before** the section and "what you learned" summary markdown **after** it (not inside `section.blocks`)
 - [ ] No leading markdown title that duplicates the guide title
 - [ ] No embedded ordered lists inside section markdown (one block per learner step)
 
