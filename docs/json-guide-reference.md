@@ -57,7 +57,7 @@ Actions are used in `interactive`, `multistep`, and `guided` blocks. See [Intera
 | `formfill` | Enter text in input | CSS selector | Text to enter |
 | `navigate` | Navigate to URL | URL path | — |
 | `hover` | Hover over element | CSS selector | — |
-| `noop` | Informational step (no action) | Optional | — |
+| `noop` | Numbered non-action pause (not click/type instructions; not a selector fallback) | Optional | — |
 | `popout` | Toggle docs panel between sidebar and floating | — | `"sidebar"` or `"floating"` (required) |
 
 ---

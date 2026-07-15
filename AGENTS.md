@@ -24,7 +24,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 11. **Connect requirements and objectives** -- if section 1 creates a resource, section 2 should require it
 12. **Tooltips** -- under 250 characters, one sentence, don't name the highlighted element
 13. **`doIt: false` for secrets** -- never automate filling passwords, tokens, or API keys
-14. **Section bookends** -- each `section` needs a 1-sentence "what you'll do" intro markdown block and a 1-sentence "what you learned" summary markdown block
+14. **Section bookends** -- each `section` needs a 1-sentence "what you'll do" intro markdown block **immediately before** the section and a 1-sentence "what you learned" summary markdown block **immediately after** it. Do not put those bookends inside the `section` -- Pathfinder often numbers in-section markdown as a step. You may omit the intro when a pre-section markdown line already covers the goal (for example "To ..., complete the following steps:").
 15. **Bold only GUI names** -- "Click **Save & test**" not "Click the **Save & test** button"
 16. **`skippable: true` for conditional steps** -- use for permission-gated steps and optional/conditional fields
 17. **No focus-before-formfill** -- `highlight` on an input with `doIt: true` is a no-op; use `formfill` instead, or set `doIt: false`

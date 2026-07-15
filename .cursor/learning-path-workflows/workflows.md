@@ -102,4 +102,4 @@ The learning path slug is mysql-data-source.
 | --- | --- | --- |
 | `/build-interactive-lj` | Existing milestone markdown in website repo (read-only source) | `content.json` + `manifest.json` + `website.yaml` files in interactive-tutorials |
 | `/create-learning-path` | Feature description (no existing markdown) | `content.json` + `manifest.json` + `website.yaml` files |
-| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Guided review: findings doc, live testing, GitHub review with inline blockers and submitted verdict |
+| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Human-guided review: static workbook, Block Editor smoke test, chat-approved inline comments, submit |
