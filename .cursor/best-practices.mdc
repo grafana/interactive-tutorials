@@ -215,7 +215,7 @@ These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rule
 
 1. **Multistep singleton** — `multistep` with one step. Use plain `interactive`.
 2. **Focus-before-formfill** — `highlight` on an input with `doIt: true` is a no-op. Use `formfill`, or set `doIt: false`.
-3. **(reserved)** — formerly "manually added `exists-reftarget`"; this is no longer a smell.
+3. **Learner-action `noop`** — instructions that tell the learner to click, type, review, or change something, but have no Pathfinder target, belong in `markdown`, not `interactive` + `action: "noop"`. Misused `noop` steps render as fake interactive cards with **Show me** / **Do it** / completion controls even though Pathfinder cannot perform or detect the action.
 4. **Markdown `##` headers in place of sections** — restructure as `section` blocks with bookend markdown.
 5. **Leading markdown title duplicating the guide title** — remove. The frame renders the title.
 6. **Brittle CSS selectors** — `.css-xyz`, deep nesting, `nth-of-type` without a stable parent. Use `data-testid`, button text, or semantic attributes.
@@ -251,6 +251,7 @@ Run through this before opening the PR.
 
 **Actions**
 - [ ] Each action targets the right thing (button by text vs CSS vs formfill vs navigate)
+- [ ] Learner-performed steps without a Pathfinder target use `markdown`, not `noop`
 - [ ] `popout` steps have `targetvalue: "sidebar"` or `"floating"`
 - [ ] `openGuide` used (not legacy `?doc=`) when chaining a guide after navigation
 - [ ] State-changing actions (save / create / navigate) have `verify`
