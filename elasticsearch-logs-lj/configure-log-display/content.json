@@ -12,13 +12,26 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/datasources']",
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "content": "Open **Connections** > **Data sources**.",
+          "verify": "on-page:/connections/datasources"
+        },
+        {
+          "type": "guided",
+          "content": "Open the **elasticsearch** data source.",
           "requirements": [
-            "navmenu-open",
-            "exists-reftarget"
+            "on-page:/connections/datasources"
           ],
-          "content": "In the left navigation menu, click **Connections** > **Data sources**, then select your Elasticsearch data source from the list."
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[href*='/connections/datasources/edit/']:contains('elasticsearch')",
+              "lazyRender": true,
+              "description": "Click **elasticsearch**."
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -85,16 +98,8 @@
           "content": "Click **Run query** to refresh the log display with your message and level field settings."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid panel content']",
-          "doIt": false,
-          "requirements": [
-            "on-page:/explore",
-            "exists-reftarget"
-          ],
-          "content": "Confirm log lines appear with color-coded levels and readable message content. If you see no logs, widen the time range to include when your data was ingested.",
-          "skippable": true
+          "type": "markdown",
+          "content": "Confirm log lines appear with color-coded levels and readable message content. If you see no logs, widen the time range to include when your data was ingested."
         }
       ]
     },
