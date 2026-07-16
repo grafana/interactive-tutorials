@@ -61,6 +61,31 @@ Follow this priority order when choosing selectors:
 | Related metrics tab   | `button[data-testid="data-testid Tab Related metrics"]`                                        | Tab toggle              |
 | Related logs tab      | `button[data-testid="data-testid Tab Related logs"]`                                           | Tab toggle              |
 
+### Tabs: `button` vs `a`
+
+The testid string `data-testid Tab <name>` is always correct, but the **element tag depends on the tab type**. grafana-ui's `Tab` component renders an `<a>` when it receives an `href` prop and a `<button>` otherwise:
+
+| Tab type                                   | Has `href`? | Selector tag | Examples                                        |
+|--------------------------------------------|-------------|--------------|-------------------------------------------------|
+| Panel-editor tabs                          | No          | `button`     | Queries, Transformations, Alert                 |
+| Viz picker tabs                            | No          | `button`     | All visualizations, Suggestions                 |
+| Drilldown / app tabs                       | No          | `button`     | Breakdown, Related metrics, Slow traces         |
+| **Dashboard scenes `TabsLayout` section tabs** | **Yes** | **`a`**      | Contest Overview tabs (Winner, Full Results, …) |
+
+Dashboard section tabs navigate by URL slug, so scenes passes an `href` and the tab renders as an anchor. Targeting them with `button[...]` silently matches nothing.
+
+```json
+{
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "a[data-testid='data-testid Tab Winner']",
+  "requirements": ["exists-reftarget"],
+  "content": "We're starting on the Winner tab."
+}
+```
+
+When you can't tell which applies, a tag-agnostic `[data-testid='data-testid Tab <name>']` matches either element.
+
 ### Data Source Elements
 
 | Component        | Selector                                             |
