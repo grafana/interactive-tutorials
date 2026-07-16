@@ -1,7 +1,7 @@
 {
   "id": "tab-button-pattern",
   "title": "Tab Button Pattern",
-  "description": "Generic pattern for clicking a named tab — replace `{TabName}` with the actual tab label (e.g. 'Slow traces', 'Breakdown').",
+  "description": "Generic pattern for clicking a named tab — replace `{TabName}` with the actual tab label (e.g. 'Slow traces', 'Breakdown'). NOTE: use `button[...]` for panel-editor, viz-picker, and drilldown/app tabs; use `a[...]` for dashboard scenes TabsLayout SECTION tabs, which render as anchors (see `_note`).",
   "blocks": [
     {
       "type": "interactive",
@@ -11,5 +11,5 @@
       "requirements": ["exists-reftarget"]
     }
   ],
-  "_note": "Pattern for clicking tabs. Replace {TabName} with the actual tab name (e.g., 'Slow traces', 'Breakdown', 'Related metrics')."
+  "_note": "Pattern for clicking tabs. Replace {TabName} with the actual tab name (e.g., 'Slow traces', 'Breakdown', 'Related metrics'). The testid string 'data-testid Tab <name>' is always correct, but the element TAG depends on the tab type: grafana-ui's Tab component renders an <a> when it receives an href and a <button> otherwise. Panel-editor tabs (Queries, Transformations, Alert), the viz picker (All visualizations), and drilldown/app tabs have NO href → use button[...]. Dashboard scenes TabsLayout SECTION tabs navigate by URL slug and DO get an href → use a[...] (e.g. a[data-testid='data-testid Tab Winner']). When unsure, a tag-agnostic [data-testid='data-testid Tab <name>'] matches either."
 }
