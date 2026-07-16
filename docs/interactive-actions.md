@@ -133,21 +133,22 @@ Set `openGuide` on a `navigate` step to automatically open another guide in the 
 
 ## noop
 
-- **Purpose**: Informational step with no DOM action.
-- **reftarget**: Optional. If provided, highlights the element for context.
+- **Purpose**: Numbered pause with no DOM action. Not a fallback for missing selectors.
+- **reftarget**: Optional. If provided, highlights an element to look at (copy must not instruct a click).
 - **Show**: Highlights the element (if reftarget provided), otherwise no visual effect.
 - **Do**: No action performed. Step completes immediately.
-- **Use when**: You need an informational pause between actions, or a step that only explains without interacting.
+- **Use when**: You need an intentional numbered pause that is **not** a click/type/open instruction (for example “Wait for the query to finish”).
+- **Do not use when**: The copy tells the learner to click, type, open, fill, or select UI without a real interactive step — use `markdown`, or restore `highlight` / `button` / `formfill` / `guided` when you have a stable selector. Flaky-selector workarounds should be `markdown`, not `noop`.
 
 ```json
 {
   "type": "interactive",
   "action": "noop",
-  "content": "Now that you've saved your data source, let's create a dashboard to visualize the data."
+  "content": "Wait for the query preview to finish loading before you continue."
 }
 ```
 
-**With optional highlight:**
+**With optional highlight (look-at only):**
 
 ```json
 {
@@ -156,6 +157,15 @@ Set `openGuide` on a `navigate` step to automatically open another guide in the 
   "reftarget": "div[data-testid='alert-banner']",
   "content": "Notice the success banner confirming your data source is connected.",
   "tooltip": "This confirms the connection test passed."
+}
+```
+
+For manual UI instructions without a working highlight, use markdown:
+
+```json
+{
+  "type": "markdown",
+  "content": "Open a dashboard that uses a Prometheus or metrics data source."
 }
 ```
 

@@ -329,7 +329,7 @@ You are generating one section block for an in-flight update to an existing Path
 - Section id MUST be unique (check against `guide-structure.json` `ids` and `section_ids`)
 - Follow all 21 critical rules
 - Step budget: 3-8 interactive steps for a typical section
-- Include section bookends (intro + summary markdown) unless the section has only 1-2 blocks
+- Include section bookends (intro markdown immediately before the section, summary immediately after) unless the section has only 1-2 blocks. Do not put “You'll …” intros inside the section.
 - Cite the rule numbers you considered in a comment block above the JSON if helpful (the orchestrator will strip the comment)
 
 **Output**: ONE valid JSON object for the section block. No prose. No markdown fences. Just the JSON.

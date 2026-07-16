@@ -79,23 +79,32 @@ This document defines the structure and field requirements for `content.json` fi
 
 ### The `noop` Action
 
-Use `noop` for steps that should be **numbered** within a `section` but don't trigger any UI automation. This is distinct from `markdown` blocks, which are unnumbered.
+Use `noop` only for steps that should be **numbered** within a `section` but must **not** tell the learner to click, type, open, or fill UI. Prefer `markdown` for instructions without a stable selector. Prefer a real interactive action (`highlight`, `button`, `formfill`, `guided`) when you have a `reftarget`.
 
 **When to use `noop`:**
-- The step is inside a `section` and should be numbered in sequence with interactive steps
-- The step is a directive telling the user to do something manually (e.g., "Enter the username and password", "Click **Save**")
-- The step is instructional but part of a numbered procedure
+- Intentional numbered pause that is not a click/type instruction (e.g. “Wait for the query to finish”, “Confirm the preview looks right before you continue”)
+- Optional look-at context with a `reftarget` where the copy does not instruct a click
 
 **When NOT to use `noop`:**
-- The content is an observation or confirmation (e.g., "You should see a success message") → use `markdown`
-- The content is purely explanatory and should NOT be numbered → use `markdown`
-- The content is outside a `section` → use `markdown`
+- Learner actions without a selector (“Open a dashboard…”, “Enter the username…”, “Click **Save**”) → use `markdown`, or restore a real interactive step if you have a stable selector
+- Flaky-selector fallback → use `markdown` (or `highlight` + `doIt: false` when a selector exists)
+- Observation / confirmation / pure explanation that should not be numbered → use `markdown`
+- Content outside a `section` → use `markdown`
 
 ```json
 {
   "type": "interactive",
   "action": "noop",
-  "content": "Enter a title and description for your dashboard, select a folder if applicable, and click **Save**."
+  "content": "Wait for the query preview to finish loading before you continue."
+}
+```
+
+For a manual UI instruction without a working highlight, use markdown instead:
+
+```json
+{
+  "type": "markdown",
+  "content": "In the **Label** field, enter a user-friendly display name.\n\nFor example, for the variable named `environment`, enter the label `Environment`."
 }
 ```
 
