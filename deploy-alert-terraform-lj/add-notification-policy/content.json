@@ -1,0 +1,18 @@
+{
+  "id": "deploy-alert-terraform-add-notification-policy",
+  "title": "Add a notification policy",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A notification policy controls how alerts are routed to contact points. It matches on alert labels to decide which contact point receives each notification. The policy tree starts with a default route, and you can add nested policies for more specific routing.\n\nTo add a notification policy, complete the following steps:\n\n1. Add the following to your `alerts.tf` file:\n\n   ```hcl\n   resource \"grafana_notification_policy\" \"main\" {\n     contact_point   = grafana_contact_point.email_alerts.name\n     group_by        = [\"alertname\"]\n     group_wait      = \"30s\"\n     group_interval  = \"5m\"\n     repeat_interval = \"4h\"\n   }\n   ```\n\n   This configuration:\n   - Sets the default contact point to your email contact point\n   - Groups alerts by their name so related alerts are batched together\n   - Waits 30 seconds before sending the first notification (to batch related alerts)\n   - Sends grouped notifications every 5 minutes while the alert is active\n   - Repeats notifications every 4 hours"
+    },
+    {
+      "type": "markdown",
+      "content": "> **Note:** The `grafana_notification_policy` resource manages the entire notification policy tree for your Grafana instance. If you already have a custom policy tree configured, this resource will replace it. Use `disable_provenance = true` if you want to allow UI edits alongside Terraform management."
+    },
+    {
+      "type": "markdown",
+      "content": "## Adding label-based routing\n\nTo route specific alerts to different contact points, add nested policies with matchers:\n\n```hcl\nresource \"grafana_notification_policy\" \"main\" {\n  contact_point = grafana_contact_point.email_alerts.name\n  group_by      = [\"alertname\"]\n\n  policy {\n    matcher {\n      label = \"severity\"\n      match = \"=\"\n      value = \"critical\"\n    }\n    contact_point = grafana_contact_point.pagerduty.name\n  }\n}\n```\n\nThis routes alerts with `severity = \"critical\"` to PagerDuty, while all other alerts go to the default email contact point.\n\nIn the next milestone, you preview your deployment with `terraform plan`."
+    }
+  ]
+}

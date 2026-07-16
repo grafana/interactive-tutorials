@@ -1,0 +1,18 @@
+{
+  "id": "deploy-alert-terraform-apply-and-verify",
+  "title": "Apply and verify",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "With the plan confirmed, you can now apply it to deploy your alerting pipeline to Grafana.\n\nTo deploy and verify your alerting pipeline, complete the following steps:\n\n1. Run `terraform apply`:\n\n   ```bash\n   terraform apply\n   ```\n\n1. Terraform displays the plan again and asks for confirmation. Type `yes` and press Enter:\n\n   ```\n   Do you want to perform these actions?\n     Terraform will perform the actions described above.\n     Only 'yes' will be accepted to approve.\n\n     Enter a value: yes\n   ```\n\n1. Wait for Terraform to complete. You should see:\n\n   ```\n   Apply complete! Resources: 4 added, 0 changed, 0 destroyed.\n   ```\n\n1. Open your Grafana instance in a browser and navigate to **Alerting > Alert rules** in the left-side menu.\n\n1. Look for the **Terraform Alerts** folder. Click into it.\n\n1. Confirm the **CPU alerts** rule group appears with the **High CPU usage** rule.\n\n1. Navigate to **Alerting > Contact points** and confirm **Email alerts** appears.\n\n1. Navigate to **Alerting > Notification policies** and confirm the default route points to your contact point."
+    },
+    {
+      "type": "markdown",
+      "content": "## Updating a deployed alert rule\n\nWhen you modify your HCL and run `terraform apply` again, Terraform detects the change and updates the existing resources in place. No duplicates, no manual intervention.\n\n```bash\n# After modifying alerts.tf:\nterraform plan    # Preview the update\nterraform apply   # Apply the update\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "## What Terraform state tracks\n\nTerraform stores the deployed resource IDs in its state file (`terraform.tfstate`). This is how it knows whether to create or update a resource on subsequent runs. Keep the state file safe. If you lose it, Terraform won't know about existing resources.\n\nYour alerting pipeline is now deployed and managed by Terraform."
+    }
+  ]
+}
