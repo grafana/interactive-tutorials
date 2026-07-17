@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "intro-to-alloy-components-and-pipelines",
+  "title": "Components and pipelines",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In Alloy, a **component** is a building block that does one job: discover targets, collect data, transform it, or send it somewhere. You connect components so data flows through a pipeline that matches your needs."
+    },
+    {
+      "type": "markdown",
+      "content": "Each component has a name and a label, such as `loki.write \"local\"`. Components take configuration that sets their behavior, and they can share values with other components through references.\n\nThis milestone focuses on the pipeline shape. For the configuration syntax itself — attributes, expressions, blocks, arguments, and exports — refer to [Alloy syntax](https://grafana.com/docs/alloy/latest/get-started/syntax/) and [Configure components](https://grafana.com/docs/alloy/latest/get-started/components/configure-components/)."
+    },
+    {
+      "type": "markdown",
+      "content": "The following example is from the [logs-file](https://github.com/grafana/alloy-scenarios/tree/main/logs-file) scenario in alloy-scenarios. It discovers log files, tails them, and writes entries to Loki:"
+    },
+    {
+      "type": "markdown",
+      "content": "```alloy\nlocal.file_match \"local_files\" {\n  path_targets = [{\"__path__\" = \"/temp/logs/*.log\", \"job\" = \"python\"}]\n  sync_period  = \"5s\"\n}\n\nloki.source.file \"log_scrape\" {\n  targets       = local.file_match.local_files.targets\n  forward_to    = [loki.write.local.receiver]\n  tail_from_end = true\n}\n\nloki.write \"local\" {\n  endpoint {\n    url = \"http://loki:3100/loki/api/v1/push\"\n  }\n}\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "Read the pipeline as collect → process → export:\n\n- `local.file_match` finds matching files\n- `loki.source.file` tails those files and forwards log entries\n- `loki.write` sends the entries to Loki\n\nReal production pipelines often add processing components for labels, parsing, filtering, or redaction between source and write steps."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you explore how Alloy appears in Grafana Cloud Connections."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your path, you can explore the following topics:\n\n- [Alloy syntax](https://grafana.com/docs/alloy/latest/get-started/syntax/)\n- [Configure components](https://grafana.com/docs/alloy/latest/get-started/components/configure-components/)\n- [alloy-scenarios](https://github.com/grafana/alloy-scenarios)"
+    }
+  ]
+}
