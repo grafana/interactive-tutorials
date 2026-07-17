@@ -1,0 +1,18 @@
+{
+  "id": "deploy-alert-terraform-define-folder-and-rule-group",
+  "title": "Define a folder and alert rule group",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Alert rules in Grafana live inside folders. You'll create a folder first, then define a rule group inside it. A rule group is a named collection of related alert rules that share the same evaluation interval.\n\nTo define a folder and rule group, complete the following steps:\n\n1. Create a file named `alerts.tf` with a folder and rule group:\n\n   ```hcl\n   resource \"grafana_folder\" \"alerts\" {\n     title = \"Terraform Alerts\"\n   }\n\n   resource \"grafana_rule_group\" \"cpu_alerts\" {\n     name             = \"CPU alerts\"\n     folder_uid       = grafana_folder.alerts.uid\n     interval_seconds = 60\n\n     rule {\n       name      = \"High CPU usage\"\n       condition = \"C\"\n       for       = \"5m\"\n\n       data {\n         ref_id         = \"A\"\n         datasource_uid = \"<YOUR_DATASOURCE_UID>\"\n\n         relative_time_range {\n           from = 600\n           to   = 0\n         }\n\n         model = jsonencode({\n           expr = \"100 - (avg(rate(node_cpu_seconds_total{mode=\\\"idle\\\"}[5m])) * 100)\"\n         })\n       }\n\n       data {\n         ref_id         = \"B\"\n         datasource_uid = \"__expr__\"\n\n         relative_time_range {\n           from = 0\n           to   = 0\n         }\n\n         model = jsonencode({\n           type       = \"reduce\"\n           expression = \"A\"\n           reducer    = \"last\"\n         })\n       }\n\n       data {\n         ref_id         = \"C\"\n         datasource_uid = \"__expr__\"\n\n         relative_time_range {\n           from = 0\n           to   = 0\n         }\n\n         model = jsonencode({\n           type       = \"threshold\"\n           expression = \"B\"\n           conditions = [{\n             evaluator = {\n               type   = \"gt\"\n               params = [80]\n             }\n           }]\n         })\n       }\n\n       labels = {\n         severity = \"warning\"\n       }\n\n       annotations = {\n         summary     = \"CPU usage is above 80%\"\n         description = \"CPU usage has been above 80% for 5 minutes.\"\n       }\n     }\n   }\n   ```\n\n1. Replace `<YOUR_DATASOURCE_UID>` with the UID of a Prometheus data source in your Grafana instance. You can find the UID in Grafana under **Connections > Data sources**, then click your data source and note the UID from the URL or the settings page."
+    },
+    {
+      "type": "markdown",
+      "content": "> **Note:** If you don't have a Prometheus data source, you can use `grafana-testdata-datasource` as the `datasource_uid` and adjust the query model to use TestData expressions instead."
+    },
+    {
+      "type": "markdown",
+      "content": "## How the data blocks work\n\nThe three `data` blocks form a query pipeline:\n\n| Block | `ref_id` | What it does |\n|-------|----------|-------------|\n| Query | `A` | Fetches CPU idle percentage from Prometheus |\n| Reduce | `B` | Reduces the time series to a single value (last) |\n| Threshold | `C` | Fires the alert when the value exceeds 80 |\n\nThe `condition = \"C\"` on the rule tells Grafana which data block determines when the alert fires.\n\nIn the next milestone, you add a contact point to receive alert notifications."
+    }
+  ]
+}

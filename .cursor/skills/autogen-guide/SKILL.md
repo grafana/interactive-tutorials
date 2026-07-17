@@ -152,51 +152,53 @@ The most common section pattern. Tab click → fields → conditional fields wit
 
 ```json
 {
-  "type": "section",
-  "id": "authentication-settings",
-  "title": "Authentication Settings",
-  "requirements": ["on-page:/connections/datasources/edit"],
-  "blocks": [
-    {
-      "type": "markdown",
-      "content": "Choose how the datasource authenticates with your API. Most public APIs need no auth; private APIs typically use Bearer tokens or API keys."
-    },
-    {
-      "type": "interactive",
-      "action": "button",
-      "reftarget": "Authentication",
-      "content": "Click the **Authentication** tab.",
-      "tooltip": "Configure credentials for APIs that require authentication."
-    },
-    {
-      "type": "interactive",
-      "action": "button",
-      "reftarget": "Bearer Token",
-      "doIt": false,
-      "content": "**Bearer Token** sends a static token in the Authorization header.",
-      "tooltip": "Use for JWT-based APIs or personal access tokens.",
-      "skippable": true,
-      "hint": "Select the auth method that matches your API."
-    },
-    {
-      "type": "interactive",
-      "action": "highlight",
-      "reftarget": "[aria-label='bearer token']",
-      "doIt": false,
-      "content": "Paste your **Bearer token** here.",
-      "tooltip": "Stored encrypted. Sent as Authorization: Bearer <token> with every request.",
-      "skippable": true,
-      "hint": "Select Bearer Token auth first to reveal this field."
-    },
-    {
-      "type": "markdown",
-      "content": "Each auth method reveals its own credential fields when selected."
-    }
-  ]
+  "intro": {
+    "type": "markdown",
+    "content": "Choose how the datasource authenticates with your API. Most public APIs need no auth; private APIs typically use Bearer tokens or API keys."
+  },
+  "section": {
+    "type": "section",
+    "id": "authentication-settings",
+    "title": "Authentication Settings",
+    "requirements": ["on-page:/connections/datasources/edit"],
+    "blocks": [
+      {
+        "type": "interactive",
+        "action": "button",
+        "reftarget": "Authentication",
+        "content": "Click the **Authentication** tab.",
+        "tooltip": "Configure credentials for APIs that require authentication."
+      },
+      {
+        "type": "interactive",
+        "action": "button",
+        "reftarget": "Bearer Token",
+        "doIt": false,
+        "content": "**Bearer Token** sends a static token in the Authorization header.",
+        "tooltip": "Use for JWT-based APIs or personal access tokens.",
+        "skippable": true,
+        "hint": "Select the auth method that matches your API."
+      },
+      {
+        "type": "interactive",
+        "action": "highlight",
+        "reftarget": "[aria-label='bearer token']",
+        "doIt": false,
+        "content": "Paste your **Bearer token** here.",
+        "tooltip": "Stored encrypted. Sent as Authorization: Bearer <token> with every request.",
+        "skippable": true,
+        "hint": "Select Bearer Token auth first to reveal this field."
+      }
+    ]
+  },
+  "summary": {
+    "type": "markdown",
+    "content": "Each auth method reveals its own credential fields when selected."
+  }
 }
 ```
 
-Key things: section bookends (intro + summary), tab-click before fields, `skippable: true` with `hint` on conditional fields, `doIt: false` on secrets, include `exists-reftarget` in requirements for selector-targeting steps, concise tooltips that don't name the highlighted element.
+Key things: section bookends (intro markdown immediately before each section, summary immediately after — not inside), tab-click before fields, `skippable: true` with `hint` on conditional fields, `doIt: false` on secrets, include `exists-reftarget` in requirements for selector-targeting steps, concise tooltips that don't name the highlighted element.
 
 ### Example B: Card grid selection
 
@@ -264,20 +266,18 @@ When a tab has no `data-testid`, use `:contains()` pseudo-selector with `doIt: f
 
 Key things: `action: "button"` with the tab label text. If the text isn't unique on the page, use `"reftarget": "div[role='tab']:contains('Network')"` or similar structural selector. Always `doIt: false` when the selector is fragile.
 
-### Example E: noop for complex concepts
+### Example E: markdown for complex concepts
 
-When no single element can be targeted but the user needs context.
+When no single element can be targeted but the user needs context. Prefer `markdown` over `noop` so Pathfinder does not number the prose as a step. Use `noop` only for an intentional numbered pause that is not a click/type instruction.
 
 ```json
 {
-  "type": "interactive",
-  "action": "noop",
-  "content": "**Proxy Settings** offer three modes: **Default** (uses environment vars), **None** (direct), and **URL** (custom proxy). Select **URL** to see proxy fields.",
-  "skippable": true
+  "type": "markdown",
+  "content": "**Proxy Settings** offer three modes: **Default** (uses environment vars), **None** (direct), and **URL** (custom proxy). Choose **URL** when you need custom proxy fields."
 }
 ```
 
-Key things: `noop` when there's no sensible element to highlight. Keep it brief. Use `skippable` if the information isn't essential to the guide flow.
+Key things: `markdown` for explanation without a selector. Do not use `noop` as a flaky-selector fallback or for “click / enter / select …” copy. Keep it brief.
 
 ---
 
@@ -623,12 +623,18 @@ You are generating ONE section of a Pathfinder interactive guide as a JSON objec
 {paste the matching golden example from SKILL.md — choose the example that best matches this section's UI patterns}
 
 **Your task:**
-1. Return a single JSON object: `{"type": "section", "id": "{section_id}", ...}`
-2. First block: brief intro markdown (what the user will do in this section)
+1. Return a **section package** (not a bare section):
+   ```json
+   {
+     "intro": {"type": "markdown", "content": "1-sentence what you'll do"},
+     "section": {"type": "section", "id": "{section_id}", "title": "...", "blocks": [/* interactive steps only */]},
+     "summary": {"type": "markdown", "content": "1-sentence what you learned"}
+   }
+   ```
+2. Do **not** put intro/summary markdown inside the section (Pathfinder may number in-section markdown as a step). Interactive steps only inside `section.blocks`.
 3. If a tab click is needed, that's the first interactive step
 4. Generate steps for each field per the action decision tree
-5. Last block: brief summary markdown (what the user configured)
-6. Return ONLY the section JSON object — no wrapper, no root structure
+5. Return ONLY the section package JSON — no guide root. `assemble_guide.py` interleaves intro → section → summary.
 
 **Also return** a brief text summary: step count, any selectors you're uncertain about, any fields you omitted and why.
 ```
@@ -661,24 +667,26 @@ Match the section's UI patterns to the golden examples:
 
 After all section sub-agents complete:
 
-1. **Write each returned section JSON** to a temporary file: `{guide_dir}/assets/section-{section_id}.json`
-2. **Add the closing summary markdown** to the guide shell as the final block:
+1. **Write each returned section package** to a temporary file: `{guide_dir}/assets/section-{section_id}.json` (must include `intro`, `section`, and `summary` — bare section objects fail assembly).
+2. **Write the guide-level closing summary** to `{guide_dir}/assets/closing.json` (not into the shell):
    ```json
    {
      "type": "markdown",
      "content": "{summary of what the user explored/configured, list the key sections, suggest next steps}"
    }
    ```
-3. **Run the assembly script** to assemble and validate in one step:
+   Keep the shell as **opening blocks only**. Putting closing markdown in the shell before `--sections` yields `intro → closing → sections` and breaks rule 14 bookends.
+3. **Run the assembly script** to interleave bookends and validate:
    ```bash
    python .cursor/tools/assemble_guide.py \
      --shell {guide_dir}/assets/guide-shell.json \
      --sections {guide_dir}/assets/section-*.json \
+     --closing {guide_dir}/assets/closing.json \
      --output {guide_dir}/content.json
    ```
-   The script validates: unique section IDs, no multistep singletons, tooltip lengths, section bookends, step counts, and no noop-only sections.
-4. **If validation fails**: fix the flagged issues in the section JSON files and re-run.
-5. **Spot-check**: read the first and last sections to verify structure and bookends.
+   The script interleaves each package as intro → section → summary, appends `--closing` last, and **fails** (exit 1) on missing or misordered required bookends. Also validates unique section IDs, no multistep singletons, tooltip lengths, step counts, and no noop-only sections.
+4. **If validation fails**: fix the flagged issues in the section package files and re-run.
+5. **Spot-check**: read the assembled `blocks` array — each section must sit between its intro and summary markdown.
 
 ### 3.4 Orchestrator: Generate Selector Report
 

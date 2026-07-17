@@ -123,20 +123,18 @@ Use a `guided` block when the user needs to hover to reveal a data link or toolt
 
 Key things: `guided` (not `multistep`) for user-performed actions, hover reveals tooltip data in time-series panels, uses `:nth-match()` to target the correct inner div, `description` provides clear user-facing instruction (never omit it).
 
-### Example F: noop for dashboard concepts
+### Example F: markdown for dashboard concepts
 
-When no single element can be targeted but the user needs context about the dashboard structure. Keep it brief.
+When no single element can be targeted but the user needs context about the dashboard structure. Prefer `markdown` so the prose is not numbered as a step. Keep it brief.
 
 ```json
 {
-  "type": "interactive",
-  "action": "noop",
-  "content": "All panels query **Prometheus** via [PromQL](https://grafana.com/docs/grafana/latest/datasources/prometheus/). The time picker (top-right) controls the shared time range.",
-  "skippable": true
+  "type": "markdown",
+  "content": "All panels query **Prometheus** via [PromQL](https://grafana.com/docs/grafana/latest/datasources/prometheus/). The time picker (top-right) controls the shared time range."
 }
 ```
 
-Key things: `noop` when there's no sensible element to highlight. Use for dashboard-wide concepts (shared data source, time range, refresh interval). Keep text to 1–2 sentences. Include a docs link when referencing a Grafana feature or query language.
+Key things: `markdown` for dashboard-wide concepts (shared data source, time range, refresh interval). Do not use `noop` for “click / enter / select …” instructions or as a selector fallback. Include a docs link when referencing a Grafana feature or query language.
 
 ### Example G: Below-fold panel highlight (guided + lazyRender)
 
@@ -194,9 +192,9 @@ When building a section's sub-agent prompt, pass only the relevant examples:
 | Dashboard link | `button` or `navigate` |
 | Panel drill-down link | `guided` with hover + button |
 | Untitled panel (above fold) | `highlight` with `doIt: false` using nth-match(1) — only for the 1st untitled panel |
-| Untitled panel (below fold) | `noop` describing the panel, OR `guided` with `lazyRender: true` |
+| Untitled panel (below fold) | `markdown` describing the panel, OR `guided` with `lazyRender: true` |
 | Text panel (`type: "text"`) | Skip -- informational content, not an interactive target |
-| Plugin panel (unrecognized type) | `noop` describing the panel -- plugin panels may not follow standard `data-testid` conventions |
+| Plugin panel (unrecognized type) | `markdown` describing the panel -- plugin panels may not follow standard `data-testid` conventions |
 
 ---
 
@@ -216,7 +214,7 @@ Grafana lazy-renders panels. Only panels in or near the viewport exist in the DO
 
 - **ALL panels below the fold** (any selector grade): MUST use `guided` with `lazyRender: true` — a plain `interactive` block WILL fail with "Element not found"
 - Green selectors (unique title) above the fold: safe in plain `interactive` blocks
-- Yellow/Red selectors using `nth-match(N)` where N > 1: **unreliable even with lazyRender** for below-fold panels — prefer `noop`/`markdown`
+- Yellow/Red selectors using `nth-match(N)` where N > 1: **unreliable even with lazyRender** for below-fold panels — prefer `markdown`
 - Below-fold panel example:
 
 ```json
@@ -249,7 +247,7 @@ These items apply to every dashboard guide review. The Phase 4 review sub-agent 
   After:  `{"type":"guided","content":"...","tooltip":"...","steps":[{"action":"highlight","reftarget":"...","lazyRender":true,"description":"Click inside the highlighted area"}]}`
 - nth-match(1) on an above-fold untitled panel is acceptable in an `interactive` block
 - nth-match(N) where N > 1 in a plain `interactive` block is ALWAYS a bug — it will fail due to lazy rendering
-- Fix nth-match issues by converting to `guided` with `lazyRender: true`, or replacing with `noop`
+- Fix nth-match issues by converting to `guided` with `lazyRender: true`, or replacing with `markdown`
 
 **Step budget and section viability**:
 - Verify each section has 3–8 interactive steps

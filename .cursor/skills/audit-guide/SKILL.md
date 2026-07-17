@@ -288,6 +288,9 @@ You are the **Semantic Audit** phase of the audit-guide skill. Read the followin
 - Variable references: every `var-<name>:<value>` requirement must correspond to an `input` block earlier in the guide with `variableName: <name>`. Every `{{<name>}}` in markdown content must correspond to an `input` block.
 - First-action page anchor: the first interactive action should have `on-page:/path` or be a `navigate` action.
 - Tooltip quality: tooltips must be ≤ 250 chars, single sentence, and not name the element being highlighted.
+- Section bookends (rule 14): each `section` should have a 1-sentence intro markdown **immediately before** it and a 1-sentence summary **immediately after** it in the parent `blocks` array. Do **not** flag missing *in-section* intro when outside bookends exist. You may treat a pre-section "To …, complete the following steps:" line as satisfying the intro.
+- Section intro markdown that may number as a step: if the first block inside a `section` is `markdown` that starts with "You'll " / "You will " or is a one-sentence action preview before the first interactive, flag as **Warning**. Cite the block path. Note that Block Editor may number this as step 1; LP review promotes to inline after live confirm. Fix guidance: move the intro outside the section (rule 14 placement).
+- False noops: `action: "noop"` whose content tells the learner to click, type, open, or select UI without a `reftarget` — flag as **Warning** (prefer `markdown` or a real highlight).
 
 **Output: a structured markdown report at `{guide_dir}/assets/semantic-report.md`** with the standard frontmatter disclaimer and the same Summary / Blocking / Warning / Info section shape as the structural report. Cite rule numbers and block paths.
 

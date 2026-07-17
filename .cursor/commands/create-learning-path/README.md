@@ -18,7 +18,7 @@ The user provides:
 
 Follow these phases in order:
 
-1. **Validate environment.** Confirm both the `website` and `interactive-tutorials` repo are accessible in the workspace and Playwright MCP is available.
+1. **Validate environment.** Confirm the `interactive-tutorials` repo is writable and the `website` repo is readable in the workspace, and that Playwright MCP is available. The `website` repo is a read-only source — it's used only to read canonical docs and any existing source markdown. All generated files are written to interactive-tutorials.
 2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch.
 3. **Propose path options.** Review existing paths in `interactive-tutorials/[slug]-lj` for structural patterns. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
 4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content.
@@ -34,14 +34,15 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 
 ## Critical rules
 
-1. **Read all canonical feature docs before writing content.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch. These docs are the authoritative source — never rely on training data.
-2. **Scaffold ALL milestones.** Every milestone needs a `content.json`, including conceptual, intro, and conclusion pages.
-3. **Use Playwright for selectors.** Never guess. Always inspect the actual DOM at `learn.grafana.net`.
-4. **User handles all Pathfinder testing.** Tell the user which `content.json` to import. Wait for their feedback. Never import JSON or click interactive buttons yourself.
-5. **Ask before fixing.** When the user reports a broken selector, explain and propose a fix, then wait for approval.
-6. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
-7. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
-8. **Verify docs accuracy.** After testing, cross-check all factual claims against live Grafana documentation.
+1. **Never modify the website repo.** The `website` repo is a read-only source. Read canonical docs and any existing source markdown from it, but never add `pathfinder_data`, insert the `{{< pathfinder/json >}}` shortcode, or otherwise write to it. All generated files — `content.json`, `manifest.json`, and `website.yaml` — live in the interactive-tutorials repo.
+2. **Read all canonical feature docs before writing content.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch. These docs are the authoritative source — never rely on training data.
+3. **Scaffold ALL milestones.** Every milestone needs a `content.json`, including conceptual, intro, and conclusion pages.
+4. **Use Playwright for selectors.** Never guess. Always inspect the actual DOM at `learn.grafana.net`.
+5. **User handles all Pathfinder testing.** Tell the user which `content.json` to import. Wait for their feedback. Never import JSON or click interactive buttons yourself.
+6. **Ask before fixing.** When the user reports a broken selector, explain and propose a fix, then wait for approval.
+7. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
+8. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
+9. **Verify docs accuracy.** After testing, cross-check all factual claims against live Grafana documentation.
 
 ---
 
