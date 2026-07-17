@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alloy-configuration-basics-configuration-file-anatomy",
+  "title": "Understand configuration file anatomy",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "An Alloy configuration file is made of attributes, expressions, and blocks. These elements describe the settings and behavior that Alloy should load."
+    },
+    {
+      "type": "markdown",
+      "content": "**Attributes** are `key = value` pairs that configure individual settings:\n\n```alloy\nlevel = \"debug\"\n```\n\nHere, `level` is the attribute name. The expression on the right side of `=` provides its value."
+    },
+    {
+      "type": "markdown",
+      "content": "**Expressions** compute values. An expression can be:\n\n- A constant, such as `\"localhost:9090\"`\n- A reference to a component export, such as `local.file.example.content`\n- A calculation, such as `(1 + 2) * 3`\n- A standard library call, such as `sys.env(\"HOME\")`\n\nAlloy evaluates an expression before assigning its result to an attribute."
+    },
+    {
+      "type": "markdown",
+      "content": "**Blocks** group related attributes and nested blocks between `{` and `}`. Some blocks configure Alloy itself, while labeled component blocks create running components.\n\nThe special `logging` block configures Alloy's own log output:\n\n```alloy\nlogging {\n  level  = \"debug\"\n  format = \"json\"\n}\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "Create a file named `config.alloy`, paste the `logging` block into it, and run:\n\n```sh\nalloy run config.alloy\n```\n\nIf the Alloy binary isn't on your `PATH`, replace `alloy` with its file path. Alloy starts and writes debug-level logs in JSON format. Stop it with `Ctrl+C`.\n\nThis configuration changes Alloy's own logging, but it doesn't collect or send telemetry."
+    },
+    {
+      "type": "markdown",
+      "content": "You can now identify the three basic parts of an Alloy configuration: attributes hold settings, expressions produce values, and blocks group configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Alloy syntax](https://grafana.com/docs/alloy/latest/get-started/syntax/)\n- [Expressions](https://grafana.com/docs/alloy/latest/get-started/expressions/)\n- [Standard library](https://grafana.com/docs/alloy/latest/reference/stdlib/)"
+    }
+  ]
+}

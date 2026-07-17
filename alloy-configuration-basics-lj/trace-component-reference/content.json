@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alloy-configuration-basics-trace-component-reference",
+  "title": "Trace a component reference",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Read the following example to trace how one component's export supplies another component's argument. You don't need to run this configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "```alloy\nlocal.file \"example\" {\n  filename = sys.env(\"HOME\") + \"/file.txt\"\n}\n\nprometheus.remote_write \"local_prom\" {\n  endpoint {\n    url = \"http://localhost:9090/api/v1/write\"\n\n    basic_auth {\n      username = \"admin\"\n      password = local.file.example.content\n    }\n  }\n}\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "Start with `local.file \"example\"`:\n\n1. `local.file` is the component name.\n1. `example` is the component label.\n1. `filename` is an argument.\n1. `sys.env(\"HOME\") + \"/file.txt\"` is an expression that produces the filename.\n1. `content` is an export containing the latest contents of that file."
+    },
+    {
+      "type": "markdown",
+      "content": "Now read `local.file.example.content` from left to right:\n\n- `local.file` identifies the component type.\n- `example` identifies the labeled instance.\n- `content` identifies the export.\n\nThe component type and label together, `local.file.example`, are the component's fully qualified name."
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, follow the value into `prometheus.remote_write \"local_prom\"`. The `password` argument in its nested `basic_auth` block references `local.file.example.content`.\n\nThe reference means Alloy evaluates `local.file.example` first, then supplies its `content` export as the `password` argument. This single reference creates a dependency from `prometheus.remote_write.local_prom` to `local.file.example`."
+    },
+    {
+      "type": "markdown",
+      "content": "You can now trace a component reference by finding its component name, label, and export, then locating the argument that receives the exported value."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Component exports](https://grafana.com/docs/alloy/latest/get-started/expressions/referencing_exports/)\n- [`local.file` reference](https://grafana.com/docs/alloy/latest/reference/components/local/local.file/)\n- [`prometheus.remote_write` reference](https://grafana.com/docs/alloy/latest/reference/components/prometheus/prometheus.remote_write/)"
+    }
+  ]
+}
