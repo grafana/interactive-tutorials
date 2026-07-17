@@ -1,0 +1,30 @@
+{
+  "id": "labeling-strategy-correlate-dont-inflate",
+  "title": "Correlate signals instead of inflating labels",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Sometimes you genuinely need a high-cardinality value, like a request ID, when you're debugging. The answer isn't to delete it, and it isn't to put it on a metric label. It's to put the value on the signal designed to hold it, and correlate across signals when you investigate."
+    },
+    {
+      "type": "markdown",
+      "content": "## The pattern\n\nWhen a high-cardinality value is attached to a metric label, every unique value multiplies your active series. The same value attached to a log costs a fraction of that, because Loki doesn't index log content:\n\n- **Keep the metric low-cardinality**: the metric answers \"how many\" and \"how fast\" per bounded dimension, such as `service` and `status`.\n- **Put the high-cardinality detail on the correlated log**: attach it as structured metadata, or leave it in the log line. The log answers \"which exact request\".\n- **Correlate at query time**: shared bounded labels, such as `service` and `env`, connect the metric that alerted you to the logs that explain it."
+    },
+    {
+      "type": "markdown",
+      "content": "## A worked example\n\nSuppose you track request latency and want to find slow requests for specific users.\n\n- **Instead of** `http_request_duration_seconds{user_id=\"u-48221\", ...}`, which creates a series per user per label combination,\n- **keep the metric as** `http_request_duration_seconds{service=\"checkout\", env=\"prod\"}`,\n- **and log each request** with `user_id` and `request_id` attached as structured metadata.\n\nWhen latency spikes, the metric tells you where and when. Then you query the logs for that service and window, filtering by structured metadata: `{app=\"checkout\"} | user_id=\"u-48221\"`. You keep full debugging detail without paying for it on every series."
+    },
+    {
+      "type": "markdown",
+      "content": "## Why this works\n\nEach signal is priced and indexed for a different job. Metrics are cheap per series but multiply by label combinations. Logs carry arbitrary detail, and structured metadata makes high-cardinality fields queryable without indexing them. Putting each value where it belongs is what a labeling strategy actually is: not fewer data points, just the right home for each one."
+    },
+    {
+      "type": "markdown",
+      "content": "You now have the complete strategy across both signals. The last milestone recaps the frameworks and points you to what's next."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following topics:\n\n- [What is structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/)\n- [Use telemetry signals together](https://grafana.com/docs/grafana-cloud/telemetry-signals/use-signals-together/key-concepts/)"
+    }
+  ]
+}

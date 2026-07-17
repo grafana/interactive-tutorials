@@ -1,0 +1,40 @@
+{
+  "id": "labeling-strategy-understand-cardinality",
+  "title": "Understand cardinality and active series",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Cardinality is the number of distinct values an attribute can have. In observability, it determines how many unique series and streams your labels create, and that number is what you're billed for. This milestone gives you the mental model that everything else in this path builds on."
+    },
+    {
+      "type": "markdown",
+      "content": "## What you're actually billed for\n\nA common misconception is that metrics billing is per metric name. It isn't. A time series is a metric name plus one unique combination of label key-value pairs, and each series that receives data within the last 20 minutes counts as an **active series**. Grafana Cloud bills metrics on the 95th percentile of your active series count over the billing period, so one metric name with many label combinations can cost far more than dozens of well-labeled metrics.\n\nLogs work the same way structurally: each unique combination of label values defines a **log stream**, and Loki indexes, batches, and stores each stream separately."
+    },
+    {
+      "type": "image",
+      "src": "https://grafana.com/media/docs/learning-journey/labeling-strategy/series-anatomy.svg",
+      "alt": "Anatomy of a time series and a log stream, showing that each unique combination of label values creates one series or stream"
+    },
+    {
+      "type": "markdown",
+      "content": "## The multiplication\n\nLabels don't add series, they multiply them. A `status` label with 3 values combined with an `action` label with 5 values produces 15 unique series from what looks like one metric. Add an `endpoint` label with 3 values and you're at 45. Every label you add multiplies the count by that label's number of values."
+    },
+    {
+      "type": "image",
+      "src": "https://grafana.com/media/docs/learning-journey/labeling-strategy/label-multiplication.svg",
+      "alt": "Two rows showing label value counts multiplying: 3 status values times 5 action values equals 15 series, and adding a 3-value endpoint label grows the total to 45 series"
+    },
+    {
+      "type": "markdown",
+      "content": "## Why this hurts twice\n\nHigh cardinality doesn't only raise your bill:\n\n- **Cost**: every unique series and stream is billed, whether or not anyone queries it.\n- **Performance**: for logs, many streams mean a large index and many small chunks, which slows queries down. Loki is designed for low-cardinality labels and limits index labels to 15 by default.\n\nHigh-cardinality attributes to watch for include user IDs, request or trace IDs, IP addresses, Kubernetes pod names, and timestamps. Any of these used as a label value creates a new series or stream for every unique value."
+    },
+    {
+      "type": "markdown",
+      "content": "You now have the core model: labels multiply into series and streams, and you pay for every unique combination. Next, you'll look at your own stack's cardinality."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following topics:\n\n- [Understand metrics usage and cost](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/understand-usage-cost/metrics/)\n- [Cardinality in Loki](https://grafana.com/docs/loki/latest/get-started/labels/cardinality/)"
+    }
+  ]
+}

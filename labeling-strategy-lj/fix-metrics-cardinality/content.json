@@ -1,0 +1,81 @@
+{
+  "id": "labeling-strategy-fix-metrics-cardinality",
+  "title": "Reduce metrics cardinality you already have",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "If the Cardinality tab already shows high-cardinality or unused metrics, you don't have to re-instrument anything to fix it. Adaptive Metrics reduces cardinality from inside Grafana Cloud by aggregating away the labels nobody uses, while keeping the metric itself."
+    },
+    {
+      "type": "markdown",
+      "content": "## How Adaptive Metrics helps\n\nAdaptive Metrics analyzes how your organization uses its metrics across dashboards, alerts, recording rules, and queries. It then recommends aggregating underutilized metrics into lower-cardinality versions. Applying a recommendation doesn't delete the metric: it aggregates away unused label dimensions, and your existing dashboards, rules, and queries continue to work without modification. If usage changes later, you can remove the aggregation and the metric is stored at full cardinality again.\n\nThink of it as enforcement at the door: unnecessary series are stopped before they're persisted, without touching your Alloy or collector configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "In this section, you'll open Adaptive Metrics and review its recommendations for your stack."
+    },
+    {
+      "type": "section",
+      "id": "review-adaptive-metrics",
+      "title": "Review your recommendations",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-label=\"Expand section: Adaptive Telemetry\"]",
+          "content": "In the navigation menu, expand **Adaptive Telemetry**. If the section is already expanded, skip this step.",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "multistep",
+          "content": "Navigate to **Adaptive Metrics** > **Metrics**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[href=\"/a/grafana-adaptive-metrics-app/overview\"]",
+              "tooltip": "Click Adaptive Metrics"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[href=\"/a/grafana-adaptive-metrics-app/rule-management\"]",
+              "tooltip": "Click Metrics"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review the recommendations list. Each recommendation shows which metric it affects and which labels it proposes to aggregate away, based on how the metric is actually used."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Expand a recommendation to review its details before applying it, including the recommended rule information and the metric's usage stats.",
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "You opened Adaptive Metrics and reviewed the aggregation recommendations for your stack."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A good remediation order:\n\n1. **Unused metrics first**: metrics with the **Unused** badge in the Cardinality tab are cost with no value.\n2. **High-cardinality labels on used metrics next**: aggregate away the label dimensions nobody queries, and keep the ones they do.\n3. **Protect what matters**: define exemptions for metrics that must never be aggregated."
+    },
+    {
+      "type": "markdown",
+      "content": "For the complete Adaptive Metrics workflow, including rules, exemptions, segmentation, and auto-apply, take the [Optimize metrics with Adaptive Metrics path](https://grafana.com/docs/learning-paths/adaptive-metrics/)."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll switch signals and apply labeling strategy to logs."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following topics:\n\n- [Introduction to Adaptive Metrics](https://grafana.com/docs/grafana-cloud/adaptive-telemetry/adaptive-metrics/introduction/)\n- [Manage recommendations](https://grafana.com/docs/grafana-cloud/adaptive-telemetry/adaptive-metrics/manage-recommendations/)"
+    }
+  ]
+}
