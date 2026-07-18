@@ -1,0 +1,14 @@
+{
+  "id": "deploy-alert-terraform-run-terraform-plan",
+  "title": "Run terraform plan",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before deploying, always run `terraform plan` to preview what Terraform will do. This shows you exactly which resources will be created, updated, or destroyed, without making any changes to your Grafana instance.\n\nTo preview your deployment, complete the following steps:\n\n1. Run `terraform plan` from your `terraform-alerts` directory:\n\n   ```bash\n   terraform plan\n   ```\n\n1. Review the output. You should see something like:\n\n   ```\n   Terraform will perform the following actions:\n\n     # grafana_folder.alerts will be created\n     + resource \"grafana_folder\" \"alerts\" {\n         + id    = (known after apply)\n         + title = \"Terraform Alerts\"\n         + uid   = (known after apply)\n       }\n\n     # grafana_rule_group.cpu_alerts will be created\n     + resource \"grafana_rule_group\" \"cpu_alerts\" {\n         + folder_uid       = (known after apply)\n         + interval_seconds = 60\n         + name             = \"CPU alerts\"\n         ...\n       }\n\n     # grafana_contact_point.email_alerts will be created\n     + resource \"grafana_contact_point\" \"email_alerts\" {\n         + name = \"Email alerts\"\n         ...\n       }\n\n     # grafana_notification_policy.main will be created\n     + resource \"grafana_notification_policy\" \"main\" {\n         + contact_point = \"Email alerts\"\n         ...\n       }\n\n   Plan: 4 to add, 0 to change, 0 to destroy.\n   ```\n\n1. Confirm the plan shows:\n   - **4 to add** (the folder, rule group, contact point, and notification policy)\n   - **0 to change** (nothing existing is being modified)\n   - **0 to destroy** (nothing is being deleted)"
+    },
+    {
+      "type": "markdown",
+      "content": "## What to look for\n\n| Indicator | Meaning |\n|-----------|---------|\n| `+` (green) | Resource will be created |\n| `~` (yellow) | Resource will be updated in place |\n| `-` (red) | Resource will be destroyed |\n\nIf the plan looks correct, you're ready to apply. If something looks wrong (unexpected destroys or changes), review your configuration before proceeding.\n\nIn the next milestone, you apply the plan to deploy the alerting pipeline to Grafana and verify it's working."
+    }
+  ]
+}
