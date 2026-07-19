@@ -96,7 +96,7 @@ Framing packages may exist in the repo for the website Learning Path but must **
 
 **OK:** Framing directories + `website.yaml` remain; `end-journey` and hands-on milestones stay in path `milestones`.
 
-**CI:** `.github/scripts/validate_learning_path_packages.py` (wired in `.github/workflows/validate-json.yml`) enforces framing-out-of-milestones, first-hands-on depends, and required `website.yaml` `description`. Prefer that script over re-deriving patterns during Phase 2.
+**CI:** `.github/scripts/validate_learning_path_packages.py` (wired in `.github/workflows/validate-json.yml`) enforces framing-out-of-milestones, first-hands-on depends, required `website.yaml` `description`, and trailing newlines on `website.yaml`. Prefer that script over re-deriving patterns during Phase 2.
 
 ---
 
@@ -127,6 +127,7 @@ Path root `{path_dir}/website.yaml` configures the companion Learning Path on gr
 | Path root file | Missing when path has framing milestone dirs (`business-value`, etc.) or website companion slug exists |
 | `menuTitle` / `description` | Missing or empty on path root `website.yaml` |
 | Step `description` | Missing or empty on any step `website.yaml` present under the package |
+| Trailing newline | Any `website.yaml` missing a final `\n` (breaks deploy-preview Hugo front matter) |
 | `journey` metadata | Missing `group`, `skill`, or layout fields peer LPs include |
 | Slug alignment | Website path slug ≠ `{path_dir}` minus `-lj` when companion exists |
 | Milestone pages | Milestone dir in path `milestones` missing `website.yaml` when peer LPs include one for same step type |

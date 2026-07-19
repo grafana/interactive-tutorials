@@ -8,6 +8,9 @@ These checks catch review findings that Pathfinder CLI validate does not cover:
    (use ``"depends": []``).
 3. Path-level and step-level ``website.yaml`` files require a non-empty
    ``description`` (Learning Hub meta / listings).
+4. Every ``website.yaml`` must end with a trailing newline (deploy-preview
+   concatenates ``type: docs`` after ``cat``; a missing newline merges lines
+   and breaks Hugo YAML unmarshalling).
 
 Framing packages may still exist on disk for the website companion path; they
 must simply be omitted from Pathfinder path ``milestones``.
@@ -231,10 +234,23 @@ def validate_path_package(path_dir: Path) -> list[Finding]:
 
     for website in website_files:
         try:
-            text = website.read_text(encoding="utf-8")
+            raw = website.read_bytes()
+            text = raw.decode("utf-8")
         except OSError as err:
             findings.append(Finding(website, f"unable to read website.yaml ({err})"))
             continue
+        except UnicodeDecodeError as err:
+            findings.append(Finding(website, f"website.yaml is not valid UTF-8 ({err})"))
+            continue
+        if raw and not raw.endswith(b"\n"):
+            findings.append(
+                Finding(
+                    website,
+                    "must end with a trailing newline — deploy-preview cats this "
+                    "file then appends type/title/description; a missing newline "
+                    "merges the last line with 'type: docs' and breaks Hugo YAML",
+                )
+            )
         description = top_level_description(text)
         if not description:
             findings.append(
@@ -262,7 +278,10 @@ def validate_repo(root: Path, only: str | None = None) -> list[Finding]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Validate learning-path framing, depends, and website.yaml description fields."
+        description=(
+            "Validate learning-path framing, depends, website.yaml description, "
+            "and website.yaml trailing newlines."
+        )
     )
     parser.add_argument(
         "--root",

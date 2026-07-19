@@ -130,6 +130,7 @@ That would require:
 - Path-level `weight` values are spaced (for example, 100, 200, 300) so paths can be reordered without renumbering.
 - `description` should be a single sentence and avoid duplicating `menuTitle`.
 - Every path-level and step-level `website.yaml` **must** include a non-empty top-level `description`. CI enforces this via `.github/scripts/validate_learning_path_packages.py`.
+- Every `website.yaml` **must** end with a trailing newline. The deploy-preview build cats the file then appends `type` / `title` / `description`; a missing newline merges the last line with `type: docs` and breaks Hugo YAML. CI enforces this in the same script.
 
 ## CI packaging checks
 
@@ -145,6 +146,7 @@ The script fails when:
 1. A framing / concept-intro package appears in path `manifest.json` `milestones` (for example `business-value`, `advantages`, `understand-value`). Keep the directory for the website; omit it from Pathfinder milestones.
 2. The first hands-on milestone `depends` on a framing package — use `"depends": []`.
 3. Path or step `website.yaml` is missing a non-empty `description`.
+4. Path or step `website.yaml` is missing a trailing newline.
 
 Framing short-name patterns live in the script and in [`.cursor/skills/review-learning-path/reference-checks.md`](../.cursor/skills/review-learning-path/reference-checks.md) (Framing milestones).
 
