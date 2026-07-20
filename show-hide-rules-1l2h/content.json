@@ -1,0 +1,146 @@
+{
+  "id": "show-hide-rules-1l2h",
+  "title": "Create a time-based show/hide rule",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You can configure panels, rows, and tabs to be shown or hidden based on rules. For example, you can set a panel to be hidden if there’s no data returned by a query or a tab to only be shown if a specific variable value is present.\n\n\n\nIn this guide, you'll learn how to configure a show/hide rule that displays a panel only when the dashboard time range is one hour or less. This helps keep dashboards focused by showing time-sensitive panels only when they're relevant to the selected time range."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-64507",
+      "title": "Steps",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Open **Dashboards** from the main menu.",
+          "requirements": [
+            "exists-reftarget",
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Create a new dashboard by clicking **New**, then selecting **New dashboard**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#pageContent button:text('New')"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Portal.container} [role='menuitem']:text('New dashboard')"
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Add a panel, then click **Configure visualization**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.Sidebar.newPanelButton"
+            },
+            {
+              "action": "button",
+              "reftarget": "Configure visualization"
+            }
+          ],
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='input-wrapper'] input[data-testid='data-testid Select a data source']",
+          "targetvalue": "-- Grafana --",
+          "content": "Open the data source selector, search for `-- Gra`, and select the **-- Grafana --** data source."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.NavToolbar.editDashboard.backToDashboardButton",
+          "content": "Return to the dashboard.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:pages.Dashboard.Sidebar.optionsButton",
+          "content": "Open the dashboard options.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid radio-button'] input[aria-label='layout-selection-option-Auto']",
+          "content": "Set the dashboard layout to **Auto**. \n\nYour dashboard needs to be in auto layout to use show/hide rules so that it can dynamically reorganize when panels appear and disappear.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.Panels.Panel.headerContainer",
+          "content": "Click the panel header to bring it back into focus. Now the sidebar shows panel configuration options.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "multistep",
+          "content": "Now let's add a rule. Click **Add rule**, then select **Time range less than**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.ValuePicker.button:Add rule"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Select.menu} [role='option']:contains('Time range less than')"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "{grafana:pages.Dashboard.Sidebar.conditionalRendering.timeRange.select} div:has(input[data-testid='data-testid Dashboard Conditional Rendering Time range select-input'])",
+          "targetvalue": "1 hour",
+          "content": "Set the time range to **1 hour**.\n\nNow, the dashboard only displays this panel if the dashboard time range is 1 hour or less."
+        },
+        {
+          "type": "multistep",
+          "content": "The panel now displays the hidden icon and won't be visible in view mode.\n\nNow let's change the dashboard time range to 1 hour. This will make the panel visible again.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.TimePicker.openButton"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#TimePickerContent label:contains('Last 1 hour')"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "input:nth-of-type(1)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Well done! Now you know:\n\n- The dashboard layout requirements for using show/hide rules.\n- How to access find show/hide rules in the dashboard sidebar.\n- How to configure a time-based show/hide rule.\n\n"
+    }
+  ]
+}
