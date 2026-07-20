@@ -12,7 +12,9 @@ on:
 
 jobs:
   deploy-pr-preview:
-    uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@76d98bf2a72fdbc47893ab8cd09e7a05ab91dd18 # main
+    # Do not pin by SHA: the WIF binding for github-docs-deploy-previews matches
+    # job_workflow_ref by branch ref. Pinning by SHA breaks getAccessToken.
+    uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@main
     if: >-
       !github.event.pull_request.head.repo.fork &&
       (contains(github.event.pull_request.labels.*.name, 'deploy-preview') ||
