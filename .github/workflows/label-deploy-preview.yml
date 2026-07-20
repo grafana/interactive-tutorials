@@ -1,0 +1,45 @@
+name: Label learning path PRs for deploy preview
+
+# Adds the deploy-preview label so authors and reviewers can see that a Learning
+# Hub preview is expected. Deploy itself is gated in deploy-pr-preview.yml by
+# path match or label — this workflow is visibility only.
+
+permissions: {}
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  label-deploy-preview:
+    if: ${{ !github.event.pull_request.head.repo.fork }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Add deploy-preview label for learning path packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HAS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'deploy-preview') }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${HAS_LABEL}" == "true" ]]; then
+            echo "deploy-preview label already present"
+            exit 0
+          fi
+
+          if ! gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --paginate \
+            --jq '.[].filename' \
+            | grep -E '(^|/)[^/]+-lj/|(^|/)website\.yaml$' >/dev/null; then
+            echo "PR does not touch a *-lj package or website.yaml; leaving unlabeled"
+            exit 0
+          fi
+
+          gh pr edit "${PR_NUMBER}" --repo "${GITHUB_REPOSITORY}" --add-label deploy-preview
+          echo "Added deploy-preview label"

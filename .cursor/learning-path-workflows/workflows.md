@@ -20,7 +20,7 @@ Make sure you have:
 - `content.json`, `manifest.json`, and `website.yaml` at the path level
 - `[milestone]/content.json`, `[milestone]/manifest.json`, and `[milestone]/website.yaml` for each milestone
 
-The `website.yaml` files are used to create deploy previews so you can see the non-interactive path before it's published to the Learning Hub.
+The `website.yaml` files are used to create deploy previews so you can see the non-interactive path before it's published to the Learning Hub. PRs that touch a `*-lj/` package (or any `website.yaml`) get a Learning Hub deploy preview automatically — watch for the bot comment with the preview URL (`/docs/learning-paths/...`). You do not need to add the `deploy-preview` label yourself for learning path PRs; for other PRs, add that label and push a commit to opt in.
 
 ## Run the command
 
@@ -70,7 +70,7 @@ Use the Block Builder **PR review tool** (dev tools, pathfinder-app 1.4.5+) to l
 
 The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, and provides a summary of all files created.
 
-**Your role:** Review the generated files, then open a PR in the `interactive-tutorials` repo.
+**Your role:** Review the generated files, then open a PR in the `interactive-tutorials` repo. CI adds the `deploy-preview` label and builds a Learning Hub preview; share the bot's preview URL with reviewers.
 
 ## Tips
 
