@@ -17,19 +17,19 @@
     },
     {
       "type": "markdown",
-      "content": "Start with `local.file \"example\"`:\n\n1. `local.file` is the component name.\n1. `example` is the component label.\n1. `filename` is an argument.\n1. `sys.env(\"HOME\") + \"/file.txt\"` is an expression that produces the filename.\n1. `content` is an export containing the latest contents of that file."
+      "content": "Start with the `local.file \"example\"` block:\n\n1. `local.file` is the component name.\n1. `example` is the component label.\n1. `filename` is an argument.\n1. `sys.env(\"HOME\") + \"/file.txt\"` is an expression that produces the filename.\n\nAs in the previous milestone, this component type also provides a `content` export. That export isn't written in the block. Other components reference it."
     },
     {
       "type": "markdown",
-      "content": "Now read `local.file.example.content` from left to right:\n\n- `local.file` identifies the component type.\n- `example` identifies the labeled instance.\n- `content` identifies the export.\n\nThe component type and label together, `local.file.example`, are the component's fully qualified name."
+      "content": "Now find that reference in the sample. The `password` argument inside `basic_auth` is set to `local.file.example.content`.\n\nRead that expression from left to right:\n\n- `local.file` identifies the component type.\n- `example` identifies the labeled instance.\n- `content` identifies the export.\n\nThe component type and label together, `local.file.example`, are the component's fully qualified name."
     },
     {
       "type": "markdown",
-      "content": "Finally, follow the value into `prometheus.remote_write \"local_prom\"`. The `password` argument in its nested `basic_auth` block references `local.file.example.content`.\n\nThe reference means Alloy evaluates `local.file.example` first, then supplies its `content` export as the `password` argument. This single reference creates a dependency from `prometheus.remote_write.local_prom` to `local.file.example`."
+      "content": "That reference means Alloy evaluates `local.file.example` first, then supplies its `content` export as the `password` argument. This single reference creates a dependency from `prometheus.remote_write.local_prom` to `local.file.example`."
     },
     {
       "type": "markdown",
-      "content": "You can now trace a component reference by finding its component name, label, and export, then locating the argument that receives the exported value."
+      "content": "You can now trace a component reference by finding where an export is used as an argument, then reading the component name, label, and export in that expression."
     },
     {
       "type": "markdown",
