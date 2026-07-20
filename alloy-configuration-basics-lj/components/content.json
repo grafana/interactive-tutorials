@@ -13,15 +13,19 @@
     },
     {
       "type": "markdown",
-      "content": "Every component has two main parts:\n\n- **Arguments** configure the component's behavior. They are the attributes and nested blocks you write inside the component block.\n- **Exports** are values that the running component makes available for other components to reference.\n\nOptional arguments can have defaults. A component can have zero or more exports."
+      "content": "For example, this `local.file` component reads a file from disk:\n\n```alloy\nlocal.file \"example\" {\n  filename = \"/tmp/example.txt\"\n}\n```\n\n- `local.file` is a component name available in Alloy.\n- `\"example\"` is the label for this instance.\n- `filename` is an argument that configures which file to read."
     },
     {
       "type": "markdown",
-      "content": "When one component uses another component's export as an argument, the reference creates a connection between them. These connections are how components become pipelines that collect, process, and send telemetry."
+      "content": "Every component has two main parts:\n\n- **Arguments** configure the component's behavior. They are the attributes and nested blocks you write inside the component block.\n- **Exports** are values that the running component makes available for other components to reference.\n\nOptional arguments can have defaults. A component can have zero or more exports. The `local.file` example above exports `content`, which holds the latest contents of the file."
     },
     {
       "type": "markdown",
-      "content": "The `logging` block from the previous milestone isn't a component: it's a special configuration block for Alloy itself. Component blocks use registered component names, such as `local.file`, and usually require a label."
+      "content": "When one component uses another component's export as an argument, the reference creates a connection between them. These connections are how components become pipelines that collect, process, and send telemetry. The next milestone traces one of those references."
+    },
+    {
+      "type": "markdown",
+      "content": "The `logging` block from the previous milestone isn't a component: it's a special configuration block for Alloy itself. Component blocks use component names available in Alloy, such as `local.file`, and require a label. Special configuration blocks like `logging` don't use a label."
     },
     {
       "type": "markdown",
