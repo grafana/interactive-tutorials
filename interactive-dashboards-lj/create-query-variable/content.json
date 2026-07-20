@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "interactive-dashboards-create-query-variable",
+  "title": "Create query-based variables",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Query-based variables dynamically populate filter options by querying your data sources, which ensures that variable options always reflect your current infrastructure and data. Unlike static variable lists that require manual updates, query-based variables leverage your data to generate filter options."
+    },
+    {
+      "type": "markdown",
+      "content": "This approach eliminates manual maintenance when entities change, because the variable automatically discovers new values through queries. With query-based variables, your dashboard filters stay synchronized with reality every time you add a new server, deploy to a new region, or introduce new services.\n\nTo create a query-based variable, complete the following steps:"
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out so you can keep it visible while you work through this milestone, including when the **Query Variable** editor opens."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Open a dashboard that uses a Prometheus or metrics data source."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Edit dashboard button']",
+          "content": "Click **Edit** in the top-right corner.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar options button']",
+          "content": "In the right sidebar, click **Dashboard options** (gear icon).",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid add variable button']",
+          "content": "In the **Variables** section of the pane, click **Add variable**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid variable type query'] button",
+          "content": "Click **Query** to choose the query variable type.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid variable name input']",
+          "targetvalue": "environment",
+          "content": "In the **Name** field, enter the variable name you'll use in queries.\n\nFor example, enter `environment`.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Query Variable editor open button']",
+          "content": "Under **Query options**, click **Open variable editor**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "content": "In the **Query Variable** editor, select your Grafana Cloud Prometheus data source.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "In the **Query** field, enter a query that returns the list of values.\n\nFor example, select **Classic query** and enter `label_values(up, environment)` to retrieve unique environment labels."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Variable editor Form Query Refresh select']",
+          "content": "Under **Refresh**, select when variable values should update.\n\nFor example, select **On dashboard load**.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Query Variable editor preview button']",
+          "content": "Click **Preview** to review the list of values.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Query Variable editor close button']",
+          "content": "Click **Close** to finish configuring the query.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Save dashboard button']",
+          "content": "Click **Save** to save the dashboard with your new variable.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "The dashboard displays the query variable at the top as an interactive drop-down list."
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar to continue to the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you learn how to create custom variables with manually defined options."
+    }
+  ]
+}

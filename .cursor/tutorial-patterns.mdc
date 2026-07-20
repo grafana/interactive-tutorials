@@ -307,27 +307,35 @@ The term "guide" is preferred over "tutorial" throughout this documentation.
 }
 ```
 
-### Section Introduction Patterns
+### Section bookend patterns
 
-Section intros are the first `markdown` block inside a `section`. They briefly explain what the user will do and why. Do not use markdown headings — the section's `title` property already provides the heading.
+Section bookends sit **outside** the `section` block: a 1-sentence intro markdown immediately before the section, and a 1-sentence summary markdown immediately after. Do not put “You'll …” / action-preview intros as the first child inside the section — Pathfinder often numbers that markdown as step 1.
+
+Do not use markdown headings for bookends — the section's `title` property already provides the heading. You may omit the intro when a pre-section line already states the goal (for example “To …, complete the following steps:”).
 
 ```json
-// Goal-oriented (first block inside a section)
+// Goal-oriented intro (immediately BEFORE the section)
 {
   "type": "markdown",
   "content": "Connect Grafana to your Prometheus server so you can query and visualize your metrics."
 }
 
-// Context-setting
+// Context-setting intro (immediately BEFORE the section)
 {
   "type": "markdown",
   "content": "Now that your data source is configured, create a dashboard to display your Prometheus metrics."
 }
 
-// Problem-solving
+// Problem-solving intro (immediately BEFORE the section)
 {
   "type": "markdown",
   "content": "Dashboards show you what happened, but alerts tell you when something *is* happening. Create alert rules to monitor your system proactively."
+}
+
+// Summary (immediately AFTER the section)
+{
+  "type": "markdown",
+  "content": "You connected Prometheus and created a dashboard that queries your metrics."
 }
 ```
 

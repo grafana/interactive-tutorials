@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "monitor-azure-resources-connect-azure-account",
+  "title": "Connect to Azure account",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll establish the connection between your Azure account and Grafana Cloud using the service principal you created in the previous milestone. This connection enables Grafana Cloud to securely access your Azure metrics and begin monitoring your resources.\n\nNavigate to the **Add new credential** page in Grafana Cloud if you're not already there."
+    },
+    {
+      "type": "section",
+      "title": "Connect to Azure account",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Enter your Azure service principal credentials on the **Add new credential** page."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#name",
+          "targetvalue": "production-azure-monitoring",
+          "content": "In the **Name** field, enter a descriptive name for your credential, for example `production-azure-monitoring`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-csp-app/azure/configuration/azure-metrics-serverless/create"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#client_id",
+          "targetvalue": "12345678-1234-1234-1234-123456789012",
+          "content": "In the **Client id** field, paste the `appId` value from the service principal output.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#client_secret",
+          "targetvalue": "your-secret-password",
+          "content": "In the **Client secret** field, paste the `password` value from the service principal output.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#tenant_id",
+          "targetvalue": "87654321-4321-4321-4321-210987654321",
+          "content": "In the **Tenant id** field, paste the `tenant` value from the service principal output.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your Azure service principal credentials are entered on the form."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "(Optional) Add Azure-formatted tags to organize and filter your metrics.\n\nBy default, resource information including tags is available on the `target_info` metric. When you add a tag here, you can add tags to your Azure Monitor metrics or filter the Azure Monitor metrics collected by tags. These tags must match the tags configured on your Azure resources.\n\nSkip the following section if you don't need to filter metrics by Azure tags."
+    },
+    {
+      "type": "section",
+      "title": "Add tags (optional)",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#tags-input",
+          "targetvalue": "Environment:Production",
+          "content": "In the **Tags** section, enter an Azure tag, for example `Environment:Production`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click **Add** in the **Tags** section to save the tag."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "(Optional) Add static labels for easier filtering and grouping in Grafana Cloud.\n\nStatic labels are key-value pairs applied to all metrics exported by this credential. Use them to distinguish metrics from different environments or teams—for example, add a key of `environment` and a value of `production`.\n\nStatic labels apply to every metric from this credential. To apply different labels to different Azure resources, create separate credentials.\n\nSkip the following section if you don't need static labels on your metrics."
+    },
+    {
+      "type": "section",
+      "title": "Add static labels (optional)",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#staticLabelKey",
+          "targetvalue": "environment",
+          "content": "In the **Static labels** section, enter a label key, for example `environment`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#staticLabelValue",
+          "targetvalue": "production",
+          "content": "Enter a label value, for example `production`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click **Add** in the **Static labels** section to save the label."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The connection information is entered and ready to be used for metric collection.\n\nIn your next milestone, you'll configure which metrics to collect from your Azure environment."
+    }
+  ]
+}

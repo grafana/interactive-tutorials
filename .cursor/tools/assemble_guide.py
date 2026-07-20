@@ -6,9 +6,10 @@ Assembles a Pathfinder content.json from a guide shell and per-section JSON file
 then validates the assembled guide for structural issues.
 
 Usage:
-  # Assemble mode (reads shell + sections, writes content.json)
+  # Assemble mode (reads shell + section packages, writes content.json)
   python assemble_guide.py --shell guide-shell.json --sections s1.json s2.json ... > content.json
-  python assemble_guide.py --shell guide-shell.json --sections s1.json s2.json ... --output {guide_dir}/content.json
+  python assemble_guide.py --shell guide-shell.json --sections s1.json s2.json ... \\
+      --closing closing.json --output {guide_dir}/content.json
 
   # Validate-only mode (validates an existing content.json)
   python assemble_guide.py --validate-only {guide_dir}/content.json
@@ -23,18 +24,34 @@ Validation checks (exit 1 on failure):
   - Section IDs are unique
   - No multistep singletons (multistep with 1 step = error)
   - Tooltip length <= 250 chars
-  - Section bookend check (first block is markdown, last block is markdown)
+  - Section bookends (intro markdown immediately before each section, summary
+    immediately after) — missing or misordered bookends are errors
+  - Warn if in-section "You'll…" intro looks like a fake step
   - Step count per section (warn if <3 or >10 interactive steps)
   - No noop-only sections (all interactive steps are noop)
+
+Section package format (each --sections file):
+  {
+    "intro": {"type": "markdown", "content": "..."},
+    "section": {"type": "section", "id": "...", ...},
+    "summary": {"type": "markdown", "content": "..."}
+  }
+  Or a JSON array of those three blocks in order.
+
+Shell should contain opening blocks only (guide intro). Pass guide-level
+closing via --closing so it lands after every section — never as a trailing
+shell block before --sections (that yields intro → closing → sections).
 """
 
+from __future__ import annotations
+
+import argparse
 import json
 import sys
-import argparse
-from pathlib import Path
+from typing import Any, Optional
 
 
-def parse_json_file(path: str) -> dict | list:
+def parse_json_file(path: str) -> Any:
     try:
         with open(path) as f:
             return json.load(f)
@@ -46,7 +63,7 @@ def parse_json_file(path: str) -> dict | list:
         sys.exit(2)
 
 
-def parse_json_string(s: str, label: str = "input") -> dict | list:
+def parse_json_string(s: str, label: str = "input") -> Any:
     try:
         return json.loads(s)
     except json.JSONDecodeError as exc:
@@ -77,6 +94,55 @@ def is_noop(block: dict) -> bool:
     if block.get("type") == "interactive" and block.get("action") == "noop":
         return True
     return False
+
+
+def is_markdown_block(block) -> bool:
+    return isinstance(block, dict) and block.get("type") == "markdown"
+
+
+def is_section_block(block) -> bool:
+    return isinstance(block, dict) and block.get("type") == "section"
+
+
+def unpack_section_package(raw, label: str) -> tuple[dict, dict, dict]:
+    """
+    Normalize a section input into (intro, section, summary) markdown/section blocks.
+
+    Accepts:
+      - {"intro": md, "section": section, "summary": md}
+      - [md, section, md]
+    Rejects bare section objects (those produce intro → sections without bookends).
+    """
+    if isinstance(raw, list):
+        if len(raw) != 3:
+            raise ValueError(
+                f"{label}: section package array must have exactly 3 blocks "
+                f"(intro markdown, section, summary markdown); got {len(raw)}"
+            )
+        intro, section, summary = raw
+    elif isinstance(raw, dict) and "section" in raw:
+        intro = raw.get("intro")
+        section = raw.get("section")
+        summary = raw.get("summary")
+    elif is_section_block(raw):
+        raise ValueError(
+            f"{label}: bare section object is not allowed — wrap as a package with "
+            f"intro and summary markdown (rule 14 bookends)"
+        )
+    else:
+        raise ValueError(
+            f"{label}: expected section package "
+            f'{{"intro", "section", "summary"}} or [intro, section, summary]'
+        )
+
+    if not is_markdown_block(intro):
+        raise ValueError(f"{label}: intro must be a markdown block")
+    if not is_section_block(section):
+        raise ValueError(f"{label}: section must be a section block")
+    if not is_markdown_block(summary):
+        raise ValueError(f"{label}: summary must be a markdown block")
+
+    return intro, section, summary
 
 
 def validate_guide(guide: dict) -> tuple[list, list]:
@@ -114,18 +180,30 @@ def validate_guide(guide: dict) -> tuple[list, list]:
             interactive_steps = [b for b in section_blocks if is_interactive(b)]
             targeting_steps = [b for b in interactive_steps if is_targeting(b)]
             noop_steps = [b for b in interactive_steps if is_noop(b)]
-
-            # Section bookends
             non_empty_blocks = [b for b in section_blocks if b.get("type") != "section"]
-            if non_empty_blocks:
-                if non_empty_blocks[0].get("type") != "markdown":
+
+            # In-section "You'll…" intros often number as step 1 in Pathfinder
+            if non_empty_blocks and non_empty_blocks[0].get("type") == "markdown":
+                intro = (non_empty_blocks[0].get("content") or "").lstrip()
+                if intro.startswith(("You'll ", "You will ", "In this section")):
                     warnings.append(
-                        f"Section '{section_id}': first block should be markdown intro (bookend missing)"
+                        f"Section '{section_id}': first in-section markdown looks like an "
+                        f"action-preview intro (may number as step 1) — move outside the section"
                     )
-                if non_empty_blocks[-1].get("type") != "markdown":
-                    warnings.append(
-                        f"Section '{section_id}': last block should be markdown summary (bookend missing)"
-                    )
+
+            # Outside bookends: markdown immediately before / after this section in parent blocks
+            prev_block = blocks[i - 1] if i > 0 else None
+            next_block = blocks[i + 1] if i + 1 < len(blocks) else None
+            if not prev_block or prev_block.get("type") != "markdown":
+                errors.append(
+                    f"Section '{section_id}': missing intro markdown immediately before the section "
+                    f"(rule 14 bookend)"
+                )
+            if not next_block or next_block.get("type") != "markdown":
+                errors.append(
+                    f"Section '{section_id}': missing summary markdown immediately after the section "
+                    f"(rule 14 bookend)"
+                )
 
             # Step count
             n_interactive = len(interactive_steps)
@@ -198,12 +276,33 @@ def validate_block(block: dict, location: str) -> tuple[list, list]:
     return errors, warnings
 
 
-def assemble(shell: dict, sections: list) -> dict:
-    """Assemble a guide from a shell and list of section dicts."""
+def assemble(shell: dict, sections: list, closing: Optional[dict] = None) -> dict:
+    """
+    Assemble a guide from a shell, section packages, and optional closing markdown.
+
+    Shell blocks are opening content only. Each section package contributes
+    intro → section → summary. Closing (if any) is appended last.
+
+    Do not put the guide-level closing summary in the shell before sections —
+    that produces intro → closing → sections and breaks bookend ordering.
+    """
     guide = dict(shell)
     blocks = list(guide.get("blocks", []))
-    for section in sections:
-        blocks.append(section)
+
+    for i, raw in enumerate(sections):
+        label = f"section[{i}]"
+        if isinstance(raw, dict) and raw.get("id"):
+            label = f"section '{raw.get('id')}'"
+        elif isinstance(raw, dict) and isinstance(raw.get("section"), dict):
+            label = f"section '{raw['section'].get('id', i)}'"
+        intro, section, summary = unpack_section_package(raw, label)
+        blocks.extend([intro, section, summary])
+
+    if closing is not None:
+        if not is_markdown_block(closing):
+            raise ValueError("closing must be a markdown block")
+        blocks.append(closing)
+
     guide["blocks"] = blocks
     return guide
 
@@ -220,13 +319,18 @@ def main():
     )
     mode_group.add_argument(
         "--shell",
-        help="Path to guide shell JSON (root structure with intro markdown)",
+        help="Path to guide shell JSON (root structure with opening intro markdown only)",
     )
 
     parser.add_argument(
         "--sections", nargs="*",
-        help="Section JSON files to append (in order)",
+        help="Section package JSON files (intro+section+summary) in order",
         default=[],
+    )
+    parser.add_argument(
+        "--closing",
+        help="Optional guide-level closing markdown JSON (appended after all sections)",
+        default=None,
     )
     parser.add_argument(
         "--output", "-o",
@@ -245,7 +349,12 @@ def main():
     else:
         shell = parse_json_file(args.shell)
         section_dicts = [parse_json_file(s) for s in (args.sections or [])]
-        guide = assemble(shell, section_dicts)
+        closing = parse_json_file(args.closing) if args.closing else None
+        try:
+            guide = assemble(shell, section_dicts, closing=closing)
+        except ValueError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            sys.exit(1)
 
     errors, warnings = validate_guide(guide)
 

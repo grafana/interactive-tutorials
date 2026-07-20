@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "monitor-azure-resources-create-service-principal",
+  "title": "Create an Azure service principal",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll create an Azure service principal that grants Grafana Cloud the necessary permissions to collect metrics from your Azure account. This service principal uses the principle of least privilege, providing the read-only access required for monitoring.\n\nA service principal is an identity created for use with applications and services. In this case, the service principal allows Grafana Cloud to authenticate with Azure and read metrics data without requiring user credentials.\n\nYou'll complete these steps in Azure Cloud Shell or a local terminal, then return to Grafana Cloud in the next milestone."
+    },
+    {
+      "type": "section",
+      "title": "Create the service principal",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Open a terminal or Azure Cloud Shell, then use the Azure CLI commands below to create the service principal."
+        },
+        {
+          "type": "markdown",
+          "content": "Log in to your Azure account:\n\n```bash\naz login\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "List your available subscriptions to identify which subscriptions you want to monitor:\n\n```bash\naz account list --output table\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Create a service principal with the Monitoring Reader role for each subscription you want to monitor.\n\nReplace SUBSCRIPTION_ID with your Azure subscription ID:\n\n```bash\naz ad sp create-for-rbac --name grafana-cloud-azure-metrics --role \"Monitoring Reader\" --scopes \"/subscriptions/SUBSCRIPTION_ID\"\n```\n\n> **Note:** If a service principal with this name already exists, this command updates it with the specified role and scopes."
+        },
+        {
+          "type": "markdown",
+          "content": "Save the output of the command, which includes the credential information you need for the next milestone:\n\n```json\n{\n  \"appId\": \"12345678-1234-1234-1234-123456789012\",\n  \"displayName\": \"grafana-cloud-azure-metrics\",\n  \"password\": \"your-secret-password\",\n  \"tenant\": \"87654321-4321-4321-4321-210987654321\"\n}\n```\n\n- `appId` is the **Client ID**\n- `password` is the **Client secret**\n- `tenant` is the **Tenant ID**\n\n> **Caution:** Store the client secret securely. Azure displays this value only once during service principal creation. If you lose this value, you'll need to create a new client secret."
+        },
+        {
+          "type": "markdown",
+          "content": "You created a read-only Azure service principal and saved the client ID, client secret, and tenant ID for the next milestone."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In your next milestone, you'll use this service principal to connect your Azure account to Grafana Cloud."
+    }
+  ]
+}

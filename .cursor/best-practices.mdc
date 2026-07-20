@@ -96,7 +96,9 @@ What does the step do?
   ├─ Change page                      → action: "navigate",  reftarget: "/path"
   │   └─ Open another guide after     → add openGuide: "bundled:<id>"
   ├─ Reveal :hover-hidden UI          → action: "hover"      (use guided for real :hover)
-  ├─ Informational pause              → action: "noop"       (reftarget optional)
+  ├─ Numbered non-action pause        → action: "noop"       (not click/type/open copy;
+  │                                                           reftarget optional for look-at)
+  ├─ Manual UI, no stable selector    → type: "markdown"     (never noop as selector fallback)
   └─ Toggle docs panel position       → action: "popout"     (targetvalue required:
                                                               "sidebar" | "floating")
 ```
@@ -213,7 +215,7 @@ These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rule
 
 1. **Multistep singleton** — `multistep` with one step. Use plain `interactive`.
 2. **Focus-before-formfill** — `highlight` on an input with `doIt: true` is a no-op. Use `formfill`, or set `doIt: false`.
-3. **(reserved)** — formerly "manually added `exists-reftarget`"; this is no longer a smell.
+3. **Learner-action `noop`** — instructions that tell the learner to click, type, review, or change something, but have no Pathfinder target, belong in `markdown`, not `interactive` + `action: "noop"`. Misused `noop` steps render as fake interactive cards with **Show me** / **Do it** / completion controls even though Pathfinder cannot perform or detect the action.
 4. **Markdown `##` headers in place of sections** — restructure as `section` blocks with bookend markdown.
 5. **Leading markdown title duplicating the guide title** — remove. The frame renders the title.
 6. **Brittle CSS selectors** — `.css-xyz`, deep nesting, `nth-of-type` without a stable parent. Use `data-testid`, button text, or semantic attributes.
@@ -226,6 +228,12 @@ These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rule
 13. **Bold the word "button"** — write "Click **Save**" not "Click the **Save** button".
 14. **`grot-guide` hand-edits without screenId integrity** — every CTA / option `screenId` must point to an existing screen `id`.
 15. **`input` `variableName` not a valid JS identifier** — schema enforces; pick simple camelCase.
+16. **Nested ordered list in section markdown** — Pathfinder numbers each block inside a `section`. An embedded `1. 2. 3.` list creates nested numbering (step 3 containing sub-steps 1–4). Use one markdown block per learner step instead.
+17. **Backticks on illustrative examples** — Inline `` `value` `` renders a copy chip. Reserve backticks for values the learner should paste. Use plain text for examples such as folder names, default branches, and URL fragments.
+18. **Dock-then-undock popout bookends** — Two consecutive `popout` steps (sidebar, then floating) confuse learners. Use one conditional instruction such as "If this guide is docked, pop it out…"
+19. **Hard `exists-reftarget` after UI transitions** — Fields that appear after a drawer opens or a folder is selected may not exist when the step loads. Prefer `doIt: false`, `skippable: true`, and prose that waits for the UI; avoid blocking on `exists-reftarget` for post-transition targets.
+20. **Conditionally visible controls as required steps** — Don't document optional UI (checkboxes, fields) as numbered interactive steps unless they appear in the default happy path. Use optional markdown or omit the step.
+21. **Section bookends inside `section.blocks`** — Intro/summary markdown inside a section is numbered as step 1 / last step. Place the intro immediately before the `section` and the summary immediately after it.
 
 ---
 
@@ -238,8 +246,9 @@ Run through this before opening the PR.
 - [ ] Sections grouped via `section` blocks, not markdown `##`
 - [ ] All `section` / `input` ids are unique kebab-case
 - [ ] `schemaVersion` is `"1.1.0"` if set (or omitted)
-- [ ] Each section has 1-sentence "what you'll do" intro markdown and "what you learned" summary markdown
+- [ ] Each section has 1-sentence "what you'll do" intro markdown **before** the section and "what you learned" summary markdown **after** it (not inside `section.blocks`)
 - [ ] No leading markdown title that duplicates the guide title
+- [ ] No embedded ordered lists inside section markdown (one block per learner step)
 
 **Requirements & objectives**
 - [ ] Nav menu interactions have `navmenu-open`
@@ -249,6 +258,8 @@ Run through this before opening the PR.
 
 **Actions**
 - [ ] Each action targets the right thing (button by text vs CSS vs formfill vs navigate)
+- [ ] Learner-performed steps without a Pathfinder target use `markdown`, not `noop`
+- [ ] Drawer workflows use one conditional `popout` step, not dock-then-undock pairs
 - [ ] `popout` steps have `targetvalue: "sidebar"` or `"floating"`
 - [ ] `openGuide` used (not legacy `?doc=`) when chaining a guide after navigation
 - [ ] State-changing actions (save / create / navigate) have `verify`
@@ -261,11 +272,14 @@ Run through this before opening the PR.
 - [ ] Any step targeting a virtualised container uses a `guided` block + `lazyRender: true`
 - [ ] Admin / permission-gated steps are `skippable: true` with a hint
 - [ ] No multistep singletons; no focus-before-formfill
+- [ ] Post-transition drawer fields use Show me / skippable, not hard `exists-reftarget` gates
+- [ ] Steps target controls visible in the default happy path (or are optional markdown)
 
 **Content**
 - [ ] Tooltips under 250 characters, single sentence, don't name the element
 - [ ] Only bold GUI item names — not the word "button"
 - [ ] Action-focused prose ("Save your dashboard" not "The save button can be clicked")
+- [ ] Backticks only for copy-paste values; illustrative examples use plain text
 
 **Validation**
 - [ ] Run the local schema check from a Pathfinder CLI checkout: `node {pathfinder-app}/dist/cli/cli/index.js validate --packages .`

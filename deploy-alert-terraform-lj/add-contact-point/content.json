@@ -1,0 +1,14 @@
+{
+  "id": "deploy-alert-terraform-add-contact-point",
+  "title": "Add a contact point",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A contact point defines where Grafana sends notifications when an alert fires. You can configure email, Slack, PagerDuty, webhooks, and many other integrations. For this path, you'll create an email contact point.\n\nTo add a contact point, complete the following steps:\n\n1. Add the following to your `alerts.tf` file:\n\n   ```hcl\n   resource \"grafana_contact_point\" \"email_alerts\" {\n     name = \"Email alerts\"\n\n     email {\n       addresses = [\"<YOUR_EMAIL_ADDRESS>\"]\n     }\n   }\n   ```\n\n1. Replace `<YOUR_EMAIL_ADDRESS>` with your email address."
+    },
+    {
+      "type": "markdown",
+      "content": "## Alternative: Slack contact point\n\nIf you prefer Slack notifications, use the `slack` block instead:\n\n```hcl\nresource \"grafana_contact_point\" \"slack_alerts\" {\n  name = \"Slack alerts\"\n\n  slack {\n    url     = var.slack_webhook_url\n    title   = \"{{ .CommonLabels.alertname }}\"\n    text    = \"{{ .CommonAnnotations.description }}\"\n  }\n}\n```\n\nFor the full list of supported integrations, refer to the [grafana_contact_point resource documentation](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/contact_point).\n\nIn the next milestone, you add a notification policy to route alerts to this contact point."
+    }
+  ]
+}
