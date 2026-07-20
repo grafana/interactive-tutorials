@@ -123,7 +123,7 @@ Re-verify commit safety after Phase 1 before Phase 2.
 | **Your turn** | Exactly one action |
 | **Up next** | One sentence |
 
-**Reply keywords:** `yes` · `ready` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N  -  …` / `N/A  -  …` · `show report` · `fix` · `frontend` · `done` · `resume` / `start fresh`
+**Reply keywords:** `yes` · `ready` · `add playwright mcp` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N - …` / `N/A - …` · `show report` · `fix` · `frontend` · `done` · `resume` / `start fresh`
 
 **Tone:** Casual and friendly. Address the author as **you**. Celebrate clean passes. No rule numbers, no Blocker/nit labels, no em dashes.
 
@@ -158,20 +158,24 @@ If `.cursor/lp-preflight-state/{slug}.json` exists:
 3. Infer `website_slug` = `{path_dir}` minus `-lj` when website repo is in workspace (read-only).
 4. Infer `path_type`: `new`, `conversion`, or `update` per [path type](reference-checks.md#path-type).
 5. List milestones from path `manifest.json` `milestones` and dirs under `{path_dir}/`.
-6. **Verify Playwright MCP** (`user-playwright`). If unavailable on a live path: stop with setup help ([author-testing.md](author-testing.md#prerequisites)). Do not silently skip.
+6. **Verify Playwright MCP** (`user-playwright`). If unavailable on a live path: stop per [If Playwright MCP is missing](author-testing.md#if-playwright-mcp-is-missing). Give manual setup steps **and** offer to help when possible (add `mcp.json` config on **add playwright mcp**, or `mcp_auth` if the server needs auth). Do not silently skip. Do not edit `mcp.json` until they agree.
 7. Write `.cursor/lp-preflight-state/{slug}.json` ([state schema](reference-checks.md#state-file-schema)).
 
-### Checkpoint
+### Checkpoint (MCP ready)
 
-> **Phase 0 complete**  -  `{path_dir}` on `{branch}` @ `{short_sha}`.
+> **Phase 0 complete** - `{path_dir}` on `{branch}` @ `{short_sha}`.
 >
 > - Path: `{path_dir}` ({M} milestones)
 > - Type: `{path_type}`
-> - Playwright MCP: ready *(or blocked: see setup)*
+> - Playwright MCP: ready
 >
 > **Your turn:** Reply **yes** if this looks right, or tell me what to change.
 >
 > **Up next:** Static pass (I won't edit your JSON unless you ask later).
+
+### Checkpoint (MCP blocked)
+
+Use the blocked shape in [author-testing.md](author-testing.md#if-playwright-mcp-is-missing). Still report path / type. **Your turn** must include the **add playwright mcp** offer (or auth offer) plus manual Settings steps. After they reload and MCP is ready, re-run the verify step and use the MCP-ready checkpoint.
 
 ---
 

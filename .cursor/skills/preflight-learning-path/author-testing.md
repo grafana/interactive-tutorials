@@ -13,7 +13,7 @@ Confirm at Phase 0 / remind in the slash-command first message.
 | Need | Required when | Why | How to verify / fix |
 |---|---|---|---|
 | `interactive-tutorials` checkout with `{slug}-lj/` | Always | Package under test | Path on disk / current branch |
-| **Playwright MCP** enabled (`user-playwright`) | Live path (default for new/conversion interactive) | Agent DOM checks | Phase 0: list or call Playwright MCP tools. If missing: enable Playwright MCP in Cursor settings, then re-run |
+| **Playwright MCP** enabled (`user-playwright`) | Live path (default for new/conversion interactive) | Agent DOM checks | Phase 0: list or call Playwright MCP tools. If missing: follow [If Playwright MCP is missing](#if-playwright-mcp-is-missing) |
 | Okta login in the **Playwright** browser to `{learn_host}` (default `learn.grafana.net`) | Before Playwright DOM loop | MCP cannot complete SAML alone | Phase 2: author logs in, replies `ready` |
 | Pathfinder Block Editor on learn | Only if author chooses `walk-me` | Optional smoke coaching | `{learn_host}/plugins/grafana-pathfinder-app?dev=true` → **?** → Debug → Block Editor → import local JSON |
 | Pathfinder CLI (`grafana-pathfinder-app` built locally) | Nice-to-have | `validate --packages` | Note if missing; do not abort preflight |
@@ -24,7 +24,41 @@ Same Playwright + Okta role as [learning-path-workflows/workflows.md](../../lear
 
 ### If Playwright MCP is missing
 
-Stop at Phase 0 (or before Phase 2) with friendly setup help. Do **not** silently skip DOM checks on new/conversion interactive paths. `static-only: <reason>` only when [static-only rules](reference-checks.md#static-only-preflight) allow it.
+Stop at Phase 0 (or before Phase 2). Do **not** silently skip DOM checks on new/conversion interactive paths. `static-only: <reason>` only when [static-only rules](reference-checks.md#static-only-preflight) allow it.
+
+Diagnose which case applies, then offer help (manual steps always; agent action when possible):
+
+| Case | How you can tell | Offer |
+|---|---|---|
+| **Config missing** from `~/.cursor/mcp.json` (no `playwright` / `@playwright/mcp` entry) | Read `mcp.json`; server absent | Ask: **Want me to add the Playwright MCP config for you?** If yes, merge the block below into `mcp.json` (create the file if needed). Then ask them to reload MCP servers (Cursor Settings → MCP → refresh/reload, or restart the agent) and reply **ready** / **yes** so you recheck. |
+| **Needs auth** (`needsAuth` / only `mcp_auth` tool) | `GetMcpTools` / server status | Ask: **Want me to start the Playwright MCP connect flow?** If yes, call `mcp_auth` for `user-playwright` (empty args), wait, recheck. |
+| **Configured but toggled off** in Cursor Settings | Entry exists in `mcp.json`; tools still unavailable | Manual only: Settings → MCP → enable **Playwright**. Agent cannot flip that toggle. |
+| **Errored / won't start** | Tools missing; logs or STATUS show install/runtime errors | Diagnose (`npx`, Node, network). Offer config fixes; author confirms reload. |
+
+Standard config to add when missing (do not overwrite unrelated servers):
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}
+```
+
+**Blocked checkpoint shape (author-facing):**
+
+> Playwright MCP isn't available, so I can't run the live DOM checks on this path.
+>
+> **Manual setup:** Cursor Settings → MCP → enable **Playwright** (or add it if it's not listed), then reload.
+>
+> **Or:** reply **add playwright mcp** and I'll add the standard config to `~/.cursor/mcp.json` for you (you'll still need to reload MCP afterward).
+>
+> `static-only` isn't a fit for new/conversion interactive paths.
+
+Never edit `mcp.json` until the author agrees. Never claim MCP is ready until `GetMcpTools` for `user-playwright` shows usable browser tools.
 
 ---
 

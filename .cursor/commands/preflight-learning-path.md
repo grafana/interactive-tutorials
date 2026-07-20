@@ -28,7 +28,7 @@ LP packages are **single-repo** (`interactive-tutorials` only). Metadata lives i
 > | 4 | Optional package fixes |
 > | 5 | Optional frontend `data-testid` PR if a stable selector is missing |
 >
-> **Setup:** Playwright MCP should be on. You'll Okta-login in the Playwright browser for DOM checks.
+> **Setup:** Playwright MCP should be on. If it isn't, I'll offer to add the config for you (or walk you through Settings). You'll Okta-login in the Playwright browser for DOM checks.
 >
 > **Phase 0:** Share the path package (`{slug}-lj/` directory), or tell me to infer it from your current branch.
 
