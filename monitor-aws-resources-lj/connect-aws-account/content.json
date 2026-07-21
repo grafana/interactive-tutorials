@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "monitor-aws-resources-connect-aws-account",
+  "title": "Connect to AWS account",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll establish the connection between your AWS account and Grafana Cloud using the IAM role you created in the previous milestone. This connection enables Grafana Cloud to securely access your AWS metrics and begin monitoring your resources.\n\nNavigate to the **Create new account** page in Grafana Cloud if you're not already there."
+    },
+    {
+      "type": "section",
+      "title": "Configure the integration",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#name",
+          "targetvalue": "aws-ec2-account",
+          "content": "In the **Account name** field, enter a unique name that contains only alphanumeric characters, dashes, and underscores, for example `aws-ec2-account`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-csp-app/aws/configuration"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#arn",
+          "targetvalue": "arn:aws:iam::123456789012:role/GrafanaCloudMonitoringRole",
+          "content": "In the **ARN** field, paste the role ARN you copied from the previous milestone, for example `arn:aws:iam::123456789012:role/GrafanaCloudMonitoringRole`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "In the **AWS Regions** field, select all regions where the AWS resources you want to monitor are located.\n\nFor example, select `us-east-1`."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add account",
+          "content": "Click **Add account** to verify the connection and complete the setup.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your AWS account is connected to Grafana Cloud and ready to collect metrics.\n\nIn your next milestone, you'll create a scrape job to customize metric collection for specific AWS services."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Manage AWS accounts](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/aws/cloudwatch-metrics/cw-accounts/)"
+    }
+  ]
+}
