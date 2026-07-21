@@ -22,7 +22,7 @@ LP packages are **single-repo** (`interactive-tutorials` only). Metadata lives i
 > | Phase | What happens |
 > |---|---|
 > | 0 | Identify your `{slug}-lj/` package + confirm Playwright MCP |
-> | 1 | Static pass (audit + path / Learning Hub checks). Only real review-level issues |
+> | 1 | Static pass (audit + path / Learning Hub + claim-check). Only real review-level issues and contradicted/unsupported product facts |
 > | 2 | Playwright DOM checks. Block Editor smoke is optional |
 > | 3 | Readiness report + offer to fix |
 > | 4 | Optional package fixes |

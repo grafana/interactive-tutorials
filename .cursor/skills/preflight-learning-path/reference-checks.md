@@ -34,6 +34,7 @@ Apply the same five-phase coach rules (cite shared reference-checks; do not soft
 - Path root / manifest `id` mismatch; Pathfinder CLI validate failure
 - Secrets `doIt: true`; confirmed 404s; conversion prose only in legacy markdown
 - Fragile / wrong selectors when live fails, or stable `data-testid` exists in DOM and the guide uses a weak selector
+- **Claim-check MUST FIX:** Contradicted, Unsupported, or Overstated product facts per [claim-check.md](claim-check.md) (made-up counts, invented names, docs contradictions)
 
 ### Never surface
 
@@ -57,6 +58,8 @@ Apply every section from [../review-learning-path/reference-checks.md](../review
 - Legacy website source (conversion, read-only)
 - noop and non-interactive steps
 - CODEOWNERS (discard for author chat)
+
+Then run [claim-check.md](claim-check.md) across path root + milestone prose. Route Contradicted / Unsupported / Overstated as Fix before PR. Hide Supported from chat. Author-decides items may appear in readiness as open questions.
 
 Tag each finding; keep only post-inline for author-facing output.
 

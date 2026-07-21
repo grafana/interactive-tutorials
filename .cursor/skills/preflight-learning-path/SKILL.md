@@ -3,8 +3,9 @@ name: preflight-learning-path
 description: >-
   Guide a learning path author through pre-PR self-review in interactive-tutorials.
   Mirrors the five-phase /review-learning-path-pr coach from the author side: static
-  pass, Playwright DOM checks, readiness report, optional package fixes, and optional
-  frontend data-testid PR. Use when the user runs /preflight-learning-path.
+  pass (including adversarial claim-check), Playwright DOM checks, readiness report,
+  optional package fixes, and optional frontend data-testid PR. Use when the user
+  runs /preflight-learning-path.
 ---
 
 # Preflight learning path (author self-review)
@@ -21,7 +22,7 @@ Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the
 
 **Skill memory:** State lives in `.cursor/lp-preflight-state/` (gitignored). Phase 1 dispatches [audit-guide](../audit-guide/SKILL.md), which writes `{milestone}/assets/`. See [Commit safety](#commit-safety).
 
-**Routing:** [reference-checks.md](reference-checks.md) · [author-testing.md](author-testing.md) · [frontend-selector-pr.md](frontend-selector-pr.md) · shared [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md) · shared [review reference-checks](../review-learning-path/reference-checks.md)
+**Routing:** [reference-checks.md](reference-checks.md) · [claim-check.md](claim-check.md) · [author-testing.md](author-testing.md) · [frontend-selector-pr.md](frontend-selector-pr.md) · shared [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md) · shared [review reference-checks](../review-learning-path/reference-checks.md)
 
 **Related:** [audit-guide](../audit-guide/SKILL.md) · [update-guide](../update-guide/SKILL.md) · [review-learning-path](../review-learning-path/SKILL.md)
 
@@ -31,7 +32,7 @@ Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the
 
 | You (agent) | Author (human) |
 |---|---|
-| Confirm path, run audit + path/LH checks | Confirm `{path_dir}`, reply at checkpoints |
+| Confirm path, run audit + path/LH + claim-check | Confirm `{path_dir}`, reply at checkpoints |
 | Surface **post-inline-only** findings in chat | Decide whether to fix now or open PR with notes |
 | Required Playwright DOM check (live path) | Okta login in Playwright browser; reply `ready` |
 | Optional Block Editor coaching | `already-tested` / `walk-me` / `skip-smoke` |
@@ -47,7 +48,7 @@ Input (path_dir or current branch)
   │
   ├─ Phase 0: Identify path ───── path_dir, path_type, Playwright MCP prereq
   │
-  ├─ Phase 1: Static pass ─────── audit + path/LH checks → author findings (post-inline only)
+  ├─ Phase 1: Static pass ─────── audit + path/LH + claim-check → author findings (post-inline only)
   │
   ├─ Phase 2: Live test ───────── Playwright DOM required; Block Editor opt-in
   │                              (skipped when static-only)
@@ -93,7 +94,7 @@ Same snapshot/cleanup rules as [review-learning-path § Commit safety](../review
 
 | Artifact | Where | Mitigation |
 |---|---|---|
-| Findings, readiness, state JSON | `.cursor/lp-preflight-state/` | `.gitignore` |
+| Findings, claim-check, readiness, state JSON | `.cursor/lp-preflight-state/` | `.gitignore` |
 | audit-guide reports | `{milestone}/assets/` | Snapshot before Phase 1; delete new files before Phase 1 checkpoint |
 | Pre-existing package `assets/` | Author/migrate notes | Never delete paths listed in `pre_review_assets` |
 
@@ -181,15 +182,15 @@ Use the blocked shape in [author-testing.md](author-testing.md#if-playwright-mcp
 
 ## Phase 1: Static pass
 
-**Goal:** Audit every milestone + path consistency + Learning Hub. Surface **post-inline** findings only in chat.
+**Goal:** Audit every milestone + path consistency + Learning Hub + adversarial claim-check. Surface **post-inline** findings only in chat.
 
-Combines review Phase 1 checks. Author sees findings in chat (not a private workbook dump of nits).
+Combines review Phase 1 checks plus [claim-check.md](claim-check.md). Author sees findings in chat (not a private workbook dump of nits).
 
 ### Tell the author
 
 > **Phase 1  -  Static pass**
 >
-> I'm reading each milestone and checking manifests, `website.yaml`, and Learning Hub structure. I'll only call out things a reviewer would comment on.
+> I'm reading each milestone, checking manifests, `website.yaml`, and Learning Hub structure, then fact-checking product claims against live docs. I'll only call out things a reviewer would comment on (plus contradicted or unsupported product facts).
 
 ### Agent steps
 
@@ -197,19 +198,21 @@ Combines review Phase 1 checks. Author sees findings in chat (not a private work
 2. Walk shared [review reference-checks](../review-learning-path/reference-checks.md) + [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md).
 3. **Always scan** for framing-in-milestones, [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
 4. Run Pathfinder CLI `validate --packages {path_dir}` if available.
-5. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing). Keep only **post inline** for author chat. Drop Internal/Discard entirely from chat.
-6. Write `{slug}-findings.md` under `.cursor/lp-preflight-state/` (post-inline list + optional verify-live notes for Phase 2). Resume aid only; chat stays tiny.
-7. Mandatory audit cleanup; verify `git status`.
-8. Do not cite rule numbers or audit severity labels in chat.
+5. Run the [claim-check](claim-check.md) pass across path root + all milestone prose. Write `{slug}-claim-check.md` under `.cursor/lp-preflight-state/`. Route Contradicted / Unsupported / Overstated as **Fix before PR**. Do not edit package JSON here.
+6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing) plus claim-check MUST FIX. Keep only **post inline** for author chat. Drop Internal/Discard entirely from chat.
+7. Write `{slug}-findings.md` under `.cursor/lp-preflight-state/` (post-inline list + optional verify-live notes for Phase 2). Resume aid only; chat stays tiny.
+8. Mandatory audit cleanup; verify `git status`.
+9. Do not cite rule numbers or audit severity labels in chat.
 
 ### Checkpoint
 
 > **Phase 1 complete**  -  static pass done.
 >
 > - {One plain sentence: clean, or a few things to fix}
-> - **Fix before PR** (≤3 bullets, plain language; omit if none):
+> - **Fix before PR** (≤3 bullets, plain language; omit if none; include claim-check MUST FIX when present):
 >   - {e.g. first hands-on still depends on business-value}
 >   - {e.g. "You'll…" intros inside sections in create-dashboard}
+>   - {e.g. claim check: contradicted alert count in business-value}
 >
 > **Your turn:** Reply **yes** and your test stack (for example `learn.grafana.net shared`, `fresh Cloud stack`).
 >
