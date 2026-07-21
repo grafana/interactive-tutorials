@@ -4,11 +4,10 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "You can configure panels, rows, and tabs to be shown or hidden based on rules. For example, you can set a panel to be hidden if there’s no data returned by a query or a tab to only be shown if a specific variable value is present.\n\n\n\nIn this guide, you'll learn how to configure a show/hide rule that displays a panel only when the dashboard time range is one hour or less. This helps keep dashboards focused by showing time-sensitive panels only when they're relevant to the selected time range."
+      "content": "You can configure panels, rows, and tabs to be shown or hidden based on rules. For example, you can set a panel to be hidden if there’s no data returned by a query or a tab to only be shown if a specific variable value is present.\n\n\n\nAnother type of rule is a time-based rule. For example, you might have panels that are only useful during an incident, so you've configured them to be hidden most of the time. As you narrow the dashboard's time range to investigate a spike, those panels automatically appear to provide more detailed insights. This keeps dashboards focused by showing time-sensitive panels only when they're relevant to the selected time range.\n\n\n\nIn this guide, you'll learn how to configure a show/hide rule that displays a panel only when the dashboard time range is one hour or less. "
     },
     {
       "type": "section",
-      "id": "guide-section-64507",
       "title": "Steps",
       "blocks": [
         {
@@ -36,13 +35,18 @@
           ]
         },
         {
-          "type": "multistep",
-          "content": "Add a panel, then click **Configure visualization**.",
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.Sidebar.newPanelButton",
+          "content": "Add a panel.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Hover your cursor over the panel and click **Configure visualization**.",
           "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "grafana:components.Sidebar.newPanelButton"
-            },
             {
               "action": "button",
               "reftarget": "Configure visualization"
@@ -53,11 +57,24 @@
           ]
         },
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "div[data-testid='input-wrapper'] input[data-testid='data-testid Select a data source']",
-          "targetvalue": "-- Grafana --",
-          "content": "Open the data source selector, search for `-- Gra`, and select the **-- Grafana --** data source."
+          "type": "guided",
+          "content": "Open the data source selector, search for `-- Gra`, and select the **-- Grafana --** data source.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.DataSourcePicker.container} svg[data-testid='icon-angle-down']"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input[data-testid='data-testid Select a data source']",
+              "targetvalue": "-- Gra"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Card.heading} button"
+            }
+          ],
+          "completeEarly": true
         },
         {
           "type": "interactive",
@@ -69,10 +86,14 @@
           ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "grafana:pages.Dashboard.Sidebar.optionsButton",
+          "type": "guided",
           "content": "Open the dashboard options.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:pages.Dashboard.Sidebar.optionsButton"
+            }
+          ],
           "requirements": [
             "exists-reftarget"
           ]
@@ -113,14 +134,17 @@
         },
         {
           "type": "interactive",
-          "action": "formfill",
+          "action": "highlight",
           "reftarget": "{grafana:pages.Dashboard.Sidebar.conditionalRendering.timeRange.select} div:has(input[data-testid='data-testid Dashboard Conditional Rendering Time range select-input'])",
-          "targetvalue": "1 hour",
-          "content": "Set the time range to **1 hour**.\n\nNow, the dashboard only displays this panel if the dashboard time range is 1 hour or less."
+          "content": "Set the time range to **1 hour**.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
         },
         {
           "type": "multistep",
-          "content": "The panel now displays the hidden icon and won't be visible in view mode.\n\nNow let's change the dashboard time range to 1 hour. This will make the panel visible again.",
+          "content": "Now, the dashboard only displays this panel if the dashboard time range is 1 hour or less. Since the dashboard time range is currently **Last 6 hours**, the panel now displays the hidden icon and won't be visible in view mode.\n\nTo make the panel visible again, let's change the dashboard time range to **Last 1 hour**.",
           "steps": [
             {
               "action": "highlight",
@@ -129,10 +153,6 @@
             {
               "action": "highlight",
               "reftarget": "#TimePickerContent label:contains('Last 1 hour')"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "input:nth-of-type(1)"
             }
           ]
         }
