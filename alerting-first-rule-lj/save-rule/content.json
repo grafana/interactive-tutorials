@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-first-rule-save-rule",
+  "title": "Save your alert rule",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The last steps are the notification message and saving.\n\nIn this milestone, you add a summary annotation, then save and activate your rule."
+    },
+    {
+      "type": "section",
+      "id": "add-annotation",
+      "title": "Add a summary annotation",
+      "requirements": ["on-page:/alerting/new/alerting"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='annotation-value-0']",
+          "content": "In the **Configure notification message** section, locate the **Summary** field. The summary is the first line responders see in Slack, PagerDuty, email, and other channels. Keep it brief and use template variables to reference labels from your query.\n\nFor the QuickPizza alert you built, use:\n\n```\nHigh request rate on {{ $labels.service_name }}\n```\n\nOther examples for real alerts:\n\n| If alerting on | Example summary |\n|----------------|------------------|\n| CPU usage | `CPU usage is high on {{ $labels.instance }}` |\n| Error rate | `Error rate elevated for {{ $labels.job }}` |\n| Disk space | `Disk space low on {{ $labels.instance }}` |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "save-rule",
+      "title": "Save and activate the rule",
+      "requirements": ["section-completed:add-annotation"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='save-rule']",
+          "content": "Click **Save** to save and activate your alert rule.\n\nYour alert rule is now saved and active. Grafana immediately begins evaluating it at your specified interval.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "**Your alert rule is saved and actively monitoring.** When the condition is met and persists past your pending period, the alert fires and notifications are sent to your contact point.\n\nYou've created a complete alert rule from query to notification."
+        }
+      ]
+    }
+  ]
+}

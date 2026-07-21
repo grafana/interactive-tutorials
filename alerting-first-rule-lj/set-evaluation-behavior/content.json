@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-first-rule-set-evaluation-behavior",
+  "title": "Set evaluation behavior",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Evaluation behavior controls how often Grafana runs your rule and how long a problem must persist before the alert fires.\n\nIn this milestone, you configure the evaluation group and set the pending period."
+    },
+    {
+      "type": "section",
+      "id": "configure-evaluation-group",
+      "title": "Configure the evaluation group",
+      "requirements": ["on-page:/alerting/new/alerting"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='group-picker']",
+          "content": "Locate the evaluation group picker. Evaluation groups batch rules that share the same evaluation interval.\n\nIf the picker is disabled, select a folder first.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule new-evaluation-group-button']",
+          "content": "If you don't have an existing group, click **New evaluation group** to create one. Choose a name and set the **Evaluation interval** — how often Grafana runs your query.\n\n| Urgency | Interval | Use case |\n|---------|----------|----------|\n| Critical | `1m` | Host down, service unavailable |\n| Standard | `5m` | CPU high, error rate elevated |\n| Low priority | `10m` | Disk trending full, memory creeping up |\n\nShorter intervals detect issues faster but increase query load on your data sources.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"],
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "set-pending-period",
+      "title": "Set the pending period",
+      "requirements": ["section-completed:configure-evaluation-group"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#eval-for-input",
+          "content": "Locate the **Pending period** field. This controls how long the condition must be true before the alert fires, which prevents brief spikes from triggering notifications.\n\n| Alert type | Pending period | Why |\n|------------|----------------|-----|\n| CPU spike | `5m` | Filters brief spikes during deployments |\n| Error burst | `2m` | Catches sustained patterns, not single errors |\n| Disk full | `10m` | Disk usage changes slowly, longer window is fine |\n| Service down | `1m` | Outages need fast detection |",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "markdown",
+          "content": "Your alert now has a folder, routing labels, an evaluation schedule, and a pending period.\n\nIn the next milestone, you configure no-data handling, select a contact point, and save your rule."
+        }
+      ]
+    }
+  ]
+}

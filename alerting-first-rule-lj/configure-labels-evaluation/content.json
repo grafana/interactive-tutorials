@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-first-rule-configure-labels-evaluation",
+  "title": "Select a folder and add labels",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You'll organize your alert into a folder and add labels that control routing.\n\nIn this milestone, you select a folder, then add rule-level labels."
+    },
+    {
+      "type": "section",
+      "id": "select-folder",
+      "title": "Select a folder",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Select folder",
+          "content": "In the **Set evaluation behavior** section, click **Select folder** to choose or create a folder for your alert rule.\n\nFolders organize alert rules by team, service, or purpose, and they determine who has permission to manage the rules inside them.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-labels",
+      "title": "Add labels",
+      "requirements": ["section-completed:select-folder"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Labels can come from two places: the query itself (your QuickPizza query already carries `service_name`, `service_namespace`, and other labels straight from the Prometheus metric) or the rule-level **Add labels** section. Use rule-level labels for higher-level routing metadata that doesn't belong on the data, like team, severity, or environment."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add labels",
+          "content": "Scroll to the **Add labels** section and click **Add labels** to add a rule-level label.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Your query already carries `service_name=\"quickpizza-public-api\"` and `service_namespace=\"quickpizza\"` from the metric. Add higher-level labels here to control routing without touching the query.\n\n| Key | Example values | Purpose |\n|-----|----------------|--------|\n| `severity` | `critical`, `warning`, `info` | Controls urgency and routing |\n| `team` | `platform`, `database`, `frontend` | Routes to the right responders |\n| `environment` | `production`, `staging` | Distinguishes alert context |\n| `runbook` | `payments-runbook` | Points on-call to a runbook |"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Labels drive notification routing. For example, notification policies can:\n\n- Route `severity=\"critical\"` to PagerDuty for immediate response\n- Route `severity=\"warning\"` to a Slack channel for awareness\n- Route `team=\"platform\"` to the platform team's on-call\n- Route by `service_name` (already on the query) to service owners\n\nChoose labels that match your notification policy matchers."
+        },
+        {
+          "type": "markdown",
+          "content": "Your alert now has a folder and routing labels.\n\nNext, you set how often Grafana evaluates the rule and how long a problem must persist before it fires."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-first-rule-build-query",
+  "title": "Build your query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The query defines what data Grafana monitors. You point the rule at a data source, choose a metric, filter it down to what matters, and apply operations that transform the raw data into something useful.\n\nThis milestone uses the **grafanacloud-play-prom** Prometheus data source from the QuickPizza tutorial data sources. You build the query in **Builder** mode, targeting a real HTTP request counter from the QuickPizza demo service."
+    },
+    {
+      "type": "section",
+      "id": "select-data-source",
+      "title": "Select the QuickPizza Prometheus data source",
+      "requirements": [
+        "has-datasource:grafanacloud-play-prom"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "You'll point the alert rule at the Prometheus data source that came with the QuickPizza tutorial data sources."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "targetvalue": "grafanacloud-play-prom",
+          "content": "In the **Define query and alert condition** section, open the data source picker and select **grafanacloud-play-prom**.",
+          "tooltip": "Pick the Prometheus data source from the QuickPizza tutorial data sources.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "use-builder-mode",
+      "title": "Confirm Builder mode",
+      "requirements": [
+        "section-completed:select-data-source"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The Prometheus query editor has two modes: **Builder** (visual, point-and-click) and **Code** (write PromQL by hand). Builder is the fastest way in when you're new to Prometheus, and it's the default for new queries."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid QueryEditorModeToggle']",
+          "content": "Above the query field, confirm **Builder** is selected. If you're on **Code**, click **Builder** to switch.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "skippable": true,
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "choose-metric",
+      "title": "Choose the metric",
+      "requirements": [
+        "section-completed:use-builder-mode"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "The **Metric** field is where you tell Prometheus which time series to query. QuickPizza exposes an HTTP request counter you can alert on."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Open metrics explorer']",
+          "content": "Click the **Metric** drop-down and select `quickpizza_server_http_request_duration_seconds_count`.\n\nIf you can't find the Metric from the dropdown, Click the **Open metric explorer** button and search for the metric.\n\nThis is a counter that increments every time QuickPizza handles an HTTP request. It's exactly the kind of counter you'd alert on in production.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-label-filter",
+      "title": "Narrow down with a label filter",
+      "requirements": [
+        "section-completed:choose-metric"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "QuickPizza has multiple services. A label filter narrows the query to just the one you care about — the public API, which handles customer traffic."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select label']",
+          "content": "Below the metric picker, in the **Label filters** row, open the **Label** drop-down and select `service_name`.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select value']",
+          "content": "In the value picker next to `service_name`, select `quickpizza-public-api`.\n\nYour query now returns only the HTTP request counter for QuickPizza's public API.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-rate-operation",
+      "title": "Convert the counter to a rate",
+      "requirements": [
+        "section-completed:add-label-filter"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Counters only ever go up, so the raw value isn't useful for alerting. Applying **Rate** turns the counter into a per-second rate — how many requests QuickPizza is currently serving. That's what you actually want to compare against a threshold."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Operations",
+          "content": "Click **+ Operations** to add a function to your query. In the picker, select **Range > Rate** and `$__rate_interval`.\n\nGrafana wraps your query with `rate(...[$__rate_interval])` under the hood — but you never touched PromQL.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "preview-query",
+      "title": "Preview the query",
+      "requirements": [
+        "section-completed:add-rate-operation"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run queries",
+          "content": "Click **Run queries** to preview the data your query returns.\n\nYou should see a line that fluctuates in the low single digits — the real-time HTTP request rate for QuickPizza's public API. If the preview is empty, double-check that you selected `grafanacloud-play-prom` and the metric name is correct.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Your query now returns a real per-second request rate from QuickPizza. In the next milestone, you set the condition that decides when this rate is high enough to fire an alert."
+        }
+      ]
+    }
+  ]
+}
