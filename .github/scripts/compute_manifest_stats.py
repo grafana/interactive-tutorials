@@ -62,6 +62,10 @@ DOCUMENTED APPROXIMATIONS (acceptable for this spike; see PR body):
      the milestone string), NOT by directory name or position. A milestone that
      resolves to no measured guide is skipped from `perMilestone` and the sums,
      and a warning is emitted; `guides` still reflects the full milestone count.
+     Only `type: guide` manifests are measured, so a milestone that references
+     another `path`/`journey` (a nested journey) contributes nothing to the
+     sums while still counting toward `guides` — a known gap flagged for the
+     RFC. No such nesting exists in this repo today.
   5. A path/journey's own sibling content.json (if any) is NOT counted — a path
      is defined purely as the rollup of its milestones.
 
