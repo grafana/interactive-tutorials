@@ -1,39 +1,38 @@
 {
-  "id": "labeling-strategy-logs-labeling-strategy",
-  "title": "Apply labeling strategy to logs",
-  "blocks": [
-    {
-      "type": "markdown",
-      "content": "Loki takes the fewest-labels principle further than metrics: it indexes only your labels, not the log content, so every label combination splits your logs into another stream to index and store. This milestone gives you the decision framework for what belongs in a label, what belongs in structured metadata, and what stays in the log line."
-    },
-    {
-      "type": "markdown",
-      "content": "## Labels tell you where\n\nGood log labels describe the origin or context of the log: application, namespace, environment, cluster, region. These are static, bounded, and what you actually filter by when you start a search. Loki performs best with few labels, and the fewer streams you create, the smaller the index and the faster your queries."
-    },
-    {
-      "type": "image",
-      "src": "https://grafana.com/media/docs/learning-journey/labeling-strategy/log-stream-splitting.svg",
-      "alt": "One application splitting into four log streams because two labels with two values each create four unique label combinations"
-    },
-    {
-      "type": "markdown",
-      "content": "## Use dynamic labels sparingly\n\nA dynamic label takes its value from the log content, such as `level`. Use them rarely, and only when all of these are true:\n\n- The value set is low-cardinality, ideally tens of values.\n- The values are long-lived, such as the first segment of an HTTP path, not ephemeral IDs.\n- Users actually query by the label frequently.\n\nOtherwise, don't index it. Loki's filter expressions are fast: `{app=\"api\"} |= \"level=error\"` performs comparably to a `level` label for many workloads, without splitting your streams. Don't add a label until you know you need it."
-    },
-    {
-      "type": "markdown",
-      "content": "## The decision framework\n\nFor any piece of log data, ask where it belongs:\n\n- **You filter by it in almost every query, and it's bounded**: make it a label. Example: `env`, `app`.\n- **It's high-cardinality but you query it often**: attach it as [structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/). It's queryable with a label filter expression, such as `{job=\"example\"} | pod=\"myservice-abc1234-56789\"`, without being indexed or creating streams. Examples: pod names, process IDs, trace IDs.\n- **Everything else**: leave it in the log line and extract it at query time with parsers like `json` or `logfmt`, or search it with filter expressions."
-    },
-    {
-      "type": "markdown",
-      "content": "## Audit what your clients send\n\nCollectors and agents can attach dynamic labels you didn't choose. Use the fewest-labels test on whatever Alloy, Fluentd, or your Docker driver is applying. To see your streams and find high-cardinality labels, run:\n\n```\nlogcli series '{}' --since=1h --analyze-labels\n```\n\nA label with thousands of unique values found in nearly every stream, such as a `requestId`, should be removed from labels and queried with a filter expression instead.\n\nIf many teams send logs and you can't audit or change every client, apply the same approach you learned for metrics: route logs through gateway collectors your admin team owns, enforce label policy at that layer, and manage those gateway configurations centrally with [Fleet Management](https://grafana.com/docs/grafana-cloud/send-data/fleet-management/)."
-    },
-    {
-      "type": "markdown",
-      "content": "You now have the logs framework: static origin labels, dynamic labels only when bounded and queried, structured metadata for high-cardinality fields, and filter expressions for the rest."
-    },
-    {
-      "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following topics:\n\n- [Label best practices](https://grafana.com/docs/loki/latest/get-started/labels/bp-labels/)\n- [What is structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/)"
-    }
-  ]
+    "id": "labeling-strategy-logs-labeling-strategy",
+    "title": "Apply labeling strategy to logs",
+    "blocks": [{
+            "type": "markdown",
+            "content": "Loki, which powers Grafana Cloud Logs, takes the fewest labels principle further than metrics: it indexes only your labels, not the log content, so every label combination splits your logs into another stream to index and store. This milestone gives you the decision framework for what belongs in a label, what belongs in structured metadata, and what stays in the log line."
+        },
+        {
+            "type": "markdown",
+            "content": "## Labels tell you where\n\nGood log labels describe the origin or context of the log: application, namespace, environment, cluster, region. These are static, bounded, and what you actually filter by when you start a search. Loki performs best with few labels, and the fewer streams you create, the smaller the index and the faster your queries."
+        },
+        {
+            "type": "image",
+            "src": "https://interactive-learning.grafana.net/packages/labeling-strategy-lj/assets/images/log-stream-splitting.svg",
+            "alt": "One application splitting into four log streams because two labels with two values each create four unique label combinations"
+        },
+        {
+            "type": "markdown",
+            "content": "## Use dynamic labels sparingly\n\nA dynamic label takes its value from the log content, such as `level`. Use them rarely, and only when all of these are true:\n\n- The value set is low-cardinality, ideally tens of values.\n- The values are long lived, such as the first segment of an HTTP path, not ephemeral IDs.\n- Users actually query by the label frequently.\n\nOtherwise, don't index it. Loki's filter expressions are fast: `{app=\"api\"} |= \"level=error\"` performs comparably to a `level` label for many workloads, without splitting your streams. Don't add a label until you know you need it."
+        },
+        {
+            "type": "markdown",
+            "content": "## The decision framework\n\nFor any piece of log data, ask where it belongs:\n\n- **You filter by it in almost every query, and it's bounded**: make it a label. Example: `env`, `app`.\n- **It's high-cardinality but you query it often**: attach it as [structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/). It's queryable with a label filter expression, such as `{job=\"example\"} | pod=\"myservice-abc1234-56789\"`, without being indexed or creating streams. Examples: pod names, process IDs, trace IDs.\n- **Everything else**: leave it in the log line and extract it at query time with parsers like `json` or `logfmt`, or search it with filter expressions."
+        },
+        {
+            "type": "markdown",
+            "content": "## Audit what your clients send\n\nCollectors and agents can attach dynamic labels you didn't choose. Use the fewest labels test on whatever Alloy, Fluentd, or your Docker driver is applying. To see your streams and find high-cardinality labels, run:\n\n```\nlogcli series '{}' --since=1h --analyze-labels\n```\n\nA label with thousands of unique values found in nearly every stream, such as a `requestId`, should be removed from labels and queried with a filter expression instead.\n\nIf many teams send logs and you can't audit or change every client, apply the same approach you learned for metrics: route logs through gateway collectors your admin team owns, enforce label policy at that layer, and manage those gateway configurations centrally with [Fleet Management](https://grafana.com/docs/grafana-cloud/send-data/fleet-management/)."
+        },
+        {
+            "type": "markdown",
+            "content": "You now have the logs framework. This includes static origin labels, dynamic labels only when bounded and queried, structured metadata for high-cardinality fields, and filter expressions for the rest."
+        },
+        {
+            "type": "markdown",
+            "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following topics:\n\n- [Label best practices](https://grafana.com/docs/loki/latest/get-started/labels/bp-labels/)\n- [What is structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/)"
+        }
+    ]
 }

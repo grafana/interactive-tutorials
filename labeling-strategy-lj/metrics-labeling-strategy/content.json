@@ -1,43 +1,42 @@
 {
-  "id": "labeling-strategy-metrics-labeling-strategy",
-  "title": "Choose metric labels deliberately",
-  "blocks": [
-    {
-      "type": "markdown",
-      "content": "A metric label should be a dimension you aggregate or filter by, with a bounded set of values. This milestone gives you the rules for choosing metric labels and shows where cardinality mistakes usually enter a stack."
-    },
-    {
-      "type": "markdown",
-      "content": "## Bounded or it doesn't belong\n\nThe single most important rule: **label values must be bounded**. A label like `env` has a handful of values forever. A label like `user_id` grows without limit, and every new value creates another active series that's billed and indexed.\n\nNever use these as metric label values:\n\n- User, customer, or session IDs\n- Request or trace IDs\n- IP addresses\n- Email addresses\n- Timestamps\n\nEach of these creates a new series per unique value, and the combinations multiply against every other label on the metric."
-    },
-    {
-      "type": "image",
-      "src": "https://grafana.com/media/docs/learning-journey/labeling-strategy/unbounded-label-growth.svg",
-      "alt": "A chart comparing active series over time: a bounded label like env stays flat while an unbounded label like user_id grows without limit"
-    },
-    {
-      "type": "markdown",
-      "content": "## Ask before you add\n\nFor every label, ask:\n\n- **Will I aggregate or filter by it?** If nobody queries by this dimension, it's pure cost.\n- **Is the value set bounded?** Think tens of values, not thousands.\n- **Does it multiply badly?** Check the label against the labels already on the metric. Three bounded labels can still combine into thousands of series."
-    },
-    {
-      "type": "markdown",
-      "content": "## Where the mistakes happen\n\nCardinality problems usually enter a stack at ingestion setup, not in application code reviews. Enabling an integration with default settings, such as the Kubernetes Monitoring Helm chart across all your clusters, can turn on thousands of metrics and labels at once. That visibility is valuable, but only if your budget expects it. When you set up a new integration:\n\n- Review what metrics the defaults send before pointing them at production.\n- Use allowlists to keep only the metrics and labels you'll use. To reduce what Kubernetes Monitoring collects, refer to [Manage your configuration](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/kubernetes-monitoring/configuration/manage-configuration/).\n- Check the Cardinality tab after enabling anything new, and watch for **New** badges."
-    },
-    {
-      "type": "markdown",
-      "content": "## Filter at the source\n\nYou can keep unnecessary series from ever leaving your infrastructure with relabeling rules in Prometheus, Alloy, or your collector:\n\n- **Allowlisting**: keep an explicit set of important metrics and labels and drop everything else, using `keep` and `labelkeep` actions.\n- **Denylisting**: drop an explicit set of high-cardinality metrics and labels and keep everything else, using `drop` and `labeldrop` actions.\n\nFor the full relabeling reference and examples, refer to [Reduce metrics costs by filtering collected and forwarded metrics](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/reduce-costs/metrics-costs/client-side-filtering/)."
-    },
-    {
-      "type": "markdown",
-      "content": "## Enforce your strategy at a gateway\n\nRelabeling rules only help if you control the collectors that apply them. In larger organizations, many teams send telemetry, and the team that pays the bill often can't change every client. In that case, route telemetry through a tier of gateway collectors that your platform or admin team owns, and apply your labeling and filtering policies at that layer. Whatever upstream teams send, your rules run at the gateway before data reaches Grafana Cloud.\n\n[Fleet Management](https://grafana.com/docs/grafana-cloud/send-data/fleet-management/) helps you run this pattern at scale: it gives you centralized control over your collector configurations, so you can roll out and update gateway policies from one place instead of editing collectors one by one."
-    },
-    {
-      "type": "markdown",
-      "content": "You now have the prevention rules: bounded values only, add labels only when queried, audit defaults at ingestion setup, and enforce policy at a layer you control. Next, you'll fix cardinality you already have."
-    },
-    {
-      "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following topics:\n\n- [Client-side filtering](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/reduce-costs/metrics-costs/client-side-filtering/)\n- [Reduce costs by adjusting data points per minute](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/reduce-costs/metrics-costs/adjust-data-points-per-minute/)"
-    }
-  ]
+    "id": "labeling-strategy-metrics-labeling-strategy",
+    "title": "Choose metric labels deliberately",
+    "blocks": [{
+            "type": "markdown",
+            "content": "A metric label should be a dimension you aggregate or filter by, with a bounded set of values. This milestone gives you the rules for choosing metric labels and shows where cardinality mistakes usually enter a stack."
+        },
+        {
+            "type": "markdown",
+            "content": "## Bounded or it doesn't belong\n\nThe single most important rule: **label values must be bounded**. A label like `env` has a handful of values forever. A label like `user_id` grows without limit, and every new value creates another active series that's billed and indexed.\n\nNever use these as metric label values:\n\n- User, customer, or session IDs\n- Request or trace IDs\n- IP addresses\n- Email addresses\n- Timestamps\n\nEach of these creates a new series per unique value, and the combinations multiply against every other label on the metric."
+        },
+        {
+            "type": "image",
+            "src": "https://interactive-learning.grafana.net/packages/labeling-strategy-lj/assets/images/unbounded-label-growth.svg",
+            "alt": "A chart comparing active series over time: a bounded label like env stays flat while an unbounded label like user_id grows without limit"
+        },
+        {
+            "type": "markdown",
+            "content": "## Ask before you add a label\n\nFor every label, ask:\n\n- **Will I aggregate or filter by it?** If nobody queries by this dimension, it's pure cost.\n- **Is the value set bounded?** Think tens of values, not thousands.\n- **How does it multiply?** Check the label against the labels already on the metric. Three bounded labels can still combine into thousands of series."
+        },
+        {
+            "type": "markdown",
+            "content": "## Where the mistakes happen\n\nCardinality problems usually enter a stack at ingestion setup, not in application code reviews. Enabling an integration with an app or service with default settings, such as the Kubernetes Monitoring Helm chart across all your clusters, can turn on thousands of metrics and labels at once. That visibility is valuable, but only if your budget expects it. When you set up a new integration:\n\n- Review what metrics the defaults send before pushing them to production.\n- Use allow lists to keep only the metrics and labels you'll use.\n- Check the Cardinality tab after enabling anything new, and watch for **New** badges."
+        },
+        {
+            "type": "markdown",
+            "content": "## Filter at the source\n\nYou can keep unnecessary series from ever leaving your infrastructure with relabeling rules in Prometheus, Alloy, or your collector:\n\n- **Allowlisting**: keep an explicit set of important metrics and labels and drop everything else. For example, for Prometheus metrics, use `keep` and `labelkeep` actions.\n- **Denylisting**: drop an explicit set of high-cardinality metrics and labels and keep everything else. For example, for Prometheus metrics, use `drop` and `labeldrop` actions.\n\nFor the full relabeling reference and examples, refer to [Reduce metrics costs by filtering collected and forwarded metrics](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/reduce-costs/metrics-costs/client-side-filtering/)."
+        },
+        {
+            "type": "markdown",
+            "content": "## Enforce your strategy at a gateway\n\nRelabeling rules only help if you control the collectors that apply them. In larger organizations, many teams send telemetry, and the team that pays the bill often can't change every client. In that case, route telemetry through a tier of gateway collectors that your platform or admin team owns, and apply your labeling and filtering policies at that layer. Whatever upstream teams send, your rules run at the gateway before data reaches Grafana Cloud.\n\n[Fleet Management](https://grafana.com/docs/grafana-cloud/send-data/fleet-management/) helps you run this pattern at scale: it gives you centralized control over your collector configurations, so you can roll out and update gateway policies from one place instead of editing collectors one by one."
+        },
+        {
+            "type": "markdown",
+            "content": "You now have the prevention rules: bounded values only, add labels only when queried, audit defaults at ingestion setup, and enforce policy at a layer you control. Next, you'll fix cardinality you already have."
+        },
+        {
+            "type": "markdown",
+            "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following topics:\n\n- [Client-side filtering](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/reduce-costs/metrics-costs/client-side-filtering/)\n- [Reduce costs by adjusting data points per minute](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/reduce-costs/metrics-costs/adjust-data-points-per-minute/)"
+        }
+    ]
 }
