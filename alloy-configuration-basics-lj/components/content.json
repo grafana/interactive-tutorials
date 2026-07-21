@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alloy-configuration-basics-components",
+  "title": "Understand components",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A **component** is an Alloy building block that performs one task, such as retrieving a secret, collecting metrics, processing data, or sending telemetry."
+    },
+    {
+      "type": "markdown",
+      "content": "You create a component with a labeled block:\n\n```alloy\nCOMPONENT_NAME \"LABEL\" {\n  // Component arguments go here.\n}\n```\n\nThe component name selects the type of work. The label identifies this instance of the component and distinguishes it from other instances of the same type."
+    },
+    {
+      "type": "markdown",
+      "content": "For example, this `local.file` component reads a file from disk:\n\n```alloy\nlocal.file \"example\" {\n  filename = \"/tmp/example.txt\"\n}\n```\n\n- `local.file` is a component name available in Alloy.\n- `\"example\"` is the label for this instance.\n- `filename` is an argument that configures which file to read."
+    },
+    {
+      "type": "markdown",
+      "content": "Every component has two main parts:\n\n- **Arguments** configure the component's behavior. They are the attributes and nested blocks you write inside the component block.\n- **Exports** are values that the running component makes available for other components to reference. You don't declare exports in the configuration. The component type provides them.\n\nOptional arguments can have defaults. A component can have zero or more exports. For the `local.file` example above, you only wrote the `filename` argument. The `local.file` component type also provides a `content` export that holds the latest contents of that file."
+    },
+    {
+      "type": "markdown",
+      "content": "When one component uses another component's export as an argument, the reference creates a connection between them. These connections are how components become pipelines that collect, process, and send telemetry. The next milestone traces one of those references."
+    },
+    {
+      "type": "markdown",
+      "content": "The `logging` block from the previous milestone isn't a component: it's a special configuration block for Alloy itself. Component blocks use component names available in Alloy, such as `local.file`, and require a label. Special configuration blocks like `logging` don't use a label."
+    },
+    {
+      "type": "markdown",
+      "content": "You can now distinguish a component's inputs from its outputs: arguments tell a component how to behave, and exports let other components use values that it provides."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Components](https://grafana.com/docs/alloy/latest/get-started/components/)\n- [Configure components](https://grafana.com/docs/alloy/latest/get-started/components/configure-components/)"
+    }
+  ]
+}
