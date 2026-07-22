@@ -20,8 +20,10 @@ Do not paste the whole #1795 diff. Link it and mirror the pattern.
 Trigger when Phase 2 shows a step needs a durable selector and:
 
 - No `data-testid` / strong semantic attribute exists in the DOM, and
-- The author wants an upstream fix (not only a justified `:contains()` fallback), and
-- They reply **`frontend`** at Phase 3 (alongside **fix all** / **fix N** choices) or ask during Phase 4
+- Live Playwright or walk-me failed on that step (or the author wants a proactive testid anyway), and
+- They reply **`frontend`** at Phase 3 or ask during Phase 4
+
+At Phase 3, treat this as a **needs-frontend** finding: lead with **frontend**, not **fix N**. A package-only `reftarget` tweak is not the real fix. Only offer a temporary weak selector in the guide if the author explicitly asks, and label it as brittle.
 
 If live passed with a justified `:contains()` and no stable selector exists, that stays Internal in review terms. Offer Phase 5 as an optional improvement, not a Fix-before-PR demand, unless Playwright/walk-me failed on that step.
 

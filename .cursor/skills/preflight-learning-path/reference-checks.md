@@ -16,14 +16,22 @@ Use this shape whenever you list Fix-before-PR items in chat (especially Phase 3
 
 1. **Friendly outcome line** (e.g. "almost ready, with 3 copy fixes first"). You may mention the gate label in the readiness file; chat can stay friendlier.
 2. **What we checked** — short bullets naming the sources of truth in plain language (product claims vs docs, UI selectors on `{stack}`, Block Editor smoke choice).
-3. **Numbered findings** — each item: plain problem, why it matters or better wording, then the file/dir in parentheses. Enough context that the author can decide without opening the skill.
-4. **Your turn** — always offer:
-   - **fix all**
-   - **fix N** (and combos like **fix 1,3**)
-   - **done** (open PR / leave for review)
+3. **Numbered findings** — each item: plain problem, why it matters or better wording, then the file/dir in parentheses. Enough context that the author can decide without opening the skill. Tag each item mentally as **package-fixable** or **needs-frontend** (see below).
+4. **Your turn** — offer only actions that can resolve the open items:
+   - **fix all** / **fix N** / combos — only for **package-fixable** items (prose, manifest, `website.yaml`, guide `reftarget` when a better selector already exists in the DOM)
+   - **frontend** — when any open item **needs-frontend** (live failed; no durable `data-testid` / strong semantic selector in the DOM). Do **not** offer **fix N** for that item as if a guide edit alone is the real fix
+   - **done** — open PR / leave for review
    - **show report**
-   - **frontend** only when relevant
 5. **Heads-up** — optional stack/testing notes (already-installed plugins, read-only provisioned sources, etc.).
+
+### Package-fixable vs needs-frontend
+
+| Kind | Examples | Phase 3 offer |
+|---|---|---|
+| **Package-fixable** | Claim-check copy, framing/`depends`, fake in-section steps, false noops, wrong `reftarget` when a stable testid already exists in the DOM | **fix N** / **fix all** |
+| **Needs-frontend** | Playwright or walk-me failed; element has no durable selector in the DOM | **frontend** (primary). Optional: clearly labeled **try temporary selector** only if the author asks for a brittle package workaround. Never present bare **fix N** as the main path for this kind |
+
+When the list mixes both kinds, number everything, but in **Your turn** say which numbers **fix** covers and that **frontend** covers the selector gap (e.g. "fix 2,3 for copy; **frontend** for item 1").
 
 Keep Phase 1 lighter (short Fix-before-PR bullets + stack ask). Put the full numbered + fix-choice treatment at Phase 3 after live results land.
 

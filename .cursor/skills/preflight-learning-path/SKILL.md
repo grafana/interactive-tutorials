@@ -127,7 +127,7 @@ Re-verify commit safety after Phase 1 before Phase 2.
 
 Do **not** open Phase 3 with a "What this check is" primer. Lead with the outcome, then **What we checked**, then the numbered findings.
 
-**Reply keywords:** `yes` · `ready` · `add playwright mcp` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N - …` / `N/A - …` · `show report` · `fix all` · `fix 1` / `fix 2` / `fix 3` · `fix 1,3` (any combo) · `frontend` · `done` · `resume` / `start fresh`
+**Reply keywords:** `yes` · `ready` · `add playwright mcp` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N - …` / `N/A - …` · `show report` · `fix all` · `fix 1` / `fix 2` / `fix 3` · `fix 1,3` (package-fixable only) · `frontend` (needs-frontend / upstream testid) · `done` · `resume` / `start fresh`
 
 **Tone:** Casual and friendly. Address the author as **you**. Celebrate clean passes. No rule numbers, no Blocker/nit labels, no em dashes. Prefer everyday words over skill jargon (say "copy fixes" not "post-inline"; say "product claims vs docs" not "claim-check MUST FIX").
 
@@ -296,17 +296,17 @@ After Playwright:
 
 ## Phase 3: Readiness
 
-**Goal:** Merge static + live into a readiness outcome; offer numbered fix choices.
+**Goal:** Merge static + live into a readiness outcome; offer the right next action per finding kind.
 
-Author chat shape: [Author-facing findings](reference-checks.md#author-facing-findings).
+Author chat shape: [Author-facing findings](reference-checks.md#author-facing-findings) (package-fixable vs needs-frontend).
 
 ### Agent steps
 
 1. Apply [selector decision tree](../review-learning-path/reference-checks.md#selector-decision-tree) and promote only post-inline items.
 2. Apply [readiness gate](reference-checks.md#readiness-gate).
 3. Write `{slug}-readiness.md` with outcome + [PR opener checklist](reference-checks.md#pr-opener-checklist).
-4. In chat: follow the Phase 3 checkpoint template below. Number every open finding. Zero findings is first-class (skip the fix list and celebrate).
-5. Map replies: `fix all` / `fix N` / `fix 1,3` → Phase 4; `frontend` → Phase 5; `show report` → paste or link readiness path; `done` → end with PR-opener notes.
+4. In chat: follow the Phase 3 checkpoint template below. Number every open finding. Mark each as package-fixable or needs-frontend. Zero findings is first-class (skip the fix list and celebrate).
+5. Map replies: `fix all` / `fix N` / combos → Phase 4 **only for package-fixable items**; `frontend` → Phase 5 for needs-frontend items; `show report` → readiness path; `done` → end with PR-opener notes. If the author says **fix N** on a needs-frontend item, clarify that a guide edit alone will not add a `data-testid` and re-offer **frontend** (or a clearly labeled temporary selector workaround if they insist).
 
 ### Checkpoint (when there are findings)
 
@@ -319,22 +319,24 @@ Use a friendly outcome line (examples: "almost ready, with N copy fixes first" f
 > - {e.g. Whether UI selectors exist on learn.grafana.net (shared stack)}
 > - {e.g. Block Editor smoke: skipped / already-tested / walked}
 >
-> **Please fix these {N}** ({short kind, e.g. product-fact issues in learner copy})
+> **Please fix these {N}** ({short kind})
 >
 > 1. {Plain problem}. {Why / better wording}.  
 >    (`{file or dirs}`)
 > 2. …
 >
-> **Your turn**
-> - **fix all** — I'll update all of them
-> - **fix 1** / **fix 2** / **fix 3** — only that item
-> - **fix 1,3** — any combo by number
+> **Your turn** *(include only the lines that apply)*
+> - **fix all** / **fix N** / **fix 1,3** — package edits for copy or guide JSON that we can fix here
+> - **frontend** — upstream `data-testid` for item(s) {N} (live miss; no durable selector in the DOM)
 > - **done** — open a PR and leave these for review
 > - **show report** — longer write-up
-> - **frontend** — only if we need an upstream `data-testid` (omit if not relevant)
 >
 > **Heads-up** *(optional, only when useful)*  
-> {Stack or testing note, e.g. provisioned data source is read-only}
+> {Stack or testing note}
+
+When **every** open item needs-frontend, omit **fix all** / **fix N**. Lead **Your turn** with **frontend**.
+
+When the list mixes kinds, say which numbers **fix** covers vs **frontend** (see [Author-facing findings](reference-checks.md#author-facing-findings)).
 
 ### Checkpoint (when clean)
 
@@ -345,15 +347,17 @@ Use a friendly outcome line (examples: "almost ready, with N copy fixes first" f
 >
 > Nothing here that would draw a review comment on copy or selectors. Nice work.
 >
-> **Your turn:** Reply **done** if you're opening the PR, **show report** for the write-up, or **frontend** if you still need an upstream testid.
+> **Your turn:** Reply **done** if you're opening the PR, or **show report** for the write-up.
 >
 > *(If Open PR with notes: say why in one line, e.g. Block Editor smoke was skipped.)*
+>
+> *(Optional **frontend** only if you want a proactive testid improvement when live already passed with a weak-but-working selector.)*
 
 ---
 
 ## Phase 4: Apply package fixes (optional)
 
-**Goal:** Author-requested surgical edits (`fix all` / `fix N` / numbered combos from Phase 3).
+**Goal:** Author-requested surgical edits (`fix all` / `fix N` / numbered combos) for **package-fixable** findings only.
 
 ### Tell the author
 
@@ -363,7 +367,7 @@ Use a friendly outcome line (examples: "almost ready, with N copy fixes first" f
 
 ### Agent steps
 
-1. Apply only the numbered findings the author requested.
+1. Apply only the numbered **package-fixable** findings the author requested. Do not pretend a guide `reftarget` tweak solves a needs-frontend gap unless they explicitly asked for a temporary workaround.
 2. Re-run Pathfinder CLI validate if content/manifests changed.
 3. Suggest re-running Phase 2 Playwright for touched interactive milestones.
 4. Do not commit unless the author explicitly asks.
