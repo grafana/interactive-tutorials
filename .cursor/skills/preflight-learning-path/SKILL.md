@@ -10,13 +10,13 @@ description: >-
 
 # Preflight learning path (author self-review)
 
-Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the five-phase [review-learning-path](../review-learning-path/SKILL.md) coach, from your side: static pass, Playwright DOM, readiness, then optional fixes.
+Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the five-phase [review-learning-path](../review-learning-path/SKILL.md) coach, from the author side: static pass, live DOM checks, readiness, then optional fixes.
 
-**Terminology:** Say **learning path** or **path** in messages; use `{path_dir}` in agent notes.
+**Terminology:** Say **learning path** or **path** in author messages; use `{path_dir}` in agent notes.
 
 **Entry command:** [/preflight-learning-path](../../commands/preflight-learning-path.md)
 
-**Mirror skill:** [review-learning-path](../review-learning-path/SKILL.md) (five-phase coach on main only). Do **not** use any outdated review skill phases or Always-inline routing.
+**Mirror skill:** [review-learning-path](../review-learning-path/SKILL.md) (five-phase coach on main only). Do **not** use outdated review skill phases or Always-inline routing.
 
 **Do NOT read external reference files upfront.** Each phase loads its own references on demand.
 
@@ -28,16 +28,34 @@ Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the
 
 ---
 
+## Voice (author-facing)
+
+Write like a calm teammate helping someone ship, not like a linter report.
+
+| Do | Don't |
+|---|---|
+| Short sentences; plain words | Jargon in chat (`post-inline`, `MUST FIX`, rule numbers) |
+| Say what is wrong, why it matters, which file | Dump severity labels or audit counts |
+| Offer only actions that can resolve the item | Offer **fix N** when the real fix is upstream |
+| Celebrate clean passes briefly | Hedge with "seems fine" / "maybe" |
+| One checkpoint ask at a time | Batch phases or multiple asks |
+
+No em dashes in author chat, readiness text, or drafted PR bodies. Use periods, commas, or parentheses.
+
+Address the author as **you**. Prefer "copy fixes," "product claims vs docs," "UI selectors," "smoke test."
+
+---
+
 ## Human-in-the-loop contract
 
 | You (agent) | Author (human) |
 |---|---|
-| Confirm path, run audit + path/LH + claim-check | Confirm `{path_dir}`, reply at checkpoints |
-| Surface **post-inline-only** findings in chat | Decide whether to fix now or open PR with notes |
-| Required Playwright DOM check (live path) | Okta login in Playwright browser; reply `ready` |
+| Confirm path; run audit, path/LH checks, and claim-check | Confirm `{path_dir}`; reply at checkpoints |
+| Surface only review-level findings in chat | Decide whether to fix now or open a PR with notes |
+| Required Playwright DOM check (live path) | Okta login in the Playwright browser; reply `ready` |
 | Optional Block Editor coaching | `already-tested` / `walk-me` / `skip-smoke` |
-| Apply package fixes only when asked | Reply `fix all`, `fix N`, or a combo like `fix 1,3` |
-| Walk frontend testid PR when needed | Approve push / PR create |
+| Apply package fixes only when asked | `fix all`, `fix N`, or a combo like `fix 1,3` (package-fixable only) |
+| Walk frontend testid PR when needed | Reply `frontend`; approve push / PR create |
 
 ---
 
@@ -46,14 +64,14 @@ Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the
 ```
 Input (path_dir or current branch)
   │
-  ├─ Phase 0: Identify path ───── path_dir, path_type, Playwright MCP prereq
+  ├─ Phase 0: Identify path ───── path_dir, path_type, Playwright MCP
   │
-  ├─ Phase 1: Static pass ─────── audit + path/LH + claim-check → author findings (post-inline only)
+  ├─ Phase 1: Static pass ─────── audit + path/LH + claim-check → review-level findings only
   │
   ├─ Phase 2: Live test ───────── Playwright DOM required; Block Editor opt-in
   │                              (skipped when static-only)
   │
-  ├─ Phase 3: Readiness ───────── readiness report + offer to fix
+  ├─ Phase 3: Readiness ───────── plain summary + numbered fixes + right next action
   │
   ├─ Phase 4: Apply fixes ─────── optional package JSON / website.yaml edits
   │
@@ -79,10 +97,10 @@ See [author-testing.md § Prerequisites](author-testing.md#prerequisites). Phase
 
 ## Safety invariants
 
-1. **Do not modify** `content.json`, `manifest.json`, or `website.yaml` until Phase 4 (and only when the author requests fixes).
+1. **Do not modify** `content.json`, `manifest.json`, or `website.yaml` until Phase 4 (and only when the author requests package-fixable fixes).
 2. **Never commit** preflight artifacts (`.cursor/lp-preflight-state/` or audit-guide files under `{milestone}/assets/`).
-3. **Surface only post-inline** findings in chat and readiness (same bar as review [comment-style](../review-learning-path/comment-style.md)). Never dump Internal/Discard nits.
-4. **No em dashes** in author-facing chat, readiness text, or drafted PR bodies. Use periods, commas, or parentheses.
+3. **Surface only review-level** findings in chat and readiness (same bar as review [comment-style](../review-learning-path/comment-style.md)). Never dump Internal/Discard nits.
+4. **No em dashes** in author-facing chat, readiness text, or drafted PR bodies.
 5. **One preflight run per path slug** (resume from state; do not fork duplicate state files).
 6. **Never** plan companion website / `pathfinder_data` / shortcode work as package blockers.
 
@@ -108,9 +126,9 @@ Re-verify commit safety after Phase 1 before Phase 2.
 
 ## How this skill runs
 
-1. Announce the phase (number and name), what you're doing, and why (2–3 sentences).
+1. Announce the phase briefly (number, name, what you are about to do). Keep it to a few sentences; do not lecture.
 2. Do agent work (audit, CLI, Playwright, drafts).
-3. Stop at the checkpoint: one message, one ask. **Do not advance** until the author replies.
+3. Stop at the checkpoint: one message, one clear ask. **Do not advance** until the author replies.
 4. **Never batch phases.** If they say "keep going," pause at the next checkpoint anyway.
 
 ---
@@ -119,17 +137,16 @@ Re-verify commit safety after Phase 1 before Phase 2.
 
 | Section | Content |
 |---|---|
-| **Header** | `Phase {n}` + short plain outcome (avoid jargon like "post-inline") |
-| **What we checked** | Phase 3 (and readiness-style summaries): where findings came from, in plain language |
-| **Findings** | Numbered list with enough context to act (what is wrong, why it matters, which file). No rule counts. |
-| **Your turn** | Clear reply choices (including **fix all** / **fix N** when findings exist) |
+| **Header** | `Phase {n}` + short plain outcome |
+| **What we checked** | Phase 3 (and similar summaries): where findings came from, in plain language |
+| **Findings** | Numbered list: what is wrong, why it matters, which file. No rule counts. |
+| **Your turn** | Only actions that can resolve open items |
 | **Up next** | One sentence when useful |
+| **Heads-up** | Optional stack note |
 
 Do **not** open Phase 3 with a "What this check is" primer. Lead with the outcome, then **What we checked**, then the numbered findings.
 
-**Reply keywords:** `yes` · `ready` · `add playwright mcp` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N - …` / `N/A - …` · `show report` · `fix all` · `fix 1` / `fix 2` / `fix 3` · `fix 1,3` (package-fixable only) · `frontend` (needs-frontend / upstream testid) · `done` · `resume` / `start fresh`
-
-**Tone:** Casual and friendly. Address the author as **you**. Celebrate clean passes. No rule numbers, no Blocker/nit labels, no em dashes. Prefer everyday words over skill jargon (say "copy fixes" not "post-inline"; say "product claims vs docs" not "claim-check MUST FIX").
+**Reply keywords:** `yes` · `ready` · `add playwright mcp` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N - …` / `N/A - …` · `show report` · `fix all` · `fix 1` / `fix 2` / `fix 3` · `fix 1,3` (package-fixable only) · `frontend` · `done` · `resume` / `start fresh`
 
 ---
 
@@ -153,7 +170,7 @@ If `.cursor/lp-preflight-state/{slug}.json` exists:
 >
 > Share the learning path package directory (for example `monitor-azure-resources-lj`), or tell me to infer it from your current branch.
 >
-> **Setup reminder:** For the live path I need **Playwright MCP** in Cursor. You'll Okta-login in the Playwright browser when we get to DOM checks. Block Editor is optional later.
+> For live checks I need **Playwright MCP** in Cursor. You will Okta-login in the Playwright browser when we get there. Block Editor smoke is optional later.
 
 ### Agent steps
 
@@ -175,7 +192,7 @@ If `.cursor/lp-preflight-state/{slug}.json` exists:
 >
 > **Your turn:** Reply **yes** if this looks right, or tell me what to change.
 >
-> **Up next:** Static pass (I won't edit your JSON unless you ask later).
+> **Up next:** Static pass (I will not edit your JSON unless you ask later).
 
 ### Checkpoint (MCP blocked)
 
@@ -185,15 +202,15 @@ Use the blocked shape in [author-testing.md](author-testing.md#if-playwright-mcp
 
 ## Phase 1: Static pass
 
-**Goal:** Audit every milestone + path consistency + Learning Hub + adversarial claim-check. Surface **post-inline** findings only in chat.
+**Goal:** Audit every milestone + path consistency + Learning Hub + claim-check. Surface review-level findings only in chat.
 
-Combines review Phase 1 checks plus [claim-check.md](claim-check.md). Author sees findings in chat (not a private workbook dump of nits).
+Combines review Phase 1 checks plus [claim-check.md](claim-check.md). Keep chat short; put detail in state files.
 
 ### Tell the author
 
 > **Phase 1  -  Static pass**
 >
-> I'm reading each milestone, checking manifests, `website.yaml`, and Learning Hub structure, then fact-checking product claims against live docs. I'll only call out things a reviewer would comment on (plus contradicted or unsupported product facts).
+> I am reading each milestone, checking manifests and Learning Hub structure, and fact-checking product claims against live docs. I will only call out issues a reviewer would likely ask you to change.
 
 ### Agent steps
 
@@ -201,21 +218,21 @@ Combines review Phase 1 checks plus [claim-check.md](claim-check.md). Author see
 2. Walk shared [review reference-checks](../review-learning-path/reference-checks.md) + [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md).
 3. **Always scan** for framing-in-milestones, [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
 4. Run Pathfinder CLI `validate --packages {path_dir}` if available.
-5. Run the [claim-check](claim-check.md) pass across path root + all milestone prose. Write `{slug}-claim-check.md` under `.cursor/lp-preflight-state/`. Route Contradicted / Unsupported / Overstated as **Fix before PR**. Do not edit package JSON here.
-6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing) plus claim-check MUST FIX. Keep only **post inline** for author chat. Drop Internal/Discard entirely from chat.
-7. Write `{slug}-findings.md` under `.cursor/lp-preflight-state/` (post-inline list + optional verify-live notes for Phase 2). Resume aid only; chat stays tiny.
+5. Run the [claim-check](claim-check.md) pass across path root + all milestone prose. Write `{slug}-claim-check.md` under `.cursor/lp-preflight-state/`. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
+6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing) plus claim-check MUST FIX. Keep only review-level items for author chat. Drop Internal/Discard entirely from chat.
+7. Write `{slug}-findings.md` under `.cursor/lp-preflight-state/` (findings + optional verify-live notes for Phase 2). Resume aid only; chat stays short.
 8. Mandatory audit cleanup; verify `git status`.
 9. Do not cite rule numbers or audit severity labels in chat.
 
 ### Checkpoint
 
-> **Phase 1 complete**  -  static pass done.
+> **Phase 1 complete** - static pass done.
 >
 > - {One plain sentence: clean, or a few things to fix}
-> - **Fix before PR** (≤3 bullets, plain language; omit if none; include claim-check MUST FIX when present):
+> - **Fix before PR** (≤3 bullets, plain language; omit if none):
 >   - {e.g. first hands-on still depends on business-value}
 >   - {e.g. "You'll…" intros inside sections in create-dashboard}
->   - {e.g. claim check: contradicted alert count in business-value}
+>   - {e.g. intro claims data never reaches Grafana Cloud; docs say queries run from the server}
 >
 > **Your turn:** Reply **yes** and your test stack (for example `learn.grafana.net shared`, `fresh Cloud stack`).
 >
@@ -231,7 +248,7 @@ Record `stack_state`, or `waive_live_testing` + `static_only_reason`.
 
 ## Phase 2: Live test
 
-**Goal:** Required Playwright DOM checks. Block Editor smoke test is **not forced**.
+**Goal:** Required Playwright DOM checks. Block Editor smoke is optional.
 
 Skipped when `waive_live_testing` is true → jump to Phase 3.
 
@@ -245,7 +262,7 @@ Details: [author-testing.md](author-testing.md).
 >
 > Stack: `{stack_state}`
 >
-> After DOM checks I'll ask whether you've already smoke-tested in Block Editor (optional).
+> After DOM checks I will ask whether you have already smoke-tested in Block Editor (optional).
 
 **Wait for:** `ready`.
 
@@ -263,7 +280,7 @@ For each milestone in scope (path order; skip prose-only / terminal):
 1. Derive start URL ([milestone start URL](../review-learning-path/reference-checks.md#milestone-start-url)).
 2. Navigate; check each `reftarget`: exists / missing / below-fold / state-dependent.
 3. Record in `playwright.{milestone-slug}`.
-4. One-line DOM result in chat per milestone (or batch briefly if all clean).
+4. One-line DOM result in chat per milestone (or a short all-clear if clean). Prefer documenting stack gaps over false "missing" on the wrong stack.
 
 ### Step B: Block Editor (opt-in, once)
 
@@ -277,20 +294,20 @@ After Playwright:
 
 | Reply | Behavior | Readiness |
 |---|---|---|
-| `already-tested: …` | Store dogfood evidence; no per-milestone loop | Can still be **Ready for PR** if Playwright clean and no post-inline blockers |
-| `walk-me` | Guided loop: local import, `pass` / `fail step N` / `N/A`; fold false-step checks into the short watch-for line | Same when scoped milestones pass or documented N/A |
+| `already-tested: …` | Store dogfood evidence; no per-milestone loop | Can still be **Ready for PR** if Playwright clean and no open blockers |
+| `walk-me` | Guided loop per [author-testing.md](author-testing.md); fold watch-fors into one line | Same when scoped milestones pass or documented N/A |
 | `skip-smoke` | Continue | Cap at **Open PR with notes**; say Block Editor was not recorded |
 
 ### Checkpoint
 
-> **Phase 2 complete**  -  live checks done.
+> **Phase 2 complete** - live checks done.
 >
-> - Playwright: [short summary]
+> - Playwright: {short summary}
 > - Block Editor: already-tested / walked / skipped
 >
 > **Your turn:** Reply **yes** for the readiness report.
 >
-> **Up next:** Phase 3  -  readiness + whether to fix anything.
+> **Up next:** Phase 3 - readiness and what to fix (if anything).
 
 ---
 
@@ -302,7 +319,7 @@ Author chat shape: [Author-facing findings](reference-checks.md#author-facing-fi
 
 ### Agent steps
 
-1. Apply [selector decision tree](../review-learning-path/reference-checks.md#selector-decision-tree) and promote only post-inline items.
+1. Apply [selector decision tree](../review-learning-path/reference-checks.md#selector-decision-tree) and promote only review-level items.
 2. Apply [readiness gate](reference-checks.md#readiness-gate).
 3. Write `{slug}-readiness.md` with outcome + [PR opener checklist](reference-checks.md#pr-opener-checklist).
 4. In chat: follow the Phase 3 checkpoint template below. Number every open finding. Mark each as package-fixable or needs-frontend. Zero findings is first-class (skip the fix list and celebrate).
@@ -310,7 +327,7 @@ Author chat shape: [Author-facing findings](reference-checks.md#author-facing-fi
 
 ### Checkpoint (when there are findings)
 
-Use a friendly outcome line (examples: "almost ready, with N copy fixes first" for Fix then re-preflight; "ready for PR" or "open PR with notes" when that is the gate). Do **not** say only the raw gate label with no context.
+Use a friendly outcome line (examples: "almost ready, with N copy fixes first"; "almost ready, with 1 selector fix first"). Do **not** lead with only the raw gate label.
 
 > **Phase 3  -  {friendly outcome}**
 >
@@ -321,12 +338,12 @@ Use a friendly outcome line (examples: "almost ready, with N copy fixes first" f
 >
 > **Please fix these {N}** ({short kind})
 >
-> 1. {Plain problem}. {Why / better wording}.  
+> 1. {Plain problem}. {Why it matters or better wording}.  
 >    (`{file or dirs}`)
 > 2. …
 >
 > **Your turn** *(include only the lines that apply)*
-> - **fix all** / **fix N** / **fix 1,3** — package edits for copy or guide JSON that we can fix here
+> - **fix all** / **fix N** / **fix 1,3** — package edits for copy or guide JSON we can fix here
 > - **frontend** — upstream `data-testid` for item(s) {N} (live miss; no durable selector in the DOM)
 > - **done** — open a PR and leave these for review
 > - **show report** — longer write-up
@@ -336,7 +353,7 @@ Use a friendly outcome line (examples: "almost ready, with N copy fixes first" f
 
 When **every** open item needs-frontend, omit **fix all** / **fix N**. Lead **Your turn** with **frontend**.
 
-When the list mixes kinds, say which numbers **fix** covers vs **frontend** (see [Author-facing findings](reference-checks.md#author-facing-findings)).
+When the list mixes kinds, say which numbers **fix** covers vs **frontend**.
 
 ### Checkpoint (when clean)
 
@@ -347,7 +364,7 @@ When the list mixes kinds, say which numbers **fix** covers vs **frontend** (see
 >
 > Nothing here that would draw a review comment on copy or selectors. Nice work.
 >
-> **Your turn:** Reply **done** if you're opening the PR, or **show report** for the write-up.
+> **Your turn:** Reply **done** if you are opening the PR, or **show report** for the write-up.
 >
 > *(If Open PR with notes: say why in one line, e.g. Block Editor smoke was skipped.)*
 >
@@ -357,13 +374,13 @@ When the list mixes kinds, say which numbers **fix** covers vs **frontend** (see
 
 ## Phase 4: Apply package fixes (optional)
 
-**Goal:** Author-requested surgical edits (`fix all` / `fix N` / numbered combos) for **package-fixable** findings only.
+**Goal:** Author-requested surgical edits for **package-fixable** findings only.
 
 ### Tell the author
 
 > **Phase 4  -  Apply fixes**
 >
-> Working on {fix all | item N | items …}. I'll edit `content.json` / `manifest.json` / `website.yaml` only, same discipline as [update-guide](../update-guide/SKILL.md).
+> Working on {fix all | item N | items …}. I will edit `content.json` / `manifest.json` / `website.yaml` only, same discipline as [update-guide](../update-guide/SKILL.md).
 
 ### Agent steps
 
@@ -374,7 +391,7 @@ When the list mixes kinds, say which numbers **fix** covers vs **frontend** (see
 
 ### Checkpoint
 
-> **Phase 4 complete**  -  applied {N} fix(es).
+> **Phase 4 complete** - applied {N} fix(es).
 >
 > **Your turn:** Reply **yes** to refresh readiness, **frontend** if you still need a testid upstream, or **done**.
 
@@ -386,11 +403,13 @@ When the list mixes kinds, say which numbers **fix** covers vs **frontend** (see
 
 Follow [frontend-selector-pr.md](frontend-selector-pr.md). Canonical example: [grafana/grafana-cmab-app#1795](https://github.com/grafana/grafana-cmab-app/pull/1795).
 
+Use the step checkpoints in that doc (confirm name → confirm repo/files → approve draft → ask before push → update guide only after the testid is on the stack).
+
 ### Checkpoint
 
-> **Phase 5 complete**  -  frontend PR {url} *(or deferred)*.
+> **Phase 5 complete** - frontend PR {url} *(or deferred)*.
 >
-> **Your turn:** Reply **done** when you're ready to open the learning path PR (or wait on the testid merge).
+> **Your turn:** Reply **done** when you are ready to open the learning path PR (or wait on the testid merge).
 
 ---
 
@@ -404,7 +423,8 @@ Follow [frontend-selector-pr.md](frontend-selector-pr.md). Canonical example: [g
 - Surface Internal/Discard nits in chat or readiness
 - Use em dashes, rule numbers, or Blocker labels with the author
 - Force a full Block Editor loop when they already dogfooded
-- Recommend **Ready for PR** with open post-inline items
+- Offer **fix N** as the main path for a needs-frontend finding
+- Recommend **Ready for PR** with open review-level items
 - Recommend **Ready for PR** on **new** / **conversion** interactive paths when Playwright was skipped
 - Request website-repo changes (`pathfinder_data`, shortcodes) as package blockers
 - Use the PR review tool as a substitute for local import (no PR yet)
@@ -412,10 +432,10 @@ Follow [frontend-selector-pr.md](frontend-selector-pr.md). Canonical example: [g
 **Do**
 
 - Mirror five-phase review checklists and Learning Hub standards
-- Keep chat tiny and friendly
+- Keep chat short, clear, and friendly
 - Dedupe findings by root cause
 - Run CLI validate when available
-- Offer Phase 4 / 5 after readiness
+- Offer Phase 4 / 5 after readiness with the right action per finding kind
 
 ---
 
@@ -426,7 +446,8 @@ Write under `.cursor/lp-preflight-state/` (never commit):
 | File | Phase | Purpose |
 |---|---|---|
 | `{slug}.json` | 0+ | Machine state ([schema](reference-checks.md#state-file-schema)) |
-| `{slug}-findings.md` | 1 | Post-inline findings + verify-live notes |
+| `{slug}-findings.md` | 1 | Findings + verify-live notes |
+| `{slug}-claim-check.md` | 1 | Claim-check report |
 | `{slug}-readiness.md` | 3 | Readiness gate + PR opener checklist |
 | `{slug}/audits/{milestone}/` | 1 (optional) | Copied audit reports before cleanup |
 
@@ -447,11 +468,12 @@ path_dir: {path_dir}
 | Topic | Doc |
 |---|---|
 | Author routing + readiness | [reference-checks.md](reference-checks.md) |
+| Claim-check (product facts) | [claim-check.md](claim-check.md) |
 | Prereqs + Playwright + optional smoke | [author-testing.md](author-testing.md) |
 | Frontend testid PR | [frontend-selector-pr.md](frontend-selector-pr.md) |
 | Shared static checklists + finding routing | [../review-learning-path/reference-checks.md](../review-learning-path/reference-checks.md) |
 | Learning Hub structure | [../review-learning-path/learning-hub-standards.md](../review-learning-path/learning-hub-standards.md) |
-| Comment voice (post-inline bar) | [../review-learning-path/comment-style.md](../review-learning-path/comment-style.md) |
+| Comment voice (review-level bar) | [../review-learning-path/comment-style.md](../review-learning-path/comment-style.md) |
 | Reviewer workflow (mirror) | [../review-learning-path/SKILL.md](../review-learning-path/SKILL.md) |
 | `website.yaml` | [docs/website-yaml-reference.md](../../../docs/website-yaml-reference.md) |
 | Single-repo LP workflows | [learning-path-workflows/workflows.md](../../learning-path-workflows/workflows.md) |

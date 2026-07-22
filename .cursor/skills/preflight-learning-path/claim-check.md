@@ -1,6 +1,6 @@
 # Claim check (preflight)
 
-Adversarial factual check for Pathfinder learning path packages. Adapted from the Learning Hub claim-check skill (`learning-hub-claim-check`) and the MUST FIX bar in journey audit reports (for example intro-db-olly). Goal: catch AI-invented product facts before a PR, not Hugo slide structure.
+Adversarial factual check for Pathfinder learning path packages. Adapted from the Learning Hub claim-check skill and the MUST FIX bar in journey audit reports. Goal: catch invented product facts before a PR, not Hugo slide structure.
 
 Run inside [preflight Phase 1](SKILL.md#phase-1-static-pass) after audit-guide and path/LH checks, before the Phase 1 checkpoint.
 
@@ -58,22 +58,20 @@ Do not edit package JSON during the claim check. Fixes wait for Phase 4 if the a
 | Verdict | Meaning | Preflight routing |
 |---|---|---|
 | **Supported** | Source plainly states the claim | Hide (optional Supported list in the report only) |
-| **Contradicted** | Source says something different | **Fix before PR** (post-inline) |
-| **Unsupported** | No source, or source does not address it | **Fix before PR** (post-inline) |
-| **Overstated** | Source supports a weaker version; claim adds absolute/superlative/framing | **Fix before PR** (post-inline) |
-| **Author decides** | Product-truth call a human must make | Surface in readiness as open question; do not auto-edit |
+| **Contradicted** | Source says something different | Fix before PR (review-level) |
+| **Unsupported** | No source, or source does not address it | Fix before PR (review-level) |
+| **Overstated** | Source supports a weaker version; claim adds absolute/superlative/framing | Fix before PR (review-level) |
+| **Author decides** | Product-truth call a human must make | Optional open question in readiness; do not auto-edit |
 
-Only Contradicted / Unsupported / Overstated count toward the Phase 1 "Fix before PR" list (dedupe by root cause). Soft style nits stay out of chat.
+Only Contradicted / Unsupported / Overstated count toward Fix before PR (dedupe by root cause). Soft style nits stay out of chat.
 
 ---
 
 ## Catches that matter (linter cannot)
 
-Same five classes as Learning Hub claim-check:
-
 1. Made-up facts
 2. Invented terms / alert names / dashboard names
-3. Overstatements (counts, "zero impact", "most/all/every")
+3. Overstatements (counts, "zero impact," "most/all/every")
 4. Competitive or prescriptive framing without a source
 5. Pre-GA / preview features taught as GA
 
@@ -96,7 +94,7 @@ path_dir: {path_dir}
 ## MUST FIX (Fix before PR)
 
 ### Contradicted
-1. `{file}` — {claim}. Source: {quote or URL}. Fix: {one line}.
+1. `{file}` - {claim}. Source: {quote or URL}. Fix: {one line}.
 
 ### Unsupported
 …
@@ -111,14 +109,14 @@ path_dir: {path_dir}
 …
 ```
 
-Mirror the ranking style of journey audit reports: MUST FIX first, then author-decides. Do not dump Supported claims into author chat.
+MUST FIX first, then author-decides. Do not dump Supported claims into author chat. No em dashes in the report body.
 
 ---
 
 ## Phase 1 / Phase 3 chat
 
-After claim-check, merge MUST FIX items into author findings (dedupe; ≤3 in Phase 1 chat). Use plain language (problem + why + file), not verdict labels like "Contradicted" in the author bullets.
+After claim-check, merge MUST FIX items into author findings (dedupe; ≤3 in Phase 1 chat). Use plain language (problem + why + file). Do **not** put verdict labels like "Contradicted" in author bullets.
 
-At **Phase 3**, list them as numbered items and offer **fix all** / **fix N** / combos per [Author-facing findings](reference-checks.md#author-facing-findings). Do not open with a "What this check is" primer.
+At **Phase 3**, list them as numbered **package-fixable** items and offer **fix all** / **fix N** / combos per [Author-facing findings](reference-checks.md#author-facing-findings). Do not open with a "What this check is" primer.
 
 If none, say the claim check found no contradicted or unsupported product facts.

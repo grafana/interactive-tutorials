@@ -50,13 +50,13 @@ Standard config to add when missing (do not overwrite unrelated servers):
 
 **Blocked checkpoint shape (author-facing):**
 
-> Playwright MCP isn't available, so I can't run the live DOM checks on this path.
+> Playwright MCP isn't available, so I can't run the live DOM checks on this path yet.
 >
 > **Manual setup:** Cursor Settings → MCP → enable **Playwright** (or add it if it's not listed), then reload.
 >
 > **Or:** reply **add playwright mcp** and I'll add the standard config to `~/.cursor/mcp.json` for you (you'll still need to reload MCP afterward).
 >
-> `static-only` isn't a fit for new/conversion interactive paths.
+> Skipping live checks with `static-only` isn't a fit for new or conversion interactive paths.
 
 Never edit `mcp.json` until the author agrees. Never claim MCP is ready until `GetMcpTools` for `user-playwright` shows usable browser tools.
 

@@ -6,17 +6,17 @@ Author-side routing and readiness for [preflight-learning-path/SKILL.md](SKILL.m
 
 **Publishing model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** Single-repo packages in `interactive-tutorials`. Metadata in package `website.yaml`; prose in `content.json`. Website repo is read-only for conversion. Never plan companion website / `pathfinder_data` / shortcode work.
 
-**Voice bar:** Same as review [comment-style.md](../review-learning-path/comment-style.md). Author chat and readiness only include **post inline** items. No em dashes. Prefer everyday words in chat (see [Author-facing findings](#author-facing-findings)).
+**Voice bar:** Same severity bar as review [comment-style.md](../review-learning-path/comment-style.md) (review-level only in chat). No em dashes. Prefer everyday words in chat (see [Author-facing findings](#author-facing-findings) and [Voice](SKILL.md#voice-author-facing)).
 
 ---
 
 ## Author-facing findings
 
-Use this shape whenever you list Fix-before-PR items in chat (especially Phase 3). Do **not** open with a "What this check is" primer.
+Use this shape whenever you list Fix-before-PR items in chat (especially Phase 3). Do **not** open with a "What this check is" primer. Match [Voice](SKILL.md#voice-author-facing).
 
-1. **Friendly outcome line** (e.g. "almost ready, with 3 copy fixes first"). You may mention the gate label in the readiness file; chat can stay friendlier.
-2. **What we checked** — short bullets naming the sources of truth in plain language (product claims vs docs, UI selectors on `{stack}`, Block Editor smoke choice).
-3. **Numbered findings** — each item: plain problem, why it matters or better wording, then the file/dir in parentheses. Enough context that the author can decide without opening the skill. Tag each item mentally as **package-fixable** or **needs-frontend** (see below).
+1. **Friendly outcome line** (e.g. "almost ready, with 3 copy fixes first"). Keep gate labels in the readiness file; chat can stay plainer.
+2. **What we checked** — short bullets in plain language (product claims vs docs, UI selectors on `{stack}`, Block Editor smoke choice).
+3. **Numbered findings** — each item: plain problem, why it matters or better wording, then the file/dir in parentheses. Enough context that the author can decide without opening the skill. Treat each item as **package-fixable** or **needs-frontend** (see below).
 4. **Your turn** — offer only actions that can resolve the open items:
    - **fix all** / **fix N** / combos — only for **package-fixable** items (prose, manifest, `website.yaml`, guide `reftarget` when a better selector already exists in the DOM)
    - **frontend** — when any open item **needs-frontend** (live failed; no durable `data-testid` / strong semantic selector in the DOM). Do **not** offer **fix N** for that item as if a guide edit alone is the real fix
