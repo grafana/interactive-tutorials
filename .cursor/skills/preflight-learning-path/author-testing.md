@@ -117,11 +117,15 @@ For each scoped milestone:
 
 > **Milestone {i} of {M}: `{milestone-id}`**
 >
-> Import the local `content.json`, open `{derived_start_url}`, run Show me / Do it.
+> 1. Import the local `content.json`
+> 2. Open `{derived_start_url}`
+> 3. Run every **Show me** and **Do it**
 >
-> Also glance at the section step list for false step numbers (intro prose as step 1, or learner-action noops).
+> **While you run it, watch for:** wrong highlights, Do it that no-ops or errors, steps that never unlock, and fake step numbers (intro prose or "You'll…" lines counted as steps).
 >
-> **Your turn:** Reply **pass**, **fail step N  - ** *what happened*, or **N/A  - ** *reason*.
+> **Your turn:** Reply **pass**, **fail step N -** *what happened*, or **N/A -** *reason*.
+
+Do **not** give the fake-step-number glance its own numbered setup step. Keep it inside the short **While you run it, watch for** line.
 
 Record in state `pathfinder.{milestone-slug}`.
 

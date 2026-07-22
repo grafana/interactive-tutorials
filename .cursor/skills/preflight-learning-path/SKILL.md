@@ -278,7 +278,7 @@ After Playwright:
 | Reply | Behavior | Readiness |
 |---|---|---|
 | `already-tested: …` | Store dogfood evidence; no per-milestone loop | Can still be **Ready for PR** if Playwright clean and no post-inline blockers |
-| `walk-me` | Guided loop: local import, `pass` / `fail step N` / `N/A`; ask about false step numbers | Same when scoped milestones pass or documented N/A |
+| `walk-me` | Guided loop: local import, `pass` / `fail step N` / `N/A`; fold false-step checks into the short watch-for line | Same when scoped milestones pass or documented N/A |
 | `skip-smoke` | Continue | Cap at **Open PR with notes**; say Block Editor was not recorded |
 
 ### Checkpoint
