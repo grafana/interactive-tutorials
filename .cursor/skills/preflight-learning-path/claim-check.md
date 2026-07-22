@@ -115,6 +115,10 @@ Mirror the ranking style of journey audit reports: MUST FIX first, then author-d
 
 ---
 
-## Phase 1 chat
+## Phase 1 / Phase 3 chat
 
-After claim-check, merge MUST FIX items into the Phase 1 Fix-before-PR bullets (still ≤3 in chat; point to the full claim-check file for the rest). If none, say the claim check found no contradicted or unsupported product facts.
+After claim-check, merge MUST FIX items into author findings (dedupe; ≤3 in Phase 1 chat). Use plain language (problem + why + file), not verdict labels like "Contradicted" in the author bullets.
+
+At **Phase 3**, list them as numbered items and offer **fix all** / **fix N** / combos per [Author-facing findings](reference-checks.md#author-facing-findings). Do not open with a "What this check is" primer.
+
+If none, say the claim check found no contradicted or unsupported product facts.

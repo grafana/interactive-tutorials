@@ -6,7 +6,26 @@ Author-side routing and readiness for [preflight-learning-path/SKILL.md](SKILL.m
 
 **Publishing model (PR [#416](https://github.com/grafana/interactive-tutorials/pull/416)):** Single-repo packages in `interactive-tutorials`. Metadata in package `website.yaml`; prose in `content.json`. Website repo is read-only for conversion. Never plan companion website / `pathfinder_data` / shortcode work.
 
-**Voice bar:** Same as review [comment-style.md](../review-learning-path/comment-style.md). Author chat and readiness only include **post inline** items. No em dashes.
+**Voice bar:** Same as review [comment-style.md](../review-learning-path/comment-style.md). Author chat and readiness only include **post inline** items. No em dashes. Prefer everyday words in chat (see [Author-facing findings](#author-facing-findings)).
+
+---
+
+## Author-facing findings
+
+Use this shape whenever you list Fix-before-PR items in chat (especially Phase 3). Do **not** open with a "What this check is" primer.
+
+1. **Friendly outcome line** (e.g. "almost ready, with 3 copy fixes first"). You may mention the gate label in the readiness file; chat can stay friendlier.
+2. **What we checked** — short bullets naming the sources of truth in plain language (product claims vs docs, UI selectors on `{stack}`, Block Editor smoke choice).
+3. **Numbered findings** — each item: plain problem, why it matters or better wording, then the file/dir in parentheses. Enough context that the author can decide without opening the skill.
+4. **Your turn** — always offer:
+   - **fix all**
+   - **fix N** (and combos like **fix 1,3**)
+   - **done** (open PR / leave for review)
+   - **show report**
+   - **frontend** only when relevant
+5. **Heads-up** — optional stack/testing notes (already-installed plugins, read-only provisioned sources, etc.).
+
+Keep Phase 1 lighter (short Fix-before-PR bullets + stack ask). Put the full numbered + fix-choice treatment at Phase 3 after live results land.
 
 ---
 

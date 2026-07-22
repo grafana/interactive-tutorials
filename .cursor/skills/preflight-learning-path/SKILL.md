@@ -36,7 +36,7 @@ Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the
 | Surface **post-inline-only** findings in chat | Decide whether to fix now or open PR with notes |
 | Required Playwright DOM check (live path) | Okta login in Playwright browser; reply `ready` |
 | Optional Block Editor coaching | `already-tested` / `walk-me` / `skip-smoke` |
-| Apply package fixes only when asked | Reply `fix` (or name findings) |
+| Apply package fixes only when asked | Reply `fix all`, `fix N`, or a combo like `fix 1,3` |
 | Walk frontend testid PR when needed | Approve push / PR create |
 
 ---
@@ -119,14 +119,17 @@ Re-verify commit safety after Phase 1 before Phase 2.
 
 | Section | Content |
 |---|---|
-| **Header** | `Phase {n} complete` + one-line outcome |
-| **Summary** | Up to 3 plain-language bullets. Post-inline only. No rule counts. |
-| **Your turn** | Exactly one action |
-| **Up next** | One sentence |
+| **Header** | `Phase {n}` + short plain outcome (avoid jargon like "post-inline") |
+| **What we checked** | Phase 3 (and readiness-style summaries): where findings came from, in plain language |
+| **Findings** | Numbered list with enough context to act (what is wrong, why it matters, which file). No rule counts. |
+| **Your turn** | Clear reply choices (including **fix all** / **fix N** when findings exist) |
+| **Up next** | One sentence when useful |
 
-**Reply keywords:** `yes` · `ready` · `add playwright mcp` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N - …` / `N/A - …` · `show report` · `fix` · `frontend` · `done` · `resume` / `start fresh`
+Do **not** open Phase 3 with a "What this check is" primer. Lead with the outcome, then **What we checked**, then the numbered findings.
 
-**Tone:** Casual and friendly. Address the author as **you**. Celebrate clean passes. No rule numbers, no Blocker/nit labels, no em dashes.
+**Reply keywords:** `yes` · `ready` · `add playwright mcp` · `static-only: <reason>` · `already-tested: <notes>` · `walk-me` · `skip-smoke` · `pass` / `fail step N - …` / `N/A - …` · `show report` · `fix all` · `fix 1` / `fix 2` / `fix 3` · `fix 1,3` (any combo) · `frontend` · `done` · `resume` / `start fresh`
+
+**Tone:** Casual and friendly. Address the author as **you**. Celebrate clean passes. No rule numbers, no Blocker/nit labels, no em dashes. Prefer everyday words over skill jargon (say "copy fixes" not "post-inline"; say "product claims vs docs" not "claim-check MUST FIX").
 
 ---
 
@@ -293,48 +296,74 @@ After Playwright:
 
 ## Phase 3: Readiness
 
-**Goal:** Merge static + live into a readiness outcome; offer fixes.
+**Goal:** Merge static + live into a readiness outcome; offer numbered fix choices.
+
+Author chat shape: [Author-facing findings](reference-checks.md#author-facing-findings).
 
 ### Agent steps
 
 1. Apply [selector decision tree](../review-learning-path/reference-checks.md#selector-decision-tree) and promote only post-inline items.
 2. Apply [readiness gate](reference-checks.md#readiness-gate).
 3. Write `{slug}-readiness.md` with outcome + [PR opener checklist](reference-checks.md#pr-opener-checklist).
-4. In chat: numbered list of open post-inline findings (file path + short human fix ask). Zero findings is first-class.
-5. Offer next steps casually: `fix`, `frontend` (missing stable selector), or `done`.
+4. In chat: follow the Phase 3 checkpoint template below. Number every open finding. Zero findings is first-class (skip the fix list and celebrate).
+5. Map replies: `fix all` / `fix N` / `fix 1,3` → Phase 4; `frontend` → Phase 5; `show report` → paste or link readiness path; `done` → end with PR-opener notes.
 
-### Checkpoint
+### Checkpoint (when there are findings)
 
-> **Phase 3 complete  -  {readiness outcome}**
+Use a friendly outcome line (examples: "almost ready, with N copy fixes first" for Fix then re-preflight; "ready for PR" or "open PR with notes" when that is the gate). Do **not** say only the raw gate label with no context.
+
+> **Phase 3  -  {friendly outcome}**
 >
-> - [2–4 bullets: gate status, live summary, top remaining items]
-> - Report: `.cursor/lp-preflight-state/{slug}-readiness.md`
+> **What we checked**
+> - {e.g. Written product claims against live docs}
+> - {e.g. Whether UI selectors exist on learn.grafana.net (shared stack)}
+> - {e.g. Block Editor smoke: skipped / already-tested / walked}
 >
-> **Fix before PR:**
-> 1. `{file}`  -  {short ask}
+> **Please fix these {N}** ({short kind, e.g. product-fact issues in learner copy})
+>
+> 1. {Plain problem}. {Why / better wording}.  
+>    (`{file or dirs}`)
 > 2. …
 >
-> *(or: Nothing you'd get a review comment for. Nice work.)*
+> **Your turn**
+> - **fix all** — I'll update all of them
+> - **fix 1** / **fix 2** / **fix 3** — only that item
+> - **fix 1,3** — any combo by number
+> - **done** — open a PR and leave these for review
+> - **show report** — longer write-up
+> - **frontend** — only if we need an upstream `data-testid` (omit if not relevant)
 >
-> **Your turn:** Reply **show report**, **fix** (package edits), **frontend** (upstream testid PR), or **done** if you're opening the PR.
+> **Heads-up** *(optional, only when useful)*  
+> {Stack or testing note, e.g. provisioned data source is read-only}
+
+### Checkpoint (when clean)
+
+> **Phase 3  -  {Ready for PR | Open PR with notes}**
 >
-> **Up next:** Optional fixes, or you're clear to open a PR.
+> **What we checked**
+> - …
+>
+> Nothing here that would draw a review comment on copy or selectors. Nice work.
+>
+> **Your turn:** Reply **done** if you're opening the PR, **show report** for the write-up, or **frontend** if you still need an upstream testid.
+>
+> *(If Open PR with notes: say why in one line, e.g. Block Editor smoke was skipped.)*
 
 ---
 
 ## Phase 4: Apply package fixes (optional)
 
-**Goal:** Author-requested surgical edits.
+**Goal:** Author-requested surgical edits (`fix all` / `fix N` / numbered combos from Phase 3).
 
 ### Tell the author
 
 > **Phase 4  -  Apply fixes**
 >
-> Tell me which findings to fix (or say **fix all**). I'll edit `content.json` / `manifest.json` / `website.yaml` only, same discipline as [update-guide](../update-guide/SKILL.md).
+> Working on {fix all | item N | items …}. I'll edit `content.json` / `manifest.json` / `website.yaml` only, same discipline as [update-guide](../update-guide/SKILL.md).
 
 ### Agent steps
 
-1. Apply only requested findings.
+1. Apply only the numbered findings the author requested.
 2. Re-run Pathfinder CLI validate if content/manifests changed.
 3. Suggest re-running Phase 2 Playwright for touched interactive milestones.
 4. Do not commit unless the author explicitly asks.
