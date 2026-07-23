@@ -23,7 +23,7 @@ Help a **human reviewer** work through a `{slug}-lj/` pull request in **five pha
 
 **Routing:** [reference-checks.md](reference-checks.md) · [comment-style.md](comment-style.md) · [learning-hub-standards.md](learning-hub-standards.md) · [github-review.md](github-review.md)
 
-**Related:** [audit-guide](../audit-guide/SKILL.md) · [review-guide-pr.mdc](../../review-guide-pr.mdc)
+**Related:** [audit-guide](../audit-guide/SKILL.md) · [review-guide-pr.mdc](../../review-guide-pr.mdc) · [preflight-learning-path](../preflight-learning-path/SKILL.md) (author pre-PR mirror)
 
 ---
 

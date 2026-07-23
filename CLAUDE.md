@@ -17,6 +17,7 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 | Update / modify an existing guide | [update-guide](.cursor/skills/update-guide/SKILL.md) skill | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Review a guide PR | [.cursor/review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc) |
 | Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md) |
+| Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
 | Decision trees & code smells | [.cursor/best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/](docs/) |
 | Create a new guide | [/new](.cursor/commands/new.md) command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate a guide | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
@@ -45,6 +46,8 @@ Multi-phase workflow skills with their own `SKILL.md` files. Skills write interm
 - [.cursor/skills/audit-guide/](.cursor/skills/audit-guide/SKILL.md) — comprehensive read-only audit (structural + semantic + adversarial) producing one prioritised report
 - [.cursor/skills/update-guide/](.cursor/skills/update-guide/SKILL.md) — modify an existing guide with a planning checkpoint, review pass, and CLI-validated rollback
 - [.cursor/skills/migrate-guide/](.cursor/skills/migrate-guide/SKILL.md) — migrate a guide or learning path to the Pathfinder package format
+- [.cursor/skills/review-learning-path/](.cursor/skills/review-learning-path/SKILL.md) — human-guided learning path PR review (five-phase coach)
+- [.cursor/skills/preflight-learning-path/](.cursor/skills/preflight-learning-path/SKILL.md) — author pre-PR self-review for a learning path
 
 ## Shared Content
 

@@ -42,6 +42,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Update/modify an existing guide | [update-guide](.cursor/skills/update-guide/SKILL.md) skill | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Review a guide PR | [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc), `docs/` |
 | Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
+| Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
 | Decision trees & code smells | [best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), `docs/` |
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
@@ -82,4 +83,5 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/check](.cursor/commands/check.md) | Check guide quality against best practices |
 | [/attack](.cursor/commands/attack.md) | Find issues by simulating confused users |
 | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
+| [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | Author pre-PR self-review for a learning path (same checks as review, then optional fixes) |
 | [/build-interactive-lj](.cursor/commands/build-interactive-lj/README.md) | Multi-phase learning journey builder |
