@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "monitor-aws-resources-create-scrape-job",
+  "title": "Create a scrape job",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll create a scrape job to customize metric collection from your AWS services. Scrape jobs let you specify which metrics to collect, set collection intervals, and apply filters to optimize performance and costs.\n\nScrape jobs provide granular control over metric collection, enabling you to focus on the most important metrics for your monitoring needs while avoiding unnecessary data collection."
+    },
+    {
+      "type": "multistep",
+      "content": "In Grafana Cloud, open the navigation menu and select **Observability > Cloud provider > AWS**, then click the **Configuration** tab.",
+      "requirements": ["navmenu-open"],
+      "steps": [
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-csp-app/aws']"
+        },
+        {
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Configuration']"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "To create the scrape job, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "title": "Create the scrape job",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='configuration-card-cloudwatch']",
+          "content": "Select the **CloudWatch metrics scrape** tile.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-csp-app/aws/configuration"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='add-cloudwatch-job-button']",
+          "content": "Click **Add new scrape job**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#account-selector",
+          "targetvalue": "customer-aws-account",
+          "content": "Select the AWS account you created in the previous milestone.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]        
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#name",
+          "targetvalue": "EC2-Production-Monitoring",
+          "content": "Enter a descriptive name for the scrape job in the **Scrape job name** field, for example `EC2-Production-Monitoring`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Leave the **Include your AWS resource tags** checkbox selected. This option is selected by default because Cloud Provider Observability for AWS requires tag data on the scrape info metrics for the best possible dashboard experience."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='service-select-list']",
+          "targetvalue": "scrape-job-parameters",
+          "content": "Select the AWS services and, optionally, custom Cloudwatch namespaces that you want to scrape. Find services by using search or browsing the list of services. A default set of metrics is collected for each service, which you can configure in the next step.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='service-multi-select']",
+          "targetvalue": "scrape-job-parameters",
+          "content": "For each service that you selected and namespace that you specified, choose **Edit metrics** to view and configure each metric and its corresponding statistics to collect.\n\nIf you specified custom namespaces, choose **Edit metrics** for each namespace, and then type the exact name of each metric and its corresponding statistics to collect.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create scrape job",
+          "content": "Click **Create scrape job** to begin collecting metrics.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The scrape job begins collecting metrics according to your configuration.\n\nIn your next milestone, you'll monitor the job status to verify data is getting sent from your Amazon account to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Create a scrape job using Terraform](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/aws/cloudwatch-metrics/config-cw-metric-scrape/#create-a-scrape-job-using-terraform)"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Verify AWS IAM permissions](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/aws/cloudwatch-metrics/config-cw-metric-scrape/#verify-aws-iam-permissions)\n- [Check resource tagging](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/aws/cloudwatch-metrics/config-cw-metric-scrape/#check-resource-tagging)"
+    }
+  ]
+}

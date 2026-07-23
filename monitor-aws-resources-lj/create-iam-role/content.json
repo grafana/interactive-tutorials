@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "monitor-aws-resources-create-iam-role",
+  "title": "Create an AWS IAM role",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you'll create an AWS IAM role that grants Grafana Cloud the necessary permissions to collect metrics from your AWS account. This role uses the principle of least privilege, providing only the read-only access required for monitoring.\n\nThe IAM role establishes a secure trust relationship between your AWS account and Grafana Cloud, allowing metric collection without sharing long-term credentials or compromising security.\n\nYou can configure the AWS role automatically with CloudFormation or Terraform, or manually in the AWS Management Console. This milestone uses CloudFormation, the recommended approach."
+    },
+    {
+      "type": "section",
+      "title": "Start the IAM role setup in Grafana Cloud",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='configuration-card-accounts']",
+          "content": "From the **Configuration** tab, click the **AWS accounts** tile.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-csp-app/aws/configuration"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add new account",
+          "content": "On the **AWS accounts** page, click **Add new account** to open the **Create new account** page.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "For **Create a new AWS role**, leave the **Automatically** and **Use CloudFormation** tiles selected."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a:contains('Launch stack')",
+          "content": "Click **Launch stack** to open a CloudFormation template in your AWS account in a new tab.\n\nThe AWS account you're logged into when you click this button is the account that opens. To use a different account, log out of the current account and log in to the account you want to use.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Complete the remaining steps in the AWS console tab, then return to Grafana Cloud:\n\n1. Select the **I acknowledge that AWS CloudFormation might create IAM resources with custom names** checkbox.\n1. Click **Create stack**.\n1. Copy the `RoleARN` in the **Outputs** tab of the stack to use in the next milestone.\n1. Return to the **Create new account** page in Grafana Cloud when you have finished in AWS."
+    },
+    {
+      "type": "markdown",
+      "content": "You created a read-only AWS IAM role and copied its role ARN for the next milestone.\n\nIn your next milestone, you'll use this IAM role to connect your AWS account to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Additional ways to create an AWS IAM role](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/aws/cloudwatch-metrics/config-cw-metric-scrape/#create-an-aws-iam-role)"
+    }
+  ]
+}
