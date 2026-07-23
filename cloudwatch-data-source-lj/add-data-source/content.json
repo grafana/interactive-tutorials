@@ -11,26 +11,17 @@
       "type": "section",
       "blocks": [
         {
-          "type": "multistep",
-          "content": "In the navigation menu, navigate to **Connections > Data sources**.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
-              "requirements": ["exists-reftarget", "navmenu-open"]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "a[href='/connections/datasources']",
-              "requirements": ["exists-reftarget", "navmenu-open"]
-            }
-          ]
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "content": "In the navigation menu, go to **Connections > Data sources**.",
+          "verify": "on-page:/connections/datasources"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid data-source-add-button']",
-          "requirements": ["exists-reftarget"],
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
           "content": "Click **Add new data source**."
         },
         {
@@ -38,14 +29,14 @@
           "action": "formfill",
           "reftarget": "input[placeholder='Filter by name or type']",
           "targetvalue": "CloudWatch",
-          "requirements": ["exists-reftarget"],
+          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
           "content": "In the **Filter by name or type** field, enter `CloudWatch`."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "CloudWatch",
-          "requirements": ["exists-reftarget"],
+          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
           "content": "Click **CloudWatch**.\n\nGrafana creates the data source and opens its **Settings** tab, where you'll configure the connection."
         }
       ]
