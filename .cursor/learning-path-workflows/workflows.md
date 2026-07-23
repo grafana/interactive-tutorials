@@ -72,7 +72,9 @@ Use the Block Builder **PR review tool** (dev tools, pathfinder-app 1.4.5+) to l
 
 The AI re-checks factual claims if prose changed, updates `.github/CODEOWNERS`, and provides a summary of all files created.
 
-**Your role:** Review the generated files, then open a PR in the `interactive-tutorials` repo.
+Before opening the PR, the AI asks whether you want a **Learning Hub website deploy preview**. That preview is the rendered non-interactive path from `website.yaml` (not Pathfinder). CI only builds it when the PR has the `deploy-preview` label **and** a commit push (`opened` / `synchronize`). Adding the label alone does not deploy.
+
+**Your role:** Review the generated files, decide yes/no on the deploy preview (yes is recommended for new paths), then open a PR in the `interactive-tutorials` repo.
 
 ## Tips
 

@@ -28,6 +28,12 @@ Follow these phases in order:
 8. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
 9. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
 10. **Verify and wrap up.** Re-run the light claim pass if prose changed. Cross-check remaining factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
+11. **Ask about a Learning Hub deploy preview (required before opening the PR).** Website previews are opt-in via the `deploy-preview` label. Ask the author:
+
+    > Want a Learning Hub website deploy preview on the PR? Recommended for new `*-lj` paths so you can read the non-interactive pages before Learning Hub publish. This is markdown/`website.yaml` only, not Pathfinder Show me / Do it.
+
+    - **Yes (default for new paths):** When creating the PR, add `--label deploy-preview`. If the PR already exists without the label, add it with `gh pr edit <n> --add-label deploy-preview`, then push any new commit (or an empty commit) so the workflow runs on `synchronize`. Label-only events do not build.
+    - **No:** Open the PR without the label. Tell the author they can add `deploy-preview` later and push again if they change their mind.
 
 For background on how this command relates to `/build-interactive-lj`, refer to `.cursor/learning-path-workflows/workflows.md`.
 

@@ -67,3 +67,11 @@ After the self-check, tell the author in plain language:
 - That Playwright is next
 
 Keep it short. No severity labels or rule-number dumps unless they ask.
+
+---
+
+## 5. Deploy preview is a wrap-up decision (not this self-check)
+
+Do **not** block Playwright on a website preview. When you open (or are about to open) the PR, ask the author if they want the Learning Hub deploy preview (`deploy-preview` label). Default recommendation for new `*-lj` paths: yes.
+
+Remember: the preview workflow builds only on `opened` / `synchronize` while the label is present. If you add the label after the PR exists, push a commit so CI actually runs.
