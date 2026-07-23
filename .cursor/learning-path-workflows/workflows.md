@@ -45,11 +45,13 @@ The AI validates that both repos are accessible (the website repo is a read-only
 
 **Your role:** Review and approve the proposed milestones before the AI writes anything.
 
-### Phase 2: Content, manifest, and website metadata generation
+### Phase 2: Content, manifest, website metadata, and scaffold self-check
 
 The AI creates `content.json` files for every milestone (interactive blocks for UI steps, markdown blocks for conceptual content), generates `manifest.json` files with the correct dependency chains, and creates `website.yaml` files with metadata required to publish to the website.
 
-**Your role:** This phase is mostly automated. The agent might ask you to supply some of the `website.yaml` values if it can't derive them on its own.
+Before selector work, the AI runs a **scaffold self-check** (section bookends, `button` vs CSS selector misuse, secrets `doIt`, and a light claim pass against the docs already read). See [create-learning-path/reference/scaffold-self-check.md](../commands/create-learning-path/reference/scaffold-self-check.md). Issues found here should be fixed before Playwright.
+
+**Your role:** This phase is mostly automated. The agent might ask you to supply some of the `website.yaml` values if it can't derive them on its own. Confirm any product-claim questions if the agent cannot find a docs source.
 
 ### Phase 3: Selector discovery
 
@@ -68,13 +70,13 @@ Use the Block Builder **PR review tool** (dev tools, pathfinder-app 1.4.5+) to l
 
 ### Phase 5: Wrap-up
 
-The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, and provides a summary of all files created.
+The AI re-checks factual claims if prose changed, updates `.github/CODEOWNERS`, and provides a summary of all files created.
 
 **Your role:** Review the generated files, then open a PR in the `interactive-tutorials` repo.
 
 ## Tips
 
-- **Plan for session length.** Paths with 7+ milestones often take two sessions. A natural break point is after Phase 2 (all content and manifests on disk). Resume at Phase 3 (selector discovery) in a new session.
+- **Plan for session length.** Paths with 7+ milestones often take two sessions. A natural break point is after Phase 2 (all content, manifests, and scaffold self-check on disk). Resume at Phase 3 (selector discovery) in a new session.
 - **Selector fixes have a 3-attempt limit.** If a selector can't be resolved after 3 tries, the AI marks it `TODO:manual-review` and moves on. You can fix these by hand later.
 
 ---

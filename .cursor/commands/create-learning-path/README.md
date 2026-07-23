@@ -21,12 +21,13 @@ Follow these phases in order:
 1. **Validate environment.** Confirm the `interactive-tutorials` repo is writable and the `website` repo is readable in the workspace, and that Playwright MCP is available. The `website` repo is a read-only source — it's used only to read canonical docs and any existing source markdown. All generated files are written to interactive-tutorials.
 2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch.
 3. **Propose path options.** Review existing paths in `interactive-tutorials/[slug]-lj` for structural patterns. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
-4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content.
+4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. While writing sections, keep bookends **outside** the `section` (critical rule 14). Never put "You'll…" / "To … complete the following steps" as the first block inside a `section`.
 5. **Create website metadata files.** Create `website.yaml` for the path and each milestone. Refer to `docs/website-yaml-reference.md`.
 6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. Where fields can't be derived, ask the user to provide values before generating.
-7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
-8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
-9. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
+7. **Scaffold self-check (required).** Before Playwright, run [reference/scaffold-self-check.md](reference/scaffold-self-check.md): section bookends, `button` vs CSS `reftarget` misuse, secrets `doIt`, and a light claim pass against the docs you already read. Fix findings (or ask the author) before continuing.
+8. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
+9. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
+10. **Verify and wrap up.** Re-run the light claim pass if prose changed. Cross-check remaining factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
 
 For background on how this command relates to `/build-interactive-lj`, refer to `.cursor/learning-path-workflows/workflows.md`.
 
@@ -43,6 +44,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 7. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
 8. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
 9. **Verify docs accuracy.** After testing, cross-check all factual claims against live Grafana documentation.
+10. **Do not skip the scaffold self-check.** Section bookends, `button`/CSS misuse, and unsupported product claims must be caught before selector discovery. See [reference/scaffold-self-check.md](reference/scaffold-self-check.md).
 
 ---
 
@@ -56,6 +58,8 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 - Never use data-dependent selectors — use `^=` starts-with patterns
 - Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
 - All links in content.json must be absolute URLs (`https://grafana.com/docs/...`), not relative
+- Never put section intro/summary markdown **inside** the `section` when it will number as a fake step (`You'll…`, `To … complete the following steps`)
+- Never use `action: "button"` with a CSS selector `reftarget` (use `highlight` or `navigate`)
 
 ---
 
@@ -68,6 +72,7 @@ Consult these during the workflow:
 | `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
 | `../build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
 | `../build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
+| `reference/scaffold-self-check.md` | After scaffold, before Playwright (bookends, claims, action sanity) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
 | `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |
 
