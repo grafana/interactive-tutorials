@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "cloudwatch-data-source-grafana-assume-role",
+  "title": "Set up the Grafana Assume Role",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "With **Grafana Assume Role** selected, Grafana Cloud makes a Security Token Service (STS) request to generate temporary credentials for your AWS account. You create an IAM role that trusts Grafana's AWS account, and Grafana assumes that role to read your CloudWatch data. No access keys are stored in Grafana.\n\nOn the CloudWatch **Settings** tab, under the **Assume Role** heading, expand **How to create an IAM role for grafana to assume** to reveal the **Grafana account ID** and **External ID** unique to your instance. You'll enter both in the AWS Console. Select **Learn more about Grafana Assume Role** for the full reference."
+    },
+    {
+      "type": "markdown",
+      "content": "### Create the IAM role in AWS\n\nIn a separate browser tab, open the [AWS IAM console](https://console.aws.amazon.com/iam/) and complete the following steps:\n\n1. Create a new IAM role. Under **Trusted entity type**, select **Another AWS account**.\n2. Enter the **Grafana account ID** from the Settings tab, and select **Require external ID**.\n3. Enter the **External ID** from the Settings tab.\n4. Attach the metrics, logs, or metrics-and-logs permissions policy you prepared earlier.\n5. Give the role a name and description, then select **Create role**.\n6. Open the new role and copy its **ARN** (for example, `arn:aws:iam::123456789012:role/grafana-cloudwatch`).\n\nFor full details and a sample trust relationship, refer to [Use Grafana Assume Role](https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/aws-authentication/#use-grafana-assume-role)."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#assumeRoleArn",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "Back on the CloudWatch **Settings** tab, paste the role ARN you copied into the **Assume Role ARN** field."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll save the data source and test the connection to AWS."
+    }
+  ]
+}
