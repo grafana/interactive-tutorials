@@ -69,15 +69,20 @@
           "content": "Leave the **Include your AWS resource tags** checkbox selected. This option is selected by default because Cloud Provider Observability for AWS requires tag data on the scrape info metrics for the best possible dashboard experience."
         },
         {
-          "type": "markdown",
-          "content": "Select the AWS services and, optionally, custom Cloudwatch namespaces that you want to scrape. Find services by using search or browsing the list of services. A default set of metrics is collected for each service, which you can configure in the next step."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='service-select-list']",
+          "targetvalue": "scrape-job-parameters",
+          "content": "Select the AWS services and, optionally, custom Cloudwatch namespaces that you want to scrape. Find services by using search or browsing the list of services. A default set of metrics is collected for each service, which you can configure in the next step.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "[data-testid='scrape-job-services-table']",
           "targetvalue": "scrape-job-parameters",
-          "content": "For each service that you selected and namespace that you specified, choose **Edit metrics** to view and configure each metric and its corresponding statistics to collect. For custom namespaces, you must choose **Edit metrics** and type the exact name of each metric and then specify its statistics.",
+          "content": "For each service that you selected and namespace that you specified, choose **Edit metrics** to view and configure each metric and its corresponding statistics to collect.\n\nIf you specified custom namespaces, choose **Edit metrics** for each namespace, and then type the exact name of each metric and its corresponding statistics to collect.",
           "doIt": false,
           "requirements": ["exists-reftarget"]
         },
