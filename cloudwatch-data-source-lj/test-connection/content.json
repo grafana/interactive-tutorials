@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "cloudwatch-data-source-test-connection",
+  "title": "Test the connection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now that you've selected an authentication method, set your region, and configured the Assume Role ARN, save the data source and verify that Grafana can reach AWS."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save & test",
+          "requirements": ["exists-reftarget"],
+          "content": "Click **Save & test** at the bottom of the **Settings** tab.\n\nGrafana assumes the IAM role and makes a test request to CloudWatch. On success, you'll see a confirmation message that the data source is working."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Common connection issues\n\n| Symptom | Likely cause | Solution |\n|---------|-------------|----------|\n| `Access denied` or `not authorized to perform: sts:AssumeRole` | Trust relationship or external ID is wrong | Verify the role trusts the Grafana account ID and requires the exact External ID from the instructions box |\n| `User is not authorized to perform: cloudwatch:ListMetrics` | IAM policy is missing required actions | Attach the metrics/logs permissions policy from the earlier milestone to the role |\n| `The security token included in the request is invalid` | Role ARN is mistyped | Re-copy the ARN from the AWS Console and paste it into **Assume Role ARN** |\n| No data but no error | Wrong region | Confirm the **Default Region** matches where your metrics and logs live |\n\nTo troubleshoot further, refer to [Troubleshoot CloudWatch issues](https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/troubleshooting/)."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll run a query and explore your CloudWatch data in Grafana."
+    }
+  ]
+}

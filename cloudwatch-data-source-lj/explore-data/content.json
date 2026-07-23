@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "cloudwatch-data-source-explore-data",
+  "title": "Explore CloudWatch data in Grafana",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you confirm the data source works by running a CloudWatch metrics query in Grafana's Explore."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": ["exists-reftarget", "navmenu-open"],
+          "content": "In the navigation menu, click **Explore**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "doIt": false,
+          "requirements": ["exists-reftarget", "on-page:/explore"],
+          "content": "From the data source dropdown at the top-left, select your CloudWatch data source."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Build a metrics query\n\nIn the query editor, with the query mode set to **Metrics** and the builder view:\n\n1. Set **Namespace** to an AWS service you're running, such as `AWS/EC2`.\n2. Set **Metric name** to a metric in that namespace, such as `CPUUtilization`.\n3. Set **Statistic** to an aggregation, such as `Average`.\n4. Optionally set a **Dimension** (for example, `InstanceId`) to scope the query to a specific resource.\n\nGrafana loads the available namespaces, metrics, and dimensions directly from your AWS account. If the dropdowns are empty, your IAM policy may be missing the `cloudwatch:ListMetrics` action."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Run query']",
+          "requirements": ["exists-reftarget", "on-page:/explore"],
+          "content": "Click **Run query** to execute the query.\n\nYou should see time series data in the results panel. If you see results, your CloudWatch data source is working correctly."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Verify successful data access\n\nAfter running your query, you should see:\n\n- Time series data displayed as a graph or table\n- No authentication or authorization errors\n- Namespaces and metrics that match the AWS services in your region\n\nTo explore what else the data source can do, refer to the [CloudWatch query editor](https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/query-editor/) documentation."
+    },
+    {
+      "type": "markdown",
+      "content": "**Congratulations!** You've connected Amazon CloudWatch to Grafana Cloud and verified that data is accessible."
+    }
+  ]
+}

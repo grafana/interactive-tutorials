@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "cloudwatch-data-source-configure-authentication",
+  "title": "Configure authentication and region",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "On the CloudWatch **Settings** tab, you choose how Grafana authenticates to AWS and which region it queries. This path uses **Grafana Assume Role**, a keyless method available in Grafana Cloud that lets Grafana access your AWS account through a trusted IAM role instead of long-lived access keys.\n\nIn Grafana Cloud, the **Authentication Provider** offers two options: **Grafana Assume Role** and **Access & secret key**. Grafana Assume Role is usually preselected."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#authProvider",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "Under **Authentication > Authentication Provider**, make sure **Grafana Assume Role** is selected.\n\nThis is the recommended method for Grafana Cloud — it avoids storing AWS access keys in Grafana."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#defaultRegion",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "Under **Additional Settings > Default Region**, select the AWS region where your CloudWatch data lives, such as `us-east-1`.\n\nThis is the region Grafana queries unless you override it in an individual panel."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Leave the **Settings** tab open. In the next milestone, you'll create the IAM role in AWS that Grafana Assume Role relies on and paste its ARN here."
+    }
+  ]
+}

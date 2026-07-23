@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "cloudwatch-data-source-prepare-permissions",
+  "title": "Prepare AWS permissions",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Grafana makes requests to AWS on behalf of an IAM role or IAM user. That identity must have policies that allow the CloudWatch and EC2 API actions Grafana uses. In this milestone, you gather the permissions Grafana needs before you configure the data source.\n\nThis path uses the **Grafana Assume Role** authentication method, which is available in Grafana Cloud for the CloudWatch data source. With Grafana Assume Role, you don't create or rotate access keys — instead, you create an IAM role that trusts Grafana's AWS account and attach the permissions below to that role. You'll create the role itself in a later milestone."
+    },
+    {
+      "type": "markdown",
+      "content": "### Choose the permissions you need\n\nAttach one of the following policies to the IAM role, depending on what you plan to query:\n\n- **Metrics only** — read CloudWatch metrics plus EC2 tags, instances, and regions.\n- **Logs only** — read CloudWatch Logs plus EC2 tags, instances, and regions.\n- **Metrics and logs** — read both.\n\nThe metrics-and-logs policy is shown below. For the metrics-only and logs-only variants and the cross-account observability policy, refer to [Configure the CloudWatch data source](https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/configure/#iam-policy-examples)."
+    },
+    {
+      "type": "markdown",
+      "content": "**Metrics and logs permissions:**\n\n```json\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"AllowReadingMetricsFromCloudWatch\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"cloudwatch:DescribeAlarmsForMetric\",\n        \"cloudwatch:DescribeAlarmHistory\",\n        \"cloudwatch:DescribeAlarms\",\n        \"cloudwatch:ListMetrics\",\n        \"cloudwatch:GetMetricData\",\n        \"cloudwatch:GetInsightRuleReport\"\n      ],\n      \"Resource\": \"*\"\n    },\n    {\n      \"Sid\": \"AllowReadingLogsFromCloudWatch\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"logs:DescribeLogGroups\",\n        \"logs:GetLogGroupFields\",\n        \"logs:StartQuery\",\n        \"logs:StopQuery\",\n        \"logs:GetQueryResults\",\n        \"logs:GetLogEvents\"\n      ],\n      \"Resource\": \"*\"\n    },\n    {\n      \"Sid\": \"AllowReadingTagsInstancesRegionsFromEC2\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"ec2:DescribeTags\", \"ec2:DescribeInstances\", \"ec2:DescribeRegions\"],\n      \"Resource\": \"*\"\n    },\n    {\n      \"Sid\": \"AllowReadingResourcesForTags\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"tag:GetResources\",\n      \"Resource\": \"*\"\n    }\n  ]\n}\n```\n\nKeep this policy handy — you'll attach it to the IAM role you create for Grafana Assume Role."
+    },
+    {
+      "type": "markdown",
+      "content": "### Also note your AWS region\n\nGrafana queries one **default region** per data source (for example, `us-east-1` or `eu-west-2`). Note the region where your CloudWatch metrics and logs live — you'll enter it when you configure the data source.\n\nIn the next milestone, you'll add the CloudWatch data source in Grafana Cloud."
+    }
+  ]
+}
