@@ -39,24 +39,37 @@
           ]
         },
         {
+          "type": "markdown",
+          "content": "Create or copy a **Stack token** for CI use (admins only). Don't put the token in your script. You'll store it as a CI secret next.\n\nIf you can't create a Stack token yet, use **Personal token** in the next step for learning, then rotate to a Stack token before you hard-wire this into a shared pipeline. For details, refer to [Authenticate on the CLI](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/tokens-and-cli-authentication/)."
+        },
+        {
           "type": "interactive",
           "content": "Under **Access**, click **Stack token**.",
           "requirements": [
-            "exists-reftarget"
+            "exists-reftarget",
+            "on-page:/a/k6-app/settings"
           ],
           "reftarget": "nav[data-testid='settings-page-navigation'] a[href='/a/k6-app/settings/stack-api-token']",
           "action": "highlight",
           "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Create or copy a **Stack token** for CI use (admins only). Don't put the token in your script — you'll store it as a CI secret next.\n\nIf you can't create a Stack token yet, open **Personal token** instead for learning, then rotate to a Stack token before you hard-wire this into a shared pipeline. For details, refer to [Authenticate on the CLI](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/tokens-and-cli-authentication/)."
+          "type": "interactive",
+          "content": "If you can't create a Stack token, open **Personal token** instead for learning.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/k6-app/settings"
+          ],
+          "reftarget": "nav[data-testid='settings-page-navigation'] a[href='/a/k6-app/settings/api-token']",
+          "action": "highlight",
+          "skippable": true
         },
         {
           "type": "interactive",
           "content": "Optional: open **Stack ID** if you need `K6_CLOUD_STACK_ID` for k6 v2+ cloud commands.",
           "requirements": [
-            "exists-reftarget"
+            "exists-reftarget",
+            "on-page:/a/k6-app/settings"
           ],
           "reftarget": "nav[data-testid='settings-page-navigation'] a[href='/a/k6-app/settings/stack-id']",
           "action": "highlight",
@@ -74,7 +87,23 @@
     },
     {
       "type": "markdown",
-      "content": "Next, wire those credentials into your pipeline so automated runs stream to Grafana Cloud k6.\n\n1. Add secrets in your CI platform:\n\n   - GitHub Actions: **Settings** > **Secrets and variables** > **Actions** > **New repository secret**. Create `K6_CLOUD_TOKEN` and `K6_CLOUD_PROJECT_ID`.\n   - GitLab CI: **Settings** > **CI/CD** > **Variables**. Add the same names and mark `K6_CLOUD_TOKEN` as **Masked**.\n\n1. Update your GitHub Actions job to pass the cloud environment variables. With `grafana/run-k6-action`, providing `K6_CLOUD_TOKEN` and `K6_CLOUD_PROJECT_ID` streams results by default (local execution with cloud output):\n\n   ```yaml\n   - name: Setup k6\n     uses: grafana/setup-k6-action@v1\n\n   - name: Run k6 test\n     uses: grafana/run-k6-action@v1\n     env:\n       K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}\n       K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}\n     with:\n       path: tests/performance/test.js\n       flags: --env BASE_URL=https://staging.example.com\n   ```\n\n   For k6 v2+, you may also need stack information via `K6_CLOUD_STACK_ID` or `options.cloud.stackID` in the script. Refer to [Authenticate on the CLI](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/tokens-and-cli-authentication/) and your action logs if authentication fails.\n\n1. For GitLab CI (or any Docker-based runner), authenticate with the token and stream with `k6 cloud run --local-execution`:\n\n   ```yaml\n   performance-test:\n     image:\n       name: grafana/k6:latest\n       entrypoint: ['']\n     stage: test\n     variables:\n       K6_CLOUD_TOKEN: $K6_CLOUD_TOKEN\n       K6_CLOUD_PROJECT_ID: $K6_CLOUD_PROJECT_ID\n     script:\n       - k6 cloud run --local-execution -e BASE_URL=https://staging.example.com tests/performance/test.js\n   ```\n\n1. Push the updated configuration and open the new pipeline run. In the job logs, k6 prints a cloud URL for the test run.\n\n1. Open that URL, or in Grafana Cloud go to **Testing & synthetics** > **Performance**, and confirm the run appears with latency, error rate, and throughput metrics.\n\n> **Note:** Streaming results consumes Grafana Cloud k6 usage (VUH or test runs) according to your plan. Refer to [Grafana Cloud k6](https://grafana.com/docs/k6/latest/results-output/real-time/cloud/) for streaming vs cloud execution modes.\n\nYou've moved k6 from a local laptop tool to a team dependency in CI/CD, with shared results in Grafana Cloud."
+      "content": "Next, wire those credentials into your pipeline so automated runs stream to Grafana Cloud k6."
+    },
+    {
+      "type": "markdown",
+      "content": "Add secrets in your CI platform:\n\n- GitHub Actions: **Settings** > **Secrets and variables** > **Actions** > **New repository secret**. Create `K6_CLOUD_TOKEN` and `K6_CLOUD_PROJECT_ID`.\n- GitLab CI: **Settings** > **CI/CD** > **Variables**. Add the same names and mark `K6_CLOUD_TOKEN` as **Masked**."
+    },
+    {
+      "type": "markdown",
+      "content": "Update your GitHub Actions job to pass the cloud environment variables. With `grafana/run-k6-action`, providing `K6_CLOUD_TOKEN` and `K6_CLOUD_PROJECT_ID` streams results by default (local execution with cloud output):\n\n```yaml\n- name: Setup k6\n  uses: grafana/setup-k6-action@v1\n\n- name: Run k6 test\n  uses: grafana/run-k6-action@v1\n  env:\n    K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}\n    K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}\n  with:\n    path: tests/performance/test.js\n    flags: --env BASE_URL=https://staging.example.com\n```\n\nReplace `https://staging.example.com` with your environment URL. For k6 v2+, you may also need stack information via `K6_CLOUD_STACK_ID` or `options.cloud.stackID` in the script. Refer to [Authenticate on the CLI](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/tokens-and-cli-authentication/) and your action logs if authentication fails."
+    },
+    {
+      "type": "markdown",
+      "content": "For GitLab CI (or any Docker-based runner), authenticate with the token and stream with `k6 cloud run --local-execution`:\n\n```yaml\nperformance-test:\n  image:\n    name: grafana/k6:latest\n    entrypoint: ['']\n  stage: test\n  variables:\n    K6_CLOUD_TOKEN: $K6_CLOUD_TOKEN\n    K6_CLOUD_PROJECT_ID: $K6_CLOUD_PROJECT_ID\n  script:\n    - k6 cloud run --local-execution -e BASE_URL=https://staging.example.com tests/performance/test.js\n```\n\nReplace the sample `BASE_URL` with your environment URL."
+    },
+    {
+      "type": "markdown",
+      "content": "Push the updated configuration and open the new pipeline run. In the job logs, k6 prints a cloud URL for the test run.\n\nOpen that URL, or in Grafana Cloud go to **Testing & synthetics** > **Performance**, and confirm the run appears with latency, error rate, and throughput metrics.\n\nIf the job fails with an auth error, re-check `K6_CLOUD_TOKEN`, `K6_CLOUD_PROJECT_ID`, and (for k6 v2+) `K6_CLOUD_STACK_ID`.\n\n> **Note:** Streaming results consumes Grafana Cloud k6 usage (VUH or test runs) according to your plan. Refer to [Grafana Cloud k6](https://grafana.com/docs/k6/latest/results-output/real-time/cloud/) for streaming vs cloud execution modes.\n\nYou've moved k6 from a local laptop tool to a team dependency in CI/CD, with shared results in Grafana Cloud."
     },
     {
       "type": "markdown",
