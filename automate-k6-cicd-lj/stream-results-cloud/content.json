@@ -39,12 +39,8 @@
           ]
         },
         {
-          "type": "markdown",
-          "content": "Create or copy a **Stack token** for CI use (admins only). Don't put the token in your script. You'll store it as a CI secret next.\n\nIf you can't create a Stack token yet, use **Personal token** in the next step for learning, then rotate to a Stack token before you hard-wire this into a shared pipeline. For details, refer to [Authenticate on the CLI](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/tokens-and-cli-authentication/)."
-        },
-        {
           "type": "interactive",
-          "content": "Under **Access**, click **Stack token**.",
+          "content": "If you're an administrator, under **Access**, click **Stack token**, then create or copy the token to a temporary location for later use.\n\nA Stack token is better for shared CI pipelines because runs aren't tied to one person's account. Don't put the token in your script.",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/k6-app/settings"
@@ -55,7 +51,7 @@
         },
         {
           "type": "interactive",
-          "content": "If you can't create a Stack token, open **Personal token** instead for learning.",
+          "content": "If you're not an administrator, under **Access**, click **Personal token**, then copy the token to a temporary location for later use.\n\nUse this for learning, then switch to a Stack token before you rely on this setup in a shared pipeline. Don't put the token in your script.",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/k6-app/settings"
@@ -66,7 +62,7 @@
         },
         {
           "type": "interactive",
-          "content": "Optional: open **Stack ID** if you need `K6_CLOUD_STACK_ID` for k6 v2+ cloud commands.",
+          "content": "Under **Access**, click **Stack ID**, then copy the ID to a temporary location for later use.\n\nIn k6 v1.6.0 and later, you can pass this value with K6_CLOUD_STACK_ID or options.cloud.stackID. Stack information is optional today, but Grafana recommends setting it now because future k6 versions will require it. Skip this step only if you are not ready to set stack information yet. For how to pass the value, refer to [Use the CLI](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/use-the-cli/).",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/k6-app/settings"
@@ -76,8 +72,42 @@
           "skippable": true
         },
         {
+          "type": "multistep",
+          "content": "In the main menu, go to **Testing & synthetics** > **Performance** > **Projects**.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app/projects']"
+            }
+          ]
+        },
+        {
           "type": "markdown",
-          "content": "Also note your Grafana Cloud k6 **project ID** from the Performance app (Projects). You'll store `K6_CLOUD_TOKEN` and `K6_CLOUD_PROJECT_ID` as CI secrets."
+          "content": "Open the project you want to use for CI runs.\n\nThe project ID is on the project overview, under the project name, not on this list."
+        },
+        {
+          "type": "interactive",
+          "content": "Under the project name, find **Project id**, then copy it to a temporary location for later use.\n\nYou'll store it as a CI secret with your token in the next part of this milestone. For token details, refer to [Authenticate on the CLI](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/tokens-and-cli-authentication/).",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/k6-app/projects"
+          ],
+          "reftarget": "div:has(> button [data-testid='icon-clipboard-alt'])",
+          "action": "highlight",
+          "skippable": true
         }
       ]
     },
