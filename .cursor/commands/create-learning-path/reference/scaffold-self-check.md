@@ -58,7 +58,21 @@ Do a **short** product-fact check now. Full adversarial claim-check can still ru
 
 ---
 
-## 4. Report to the author
+## 4. Code samples and “copy” instructions (scaffold-time)
+
+When a milestone already shows a command or config in a fenced code block (or a bullet list of commands), do **not** also tell the learner to copy it.
+
+| Check | Fail if |
+| --- | --- |
+| Redundant copy cue | Prose says `Copy the following`, `Copy this command`, or similar immediately before/after a fenced sample the UI can already copy. |
+| Copyable chip in the action line | An interactive step’s `content` embeds a backtick command or env var (`k6 …`, `` `K6_CLOUD_…` ``) that Pathfinder may render as a separate copy control, when that value is already listed in nearby sample config. |
+| Extra copy-only step | A dedicated interactive or noop whose only job is “copy this command” while the same command sits in markdown. |
+
+**Fix:** Keep the fenced sample. In the step, use plain action language (open, note, create, run). Put env var names in surrounding markdown if needed, not as copy chips inside the action line.
+
+---
+
+## 5. Report to the author
 
 After the self-check, tell the author in plain language:
 
@@ -70,7 +84,7 @@ Keep it short. No severity labels or rule-number dumps unless they ask.
 
 ---
 
-## 5. Deploy preview is a wrap-up decision (not this self-check)
+## 6. Deploy preview is a wrap-up decision (not this self-check)
 
 Do **not** block Playwright on a website preview. When you open (or are about to open) the PR, ask the author if they want the Learning Hub deploy preview (`deploy-preview` label). Default recommendation for new `*-lj` paths: yes.
 

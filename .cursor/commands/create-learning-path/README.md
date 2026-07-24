@@ -24,7 +24,7 @@ Follow these phases in order:
 4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. While writing sections, keep bookends **outside** the `section` (critical rule 14). Never put "You'll…" / "To … complete the following steps" as the first block inside a `section`.
 5. **Create website metadata files.** Create `website.yaml` for the path and each milestone. Refer to `docs/website-yaml-reference.md`.
 6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. Where fields can't be derived, ask the user to provide values before generating.
-7. **Scaffold self-check (required).** Before Playwright, run [reference/scaffold-self-check.md](reference/scaffold-self-check.md): section bookends, `button` vs CSS `reftarget` misuse, secrets `doIt`, and a light claim pass against the docs you already read. Fix findings (or ask the author) before continuing.
+7. **Scaffold self-check (required).** Before Playwright, run [reference/scaffold-self-check.md](reference/scaffold-self-check.md): section bookends, `button` vs CSS `reftarget` misuse, secrets `doIt`, redundant “copy this command” cues next to fenced samples, and a light claim pass against the docs you already read. Fix findings (or ask the author) before continuing.
 8. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
 9. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
 10. **Verify and wrap up.** Re-run the light claim pass if prose changed. Cross-check remaining factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
@@ -50,7 +50,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 7. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
 8. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
 9. **Verify docs accuracy.** After testing, cross-check all factual claims against live Grafana documentation.
-10. **Do not skip the scaffold self-check.** Section bookends, `button`/CSS misuse, and unsupported product claims must be caught before selector discovery. See [reference/scaffold-self-check.md](reference/scaffold-self-check.md).
+10. **Do not skip the scaffold self-check.** Section bookends, `button`/CSS misuse, redundant copy cues next to listed commands, and unsupported product claims must be caught before selector discovery. See [reference/scaffold-self-check.md](reference/scaffold-self-check.md).
 
 ---
 
@@ -78,7 +78,7 @@ Consult these during the workflow:
 | `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
 | `../build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
 | `../build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
-| `reference/scaffold-self-check.md` | After scaffold, before Playwright (bookends, claims, action sanity) |
+| `reference/scaffold-self-check.md` | After scaffold, before Playwright (bookends, claims, action sanity, copy cues) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
 | `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |
 
