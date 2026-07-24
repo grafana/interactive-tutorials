@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "alerting-create-child-policy-create-child-policy",
+  "title": "Create the child policy",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now you'll add a child policy that matches alerts based on a label and routes them to a dedicated contact point."
+    },
+    {
+      "type": "markdown",
+      "content": "To create a child policy, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:has-text('Add route')",
+          "content": "On the default policy row, click **Add route**.\n\nA modal opens with the child policy configuration form.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/routes"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[name='object_matchers.0.name']",
+          "content": "In the **Label** field, enter the name of the label you want to match.\n\nFor example, type `team` to match alerts that have a `team` label. Choose a label that exists on the alert rules you want this policy to capture.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-label='Operator']",
+          "content": "Select a match **Operator**.\n\nThe operators available are:\n\n- **=** exact match\n- **!=** not equal\n- **=~** regex match\n- **!~** regex not match\n\nFor a simple match, use **=** (the default).",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[name='object_matchers.0.value']",
+          "content": "In the **Value** field, enter the label value to match.\n\nFor example, type `database` to match alerts where `team=database`.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[placeholder='Choose a contact point']",
+          "content": "Select a **contact point** from the dropdown.\n\nThis is the destination for alerts that match the label criteria you just defined. Choose the contact point that reaches the team responsible for these alerts.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[name='continue']",
+          "content": "Optionally, toggle **Continue matching siblings**.\n\nWhen enabled, the routing algorithm continues evaluating sibling policies after this one matches. This is useful when you want multiple teams to receive the same alert.\n\nLeave this off unless you need multi-team routing.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[name='overrideGrouping']",
+          "content": "Optionally, toggle **Override grouping** to set custom Group by labels for this child policy.\n\nBy default, child policies inherit grouping from the default policy. Enable this only if this policy's alerts need different grouping.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[name='overrideTimings']",
+          "content": "Optionally, toggle **Override timings** to set custom Group wait, Group interval, and Repeat interval for this child policy.\n\nBy default, child policies inherit timing from the default policy. Enable this only if you need different notification pacing for these specific alerts.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button:has-text('Add route')",
+          "content": "Click **Add route** to save your child policy.\n\nThe modal closes and the policy tree refreshes. Your new child policy appears as a branch under the default policy.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your child policy is now active. Any alert with a matching label is routed to the contact point you selected instead of falling through to the default policy.\n\nIn the next milestone, you'll review what you accomplished."
+    }
+  ]
+}
