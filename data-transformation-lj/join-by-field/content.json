@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "data-transformation-join-by-field",
+  "title": "Add a Join by field transformation",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The join by field transformation combines two or more data tables that share a common field. It's similar to a SQL `JOIN` clause. Use this to merge multiple query results into a single table, which is especially useful for converting multiple time series results into a single wide table with a shared time field."
+    },
+    {
+      "type": "markdown",
+      "content": "This transformation requires a panel with multiple queries. Open an existing panel in edit mode on your dashboard."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Transformations']",
+          "content": "Click the **Transformations** tab.",
+          "requirements": ["exists-reftarget", "on-page:/d/"]
+        },
+        {
+          "type": "multistep",
+          "content": "Click **Add transformation** and select **Join by field**.",
+          "requirements": ["exists-reftarget"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid add transformation button']"
+            },
+            {
+              "action": "button",
+              "reftarget": "Join by field"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Under **Mode**, select how you want your queries joined. Use the following table as a guideline:\n\n| Mode | When to use |\n| --- | --- |\n| INNER | Combine results from multiple queries into one result, dropping rows where a successful join cannot occur. |\n| OUTER (TIME SERIES) | Include all data from an inner join plus rows where values don't match in every input. |\n| OUTER (TABULAR) | Join tables so the result includes matched and unmatched rows from either or both tables. |"
+        },
+        {
+          "type": "guided",
+          "content": "Select a **Mode**, then choose the **Field** to join on from the multiple tables.",
+          "requirements": ["exists-reftarget"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Transformation editor Join by field']",
+              "description": "Configure the join mode and field in this editor, then click anywhere here when you're done."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Click **Save dashboard**, confirm the title, and click **Save**.",
+          "requirements": ["exists-reftarget"],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Save dashboard"
+            },
+            {
+              "action": "button",
+              "reftarget": "Save"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The transformation is applied automatically. If it doesn't refresh, click **Refresh** on the panel to verify the visualization looks as intended.\n\nIn the next milestone, you'll clean up your columns with an organize fields by name transformation."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [Join by field](/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#join-by-field)"
+    }
+  ]
+}
