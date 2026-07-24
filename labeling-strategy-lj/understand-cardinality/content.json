@@ -3,11 +3,11 @@
     "title": "Understand cardinality and active series",
     "blocks": [{
             "type": "markdown",
-            "content": "Cardinality is the number of distinct values an attribute can have. In observability, it determines how many unique series and streams your labels create, and that number is what you're billed for."
+            "content": "Cardinality is the number of distinct values an attribute can have. In observability, it determines how many unique series and streams your labels create, and that number can significantly impact your costs."
         },
         {
             "type": "markdown",
-            "content": "## What you're actually billed for\n\nA common misconception is that metrics billing is per metric name. It isn't. A time series is a metric name plus one unique combination of label key-value pairs, and each series that receives data within the last 20 minutes counts as an **active series**. Grafana Cloud bills metrics on the 95th percentile of your active series count over the billing period, so one metric name with many label combinations can cost far more than dozens of well labeled metrics.\n\nLogs work the same way structurally; each unique combination of label values defines a **log stream**, and Loki indexes, batches, and stores each stream separately."
+            "content": "## What you're actually billed for\n\nA common misconception is that metrics billing is per metric name. It isn't. A time series is a metric name plus one unique combination of label key-value pairs, and each series that receives data within the last 20 minutes counts as an **active series**. Grafana Cloud bills metrics on the 95th percentile of your active series count over the billing period, so one metric name with many label combinations can cost far more than dozens of well labeled metrics.\n\nLogs work the same way structurally, though cost attribution is different. Each unique combination of label values defines a **log stream**, and Loki indexes, batches, and stores each stream separately. Though high-cardinality labels don't add a direct per-stream charge, they can inflate query costs because larger indexes and more chunks mean bigger scans."
         },
         {
             "type": "image",
