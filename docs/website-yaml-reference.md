@@ -35,6 +35,7 @@ There are two kinds of `website.yaml`:
 | Field                            | Type   | Notes                                                                                                                            |
 | -------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | `show_play`                      | bool   | Set to `false` to hide the play button. Defaults to shown when omitted. Read by `single-journey-main.html` and `path-card.html`. |
+| `journey.duration`               | string | Estimated learner time for the path, for example `45-60 minutes`. Consumed by the Learning Hub catalog as the Duration stat; missing values render as `—`. |
 | `related_journeys.title`         | string | Heading for the related paths block. Conventionally `Related paths`. Rendered by `related-journeys.html`.                        |
 | `related_journeys.heading`       | string | Lead-in sentence above the list.                                                                                                 |
 | `related_journeys.items[].title` | string | Display title of the related path.                                                                                               |
