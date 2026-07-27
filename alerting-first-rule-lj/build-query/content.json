@@ -20,7 +20,7 @@
           "action": "formfill",
           "reftarget": "input[data-testid='data-testid Select a data source']",
           "targetvalue": "grafanacloud-play-prom",
-          "content": "Point the alert rule at the **grafanacloud-play-prom** data source from the QuickPizza tutorial data sources. It's filled in for you.",
+          "content": "Choose the data source that holds the metric you want to alert on. For this tutorial, `grafanacloud-play-prom` is filled in for you — it's the Prometheus data source from the QuickPizza tutorial data sources.",
           "tooltip": "Prometheus data source from the QuickPizza tutorial data sources.",
           "requirements": [
             "on-page:/alerting/new/alerting"
@@ -30,17 +30,33 @@
     },
     {
       "type": "section",
+      "id": "toggle-explain",
+      "title": "Turn on Explain (optional)",
+      "skippable": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid prometheus explain switch wrapper']",
+          "content": "Toggle **Explain** on. Grafana narrates what each part of your query does in plain English — a fast way to learn what you're clicking without knowing PromQL syntax.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "skippable": true,
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "section",
       "id": "use-builder-mode",
       "title": "Confirm Builder mode",
-      "requirements": [
-        "section-completed:select-data-source"
-      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid QueryEditorModeToggle']",
-          "content": "**Builder** mode lets you construct the query by clicking dropdowns instead of typing PromQL. It's the default for new queries — if **Code** is selected, click **Builder** to switch.",
+          "content": "Make sure **Builder** mode is selected. This mode lets you build the query without using PromQL.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ],
@@ -53,17 +69,14 @@
       "type": "section",
       "id": "choose-metric",
       "title": "Choose the metric",
-      "requirements": [
-        "section-completed:use-builder-mode"
-      ],
       "blocks": [
         {
           "type": "interactive",
-          "action": "formfill",
-          "reftarget": "[data-testid='data-testid metric select'] input",
-          "targetvalue": "quickpizza_server_http_requests_total",
-          "content": "In the **Metric** drop-down, `quickpizza_server_http_requests_total` is filled in for you. This counter tracks every HTTP request QuickPizza's services handle, labeled with the response `status` — the raw material for the alert.",
-          "tooltip": "Counter of QuickPizza HTTP requests, broken down by status code.",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid metric select']",
+          "content": "Copy `quickpizza_server_http_requests_total` from this step, paste it into the **Metric** drop-down, then select it from the list. This counter tracks every HTTP request QuickPizza's services handle, labeled with the response `status`. It's the raw material for the alert.",
+          "tooltip": "Paste the metric name here, then pick it from the list.",
+          "doIt": false,
           "requirements": [
             "on-page:/alerting/new/alerting"
           ]
@@ -74,16 +87,13 @@
       "type": "section",
       "id": "add-label-filter",
       "title": "Filter to server errors",
-      "requirements": [
-        "section-completed:choose-metric"
-      ],
       "blocks": [
         {
           "type": "interactive",
-          "action": "formfill",
-          "reftarget": "[data-testid='data-testid Select label'] input",
-          "targetvalue": "status",
-          "content": "The raw metric covers *all* requests. To keep only server errors, add a **Label filter** on `status` — it's filled in for you.",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select label']",
+          "content": "In the **Label filters** row, open the **Label** drop-down and select `status`. The raw metric covers *all* requests — the `status` label lets you narrow it down.",
+          "tooltip": "Pick status from the list.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ]
@@ -91,21 +101,21 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Select operator']",
-          "content": "Change the operator from `=` to `=~`. The `=~` operator does a regex match, so one filter catches every 5xx code at once (500, 502, 503, and so on).",
+          "reftarget": "[data-testid='data-testid Select match operator']",
+          "content": "Open the operator drop-down and change `=` to `=~`. The `=~` operator does a regex match, so one filter catches every 5xx code at once (500, 502, 503, and so on).",
           "tooltip": "=~ is Prometheus regex-match; = is exact-match.",
+          "doIt": false,
           "requirements": [
             "on-page:/alerting/new/alerting"
-          ],
-          "skippable": true,
-          "doIt": false
+          ]
         },
         {
           "type": "interactive",
-          "action": "formfill",
-          "reftarget": "[data-testid='data-testid Select value'] input",
-          "targetvalue": "5..",
-          "content": "In the value field, `5..` is filled in for you. That regex matches any three-digit status starting with 5 — so the query now returns only server errors.",
+          "action": "highlight",
+          "reftarget": "[aria-label='Value']",
+          "content": "In the **Select value** box, enter `5..`, then press Enter. That regex matches any three-digit status starting with 5, so the query now returns only server errors.",
+          "tooltip": "Enter 5.. and press Enter.",
+          "doIt": false,
           "requirements": [
             "on-page:/alerting/new/alerting"
           ]
@@ -116,9 +126,6 @@
       "type": "section",
       "id": "add-increase-operation",
       "title": "Add Increase (5m)",
-      "requirements": [
-        "section-completed:add-label-filter"
-      ],
       "blocks": [
         {
           "type": "interactive",
@@ -140,9 +147,6 @@
       "type": "section",
       "id": "add-sum-operation",
       "title": "Sum across services (optional)",
-      "requirements": [
-        "section-completed:add-increase-operation"
-      ],
       "skippable": true,
       "blocks": [
         {
@@ -164,33 +168,8 @@
     },
     {
       "type": "section",
-      "id": "toggle-explain",
-      "title": "Turn on Explain (optional)",
-      "requirements": [
-        "section-completed:add-sum-operation"
-      ],
-      "skippable": true,
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "label[for='option-explain-radiogroup']",
-          "content": "Toggle **Explain** on. Grafana narrates what each part of your query does in plain English — a fast way to learn what you're clicking without knowing PromQL syntax.",
-          "requirements": [
-            "on-page:/alerting/new/alerting"
-          ],
-          "skippable": true,
-          "doIt": false
-        }
-      ]
-    },
-    {
-      "type": "section",
       "id": "preview-query",
       "title": "Preview the query",
-      "requirements": [
-        "section-completed:toggle-explain"
-      ],
       "blocks": [
         {
           "type": "interactive",
