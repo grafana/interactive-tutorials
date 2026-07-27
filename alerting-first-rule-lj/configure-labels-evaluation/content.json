@@ -1,24 +1,29 @@
 {
   "schemaVersion": "1.1.0",
   "id": "alerting-first-rule-configure-labels-evaluation",
-  "title": "Select a folder and add labels",
+  "title": "Create a folder and add labels",
   "blocks": [
     {
       "type": "markdown",
-      "content": "You'll organize your alert into a folder and add labels that control routing.\n\nIn this milestone, you select a folder, then add rule-level labels."
+      "content": "You'll organize your alert into a folder and add labels that control how notifications get routed.\n\nFolders organize alerts by team, service, or purpose, and control who can manage them.\n\nIn this milestone, you create a folder, then add rule-level labels."
     },
     {
       "type": "section",
       "id": "select-folder",
-      "title": "Select a folder",
+      "title": "Create a folder",
       "blocks": [
         {
           "type": "interactive",
           "action": "button",
-          "reftarget": "Select folder",
-          "content": "In the **Set evaluation behavior** section, click **Select folder** to choose or create a folder for your alert rule.\n\nFolders organize alert rules by team, service, or purpose, and they determine who has permission to manage the rules inside them.",
+          "reftarget": "New folder",
+          "content": "In the **Add folder and labels** section, click **New folder** to open the create dialog.",
           "doIt": false,
           "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Give your folder a name \u2014 **Alerts** works for this tutorial, or pick something meaningful to your team \u2014 then click **Create**. Grafana saves the folder and selects it for your rule."
         }
       ]
     },
@@ -29,29 +34,21 @@
       "requirements": ["section-completed:select-folder"],
       "blocks": [
         {
-          "type": "markdown",
-          "content": "Labels can come from two places: the query itself (the raw QuickPizza metric carries `service_name`, `service_namespace`, and `status` labels straight from Prometheus, though the `Sum` step aggregates them away) or the rule-level **Add labels** section. Use rule-level labels for higher-level routing metadata that doesn't belong on the data, like team, severity, or environment."
-        },
-        {
           "type": "interactive",
           "action": "button",
           "reftarget": "Add labels",
-          "content": "Scroll to the **Add labels** section and click **Add labels** to add a rule-level label.",
+          "content": "Click **Add labels** to open the labels editor. Labels are simple key-value tags you attach to the alert. Grafana uses them to decide who to notify.",
           "requirements": ["on-page:/alerting/new/alerting"]
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Rule-level labels give you routing metadata that lives on the alert regardless of what the query returns. Add them here to control how notifications are dispatched without touching the query.\n\n| Key | Example values | Purpose |\n|-----|----------------|--------|\n| `severity` | `critical`, `warning`, `info` | Controls urgency and routing |\n| `team` | `platform`, `database`, `frontend` | Routes to the right responders |\n| `environment` | `production`, `staging` | Distinguishes alert context |\n| `runbook` | `payments-runbook` | Points on-call to a runbook |"
+          "content": "Add a label with the key **severity** and the value **critical**, then click **Save**.\n\nA server returning 5xx errors is significant, so this alert deserves the critical tag."
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Labels drive notification routing. For example, notification policies can:\n\n- Route `severity=\"critical\"` to PagerDuty for immediate response\n- Route `severity=\"warning\"` to a Slack channel for awareness\n- Route `team=\"platform\"` to the platform team's on-call\n- Route by service or environment labels to service owners\n\nChoose labels that match your notification policy matchers."
-        },
-        {
-          "type": "markdown",
-          "content": "Your alert now has a folder and routing labels.\n\nNext, you set how often Grafana evaluates the rule and how long a problem must persist before it fires."
+          "content": "Your alert now has a folder and a label. Next, you'll tell Grafana how often to check the query and how long the problem must last before the alert fires."
         }
       ]
     }
