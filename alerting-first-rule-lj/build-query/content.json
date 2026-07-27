@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "The query defines what data Grafana monitors. You point the rule at a data source, choose a metric, filter it down to what matters, and apply operations that transform the raw data into something useful.\n\nThis milestone uses the **grafanacloud-play-prom** Prometheus data source from the QuickPizza tutorial data sources. You build the query in **Builder** mode, targeting a real HTTP request counter from the QuickPizza demo service."
+      "content": "This alert watches the QuickPizza app for server errors and notifies you as soon as any occur.\n\nYou build the query in **Builder** mode against the **grafanacloud-play-prom** Prometheus data source. The finished query counts how many QuickPizza HTTP requests returned a `5xx` status code in the last 5 minutes, sums them across all services, and sets you up to fire the moment that total goes above zero — so you find out the instant QuickPizza starts failing requests, no matter which service is responsible."
     },
     {
       "type": "section",
@@ -17,19 +17,18 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "You'll point the alert rule at the Prometheus data source that came with the QuickPizza tutorial data sources."
+          "content": "First, point the alert rule at the Prometheus data source from the QuickPizza tutorial data sources."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='data-testid Select a data source']",
           "targetvalue": "grafanacloud-play-prom",
-          "content": "In the **Define query and alert condition** section, open the data source picker and select **grafanacloud-play-prom**.",
-          "tooltip": "Pick the Prometheus data source from the QuickPizza tutorial data sources.",
+          "content": "In the **Define query and alert condition** section, the data source picker is filled with **grafanacloud-play-prom** for you.",
+          "tooltip": "Prometheus data source from the QuickPizza tutorial data sources.",
           "requirements": [
             "on-page:/alerting/new/alerting"
-          ],
-          "doIt": false
+          ]
         }
       ]
     },
@@ -43,7 +42,7 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "The Prometheus query editor has two modes: **Builder** (visual, point-and-click) and **Code** (write PromQL by hand). Builder is the fastest way in when you're new to Prometheus, and it's the default for new queries."
+          "content": "**Builder** mode lets you construct the query by clicking dropdowns and menus instead of typing PromQL. It's the default for new queries."
         },
         {
           "type": "interactive",
@@ -68,74 +67,147 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "The **Metric** field is where you tell Prometheus which time series to query. QuickPizza exposes an HTTP request counter you can alert on."
+          "content": "The **Metric** field tells Prometheus which time series to query. QuickPizza exposes a counter for every HTTP request its services have handled, broken down by status code — that's the raw material this alert is built from."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label='Open metrics explorer']",
-          "content": "Click the **Metric** drop-down and select `quickpizza_server_http_request_duration_seconds_count`.\n\nIf you can't find the Metric from the dropdown, Click the **Open metric explorer** button and search for the metric.\n\nThis is a counter that increments every time QuickPizza handles an HTTP request. It's exactly the kind of counter you'd alert on in production.",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid metric select'] input",
+          "targetvalue": "quickpizza_server_http_requests_total",
+          "content": "In the **Metric** drop-down, the value is set to `quickpizza_server_http_requests_total` for you.\n\nThis counter increments every time one of QuickPizza's services — catalog, config, copy, public-api, recommendation — handles an HTTP request. Each series is labeled with the response `status`, which the next step filters on.",
+          "tooltip": "Counter of QuickPizza HTTP requests, broken down by status code.",
           "requirements": [
             "on-page:/alerting/new/alerting"
-          ],
-          "doIt": false
+          ]
         }
       ]
     },
     {
       "type": "section",
       "id": "add-label-filter",
-      "title": "Narrow down with a label filter",
+      "title": "Filter to server errors",
       "requirements": [
         "section-completed:choose-metric"
       ],
       "blocks": [
         {
           "type": "markdown",
-          "content": "QuickPizza has multiple services. A label filter narrows the query to just the one you care about — the public API, which handles customer traffic."
+          "content": "The raw metric covers *all* requests — 200s, 400s, 500s. This filter narrows the query to server errors only, using a regex match on the `status` label so it catches every 5xx code at once (500, 502, 503, and so on)."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Select label'] input",
+          "targetvalue": "status",
+          "content": "In the **Label filters** row, the **Label** field is set to `status` for you.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Select label']",
-          "content": "Below the metric picker, in the **Label filters** row, open the **Label** drop-down and select `service_name`.",
+          "reftarget": "[data-testid='data-testid Select operator']",
+          "content": "Change the operator from `=` to `=~`. The `=~` operator does a regex match, which is how you catch every 5xx code at once instead of one specific status.",
+          "tooltip": "=~ is Prometheus regex-match; = is exact-match.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ],
+          "skippable": true,
           "doIt": false
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid Select value']",
-          "content": "In the value picker next to `service_name`, select `quickpizza-public-api`.\n\nYour query now returns only the HTTP request counter for QuickPizza's public API.",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Select value'] input",
+          "targetvalue": "5..",
+          "content": "In the value field, the value is set to `5..` for you.\n\nThat regex matches any three-digit status starting with 5 (500, 502, 503, 504, and so on). Your query now returns only server errors.",
           "requirements": [
             "on-page:/alerting/new/alerting"
-          ],
-          "doIt": false
+          ]
         }
       ]
     },
     {
       "type": "section",
-      "id": "add-rate-operation",
-      "title": "Convert the counter to a rate",
+      "id": "add-increase-operation",
+      "title": "Add Increase (5m)",
       "requirements": [
         "section-completed:add-label-filter"
       ],
       "blocks": [
         {
           "type": "markdown",
-          "content": "Counters only ever go up, so the raw value isn't useful for alerting. Applying **Rate** turns the counter into a per-second rate — how many requests QuickPizza is currently serving. That's what you actually want to compare against a threshold."
+          "content": "The raw metric is a *counter* — it only ever goes up and never resets, so its current value (like 48,213) tells you nothing about whether errors just happened. `increase()` converts that into \"how many new errors occurred in the last 5 minutes\" — a number you can actually alert on."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Operations",
-          "content": "Click **+ Operations** to add a function to your query. In the picker, select **Range > Rate** and `$__rate_interval`.\n\nGrafana wraps your query with `rate(...[$__rate_interval])` under the hood — but you never touched PromQL.",
+          "content": "Click **+ Operations** to open the operations picker.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the picker, select **Range functions**, then **Increase**. Grafana adds an `Increase` step to your query.\n\nIn the step's range field, set the range to `5m` so the query counts errors over the last 5 minutes."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-sum-operation",
+      "title": "Sum across services (optional)",
+      "requirements": [
+        "section-completed:add-increase-operation"
+      ],
+      "skippable": true,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Without `Sum`, you get one separate number per QuickPizza service, since each runs on its own instance. Summing collapses them into a single total, so the alert answers \"is QuickPizza having errors *anywhere*?\" instead of firing separately per service — quieter and easier to read."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Operations",
+          "content": "Click **+ Operations** again to open the picker.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Select **Aggregations**, then **Sum**. Grafana adds a `Sum` step that wraps your `increase()` result in a single total across all services."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "toggle-explain",
+      "title": "Turn on Explain (optional)",
+      "requirements": [
+        "section-completed:add-sum-operation"
+      ],
+      "skippable": true,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "**Explain** makes Grafana narrate what each part of your query does in plain English as you build it — a fast way to learn what you're clicking without having to know PromQL syntax upfront."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[for='option-explain-radiogroup']",
+          "content": "Toggle **Explain** on. Grafana adds inline descriptions to each step of your query.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "skippable": true,
           "doIt": false
         }
       ]
@@ -145,21 +217,21 @@
       "id": "preview-query",
       "title": "Preview the query",
       "requirements": [
-        "section-completed:add-rate-operation"
+        "section-completed:toggle-explain"
       ],
       "blocks": [
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Run queries",
-          "content": "Click **Run queries** to preview the data your query returns.\n\nYou should see a line that fluctuates in the low single digits — the real-time HTTP request rate for QuickPizza's public API. If the preview is empty, double-check that you selected `grafanacloud-play-prom` and the metric name is correct.",
+          "content": "Click **Run queries** to preview the data.\n\nYou should see a value that stays at `0` while QuickPizza is healthy and jumps above zero when server errors occur in the last 5-minute window. If the preview is empty, double-check the data source, metric name, and label filter.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ]
         },
         {
           "type": "markdown",
-          "content": "Your query now returns a real per-second request rate from QuickPizza. In the next milestone, you set the condition that decides when this rate is high enough to fire an alert."
+          "content": "Your query now counts QuickPizza's 5xx errors over the last 5 minutes. In the next milestone, you set the condition that fires the alert the moment that count goes above zero."
         }
       ]
     }
