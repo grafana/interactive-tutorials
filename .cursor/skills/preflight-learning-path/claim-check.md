@@ -2,7 +2,7 @@
 
 Adversarial factual check for Pathfinder learning path packages. Adapted from the Learning Hub claim-check skill and the MUST FIX bar in journey audit reports. Goal: catch invented product facts before a PR, not Hugo slide structure.
 
-Run inside [preflight Phase 1](SKILL.md#phase-1-static-pass) after audit-guide and path/LH checks, before the Phase 1 checkpoint.
+Run during the [static pass](SKILL.md#static-pass-no-author-yes) after audit-guide and path/LH checks. Do not pause the author for a yes between static and login.
 
 **Independence:** Prefer a fresh agent pass that did not author the package prose. Default stance: unproven. A claim is flagged unless a source plainly supports it.
 
@@ -49,7 +49,7 @@ Falsifiable statements about the product, including:
 4. Verdict (see below). Sweep phrase + category across the whole package so the same error is one finding with multiple locations.
 5. Write `.cursor/lp-preflight-state/{slug}-claim-check.md` (gitignored).
 
-Do not edit package JSON during the claim check. Fixes wait for Phase 4 if the author asks.
+Do not edit package JSON during the claim check. Fixes wait for the results menu if the author asks.
 
 ---
 
@@ -113,10 +113,10 @@ MUST FIX first, then author-decides. Do not dump Supported claims into author ch
 
 ---
 
-## Phase 1 / Phase 3 chat
+## Author chat (results menu)
 
-After claim-check, merge MUST FIX items into author findings (dedupe; ≤3 in Phase 1 chat). Use plain language (problem + why + file). Do **not** put verdict labels like "Contradicted" in author bullets.
+After claim-check, merge MUST FIX items into the findings that feed the **one results menu** (dedupe). Use plain language (problem + why + file). Do **not** put verdict labels like "Contradicted" in author bullets. Do not open with a "What this check is" primer.
 
-At **Phase 3**, list them as numbered **package-fixable** items and offer **fix all** / **fix N** / combos per [Author-facing findings](reference-checks.md#author-facing-findings). Do not open with a "What this check is" primer.
+Offer **fix all** / **fix N** / combos for package-fixable claim items per [Author-facing findings](reference-checks.md#author-facing-findings).
 
-If none, say the claim check found no contradicted or unsupported product facts.
+If none, say the claim check found no contradicted or unsupported product facts (as part of What we checked / clean results).

@@ -1,41 +1,42 @@
 # Author testing (preflight)
 
-Live-test helpers for [preflight-learning-path/SKILL.md](SKILL.md) Phase 2.
+Live-test helpers for [preflight-learning-path/SKILL.md](SKILL.md).
 
-Aligns with the five-phase [review-learning-path](../review-learning-path/SKILL.md) live path, lighter for authors: Playwright DOM is required; Block Editor is opt-in.
+Aligns with the five-phase [review-learning-path](../review-learning-path/SKILL.md) live path, lighter for authors: Playwright DOM is required; Block Editor is opt-in. Fits the hard author flow: pause for login, then smoke choice; do not quiz between DOM milestones.
 
 ---
 
 ## Prerequisites
 
-Confirm at Phase 0 / remind in the slash-command first message.
+Confirm during identify (quietly unless blocked). Remind in the slash-command first message.
 
 | Need | Required when | Why | How to verify / fix |
 |---|---|---|---|
 | `interactive-tutorials` checkout with `{slug}-lj/` | Always | Package under test | Path on disk / current branch |
-| **Playwright MCP** enabled (`user-playwright`) | Live path (default for new/conversion interactive) | Agent DOM checks | Phase 0: list or call Playwright MCP tools. If missing: follow [If Playwright MCP is missing](#if-playwright-mcp-is-missing) |
-| Okta login in the **Playwright** browser to `{learn_host}` (default `learn.grafana.net`) | Before Playwright DOM loop | MCP cannot complete SAML alone | Phase 2: author logs in, replies `ready` |
+| **Playwright MCP** enabled (`user-playwright`) | Live path (default for new/conversion interactive) | Agent DOM checks | Identify: list or call Playwright MCP tools. If missing or broken: follow [If Playwright MCP is missing or broken](#if-playwright-mcp-is-missing-or-broken) |
+| Okta login in the **Playwright** browser to `{learn_host}` (default `learn.grafana.net`) | Before Playwright DOM loop | MCP cannot complete SAML alone | Login pause: author logs in, replies `ready` |
 | Pathfinder Block Editor on learn | Only if author chooses `walk-me` | Optional smoke coaching | `{learn_host}/plugins/grafana-pathfinder-app?dev=true` → **?** → Debug → Block Editor → import local JSON |
 | Pathfinder CLI (`grafana-pathfinder-app` built locally) | Nice-to-have | `validate --packages` | Note if missing; do not abort preflight |
-| `gh` auth + write access to the UI repo | Phase 5 only | Frontend testid PR | Check when entering Phase 5 |
+| `gh` auth + write access to the UI repo | Frontend walkthrough only | Frontend testid PR | Check when entering frontend steps |
 | `website` repo in workspace | Optional (conversion) | Read-only legacy compare | Never write |
 
 Same Playwright + Okta role as [learning-path-workflows/workflows.md](../../learning-path-workflows/workflows.md) and `/create-learning-path`.
 
-### If Playwright MCP is missing
+### If Playwright MCP is missing or broken
 
-Stop at Phase 0 (or before Phase 2). Do **not** silently skip DOM checks on new/conversion interactive paths. `static-only: <reason>` only when [static-only rules](reference-checks.md#static-only-preflight) allow it.
+Stop before live DOM checks. Do **not** silently skip DOM checks on new/conversion interactive paths. `static-only: <reason>` only when [static-only rules](reference-checks.md#static-only-preflight) allow it.
 
 Diagnose which case applies, then offer help (manual steps always; agent action when possible):
 
 | Case | How you can tell | Offer |
 |---|---|---|
-| **Config missing** from `~/.cursor/mcp.json` (no `playwright` / `@playwright/mcp` entry) | Read `mcp.json`; server absent | Ask: **Want me to add the Playwright MCP config for you?** If yes, merge the block below into `mcp.json` (create the file if needed). Then ask them to reload MCP servers (Cursor Settings → MCP → refresh/reload, or restart the agent) and reply **ready** / **yes** so you recheck. |
+| **Config missing** from `~/.cursor/mcp.json` (no `playwright` / `@playwright/mcp` entry) | Read `mcp.json`; server absent | Ask: **Want me to add the Playwright MCP config for you?** If yes, merge the standard block below into `mcp.json`. Then ask them to reload MCP and reply when ready so you recheck. |
 | **Needs auth** (`needsAuth` / only `mcp_auth` tool) | `GetMcpTools` / server status | Ask: **Want me to start the Playwright MCP connect flow?** If yes, call `mcp_auth` for `user-playwright` (empty args), wait, recheck. |
 | **Configured but toggled off** in Cursor Settings | Entry exists in `mcp.json`; tools still unavailable | Manual only: Settings → MCP → enable **Playwright**. Agent cannot flip that toggle. |
-| **Errored / won't start** | Tools missing; logs or STATUS show install/runtime errors | Diagnose (`npx`, Node, network). Offer config fixes; author confirms reload. |
+| **Configured but broken** | Entry exists; server shows error / tools fail / navigate fails. Common: custom CDP like `http://localhost:9222` with nothing listening | Explain the failure plainly. Offer to replace with the standard `npx @playwright/mcp@latest` block (reply **add playwright mcp** or **fix playwright mcp**). Warn that this overwrites a custom playwright entry; keep other servers. Then reload and recheck. |
+| **Errored / won't start** | Tools missing; logs or STATUS show install/runtime errors | Diagnose (`npx`, Node, network). Offer the standard config; author confirms reload. |
 
-Standard config to add when missing (do not overwrite unrelated servers):
+Standard config to add or restore (do not overwrite unrelated servers; for **configured but broken**, replace only the `playwright` server entry after the author agrees):
 
 ```json
 {
@@ -50,15 +51,17 @@ Standard config to add when missing (do not overwrite unrelated servers):
 
 **Blocked checkpoint shape (author-facing):**
 
-> Playwright MCP isn't available, so I can't run the live DOM checks on this path yet.
+> Playwright MCP isn't ready, so I can't run the live DOM checks on this path yet.
 >
-> **Manual setup:** Cursor Settings → MCP → enable **Playwright** (or add it if it's not listed), then reload.
+> **Manual setup:** Cursor Settings → MCP → enable **Playwright** (or fix / re-add it), then reload.
 >
-> **Or:** reply **add playwright mcp** and I'll add the standard config to `~/.cursor/mcp.json` for you (you'll still need to reload MCP afterward).
+> If Playwright is listed but broken (for example a CDP URL like `localhost:9222` with no browser listening), reply **fix playwright mcp** and I'll switch it to the standard `npx @playwright/mcp@latest` config. You'll still need to reload MCP afterward.
+>
+> **Or:** reply **add playwright mcp** if it is missing entirely.
 >
 > Skipping live checks with `static-only` isn't a fit for new or conversion interactive paths.
 
-Never edit `mcp.json` until the author agrees. Never claim MCP is ready until `GetMcpTools` for `user-playwright` shows usable browser tools.
+Never edit `mcp.json` until the author agrees. Never claim MCP is ready until `GetMcpTools` for `user-playwright` shows usable browser tools (and a quick navigate smoke succeeds when diagnosing "broken").
 
 ---
 
@@ -75,14 +78,14 @@ DOM exists ≠ Show me / Do it works. Reviewers still run full Block Editor smok
 
 ## Playwright DOM (required)
 
-After author replies `ready`:
+After author replies `ready` at the login pause:
 
 For each interactive milestone in scope (path order):
 
 1. Start URL: first `on-page:/path` in milestone blocks, else path manifest `startingLocation` (same as [review milestone start URL](../review-learning-path/reference-checks.md#milestone-start-url)).
 2. Navigate on `{learn_host}`.
 3. For each `reftarget`, record: `exists` / `missing` / `below-fold` / `state-dependent`.
-4. One-line result in chat before moving on (or a short all-clear if clean).
+4. Do **not** stop for author confirmation between milestones. One short progress line is enough; save the summary for the results menu.
 
 Respect [live testing prerequisites](../review-learning-path/reference-checks.md#live-testing-prerequisites-phase-2) (stack state, credential-gated UI). Prefer documenting stack gaps over false "missing selector" on the wrong stack.
 

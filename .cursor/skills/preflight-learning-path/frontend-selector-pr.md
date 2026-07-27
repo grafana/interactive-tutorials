@@ -1,4 +1,4 @@
-# Frontend selector PR (preflight Phase 5)
+# Frontend selector PR (preflight)
 
 Walk an author through adding a stable `data-testid` upstream when Pathfinder needs one and the DOM has no good selector.
 
@@ -15,23 +15,23 @@ Do not paste the whole #1795 diff. Link it and mirror the pattern. No em dashes 
 
 ---
 
-## When to enter Phase 5
+## When to enter
 
-Trigger when Phase 2 shows a step needs a durable selector and:
+Trigger when live checks show a step needs a durable selector and:
 
 - No `data-testid` / strong semantic attribute exists in the DOM, and
 - Live Playwright or walk-me failed on that step (or the author wants a proactive testid anyway), and
-- They reply **`frontend`** at Phase 3 or ask during Phase 4
+- They reply **`frontend`** at the results menu or ask after package fixes
 
-At Phase 3, treat this as a **needs-frontend** finding: lead with **frontend**, not **fix N**. A package-only `reftarget` tweak is not the real fix. Only offer a temporary weak selector in the guide if the author explicitly asks, and label it as brittle.
+At the results menu, treat this as a **needs-frontend** finding: lead with **frontend**, not **fix N**. A package-only `reftarget` tweak is not the real fix. Only offer a temporary weak selector in the guide if the author explicitly asks, and label it as brittle.
 
-If live passed with a justified `:contains()` and no stable selector exists, that stays Internal in review terms. Offer Phase 5 as an optional improvement, not a Fix-before-PR demand, unless Playwright/walk-me failed on that step.
+If live passed with a justified `:contains()` and no stable selector exists, that stays Internal in review terms. Offer this walkthrough as an optional improvement, not a Fix-before-PR demand, unless Playwright/walk-me failed on that step.
 
 ---
 
 ## Walkthrough (checkpointed)
 
-Announce **Phase 5 - frontend selector (step X of 5)** at each stop. One ask per message.
+These pauses are intentional (author must approve name, repo, draft, push). Announce **Frontend selector (step X of 5)** at each stop. One ask per message. Do not call this "Phase 5" in author chat.
 
 ### 1. Confirm the element
 
@@ -39,7 +39,7 @@ From Playwright: URL, visible label, current weak selector, screenshot or DOM sn
 
 Propose a `data-testid` (plain kebab-case, product-area prefix, matching existing testids in that app when present).
 
-> **Phase 5  -  frontend selector (step 1 of 5)**
+> **Frontend selector (step 1 of 5)**
 >
 > **Element that failed live**
 > - Page: {url or page name}
@@ -59,7 +59,7 @@ Propose a `data-testid` (plain kebab-case, product-area prefix, matching existin
 
 Use workspace clones or GitHub search. Do **not** invent file paths.
 
-> **Phase 5  -  frontend selector (step 2 of 5)**
+> **Frontend selector (step 2 of 5)**
 >
 > Best guess for owning source: `{repo}` ({why}).
 >
@@ -85,7 +85,7 @@ Adds `data-testid` attributes to {components} following the existing kebab-case 
 Example pattern: https://github.com/grafana/grafana-cmab-app/pull/1795
 ```
 
-> **Phase 5  -  frontend selector (step 3 of 5)**
+> **Frontend selector (step 3 of 5)**
 >
 > Draft change: add `{testid}` on {component summary}. Testids only; no behavior change.
 >
@@ -104,7 +104,7 @@ Example pattern: https://github.com/grafana/grafana-cmab-app/pull/1795
 3. `gh pr create` with the approved title/body
 4. Follow existing grafana org repo norms; do not change repo visibility
 
-> **Phase 5  -  frontend selector (step 4 of 5)**
+> **Frontend selector (step 4 of 5)**
 >
 > Ready to open the PR in `{repo}` with the approved title/body.
 >
@@ -118,7 +118,7 @@ Update the milestone `reftarget` to the new testid **only after** the author con
 
 Until then: keep a temporary justified fallback if needed, and note the upstream PR URL in readiness / Open PR with notes.
 
-> **Phase 5  -  frontend selector (step 5 of 5)**
+> **Frontend selector (step 5 of 5)**
 >
 > Frontend PR: {url}
 >
@@ -134,4 +134,4 @@ Until then: keep a temporary justified fallback if needed, and note the upstream
 - Inventing component paths
 - Updating guide JSON to a testid that is not on the test stack yet without saying so
 - Treating a missing upstream testid as something to "fix" only inside `interactive-tutorials` when the DOM has no stable hook
-- Offering bare **fix N** at Phase 3 as if a guide edit adds the testid
+- Offering bare **fix N** at the results menu as if a guide edit adds the testid

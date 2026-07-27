@@ -1,8 +1,8 @@
 ## Command: /preflight-learning-path
 
-Self-review a learning path package in `interactive-tutorials` **before** opening a PR. Walks you through **one phase at a time**. Same static and live checks as the five-phase [/review-learning-path-pr](review-learning-path-pr.md) coach, from the author side.
+Self-review a learning path package in `interactive-tutorials` **before** opening a PR. Same checks as [/review-learning-path-pr](review-learning-path-pr.md), from the author side, with fewer stop-and-type moments: the agent runs what it can, then pauses only when it needs you (login, smoke choice, results / fixes).
 
-When invoked, read and follow **[preflight-learning-path/SKILL.md](../skills/preflight-learning-path/SKILL.md)** in order. Never batch phases.
+When invoked, read and follow **[preflight-learning-path/SKILL.md](../skills/preflight-learning-path/SKILL.md)** in order.
 
 LP packages are **single-repo** (`interactive-tutorials` only). Metadata lives in package `website.yaml`; the website repo is read-only for conversion ([PR #416](https://github.com/grafana/interactive-tutorials/pull/416)). Learning Hub criteria: [learning-hub-standards.md](../skills/review-learning-path/learning-hub-standards.md).
 
@@ -17,19 +17,20 @@ LP packages are **single-repo** (`interactive-tutorials` only). Metadata lives i
 
 ## First message to the author
 
-> I'll walk you through a preflight check on your learning path **one phase at a time**. I'll pause after each phase. Please don't skip ahead.
+> I'll preflight your learning path with as few interruptions as possible. I'll run the static checks on my own, then pause when I need you logged into Playwright, again for an optional Block Editor smoke choice, then once for results and fix options.
 >
-> | Phase | What happens |
+> | When I pause | Why |
 > |---|---|
-> | 0 | Confirm your `{slug}-lj/` package and Playwright MCP |
-> | 1 | Static pass: structure, Learning Hub, and product claims vs docs |
-> | 2 | Playwright DOM checks (Block Editor smoke optional) |
-> | 3 | Readiness summary and what to fix (if anything) |
-> | 4 | Optional package edits |
-> | 5 | Optional upstream `data-testid` PR if a stable selector is missing |
+> | Path unclear | Confirm which `{slug}-lj/` package |
+> | Playwright not ready | Fix or add MCP |
+> | Before live DOM | Okta login + which stack |
+> | After DOM | Smoke: already-tested / walk-me / skip |
+> | Results | What to fix (if anything) |
 >
-> **Setup:** Playwright MCP should be on. If it isn't, I'll offer to add the config for you (or walk you through Settings). You'll Okta-login in the Playwright browser for DOM checks.
+> **Setup:** Playwright MCP should be on. If it is missing or broken, I'll help fix it. You'll Okta-login in the Playwright browser for DOM checks.
 >
-> **Phase 0:** Share the path package (`{slug}-lj/` directory), or tell me to infer it from your current branch.
+> Preflight reports stay under `.cursor/lp-preflight-state/` (gitignored). Don't force-add them to your PR.
+>
+> **To start:** Share the path package (`{slug}-lj/` directory), or tell me to infer it from your current branch. If you already named the path, I'll begin the static checks now.
 
-Do not start Phase 1 until the author confirms the path directory.
+If the path is already clear from the user message, skip asking and start identify + static immediately.

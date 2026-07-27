@@ -12,7 +12,7 @@ Author-side routing and readiness for [preflight-learning-path/SKILL.md](SKILL.m
 
 ## Author-facing findings
 
-Use this shape whenever you list Fix-before-PR items in chat (especially Phase 3). Do **not** open with a "What this check is" primer. Match [Voice](SKILL.md#voice-author-facing).
+Use this shape for the **one results menu** after live (or after allowed static-only). Do **not** open with a "What this check is" primer. Match [Voice](SKILL.md#voice-author-facing).
 
 1. **Friendly outcome line** (e.g. "almost ready, with 3 copy fixes first"). Keep gate labels in the readiness file; chat can stay plainer.
 2. **What we checked** — short bullets in plain language (product claims vs docs, UI selectors on `{stack}`, Block Editor smoke choice).
@@ -26,14 +26,14 @@ Use this shape whenever you list Fix-before-PR items in chat (especially Phase 3
 
 ### Package-fixable vs needs-frontend
 
-| Kind | Examples | Phase 3 offer |
+| Kind | Examples | Results menu offer |
 |---|---|---|
 | **Package-fixable** | Claim-check copy, framing/`depends`, fake in-section steps, false noops, wrong `reftarget` when a stable testid already exists in the DOM | **fix N** / **fix all** |
 | **Needs-frontend** | Playwright or walk-me failed; element has no durable selector in the DOM | **frontend** (primary). Optional: clearly labeled **try temporary selector** only if the author asks for a brittle package workaround. Never present bare **fix N** as the main path for this kind |
 
 When the list mixes both kinds, number everything, but in **Your turn** say which numbers **fix** covers and that **frontend** covers the selector gap (e.g. "fix 2,3 for copy; **frontend** for item 1").
 
-Keep Phase 1 lighter (short Fix-before-PR bullets + stack ask). Put the full numbered + fix-choice treatment at Phase 3 after live results land.
+Keep the identify + static work quiet when the path is known. Put the full numbered + fix-choice treatment in the **one results menu** after live (or after allowed static-only).
 
 ---
 
@@ -106,7 +106,7 @@ Infer from branch diff, directory age, and legacy website source. Record in `{sl
 
 ## Static-only preflight
 
-`static-only: <reason>` at Phase 1 end skips Phase 2.
+`static-only: <reason>` at the **login / stack pause** skips Playwright and smoke (jump to the results menu).
 
 | Situation | Allowed? |
 |---|---|
