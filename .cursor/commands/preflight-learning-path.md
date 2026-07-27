@@ -1,6 +1,6 @@
 ## Command: /preflight-learning-path
 
-Self-review a learning path package in `interactive-tutorials` **before** opening a PR. Same checks as [/review-learning-path-pr](review-learning-path-pr.md), from the author side, with fewer stop-and-type moments: the agent runs what it can, then pauses only when it needs you (login, smoke choice, results / fixes).
+Self-review a learning path package in `interactive-tutorials` **before** opening a PR. Mirrors [/review-learning-path-pr](review-learning-path-pr.md) (shared static checklists, shared claim-check, Playwright DOM) from the author side, with fewer stop-and-type moments: the agent runs what it can, then pauses only when it needs you (login, smoke choice, results / fixes).
 
 When invoked, read and follow **[preflight-learning-path/SKILL.md](../skills/preflight-learning-path/SKILL.md)** in order.
 

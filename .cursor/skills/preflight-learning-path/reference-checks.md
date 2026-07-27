@@ -61,7 +61,7 @@ Apply the same five-phase coach rules (cite shared reference-checks; do not soft
 - Path root / manifest `id` mismatch; Pathfinder CLI validate failure
 - Secrets `doIt: true`; confirmed 404s; conversion prose only in legacy markdown
 - Fragile / wrong selectors when live fails, or stable `data-testid` exists in DOM and the guide uses a weak selector
-- **Claim-check MUST FIX:** Contradicted, Unsupported, or Overstated product facts per [claim-check.md](claim-check.md) (made-up counts, invented names, docs contradictions)
+- **Claim-check MUST FIX:** Contradicted, Unsupported, or Overstated product facts per shared [claim-check.md](../review-learning-path/claim-check.md) (made-up counts, invented names, docs contradictions)
 
 ### Never surface
 
@@ -86,7 +86,7 @@ Apply every section from [../review-learning-path/reference-checks.md](../review
 - noop and non-interactive steps
 - CODEOWNERS (discard for author chat)
 
-Then run [claim-check.md](claim-check.md) across path root + milestone prose. Route Contradicted / Unsupported / Overstated as Fix before PR. Hide Supported from chat. Author-decides items may appear in readiness as open questions.
+Then run shared [claim-check.md](../review-learning-path/claim-check.md) across path root + milestone prose. Route Contradicted / Unsupported / Overstated as Fix before PR. Hide Supported from chat. Author-decides items may appear in readiness as open questions.
 
 Tag each finding; keep only post-inline for author-facing output.
 
@@ -108,13 +108,22 @@ Infer from branch diff, directory age, and legacy website source. Record in `{sl
 
 `static-only: <reason>` at the **login / stack pause** skips Playwright and smoke (jump to the results menu).
 
+**Precedence (evaluate in order; first match wins):**
+
+1. **Bare `static-only` (no reason)** → always **reject**.
+2. **`path_type` is `new` or `conversion` and the path has interactive milestones** → always **reject**, even if the author cites "no stack access" or "practice run." Playwright is mandatory here.
+3. **`path_type` is `update` and the change touches only markdown / `website.yaml` (no interactive selector work)** → **allow** with a non-empty reason. Cap readiness (never **Ready for PR** if interactive milestones exist and were not live-tested).
+4. **Practice run / no stack access on `update` only** → **allow** with a non-empty reason. Cap readiness the same way.
+5. Anything else → **reject** and ask for a clearer reason or proceed with live checks.
+
 | Situation | Allowed? |
 |---|---|
-| **new** / **conversion** with interactive milestones | **No** |
+| Bare `static-only` | **No** |
+| **new** / **conversion** with interactive milestones (any reason, including no stack) | **No** |
 | **update** touching only markdown / `website.yaml` | Yes, with reason |
-| Practice run / no stack access | Yes, with reason (caps readiness) |
+| **update** practice / no stack access | Yes, with reason (caps readiness) |
 
-Reject bare `static-only`. Record `waive_live_testing` + `static_only_reason`.
+Record `waive_live_testing` + `static_only_reason` only when allowed.
 
 When live was skipped or incomplete, readiness must include **Not live-tested** (interactive path `milestones` minus recorded Playwright results). Never recommend **Ready for PR** for new/conversion interactive when Playwright was waived.
 
@@ -174,7 +183,7 @@ Path: `.cursor/lp-preflight-state/{slug}.json`
   "smoke_mode": null,
   "smoke_notes": null,
   "pre_review_assets": {},
-  "phase": 3,
+  "checkpoint": "login",
   "status": "in_progress",
   "readiness": null,
   "playwright": {},
@@ -189,8 +198,11 @@ Path: `.cursor/lp-preflight-state/{slug}.json`
 | `smoke_notes` | Author notes for already-tested / skip |
 | `pathfinder` | Only when `walk-me`; keys = milestone slug |
 | `playwright` | DOM results per milestone |
-| `phase` | Integer 0–5 |
+| `checkpoint` | Named gate (required). One of: `identify` \| `login` \| `dom` \| `smoke` \| `results` \| `package_fixes` \| `frontend`. Persist at every gate per [SKILL.md](SKILL.md). Do **not** use integer phase 0–5. |
+| `status` | `in_progress` \| `blocked` \| `complete` |
 | `readiness` | `Ready for PR` \| `Fix then re-preflight` \| `Open PR with notes` |
+
+Legacy state files with numeric `phase` are invalid for resume: ask **start fresh**, or map once (`0`→`identify`, `1`→`login`, `2`→`dom`, `3`→`results`, `4`→`package_fixes`, `5`→`frontend`) then rewrite `checkpoint` and drop `phase`.
 
 ---
 

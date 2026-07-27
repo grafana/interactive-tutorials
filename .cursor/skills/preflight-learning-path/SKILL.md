@@ -2,27 +2,26 @@
 name: preflight-learning-path
 description: >-
   Guide a learning path author through pre-PR self-review in interactive-tutorials.
-  Mirrors the five-phase /review-learning-path-pr coach from the author side: static
-  pass (including adversarial claim-check), Playwright DOM checks, readiness report,
-  optional package fixes, and optional frontend data-testid PR. Use when the user
-  runs /preflight-learning-path.
+  Mirrors /review-learning-path-pr (shared static checklists, shared claim-check,
+  Playwright DOM, readiness) from the author side, then optional package fixes and
+  optional frontend data-testid PR. Use when the user runs /preflight-learning-path.
 ---
 
 # Preflight learning path (author self-review)
 
-Walk through a `{slug}-lj/` package **before you open a PR**. Same checks as the five-phase [review-learning-path](../review-learning-path/SKILL.md) coach, from the author side: static pass, live DOM checks, readiness, then optional fixes.
+Walk through a `{slug}-lj/` package **before you open a PR**. Mirrors [review-learning-path](../review-learning-path/SKILL.md): shared static checklists, shared [claim-check](../review-learning-path/claim-check.md), Playwright DOM, then readiness and optional fixes. Author flow batches agent work and pauses only at real human gates (not a five-stop quiz).
 
 **Terminology:** Say **learning path** or **path** in author messages; use `{path_dir}` in agent notes.
 
 **Entry command:** [/preflight-learning-path](../../commands/preflight-learning-path.md)
 
-**Mirror skill:** [review-learning-path](../review-learning-path/SKILL.md) (five-phase coach on main only). Do **not** use outdated review skill phases or Always-inline routing.
+**Mirror skill:** [review-learning-path](../review-learning-path/SKILL.md). Shared claim policy lives under the review skill so both callers cannot drift.
 
-**Do NOT read external reference files upfront.** Each phase loads its own references on demand.
+**Do NOT read external reference files upfront.** Each step loads its own references on demand.
 
-**Skill memory:** State lives in `.cursor/lp-preflight-state/` (gitignored; never commit). Phase 1 dispatches [audit-guide](../audit-guide/SKILL.md), which writes `{milestone}/assets/`. See [Commit safety](#commit-safety).
+**Skill memory:** State lives in `.cursor/lp-preflight-state/` (gitignored; never commit). Static pass dispatches [audit-guide](../audit-guide/SKILL.md), which writes `{milestone}/assets/`. See [Commit safety](#commit-safety).
 
-**Routing:** [reference-checks.md](reference-checks.md) · [claim-check.md](claim-check.md) · [author-testing.md](author-testing.md) · [frontend-selector-pr.md](frontend-selector-pr.md) · shared [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md) · shared [review reference-checks](../review-learning-path/reference-checks.md)
+**Routing:** [reference-checks.md](reference-checks.md) · [claim-check.md](claim-check.md) (pointer) · [author-testing.md](author-testing.md) · [frontend-selector-pr.md](frontend-selector-pr.md) · shared [claim-check](../review-learning-path/claim-check.md) · shared [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md) · shared [review reference-checks](../review-learning-path/reference-checks.md)
 
 **Related:** [audit-guide](../audit-guide/SKILL.md) · [update-guide](../update-guide/SKILL.md) · [review-learning-path](../review-learning-path/SKILL.md)
 
@@ -60,7 +59,7 @@ Do as much as you can without stopping. Authors should not confirm every interna
 
 **Do not** pause for "Phase 0 complete, reply yes" or "Phase 1 complete, reply yes" when the path is known and MCP is healthy. Run identify → static → then ask for login in one beat.
 
-Internal phase numbers (0–5) stay in state and agent notes. Author chat can say "checking your path," "live checks," "results" instead of a quiz board.
+Internal **checkpoint** names (see [state schema](reference-checks.md#state-file-schema)) stay in state and agent notes. Author chat can say "checking your path," "live checks," "results" instead of a quiz board.
 
 ---
 
@@ -175,15 +174,19 @@ After package fixes, ask: **Want an updated ready / not-ready summary?** (not "r
 
 If `.cursor/lp-preflight-state/{slug}.json` exists:
 
-> **Resume?** I have an in-progress preflight for `{path_dir}` (stopped at {plain pause name}).
+> **Resume?** I have an in-progress preflight for `{path_dir}` (stopped at **`{checkpoint}`**).
 >
 > Reply **resume** to pick up, or **start fresh** to begin again.
+
+On resume, read `checkpoint` + `status` from state and continue from that gate. Do not invent a numeric phase.
 
 ---
 
 ## Identify path + MCP (quiet unless blocked)
 
 **Goal:** Confirm `{path_dir}`, `path_type`, milestones; verify Playwright MCP; init state.
+
+**Persist:** After init (or when blocked on MCP), set `checkpoint` to `identify` (still blocked) or `login` (ready for login pause). Set `status: in_progress`.
 
 ### Author chat
 
@@ -205,7 +208,7 @@ Mention once (early, not every pause): reports land under `.cursor/lp-preflight-
 6. **Verify Playwright MCP** (`user-playwright`). Cover missing, needs-auth, toggled-off, **and configured-but-broken** per [If Playwright MCP is missing or broken](author-testing.md#if-playwright-mcp-is-missing-or-broken). Do not silently skip. Do not edit `mcp.json` until they agree.
 7. Write `.cursor/lp-preflight-state/{slug}.json` ([state schema](reference-checks.md#state-file-schema)).
 
-If MCP is blocked, stop with the blocked shape in author-testing.md. Do not run live later until tools work.
+If MCP is blocked, stop with the blocked shape in author-testing.md (`checkpoint: identify`). Do not run live later until tools work.
 
 ---
 
@@ -213,13 +216,15 @@ If MCP is blocked, stop with the blocked shape in author-testing.md. Do not run 
 
 **Goal:** Audit every milestone + path consistency + Learning Hub + claim-check. Keep findings for the final results menu.
 
+**Persist:** Keep `checkpoint: login` while static runs (next human gate). Do not invent a separate author-facing "static done" pause.
+
 ### Agent steps
 
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk shared [review reference-checks](../review-learning-path/reference-checks.md) + [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md).
-3. **Always scan** for framing-in-milestones, [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
+3. **Always scan** for framing-in-milestones, [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-a-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
 4. Run Pathfinder CLI `validate --packages {path_dir}` if available.
-5. Run the [claim-check](claim-check.md) pass. Write `{slug}-claim-check.md`. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
+5. Run the shared [claim-check](../review-learning-path/claim-check.md) pass (preflight pointer: [claim-check.md](claim-check.md)). Write `{slug}-claim-check.md`. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
 6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing). Keep only review-level items for later author chat.
 7. Write `{slug}-findings.md` (findings + verify-live notes).
 8. Mandatory audit cleanup; verify `git status`.
@@ -232,6 +237,8 @@ Then go straight to the login pause (unless `static-only` was already set).
 ## PAUSE: Login + stack
 
 **Goal:** Author is logged into Playwright on `{learn_host}`; record stack (or allow static-only when rules permit).
+
+**Persist:** Before asking, `checkpoint: login`. After `ready`, set `checkpoint: dom`. After allowed `static-only`, set `checkpoint: results` and `waive_live_testing`.
 
 > **Live checks next**
 >
@@ -247,7 +254,7 @@ Then go straight to the login pause (unless `static-only` was already set).
 
 Record `stack_state`, or `waive_live_testing` + `static_only_reason`.
 
-**Reject** bare `static-only` and static-only on **new** / **conversion** with interactive milestones.
+**Reject** bare `static-only` and static-only on **new** / **conversion** with interactive milestones. Precedence: [static-only preflight](reference-checks.md#static-only-preflight).
 
 If static-only: skip Playwright + smoke; jump to results menu with **Not live-tested** notes.
 
@@ -256,6 +263,8 @@ If static-only: skip Playwright + smoke; jump to results menu with **Not live-te
 ## Playwright DOM (no author yes between milestones)
 
 Details: [author-testing.md](author-testing.md).
+
+**Persist:** `checkpoint: dom` while sweeping; set `checkpoint: smoke` when DOM is done (before the smoke ask).
 
 | `path_type` | Scope |
 |---|---|
@@ -276,6 +285,8 @@ Then go to the smoke pause.
 
 ## PAUSE: Block Editor smoke
 
+**Persist:** Before asking, `checkpoint: smoke`. After the author replies, set `checkpoint: results` (or stay on `smoke` during walk-me until scoped milestones finish).
+
 > Have you already smoke-tested this path in Block Editor (Show me / Do it)?
 >
 > - **`already-tested: <short notes>`** if yes (stack + anything flaky)
@@ -295,6 +306,8 @@ After smoke (or walk-me finishes), build readiness and show the **results menu**
 ## Results + fix menu
 
 **Goal:** One readiness outcome; right next actions. Author chat shape: [Author-facing findings](reference-checks.md#author-facing-findings).
+
+**Persist:** `checkpoint: results` when showing the menu. On `fix all` / `fix N` → `checkpoint: package_fixes`. On `frontend` → `checkpoint: frontend`. On `done` → `status: complete`, keep `checkpoint: results` (or `frontend` if that was last).
 
 ### Agent steps
 
@@ -349,6 +362,8 @@ When every open item needs-frontend, omit **fix all** / **fix N**. Lead with **f
 
 **Goal:** Surgical edits for **package-fixable** findings only (`fix all` / `fix N`).
 
+**Persist:** `checkpoint: package_fixes` while editing; return to `checkpoint: results` after offering an updated summary.
+
 > Working on {fix all | item N | items …}. I will edit `content.json` / `manifest.json` / `website.yaml` only, same discipline as [update-guide](../update-guide/SKILL.md).
 
 1. Apply only requested package-fixable findings.
@@ -365,6 +380,8 @@ When every open item needs-frontend, omit **fix all** / **fix N**. Lead with **f
 ## Frontend selector PR (optional)
 
 When a stable selector is missing upstream, follow [frontend-selector-pr.md](frontend-selector-pr.md). Canonical example: [grafana/grafana-cmab-app#1795](https://github.com/grafana/grafana-cmab-app/pull/1795).
+
+**Persist:** `checkpoint: frontend` for the whole walkthrough.
 
 > Frontend PR {url} *(or deferred)*.
 >
@@ -388,14 +405,17 @@ When a stable selector is missing upstream, follow [frontend-selector-pr.md](fro
 - Recommend **Ready for PR** on **new** / **conversion** interactive paths when Playwright was skipped
 - Request website-repo changes as package blockers
 - Use the PR review tool instead of local import (no PR yet)
+- Leave `checkpoint` stale across gates (resume depends on it)
 
 **Do**
 
 - Batch agent work; pause only for real human gates
+- Persist named `checkpoint` after each gate
 - Keep chat short, clear, and friendly
 - Dedupe findings by root cause
 - Run CLI validate when available
 - Offer package vs frontend actions correctly after the results menu
+- Run the shared claim-check (same policy as review)
 
 ---
 
@@ -426,7 +446,7 @@ path_dir: {path_dir}
 | Topic | Doc |
 |---|---|
 | Author routing + readiness | [reference-checks.md](reference-checks.md) |
-| Claim-check (product facts) | [claim-check.md](claim-check.md) |
+| Claim-check (product facts) | [../review-learning-path/claim-check.md](../review-learning-path/claim-check.md) (pointer: [claim-check.md](claim-check.md)) |
 | Prereqs + Playwright + optional smoke | [author-testing.md](author-testing.md) |
 | Frontend testid PR | [frontend-selector-pr.md](frontend-selector-pr.md) |
 | Shared static checklists + finding routing | [../review-learning-path/reference-checks.md](../review-learning-path/reference-checks.md) |

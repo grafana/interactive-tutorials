@@ -83,5 +83,5 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/check](.cursor/commands/check.md) | Check guide quality against best practices |
 | [/attack](.cursor/commands/attack.md) | Find issues by simulating confused users |
 | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
-| [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | Author pre-PR self-review for a learning path (same checks as review, then optional fixes) |
+| [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | Author pre-PR self-review for a learning path (mirrors review checks + shared claim-check, then optional fixes) |
 | [/build-interactive-lj](.cursor/commands/build-interactive-lj/README.md) | Multi-phase learning journey builder |

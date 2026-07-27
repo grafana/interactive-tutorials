@@ -69,7 +69,7 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | `schemaVersion` not `"1.1.0"` when present | post inline |
 | Markdown `##` / `###` for grouping | internal |
 | Section bookends missing (rule 14) — no intro/summary **around** the section | **post inline** |
-| In-section intro markdown that may number as a step | **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)). Prefer bookends **outside** the section per rule 14. |
+| In-section intro markdown that may number as a step | **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-a-step)). Prefer bookends **outside** the section per rule 14. |
 | Missing `exists-reftarget`, `navmenu-open` | internal until live fails |
 | Missing `on-page` | internal until live fails |
 | `lazyRender` missing on virtualized targets | internal until live fails |
@@ -209,13 +209,22 @@ Prose not captured in package on conversion → **post inline**. Front matter ma
 
 `static-only: <reason>` at end of Phase 1 skips Phase 2.
 
+**Precedence (evaluate in order; first match wins):**
+
+1. **Bare `static-only` (no reason)** → always **reject**.
+2. **`pr_type` is `new` or `conversion` and the path has interactive milestones** → always **reject**, even if the reviewer cites "practice" or "no stack." Playwright is mandatory here.
+3. **`pr_type` is `update` with only markdown / `website.yaml` changes** → **allow** with a non-empty reason.
+4. **Practice / archaeology on a merged PR** → **allow** with a non-empty reason (never suggest APPROVE when waived).
+5. Anything else → **reject**.
+
 | Situation | Allowed? |
 |---|---|
-| **new** / **conversion** with interactive milestones | **No** |
+| Bare `static-only` | **No** |
+| **new** / **conversion** with interactive milestones (any reason) | **No** |
 | **update** with only markdown / `website.yaml` | Yes, with reason |
 | Practice / archaeology on merged PR | Yes, with reason |
 
-Record `waive_live_testing: true` and `static_only_reason`. Never suggest APPROVE when waived.
+Record `waive_live_testing: true` and `static_only_reason` only when allowed. Never suggest APPROVE when waived.
 
 ### Not live-tested disclosure (required)
 
