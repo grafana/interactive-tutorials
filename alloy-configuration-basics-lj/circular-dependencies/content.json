@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alloy-configuration-basics-circular-dependencies",
+  "title": "Recognize circular dependencies",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In the previous milestone, a reference created a dependency from `prometheus.remote_write.local_prom` to `local.file.example`. Alloy uses dependencies like that to decide which components to evaluate first, so those dependencies can't form a circle."
+    },
+    {
+      "type": "markdown",
+      "content": "A component can't reference itself directly:\n\n```alloy\n// Invalid: direct self-reference.\nlocal.file \"self_reference\" {\n  filename = local.file.self_reference.content\n}\n```"
+    },
+    {
+      "type": "markdown",
+      "content": "Components also can't reference each other in a loop:\n\n```alloy\n// Invalid: circular dependency.\nlocal.file \"a\" {\n  filename = local.file.b.content\n}\n\nlocal.file \"b\" {\n  filename = local.file.a.content\n}\n```\n\nHere, `a` depends on `b`, while `b` depends on `a`. Neither can be evaluated first."
+    },
+    {
+      "type": "markdown",
+      "content": "When you read component references, follow each dependency in its direction. If following the references brings you back to a component you already visited, the configuration has a circular dependency and is invalid."
+    },
+    {
+      "type": "markdown",
+      "content": "You can now explain why circular dependencies aren't allowed: a component can't reference itself directly or indirectly because Alloy needs a clear order for evaluating dependencies."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure components: Component rules](https://grafana.com/docs/alloy/latest/get-started/components/configure-components/#component-rules)\n- [Component controller: Component graph](https://grafana.com/docs/alloy/latest/get-started/components/component-controller/#component-graph)"
+    }
+  ]
+}
