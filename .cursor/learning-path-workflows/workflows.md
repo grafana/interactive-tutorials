@@ -1,5 +1,7 @@
 # Learning path workflows
 
+Docs writers: start with [docs/learning-path-authoring.md](../../docs/learning-path-authoring.md) for the one-page overview (commands, file map, testing). This file is the detailed session playbook.
+
 Use the `/create-learning-path` command to build a new interactive learning path from scratch. If you have an existing non-interactive learning path that you need to convert, refer to the [appendix](#appendix-convert-an-existing-learning-path).
 
 ## Before you start
@@ -102,5 +104,5 @@ The learning path slug is mysql-data-source.
 | --- | --- | --- |
 | `/build-interactive-lj` | Existing milestone markdown in website repo (read-only source) | `content.json` + `manifest.json` + `website.yaml` files in interactive-tutorials |
 | `/create-learning-path` | Feature description (no existing markdown) | `content.json` + `manifest.json` + `website.yaml` files |
-| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Human-guided review: static workbook, Block Editor smoke test, chat-approved inline comments, submit |
 | `/preflight-learning-path` | Local `{slug}-lj/` package before opening a PR | Author self-review with few pauses (login, smoke choice, results): mirrors review static + Playwright checks and shared claim-check, readiness report, optional fixes / frontend testid PR |
+| `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Human-guided review: static workbook, Block Editor smoke test, chat-approved inline comments, submit |

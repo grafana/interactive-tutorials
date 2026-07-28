@@ -65,9 +65,9 @@ Consult these during the workflow:
 
 | Document | When |
 | --- | --- |
-| `reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
-| `reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
-| `../create-learning-path/reference/frontmatter-schema.md` | Reading website front matter fields and CTA types (source only) |
+| `build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
+| `build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
+| `create-learning-path/reference/frontmatter-schema.md` | Reading website front matter fields and CTA types (source only) |
 | `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
 | `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |

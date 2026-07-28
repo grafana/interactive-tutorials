@@ -66,8 +66,8 @@ Consult these during the workflow:
 | Document | When |
 | --- | --- |
 | `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
-| `../build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
-| `../build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
+| `build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
+| `build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
 | `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |
 
