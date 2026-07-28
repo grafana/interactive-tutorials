@@ -5,12 +5,12 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "You'll open the silence form, set a time window, add label matchers that select which alerts to suppress, verify the affected instances, and submit.\n\nIn this milestone, you create a silence from start to finish."
+      "content": "You'll open the **Silences** page, set a time window, add label matchers that select which alerts to suppress, verify the affected instances, and submit.\n\nIn this milestone, you create a silence from start to finish."
     },
     {
       "type": "section",
       "id": "open-silence-form",
-      "title": "Open the silence form",
+      "title": "Start a new silence",
       "blocks": [
         {
           "type": "interactive",
@@ -22,8 +22,8 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[href*='/alerting/silence/new']",
-          "content": "Click **Add silence** to open the silence creation form.",
+          "reftarget": "a[href*='alerting/silence/new']",
+          "content": "Click **Create silence** to start a new silence.",
           "requirements": ["on-page:/alerting/silences"],
           "verify": "on-page:/alerting/silence/new"
         }
@@ -37,16 +37,29 @@
       "blocks": [
         {
           "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('Silence start and end')",
+          "content": "The **Silence start and end** field shows two timestamps: when the silence starts and when it ends. By default, the start is now and the end is two hours from now, so the silence lasts two hours.",
+          "doIt": false,
+          "requirements": ["on-page:/alerting/silence/new"]
+        },
+        {
+          "type": "interactive",
           "action": "noop",
-          "content": "In the **Silence start and end** picker, set when the silence begins and ends. For a maintenance window, set the start to now and the end to when the work finishes."
+          "content": "If you need custom times, click the field to open an **Absolute time range** menu, set **From** and **To**, then click **Apply time range**. Otherwise, skip to the **Duration** field."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "#duration",
-          "content": "Alternatively, set the **Duration** field and Grafana calculates the end time for you.\n\nUse a duration that matches the work, for example, `2h` for a short maintenance window or `1d` for a longer migration. Valid units: `y`, `M`, `w`, `d`, `h`, `m`, `s`.",
+          "content": "Set the **Duration** field to how long you want the silence to last, and Grafana calculates the end time for you.",
           "doIt": false,
           "requirements": ["on-page:/alerting/silence/new"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "The default `2h` works for a short deployment. Use `1d` for a longer migration. Valid units are years (y), months (M), weeks (w), days (d), hours (h), minutes (m), and seconds (s)."
         }
       ]
     },
@@ -60,7 +73,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "#matcher-0-label",
-          "content": "Under **Refine affected alerts**, enter the label name to match in the **Label** field, for example, `severity` or `team`.",
+          "content": "Under **Refine affected alerts**, enter a label that's on one of your alerts. If you followed the first-rule journey, copy `severity` and paste it into the **Label** field.",
           "doIt": false,
           "requirements": ["on-page:/alerting/silence/new"]
         },
@@ -68,15 +81,20 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "#matcher-0-value",
-          "content": "Enter the matching value in the **Value** field, for example, `warning` or `database`. The operator defaults to equals (`=`); change it if you need a regex or not-equals match.\n\nOnly alerts whose labels match every matcher you add are silenced. The more matchers you add, the narrower the silence.",
+          "content": "Copy `critical` and paste it into the **Value** field so the matcher becomes `severity=critical`. The operator defaults to equals (`=`). Change it if you need a regex or not-equals match.",
           "doIt": false,
           "requirements": ["on-page:/alerting/silence/new"]
         },
         {
           "type": "interactive",
+          "action": "noop",
+          "content": "Only alerts whose labels match every matcher you add are silenced. The more matchers you add, the narrower the silence."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "button:contains('Add matcher')",
-          "content": "Click **Add matcher** to add another label matcher if you need to narrow the silence further.",
+          "content": "Click **Add matcher** if you want to narrow the silence further, for example, adding `team=platform` alongside `severity=critical` silences only critical alerts owned by the platform team.",
           "doIt": false,
           "requirements": ["on-page:/alerting/silence/new"],
           "skippable": true
@@ -92,13 +110,13 @@
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Review the **Affected alert instances** preview below the matchers. It lists the alert instances your matchers currently select.\n\nIf the preview is empty or includes alerts you didn't intend to silence, adjust your matchers before submitting."
+          "content": "Review the **Affected alert instances** preview below the matchers. It lists any alert instances currently firing that match your matchers.\n\nWith `severity=critical`, you should see the alerts you created in the previous sections. If the preview is empty, the silence still catches alerts that start firing during the window."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "#comment",
-          "content": "Enter a **Comment** describing why you're creating the silence, for example, `Database upgrade maintenance window`. This helps your team understand the silence later.",
+          "content": "Replace the auto-populated text in the **Comment** field with a short reason, for example, `Database upgrade in progress`. Grafana records the creation time separately, so the timestamp isn't needed here.",
           "doIt": false,
           "requirements": ["on-page:/alerting/silence/new"]
         },
