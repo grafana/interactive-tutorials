@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-query-language-build-query",
+  "title": "Write your query in Code mode",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Your alert watches how often QuickPizza's server fails. Every request either works or doesn't. You want the alert to fire when **too many** fail, say, more than 5 in every 100.\n\nTo express \"5 in every 100,\" your query has to divide the number of failed requests by the number of *all* requests. Builder mode can't divide two numbers in one query, so you switch to Code mode and write it in PromQL."
+    },
+    {
+      "type": "section",
+      "id": "select-data-source",
+      "title": "Select the QuickPizza Prometheus data source",
+      "requirements": [
+        "has-datasource:grafanacloud-play-prom"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "targetvalue": "grafanacloud-play-prom",
+          "content": "Choose **grafanacloud-play-prom** as the data source. That's the Prometheus data source with QuickPizza's metrics.",
+          "tooltip": "QuickPizza's Prometheus data source.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "switch-to-code-mode",
+      "title": "Switch to Code mode",
+      "requirements": ["section-completed:select-data-source"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid QueryEditorModeToggle']",
+          "content": "Click **Code** on the mode toggle to switch away from Builder mode. The dropdowns collapse, and a text field appears where you type PromQL.",
+          "tooltip": "Switches the query editor from Builder to Code.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "write-promql",
+      "title": "Write the PromQL error-rate query",
+      "requirements": ["section-completed:switch-to-code-mode"],
+      "blocks": [
+        {
+          "type": "code-block",
+          "reftarget": "div[data-testid='data-testid Query field']",
+          "language": "promql",
+          "code": "100 * sum(rate(quickpizza_server_http_requests_total{status=~\"5..\"}[5m])) / sum(rate(quickpizza_server_http_requests_total[5m]))",
+          "content": "Add this query to the editor. Click **Insert** to drop it in.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Here's what the query does, one piece at a time:\n\n- `quickpizza_server_http_requests_total` counts every request QuickPizza has ever handled.\n- `rate(...[5m])` turns that ever-growing count into a per-second speed, smoothed over the last 5 minutes.\n- `{status=~\"5..\"}` narrows to just the failed requests (anything with a status code starting with `5`, like `500` or `503`).\n- Dividing failed requests by all requests, then multiplying by 100, gives you a percentage."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "preview-query",
+      "title": "Preview the query",
+      "requirements": ["section-completed:write-promql"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run queries",
+          "content": "Click **Run queries** to see what the query returns. You'll see a low percentage while QuickPizza is healthy, and spikes when errors happen. If the preview is empty, double-check that **grafanacloud-play-prom** is selected as the data source.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "The query now reports QuickPizza's error rate as a percentage. Next, you decide how high that percentage has to go before the alert fires."
+        }
+      ]
+    }
+  ]
+}

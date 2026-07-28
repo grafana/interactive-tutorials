@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-query-language-configure-notification",
+  "title": "Configure the notification message",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "When your alert fires, the notification includes a **Summary** and a **Description**. In this milestone, you complete both so anyone who gets the alert can tell what happened and what to check.\n\nYour first alert reported a raw count of 5xx responses. This alert reports a **percentage**, because the query returns a ratio. The Summary uses `printf \"%.1f\"` to format `$value` as a one-decimal number, and the Description names the ratio explicitly so the on-call reader knows what 5% means."
+    },
+    {
+      "type": "section",
+      "id": "add-summary",
+      "title": "Add a summary",
+      "requirements": ["on-page:/alerting/new/alerting"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='annotation-value-0']",
+          "targetvalue": "QuickPizza error rate at {{ $value | printf \"%.1f\" }}% over the last 5 minutes",
+          "content": "The **Summary** is the first line people see. The `{{ $value }}` template renders the live percentage when the alert fires.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "add-description",
+      "title": "Add a description",
+      "requirements": ["section-completed:add-summary"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='annotation-value-1']",
+          "targetvalue": "Fires when the ratio of QuickPizza 5xx responses to total requests exceeds 5% over 5 minutes. Check recent deploys and the app dashboard first.",
+          "content": "The **Description** gives more detail than the Summary. Use it to explain what the alert is watching and where to start looking if it goes off.",
+          "requirements": ["on-page:/alerting/new/alerting"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Your notification now says what happened and what to check. Next, you save and activate the rule."
+        }
+      ]
+    }
+  ]
+}
