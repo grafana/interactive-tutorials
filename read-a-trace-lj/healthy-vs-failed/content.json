@@ -1,0 +1,43 @@
+{
+  "id": "read-a-trace-healthy-vs-failed",
+  "title": "Healthy vs. failed requests",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The trace you just read is a healthy request that ran the whole pipeline. But not every useful trace is a big waterfall. Here's what a failed request looks like — and why its shape alone tells you something."
+    },
+    {
+      "type": "markdown",
+      "content": "This is another ready-made TraceQL query, this time for requests that ended in an error. Run it and open one result, the same way as before."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22trc%22%3A%7B%22datasource%22%3A%22grafanacloud-play-traces%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22tempo%22%2C%22uid%22%3A%22grafanacloud-play-traces%22%7D%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20rootServiceName%20%3D%20%5C%22quickpizza-public-api%5C%22%20%26%26%20rootName%20%3D%20%5C%22POST%20%2Fapi%2Fpizza%5C%22%20%26%26%20status%20%3D%20error%20%7D%22%2C%22limit%22%3A20%2C%22tableType%22%3A%22traces%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1",
+          "content": "Run the query for failed requests. It opens Explore and returns any error traces from the last hour.",
+          "verify": "on-page:/explore"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid=\"data-testid Data link\"]",
+          "content": "Open one of the error traces by clicking its trace ID.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**If the list is empty, that's expected.** These errors come in bursts, so a quiet minute can return nothing. Widen the time range or run the query again shortly and one will appear."
+    },
+    {
+      "type": "markdown",
+      "content": "Notice how different it looks. A successful order runs the whole pipeline — dozens of spans, the deep `recommendations → catalog → SELECT` fan-out. A failed one is short: it short-circuits early, stopping at the step that failed, so it never reaches the rest of the pipeline. The shape alone tells you it stopped early, before you read a single attribute.\n\nThis is also where you meet **status codes** — a healthy request returns a success code, a failed one an error code — and the **Errors** filter chip that finds them. The lesson: useful traces aren't always big waterfalls. A small, short trace can tell you exactly where a request gave up."
+    }
+  ]
+}

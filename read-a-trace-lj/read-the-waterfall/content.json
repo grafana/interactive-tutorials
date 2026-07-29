@@ -1,0 +1,53 @@
+{
+  "id": "read-a-trace-read-the-waterfall",
+  "title": "Read the span waterfall",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The whole waterfall in front of you is one trace. Every row in it is a span — one unit of work. Reading a trace is mostly reading this shape: what nests under what, and how long each bar is."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"data-testid Panel header Trace\"]",
+          "content": "This whole panel is one trace. Start at the root: the top row is the request itself, the span that everything else happens inside. In this demo it's the `quickpizza-public-api` span for the pizza-order request.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": ".SpanTreeOffset--indentGuide",
+          "content": "Follow the indentation. A child span sits inside the span that triggered it, so the nesting shows the call chain — one operation calls the next.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"data-testid SpanBar--wrapper\"]",
+          "content": "Look at the bars. Each bar's length is how long that operation took, drawn on the timeline where it happened. A wider bar is a slower step, so comparing bars tells you where time went.",
+          "doIt": false,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Find the longest bar in the trace. That single span is where the request spent most of its time — often a compute step, not an error. Reading a trace top-down like this is how you spot where the time went without checking every row."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Optional: click the **Critical path** chip in the Filters row above the waterfall. It shades the hops that actually drove the end-to-end time, so on a busier trace you can pick out the slow path at a glance."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "That's the core of reading a trace: the shape shows the call chain, and the bars show where the time went. Next, read what each span actually is."
+    }
+  ]
+}
