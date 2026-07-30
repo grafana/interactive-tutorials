@@ -1,33 +1,66 @@
 {
   "schemaVersion": "1.1.0",
   "id": "drilldown-profiles-investigate-with-assistant",
-  "title": "Investigate and fix with Grafana Assistant",
+  "title": "Analyze the flame graph with AI (Optional)",
   "blocks": [
     {
       "type": "markdown",
-      "content": "Hand the investigation to Grafana Assistant to confirm the root cause and open a fix.\n\n> **Note:** Grafana Assistant is non-deterministic. Its exact responses vary between runs, so treat the following as a guide rather than a fixed script, and try it a few times before demoing."
+      "content": "You can optionally ask AI to summarize what you're looking at.\n\nThis milestone needs [Grafana Assistant](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/get-started/) enabled, or otherwise the [LLM plugin](https://grafana.com/grafana/plugins/grafana-llm-app/) (`grafana-llm-app`) installed and enabled. If neither is available, you can finish the journey without this step.\n\nTo analyze with AI, complete the following steps:"
     },
     {
       "type": "section",
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "markdown",
-          "content": "Open **Assistant** and ask something like `What's going on here?`\n\nBecause Assistant is context-aware, it detects that Profiles Drilldown is open and reads the selected services, labels, and time ranges. That's why you can ask such a vague question."
+          "type": "conditional",
+          "conditions": ["plugin-enabled:grafana-assistant-app"],
+          "description": "Use Analyze with Assistant when Assistant is enabled; otherwise fall back to the LLM plugin.",
+          "display": "section",
+          "whenTrueSectionConfig": { "title": "Grafana Assistant" },
+          "whenTrue": [
+            {
+              "type": "interactive",
+              "action": "button",
+              "reftarget": "Analyze with Assistant",
+              "content": "Click **Analyze with Assistant**.",
+              "requirements": ["exists-reftarget", "on-page:/a/grafana-pyroscope-app/explore"],
+              "skippable": true
+            }
+          ],
+          "whenFalseSectionConfig": { "title": "LLM plugin" },
+          "whenFalse": [
+            {
+              "type": "conditional",
+              "conditions": ["plugin-enabled:grafana-llm-app"],
+              "description": "Use Explain Diff when the LLM plugin is enabled.",
+              "whenTrue": [
+                {
+                  "type": "interactive",
+                  "action": "button",
+                  "reftarget": "Explain Diff",
+                  "content": "Click **Explain Diff**.",
+                  "requirements": ["exists-reftarget", "on-page:/a/grafana-pyroscope-app/explore"],
+                  "skippable": true
+                }
+              ],
+              "whenFalse": [
+                {
+                  "type": "markdown",
+                  "content": "Neither Grafana Assistant nor the LLM plugin (`grafana-llm-app`) is enabled on this stack, so you can finish without this step. To use flame graph AI later, [get started with Grafana Assistant](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/get-started/) or install and enable the [LLM plugin](https://grafana.com/grafana/plugins/grafana-llm-app/)."
+                }
+              ]
+            }
+          ]
         },
         {
           "type": "markdown",
-          "content": "Assistant summarizes the current view and offers next steps. Choose **Investigate any performance differences** so it digs into why `eu-west-1` differs.\n\nIt will determine that the issue is inefficient regular-expression usage that only runs in `eu-west-1`."
-        },
-        {
-          "type": "markdown",
-          "content": "Ask Assistant to `Fix it`.\n\nUsing the GitHub integration against the [AppEnv mirror repo](https://github.com/grafana/field-eng-appenv-mirror), Assistant searches the code, reads the relevant files, and opens a pull request with a fix, then summarizes the changes. This step can take a little time."
+          "content": "If the analysis runs, it summarizes bottlenecks and likely root causes."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You've gone from a vague \"it's slow in some regions\" report to a concrete code fix \u2014 without writing a single query."
+      "content": "You've completed this optional AI step."
     }
   ]
 }
