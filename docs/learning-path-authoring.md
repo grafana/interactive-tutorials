@@ -104,9 +104,9 @@ If MCP is missing or broken (browser tools fail, or login never works), stop and
 After the agent has written milestone `content.json` files (or after you open a PR), click through each milestone yourself:
 
 1. On your stack, enable Pathfinder **dev mode**, then open **Debug** → **Block Editor**.
-2. Prefer the **PR review tool** (pathfinder-app 1.4.5+) when you have a PR: it loads each milestone’s `content.json` from the package so you do not paste JSON by hand. Use paste only if that tool is unavailable.
+2. Prefer the **PR review tool** (pathfinder-app 1.4.5+) when you have a PR: it loads each milestone’s `content.json` from the package so you do not paste or import JSON by hand. Use paste or import individual `content.json` files only if that tool is unavailable.
 3. For each milestone: start on the correct Grafana page, click every **Show me** and **Do it**, and report exact failures (wrong highlight, no click, missing element).
-4. When you can, test on more than one stack (learn, ops, personal/staff). Permissions and “already configured” UI states differ.
+4. When you can, test on more than one stack. Permissions and “already configured” UI states differ.
 
 Screenshots for opening **dev mode** and the Block Editor are in the [repo README](../README.md).
 
