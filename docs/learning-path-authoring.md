@@ -125,7 +125,7 @@ Screenshots for opening **dev mode** and the Block Editor are in the [repo READM
 
 - Authors: run [`/preflight-learning-path`](../.cursor/commands/preflight-learning-path.md) before opening a PR (static checks + live DOM; optional Block Editor walk).
 - Reviewers: run [`/review-learning-path-pr`](../.cursor/commands/review-learning-path-pr.md) after the PR exists.
-- Add the `lh-learning-path` label to learning path PRs so they show up on the [Learning Hub board](https://github.com/orgs/grafana/projects/1108/views/2).
+- Add the `lh-learning-path` label to learning path PRs, and set **Status** on the [Learning Hub board](https://github.com/orgs/grafana/projects/1108/views/2), so the PR appears on the board with the right workflow state.
 
 Preflight reports under `.cursor/lp-preflight-state/` are local and gitignored. Do not force-add them to your PR.
 
