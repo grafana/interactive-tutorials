@@ -12,21 +12,38 @@ Usage:
   convert-reftargets.py ... --pin "data-testid prometheus type=components.DataSource.Prometheus.queryEditor.type"
   convert-reftargets.py ... --param "data-testid Duplicate query=components.QueryEditorRow.actionButton:Duplicate query"
 
+Sources an exact `[data-testid='V']` or `[aria-label='V']` match, with or without the
+`data-testid ` value prefix; `^=` / `*=` / `$=` are left alone. See the ATTR comment for why.
+
 Edits raw text so the file's formatting is preserved, and asserts the parsed JSON is
 structurally identical apart from reftargets.
 """
 import argparse
 import json
 import re
-import subprocess
 import sys
 
 # Nav menu items must stay literal: Pathfinder regex-matches this exact shape to auto-expand a
 # collapsed menu section, and the resolved :is(...) form defeats that fix.
 SKIP_VALUES = {'data-testid Nav menu item'}
 
+# Matches an exact-match `[data-testid='<value>']` OR `[aria-label='<value>']`, with any value.
+#
+# Two deliberate widenings, both of which were blind spots:
+#
+# 1. Not only values carrying the `data-testid ` prefix. 105 of the 635 non-URL values in
+#    @grafana/e2e-selectors have no prefix (`uplot-main-div`, `toggle-viz-picker` at 8.0.0,
+#    `Explore Graph`, the TestData and time-range values). Whether a value is convertible is decided
+#    by looking it up in the map, not by its spelling.
+# 2. `aria-label`, not just `data-testid`. Unprefixed package values are the ones Grafana renders as
+#    an `aria-label`, so that is where they show up in guides — and the resolver emits
+#    `:is([data-testid=V], [aria-label=V])`, which covers both. A hand-written
+#    `[data-testid='Explore Graph']` matches nothing at all; the reference matches.
+#
+# `^=` / `*=` / `$=` are deliberately excluded: a prefix match is an intentional pattern, not a
+# snapshot of one resolved value, so there is nothing to reverse-map.
 ATTR = re.compile(
-    r"""(?P<tag>[a-zA-Z][\w-]*)?\[data-testid=(?P<q>['"])(?P<val>data-testid [^'"]+)(?P=q)\]"""
+    r"""(?P<tag>[a-zA-Z][\w-]*)?\[(?:data-testid|aria-label)=(?P<q>['"])(?P<val>[^'"]+)(?P=q)\]"""
 )
 REFTARGET = re.compile(r'("reftarget":\s*)"((?:[^"\\]|\\.)*)"')
 
@@ -70,6 +87,7 @@ class ReleaseGate:
         self.paths = set(m.get('strMap', {}).values())
         self.paths |= {f['path'] for f in m.get('fns', [])}
         self.paths |= set(m.get('greedyFns', []))
+        self.paths |= set(m.get('undefinedProbes', []))
         for paths in m.get('ambiguous', {}).values():
             self.paths |= set(paths)
 
@@ -112,8 +130,10 @@ def main():
 
     param_overrides = {}
     for val, spec in parse_kv(args.param).items():
-        path, _, arg = spec.rpartition(':')
-        if not path:
+        # Split on the FIRST colon: a selector path never contains one, but an argument can
+        # (e.g. a panel titled "Latency: p99").
+        path, sep, arg = spec.partition(':')
+        if not sep or not path:
             sys.exit(f'--param value must be PATH:ARG, got: {spec}')
         param_overrides[val] = (path, arg)
 
@@ -124,8 +144,11 @@ def main():
     ]
 
     ambiguous = m.get('ambiguous', {})
-    report = {'bare': [], 'param': [], 'embedded': [], 'unmapped': [], 'untouched': [],
-              'warn': [], 'pending': []}
+    # 'pending' entries are (ref, would_become, path, ref_was_partially_converted). The last field
+    # matters: a compound reftarget can have one part converted and another gated, in which case the
+    # file WAS modified and reporting it as "left unchanged" would be false.
+    report = {'bare': [], 'param': [], 'embedded': [], 'partial': [], 'unmapped': [],
+              'untouched': [], 'warn': [], 'pending': []}
 
     def match_fn(val):
         if val in param_overrides:
@@ -151,7 +174,7 @@ def main():
 
         matches = list(ATTR.finditer(ref))
         if not matches:
-            report['untouched'].append((ref, 'no data-testid attribute'))
+            report['untouched'].append((ref, 'no exact data-testid/aria-label match'))
             return ref
         if any(mo.group('val') in SKIP_VALUES for mo in matches):
             report['untouched'].append((ref, 'nav menu: relies on Pathfinder auto-fix'))
@@ -163,7 +186,7 @@ def main():
             val = only.group('val')
             if val in str_map:
                 if not gate.released(str_map[val]):
-                    report['pending'].append((ref, f'grafana:{str_map[val]}', str_map[val]))
+                    report['pending'].append((ref, f'grafana:{str_map[val]}', str_map[val], False))
                     return ref
                 note_ambiguity(val, str_map[val])
                 new = f'grafana:{str_map[val]}'
@@ -172,7 +195,7 @@ def main():
             path, arg = match_fn(val)
             if path:
                 if not gate.released(path):
-                    report['pending'].append((ref, f'grafana:{path}:{arg}', path))
+                    report['pending'].append((ref, f'grafana:{path}:{arg}', path, False))
                     return ref
                 new = f'grafana:{path}:{arg}'
                 report['param'].append((ref, new))
@@ -180,15 +203,17 @@ def main():
             report['unmapped'].append(val)
             return ref
 
-        # Scoped / compound: embed each mappable part as a {grafana:...} token.
+        # Scoped / compound: embed each mappable part as a {grafana:...} token. Parts are gated
+        # individually, so some may convert while others stay literal.
         changed = False
+        gated = []
 
         def repl(mo):
             nonlocal changed
             val, tag = mo.group('val'), (mo.group('tag') or '')
             if val in str_map:
                 if not gate.released(str_map[val]):
-                    report['pending'].append((ref, f'{{grafana:{str_map[val]}}}', str_map[val]))
+                    gated.append((f'{{grafana:{str_map[val]}}}', str_map[val]))
                     return mo.group(0)
                 note_ambiguity(val, str_map[val])
                 changed = True
@@ -196,7 +221,7 @@ def main():
             path, arg = match_fn(val)
             if path:
                 if not gate.released(path):
-                    report['pending'].append((ref, f'{{grafana:{path}:{arg}}}', path))
+                    gated.append((f'{{grafana:{path}:{arg}}}', path))
                     return mo.group(0)
                 changed = True
                 return f'{tag}{{grafana:{path}:{arg}}}'
@@ -204,10 +229,13 @@ def main():
             return mo.group(0)
 
         new = ATTR.sub(repl, ref)
+        for target, path in gated:
+            report['pending'].append((ref, target, path, changed))
         if changed:
-            report['embedded'].append((ref, new))
+            report['partial' if gated else 'embedded'].append((ref, new))
             return new
-        report['untouched'].append((ref, 'no mappable attributes'))
+        if not gated:
+            report['untouched'].append((ref, 'no mappable attributes'))
         return ref
 
     raw = open(args.guide).read()
@@ -234,16 +262,22 @@ def main():
 
     for title, key in [('BARE -> grafana:<path>', 'bare'),
                        ('PARAMETERIZED -> grafana:<path>:<arg>', 'param'),
-                       ('EMBEDDED -> {grafana:<path>}', 'embedded')]:
+                       ('EMBEDDED -> {grafana:<path>}', 'embedded'),
+                       ('PARTIALLY CONVERTED — some parts gated, see PENDING', 'partial')]:
         print(f'\n=== {title} ===')
         for a, b in report[key]:
             print(f'  {a}\n    -> {b}')
 
     if report['pending']:
-        print('\n=== PENDING RELEASE — left unchanged (path absent from --merged-map) ===')
+        print('\n=== PENDING RELEASE — not converted (path absent from --merged-map) ===')
         print('   Record these in the guide PR; swap them once the selector ships.')
-        for ref, target, val in report['pending']:
-            print(f'  {ref}\n    would become: {target}   [{val}]')
+        for label, partial in [('reftarget left entirely unchanged', False),
+                               ('reftarget WAS rewritten; only this part left literal', True)]:
+            rows = [r for r in report['pending'] if r[3] is partial]
+            if rows:
+                print(f'   -- {label}:')
+                for ref, target, path, _ in rows:
+                    print(f'  {ref}\n    would become: {target}   [{path}]')
 
     print('\n=== UNMAPPED (no package selector) ===')
     for v in sorted(set(report['unmapped'])):
@@ -256,9 +290,12 @@ def main():
         for w in report['warn']:
             print(f'  {w}')
 
-    print(f"\nbare={len(report['bare'])} param={len(report['param'])} "
-          f"embedded={len(report['embedded'])} unmapped={len(set(report['unmapped']))} "
-          f"untouched={len(report['untouched'])} pending={len(report['pending'])}"
+    pending_refs = {r[0] for r in report['pending']}
+    print(f"\nreftargets: bare={len(report['bare'])} param={len(report['param'])} "
+          f"embedded={len(report['embedded'])} partial={len(report['partial'])} "
+          f"untouched={len(report['untouched'])}")
+    print(f"values: unmapped={len(set(report['unmapped']))}")
+    print(f"pending: {len(report['pending'])} path(s) across {len(pending_refs)} reftarget(s)"
           f"{'  (dry run — pass --write to apply)' if not args.write else ''}")
 
 

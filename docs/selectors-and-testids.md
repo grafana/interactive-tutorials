@@ -17,9 +17,13 @@ Follow this priority order when choosing selectors:
 
 > Avoid selecting by auto-generated class names or deep DOM nesting. Use attributes (`data-testid`, `href`, `aria-*`, `id`) instead.
 
-> **On `:contains()` and translation.** Text matching compares against **translated** UI copy. A step
-> using `:contains('Builder')` works in English and fails everywhere else. Prefer a symbolic
+> **On text matching and translation.** Anything that matches visible copy compares against
+> **translated** UI strings: `:contains()`, `:text()`, and `action: "button"` with a text `reftarget`.
+> A step using `:contains('Builder')` works in English and fails everywhere else. Prefer a symbolic
 > reference; where one doesn't exist, that's a gap to fix in Grafana rather than paper over here.
+>
+> A `data-testid` is not automatically safe either — if its value comes from a `t()`-wrapped string it
+> changes with the UI language.
 
 ### Symbolic selector references
 
@@ -32,20 +36,32 @@ you writing the resulting attribute value by hand. Three forms:
 | `grafana:<path>:<arg>` | parameterized selectors | `grafana:components.Panels.Panel.title:Graph` |
 | `{grafana:<path>}` | inside a larger CSS expression | `{grafana:components.DataSource.Prometheus.queryEditor.options} button` |
 
-`<path>` is a dotted path into the package's `components` or `pages` exports.
+`<path>` is a dotted path into the package's `components` or `pages` exports. Both roots work:
+`components.TimePicker.openButton` and `pages.Explore.General.graph`. The `:<arg>` split is on the
+first colon, so an argument may itself contain one.
 
-**Why prefer this over writing the `data-testid` out.** The selector value can differ between
-Grafana versions, and older values are often matched by `aria-label` rather than `data-testid`.
-The symbolic form resolves against the running Grafana and matches either attribute; a literal
-matches exactly one spelling of one version.
+**Why prefer this over writing the `data-testid` out.** A reference resolves to
+`:is([data-testid="V"], [aria-label="V"])` against the *running* Grafana version. That buys two
+things a literal can't:
+
+1. **The value can differ between versions.** `components.QueryEditorRows.rows` is
+   `data-testid Query editor row` from 13.1.0 and `Query editor row` before it.
+2. **Either attribute matches.** 105 of the 635 non-URL values in the package carry no
+   `data-testid ` prefix, and those are rendered as an `aria-label`. A literal
+   `[data-testid='Explore Graph']` matches **nothing** — the element has no such attribute.
 
 ```json
-// resolves per running Grafana version
+// resolves per running Grafana version, and matches either attribute
 "reftarget": "grafana:components.QueryEditorRows.rows"
 
 // pinned: silently matches nothing on Grafana < 13.1.0, where the value has no data-testid prefix
 "reftarget": "div[data-testid='data-testid Query editor row']"
+
+// wrong attribute: this value is an aria-label, so this matches nothing on any version
+"reftarget": "div[data-testid='Explore Graph']"
 ```
+
+An `[aria-label='…']` reftarget is just as convertible as a `[data-testid='…']` one — same lookup.
 
 **Only reference selectors that exist in a shipped release.** A selector newly added to
 grafana/grafana resolves to nothing on the instances your guide runs against today. Leave the step
@@ -89,28 +105,41 @@ the release gate, and per-version validation.
 | Alerting                | `a[data-testid='data-testid Nav menu item'][href='/alerting']`    |
 | Connections             | `a[data-testid='data-testid Nav menu item'][href='/connections']` |
 | Admin                   | `a[data-testid='data-testid Nav menu item'][href='/admin']`       |
-| Navigation container    | `div[data-testid="data-testid navigation mega-menu"]`             |
+| Navigation container    | `{grafana:components.NavMenu.Menu}`                               |
+
+Nav menu **items** are the documented exception and stay literal (see above). The surrounding
+container has no such constraint, so it takes a reference.
 
 ### Editor and Panel Building
 
 | Component                   | Selector                                                                |
 |-----------------------------|-------------------------------------------------------------------------|
-| Query mode toggle (Code)    | `div[data-testid="QueryEditorModeToggle"] label[for^="option-code-radiogroup"]` |
-| Visualization picker toggle | `button[data-testid="data-testid toggle-viz-picker"]`                           |
-| Panel title input           | `input[data-testid="data-testid Panel editor option pane field input Title"]`   |
+| Query mode toggle (Code)    | `{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} label[for^="option-code-radiogroup"]` |
+| Visualization picker toggle | `grafana:components.PanelEditor.toggleVizPicker`                        |
+| Panel title input           | `input[data-testid="data-testid Panel editor option pane field input Title"]` — no package selector |
+
+> Two things this table got wrong before, both silent:
+>
+> - The query mode toggle was listed as `div[data-testid="QueryEditorModeToggle"]`, but the package
+>   value is `data-testid QueryEditorModeToggle` — **with** the prefix. The literal matched nothing.
+> - `toggleVizPicker` genuinely has two spellings: `toggle-viz-picker` at `8.0.0` and
+>   `data-testid toggle-viz-picker` from `10.0.0`. Either literal is wrong on half the version range.
+>
+> The reference is right in all three cases. Check yours with
+> `scripts/validate-paths.ts` across your minimum and current versions.
 
 ### Drilldowns
 
 | Component             | Selector                                                                                       | Notes                   |
 |-----------------------|------------------------------------------------------------------------------------------------|-------------------------|
-| Metrics drilldown app | `a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']` | Opens app entrypoint    |
-| Select metric action  | `button[data-testid="select-action_<metric_name>"]`                                            | Replace `<metric_name>` |
-| Related metrics tab   | `button[data-testid="data-testid Tab Related metrics"]`                                        | Tab toggle              |
-| Related logs tab      | `button[data-testid="data-testid Tab Related logs"]`                                           | Tab toggle              |
+| Metrics drilldown app | `a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']` | Nav item — stays literal |
+| Select metric action  | `button[data-testid^="select-action_"]`                                                        | Prefix match; the suffix is a metric name |
+| Related metrics tab   | `grafana:components.Tab.title:Related metrics`                                                  | Parameterized           |
+| Related logs tab      | `grafana:components.Tab.title:Related logs`                                                     | Parameterized           |
 
 ### Tabs: `button` vs `a`
 
-The testid string `data-testid Tab <name>` is always correct, but the **element tag depends on the tab type**. grafana-ui's `Tab` component renders an `<a>` when it receives an `href` prop and a `<button>` otherwise:
+`grafana:components.Tab.title:<name>` is always correct, but the **element tag depends on the tab type**, so a tag-qualified selector needs the embedded form: `a{grafana:components.Tab.title:<name>}`. grafana-ui's `Tab` component renders an `<a>` when it receives an `href` prop and a `<button>` otherwise:
 
 | Tab type                                   | Has `href`? | Selector tag | Examples                                        |
 |--------------------------------------------|-------------|--------------|-------------------------------------------------|
@@ -125,15 +154,18 @@ Dashboard section tabs navigate by URL slug, so scenes passes an `href` and the 
 {
   "type": "interactive",
   "action": "highlight",
-  "reftarget": "a[data-testid='data-testid Tab Winner']",
+  "reftarget": "a{grafana:components.Tab.title:Winner}",
   "requirements": ["exists-reftarget"],
   "content": "We're starting on the Winner tab."
 }
 ```
 
-When you can't tell which applies, a tag-agnostic `[data-testid='data-testid Tab <name>']` matches either element.
+When you can't tell which applies, drop the tag: `grafana:components.Tab.title:<name>` matches either element.
 
 ### Data Source Elements
+
+These have no package selectors — `id` and `href` are the stable options, and both are already
+version-independent:
 
 | Component        | Selector                                             |
 |------------------|------------------------------------------------------|
@@ -145,7 +177,13 @@ When you can't tell which applies, a tag-agnostic `[data-testid='data-testid Tab
 
 ## Button Action vs CSS Selector
 
-For buttons with stable text, prefer the `button` action:
+> **The `button` action matches translated text.** It is a text match like `:contains()`, so it works
+> in English and silently matches nothing in any other locale. Where a `grafana:` reference or a
+> `data-testid` exists for the button, prefer that. Use the `button` action when neither does — and
+> treat the missing selector as a gap to fix in grafana/grafana.
+
+For buttons with stable text, and no symbolic reference available, the `button` action is the most
+readable option:
 
 ```json
 {
@@ -255,9 +293,14 @@ Finds elements by **direct text content** only (does not match descendant text, 
 
 Use `:text()` when `:contains()` matches too many elements due to nested text.
 
+`:text()` carries the same translation caveat as `:contains()` — it compares against localized copy.
+It narrows *which* element matches, not *how stable* the match is.
+
 ### Combined Complex Selectors
 
-The most powerful feature: combining `:has()` and `:contains()`.
+Combining `:has()` and `:contains()` is the most expressive option, and the least portable — the
+`:contains()` half matches translated copy. Reach for it when the target has no stable attribute of
+its own and must be identified by its content, which is common for data-driven lists.
 
 ```json
 {
@@ -418,7 +461,7 @@ Some pseudo-classes are **not supported**. Use alternatives:
 
 1. **Native first** -- the engine always tries the browser's native `querySelector()` before falling back to JavaScript parsing
 2. **Specific base selectors** -- narrow the search scope (e.g., `div[data-testid="panel"]:has(...)` rather than `div:has(...)`)
-3. **Prefer `data-testid`** -- fastest and most stable
+3. **Prefer attribute matching over text or structure** -- a `grafana:` reference or a `data-testid` resolves to a single attribute lookup; `:contains()` and `:has()` fall back to walking the DOM in JS. A `grafana:` reference costs one extra map lookup at resolve time and is the most *stable* option; a literal `data-testid` is marginally faster and pins one version
 4. **Test in target browsers** -- especially when using `:has()` on older Firefox
 
 ---
@@ -462,6 +505,7 @@ div > div > div > button
 
 ✅ **Prefer**:
 ```
+grafana:components.TimePicker.openButton
 button[data-testid='save-button']
 a[href='/dashboards']
 input[id='connection-url']

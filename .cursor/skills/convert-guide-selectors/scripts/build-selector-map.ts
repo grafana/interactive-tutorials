@@ -1,13 +1,24 @@
 /**
  * Build a resolved-value -> dotted-path map for @grafana/e2e-selectors, plus a probe table for
- * parameterized selectors. Mirrors what grafana-pathfinder-app's resolver sees:
- * resolveSelectors({ components, pages }, version).
+ * parameterized selectors. Resolves the tree exactly as grafana-pathfinder-app does:
+ * resolveSelectors({ components, pages }, version) — see
+ * grafana-pathfinder-app/src/lib/dom/grafana-selector-core.ts (`getResolvedSelectors`).
  *
- * Run from a grafana/grafana checkout:
- *   tsx build-selector-map.ts [version] > selmap.json
+ * Run from THIS repo, with GRAFANA_REPO pointing at a grafana/grafana checkout:
+ *   GRAFANA_REPO=~/Repos/grafana npx tsx build-selector-map.ts [version] > selmap.json
  *
  * `version` defaults to "latest". Pass the version of the Grafana you are targeting so that
  * version-gated selectors resolve to the value that instance actually renders.
+ *
+ * TWO DELIBERATE DIVERGENCES from the plugin's reverse index (`getReverseIndex`):
+ *
+ * 1. Ambiguous values. The plugin DROPS a value that several paths produce (`exact.delete(value)`)
+ *    and emits no `grafana:` reference at all. This script keeps the first path and records every
+ *    path under `ambiguous`, because a human with `--pin` can resolve what the picker cannot.
+ *    Consequence: never trust `strMap` for a value listed in `ambiguous` — pin it.
+ * 2. Probes are not filtered on `undefined`. The plugin rejects a template whose probe output
+ *    `.includes('undefined')`; this script keeps them so the divergence is visible in the map
+ *    rather than silent. They are marked `containsUndefined` and excluded from `fns`.
  */
 import { loadSelectors } from './selectors-source';
 
@@ -24,12 +35,20 @@ async function main() {
     VERSION
   );
 
+  // Null-prototype: a selector value of "constructor" / "toString" / "__proto__" would otherwise
+  // collide with Object.prototype and either be dropped or crash the `??= []` below.
   /** value -> first path that produced it. Ambiguous values are reported separately. */
-  const strMap: Record<string, string> = {};
+  const strMap: Record<string, string> = Object.create(null);
   /** every path that produced a given value, so callers can detect ambiguity */
-  const allPaths: Record<string, string[]> = {};
+  const allPaths: Record<string, string[]> = Object.create(null);
   /** single-argument function selectors, as reversible prefix/suffix probes */
-  const fns: Array<{ path: string; prefix: string; suffix: string; significant: number }> = [];
+  const fns: Array<{
+    path: string;
+    prefix: string;
+    suffix: string;
+    significant: number;
+    containsUndefined: boolean;
+  }> = [];
 
   function walk(node: any, path: string[]) {
     if (node == null) return;
@@ -55,7 +74,13 @@ async function main() {
       const prefix = out.slice(0, i);
       const suffix = out.slice(i + SENTINEL.length);
       const significant = (prefix.replace(/^data-testid\s*/, '') + suffix).trim().length;
-      fns.push({ path: path.join('.'), prefix, suffix, significant });
+      fns.push({
+        path: path.join('.'),
+        prefix,
+        suffix,
+        significant,
+        containsUndefined: out.includes('undefined'),
+      });
       return;
     }
 
@@ -63,7 +88,8 @@ async function main() {
       for (const [k, v] of Object.entries(node)) walk(v, [...path, k]);
     }
   }
-    walk(resolved, []);
+
+  walk(resolved, []);
 
   const ambiguous = Object.fromEntries(
     Object.entries(allPaths).filter(([, paths]) => new Set(paths).size > 1)
@@ -76,9 +102,13 @@ async function main() {
       strMap,
       ambiguous,
       // Most specific first so the best reverse-match wins.
-      fns: fns.filter((f) => f.significant >= MIN_SIGNIFICANT).sort((a, b) => b.significant - a.significant),
+      fns: fns
+        .filter((f) => f.significant >= MIN_SIGNIFICANT && !f.containsUndefined)
+        .sort((a, b) => b.significant - a.significant),
       // Kept for reporting: usable, but too greedy to infer automatically.
       greedyFns: fns.filter((f) => f.significant < MIN_SIGNIFICANT).map((f) => f.path),
+      // The plugin rejects these outright; surfaced so a stale/misdeclared selector is visible.
+      undefinedProbes: fns.filter((f) => f.containsUndefined).map((f) => f.path),
     })
   );
 }

@@ -30,6 +30,7 @@ def paths_of(map_path):
     out = set(m.get('strMap', {}).values())
     out |= {f['path'] for f in m.get('fns', [])}
     out |= set(m.get('greedyFns', []))
+    out |= set(m.get('undefinedProbes', []))
     for ps in m.get('ambiguous', {}).values():
         out |= set(ps)
     return out

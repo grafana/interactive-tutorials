@@ -12,8 +12,20 @@ selector syntax, and hand off to grafana/grafana when a selector doesn't exist y
 symbolic form is a *reference*. Always ship the reference.
 
 **REQUIRED BACKGROUND:** Read [symbolic-selector-syntax.md](symbolic-selector-syntax.md) before
-converting anything. It defines the three forms, the version-resolution behaviour, and four traps
+converting anything. It defines the three forms, the version-resolution behaviour, and five traps
 that silently break guides.
+
+Upstream reference (the authority, per [CLAUDE.md](../../../CLAUDE.md#pathfinder-source)):
+`grafana-pathfinder-app/docs/developer/interactive-examples/selectors-reference.md` for the syntax,
+`src/lib/dom/grafana-selector-core.ts` for the resolver.
+
+## Prerequisites
+
+| Need | Why |
+| --- | --- |
+| `GRAFANA_REPO=<path>` | a grafana/grafana checkout; the `.ts` scripts import the selectors package from it |
+| `npx tsx` | runs the `.ts` scripts. This repo has no `package.json`, so `tsx` is not installed — `npx` fetches it on first use |
+| `python3`, `jq`, `git` | the `.py` scripts, and the path-extraction step in Verify |
 
 ---
 
@@ -28,9 +40,22 @@ Every reftarget you touch ends as **exactly one** of these four shapes:
 | `{grafana:<path>}` embedded in CSS | the selector is scoped, or combined with a non-package part |
 | **unchanged** | no package selector exists, or it is a documented exception |
 
-A converted reftarget contains **no resolved selector text**. If the result still contains
-`data-testid ` followed by a literal value, the conversion is not done — that is the snapshot, not
-the reference.
+A converted reftarget contains **no resolved selector text** — no literal value that came out of the
+selector package, in either attribute and in either spelling.
+
+Two things that are easy to skip and shouldn't be:
+
+- **Values without the `data-testid ` prefix.** 105 of the 635 non-URL values in
+  `@grafana/e2e-selectors` have none (`uplot-main-div` → `components.UPlotChart.container`,
+  `Explore Graph` → `pages.Explore.General.graph`, the TestData and time-range values). "No prefix"
+  does not mean "hand-written".
+- **`aria-label` reftargets.** Unprefixed values are exactly the ones Grafana renders as an
+  `aria-label`, so that is where they appear in guides. The resolver emits
+  `:is([data-testid=V], [aria-label=V])` and covers both, so `[aria-label='Explore Graph']` converts
+  the same way `[data-testid='…']` does. A hand-written `[data-testid='Explore Graph']` matches
+  *nothing* — the element has no such attribute.
+
+`^=` / `*=` / `$=` matches are left alone: a prefix match is an intentional pattern, not a snapshot.
 
 ```json
 // the reference — resolves per running Grafana version
@@ -122,17 +147,24 @@ there.
 export GRAFANA_REPO=~/Repos/grafana
 SK=.cursor/skills/convert-guide-selectors
 
-tsx $SK/scripts/build-selector-map.ts 13.2.0 > /tmp/selmap.json
+npx tsx $SK/scripts/build-selector-map.ts 13.2.0 > /tmp/selmap.json
 
 # A second map from the merged ref. This powers the gate.
+git -C $GRAFANA_REPO worktree remove --force /tmp/grafana-merged 2>/dev/null   # from a previous run
 git -C $GRAFANA_REPO worktree add --detach /tmp/grafana-merged origin/main
 ln -sfn $GRAFANA_REPO/node_modules /tmp/grafana-merged/node_modules   # resolver needs semver
-GRAFANA_REPO=/tmp/grafana-merged tsx $SK/scripts/build-selector-map.ts 13.2.0 > /tmp/merged.json
+GRAFANA_REPO=/tmp/grafana-merged npx tsx $SK/scripts/build-selector-map.ts 13.2.0 > /tmp/merged.json
 
 # Which selectors are yours-and-unmerged? Keep this list in front of you.
 python3 $SK/scripts/find-unmerged-paths.py --map /tmp/selmap.json --merged-map /tmp/merged.json
 
 python3 $SK/scripts/find-ambiguous.py <guide>/content.json --map /tmp/selmap.json   # pin what it reports
+```
+
+Tear the worktree down when you're finished, or the next run's `worktree add` fails:
+
+```bash
+git -C $GRAFANA_REPO worktree remove --force /tmp/grafana-merged
 ```
 
 ### 2. Rewrite
@@ -145,8 +177,15 @@ python3 $SK/scripts/convert-reftargets.py <guide>/content.json \
 # add --write to apply
 ```
 
-Anything the gate reports as **PENDING** is left unchanged — that is the rule above being
-enforced, not a failure. Copy that list into the guide PR.
+Anything the gate reports as **PENDING** is not converted — that is the rule above being enforced,
+not a failure. Copy that list into the guide PR.
+
+PENDING splits into two groups, and the difference matters when you write the PR note:
+
+- *reftarget left entirely unchanged* — the step is untouched on disk.
+- *reftarget WAS rewritten; only this part left literal* — a compound selector where a sibling part
+  did convert. The file **is** modified, so describe it as partially converted, not as deferred.
+  Cross-check these against the **PARTIALLY CONVERTED** section, which shows the resulting value.
 
 Omitting `--merged-map` disables the gate and prints a warning. Don't.
 (`find-ambiguous.py` needs only `--map`; ambiguity is independent of release status.)
@@ -156,6 +195,13 @@ parsed JSON is structurally identical apart from reftargets. **Never** rewrite t
 `json.load` → `json.dump`; that reflows the whole file and buries the real change in hundreds of
 formatting-only lines.
 
+If you change either Python script, run its tests first — hermetic, no `GRAFANA_REPO` or `tsx`
+needed, and each case is a bug that shipped once:
+
+```bash
+python3 $SK/tests/test-convert-reftargets.py
+```
+
 ### 3. Verify (all of these are gates, not optional)
 
 ```bash
@@ -163,12 +209,16 @@ python3 -m json.tool <guide>/content.json > /dev/null            # still valid J
 
 PATHS=$(grep -o 'grafana:[A-Za-z0-9_.]*' <guide>/content.json \
         | sed 's/^grafana://' | sort -u | jq -R . | jq -sc .)
-tsx $SK/scripts/validate-paths.ts "$PATHS" "<min-version>,<current-version>"
+npx tsx $SK/scripts/validate-paths.ts "$PATHS" "<min-version>,<current-version>"
 
 # only reftarget lines changed (the converter also asserts this structurally)
 git diff --stat <guide>/content.json 2>/dev/null \
   || diff <(git show HEAD:<guide>/content.json) <guide>/content.json
 ```
+
+Validate **every** path, not a sample: one unresolvable `{grafana:…}` token makes Pathfinder return
+the entire reftarget unresolved, braces included, so it also disables the tokens that were correct
+(trap 5).
 
 Then confirm in a live instance: for a sample of converted steps, evaluate
 `document.querySelectorAll(':is([data-testid="V"], [aria-label="V"])').length === 1`.
@@ -200,8 +250,12 @@ from this repo. Both checkouts must be available.
 | --- | --- |
 | Converting nav menu items | Breaks Pathfinder's collapsed-menu auto-fix — see trap 1 |
 | Skipping steps that already have a `data-testid` | Those are version-pinned snapshots; they are the point |
+| Assuming a value without the `data-testid ` prefix is hand-written | 105 of 635 package values have no prefix; they are matched by `aria-label` |
+| Skipping `[aria-label='…']` reftargets | Same lookup, and a literal `[data-testid='…']` for those values matches nothing |
 | Using a just-added selector | Resolves to nothing on every released Grafana |
 | Trusting the first path found for a value | Several values map to multiple paths — pin them |
+| Validating a sample of paths | One bad token voids the whole reftarget — trap 5 |
 | `json.dump` round-trip | Reflows the file; the real diff disappears |
 | Validating only against current Grafana | Misses selectors whose older form matched `aria-label` |
 | Treating a `data-testid` as i18n-safe | It is only as stable as the string that produced it |
+| Reverse-engineering the shipped plugin bundle | The resolver source and upstream author docs are public — read those |

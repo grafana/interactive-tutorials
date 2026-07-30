@@ -16,7 +16,10 @@ import json
 import re
 import sys
 
-VALUE = re.compile(r"""\[data-testid=['"](data-testid [^'"]+)['"]\]""")
+# Any exact-match data-testid OR aria-label value, prefixed or not. Kept in step with
+# convert-reftargets.py's ATTR so both scripts see the same set of reftargets — see the comment
+# there for why both attributes and both spellings matter.
+VALUE = re.compile(r"""\[(?:data-testid|aria-label)=['"]([^'"]+)['"]\]""")
 
 
 def main():

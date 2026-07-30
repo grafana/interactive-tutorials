@@ -1,10 +1,12 @@
 /**
  * Verify every selector path a guide references actually resolves — at each Grafana version you
- * support. Mirrors grafana-pathfinder-app's resolver: walk the dotted path over
+ * support. Mirrors grafana-pathfinder-app's `toGrafanaSelectorForVersion`
+ * (src/lib/dom/grafana-selector-core.ts): walk the dotted path over
  * resolveSelectors({ components, pages }, version), then require string | function.
  *
- * Run from a grafana/grafana checkout:
- *   tsx validate-paths.ts '["components.TimePicker.openButton", ...]' "12.4.0,13.2.0"
+ * Run from THIS repo, with GRAFANA_REPO pointing at a grafana/grafana checkout:
+ *   GRAFANA_REPO=~/Repos/grafana npx tsx validate-paths.ts \
+ *     '["components.TimePicker.openButton", ...]' "12.4.0,13.2.0"
  *
  * Exits non-zero if any path fails at any version. Validating the MINIMUM supported version as
  * well as current is what catches selectors whose older form matched aria-label rather than
