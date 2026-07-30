@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "tempo-data-source-prepare",
+  "title": "Prepare Tempo connection details",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before adding the Tempo data source, gather the URL, authentication credentials, and (if applicable) tenant ID for your Tempo backend. Having these ready avoids back-and-forth while filling out the data source form.\n\nThe connection URL and authentication method depend on which flavor of Tempo you're connecting to. Use the table in the next step to find the URL format for your environment.\n\nTo prepare your Tempo connection details, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "**1. Identify your Tempo environment.** The Tempo data source supports three common environments:\n\n- **Self-managed Tempo** — Tempo you run yourself, typically at `http://<host>:<port>`.\n- **Grafana Cloud Traces** — The fully-managed Tempo backend included with Grafana Cloud.\n- **Grafana Enterprise Traces (GET)** — The self-hosted enterprise tracing backend.\n\n**Note:** Grafana Cloud already includes a pre-configured `grafanacloud-<stack>-traces` data source. Add a Tempo data source manually when you need to connect to a self-managed Tempo instance or require a custom configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "**2. Record the query URL for your environment:**\n\n| Environment | URL format | Example |\n| --- | --- | --- |\n| Self-managed Tempo (HTTP) | `http://<host>:3200` | `http://tempo:3200` |\n| Grafana Cloud Traces | `https://tempo-<zone>.grafana.net/tempo` | `https://tempo-prod-01-eu-west-0.grafana.net/tempo` |\n| Grafana Enterprise Traces | URL of your GET gateway | `https://get.example.com/tempo` |\n\nThe default port for self-managed Tempo is `3200` for HTTP and `9095` for gRPC."
+    },
+    {
+      "type": "markdown",
+      "content": "**3. Choose an authentication method:**\n\n- **Basic authentication** — Authenticates with a username and password. Required for Grafana Cloud Traces.\n- **Forward OAuth Identity** — Forwards the querying user's OAuth access token and OIDC ID token.\n- **No Authentication** — For Tempo instances with no auth configured (typical for local or internal deployments).\n\nIf your Tempo instance sits behind a reverse proxy with its own auth, match the proxy's expected credentials."
+    },
+    {
+      "type": "markdown",
+      "content": "**4. Create an access token (Grafana Cloud Traces only).** If you're connecting to **Grafana Cloud Traces**, create a Cloud Access Policy token with the `traces:read` scope:\n\n1. In the Grafana Cloud Portal, open your stack and select **Tempo**.\n2. Copy the URL and note the numeric **instance ID** — this is your username.\n3. Create an **Access Policy** with `traces:read` scope.\n4. Generate a **token** under the access policy; this is your password.\n\n**Important:** Don't use your Grafana login credentials. The instance ID is the username, and the access policy token is the password."
+    },
+    {
+      "type": "markdown",
+      "content": "**5. Record your tenant ID (multi-tenant only).** If your Tempo instance is multi-tenant, record your tenant ID. You'll add it as an `X-Scope-OrgID` HTTP header in the Authentication section of the data source settings.\n\nThe same header must also be set on the write path (for example, in your Alloy or OpenTelemetry Collector configuration) so ingested traces land in the correct tenant."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you add the Tempo data source in Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Grafana Cloud access policies](https://grafana.com/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/)\n- [Tempo multi-tenancy](https://grafana.com/docs/tempo/latest/operations/multitenancy/)\n- [Private data source connections](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/)"
+    }
+  ]
+}
