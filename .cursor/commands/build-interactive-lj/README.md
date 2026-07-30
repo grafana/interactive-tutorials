@@ -21,9 +21,16 @@ Follow these phases in order:
 3. **Scaffold content files.** Create `content.json` for every milestone in the interactive-tutorials repo — interactive blocks for UI steps, markdown blocks for conceptual content. Because the website markdown is no longer used to render this learning path, capture all conceptual prose from each milestone's `index.md` body as markdown blocks so no content is lost. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks. **Exception: the `business-value` milestone gets markdown blocks only — no interactive blocks, sections, or guided blocks.**
 4. **Create website metadata files.** Create a `website.yaml` for the path and each milestone, derived from the front matter of the corresponding website markdown files. Map the path `_index.md` front matter into the path-level `website.yaml` and each milestone `index.md` front matter into that milestone's `website.yaml` (for example, `title` → `menuTitle`, plus `description`, `weight`, step ordering, `cta`, `related_journeys` at the path level, and `side_journeys` at the step level). These files take the place of the markdown front matter as the package's source of website metadata; the website markdown itself stays unchanged. Refer to `docs/website-yaml-reference.md`.
 5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. **Exception: exclude `business-value` from the path-level `milestones` array.** The `business-value` milestone still gets its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a registered stop on the path.
-6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
-7. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
-8. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
+6. **Scaffold self-check (required).** Before Playwright, run [../create-learning-path/reference/scaffold-self-check.md](../create-learning-path/reference/scaffold-self-check.md): section bookends, `button` vs CSS `reftarget` misuse, secrets `doIt`, and a light claim pass against the docs you already read. Fix findings (or ask the author) before continuing.
+7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
+8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
+9. **Verify and wrap up.** Re-run the light claim pass if prose changed. Cross-check remaining factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
+10. **Ask about a Learning Hub deploy preview (required before opening the PR).** Website previews are opt-in via the `deploy-preview` label. Ask the author:
+
+    > Want a Learning Hub website deploy preview on the PR? Recommended for new `*-lj` paths so you can read the non-interactive pages before Learning Hub publish. This is markdown/`website.yaml` only, not Pathfinder Show me / Do it.
+
+    - **Yes (default for new paths):** When creating the PR, add `--label deploy-preview`. If the PR already exists without the label, add it with `gh pr edit <n> --add-label deploy-preview`, then push any new commit (or an empty commit) so the workflow runs on `synchronize`. Label-only events do not build.
+    - **No:** Open the PR without the label. Tell the author they can add `deploy-preview` later and push again if they change their mind.
 
 For background on how this command relates to `/create-learning-path`, refer to `.cursor/learning-path-workflows/workflows.md`.
 
@@ -44,6 +51,7 @@ For background on how this command relates to `/create-learning-path`, refer to 
 11. **Ask before fixing.** When the user reports a broken selector, explain the problem and proposed fix, then wait for approval.
 12. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
 13. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
+14. **Do not skip the scaffold self-check.** Section bookends, `button`/CSS misuse, and unsupported product claims must be caught before selector discovery. See [../create-learning-path/reference/scaffold-self-check.md](../create-learning-path/reference/scaffold-self-check.md).
 
 ---
 
@@ -56,6 +64,8 @@ For background on how this command relates to `/create-learning-path`, refer to 
 - Never use non-standard CSS (`:contains()`, `:has-text()`)
 - Never use data-dependent selectors — use `^=` starts-with patterns
 - Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
+- Never put section intro/summary markdown **inside** the `section` when it will number as a fake step (`You'll…`, `To … complete the following steps`)
+- Never use `action: "button"` with a CSS selector `reftarget` (use `highlight` or `navigate`)
 
 ---
 
@@ -68,6 +78,7 @@ Consult these during the workflow:
 | `reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
 | `reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
 | `../create-learning-path/reference/frontmatter-schema.md` | Reading website front matter fields and CTA types (source only) |
+| `../create-learning-path/reference/scaffold-self-check.md` | After scaffold, before Playwright (bookends, claims, action sanity) |
 | `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
 | `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |
