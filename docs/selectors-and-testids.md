@@ -8,13 +8,60 @@ This guide covers stable selectors and patterns for targeting Grafana UI element
 
 Follow this priority order when choosing selectors:
 
-1. **`data-testid` attributes** -- most stable, maintained by Grafana core
-2. **Semantic attributes** -- `href`, `aria-*`, `id`, `role`
-3. **`:contains()` text matching** -- reliable for buttons and labels
-4. **`:has()` structural matching** -- when you need to match by descendants
-5. **CSS class selectors** -- least stable; avoid auto-generated class names
+1. **Symbolic `grafana:` references** -- resolve through `@grafana/e2e-selectors` per Grafana version
+2. **`data-testid` attributes** -- stable, maintained by Grafana core, but pinned to one version's value
+3. **Semantic attributes** -- `href`, `aria-*`, `id`, `role`
+4. **`:contains()` text matching** -- reliable for buttons and labels, but breaks under translation
+5. **`:has()` structural matching** -- when you need to match by descendants
+6. **CSS class selectors** -- least stable; avoid auto-generated class names
 
 > Avoid selecting by auto-generated class names or deep DOM nesting. Use attributes (`data-testid`, `href`, `aria-*`, `id`) instead.
+
+> **On `:contains()` and translation.** Text matching compares against **translated** UI copy. A step
+> using `:contains('Builder')` works in English and fails everywhere else. Prefer a symbolic
+> reference; where one doesn't exist, that's a gap to fix in Grafana rather than paper over here.
+
+### Symbolic selector references
+
+Pathfinder can resolve a `reftarget` through Grafana's `@grafana/e2e-selectors` package instead of
+you writing the resulting attribute value by hand. Three forms:
+
+| Form | Use for | Example |
+| --- | --- | --- |
+| `grafana:<path>` | the whole reftarget | `grafana:components.TimePicker.openButton` |
+| `grafana:<path>:<arg>` | parameterized selectors | `grafana:components.Panels.Panel.title:Graph` |
+| `{grafana:<path>}` | inside a larger CSS expression | `{grafana:components.DataSource.Prometheus.queryEditor.options} button` |
+
+`<path>` is a dotted path into the package's `components` or `pages` exports.
+
+**Why prefer this over writing the `data-testid` out.** The selector value can differ between
+Grafana versions, and older values are often matched by `aria-label` rather than `data-testid`.
+The symbolic form resolves against the running Grafana and matches either attribute; a literal
+matches exactly one spelling of one version.
+
+```json
+// resolves per running Grafana version
+"reftarget": "grafana:components.QueryEditorRows.rows"
+
+// pinned: silently matches nothing on Grafana < 13.1.0, where the value has no data-testid prefix
+"reftarget": "div[data-testid='data-testid Query editor row']"
+```
+
+**Only reference selectors that exist in a shipped release.** A selector newly added to
+grafana/grafana resolves to nothing on the instances your guide runs against today. Leave the step
+on its working selector and record the swap for later.
+
+**Exception -- nav menu items stay literal:**
+
+```json
+"reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']"
+```
+
+Pathfinder regex-matches that exact shape to auto-expand a collapsed menu section; the resolved
+form defeats that fix.
+
+To convert an existing guide, see the `convert-guide-selectors` skill, which scripts the mapping,
+the release gate, and per-version validation.
 
 ### Example
 

@@ -42,7 +42,8 @@ These patterns cause selectors to work for one user but fail for another—even 
 | **Position-based** | `:first-of-type`, `:nth-child(4)` | Order depends on data; different users see different lists | Use `data-testid` or `aria-label` |
 | **Data-dependent values** | `[data-testid='select-action-asserts:resource:threshold']` | Only works with specific metrics/services/labels | Use `^=` starts-with: `[data-testid^='select-action-']` |
 | **Hardcoded dynamic IDs** | `label[for='option-traceql-xyz123']` | IDs may include random suffixes | Use `^=` starts-with: `label[for^='option-traceql-']` |
-| **Non-standard CSS** | `:contains()`, `:nth-match()`, `:has-text()` | Playwright/jQuery-only, not standard CSS | Find `data-testid` or `aria-label` instead |
+| **Text matching** | `:contains()`, `:has-text()` | Compares against translated copy; breaks in any non-English UI | Use a `grafana:` reference, or `data-testid` |
+| **Position-dependent matching** | `:nth-match()` | Supported by Pathfinder, but index depends on what is rendered — and Grafana lazy-renders | Scope to a container instead; see [dashboard-selector-strategies.md](../../../skills/autogen-guide-dashboard/dashboard-selector-strategies.md) |
 | **Exact label matches** | `a[aria-label='Select detected_level']` | Label text includes data-specific values | Use `^=` starts-with: `a[aria-label^='Select ']` |
 
 ---
@@ -59,22 +60,33 @@ These patterns cause selectors to work for one user but fail for another—even 
    - ❌ `a[data-testid='button-select-service']:first-of-type`
    - ✅ `a[data-testid^='data-testid button-select-service']`
 
-3. **Is it Playwright/jQuery-specific syntax?**
-   - ❌ `button:contains('Include')` or `input:nth-match(1)`
+3. **Does it depend on translated text?**
+   - ❌ `button:contains('Include')` — breaks in every non-English UI
    - ✅ `button[data-testid='data-testid button-filter-include']`
 
 4. **Does the ID have a random suffix?**
    - ❌ `label[for='option-traceql-abc123']`
    - ✅ `label[for^='option-traceql-']`
 
+5. **Is there a `grafana:` reference for it?**
+   - ❌ `button[data-testid='data-testid TimePicker Open Button']` — pins one version's value
+   - ✅ `grafana:components.TimePicker.openButton`
+
 > 💡 **Pro tip:** When you find multiple valid selectors for an element, always prefer:
-> `data-testid` (exact) > `data-testid` (starts-with) > `aria-label` > `href` > other attributes
+> `grafana:` reference > `data-testid` (exact) > `data-testid` (starts-with) > `aria-label` > `href` > other attributes
+>
+> See [docs/selectors-and-testids.md](../../../../docs/selectors-and-testids.md) for the `grafana:`
+> forms, and the `convert-guide-selectors` skill to convert an existing guide.
 
 ---
 
 ## Selector Syntax Limitations
 
-> ⚠️ **Pathfinder uses standard CSS selectors, NOT Playwright-style selectors.**
+> ⚠️ **Pathfinder uses standard CSS selectors plus a small set of its own extensions.** It is not a
+> Playwright selector engine, but it is not plain `querySelector` either. The extensions are the
+> `grafana:` / `{grafana:}` / `panel:` references (see
+> [docs/selectors-and-testids.md](../../../../docs/selectors-and-testids.md)) and the `:contains()`
+> / `:nth-match()` pseudo-selectors. Everything else must be standard CSS.
 
 ### These DON'T work in Pathfinder:
 
@@ -89,6 +101,9 @@ These patterns cause selectors to work for one user but fail for another—even 
 
 | ✅ Works | Example |
 |----------|---------|
+| Symbolic selector reference | `grafana:components.TimePicker.openButton` |
+| …parameterized | `grafana:components.Panels.Panel.title:Graph` |
+| …embedded in CSS | `{grafana:components.VizLegend.legend} button` |
 | Attribute selectors | `[data-testid="my-button"]` |
 | Attribute contains | `[aria-label*='section: Alerts']` |
 | Attribute starts with | `[data-testid^="select-"]` |
