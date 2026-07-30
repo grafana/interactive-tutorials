@@ -51,14 +51,6 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
-          "requirements": ["navmenu-open"],
-          "verify": "on-page:/explore",
-          "content": "Click **Explore** in the main menu."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
           "reftarget": "grafana:components.DataSourcePicker.container",
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "doIt": false,
@@ -143,6 +135,7 @@
           "action": "highlight",
           "reftarget": "grafana:pages.Explore.toolbar.contentOutline",
           "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
           "content": "Click **Outline** to toggle the section-jump sidebar."
         },
         {
@@ -168,6 +161,7 @@
           "action": "highlight",
           "reftarget": "grafana:components.QueryTab.queryHistoryButton",
           "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
           "content": "Click **Query history** to see every query you've run recently."
         },
         {
@@ -179,12 +173,14 @@
           "action": "highlight",
           "reftarget": "grafana:components.QueryTab.queryHistoryButton",
           "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
           "content": "Click **Query history** again to close the panel."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Query inspector",
+          "doIt": false,
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "content": "Click **Query inspector** to inspect the raw request and response."
         },
@@ -196,6 +192,7 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "Query inspector",
+          "doIt": false,
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "content": "Click **Query inspector** again to close it."
         }
@@ -226,8 +223,14 @@
               "requirements": ["exists-reftarget"]
             },
             {
+              "action": "formfill",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "targetvalue": "grafanacloud-play-prom",
+              "requirements": ["exists-reftarget"]
+            },
+            {
               "action": "highlight",
-              "reftarget": "div[role='option'][aria-label='grafanacloud-play-prom']",
+              "reftarget": "div[data-testid='data-source-card']",
               "requirements": ["exists-reftarget"]
             }
           ]
@@ -237,6 +240,7 @@
           "action": "highlight",
           "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Builder')",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
           "tooltip": "The rest of this section uses the visual query builder — if a previous session left this data source in Code mode, this switches it back.",
           "content": "Make sure the query editor is in **Builder** mode."
         },
@@ -290,6 +294,7 @@
           "action": "highlight",
           "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
           "content": "Turn on **Explain** to see your query broken down in plain English."
         },
         {
@@ -306,6 +311,7 @@
           "action": "highlight",
           "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
           "content": "Turn **Explain** back off."
         },
         {
@@ -313,6 +319,7 @@
           "action": "highlight",
           "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Code')",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
           "content": "Switch to **Code** mode to write raw PromQL directly."
         },
         {
@@ -431,8 +438,14 @@
               "requirements": ["exists-reftarget"]
             },
             {
+              "action": "formfill",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "targetvalue": "grafanacloud-play-logs",
+              "requirements": ["exists-reftarget"]
+            },
+            {
               "action": "highlight",
-              "reftarget": "div[role='option'][aria-label='grafanacloud-play-logs']",
+              "reftarget": "div[data-testid='data-source-card']",
               "requirements": ["exists-reftarget"]
             }
           ]
@@ -457,15 +470,27 @@
           "content": "**Label browser** is Loki's dedicated tool for discovering labels and values."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "grafana:components.QueryBuilder.labelSelect",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
-          "content": "Click **Select label** to see the labels available on your logs."
+          "type": "multistep",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "content": "Set the label filter to **service_name = quickpizza-catalog** — a real service in the shared demo dataset.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "grafana:components.QueryBuilder.inputSelect",
+              "targetvalue": "service_name",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div{grafana:components.QueryBuilder.valueSelect} input",
+              "targetvalue": "quickpizza-catalog",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
         },
         {
           "type": "markdown",
-          "content": "Choose **service_name**, then set its value to **quickpizza-catalog** — a real service in the shared demo dataset. Every Loki query starts with a label selector like this in curly braces."
+          "content": "Every Loki query starts with a label selector like this in curly braces."
         },
         {
           "type": "interactive",
@@ -531,6 +556,7 @@
           "action": "highlight",
           "reftarget": "grafana:pages.Explore.toolbar.live",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
           "content": "Click **Live** to start tailing new log lines as they arrive."
         },
         {
@@ -538,16 +564,12 @@
           "action": "highlight",
           "reftarget": "grafana:pages.Explore.toolbar.live",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
           "content": "Click it again to stop and return to a normal query."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid loki options'] button",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
-          "skippable": true,
-          "hint": "If this isn't found, look for a similar collapsed **Options** row above the results.",
-          "content": "Expand **Options** to see the line limit and read direction."
+          "type": "markdown",
+          "content": "Below the query editor, the collapsed **Options** row holds the line limit and read direction — expand it if you want to cap how many lines come back, or read oldest-first instead of newest-first."
         }
       ]
     },
@@ -576,8 +598,14 @@
               "requirements": ["exists-reftarget"]
             },
             {
+              "action": "formfill",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "targetvalue": "grafanacloud-play-traces",
+              "requirements": ["exists-reftarget"]
+            },
+            {
               "action": "highlight",
-              "reftarget": "div[role='option'][aria-label='grafanacloud-play-traces']",
+              "reftarget": "div[data-testid='data-source-card']",
               "requirements": ["exists-reftarget"]
             }
           ]
@@ -585,7 +613,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "grafana:components.RadioGroup.container",
+          "reftarget": "div[data-testid='data-testid Query editor row tempo A'] {grafana:components.RadioGroup.container}",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
           "doIt": false,
           "tooltip": "Search is form-based, TraceQL is a query language for precise filters, and Service Graph shows dependencies between services.",
@@ -596,11 +624,21 @@
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Search')",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "doIt": false,
           "content": "Select **Search** for a form-based way to find traces."
         },
         {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input#service-name-value",
+          "targetvalue": "quickpizza-public-api",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "tooltip": "A real, traced service in the shared demo dataset.",
+          "content": "Set **Service Name** to `quickpizza-public-api`."
+        },
+        {
           "type": "markdown",
-          "content": "Set **Service Name** to `quickpizza-public-api` — a real, traced service in the shared demo dataset. **Span Name**, **Status**, **Duration**, and **Tags** filter further the same way."
+          "content": "**Span Name**, **Status**, **Duration**, and **Tags** filter further the same way."
         },
         {
           "type": "interactive",
@@ -678,6 +716,7 @@
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Service Graph')",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "doIt": false,
           "content": "Switch to **Service Graph** to see how services depend on each other."
         },
         {
