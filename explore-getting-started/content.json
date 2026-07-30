@@ -287,21 +287,31 @@
         {
           "type": "guided",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
-          "content": "Turn on **Explain** to see your query broken down in plain English, then turn it back off.",
+          "content": "Turn on **Explain** to see your query broken down in plain English.",
           "steps": [
             {
               "action": "highlight",
               "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
               "requirements": ["exists-reftarget"],
               "description": "Turn on Explain"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Query editor row prometheus A']",
-              "requirements": ["exists-reftarget"],
-              "tooltip": "Each clause gets its own numbered, plain-language explanation — useful while you're still learning PromQL.",
-              "description": "Read the annotations above the editor"
-            },
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row prometheus A']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Each clause gets its own numbered, plain-language explanation — useful while you're still learning PromQL.",
+          "content": "Explain mode annotates every part of the query above the editor."
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "skippable": true,
+          "content": "Turn **Explain** back off — or leave it on if you find the annotations useful.",
+          "steps": [
             {
               "action": "highlight",
               "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
@@ -447,6 +457,20 @@
           ]
         },
         {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "content": "Make sure the query editor is in **Builder** mode — the next few steps describe the visual builder.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row loki A'] {grafana:components.RadioButton.container}:contains('Builder')",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "If a previous session left this data source in Code mode, this switches it back.",
+              "description": "Select Builder mode"
+            }
+          ]
+        },
+        {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "grafana:components.QueryBuilder.queryPatterns",
@@ -466,23 +490,13 @@
           "content": "**Label browser** is Loki's dedicated tool for discovering labels and values."
         },
         {
-          "type": "multistep",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
-          "content": "Set the label filter to **service_name = quickpizza-catalog** — a real service in the shared demo dataset.",
-          "steps": [
-            {
-              "action": "formfill",
-              "reftarget": "grafana:components.QueryBuilder.inputSelect",
-              "targetvalue": "service_name",
-              "requirements": ["exists-reftarget"]
-            },
-            {
-              "action": "formfill",
-              "reftarget": "div{grafana:components.QueryBuilder.valueSelect} input",
-              "targetvalue": "quickpizza-catalog",
-              "requirements": ["exists-reftarget"]
-            }
-          ]
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.QueryBuilder.labelSelect",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Pick a label, an operator, and a value — the builder writes the selector for you.",
+          "content": "**Label filters** scope the query to a set of streams."
         },
         {
           "type": "markdown",
@@ -498,12 +512,26 @@
           "content": "Every new query starts with a **Line contains** filter, ready to narrow results further."
         },
         {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "content": "Switch to **Code** mode so you can write the whole LogQL query at once.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row loki A'] {grafana:components.RadioButton.container}:contains('Code')",
+              "requirements": ["exists-reftarget"],
+              "description": "Select Code mode"
+            }
+          ]
+        },
+        {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "div[data-testid='operations.0.wrapper'] input",
-          "targetvalue": "doughs",
+          "reftarget": "{grafana:components.QueryField.container} textarea.inputarea",
+          "targetvalue": "{service_name=\"quickpizza-catalog\"} |= \"doughs\"",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
-          "content": "Type `doughs` into the line filter — one of QuickPizza's real API paths — to match only lines containing it."
+          "tooltip": "The label selector picks the stream; `|=` keeps only lines containing `doughs`, one of QuickPizza's real API paths.",
+          "content": "Type `{service_name=\"quickpizza-catalog\"} |= \"doughs\"`."
         },
         {
           "type": "interactive",
