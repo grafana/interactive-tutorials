@@ -4,6 +4,8 @@ Each learning path directory (`<NAME>-lj/`) and each of its step subdirectories 
 This file carries metadata consumed by the `grafana/website` build.
 It's unrelated to `manifest.json`, which controls in-product recommendation targeting.
 
+PRs that change `*-lj/` packages or `website.yaml` get a Learning Hub deploy preview automatically (see `.github/workflows/deploy-pr-preview.yml`). The bot comments with a preview URL under `/docs/learning-paths/`.
+
 There are two kinds of `website.yaml`:
 
 - **Path-level**: `<NAME>-lj/website.yaml`. Describes the whole learning path.

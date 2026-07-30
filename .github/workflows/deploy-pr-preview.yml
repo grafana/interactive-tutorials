@@ -11,13 +11,56 @@ on:
       - closed
 
 jobs:
+  # Learning path PRs should preview without authors knowing to add a label.
+  # The reusable workflow only builds on opened/synchronize (not labeled), so
+  # path detection here must succeed on open — label-only was a race.
+  preview-gate:
+    if: >-
+      github.event.action != 'closed' &&
+      !github.event.pull_request.head.repo.fork
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      deploy: ${{ steps.decide.outputs.deploy }}
+    steps:
+      - id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HAS_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'deploy-preview') }}
+        run: |
+          set -euo pipefail
+          if [[ "${HAS_LABEL}" == "true" ]]; then
+            echo "deploy=true" >> "${GITHUB_OUTPUT}"
+            echo "Deploy preview enabled: deploy-preview label present"
+            exit 0
+          fi
+
+          if gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/files" --paginate \
+            --jq '.[].filename' \
+            | grep -E '(^|/)[^/]+-lj/|(^|/)website\.yaml$' >/dev/null; then
+            echo "deploy=true" >> "${GITHUB_OUTPUT}"
+            echo "Deploy preview enabled: PR touches a *-lj package or website.yaml"
+            exit 0
+          fi
+
+          echo "deploy=false" >> "${GITHUB_OUTPUT}"
+          echo "Deploy preview skipped: add the deploy-preview label to opt in"
+
   deploy-pr-preview:
     # Do not pin by SHA the WIF binding for github-docs-deploy-previews matches job_workflow_ref by branch ref. Pinning by SHA breaks getAccessToken.
+    needs: preview-gate
     uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@main
     if: >-
+      always() &&
+      !cancelled() &&
       !github.event.pull_request.head.repo.fork &&
-      (contains(github.event.pull_request.labels.*.name, 'deploy-preview') ||
-      github.event.action == 'closed')
+      (
+        github.event.action == 'closed' ||
+        (needs.preview-gate.result == 'success' && needs.preview-gate.outputs.deploy == 'true')
+      )
     permissions:
       contents: read
       id-token: write
