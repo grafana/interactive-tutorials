@@ -139,7 +139,9 @@ Preflight reports under `.cursor/lp-preflight-state/` are local and gitignored. 
 | Preflight (author self-review) | [`.cursor/commands/preflight-learning-path.md`](../.cursor/commands/preflight-learning-path.md) |
 | Review an LP PR | [`.cursor/commands/review-learning-path-pr.md`](../.cursor/commands/review-learning-path-pr.md) |
 | Guide JSON blocks | [json-guide-reference.md](json-guide-reference.md) |
+| Interactive actions (**Show me** / **Do it**) | [interactive-actions.md](interactive-actions.md) |
 | Manifests | [manifest-reference.md](manifest-reference.md) |
 | `website.yaml` fields | [website-yaml-reference.md](website-yaml-reference.md) |
 | Selectors | [selectors-and-testids.md](selectors-and-testids.md) |
 | Block Editor / dev mode UI screenshots | [README.md](../README.md) |
+| Pathfinder plugin docs | [grafana-pathfinder-app docs](https://grafana.com/docs/plugins/grafana-pathfinder-app/latest/) |
