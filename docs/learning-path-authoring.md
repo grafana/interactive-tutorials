@@ -84,6 +84,17 @@ Think of a selector as a street address for a button, menu item, or field. A pre
 
 You do not write selectors by hand in the happy path. During create and convert, the agent discovers them with Playwright against your live stack. Your job is to log in when asked, then prove the steps work in the Block Editor and report failures so the agent can fix them. Prefer stable selectors such as `data-testid` when the UI provides them. For patterns and anti-patterns, see [selectors-and-testids.md](selectors-and-testids.md).
 
+### When selectors apply
+
+Selectors only apply to interactive UI steps (`interactive`, `multistep`, `guided`, and similar blocks). Conceptual milestones that explain ideas without targeting the Grafana UI are markdown-only and skip Playwright selector discovery.
+
+Rule of thumb:
+
+- Teaching a click, fill, or navigate in the Grafana UI needs selectors. The agent discovers them. You smoke-test **Show me** / **Do it**.
+- Explaining concepts with no UI target stays markdown only. No selectors.
+
+The create and convert commands already treat `business-value` as markdown-only (no interactive blocks). Intro and conclusion milestones are often mostly markdown too.
+
 ### Playwright MCP
 
 Playwright MCP is how Cursor lets the agent drive a real browser against your Grafana stack.
