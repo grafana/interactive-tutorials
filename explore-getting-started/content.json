@@ -135,7 +135,6 @@
           "action": "highlight",
           "reftarget": "grafana:pages.Explore.toolbar.contentOutline",
           "requirements": ["on-page:/explore", "exists-reftarget"],
-          "doIt": false,
           "content": "Click **Outline** to toggle the section-jump sidebar."
         },
         {
@@ -161,7 +160,6 @@
           "action": "highlight",
           "reftarget": "grafana:components.QueryTab.queryHistoryButton",
           "requirements": ["on-page:/explore", "exists-reftarget"],
-          "doIt": false,
           "content": "Click **Query history** to see every query you've run recently."
         },
         {
@@ -173,14 +171,12 @@
           "action": "highlight",
           "reftarget": "grafana:components.QueryTab.queryHistoryButton",
           "requirements": ["on-page:/explore", "exists-reftarget"],
-          "doIt": false,
           "content": "Click **Query history** again to close the panel."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Query inspector",
-          "doIt": false,
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "content": "Click **Query inspector** to inspect the raw request and response."
         },
@@ -192,7 +188,6 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "Query inspector",
-          "doIt": false,
           "requirements": ["on-page:/explore", "exists-reftarget"],
           "content": "Click **Query inspector** again to close it."
         }
@@ -227,22 +222,22 @@
               "reftarget": "grafana:components.DataSourcePicker.inputV2",
               "targetvalue": "grafanacloud-play-prom",
               "requirements": ["exists-reftarget"]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-source-card']",
-              "requirements": ["exists-reftarget"]
             }
           ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Builder')",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
-          "doIt": false,
-          "tooltip": "The rest of this section uses the visual query builder — if a previous session left this data source in Code mode, this switches it back.",
-          "content": "Make sure the query editor is in **Builder** mode."
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "content": "Make sure the query editor is in **Builder** mode — the rest of this section uses the visual query builder.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Builder')",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "If a previous session left this data source in Code mode, this switches it back.",
+              "description": "Select Builder mode"
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -290,37 +285,43 @@
           "content": "**Operations** adds functions to your query without typing PromQL by hand."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
-          "doIt": false,
-          "content": "Turn on **Explain** to see your query broken down in plain English."
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "content": "Turn on **Explain** to see your query broken down in plain English, then turn it back off.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
+              "requirements": ["exists-reftarget"],
+              "description": "Turn on Explain"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row prometheus A']",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "Each clause gets its own numbered, plain-language explanation — useful while you're still learning PromQL.",
+              "description": "Read the annotations above the editor"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
+              "requirements": ["exists-reftarget"],
+              "description": "Turn Explain back off"
+            }
+          ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row prometheus A']",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
-          "doIt": false,
-          "tooltip": "Each clause gets its own numbered, plain-language explanation — useful while you're still learning PromQL.",
-          "content": "Explain mode annotates every part of the query above the editor."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
-          "doIt": false,
-          "content": "Turn **Explain** back off."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Code')",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
-          "doIt": false,
-          "content": "Switch to **Code** mode to write raw PromQL directly."
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "content": "Switch to **Code** mode to write raw PromQL directly.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Code')",
+              "requirements": ["exists-reftarget"],
+              "description": "Select Code mode"
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -442,11 +443,6 @@
               "reftarget": "grafana:components.DataSourcePicker.inputV2",
               "targetvalue": "grafanacloud-play-logs",
               "requirements": ["exists-reftarget"]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-source-card']",
-              "requirements": ["exists-reftarget"]
             }
           ]
         },
@@ -552,20 +548,23 @@
           "content": "From here you can show full log details, view surrounding context lines, pin the line, copy it as text or JSON, or ask Grafana Assistant to explain it."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "grafana:pages.Explore.toolbar.live",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
-          "doIt": false,
-          "content": "Click **Live** to start tailing new log lines as they arrive."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "grafana:pages.Explore.toolbar.live",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
-          "doIt": false,
-          "content": "Click it again to stop and return to a normal query."
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "content": "**Live** tails new log lines as they arrive. Start it, watch a few lines land, then stop it.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:pages.Explore.toolbar.live",
+              "requirements": ["exists-reftarget"],
+              "description": "Click Live to start tailing"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "grafana:pages.Explore.toolbar.live",
+              "requirements": ["exists-reftarget"],
+              "description": "Click it again to stop"
+            }
+          ]
         },
         {
           "type": "markdown",
@@ -602,11 +601,6 @@
               "reftarget": "grafana:components.DataSourcePicker.inputV2",
               "targetvalue": "grafanacloud-play-traces",
               "requirements": ["exists-reftarget"]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-source-card']",
-              "requirements": ["exists-reftarget"]
             }
           ]
         },
@@ -620,12 +614,17 @@
           "content": "Tempo offers three query types: **Search**, **TraceQL**, and **Service Graph**."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Search')",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
-          "doIt": false,
-          "content": "Select **Search** for a form-based way to find traces."
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces"],
+          "content": "Select **Search** for a form-based way to find traces.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Search')",
+              "requirements": ["exists-reftarget"],
+              "description": "Select the Search query type"
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -712,12 +711,17 @@
           "content": "A span's details include its own attributes, resource attributes (service, cluster, region, and more), and a **Related logs** button that jumps straight to log lines from the same request."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Service Graph')",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
-          "doIt": false,
-          "content": "Switch to **Service Graph** to see how services depend on each other."
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces"],
+          "content": "Switch to **Service Graph** to see how services depend on each other.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Service Graph')",
+              "requirements": ["exists-reftarget"],
+              "description": "Select the Service Graph query type"
+            }
+          ]
         },
         {
           "type": "interactive",
