@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "drilldown-profiles-investigate-labels",
+  "title": "Investigate a service with labels",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now drill into `checkoutservice` and use its labels to find what explains its spikes.\n\nTo investigate with labels, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header checkoutservice'] button[aria-label='Labels']",
+          "content": "The `checkoutservice` box has some huge spikes. Click **Labels** to explore it further.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-pyroscope-app/explore"],
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "Profiles Drilldown shows the labels associated with this Go process. The `region` label reveals that `eu-west-1` uses significantly more CPU than `ap-south-1` and `us-east-2`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid^='data-testid Panel header region'] button[aria-label='Select']",
+          "content": "Select the **region** label to group by it.\n\nGrouping by `region` separates each labelled instance of the process into its own graph, confirming that `eu-west-1` is the only region with a CPU problem.",
+          "requirements": ["exists-reftarget", "on-page:/a/grafana-pyroscope-app/explore"],
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've isolated the problem to a single region. Next, you'll pinpoint the exact function responsible."
+    }
+  ]
+}
