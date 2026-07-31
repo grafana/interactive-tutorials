@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "drilldown-profiles-diff-flame-graphs",
+  "title": "Compare with a Diff flame graph",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now compare the slow region to a healthy one. `eu-west-1` is significantly more expensive than the others, so you'll set a healthy region (`ap-south-1`) as the baseline and `eu-west-1` as the comparison.\n\nTo explore a Diff flame graph, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=labels&var-dataSource=grafanacloud-play-profiles&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-groupBy=region&var-filters=",
+          "content": "Return to the grouped **region** view for `checkoutservice` if you aren't already there."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='stats-panel-ap-south-1'] label:contains('Baseline')",
+          "content": "On the `ap-south-1` panel, select **Baseline**.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='stats-panel-eu-west-1'] label:contains('Comparison')",
+          "content": "On the `eu-west-1` panel, select **Comparison**.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Compare']",
+          "content": "Click **Compare** to open the **Diff flame graph** view for the two regions.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Auto-select",
+          "content": "To compare the same time window in both, highlight a spike in the **Comparison** graph and click **Sync time ranges**, or click **Auto-select** to line up the time windows automatically.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "The **Diff flame graph** appears. Similar to a git diff, it highlights where the relative share of time changes between the two flame graphs: red means a larger share in the comparison (`eu-west-1`) than in the baseline (`ap-south-1`); green means a smaller share."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Search...']",
+          "targetvalue": "main",
+          "content": "In the table search bar, type `main` to filter the function list.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "You can see that `PlaceOrder` calls `processOrder`, which calls `validateOrderWithRegex`. Hovering over each function shows that `eu-west-1` spends a huge amount of time in `validateOrderWithRegex`, unlike `ap-south-1`, so this confirms that this is the cause of our increased CPU usage."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've found the function responsible for the regional slowdown. Next is an optional AI look at this Diff flame graph."
+    }
+  ]
+}
