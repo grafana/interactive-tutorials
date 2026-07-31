@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "With the slow region isolated, open its flame graph to see where CPU time goes.\n\nA flame graph is a hierarchical view of call stacks. Horizontally, wider nodes cost more. Vertically, each level is a caller–callee relationship: the root sits at the top, and callees stack beneath their callers. **Self** time is spent in the function itself; **total** time is the function plus its callees. For more, see <a href=\"https://grafana.com/docs/pyroscope/latest/introduction/flamegraphs/\" target=\"_blank\" rel=\"noopener noreferrer\">Flame graphs</a> and <a href=\"https://grafana.com/docs/pyroscope/latest/view-and-analyze-profile-data/self-vs-total/\" target=\"_blank\" rel=\"noopener noreferrer\">self vs. total metrics</a>.\n\nTo explore a flame graph, complete the following steps:"
+      "content": "With the slow region isolated, open a healthy region's flame graph first, then the expensive one, so the difference is easier to see.\n\nA flame graph is a hierarchical view of call stacks. Horizontally, wider nodes cost more. Vertically, each level is a caller–callee relationship: the root sits at the top, and callees stack beneath their callers. **Self** time is spent in the function itself; **total** time is the function plus its callees. For more, see <a href=\"https://grafana.com/docs/pyroscope/latest/introduction/flamegraphs/\" target=\"_blank\" rel=\"noopener noreferrer\">Flame graphs</a> and <a href=\"https://grafana.com/docs/pyroscope/latest/view-and-analyze-profile-data/self-vs-total/\" target=\"_blank\" rel=\"noopener noreferrer\">self vs. total metrics</a>.\n\nTo explore flame graphs, complete the following steps:"
     },
     {
       "type": "section",
@@ -14,8 +14,8 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header eu-west-1'] button[aria-label='Flame graph']",
-          "content": "Select **Flame graph** for `eu-west-1`.",
+          "reftarget": "section[data-testid='data-testid Panel header ap-south-1'] button[aria-label='Flame graph']",
+          "content": "Select **Flame graph** for `ap-south-1`, a healthier region.",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
@@ -24,13 +24,41 @@
         },
         {
           "type": "markdown",
-          "content": "Looking at this flame graph, a lot of time is spent in functions related to regex."
+          "content": "Take a look at how CPU time is distributed across the call stack. Keep this picture in mind as a baseline."
+        },
+        {
+          "type": "multistep",
+          "content": "In the **Filters** bar, change the `region` filter from `ap-south-1` to `eu-west-1`.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "#query-builder-filters [aria-label='Filter'] button:contains('ap-south-1')"
+            },
+            {
+              "action": "button",
+              "reftarget": "[aria-label='Select options menu'] :contains('eu-west-1')"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Compared with `ap-south-1`, a lot more time is spent in functions related to regex."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=labels&var-dataSource=grafanacloud-play-profiles&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-groupBy=region&var-filters=",
+          "content": "Return to the grouped **region** view so you can set up a Diff in the next milestone."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You've seen where `eu-west-1` spends its time. Next, compare it to a healthy region with a Diff flame graph."
+      "content": "You've seen a healthy flame graph and the expensive one. Next, confirm the difference with a Diff flame graph."
     }
   ]
 }
