@@ -31,6 +31,6 @@ LP packages are **single-repo** (`interactive-tutorials` only). Metadata lives i
 >
 > Preflight reports stay under `.cursor/lp-preflight-state/` (gitignored). Don't force-add them to your PR.
 >
-> **To start:** Share the path package (`{slug}-lj/` directory), or tell me to infer it from your current branch. If you already named the path, I'll begin the static checks now.
+> **To start:** Share the path package (`{slug}-lj/` directory), or tell me to infer it from your current branch. If you already named the path, I'll begin the static checks now. If this branch also has other `*-lj` packages, I'll list them so you know this run covers only the path you named.
 
 If the path is already clear from the user message, skip asking and start identify + static immediately.

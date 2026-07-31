@@ -84,9 +84,12 @@ Apply every section from [../review-learning-path/reference-checks.md](../review
 - Supplementary content
 - Legacy website source (conversion, read-only)
 - noop and non-interactive steps
+- backticks / copy chips (smell #17)
 - CODEOWNERS (discard for author chat)
 
 Then run shared [claim-check.md](../review-learning-path/claim-check.md) across path root + milestone prose. Route Contradicted / Unsupported / Overstated as Fix before PR. Hide Supported from chat. Author-decides items may appear in readiness as open questions.
+
+Illustrative backtick / copy-chip hits are **Fix before PR** (same bar as review post-inline). Paste-justified backticks matching `targetvalue` stay out of author chat.
 
 Tag each finding; keep only post-inline for author-facing output.
 
@@ -101,6 +104,17 @@ Infer from branch diff, directory age, and legacy website source. Record in `{sl
 | **new** | New `{slug}-lj/`; no legacy website folder | Full Playwright; `website.yaml` + path root completeness |
 | **conversion** | Built via `/build-interactive-lj`; prose-heavy | Legacy prose captured in package; Playwright full path |
 | **update** | Changes existing package only | Touched interactive milestones first |
+
+---
+
+## Multi-path branches
+
+A branch can carry more than one `{slug}-lj/` package. Authors who preflight only the path they have open often ship untested siblings (same failure mode as multi-path PR reviews).
+
+1. During identify, build `paths_on_branch` (diff vs `origin/main` plus untracked `*-lj` dirs). Persist `other_paths`.
+2. Tell the author once when siblings exist. Preflight still runs on `{path_dir}` only unless they ask to expand.
+3. In the readiness / results summary, list each package in `other_paths` under a short **Not preflighted on this run** note so they do not open a multi-path PR thinking one pass covered everything.
+4. Mirror: [review multi-path PRs](../review-learning-path/reference-checks.md#multi-path-prs).
 
 ---
 
@@ -174,6 +188,8 @@ Path: `.cursor/lp-preflight-state/{slug}.json`
   "slug": "monitor-azure-resources-lj",
   "website_slug": "monitor-azure-resources",
   "path_type": "conversion",
+  "paths_on_branch": ["monitor-azure-resources-lj"],
+  "other_paths": [],
   "branch": "docs/my-path",
   "head_commit": "abc123",
   "learn_host": "learn.grafana.net",
@@ -194,6 +210,8 @@ Path: `.cursor/lp-preflight-state/{slug}.json`
 
 | Field | Notes |
 |---|---|
+| `paths_on_branch` | Every `*-lj` package touched on this branch (diff + untracked) |
+| `other_paths` | `paths_on_branch` minus `path_dir` (siblings not in this preflight) |
 | `smoke_mode` | `already-tested` \| `walk-me` \| `skip-smoke` \| null |
 | `smoke_notes` | Author notes for already-tested / skip |
 | `pathfinder` | Only when `walk-me`; keys = milestone slug |

@@ -124,7 +124,7 @@ If `.cursor/pr-review-state/pr-{n}.json` exists:
 
 ## Phase 0: Setup
 
-**Goal:** Checkout PR, infer path, init state.
+**Goal:** Checkout PR, inventory every learning path package the PR touches, infer the path under review, init state.
 
 ### Tell the reviewer
 
@@ -135,14 +135,33 @@ If `.cursor/pr-review-state/pr-{n}.json` exists:
 ### Agent steps
 
 1. `gh pr view` + `gh pr checkout`
-2. Infer `{path_dir}`, `website_slug`, `pr_type`
-3. Write `pr-{n}.json` with `pull_request_node_id` ([github-review.md](github-review.md))
+2. **Inventory every `*-lj` package touched by the PR** (required). Diff against the PR base:
+   ```bash
+   gh pr diff {n} --name-only | awk -F/ '/-lj\// {print $1}' | sort -u
+   ```
+   Store the full list as `paths_in_pr`. If empty, fall back to top-level `*-lj` dirs present on the branch that differ from base (`git diff --name-only origin/{base}...HEAD`).
+3. Infer primary `{path_dir}` (and `website_slug`, `pr_type`). If `paths_in_pr` has more than one entry and the reviewer did not name a path, **stop and ask** which path to review first. Set `other_paths` = `paths_in_pr` minus `{path_dir}`.
+4. Write `pr-{n}.json` with `pull_request_node_id`, `paths_in_pr`, `other_paths` ([github-review.md](github-review.md))
+
+**Multi-path rule:** One review cycle covers **one** `{path_dir}`. Sibling packages in `other_paths` stay out of Phase 1–2 unless the reviewer expands scope. They must still appear in the Phase 0 checkpoint and in the Phase 3 **Not live-tested** list (as whole packages). See [Multi-path PRs](reference-checks.md#multi-path-prs).
 
 ### Checkpoint
+
+When `other_paths` is empty:
 
 > **Phase 0 complete** — PR #{n} on `{head_branch}` @ `{short_sha}`, path `{path_dir}` ({M} milestones), type `{pr_type}`.
 >
 > **Your turn:** Reply **yes** to start the static pass.
+
+When `other_paths` is non-empty:
+
+> **Phase 0 complete** — PR #{n} on `{head_branch}` @ `{short_sha}`, reviewing `{path_dir}` ({M} milestones), type `{pr_type}`.
+>
+> **This PR also includes other learning paths (not in this review cycle unless you expand):**
+> - `{other_path_1}`
+> - `{other_path_2}`
+>
+> **Your turn:** Reply **yes** to start the static pass on `{path_dir}`, or name a different path (or **all**) to change scope.
 
 ---
 
@@ -162,7 +181,7 @@ Combines the former Phases 1–2 and workbook write.
 
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk all [reference-checks.md](reference-checks.md) checklists + [learning-hub-standards.md](learning-hub-standards.md).
-3. **Always scan** for [section intro markdown that may number as a step](reference-checks.md#section-intro-markdown-numbered-as-a-step) and [false noops](reference-checks.md#noop-and-non-interactive-steps). Put matches under **Verify in Block Editor**.
+3. **Always scan** for [section intro markdown that may number as a step](reference-checks.md#section-intro-markdown-numbered-as-a-step), [false noops](reference-checks.md#noop-and-non-interactive-steps), and [backticks / copy chips](reference-checks.md#backticks--copy-chips-smell-17). Put step-numbering matches under **Verify in Block Editor**.
 4. Run Pathfinder CLI validate if available.
 5. Run the shared [claim-check](claim-check.md) pass. Write `pr-{n}-claim-check.md`. Route Contradicted / Unsupported / Overstated as **post inline** (same bar as preflight). Do not edit package JSON here.
 6. Tag every finding with [finding routing](reference-checks.md#finding-routing): **post inline**, **internal**, or **discard**.

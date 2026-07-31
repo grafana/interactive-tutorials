@@ -78,6 +78,8 @@ Path: `.cursor/pr-review-state/pr-{n}.json`
   "pr_number": 403,
   "pull_request_node_id": "PR_kwDOPf9q6c8AAAAA1234567",
   "path_dir": "monitor-azure-resources-lj",
+  "paths_in_pr": ["monitor-azure-resources-lj"],
+  "other_paths": [],
   "website_slug": "monitor-azure-resources",
   "pr_type": "conversion",
   "head_branch": "monitor-azure-interactive",
@@ -110,6 +112,8 @@ Path: `.cursor/pr-review-state/pr-{n}.json`
 | Field | When set | Notes |
 |---|---|---|
 | `pull_request_node_id` | Phase 0 | For GraphQL mutations |
+| `paths_in_pr` | Phase 0 | Every `*-lj` package touched by the PR (sorted) |
+| `other_paths` | Phase 0 | `paths_in_pr` minus `path_dir` (sibling packages) |
 | `pr_type` | Phase 0 | `new`, `conversion`, `update` |
 | `stack_state` | Phase 1 end | Stack used in Phase 2 |
 | `waive_live_testing` | Phase 1 end | Skips Phase 2 (`static-only`) |
