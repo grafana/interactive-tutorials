@@ -14,42 +14,35 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=labels&var-dataSource=grafanacloud-play-profiles&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-groupBy=region&var-filters=",
-          "content": "Make sure you're on the grouped **region** view for `checkoutservice`.",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=labels&var-dataSource=grafanacloud-play-profiles&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-groupBy=region&var-filters=&searchText=",
+          "content": "Make sure you're on the grouped **region** view for `checkoutservice`, with the Quick filter cleared so every region panel is available. If you're already there, click **Skip**.",
           "skippable": true
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='stats-panel-ap-south-1'] label:contains('Baseline')",
-          "content": "On the `ap-south-1` panel, select **Baseline**.",
+          "type": "guided",
+          "content": "Set `ap-south-1` as **Baseline**, `eu-west-1` as **Comparison**, then click **Compare**.",
           "requirements": [
-            "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
           ],
-          "lazyRender": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='stats-panel-eu-west-1'] label:contains('Comparison')",
-          "content": "On the `eu-west-1` panel, select **Comparison**.",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-pyroscope-app/explore"
-          ],
-          "lazyRender": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label='Compare']",
-          "content": "Click **Compare** to open the **Diff flame graph** view for the two regions.",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-pyroscope-app/explore"
-          ],
-          "lazyRender": true
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='stats-panel-ap-south-1'] label:contains('Baseline')",
+              "lazyRender": true,
+              "description": "On the `ap-south-1` panel, select **Baseline**."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='stats-panel-eu-west-1'] label:contains('Comparison')",
+              "lazyRender": true,
+              "description": "On the `eu-west-1` panel, select **Comparison**."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Compare']",
+              "description": "Click **Compare** to open the **Diff flame graph** view for the two regions."
+            }
+          ]
         },
         {
           "type": "interactive",
