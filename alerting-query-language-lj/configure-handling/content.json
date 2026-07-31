@@ -1,17 +1,19 @@
 {
   "schemaVersion": "1.1.0",
   "id": "alerting-query-language-configure-handling",
-  "title": "Configure no-data, error handling, and recovery",
+  "title": "Configure no-data and error handling",
   "blocks": [
     {
       "type": "markdown",
-      "content": "No-data and error handling controls what your rule does when a query returns no data or fails.\n\nA **recovery threshold** is a second boundary that stops the alert from flapping. It fires above your threshold, but only returns to normal when the value drops below the recovery boundary. Ratio queries can hover near the trigger point, so a recovery threshold matters here.\n\nIn this milestone, you configure both."
+      "content": "No-data and error handling controls what your rule does when a query returns no data or fails.\n\nIn this milestone, you open those settings and confirm the defaults."
     },
     {
       "type": "section",
       "id": "configure-handling",
-      "title": "Configure no-data and error handling",
-      "requirements": ["on-page:/alerting/new/alerting"],
+      "title": "Confirm no-data and error handling",
+      "requirements": [
+        "on-page:/alerting/new/alerting"
+      ],
       "blocks": [
         {
           "type": "interactive",
@@ -19,34 +21,38 @@
           "reftarget": "Configure no data and error handling",
           "content": "In the **Set evaluation behavior** section, click **Configure no data and error handling** to expand the options.",
           "doIt": true,
-          "requirements": ["on-page:/alerting/new/alerting"]
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "Leave both dropdowns at their defaults. **Alert state if no data or all values are null** stays on **No Data**. **Alert state if execution error or timeout** stays on **Error**. That way, empty results and query failures each surface as their own alert instead of going unnoticed."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#no-data-state-input",
+          "content": "Confirm **Alert state if no data or all values are null** is set to **No Data**. Don't change it.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#exec-err-state-input",
+          "content": "Confirm **Alert state if execution error or timeout** is set to **Error**. Don't change it.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
-      "type": "section",
-      "id": "set-recovery-threshold",
-      "title": "Set a recovery threshold",
-      "requirements": ["section-completed:configure-handling"],
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid alert-rule step-2']",
-          "content": "Scroll back to the **Set alert condition** section and turn on the **Custom recovery threshold** toggle. Set the recovery value to **3**. The alert now fires when the error rate crosses 5%, and only returns to normal when it drops below 3%. That gap prevents the alert from flapping when the rate hovers around 5%.",
-          "doIt": false,
-          "skippable": true,
-          "requirements": ["on-page:/alerting/new/alerting"]
-        },
-        {
-          "type": "markdown",
-          "content": "Your rule now handles empty results, query errors, and recovery. Next, you choose the contact point that receives the notification."
-        }
-      ]
+      "type": "markdown",
+      "content": "Your rule keeps the default handling for empty results and query errors. Next, you choose the contact point that receives the notification."
     }
   ]
 }

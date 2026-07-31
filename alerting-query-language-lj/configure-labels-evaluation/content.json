@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "You'll organize your alert into a folder and add labels that control how notifications get routed. Folders group alerts by team, service, or purpose, and control who can manage them.\n\nIn this milestone, you create a folder, then add rule-level labels."
+      "content": "You'll organize your alert into a folder and add labels so the rule is easy to find and filter later. Labels can also feed notification policies when you set those up.\n\nFolders organize alerts by team, service, or purpose, and control who can manage them.\n\nIn this milestone, you create a folder, then add a rule-level label."
     },
     {
       "type": "section",
@@ -18,37 +18,49 @@
           "reftarget": "New folder",
           "content": "In the **Add folder and labels** section, click **New folder** to open the create dialog.",
           "doIt": false,
-          "requirements": ["on-page:/alerting/new/alerting"]
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "markdown",
-          "content": "Name the folder **Alerts** (or something meaningful to your team), then click **Create**. Grafana saves the folder and selects it for your rule."
+          "content": "Enter a folder name (for example, **Alerts**), then click **Create**. The folder is saved and selected for your rule."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've created a folder for the rule. Next, add labels."
     },
     {
       "type": "section",
       "id": "add-labels",
       "title": "Add labels",
-      "requirements": ["section-completed:select-folder"],
+      "requirements": [
+        "section-completed:select-folder"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Add labels",
-          "content": "Click **Add labels** to open the labels editor. Labels are key-value tags that route this alert. A sustained 5% error rate deserves a `severity=critical` tag.",
+          "content": "Click **Add labels** to open the labels editor. Labels are key-value tags that help you find and filter this alert. A sustained 5% error rate deserves the key **severity** and the value **critical**.",
           "doIt": false,
-          "requirements": ["on-page:/alerting/new/alerting"]
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "markdown",
-          "content": "In the **Choose key** dropdown, type or select **severity**. In **Choose value**, type **critical**. Click **Save**."
-        },
-        {
-          "type": "markdown",
-          "content": "Your alert now has a folder and a label. Next, you tell Grafana how often to check the query and how long the problem must last before the alert fires."
+          "content": "Add a label with the key **severity** and the value **critical**, then click **Save**."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your alert now has a folder and a label. Next, you set how often the rule evaluates and how long the condition must last before the alert fires."
     }
   ]
 }

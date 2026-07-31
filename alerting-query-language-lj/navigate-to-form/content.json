@@ -1,58 +1,51 @@
 {
   "schemaVersion": "1.1.0",
   "id": "alerting-query-language-navigate-to-form",
-  "title": "Open the new alert rule page",
+  "title": "Open the New alert rule page",
   "blocks": [
     {
       "type": "markdown",
-      "content": "When an alert fires, the name is the first thing responders see, so give the rule a name that says exactly what's wrong.\n\nIn this milestone, you open a fresh alert rule form and name the rule."
+      "content": "A clear, descriptive name is the first thing responders see when an alert fires. A good name tells them immediately what's wrong without opening the alert details.\n\nIn this milestone, you'll open the **New alert rule** page and name your rule."
     },
     {
       "type": "section",
-      "id": "open-alert-form",
-      "title": "Open the new alert rule page",
+      "id": "open-and-name-alert-rule",
+      "title": "Open and name your alert rule",
       "blocks": [
         {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/alerting/list",
-          "content": "Open the **Alert rules** page. It's in the main menu under **Alerting > Alert rules**.",
+          "content": "In the main menu, click **Alerting > Alert rules**.",
           "verify": "on-page:/alerting/list"
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[href*='alerting/new/alerting']",
-          "content": "Click **+ New alert rule** to start a fresh rule.",
-          "requirements": ["on-page:/alerting/list"],
+          "action": "navigate",
+          "reftarget": "/alerting/new/alerting",
+          "content": "Click **+ New alert rule**.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ],
           "verify": "on-page:/alerting/new/alerting"
         },
         {
-          "type": "markdown",
-          "content": "You're on the new alert rule page. Any draft you had open before is now cleared."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Give your alert rule a name']",
+          "targetvalue": "QuickPizza high error rate",
+          "content": "In the **Name** field, enter `QuickPizza high error rate`.",
+          "tooltip": "Responders see this name first when the alert fires.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
-      "type": "section",
-      "id": "set-alert-name",
-      "title": "Name the rule",
-      "requirements": ["section-completed:open-alert-form"],
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "input#name",
-          "targetvalue": "QuickPizza high error rate",
-          "content": "In the **Alert rule name** field, use **QuickPizza high error rate**. It says exactly what the rule watches.",
-          "tooltip": "This name shows up first when the alert fires.",
-          "requirements": ["on-page:/alerting/new/alerting"]
-        },
-        {
-          "type": "markdown",
-          "content": "Next, you write the query that measures the error rate."
-        }
-      ]
+      "type": "markdown",
+      "content": "Your rule has a clear name. Next, you write the query in Code mode."
     }
   ]
 }
