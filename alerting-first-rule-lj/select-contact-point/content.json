@@ -1,31 +1,45 @@
 {
   "schemaVersion": "1.1.0",
   "id": "alerting-first-rule-select-contact-point",
-  "title": "Select a contact point",
+  "title": "Configure handling and select a contact point",
   "blocks": [
     {
       "type": "markdown",
-      "content": "A contact point tells Grafana where to send notifications, like email, Slack, or PagerDuty. In this milestone, you pick the contact point that receives notifications when this rule fires."
+      "content": "In this milestone, you keep the default no-data and error handling, then choose where notifications go when the alert fires."
     },
     {
       "type": "section",
-      "id": "select-contact-point",
-      "title": "Select a contact point",
-      "requirements": ["on-page:/alerting/new/alerting"],
+      "id": "configure-handling-and-contact-point",
+      "title": "Configure handling and select a contact point",
+      "requirements": [
+        "on-page:/alerting/new/alerting"
+      ],
       "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Configure no data and error handling",
+          "content": "In the **Set evaluation behavior** section, click **Configure no data and error handling** to expand the options.\n\nLeave both drop-downs at their defaults: **No Data** for no data or all null values, and **Error** for execution error or timeout.",
+          "doIt": true,
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='contact-point-picker']",
           "content": "In the **Configure notifications** section, open the **Contact point** picker and choose **grafana-default-email**. Every Grafana Cloud stack includes it, and it delivers notifications to the email on your account.",
           "doIt": false,
-          "requirements": ["on-page:/alerting/new/alerting"]
-        },
-        {
-          "type": "markdown",
-          "content": "Your rule now knows where to send notifications. Next, you'll write the notification message and save the rule."
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your rule has handling defaults and a contact point. Next, you write the notification message and save the rule."
     }
   ]
 }

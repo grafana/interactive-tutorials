@@ -1,16 +1,16 @@
 {
   "schemaVersion": "1.1.0",
   "id": "alerting-first-rule-build-query",
-  "title": "Build your query",
+  "title": "Build your query and set the condition",
   "blocks": [
     {
       "type": "markdown",
-      "content": "You'll build an alert that watches the QuickPizza app for server errors. You'll use Builder mode instead of using a query language."
+      "content": "You'll build a query that watches QuickPizza for server errors, then confirm when the alert fires.\n\nUse **Builder** mode instead of writing PromQL. Keep the condition as **Is above** **0**."
     },
     {
       "type": "section",
-      "id": "select-data-source",
-      "title": "Select the QuickPizza Prometheus data source",
+      "id": "prepare-query-editor",
+      "title": "Prepare the query editor",
       "requirements": [
         "has-datasource:grafanacloud-play-prom"
       ],
@@ -20,42 +20,29 @@
           "action": "formfill",
           "reftarget": "input[data-testid='data-testid Select a data source']",
           "targetvalue": "grafanacloud-play-prom",
-          "content": "Choose the data source that holds the metric you want to alert on. For this tutorial, `grafanacloud-play-prom` is filled in for you — it's the Prometheus data source from the QuickPizza tutorial data sources.",
+          "content": "On the **New alert rule** page, choose the data source that holds the metric you want to alert on.\n\n**grafanacloud-play-prom** is filled in for you.",
           "tooltip": "Prometheus data source from the QuickPizza tutorial data sources.",
           "requirements": [
-            "on-page:/alerting/new/alerting"
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
           ]
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "id": "toggle-explain",
-      "title": "Turn on Explain (optional)",
-      "blocks": [
+        },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid prometheus explain switch wrapper']",
-          "content": "Toggle **Explain** on. Grafana narrates what each part of your query does in plain English — a fast way to learn what you're clicking without knowing PromQL syntax.",
+          "content": "Optionally, toggle **Explain** on. Grafana describes each part of your query in plain language.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ],
           "skippable": true,
           "doIt": false
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "id": "use-builder-mode",
-      "title": "Confirm Builder mode",
-      "blocks": [
+        },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid QueryEditorModeToggle']",
-          "content": "Make sure **Builder** mode is selected. This mode lets you build the query without using PromQL.",
+          "content": "Confirm **Builder** is selected so you can build the query without writing PromQL.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ],
@@ -66,121 +53,140 @@
     },
     {
       "type": "section",
-      "id": "choose-metric",
-      "title": "Choose the metric",
+      "id": "build-metric-query",
+      "title": "Build the metric query",
+      "requirements": [
+        "section-completed:prepare-query-editor"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid metric select']",
-          "content": "Copy `quickpizza_server_http_requests_total` from this step, paste it into the **Metric** drop-down, then select it from the list. This counter tracks every HTTP request QuickPizza's services handle, labeled with the response `status`. It's the raw material for the alert.",
-          "tooltip": "Paste the metric name here, then pick it from the list.",
+          "content": "In the **Metric** drop-down, paste `quickpizza_server_http_requests_total`, then select it from the list.\n\nThis counter tracks HTTP requests for QuickPizza services and includes a response **status** label.",
+          "tooltip": "Paste the metric name, then pick it from the list.",
           "doIt": false,
           "requirements": [
-            "on-page:/alerting/new/alerting"
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
           ]
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "id": "add-label-filter",
-      "title": "Filter to server errors",
-      "blocks": [
+        },
         {
           "type": "interactive",
-          "action": "highlight",
+          "action": "formfill",
           "reftarget": "[data-testid='data-testid Select label']",
-          "content": "In the **Label filters** row, open the **Label** drop-down and select `status`. The raw metric covers *all* requests — the `status` label lets you narrow it down.",
+          "targetvalue": "status",
+          "content": "In the **Label filters** row, open the **Label** drop-down and select **status**.",
           "tooltip": "Pick status from the list.",
           "requirements": [
-            "on-page:/alerting/new/alerting"
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid Select match operator']",
-          "content": "Open the operator drop-down and change `=` to `=~`. The `=~` operator does a regex match, so one filter catches every 5xx code at once (500, 502, 503, and so on).",
-          "tooltip": "=~ is Prometheus regex-match; = is exact-match.",
+          "content": "Open the operator drop-down and change **=** to **=~** so one filter can match every 5xx status code.",
+          "tooltip": "=~ is regex match; = is exact match.",
           "doIt": false,
           "requirements": [
-            "on-page:/alerting/new/alerting"
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid Select value']",
-          "content": "In the **Select value** box, enter `5..`, then press Enter. That regex matches any three-digit status starting with 5, so the query now returns only server errors.",
-          "tooltip": "Enter 5.. and press Enter.",
+          "content": "In the **Select value** box, enter `5..`, then press Enter.\n\nThat regex matches any three-digit status that starts with 5.",
+          "tooltip": "Enter 5.. and press Enter. Don't pick 500 from the list.",
           "doIt": false,
           "requirements": [
-            "on-page:/alerting/new/alerting"
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
           ]
         }
       ]
     },
     {
+      "type": "markdown",
+      "content": "The metric is a counter that only increases. Add a range function to count new errors over the last 5 minutes. Optionally sum across services so the alert uses one total."
+    },
+    {
       "type": "section",
-      "id": "add-increase-operation",
-      "title": "Add Increase (5m)",
+      "id": "add-operations-and-preview",
+      "title": "Add operations and run the query",
+      "requirements": [
+        "section-completed:build-metric-query"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Operations",
-          "content": "The metric is a *counter* that only goes up, so its raw value doesn't tell you whether errors just happened. `increase()` fixes that. Click **+ Operations** to open the picker.",
+          "content": "Click **+ Operations**. In the **Operations** drop-down, select **Range functions / Increase**, then set the **Range** to **5m**.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ]
         },
         {
-          "type": "markdown",
-          "content": "Select **Range functions**, then **Increase**. Set the range to `5m` — the query now counts new errors in the last 5 minutes."
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "id": "add-sum-operation",
-      "title": "Sum across services (optional)",
-      "blocks": [
-        {
           "type": "interactive",
           "action": "button",
           "reftarget": "Operations",
-          "content": "Without `Sum`, you get one number per QuickPizza service — noisier, harder to read. Summing gives one total so the alert answers \"is QuickPizza having errors *anywhere*?\" Click **+ Operations** again to open the picker.",
+          "content": "Optionally, click **+ Operations** again and select **Aggregations / Sum**.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ],
           "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Select **Aggregations**, then **Sum**. Grafana wraps your `increase()` result in a single total across all services."
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run queries",
+          "content": "Click **Run queries**.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
         }
       ]
     },
     {
+      "type": "markdown",
+      "content": "Check that your query matches `sum(increase(quickpizza_server_http_requests_total{status=~\"5..\"}[5m]))` and that **Run queries** succeeds.\n\nNext, confirm the alert condition."
+    },
+    {
       "type": "section",
-      "id": "preview-query",
-      "title": "Preview the query",
+      "id": "confirm-and-preview-condition",
+      "title": "Confirm and preview the condition",
+      "requirements": [
+        "section-completed:add-operations-and-preview"
+      ],
       "blocks": [
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "Run queries",
-          "content": "Click **Run queries** to preview the data. You should see `0` while QuickPizza is healthy, jumping above zero when 5xx errors happen in the last 5-minute window. If the preview is empty, double-check the data source, metric name, and label filter.",
+          "action": "highlight",
+          "reftarget": "label:contains('WHEN QUERY')",
+          "content": "In the **Alert condition** section, confirm **Is above** is selected and the value is **0**.",
+          "doIt": false,
           "requirements": [
             "on-page:/alerting/new/alerting"
           ]
         },
         {
-          "type": "markdown",
-          "content": "Your query now counts QuickPizza's 5xx errors over the last 5 minutes. In the next milestone, you set the condition that fires the alert the moment that count goes above zero."
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Preview alert rule condition",
+          "content": "Click **Preview alert rule condition** to evaluate the condition against your query.\n\nThe result may show **Normal** or **Firing**, depending on whether the query is above **0** right now.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your query and alert condition are set. Next, you create a folder and add labels."
     }
   ]
 }

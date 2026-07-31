@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.1.0",
   "id": "alerting-first-rule-install-datasources",
-  "title": "Install the tutorial data sources",
+  "title": "Install the QuickPizza demo",
   "blocks": [
     {
       "type": "markdown",
@@ -16,32 +16,41 @@
       ],
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-demodashboards-app']",
-          "content": "In the left nav, click **Demo Data Dashboards**.",
-          "tooltip": "Opens the app that installs the tutorial data sources.",
+          "type": "multistep",
+          "content": "Expand **More apps** in the main menu, then open **Demo Data Dashboards**.",
           "requirements": [
-            "navmenu-open",
-            "exists-reftarget"
+            "navmenu-open"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label*='section: More apps']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-demodashboards-app']"
+            }
           ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='install-quickpizza']",
+          "type": "guided",
           "content": "Click **Install the Quick Pizza SRE demo**. This deploys the tutorial data sources and refreshes the page.",
           "tooltip": "Installs grafanacloud-play-prom and the other tutorial data sources.",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "completeEarly": true
+          "completeEarly": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='install-quickpizza']",
+              "lazyRender": true,
+              "description": "Click **Install the Quick Pizza SRE demo**."
+            }
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "The `grafanacloud-play-prom` data source is now available. In the next milestone, you open the new alert rule page and give your rule a clear name."
+      "content": "Install opens the QuickPizza dashboards folder. Those dashboards use the tutorial Prometheus data source **grafanacloud-play-prom**. Next, you'll open the new alert rule page and build a query on that same data."
     }
   ]
 }

@@ -1,58 +1,51 @@
 {
   "schemaVersion": "1.1.0",
   "id": "alerting-first-rule-navigate-to-form",
-  "title": "Open the new alert rule page",
+  "title": "Open the New alert rule page",
   "blocks": [
     {
       "type": "markdown",
-      "content": "A clear, descriptive name is the first thing responders see when an alert fires. A good name tells them immediately what's wrong without opening the alert details.\n\nIn this milestone, you'll open the new alert rule page and give your rule a name."
+      "content": "A clear, descriptive name is the first thing responders see when an alert fires. A good name tells them immediately what's wrong without opening the alert details.\n\nIn this milestone, you'll open the **New alert rule** page and name your rule."
     },
     {
       "type": "section",
-      "id": "open-alert-form",
-      "title": "Open the new alert rule page",
+      "id": "open-and-name-alert-rule",
+      "title": "Open and name your alert rule",
       "blocks": [
         {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/alerting/list",
-          "content": "Open the **Alert rules** page. In the main menu, you'll find it under **Alerting > Alert rules**.",
+          "content": "In the left navigation menu, click **Alerting** > **Alert rules**.",
           "verify": "on-page:/alerting/list"
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[href*='alerting/new/alerting']",
-          "content": "Click **+ New alert rule** to open the new alert rule page.",
-          "requirements": ["on-page:/alerting/list"],
+          "action": "navigate",
+          "reftarget": "/alerting/new/alerting",
+          "content": "On the **Alert rules** page, click **+ New alert rule**.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ],
           "verify": "on-page:/alerting/new/alerting"
         },
         {
-          "type": "markdown",
-          "content": "You're now on the new alert rule page."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Give your alert rule a name']",
+          "targetvalue": "QuickPizza server errors",
+          "content": "On the **New alert rule** page, in the **Name** field, enter a clear name that helps responders triage alerts quickly.\n\n**QuickPizza server errors** is filled in for you.",
+          "tooltip": "Responders see this name first when the alert fires.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
-      "type": "section",
-      "id": "set-alert-name",
-      "title": "Set the alert rule name",
-      "requirements": ["section-completed:open-alert-form"],
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "input#name",
-          "targetvalue": "QuickPizza server errors",
-          "content": "Enter a descriptive name for your alert rule that tells responders triage alerts quickly, especially when multiple alerts fire at once. In the **Alert rule name** field, `QuickPizza server errors` is filled in for you.",
-          "tooltip": "Responders see this name first when the alert fires.",
-          "requirements": ["on-page:/alerting/new/alerting"]
-        },
-        {
-          "type": "markdown",
-          "content": "In the next milestone, you learn how to build the query that defines what your alert monitors."
-        }
-      ]
+      "type": "markdown",
+      "content": "Your rule has a clear name. In the next milestone, you build the query that defines what the alert monitors."
     }
   ]
 }
