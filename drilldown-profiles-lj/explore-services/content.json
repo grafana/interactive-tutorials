@@ -9,7 +9,7 @@
     },
     {
       "type": "markdown",
-      "content": "This journey uses a Pyroscope data source named `grafanacloud-play-profiles` that points at the public play instance. The next step checks whether you already have it and helps you add it if you don't."
+      "content": "This journey uses a Grafana Pyroscope data source named `grafanacloud-play-profiles` that connects to the public play Pyroscope instance. The next step checks whether you already have it and helps you add it if you don't."
     },
     {
       "type": "conditional",
@@ -23,7 +23,7 @@
           "content": "You already have the **grafanacloud-play-profiles** data source. You'll select it in the next step."
         }
       ],
-      "whenFalseSectionConfig": { "title": "Add the play Profiles data source" },
+      "whenFalseSectionConfig": { "title": "Add the play Pyroscope data source" },
       "whenFalse": [
         {
           "type": "markdown",
@@ -101,7 +101,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='profileMetricId']",
-          "content": "Make sure the **CPU** profile type (`process_cpu`) is selected.\n\nCPU time helps you identify bottlenecks where operations take too long. You'll see that services use different languages (Go, Java), and some take longer than others, with periodic large spikes.",
+          "content": "Make sure the **CPU** profile type (`process_cpu`) is selected.\n\nLook for spikes or trends in the service charts to decide where to investigate next.",
           "requirements": ["exists-reftarget", "on-page:/a/grafana-pyroscope-app/explore"],
           "doIt": false
         }
@@ -109,7 +109,7 @@
     },
     {
       "type": "markdown",
-      "content": "Optional detour: before you drill in, take a quick look at every profile type `checkoutservice` emits."
+      "content": "Optional detour: before you drill in, open **Profile types** for `checkoutservice`."
     },
     {
       "type": "section",
@@ -124,7 +124,7 @@
         },
         {
           "type": "markdown",
-          "content": "The **Profile types** tab shows every signal `checkoutservice` emits at once: CPU (`process_cpu`), memory (`alloc_space`, `inuse_space`), `goroutine` count, and mutex/block `contentions` and `delay`. Each panel has its own **Labels** and **Flame graph** shortcut. Scanning these confirms CPU is the profile type with the telling periodic spikes, the signal worth chasing here."
+          "content": "The **Profile types** tab shows each profile type available for `checkoutservice`. Each panel has **Labels** and **Flame graph** shortcuts. Scan for the profile type with the clearest spikes. Here, that's CPU."
         },
         {
           "type": "interactive",
