@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "You'll open the **Silences** page, set a time window, add label matchers that select which alerts to suppress, verify the affected instances, and submit.\n\nIn this milestone, you create a silence from start to finish."
+      "content": "You'll create a silence that suppresses notifications for alerts with the label **severity=critical**.\n\nUse the defaults for the time window. Enter the label matcher values this path provides."
     },
     {
       "type": "section",
@@ -16,121 +16,134 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/alerting/silences",
-          "content": "Open the **Silences** page. In the main menu, you'll find it under **Alerting > Silences**.",
+          "content": "In the main menu, click **Alerting > Silences**.",
           "verify": "on-page:/alerting/silences"
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[href*='alerting/silence/new']",
-          "content": "Click **Create silence** to start a new silence.",
-          "requirements": ["on-page:/alerting/silences"],
+          "action": "navigate",
+          "reftarget": "/alerting/silence/new",
+          "content": "Click **Create silence**.",
+          "requirements": [
+            "on-page:/alerting/silences"
+          ],
           "verify": "on-page:/alerting/silence/new"
         }
       ]
     },
     {
+      "type": "markdown",
+      "content": "You've opened the new silence form. Next, leave the default time window."
+    },
+    {
       "type": "section",
       "id": "set-time-window",
       "title": "Set the silence time window",
-      "requirements": ["section-completed:open-silence-form"],
+      "requirements": [
+        "section-completed:open-silence-form"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "label:contains('Silence start and end')",
-          "content": "The **Silence start and end** field shows two timestamps: when the silence starts and when it ends. By default, the start is now and the end is two hours from now, so the silence lasts two hours.",
+          "content": "Leave the default **Silence start and end** times for now.",
           "doIt": false,
-          "requirements": ["on-page:/alerting/silence/new"]
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "If you need custom times, click the field to open an **Absolute time range** menu, set **From** and **To**, then click **Apply time range**. Otherwise, skip to the **Duration** field."
+          "requirements": [
+            "on-page:/alerting/silence/new"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "#duration",
-          "content": "Set the **Duration** field to how long you want the silence to last, and Grafana calculates the end time for you.",
+          "content": "Leave **Duration** set to **2h**.",
           "doIt": false,
-          "requirements": ["on-page:/alerting/silence/new"]
-        },
-        {
-          "type": "markdown",
-          "content": "The default `2h` works for a short deployment. Use `1d` for a longer migration. Valid units are years (y), months (M), weeks (w), days (d), hours (h), minutes (m), and seconds (s)."
+          "requirements": [
+            "on-page:/alerting/silence/new"
+          ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've kept the default two-hour window. Next, add a label matcher."
     },
     {
       "type": "section",
       "id": "add-matchers",
       "title": "Add label matchers",
-      "requirements": ["section-completed:set-time-window"],
+      "requirements": [
+        "section-completed:set-time-window"
+      ],
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
+          "action": "formfill",
           "reftarget": "#matcher-0-label",
-          "content": "Under **Refine affected alerts**, enter a label that's on one of your alerts. If you followed the first-rule journey, copy `severity` and paste it into the **Label** field.",
-          "doIt": false,
-          "requirements": ["on-page:/alerting/silence/new"]
+          "targetvalue": "severity",
+          "content": "In the **Label** field, enter `severity`.",
+          "tooltip": "Paste the label name from the first-rule path.",
+          "doIt": true,
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
-          "action": "highlight",
+          "action": "formfill",
           "reftarget": "#matcher-0-value",
-          "content": "Copy `critical` and paste it into the **Value** field so the matcher becomes `severity=critical`. The operator defaults to equals (`=`). Change it if you need a regex or not-equals match.",
-          "doIt": false,
-          "requirements": ["on-page:/alerting/silence/new"]
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "Only alerts whose labels match every matcher you add are silenced. The more matchers you add, the narrower the silence."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button:contains('Add matcher')",
-          "content": "Click **Add matcher** if you want to narrow the silence further, for example, adding `team=platform` alongside `severity=critical` silences only critical alerts owned by the platform team.",
-          "doIt": false,
-          "requirements": ["on-page:/alerting/silence/new"],
-          "skippable": true
+          "targetvalue": "critical",
+          "content": "In the **Value** field, enter `critical`.",
+          "tooltip": "Paste the label value from the first-rule path.",
+          "doIt": true,
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
+      "type": "markdown",
+      "content": "Your matcher is **severity=critical**. Optionally check **Affected alert instances** below the matchers (an empty list is fine), then add a comment and save."
+    },
+    {
       "type": "section",
       "id": "verify-and-submit",
-      "title": "Verify affected instances and submit",
-      "requirements": ["section-completed:add-matchers"],
+      "title": "Add a comment and save",
+      "requirements": [
+        "section-completed:add-matchers"
+      ],
       "blocks": [
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "Review the **Affected alert instances** preview below the matchers. It lists any alert instances currently firing that match your matchers.\n\nWith `severity=critical`, you should see the alerts you created in the previous sections. If the preview is empty, the silence still catches alerts that start firing during the window."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
+          "action": "formfill",
           "reftarget": "#comment",
-          "content": "Replace the auto-populated text in the **Comment** field with a short reason, for example, `Database upgrade in progress`. Grafana records the creation time separately, so the timestamp isn't needed here.",
-          "doIt": false,
-          "requirements": ["on-page:/alerting/silence/new"]
+          "targetvalue": "Maintenance window",
+          "content": "In the **Comment** field, replace the text with `Maintenance window`.",
+          "doIt": true,
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Save silence",
-          "content": "Click **Save silence** to create the silence.\n\nNotifications for matching alerts are now suppressed until the silence expires. Evaluation continues, so you keep a record of what fired during the window.",
-          "requirements": ["on-page:/alerting/silence/new"]
-        },
-        {
-          "type": "markdown",
-          "content": "Your silence is active. Matching alerts won't notify anyone until the window ends, then notifications resume automatically.\n\nYou've created a silence from start to finish."
+          "content": "Click **Save silence**.",
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your silence is active. Matching alerts won't notify anyone until the window ends."
     }
   ]
 }
