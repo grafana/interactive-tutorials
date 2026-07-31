@@ -16,24 +16,16 @@
           "content": "This whole panel is one trace. Start at the root: the top row is the request itself, the span that everything else happens inside. In this demo it's the quickpizza-public-api span for the pizza-order request.",
           "doIt": false,
           "requirements": ["on-page:/explore", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid=\"SpanTreeOffset--indentGuide\"]:nth-match(1)",
-          "content": "Follow the indentation. A child span sits inside the span that triggered it, so the nesting shows the call chain: one operation calls the next.",
-          "doIt": false,
-          "requirements": ["on-page:/explore", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid=\"data-testid SpanBar--wrapper\"]:nth-match(1)",
-          "content": "Look at the bars. Each bar's length is how long that operation took, drawn on the timeline where it happened. A wider bar is a slower step, so comparing bars tells you where time went.",
-          "doIt": false,
-          "requirements": ["on-page:/explore", "exists-reftarget"]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Follow the indentation down the left side. A child span sits inside the span that triggered it, so the nesting shows the call chain: one operation calls the next. Rows that line up at the same indentation are siblings, steps that ran under the same parent."
+    },
+    {
+      "type": "markdown",
+      "content": "Now look at the bars. Each bar's length is how long that operation took, drawn on the timeline where it happened. A wider bar is a slower step, so comparing bars tells you where the time went."
     },
     {
       "type": "markdown",
@@ -41,11 +33,11 @@
     },
     {
       "type": "markdown",
-      "content": "The top bar is always the whole request, so skip it and find the longest bar below it. That span is where the request spent most of its time. Its service and operation names tell you what it was, for example a database query, an API call, or a compute step. Reading a trace top-down like this is how you spot where the time went without checking every row."
+      "content": "The top bar is usually the whole request, so look below it for the longest bar. That span is often where the request spent much of its time. Its service and operation names suggest what it was, for example a database query, an API call, or a compute step. When you care about the end-to-end time, use the **Critical path** (next) rather than bar length alone. Reading a trace top-down like this is how you spot where the time went without checking every row."
     },
     {
       "type": "markdown",
-      "content": "Optional: if your view offers a **Critical path** control (look near the filters, or above the service and operation names), select it to shade the hops that drove the end-to-end time. It can highlight most of the spans, so don't just look for highlighted rows. Look for the span with the longest critical-path segment, the solid black line, because that's where the slow path actually spent its time."
+      "content": "Optional: if your view offers a **Critical path** control (look near the filters, or above the service and operation names), select it. The critical path shades the hops that drove the end-to-end time as a darker segment on each duration bar. It can shade most of the spans, so don't just look for shaded rows. Look for the span with the longest darker segment, because that's where the slow path actually spent its time."
     },
     {
       "type": "markdown",

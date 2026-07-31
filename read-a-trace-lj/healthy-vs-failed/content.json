@@ -17,7 +17,7 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/explore?schemaVersion=1&panes=%7B%22trc%22%3A%7B%22datasource%22%3A%22grafanacloud-traces%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22tempo%22%2C%22uid%22%3A%22grafanacloud-traces%22%7D%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20rootServiceName%20%3D%20%5C%22quickpizza-public-api%5C%22%20%26%26%20rootName%20%3D%20%5C%22POST%20%2Fapi%2Fpizza%5C%22%20%26%26%20status%20%3D%20error%20%7D%22%2C%22limit%22%3A20%2C%22tableType%22%3A%22traces%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-3h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1",
-          "content": "This step opens Explore and runs a query for failed requests, returning any error traces from the last three hours. Wait for the results table to load.",
+          "content": "Run this query to load error traces from the last three hours. Wait for the results table to appear.",
           "verify": "on-page:/explore"
         }
       ]
@@ -28,11 +28,11 @@
     },
     {
       "type": "markdown",
-      "content": "**If the list is empty, that's not an issue.** Widen the time range at the top of Explore and run the query again. Error traces are common, so a larger window will surface some. If you change the query by mistake, run the query step again to reload it."
+      "content": "**If the list is empty, that's not an issue.** Widen the time range at the top of Explore and run the query again; a larger window usually surfaces some error traces. If you change the query by mistake, run the query step again to reload it."
     },
     {
       "type": "markdown",
-      "content": "Notice how different it looks. A successful order runs the whole pipeline: many spans, the deep recommendations → catalog → SELECT fan-out. A failed one is much shorter: it short-circuits early, stopping at the step that failed, so it never reaches the rest of the pipeline. Whatever the exact counts, the failed trace is visibly smaller, and that shape alone tells you it stopped early, before you read a single attribute.\n\nThis is also where you meet **status codes** (a healthy request returns a success code, a failed one an error code) and, where your view offers one, an **Errors** filter for finding them. To see why a request failed, open the span that failed and read its attributes: the HTTP attributes and status code, for example http.status_code, often carry an error message that names the cause. The lesson: useful traces aren't always big waterfalls. A small, short trace can tell you exactly where a request gave up."
+      "content": "Notice how different it looks. A successful order runs the whole pipeline: many spans, the deep recommendations → catalog → SELECT fan-out. A failed one is often shorter: it may stop at the step that failed, so it doesn't always reach the rest of the pipeline. When it does stop early, the failed trace is visibly smaller, and that shape alone hints that the request gave up before you read a single attribute.\n\nThis is also where you meet **status codes** (a healthy request returns a success code, a failed one an error code) and, where your view offers one, an **Errors** filter for finding them. To see why a request failed, open the span that failed and read its details: http.status_code gives the numeric status, and the error message itself usually lives in the span's **events** (look for an exception event). Together they tell you what went wrong. The lesson: useful traces aren't always big waterfalls. A small, short trace can tell you exactly where a request gave up."
     }
   ]
 }
