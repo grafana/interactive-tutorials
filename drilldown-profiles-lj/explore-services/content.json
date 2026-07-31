@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "You've been told the application is slow in some regions but not others. Before you explore your services, make sure you have a Pyroscope data source, then open Profiles Drilldown and focus on the signal that matters."
+      "content": "Before you explore your services, make sure you have a Pyroscope data source, then open Profiles Drilldown and focus on the signal that matters."
     },
     {
       "type": "markdown",
@@ -13,17 +13,23 @@
     },
     {
       "type": "conditional",
-      "conditions": ["has-datasource:grafanacloud-play-profiles"],
+      "conditions": [
+        "has-datasource:grafanacloud-play-profiles"
+      ],
       "description": "Create the grafanacloud-play-profiles Pyroscope data source when it is missing.",
       "display": "section",
-      "whenTrueSectionConfig": { "title": "Data source ready" },
+      "whenTrueSectionConfig": {
+        "title": "Data source ready"
+      },
       "whenTrue": [
         {
           "type": "markdown",
           "content": "You already have the **grafanacloud-play-profiles** data source. You'll select it in the next step."
         }
       ],
-      "whenFalseSectionConfig": { "title": "Add the play Pyroscope data source" },
+      "whenFalseSectionConfig": {
+        "title": "Add the play Pyroscope data source"
+      },
       "whenFalse": [
         {
           "type": "markdown",
@@ -40,7 +46,10 @@
           "action": "button",
           "reftarget": "Grafana Pyroscope",
           "content": "Select **Grafana Pyroscope** from the list of data source types.",
-          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"]
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
@@ -48,7 +57,9 @@
           "reftarget": "input[id='connection-url']",
           "targetvalue": "https://play-pyroscope.grafana.org/",
           "content": "In the **Connection > URL** field, enter `https://play-pyroscope.grafana.org/`.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
@@ -56,14 +67,18 @@
           "reftarget": "[data-testid='data-testid Data source settings page name input field']",
           "targetvalue": "grafanacloud-play-profiles",
           "content": "At the top of the page, rename the data source to `grafanacloud-play-profiles`.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Save & test",
           "content": "Click **Save & test**. You should see a message confirming the data source is working.",
-          "requirements": ["exists-reftarget"],
+          "requirements": [
+            "exists-reftarget"
+          ],
           "verify": "has-datasource:grafanacloud-play-profiles"
         }
       ]
@@ -79,7 +94,9 @@
         {
           "type": "multistep",
           "content": "On the Grafana Cloud home page, open the navigation menu and click **Drilldown > Profiles**.",
-          "requirements": ["navmenu-open"],
+          "requirements": [
+            "navmenu-open"
+          ],
           "steps": [
             {
               "action": "highlight",
@@ -102,7 +119,10 @@
           "action": "highlight",
           "reftarget": "[data-testid='profileMetricId']",
           "content": "Make sure the **CPU** profile type (`process_cpu`) is selected.\n\nLook for spikes or trends in the service charts to decide where to investigate next.",
-          "requirements": ["exists-reftarget", "on-page:/a/grafana-pyroscope-app/explore"],
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
           "doIt": false
         }
       ]
