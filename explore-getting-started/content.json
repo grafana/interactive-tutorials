@@ -73,11 +73,8 @@
           "action": "highlight",
           "reftarget": "grafana:pages.Explore.toolbar.split",
           "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Split view is ideal for comparing two queries, two data sources, or two time ranges side by side.",
           "content": "Click **Split** to open a second, independent query pane."
-        },
-        {
-          "type": "markdown",
-          "content": "Split view is ideal for comparing two queries, two data sources, or two time ranges side by side."
         },
         {
           "type": "interactive",
@@ -156,40 +153,42 @@
           "content": "Icons on the query row include a duplicate-query shortcut, shown here."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "grafana:components.QueryTab.queryHistoryButton",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "content": "Click **Query history** to see every query you've run recently."
+          "type": "guided",
+          "requirements": ["on-page:/explore"],
+          "content": "**Query history** lists every query you've run recently — browse by day, star favorites, or filter by data source. Open it, take a look, then close it again.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.QueryTab.queryHistoryButton",
+              "requirements": ["exists-reftarget"],
+              "description": "Click Query history to open the panel"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.QueryTab.queryHistoryButton",
+              "requirements": ["exists-reftarget"],
+              "description": "Click it again to close the panel"
+            }
+          ]
         },
         {
-          "type": "markdown",
-          "content": "Browse history by day, star favorites, or filter by data source."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "grafana:components.QueryTab.queryHistoryButton",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "content": "Click **Query history** again to close the panel."
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Query inspector",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "content": "Click **Query inspector** to inspect the raw request and response."
-        },
-        {
-          "type": "markdown",
-          "content": "Its Stats, Query, JSON, and Data tabs show timing, the exact request sent, and the payload returned — invaluable when a query doesn't behave as expected."
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Query inspector",
-          "requirements": ["on-page:/explore", "exists-reftarget"],
-          "content": "Click **Query inspector** again to close it."
+          "type": "guided",
+          "requirements": ["on-page:/explore"],
+          "content": "**Query inspector** exposes the raw request and response. Its Stats, Query, JSON, and Data tabs show timing, the exact request sent, and the payload returned — invaluable when a query doesn't behave as expected. Open it, look around, then close it.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Query inspector']",
+              "requirements": ["exists-reftarget"],
+              "description": "Click Query inspector to open it"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Query inspector']",
+              "requirements": ["exists-reftarget"],
+              "description": "Click it again to close it"
+            }
+          ]
         }
       ]
     },
@@ -228,13 +227,14 @@
         {
           "type": "guided",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "skippable": true,
           "content": "Make sure the query editor is in **Builder** mode — the rest of this section uses the visual query builder.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Builder')",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:has(input[title='Builder'])",
               "requirements": ["exists-reftarget"],
-              "tooltip": "If a previous session left this data source in Code mode, this switches it back.",
+              "tooltip": "Already in Builder mode? Skip this step — nothing needs to change.",
               "description": "Select Builder mode"
             }
           ]
@@ -277,8 +277,8 @@
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "Operations",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row prometheus A'] button[title='Add operation']",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
           "doIt": false,
           "tooltip": "This is the same function library PromQL uses — rate, sum, histogram_quantile, and dozens more — applied visually.",
@@ -287,7 +287,7 @@
         {
           "type": "guided",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
-          "content": "Turn on **Explain** to see your query broken down in plain English.",
+          "content": "Turn on **Explain** to see your query broken down in plain English. Every clause then gets its own numbered, plain-language explanation above the editor — useful while you're still learning PromQL.",
           "steps": [
             {
               "action": "highlight",
@@ -296,15 +296,6 @@
               "description": "Turn on Explain"
             }
           ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row prometheus A']",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
-          "doIt": false,
-          "tooltip": "Each clause gets its own numbered, plain-language explanation — useful while you're still learning PromQL.",
-          "content": "Explain mode annotates every part of the query above the editor."
         },
         {
           "type": "guided",
@@ -327,7 +318,7 @@
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:contains('Code')",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:has(input[title='Code'])",
               "requirements": ["exists-reftarget"],
               "description": "Select Code mode"
             }
@@ -360,16 +351,13 @@
           "content": "Click **Run query**."
         },
         {
-          "type": "markdown",
-          "content": "A counter like this only ever goes up, so it's more useful as a rate. Wrap it in `rate(...)` to see requests per second instead."
-        },
-        {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "{grafana:components.DataSource.Prometheus.queryEditor.code.queryField} textarea.inputarea",
           "targetvalue": "rate(quickpizza_server_http_request_duration_seconds_count[5m])",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
-          "content": "Replace the query with `rate(quickpizza_server_http_request_duration_seconds_count[5m])`."
+          "tooltip": "A counter like this only ever goes up, so it's more useful as a rate.",
+          "content": "Wrap the counter in `rate(...)` to see requests per second instead — replace the query with `rate(quickpizza_server_http_request_duration_seconds_count[5m])`."
         },
         {
           "type": "interactive",
@@ -399,10 +387,11 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "grafana:components.Panels.Panel.title:Raw",
+          "reftarget": "{grafana:components.Panels.Panel.title:Raw} {grafana:components.Panels.Panel.headerContainer}",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
           "doIt": false,
           "skippable": true,
+          "hint": "The Raw results panel only appears when the query type includes Instant — continue if it isn't there.",
           "tooltip": "Toggle to Table for a spreadsheet-style view of the exact same data.",
           "content": "**Raw** shows the underlying data frame — every returned series and its labels."
         },
@@ -419,6 +408,8 @@
           "reftarget": "grafana:components.DataSource.Prometheus.queryEditor.type",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
           "doIt": false,
+          "skippable": true,
+          "hint": "This lives inside the Options row — expand it first if the highlight can't find it.",
           "tooltip": "Instant returns one value per series for the end of the time range — useful for current-state checks like this one.",
           "content": "**Type** switches between a full time series (**Range**), a single point (**Instant**), or **Both**."
         }
@@ -459,13 +450,14 @@
         {
           "type": "guided",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "skippable": true,
           "content": "Make sure the query editor is in **Builder** mode — the next few steps describe the visual builder.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Query editor row loki A'] {grafana:components.RadioButton.container}:contains('Builder')",
+              "reftarget": "div[data-testid='data-testid Query editor row loki A'] div{grafana:components.RadioButton.container}:has(input[title='Builder'])",
               "requirements": ["exists-reftarget"],
-              "tooltip": "If a previous session left this data source in Code mode, this switches it back.",
+              "tooltip": "The metrics section left the editor in Code mode, so this usually needs one click. If Builder is already selected, skip the step.",
               "description": "Select Builder mode"
             }
           ]
@@ -496,11 +488,7 @@
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
           "doIt": false,
           "tooltip": "Pick a label, an operator, and a value — the builder writes the selector for you.",
-          "content": "**Label filters** scope the query to a set of streams."
-        },
-        {
-          "type": "markdown",
-          "content": "Every Loki query starts with a label selector like this in curly braces."
+          "content": "**Label filters** scope the query to a set of streams. Every Loki query starts with a label selector like this, in curly braces."
         },
         {
           "type": "interactive",
@@ -518,7 +506,7 @@
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Query editor row loki A'] {grafana:components.RadioButton.container}:contains('Code')",
+              "reftarget": "div[data-testid='data-testid Query editor row loki A'] div{grafana:components.RadioButton.container}:has(input[title='Code'])",
               "requirements": ["exists-reftarget"],
               "description": "Select Code mode"
             }
@@ -538,11 +526,8 @@
           "action": "highlight",
           "reftarget": "grafana:components.RefreshPicker.runButtonV2",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "tooltip": "Above the results, Loki reports how much it scanned and often suggests hints like **add json parser** — QuickPizza's logs are JSON, and carry the `traceID` you'll follow in the next section.",
           "content": "Click **Run query**."
-        },
-        {
-          "type": "markdown",
-          "content": "Above the results, Loki shows how much data it scanned and often suggests hints like **add json parser** — one click adds a parser for structured log lines. QuickPizza's logs are JSON and include a `traceID` field — the same trace you'll open in the next section."
         },
         {
           "type": "interactive",
@@ -569,11 +554,8 @@
           "action": "highlight",
           "reftarget": "button[aria-label='Log menu']:nth-match(1)",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "tooltip": "From here you can show full log details, view surrounding context lines, pin the line, copy it as text or JSON, or ask Grafana Assistant to explain it.",
           "content": "Click the menu icon on a log line to see what you can do with it."
-        },
-        {
-          "type": "markdown",
-          "content": "From here you can show full log details, view surrounding context lines, pin the line, copy it as text or JSON, or ask Grafana Assistant to explain it."
         },
         {
           "type": "guided",
@@ -593,16 +575,16 @@
               "description": "Click it again to stop"
             }
           ]
-        },
-        {
-          "type": "markdown",
-          "content": "Below the query editor, the collapsed **Options** row holds the line limit and read direction — expand it if you want to cap how many lines come back, or read oldest-first instead of newest-first."
         }
       ]
     },
     {
       "type": "markdown",
       "content": "You built a label selector, filtered lines by content, inspected fields, and tailed logs live."
+    },
+    {
+      "type": "markdown",
+      "content": "One control worth knowing about before moving on: below the query editor, the collapsed **Options** row holds the line limit and read direction — expand it if you want to cap how many lines come back, or read oldest-first instead of newest-first."
     },
     {
       "type": "markdown",
@@ -644,12 +626,14 @@
         {
           "type": "guided",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces"],
+          "skippable": true,
           "content": "Select **Search** for a form-based way to find traces.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Search')",
+              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:has(input[title='Search'])",
               "requirements": ["exists-reftarget"],
+              "tooltip": "Search is Tempo's default query type, so this is usually already selected — skip the step if it is.",
               "description": "Select the Search query type"
             }
           ]
@@ -660,21 +644,8 @@
           "reftarget": "input#service-name-value",
           "targetvalue": "quickpizza-public-api",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
-          "tooltip": "A real, traced service in the shared demo dataset.",
-          "content": "Set **Service Name** to `quickpizza-public-api`."
-        },
-        {
-          "type": "markdown",
-          "content": "**Span Name**, **Status**, **Duration**, and **Tags** filter further the same way."
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Edit in TraceQL",
-          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
-          "doIt": false,
-          "tooltip": "Every filter you set in the form above is expressed as a single TraceQL expression here.",
-          "content": "**Edit in TraceQL** drops you into the raw query behind your form selections."
+          "tooltip": "**Span Name**, **Status**, **Duration**, and **Tags** filter further the same way, and **Edit in TraceQL** turns whatever you set in the form into the equivalent raw TraceQL expression.",
+          "content": "Set **Service Name** to `quickpizza-public-api`, a real traced service in the shared demo dataset."
         },
         {
           "type": "interactive",
@@ -686,7 +657,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "grafana:components.Panels.Panel.title:Table - Traces",
+          "reftarget": "{grafana:components.Panels.Panel.title:Table - Traces} {grafana:components.Panels.Panel.headerContainer}",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
           "doIt": false,
           "skippable": true,
@@ -709,12 +680,8 @@
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
           "doIt": false,
           "skippable": true,
-          "tooltip": "The route is the entry span's name — usually the endpoint or operation the request started at.",
+          "tooltip": "The route is the entry span's name, and just below it **Overview** draws a mini waterfall of the whole trace — collapse that once you've found the section you want to zoom into.",
           "content": "The trace header shows total duration, how many services were involved, and the route."
-        },
-        {
-          "type": "markdown",
-          "content": "Just below the header, **Overview** shows a mini waterfall of the whole trace for quick orientation — collapse it once you've found the section you want to zoom into."
         },
         {
           "type": "interactive",
@@ -732,11 +699,8 @@
           "reftarget": "div{grafana:components.TraceViewer.spanBar}:nth-match(1)",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
           "skippable": true,
+          "tooltip": "A span's details include its own attributes, resource attributes (service, cluster, region, and more), and a **Related logs** button that jumps straight to log lines from the same request.",
           "content": "Click the first span to expand its details."
-        },
-        {
-          "type": "markdown",
-          "content": "A span's details include its own attributes, resource attributes (service, cluster, region, and more), and a **Related logs** button that jumps straight to log lines from the same request."
         },
         {
           "type": "interactive",
@@ -754,7 +718,7 @@
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:contains('Service Graph')",
+              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:has(input[title='Service Graph'])",
               "requirements": ["exists-reftarget"],
               "description": "Select the Service Graph query type"
             }
@@ -765,11 +729,8 @@
           "action": "highlight",
           "reftarget": "grafana:components.RefreshPicker.runButtonV2",
           "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "tooltip": "Each node shows request rate and error rate for one service and each edge is a dependency — a fast way to spot where errors or latency concentrate across a whole system.",
           "content": "Click **Run query** to build the graph."
-        },
-        {
-          "type": "markdown",
-          "content": "Each node shows request rate and error rate for that service, and each edge is a dependency between two services — a fast way to spot where errors or latency are concentrated across a whole system."
         }
       ]
     },
