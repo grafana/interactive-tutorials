@@ -28,11 +28,11 @@
     },
     {
       "type": "markdown",
-      "content": "**If the list is empty, that's expected.** These errors come in bursts, so a quiet moment can return nothing. Run the query again in a few minutes and one will appear. If you change the query by mistake, run the query step again to reload it."
+      "content": "**If the list is empty, that's not an issue.** Widen the time range at the top of Explore and run the query again. Error traces are common, so a larger window will surface some. If you change the query by mistake, run the query step again to reload it."
     },
     {
       "type": "markdown",
-      "content": "Notice how different it looks. A successful order runs the whole pipeline: many spans, the deep recommendations → catalog → SELECT fan-out. A failed one is much shorter: it short-circuits early, stopping at the step that failed, so it never reaches the rest of the pipeline. Whatever the exact counts, the failed trace is visibly smaller, and that shape alone tells you it stopped early, before you read a single attribute.\n\nThis is also where you meet **status codes** (a healthy request returns a success code, a failed one an error code) and, where your view offers one, an **Errors** filter for finding them. The lesson: useful traces aren't always big waterfalls. A small, short trace can tell you exactly where a request gave up."
+      "content": "Notice how different it looks. A successful order runs the whole pipeline: many spans, the deep recommendations → catalog → SELECT fan-out. A failed one is much shorter: it short-circuits early, stopping at the step that failed, so it never reaches the rest of the pipeline. Whatever the exact counts, the failed trace is visibly smaller, and that shape alone tells you it stopped early, before you read a single attribute.\n\nThis is also where you meet **status codes** (a healthy request returns a success code, a failed one an error code) and, where your view offers one, an **Errors** filter for finding them. To see why a request failed, open the span that failed and read its attributes: the HTTP attributes and status code, for example http.status_code, often carry an error message that names the cause. The lesson: useful traces aren't always big waterfalls. A small, short trace can tell you exactly where a request gave up."
     }
   ]
 }
