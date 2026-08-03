@@ -30,29 +30,37 @@
           "skippable": true
         },
         {
-          "type": "guided",
-          "content": "Set `ap-south-1` as **Baseline**, `eu-west-1` as **Comparison**, then click **Compare**.",
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='stats-panel-eu-west-1'] label:contains('Comparison')",
+          "content": "On the `eu-west-1` panel, select **Comparison**.",
+          "lazyRender": true,
+          "scrollContainer": "main",
           "requirements": [
+            "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
-          ],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='stats-panel-ap-south-1'] label:contains('Baseline')",
-              "lazyRender": true,
-              "description": "On the `ap-south-1` panel, select **Baseline**."
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='stats-panel-eu-west-1'] label:contains('Comparison')",
-              "lazyRender": true,
-              "description": "On the `eu-west-1` panel, select **Comparison**."
-            },
-            {
-              "action": "highlight",
-              "reftarget": "button[aria-label='Compare']",
-              "description": "Click **Compare** to open the **Diff flame graph** view for the two regions."
-            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='stats-panel-ap-south-1'] label:contains('Baseline')",
+          "content": "On the `ap-south-1` panel, select **Baseline**.",
+          "lazyRender": true,
+          "scrollContainer": "main",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button[aria-label='Compare']",
+          "content": "Click **Compare** to open the **Diff flame graph** view for the two regions.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
           ]
         },
         {
