@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "explore-cardinality",
+  "title": "Explore your cardinality",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before you can fix high cardinality, you need to see it. This guide shows you how to read the Cardinality tab in the Cost Management and Billing app to identify which metrics and labels contribute the most to your active series count."
+    },
+    {
+      "type": "markdown",
+      "content": "Access to the Cardinality tab requires the `grafana-cmab-app.cardinality:read` permission. Refer to [Manage access to the Cost Management and Billing app](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/set-up/cost-management-billing-rbac/). If your stack is new or isn't receiving metrics yet, the tables will be empty or sparse."
+    },
+    {
+      "type": "markdown",
+      "content": "In this section, you'll open the Cardinality tab and identify your highest-cardinality metrics and labels."
+    },
+    {
+      "type": "section",
+      "id": "read-cardinality-tab",
+      "title": "Read the Cardinality tab",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-cmab-app/usage",
+          "content": "Open the **Usage** tab of the Cost Management and Billing app.",
+          "verify": "on-page:/a/grafana-cmab-app/usage"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Cardinality']",
+          "content": "Select the **Cardinality** tab.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Review the summary stats at the top: **Unique metrics**, **Total active series**, **Unique labels**, and **Total label value pairs**. **Total active series** is the number your metrics bill is based on."
+        },
+        {
+          "type": "markdown",
+          "content": "In the **Highest cardinality metrics** table, the **Series** column shows how many active series each metric produces, and **% Total** shows its share of your stack's series count. Start your investigations here: these metrics contribute the most to cost."
+        },
+        {
+          "type": "markdown",
+          "content": "Review the **Highest cardinality labels** table. Labels with many distinct values, such as IDs or addresses, are the multiplication factors that inflate your series count."
+        },
+        {
+          "type": "markdown",
+          "content": "Check the **Status** column for **New** and **Unused** badges. A **New** badge marks a metric or label first ingested in the last 30 days. An **Unused** badge marks a metric that isn't used in queries, dashboards, recording rules, or alerting rules, so it may be costing you without providing value."
+        },
+        {
+          "type": "markdown",
+          "content": "Open a metric row to see its details drawer: cardinality history, label breakdown, query count, and the dashboards and rules that reference it. The **Actions** menu links to deeper analysis and remediation, including Adaptive Metrics."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've identified which metrics and labels drive your active series count. Ask: which metrics produce the most series, which labels have the most unique values, and is anything both high-cardinality and unused?"
+    },
+    {
+      "type": "markdown",
+      "content": "Next, reduce series with Adaptive Metrics recommendations in the **Reduce your metrics cardinality** guide, or take the fuller [Understand billing and usage](https://grafana.com/docs/learning-paths/billing-usage/) path.\n\nDocs: [Historical metrics cardinality](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/metrics-costs/prometheus-metrics-costs/historical-cardinality/), [Live cardinality management dashboards](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/analyze-costs/metrics-costs/prometheus-metrics-costs/cardinality-management/)."
+    }
+  ]
+}
