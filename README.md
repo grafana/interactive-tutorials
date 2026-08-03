@@ -114,3 +114,11 @@ Primary documentation files in this repo:
 | Action Types | [docs/interactive-actions.md](docs/interactive-actions.md) |
 | Requirements | [docs/requirements-reference.md](docs/requirements-reference.md) |
 | Selectors | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) |
+
+
+## Grafana Learn terminology
+
+The following diagram outlines the core terminology used across Grafana Learn resources.
+
+![Grafana Learn terminology diagram](docs/img/grafana-learn-terminology.png)
+
