@@ -90,17 +90,28 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&var-dataSource=grafanacloud-play-profiles&searchText=checkout",
-          "content": "Select **grafanacloud-play-profiles** as the **Data source**.\n\nThe **All services** view shows a chart for each service. This step also sets the Quick filter to `checkout` so `checkoutservice` is on screen.",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&var-dataSource=grafanacloud-play-profiles&searchText=",
+          "content": "Make sure **grafanacloud-play-profiles** is selected as the **Data source**.\n\nThe **All services** view shows a chart for each service.",
           "objectives": [
             "on-page:/a/grafana-pyroscope-app/explore?explorationType=all&var-dataSource=grafanacloud-play-profiles"
           ]
         },
         {
           "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[aria-label='Quick filter']",
+          "targetvalue": "checkout",
+          "content": "In the Quick filter, type `checkout` so `checkoutservice` is on screen.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='profileMetricId']",
-          "content": "Make sure the **CPU** profile type (`process_cpu/cpu`) is selected.\n\nWe will be taking a look at `checkoutservice`.",
+          "content": "Make sure the **CPU** profile type (`process_cpu/cpu`) is selected.",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
