@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "work-with-grafana-assistant-refine-a-query",
+  "title": "Refine a query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A first draft is rarely final. Ask Assistant to tighten filters, group results, or reduce how much data a query returns. Keep the conversation in the same chat so Assistant has the prior query as context."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "If this guide is docked in the sidebar, pop it out into a floating window so it stays visible beside **Assistant**."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "To refine a query draft, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "refine-query-draft",
+      "title": "Ask for a tighter query",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "content": "If the Assistant panel is closed, open **Assistant** from the top toolbar.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "In the same conversation (or after pasting a query you care about), ask for a refinement.\n\nExamples:\n\n> Group by region and sort by highest error rate.\n\n> This query is returning too much data. Help me filter it to only the production namespace.\n\n> Narrow this to the last 15 minutes and keep only the top 5 series.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] button[aria-label='Send message']",
+          "content": "Click **Send**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Compare the refined query to the earlier draft.\n\nCheck that filters, groupings, or time ranges match what you asked for before you reuse the query elsewhere."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You practiced improving a query with a follow-up prompt.\n\nFor more examples, refer to [Query data](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/guides/querying/)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll create a small dashboard from a description, or explain an existing panel if that fits your stack better."
+    }
+  ]
+}

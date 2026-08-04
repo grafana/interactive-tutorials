@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "work-with-grafana-assistant-query-natural-language",
+  "title": "Query with natural language",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Assistant can write queries across your observability stack. Describe what you want and use an at-mention to point Assistant at a specific data source."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "If this guide is docked in the sidebar, pop it out into a floating window so it stays visible beside **Assistant**."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "To generate a query from a prompt, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "run-natural-language-query",
+      "title": "Generate a query from a prompt",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "content": "If the Assistant panel is closed, open **Assistant** from the top toolbar.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "In the chat input, type the at symbol (@) and pick a data source from the mention list, then ask for a query.\n\nFor metrics:\n\n> Create a PromQL query in @prometheus-ds that shows p95 latency for checkout_service over the last hour.\n\nFor logs:\n\n> Find logs from @loki-logs where job=\"checkout\" and level=\"error\" in the last 15 minutes.\n\nReplace those example names with data sources in your stack.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] button[aria-label='Send message']",
+          "content": "Click **Send**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review the generated query and, when data is available, any visualization or Explore view Assistant opens.\n\nTreat the result as a draft. You refine it in a later milestone."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You practiced turning a natural-language request into a query draft.\n\nFor supported sources and more examples, refer to [Query data](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/guides/querying/)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll paste an existing query and ask Assistant to explain it."
+    }
+  ]
+}

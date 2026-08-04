@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "work-with-grafana-assistant-find-a-resource",
+  "title": "Find a Grafana resource",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Instead of browsing folders, describe what you need in plain language. Assistant can find dashboards, list data sources, and open Explore with a query already loaded.\n\nStay in **Assistant** mode for this path (switch back from Learn or other modes if needed)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "If this guide is docked in the sidebar, pop it out into a floating window so it stays visible when **Assistant** opens."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "To find a resource with Assistant, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "ask-to-find-resource",
+      "title": "Ask Assistant to find something",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "content": "Open **Assistant** from the top toolbar (sparkle icon). You can also select **Assistant** from the left navigation.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if the Assistant panel is already open."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "In the chat input, paste or type a prompt that matches your environment:\n\n> List Prometheus data sources available to me.\n\n> Find dashboards tagged \"production\" that include checkout metrics.\n\n> List data sources available to me.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] button[aria-label='Send message']",
+          "content": "Click **Send** (the arrow next to the chat input).",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review the reply.\n\nCheck that the resources or links match what you asked for. When a dashboard opens from the reply, the current time range stays the same."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You should see matching resources or a link you can open. Results depend on what exists in your stack.\n\nFor more prompts, refer to [Navigate Grafana resources](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/guides/navigation/)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll ask Assistant to write a query using natural language."
+    }
+  ]
+}
