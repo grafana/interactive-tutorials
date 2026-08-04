@@ -1,0 +1,47 @@
+{
+  "id": "read-a-trace-read-the-waterfall",
+  "title": "Read the span waterfall",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Keep the trace you opened in the previous step open. If none is open, go back to the previous step and open one by clicking its trace ID, the hex string in the left column; these steps activate once a trace is open. The whole waterfall in front of you is one trace. Every row in it is a span, one unit of work. Reading a trace is mostly reading this shape: what nests under what, and how long each bar is."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"data-testid Panel header Trace\"]",
+          "content": "This whole panel is one trace. Start at the root: the top row is the request itself, the span that everything else happens inside. In this demo it's the quickpizza-public-api span for the pizza-order request.",
+          "doIt": false,
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Follow the indentation down the left side. A child span sits inside the span that triggered it, so the nesting shows the call chain: one operation calls the next. Rows that line up at the same indentation are siblings, steps that ran under the same parent."
+    },
+    {
+      "type": "markdown",
+      "content": "Now look at the bars. Each bar's length is how long that operation took, drawn on the timeline where it happened. A wider bar is a slower step, so comparing bars tells you where the time went."
+    },
+    {
+      "type": "markdown",
+      "content": "That's the trace's shape and timing in three reads: the panel is one trace, the indentation shows what called what, and the bars show how long each step took."
+    },
+    {
+      "type": "markdown",
+      "content": "The top bar is usually the whole request, so look below it for the longest bar. That span is often where the request spent much of its time. Each row shows a service name and an operation name. The operation name is the best hint at what the step did, for example a SELECT for a database query or a GET for an API call, and the service name tells you which service ran it. When you care about the end-to-end time, and if a **Critical path** view is available (next), use it rather than bar length alone. Reading a trace top-down like this is how you spot where the time went without checking every row."
+    },
+    {
+      "type": "markdown",
+      "content": "Optional: if your view offers a **Critical path** control (look near the filters, or above the service and operation names), select it. It isn't available in every version or for every trace, so it's fine if you don't see it. The critical path shades the hops that drove the end-to-end time as a darker segment on each duration bar. It can shade most of the spans, so don't just look for shaded rows. Look for the span with the longest darker segment, because that's where the slow path actually spent its time."
+    },
+    {
+      "type": "markdown",
+      "content": "That's the core of reading a trace: the shape shows the call chain, and the bars show where the time went. Next, read what each span actually is."
+    }
+  ]
+}

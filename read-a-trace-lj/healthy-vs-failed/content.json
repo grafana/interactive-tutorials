@@ -1,0 +1,38 @@
+{
+  "id": "read-a-trace-healthy-vs-failed",
+  "title": "Healthy vs. failed requests",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The trace you just read is a healthy request that ran the whole pipeline. But not every useful trace is a big waterfall. Here's what a failed request looks like, and why its shape alone tells you something."
+    },
+    {
+      "type": "markdown",
+      "content": "This is another ready-made TraceQL query, this time for requests that ended in an error. Run it and open one result, the same way as before."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22trc%22%3A%7B%22datasource%22%3A%22grafanacloud-play-traces%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20rootServiceName%20%3D%20%5C%22quickpizza-public-api%5C%22%20%26%26%20rootName%20%3D%20%5C%22POST%20%2Fapi%2Fpizza%5C%22%20%26%26%20status%20%3D%20error%20%7D%22%2C%22limit%22%3A20%2C%22tableType%22%3A%22traces%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-3h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1",
+          "content": "Run this query to load error traces from the last three hours. Wait for the results table to appear.",
+          "verify": "on-page:/explore"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now, open one of the error traces by clicking its trace ID."
+    },
+    {
+      "type": "markdown",
+      "content": "**If the list is empty, that's not an issue.** Widen the time range at the top of Explore and run the query again; a larger window usually surfaces some error traces. If you change the query by mistake, run the query step again to reload it."
+    },
+    {
+      "type": "markdown",
+      "content": "Notice how different it looks. A successful order runs the whole pipeline: many spans, the deep recommendations → catalog → SELECT fan-out. A failed one is often shorter: it may stop at the step that failed, so it doesn't always reach the rest of the pipeline. When it does stop early, the failed trace is visibly smaller, and that shape alone hints that the request gave up before you read a single attribute.\n\nThis is also where you meet **status codes** (a healthy request returns a success code, a failed one an error code) and, where your view offers one, an **Errors** filter for finding them. To see why a request failed, open the span that failed and read its details: http.status_code gives the numeric status, and the error message itself usually lives in the span's **events** (look for an exception event). Together they tell you what went wrong. The lesson: useful traces aren't always big waterfalls. A small, short trace can tell you exactly where a request gave up."
+    }
+  ]
+}
