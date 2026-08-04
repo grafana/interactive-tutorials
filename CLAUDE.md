@@ -18,6 +18,7 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 | Review a guide PR | [.cursor/review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc) |
 | Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md) |
 | Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
+| Author a learning path (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | [learning-path workflows](.cursor/learning-path-workflows/workflows.md), [/create-learning-path](.cursor/commands/create-learning-path.md), [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) |
 | Decision trees & code smells | [.cursor/best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/](docs/) |
 | Create a new guide | [/new](.cursor/commands/new.md) command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate a guide | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
@@ -30,12 +31,14 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 
 | Document | Purpose |
 |----------|---------|
+| [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | Docs-team entry point for interactive learning paths |
 | [docs/json-guide-reference.md](docs/json-guide-reference.md) | All 16 block types and their properties |
 | [docs/interactive-actions.md](docs/interactive-actions.md) | Action type behavior: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
 | [docs/requirements-reference.md](docs/requirements-reference.md) | All requirement types (fixed + parameterized) |
 | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns and pseudo-selectors |
 | [docs/guided-interactions.md](docs/guided-interactions.md) | Guided block deep dive |
 | [docs/manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and derivation rules |
+| [docs/website-yaml-reference.md](docs/website-yaml-reference.md) | Learning Hub metadata in `website.yaml` |
 
 ## Skills
 

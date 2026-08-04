@@ -43,6 +43,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Review a guide PR | [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc), `docs/` |
 | Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
+| Author a learning path (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | [learning-path workflows](.cursor/learning-path-workflows/workflows.md), [/create-learning-path](.cursor/commands/create-learning-path.md), [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) |
 | Decision trees & code smells | [best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), `docs/` |
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
@@ -54,12 +55,14 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 
 | Document | Purpose |
 |----------|---------|
+| [learning-path-authoring.md](docs/learning-path-authoring.md) | Docs-team entry point for interactive learning paths |
 | [json-guide-reference.md](docs/json-guide-reference.md) | Block types, properties, and guide structure |
 | [interactive-actions.md](docs/interactive-actions.md) | Action type behavior and button controls |
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
 | [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |
 | [manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and derivation rules |
+| [website-yaml-reference.md](docs/website-yaml-reference.md) | Learning Hub metadata in `website.yaml` |
 
 ## Historical Context
 
@@ -82,6 +85,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/lint](.cursor/commands/lint.md) | Validate guide JSON structure |
 | [/check](.cursor/commands/check.md) | Check guide quality against best practices |
 | [/attack](.cursor/commands/attack.md) | Find issues by simulating confused users |
-| [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
+| [/create-learning-path](.cursor/commands/create-learning-path.md) | Create a new interactive learning path from scratch |
+| [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) | Convert an existing website learning path to an interactive package |
 | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | Author pre-PR self-review for a learning path (mirrors review checks + shared claim-check, then optional fixes) |
-| [/build-interactive-lj](.cursor/commands/build-interactive-lj/README.md) | Multi-phase learning journey builder |
+| [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
