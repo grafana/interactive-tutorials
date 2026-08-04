@@ -35,6 +35,14 @@ When the list mixes both kinds, number everything, but in **Your turn** say whic
 
 Keep the identify + static work quiet when the path is known. Put the full numbered + fix-choice treatment in the **one results menu** after live (or after allowed static-only).
 
+### Framing finding wording
+
+When a framing ID is in path `milestones`, use wording like:
+
+> `{slug}` is framing (value / why). Omit it from Pathfinder path `milestones` so the in-app path stays action-oriented. Keep the package and `website.yaml` — the website Learning Path still shows it. First hands-on `depends` must be `[]`.
+
+Never say “remove this milestone” without the Pathfinder-only / website-kept distinction.
+
 ---
 
 ## Finding severity (author)
@@ -54,7 +62,7 @@ Do not invent an author-only softer bar. Do not surface "Polish / follow-up" lis
 Apply the same five-phase coach rules (cite shared reference-checks; do not soften):
 
 - Playwright / Block Editor runtime fail (when live failed or `walk-me` failed)
-- **Framing milestones** in path `milestones`, or first hands-on `depends` on a framing ID (must be `depends: []`)
+- **Framing milestones** listed in path `milestones`, or first hands-on `depends` on a framing ID (must be `depends: []`). When surfacing: say this is **Pathfinder-only** (omit from `milestones` so Pathfinder stays action-oriented); keep the framing package + `website.yaml` for the website Learning Path. Do not imply the milestone is removed from the website.
 - **Fake steps in sections:** missing bookends outside the section; in-section intro markdown that numbers as a step (e.g. first child "You'll …")
 - **False noops:** learner-action copy with `noop` and no `reftarget`
 - Missing / broken required `website.yaml` identity; Learning Hub structure the author must change
@@ -154,7 +162,7 @@ Include in `{slug}-readiness.md`:
 
 - [ ] Path `{path_dir}` validates with Pathfinder CLI (or CLI unavailable noted)
 - [ ] First hands-on milestone `depends: []`
-- [ ] No framing IDs in path `manifest.json` `milestones`
+- [ ] No framing IDs in path `manifest.json` `milestones` (Pathfinder-only omission; framing packages remain for the website)
 - [ ] `schemaVersion: "1.1.0"` or omitted on milestone `content.json`
 - [ ] Playwright DOM checked for scoped interactive milestones
 - [ ] Block Editor: already-tested notes, walk-me results, or skip noted for reviewer

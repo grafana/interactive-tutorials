@@ -124,9 +124,13 @@ Same scan applies to [false noops](#noop-and-non-interactive-steps) even when st
 
 ## Framing milestones
 
-Framing packages may live in the path directory for the website Learning Path, but must **not** appear in path `manifest.json` `milestones`. First hands-on `depends` must not reference framing IDs.
+Framing packages (value / why intros) stay in the path directory for the **website** Learning Path. Omit them only from Pathfinder path `manifest.json` `milestones` so the in-app Pathfinder UI stays action-oriented. Do **not** delete the framing package, its `content.json`, or its `website.yaml` when fixing this.
 
-Framing in path `milestones` or broken depends → **post inline**.
+- Keep the framing directory + `website.yaml` when the website needs that intro.
+- Remove framing IDs from path `milestones` (Pathfinder only).
+- First hands-on `depends` must be `[]` (must not reference framing IDs).
+
+Framing in path `milestones` or broken depends → **post inline**. When commenting or surfacing the finding, say explicitly that this is a **Pathfinder-only** omission and the website Learning Path still uses the framing package.
 
 ### Framing vs not framing
 
@@ -134,9 +138,9 @@ Framing is about **role**, not “markdown-only.”
 
 | Kind | Examples | In path `milestones`? |
 |---|---|---|
-| **Framing** (value / why intro) | `business-value`, `value-*`, `advantages-*`, `welcome` | No — keep the package + `website.yaml` if the website needs it; omit from Pathfinder `milestones` |
+| **Framing** (value / why intro) | `business-value`, `value-*`, `advantages-*`, `welcome` | No — Pathfinder drops these from `milestones` only; keep the package + `website.yaml` for the website Learning Path |
 | **Not framing** (path destination) | `end-journey`, `end-<topic>` | Yes |
-| **Case-by-case** | Prose conceptual packages such as `understanding-*` | Only if they are a Pathfinder path step learners must complete. If they are website-only conceptual framing, treat as framing (omit from `milestones`, first hands-on `depends: []`) |
+| **Case-by-case** | Prose conceptual packages such as `understanding-*` | Only if they are a Pathfinder path step learners must complete. If they are website-only conceptual framing, treat as framing (omit from Pathfinder `milestones`, keep the package for the website, first hands-on `depends: []`) |
 
 Do **not** auto-flag every markdown-only `milestones` entry. `end-journey` is normally prose-only and correctly listed.
 
