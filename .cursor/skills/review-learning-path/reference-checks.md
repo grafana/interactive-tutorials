@@ -24,6 +24,7 @@ Tag every finding when writing the workbook. **Author-facing change requests alw
 | In-section intro that may number as a step (static detect) | Suspected bad link (unverified) | Pathfinder shell UX |
 | False `noop` (learner action, no `reftarget`) | Framing ambiguity (“is this framing?”) until confirmed | Fresh-stack retest notes (unless live failed) |
 | Missing required section bookends (rule 14) | Pure LH wording polish (boilerplate synonym) when structure is fine | |
+| Backticks on illustrative examples (copy chips; smell #17) | Justified paste backticks matching `targetvalue` / PromQL | |
 | Missing / broken required `website.yaml` identity fields (`menuTitle`, `description`, `journey.*`) | Overly broad `targeting.match` without impact | |
 | Learning Hub structure the author must change (missing path intro, wrong group/skill, hard cross-path deps, conversion prose gap) | Landing screenshot / milestone-count notes | |
 | Missing `exists-reftarget`, `navmenu-open` **when live fails** | | |
@@ -76,8 +77,36 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | Multistep singleton, focus-before-formfill, `noop` misuse | post inline if compliance; else internal |
 | Secrets `doIt: true` | post inline |
 | Missing `verify` on save | internal until live fails |
+| Backticks on illustrative examples (copy chips) | **post inline** (see [backticks / copy chips](#backticks--copy-chips-smell-17)) |
 
 LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — **post inline** when the author must change structure or required fields; **internal** for wording polish only.
+
+---
+
+## Backticks / copy chips (smell #17)
+
+Inline `` `value` `` in Pathfinder prose renders a **copy chip**. Learners click to copy. Reserve backticks for values the learner should paste. Use plain text for illustrative examples (folder names, default branches, URL fragments, "for example …"). Canonical smell: [best-practices.mdc](../../best-practices.mdc) item 17.
+
+### Phase 1 — static detect (workbook)
+
+Scan learner-visible strings in path root + every milestone `content.json` (markdown `content`, interactive `content`, `tooltip`):
+
+| Flag when | Examples |
+|---|---|
+| Backticks around an illustrative name near "for example" / "e.g." / "such as" | `` for example, `Alerts` `` |
+| Backticks around a folder, branch, org, or URL fragment the learner is not told to paste | `` create a folder named `Team` `` |
+| Backticks around UI chrome that should be bold instead | `` click `Save` `` (should be **Save**) |
+
+| Keep / discard when | Examples |
+|---|---|
+| Value matches a nearby `targetvalue` or formfill the learner pastes | `` `quickpizza_server_http_requests_total` `` with that `targetvalue` |
+| PromQL, JSON, exact tokens, datasource UIDs, metric names the step asks them to paste | paste-oriented steps |
+
+Write illustrative hits as **post inline** (path-wide OK when the same pattern repeats). Do not invent hits: only flag real backtick spans.
+
+### Phase 3 — comment shape
+
+> Backticks turn into copy chips in Pathfinder. Use them for values learners paste. For examples (folder names, branches), use plain text or bold UI labels instead. Same pattern in {other milestones}.
 
 ---
 
@@ -205,6 +234,23 @@ Prose not captured in package on conversion → **post inline**. Front matter ma
 
 ---
 
+## Multi-path PRs
+
+A single PR can ship more than one `{slug}-lj/` package. Reviewers and authors miss sibling paths when Phase 0 only names the path under discussion (seen on multi-path alerting PRs).
+
+### Phase 0 (required)
+
+1. Build `paths_in_pr` from the PR file list (see [SKILL.md Phase 0](SKILL.md#phase-0-setup)).
+2. Persist `paths_in_pr` and `other_paths` (`paths_in_pr` minus the path under review).
+3. Surface **every** entry in the Phase 0 checkpoint when `other_paths` is non-empty. Do not hide siblings in the workbook only.
+4. Default scope is one `{path_dir}` per review cycle. Expanding to **all** means separate static + live passes (or explicit reuse-live notes) per path before APPROVE.
+
+### Not live-tested (sibling packages)
+
+When `other_paths` is non-empty and those packages were not fully live-tested in this review, the Phase 3 summary **must** list each sibling under **Not live-tested** as a package line (for example `- alerting-create-silence-lj (entire path — not in this review cycle)`), in addition to any untested milestones inside `{path_dir}`. Cap verdict at **COMMENT** until every interactive path in `paths_in_pr` has a live result (or an explicit static-only waiver where allowed).
+
+---
+
 ## Static-only reviews
 
 `static-only: <reason>` at end of Phase 1 skips Phase 2.
@@ -228,11 +274,12 @@ Record `waive_live_testing: true` and `static_only_reason` only when allowed. Ne
 
 ### Not live-tested disclosure (required)
 
-Whenever Phase 2 did not record a result for every interactive path milestone (static-only, partial live, or any other skip), the review summary **must** include a **Not live-tested** list:
+Whenever Phase 2 did not record a result for every interactive path milestone (static-only, partial live, or any other skip), **or** `other_paths` still lacks a live pass, the review summary **must** include a **Not live-tested** list:
 
 1. Start from interactive milestones in path `manifest.json` `milestones`.
 2. Subtract any milestone with a recorded Phase 2 result in `pathfinder.{milestone}` (including `pass (reused — …)` when `reuse_live` is true).
 3. List every remaining slug under a `### Not live-tested` heading in the summary body.
+4. Append every package in `other_paths` that was not live-tested in this review (whole-path lines). See [Multi-path PRs](#multi-path-prs).
 
 Cap verdict at **COMMENT**. Do not use a single vague “milestones were not live-tested” sentence in place of the list.
 ---

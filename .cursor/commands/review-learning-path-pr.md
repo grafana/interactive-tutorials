@@ -16,7 +16,7 @@ LP PRs are **single-repo** (`interactive-tutorials` only). Metadata lives in pac
 >
 > | Phase | What happens |
 > |---|---|
-> | 0 | Check out the PR |
+> | 0 | Check out the PR and list every `*-lj` package it touches |
 > | 1 | Static pass (audit + path checks → internal workbook) |
 > | 2 | Live test (required Playwright DOM check + Block Editor smoke test per milestone) |
 > | 3 | Draft comments + summary in chat; you approve before posting |

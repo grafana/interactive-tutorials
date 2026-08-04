@@ -205,8 +205,13 @@ Mention once (early, not every pause): reports land under `.cursor/lp-preflight-
 3. Infer `website_slug` = `{path_dir}` minus `-lj` when website repo is in workspace (read-only).
 4. Infer `path_type`: `new`, `conversion`, or `update` per [path type](reference-checks.md#path-type).
 5. List milestones from path `manifest.json` `milestones` and dirs under `{path_dir}/`.
-6. **Verify Playwright MCP** (`user-playwright`). Cover missing, needs-auth, toggled-off, **and configured-but-broken** per [If Playwright MCP is missing or broken](author-testing.md#if-playwright-mcp-is-missing-or-broken). Do not silently skip. Do not edit `mcp.json` until they agree.
-7. Write `.cursor/lp-preflight-state/{slug}.json` ([state schema](reference-checks.md#state-file-schema)).
+6. **Inventory sibling `*-lj` packages on this branch** (required). Diff against the merge base with `main` (or `master`):
+   ```bash
+   git diff --name-only origin/main...HEAD | awk -F/ '/-lj\// {print $1}' | sort -u
+   ```
+   Also include untracked top-level `*-lj` dirs (`git status --porcelain`). Store as `paths_on_branch`. Set `other_paths` = that list minus `{path_dir}`. If `other_paths` is non-empty, tell the author once in plain language that this branch also has those packages and that preflight covers only `{path_dir}` unless they expand. See [Multi-path branches](reference-checks.md#multi-path-branches).
+7. **Verify Playwright MCP** (`user-playwright`). Cover missing, needs-auth, toggled-off, **and configured-but-broken** per [If Playwright MCP is missing or broken](author-testing.md#if-playwright-mcp-is-missing-or-broken). Do not silently skip. Do not edit `mcp.json` until they agree.
+8. Write `.cursor/lp-preflight-state/{slug}.json` ([state schema](reference-checks.md#state-file-schema)), including `paths_on_branch` and `other_paths`.
 
 If MCP is blocked, stop with the blocked shape in author-testing.md (`checkpoint: identify`). Do not run live later until tools work.
 
@@ -222,7 +227,7 @@ If MCP is blocked, stop with the blocked shape in author-testing.md (`checkpoint
 
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk shared [review reference-checks](../review-learning-path/reference-checks.md) + [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md).
-3. **Always scan** for framing-in-milestones, [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-a-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
+3. **Always scan** for framing-in-milestones, [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-a-step), [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps), and [backticks / copy chips](../review-learning-path/reference-checks.md#backticks--copy-chips-smell-17).
 4. Run Pathfinder CLI `validate --packages {path_dir}` if available.
 5. Run the shared [claim-check](../review-learning-path/claim-check.md) pass (preflight pointer: [claim-check.md](claim-check.md)). Write `{slug}-claim-check.md`. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
 6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing). Keep only review-level items for later author chat.

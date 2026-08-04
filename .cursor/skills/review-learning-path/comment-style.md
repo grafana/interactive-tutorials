@@ -81,15 +81,15 @@ Thanks for the PR. I smoke-tested this on {stack_state} in Block Editor.
 
 {If reuse-live: one sentence that Block Editor results were reused from prior evidence, not re-run in this session.}
 
-{If any interactive path milestone has no Phase 2 result (static-only or partial):}
+{If any interactive path milestone has no Phase 2 result (static-only or partial), or the PR has sibling `*-lj` packages not live-tested:}
 
 ### Not live-tested
 
 - {milestone-slug}
-- {milestone-slug}
+- {sibling-path-lj} (entire path — not in this review cycle)
 ```
 
-Derive the list from path `milestones` minus milestones with recorded `pathfinder` results. See [static-only reviews](reference-checks.md#static-only-reviews).
+Derive milestone lines from path `milestones` minus milestones with recorded `pathfinder` results. Derive sibling package lines from `other_paths` in `pr-{n}.json`. See [static-only reviews](reference-checks.md#static-only-reviews) and [multi-path PRs](reference-checks.md#multi-path-prs).
 
 **Target length:** 3–5 sentences plus the Not live-tested list when required. Never paste the workbook into the summary.
 
