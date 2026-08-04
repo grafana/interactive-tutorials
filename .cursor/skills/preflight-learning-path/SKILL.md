@@ -222,7 +222,7 @@ If MCP is blocked, stop with the blocked shape in author-testing.md (`checkpoint
 
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk shared [review reference-checks](../review-learning-path/reference-checks.md) + [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md).
-3. **Always scan** for framing-in-milestones, [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-a-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
+3. **Always scan** for framing-in-milestones ([Pathfinder-only omission](../review-learning-path/reference-checks.md#framing-milestones): keep packages for the website), [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-a-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
 4. Run Pathfinder CLI `validate --packages {path_dir}` if available.
 5. Run the shared [claim-check](../review-learning-path/claim-check.md) pass (preflight pointer: [claim-check.md](claim-check.md)). Write `{slug}-claim-check.md`. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
 6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing). Keep only review-level items for later author chat.
