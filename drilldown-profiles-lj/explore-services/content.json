@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "drilldown-profiles-explore-services",
+  "title": "Explore your services",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This journey uses a Grafana Pyroscope data source named `grafanacloud-play-profiles` that contains some existing data. The next step checks whether you already have it and helps you add it if you don't."
+    },
+    {
+      "type": "conditional",
+      "conditions": [
+        "has-datasource:grafanacloud-play-profiles"
+      ],
+      "description": "Create the grafanacloud-play-profiles Pyroscope data source when it is missing.",
+      "display": "section",
+      "whenTrueSectionConfig": {
+        "title": "Data source ready"
+      },
+      "whenTrue": [
+        {
+          "type": "markdown",
+          "content": "You already have the **grafanacloud-play-profiles** data source. You'll select it in the next step."
+        }
+      ],
+      "whenFalseSectionConfig": {
+        "title": "Add the play Pyroscope data source"
+      },
+      "whenFalse": [
+        {
+          "type": "markdown",
+          "content": "You don't have the **grafanacloud-play-profiles** data source yet. To continue, you need permission to create a data source on this Grafana instance, or go to [play.grafana.org](https://play.grafana.org/) where the demo data is already available.\n\nIf you can create a data source here, complete the following steps."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "content": "Open **Connections > Data sources > Add new data source**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Grafana Pyroscope",
+          "content": "Select **Grafana Pyroscope** from the list of data source types.",
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='connection-url']",
+          "targetvalue": "https://play-pyroscope.grafana.org/",
+          "content": "In the **Connection > URL** field, enter `https://play-pyroscope.grafana.org/`.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Data source settings page name input field']",
+          "targetvalue": "grafanacloud-play-profiles",
+          "content": "At the top of the page, rename the data source to `grafanacloud-play-profiles`.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save & test",
+          "content": "Click **Save & test**. You should see a message confirming the data source is working.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "verify": "has-datasource:grafanacloud-play-profiles"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "With the data source in place, choose it in Profiles Drilldown.\n\nTo explore your services, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&var-dataSource=grafanacloud-play-profiles&searchText=",
+          "content": "Make sure **grafanacloud-play-profiles** is selected as the **Data source**.\n\nThe **All services** view shows a chart for each service.",
+          "objectives": [
+            "on-page:/a/grafana-pyroscope-app/explore?explorationType=all&var-dataSource=grafanacloud-play-profiles"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[aria-label='Quick filter']",
+          "targetvalue": "checkout",
+          "content": "In the Quick filter, type `checkout` so `checkoutservice` is on screen.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='profileMetricId']",
+          "content": "Make sure the **CPU** profile type (`process_cpu/cpu`) is selected.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Optional detour: before you look into labels, open **Profile types** for `checkoutservice` to see graphs for each profile type."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header checkoutservice'] button[aria-label='Profile types']",
+          "content": "On the `checkoutservice` panel, click **Profile types**.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "The **Profile types** tab shows each profile type available for `checkoutservice`. Each panel has **Labels** and **Flame graph** shortcuts."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&var-dataSource=grafanacloud-play-profiles&searchText=checkout",
+          "content": "Return to the **All services** view to continue. If you're already there, click **Skip**.",
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now let's look at `checkoutservice`."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore\n\n- [Profiling types and their uses](https://grafana.com/docs/pyroscope/latest/introduction/profiling-types/)"
+    }
+  ]
+}
