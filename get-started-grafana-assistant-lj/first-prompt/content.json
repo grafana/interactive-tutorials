@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "get-started-grafana-assistant-first-prompt",
+  "title": "Send your first prompt",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Start with a short question that can return a data source list, a query, or results. Treat the reply as a draft, then judge whether it is specific enough or needs narrowing.\n\nThe first time you open Assistant, a tutorial option may appear. You can reopen it anytime from the chat menu (**Open tutorial**)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "If this guide is docked in the sidebar, pop it out into a floating window so it stays visible when **Assistant** opens."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "To send your first prompt, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "send-first-prompt",
+      "title": "Ask a starter question",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "content": "Open **Assistant** from the top toolbar (sparkle icon). You can also select **Assistant** from the left navigation.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if the Assistant panel is already open. If you do not see the control, confirm Assistant is enabled for your stack."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "In the chat input, paste or type a starter prompt:\n\n> List the data sources available to me\n\nIf you have metrics in your stack, you can use:\n\n> Show me CPU usage for the API service",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] button[aria-label='Send message']",
+          "content": "Click **Send** (the arrow next to the chat input).",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Judge whether the reply is specific enough to continue:\n\n- **Useful:** It lists or names data sources, includes a query, opens Explore, or summarizes something concrete from your stack.\n- **Needs narrowing:** It stays generic, seems off-target, or mostly includes clarifying questions.\n\nTreat the reply as a draft either way. Use thumbs up or thumbs down when those controls appear."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You sent a first prompt and checked whether the reply was specific enough.\n\nIf it needed narrowing, the next milestone shows how an `@` mention scopes the request to a specific data source.\n\nFor product details, refer to [Start your first conversation](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/get-started/grafana-cloud/#start-your-first-conversation)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll use an `@` mention to target a specific data source."
+    }
+  ]
+}
