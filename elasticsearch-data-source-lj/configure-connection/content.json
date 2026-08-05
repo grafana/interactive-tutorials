@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "elasticsearch-data-source-configure-connection",
+  "title": "Configure the Elasticsearch connection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you configure the connection details so that Grafana Cloud can query your Elasticsearch instance. This includes the server URL, the authentication method, the index name, and the time field.\n\nRefer to [Configure the Elasticsearch data source](https://grafana.com/docs/grafana/latest/datasources/elasticsearch/configure/) for the full list of settings."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='Datasource HTTP settings url']",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "Under **Connection > URL**, enter the URL of your Elasticsearch server, including the port.\n\nFor example: `http://elasticsearch.example.com:9200`"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='es-config-index-name']",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"],
+          "content": "Under **Elasticsearch details > Index name**, enter the name of the index you want to query.\n\nYou can use a wildcard pattern such as `logs-*`, a time pattern such as `[filebeat-]YYYY.MM.DD`, or a specific index name such as `application-logs`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='es-config-time-field']",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"],
+          "content": "Under **Elasticsearch details > Time field name**, enter the name of your time field.\n\nThe default is `@timestamp`. Enter a different name only if your index uses a custom time field."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Configure authentication\n\nUnder **Authentication**, select the method that matches your Elasticsearch security configuration:\n\n- **Basic authentication** — Enter the username and password for your Elasticsearch user.\n- **No authentication** — Use only if your Elasticsearch instance doesn't require credentials. To authenticate with an API key, select **No authentication**, then add an HTTP header named `Authorization` with the value `ApiKey <your-api-key>`.\n- **Serverless API key** — Enter your API key to connect to an Elastic Cloud Serverless instance.\n\nEnter credentials directly in the Grafana UI — for your security, this path doesn't automate filling passwords or API keys."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll save and test the connection to verify everything is configured correctly."
+    }
+  ]
+}
