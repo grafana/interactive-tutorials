@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-query-language-create-silence",
+  "title": "Create a silence",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You'll create a silence that suppresses notifications for alerts with the label **severity=critical**.\n\nUse the defaults for the time window. Enter the label matcher values this path provides."
+    },
+    {
+      "type": "section",
+      "id": "open-silence-form",
+      "title": "Start a new silence",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/silences",
+          "content": "In the main menu, click **Alerting > Silences**.",
+          "verify": "on-page:/alerting/silences"
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/silence/new",
+          "content": "Click **Create silence**.",
+          "requirements": [
+            "on-page:/alerting/silences"
+          ],
+          "verify": "on-page:/alerting/silence/new"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've opened the new silence form. Next, leave the default time window."
+    },
+    {
+      "type": "section",
+      "id": "set-time-window",
+      "title": "Set the silence time window",
+      "requirements": [
+        "section-completed:open-silence-form"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('Silence start and end')",
+          "content": "Leave the default **Silence start and end** times for now.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/silence/new"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#duration",
+          "content": "Leave **Duration** set to **2h**.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/silence/new"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've kept the default two-hour window. Next, add a label matcher."
+    },
+    {
+      "type": "section",
+      "id": "add-matchers",
+      "title": "Add label matchers",
+      "requirements": [
+        "section-completed:set-time-window"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#matcher-0-label",
+          "targetvalue": "severity",
+          "content": "In the **Label** field, enter `severity`.",
+          "tooltip": "Paste the label name from the label you added earlier.",
+          "doIt": true,
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#matcher-0-value",
+          "targetvalue": "critical",
+          "content": "In the **Value** field, enter `critical`.",
+          "tooltip": "Paste the label value from the label you added earlier.",
+          "doIt": true,
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your matcher is **severity=critical**. Optionally check **Affected alert instances** below the matchers (an empty list is fine), then add a comment and save."
+    },
+    {
+      "type": "section",
+      "id": "verify-and-submit",
+      "title": "Add a comment and save",
+      "requirements": [
+        "section-completed:add-matchers"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#comment",
+          "targetvalue": "Maintenance window",
+          "content": "In the **Comment** field, replace the text with `Maintenance window`.",
+          "doIt": true,
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save silence",
+          "content": "Click **Save silence**.",
+          "requirements": [
+            "on-page:/alerting/silence/new",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your silence is active. Matching alerts won't notify anyone until the window ends."
+    }
+  ]
+}

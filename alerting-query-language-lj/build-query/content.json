@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-query-language-build-query",
+  "title": "Write your query in Code mode",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Your alert watches how often QuickPizza's server fails. You want it to fire when more than 5 in every 100 requests fail.\n\nYou switch to **Code** and write PromQL so the full ratio is one clear expression.\n\nWhat the query does:\n\n- `quickpizza_server_http_requests_total` counts every request.\n- `rate(...[5m])` converts that count to a per-second rate over 5 minutes.\n- `{status=~\"5..\"}` keeps only 5xx failures.\n- Dividing failed by all requests, then multiplying by 100, gives a percentage."
+    },
+    {
+      "type": "section",
+      "id": "build-code-query",
+      "title": "Build the Code mode query",
+      "requirements": [
+        "has-datasource:grafanacloud-play-prom"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "targetvalue": "grafanacloud-play-prom",
+          "content": "Choose **grafanacloud-play-prom** as the data source.",
+          "tooltip": "QuickPizza's Prometheus data source.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid QueryEditorModeToggle']",
+          "content": "Click **Code** on the mode toggle.",
+          "tooltip": "Switches the query editor from Builder to Code.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
+        {
+          "type": "code-block",
+          "reftarget": "div[data-testid='data-testid Query field']",
+          "language": "promql",
+          "code": "100 * sum(rate(quickpizza_server_http_requests_total{status=~\"5..\"}[5m])) / sum(rate(quickpizza_server_http_requests_total[5m]))",
+          "content": "Click **Insert** to add this query to the editor.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run queries",
+          "content": "Click **Run queries**.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The query reports QuickPizza's error rate as a percentage. Next, you set the threshold and recovery while you're still in this section."
+    }
+  ]
+}
