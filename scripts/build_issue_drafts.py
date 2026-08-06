@@ -25,6 +25,18 @@ known = dict(re.findall(r'"?([\w@/.-]+)"?\s*:\s*\n?\s*"(https://github\.com/[^"]
 
 EXTRA_REPOS = {"plugin-ui": "grafana/plugin-ui"}
 
+# issues filed 2026-08-06 (bodies kept in sync via `gh issue edit --body-file`)
+FILED_ISSUES = {
+    "grafana/synthetic-monitoring-app": 1788, "grafana/irm": 11063, "grafana/grafana-cube-datasource": 528,
+    "grafana/traces-drilldown": 844, "grafana/asserts-app-plugin": 3763, "grafana/grafana-pathfinder-app": 1515,
+    "grafana/grafana-collector-app": 1897, "grafana/slo": 4726, "grafana/grafana-adaptivelogs-app": 1877,
+    "grafana/app-observability-plugin": 2567, "grafana/grafana-k6-app": 2109, "grafana/grafana-connections-app": 85,
+    "grafana/business-news": 68, "grafana/grafana-infinity-datasource": 1769, "grafana/grafana-assistant-app": 9090,
+    "grafana/logs-drilldown": 2042, "grafana/plugin-ui": 331, "grafana/grafana-mysql-datasource": 129,
+    "grafana/metrics-drilldown": 1370, "grafana/grafana-adaptive-metrics-app": 1726, "grafana/grafana-pdc-app": 728,
+    "grafana/github-datasource": 796,
+}
+
 
 def repo_for(clone_dir):
     if clone_dir in EXTRA_REPOS:
@@ -84,6 +96,19 @@ DISPOSITIONS = [
     # instance data — nothing the owning team can do
     ("quickpizza", "drop", "env-var names are instance data"),
     ('Day in the Life Demo', "drop", "demo incident title is instance data — tutorial step needs re-recording"),
+    # core-rendered nav/href links — guide-side retarget to core selectors, not a plugin ask
+    ('a[href*="a/grafana-app-observability-app"]', "retarget",
+     "link is rendered by Grafana core (mega menu / nav registration) — tutorials will retarget to the core `Nav menu item` selector"),
+    ("a[href='/a/grafana-synthetic-monitoring-app/home']", "retarget",
+     "link is rendered by Grafana core from plugin.json `includes` — tutorials will retarget to the core `Nav menu item` selector"),
+    # asserts workbench rows already have a parameterized test id
+    ("wb-item:has(", "retarget",
+     "existing parameterized test id `wb-list-item-${name}` — src/testIds.ts:77, emitted by src/features/RcaWorkbench/components/EntityRow.tsx:154"),
+    # instance-data text rendered by a component grep can't tie to the value
+    # (scoped to the app-o11y anchor shape; asserts' wb-list-item rows already have
+    # the parameterized `wb-list-item-${name}` testid and stay in the contract bucket)
+    ("button:has(span:contains('productcatalogservice'))", "add",
+     "service names are instance data (OTel demo) — the ask is a parameterized `data-testid` (e.g. `service-node-${name}`) on the service-map node / services-table name cell"),
 ]
 
 
@@ -104,11 +129,11 @@ def md_code(s):
 
 
 PREAMBLE = """\
-[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor steps to DOM selectors, and the ones below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes.
+[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor their steps to DOM selectors. We've identified that the guides mentioned below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes in your plugin however data-testids give us a more robust path forwards.
 """
 
 SECTION_ADD = """\
-## Add a `data-testid` ({n})
+## Add `data-testid`s to the following JSX
 
 Any value works — we'll retarget the tutorials to whatever you pick.
 
@@ -158,16 +183,23 @@ LIVE_BADGE = {"found": "✅ live", "renamed": "⚠️ renamed", "missing": "❌ 
               "instance-data": "ℹ️ instance data"}
 
 
+CODE_RE = re.compile(r"\.(tsx|jsx|ts)$")
+
+
 def evidence(r, extra_note=None, show_live=True):
     m = r.get("match")
     if not m:
         tok = r["tokens"][0]["value"][:60] if r.get("tokens") else "—"
         ev = md_code(tok)
     else:
-        hits = [h for h in m["hits"] if not h["isTest"]][:2] or m["hits"][:1]
-        ev = "<br>".join(md_code(f"{h['file'].split('/', 1)[1]}:{h['line']}") for h in hits)
-        if m["confidence"] != "high":
-            ev += f"<br>_{m['confidence']} confidence (matched {md_code(m['matchedToken'][:50])})_"
+        hits = [h for h in m["hits"] if not h["isTest"] and CODE_RE.search(h["file"])][:2]
+        if hits:
+            ev = "<br>".join(md_code(f"{h['file'].split('/', 1)[1]}:{h['line']}") for h in hits)
+            if m["confidence"] != "high":
+                ev += f"<br>_{m['confidence']} confidence (matched {md_code(m['matchedToken'][:50])})_"
+        else:
+            ev = ("_component not located by search — the value only appears in test/fixture files "
+                  "or is built dynamically; you'll know the component_")
     live = r.get("live")
     if live and show_live:
         ev += f"<br>**{LIVE_BADGE[live['status']]}** {live['checked']}: {live['note']}"
@@ -262,12 +294,16 @@ for repo, bundle in by_repo.items():
 index.sort(key=lambda t: -(t[2] + t[3] + t[4]))
 readme = ["# Selector issue drafts — one per plugin repo\n",
           "Generated 2026-08-06 from `external-selector-locations.json` + live-DOM verification",
-          "(learn.grafana.net, 2026-08-06). File with:",
-          "`gh issue create -R <repo> --title 'Stable selectors for Grafana Pathfinder tutorials' --body-file <file>` (after review).\n",
-          "| repo | plugin | add | drift | stale | retarget FYI | contracts | draft |",
-          "|---|---|---|---|---|---|---|---|"]
+          "(learn.grafana.net, 2026-08-06).\n",
+          "> **Status: all filed issues were CLOSED (not planned) on 2026-08-06 pending re-verification",
+          "> of the audit inputs.** Reopen with `gh issue reopen <num> -R <repo>` and re-sync bodies with",
+          "> `gh issue edit <num> -R <repo> --body-file <draft>` once the underlying data is confirmed.\n",
+          "| repo | issue | plugin | add | drift | stale | retarget FYI | contracts | draft |",
+          "|---|---|---|---|---|---|---|---|---|"]
 for repo, d, a, dr, st, rt, c, fn in index:
-    readme.append(f"| {repo} | {d} | {a} | {dr} | {st} | {rt} | {c} | [{fn}]({fn}) |")
+    num = FILED_ISSUES.get(repo)
+    issue_cell = f"[#{num}](https://github.com/{repo}/issues/{num})" if num else "—"
+    readme.append(f"| {repo} | {issue_cell} | {d} | {a} | {dr} | {st} | {rt} | {c} | [{fn}]({fn}) |")
 (OUT / "README.md").write_text("\n".join(readme) + "\n")
 
 print(f"{len(index)} issue drafts written to {OUT}")

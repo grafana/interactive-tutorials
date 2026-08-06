@@ -55,16 +55,16 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 | `[id='pageContent'] a[href='/a/grafana-synthetic-monitoring-app/home']` | highlight | detect-outages-synthetic-monitoring-lj/navigate-to-synthetic-monitoring, sm-dns-check-tutorial, sm-ping-check-tutorial +2 | `grafana-synthetic-monitoring-app/src/plugin.json:46` |
 | `button:contains('Save')` | highlight x3 | how-to-setup-secrets-tutorial | `grafana-synthetic-monitoring-app/src/components/Checkster/components/form/FormRoot.tsx:110` (low confidence, token `Save`) |
 | `#secret-name` | formfill x2 | how-to-setup-secrets-tutorial | `grafana-synthetic-monitoring-app/src/page/ConfigPageLayout/tabs/SecretsManagementTab/SecretEditModal.tsx:177`; `grafana-synthetic-monitoring-app/src/page/ConfigPageLayout/tabs/SecretsManagementTab/SecretEditModal.tsx:184` |
-| `[aria-label="timeout seconds input"]` | formfill | sm-dns-check-tutorial, sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/page/NewCheck/__tests__/v2/apiEndpointChecks/gRPCCheck/2-defineUptime.payload.test.tsx:29` |
-| `input[name='target'][placeholder='grafana.com']` | formfill | detect-outages-synthetic-monitoring-lj/create-ping-check, sm-ping-check-tutorial | `grafana-synthetic-monitoring-app/src/configPage/PluginConfigPage/PluginConfigPage.tsx:110`; `grafana-synthetic-monitoring-app/src/components/ProbeAPIServer/ProbeAPIServer.tsx:37` |
+| `[aria-label="timeout seconds input"]` | formfill | sm-dns-check-tutorial, sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/page/NewCheck/__tests__/v2/NewCheckV2.journey.test.tsx:244` |
+| `input[name='target'][placeholder='grafana.com']` | formfill | detect-outages-synthetic-monitoring-lj/create-ping-check, sm-ping-check-tutorial | `grafana-synthetic-monitoring-app/src/configPage/PluginConfigPage/PluginConfigPage.tsx:110`; `grafana-synthetic-monitoring-app/src/features/tracking/TrackingIdentity.tsx:11` |
 | `input[placeholder='name']` | formfill | sm-dns-check-tutorial, sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/services/featureFlags.ts:6`; `grafana-synthetic-monitoring-app/src/services/featureFlags.ts:10` |
 | `input[placeholder='value']` | formfill | sm-dns-check-tutorial, sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/services/featureFlags.ts:22`; `grafana-synthetic-monitoring-app/src/services/featureFlags.ts:53` |
 | `[aria-label="Query to send 1"]` | formfill | sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/page/NewCheck/__tests__/v2/apiEndpointChecks/tcpCheck/2-defineUptime.payload.test.tsx:38` |
 | `[aria-label="Response to expect 1"]` | formfill | sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/page/NewCheck/__tests__/v2/apiEndpointChecks/tcpCheck/2-defineUptime.payload.test.tsx:39` |
 | `[name="target"]` | formfill | sm-dns-check-tutorial | `grafana-synthetic-monitoring-app/src/services/featureFlags.ts:44`; `grafana-synthetic-monitoring-app/src/data/useLatency.ts:14` |
 | `[name='target']` | formfill | sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/services/featureFlags.ts:44`; `grafana-synthetic-monitoring-app/src/data/useLatency.ts:14` |
-| `input[aria-label='Custom labels 1 name']` | formfill | sm-ping-check-tutorial | `grafana-synthetic-monitoring-app/src/page/NewCheck/__tests__/v2/apiEndpointChecks/CommonFields.payload.test.tsx:72` |
-| `input[aria-label='Custom labels 1 value']` | formfill | sm-ping-check-tutorial | `grafana-synthetic-monitoring-app/src/components/Checkster/components/form/layouts/GenericLabelContent.test.tsx:109` |
+| `input[aria-label='Custom labels 1 name']` | formfill | sm-ping-check-tutorial | `grafana-synthetic-monitoring-app/src/page/NewCheck/__tests__/v2/scriptedChecks/scripted/3-labels.payload.test.tsx:32` |
+| `input[aria-label='Custom labels 1 value']` | formfill | sm-ping-check-tutorial | `grafana-synthetic-monitoring-app/src/page/NewCheck/__tests__/v2/apiEndpointChecks/CommonFields.payload.test.tsx:73` |
 | `label:contains('DNS')` | highlight | sm-dns-check-tutorial | `grafana-synthetic-monitoring-app/src/scenes/Summary/SummaryTableViz.tsx:383`; `grafana-synthetic-monitoring-app/src/components/CheckForm/AlertsPerCheck/AlertsPerCheck.constants.tsx:137` (low confidence, token `DNS`) |
 | `label:contains('TCP')` | highlight | sm-tcp-check-tutorial | `grafana-synthetic-monitoring-app/src/scenes/Summary/SummaryTableViz.tsx:392`; `grafana-synthetic-monitoring-app/src/types.ts:60` (low confidence, token `TCP`) |
 
@@ -122,13 +122,13 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 
 | selector | action | guides | evidence |
 |---|---|---|---|
-| `div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/test/fixtures/k8s_pod_entity.ts:33`; `grafana-asserts-app/src/test/fixtures/k8s_cluster_entity.ts:31` |
+| `div.grid.wb-item:has(p[data-original='KubePodCrashLooping'])` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Assertions/hooks/useProvideAssistantContext.ts:75` |
 | `div.grid.wb-item:has(p:contains('PostgreSQLHighConnections'))` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/test/fixtures/k8s_cluster_entity.ts:91` (low confidence, token `PostgreSQLHighConnections`) |
-| `div[role="menu"] button[role="menuitem"]:has(span:contains("Time"))` | highlight | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/externalComponents/ObservabilityLanding/ObservabilityLanding.tsx:97`; `grafana-asserts-app/src/features/RcaWorkbench/components/TopMenu.tsx:92` (low confidence, token `Time`) |
-| `div[role='dialog'] div[role='group'] div:contains('Frontend')` | highlight | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/ObservabilityHome/widgets/PromoWidget.tsx:39`; `grafana-asserts-app/src/features/EntityDetails/hooks/useDrawerTabs.tsx:33` (low confidence, token `Frontend`) |
+| `div[role="menu"] button[role="menuitem"]:has(span:contains("Time"))` | highlight | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/externalComponents/ObservabilityLanding/ObservabilityLanding.tsx:97`; `grafana-asserts-app/src/features/EntityDetails/components/ServiceEntityOverview/panels/ServiceEntityRelationshipPanel.tsx:151` (low confidence, token `Time`) |
+| `div[role='dialog'] div[role='group'] div:contains('Frontend')` | highlight | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/PageEditor/AddWidgetPicker.tsx:19`; `grafana-asserts-app/src/features/EntityDetails/hooks/useDrawerTabs.tsx:33` (low confidence, token `Frontend`) |
 | `div[role='dialog'] div[role='group'] div:contains('Service')` | highlight | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/services/KgQuality.service.ts:67` (low confidence, token `Service`) |
 | `div.text-xs:has(span:contains('Sort By'))` | highlight | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Assertions/components/AssertionsTopMenuButtons/messages.ts:63`; `grafana-asserts-app/src/features/Assertions/components/AssertionsSortBy/messages.ts:22` (low confidence, token `Sort By`) |
-| `div[role='dialog'] button[type='button']:has(div:contains('Frontend'))` | hover | rca-demo | `grafana-asserts-app/src/features/EntityDetails/hooks/useDrawerTabs.tsx:33`; `grafana-asserts-app/src/features/EntityDetails/hooks/useDrawerTabs.tsx:34` (low confidence, token `Frontend`) |
+| `div[role='dialog'] button[type='button']:has(div:contains('Frontend'))` | hover | rca-demo | `grafana-asserts-app/src/features/ObservabilityHome/widgets/PromoWidget.tsx:39`; `grafana-asserts-app/src/features/ObservabilityHome/registry.tsx:95` (low confidence, token `Frontend`) |
 | `div[role='dialog'] button[type='button']:has(div:contains('Service'))` | hover | rca-demo | `grafana-asserts-app/src/services/KgQuality.service.ts:67` (low confidence, token `Service`) |
 | `input[placeholder='Search entity']` | highlight | knowledge-graph-guide | `grafana-asserts-app/src/features/Catalog/components/CatalogSearchInput.tsx:34` |
 
@@ -161,22 +161,22 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 | `div[data-cy='wb-list-item']:has(p:contains('failure'))` | highlight x2 | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres'))` | highlight/highlight x2/highlight, hover | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('productcatalogservice'))` | highlight/highlight x2/highlight, hover | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
-| `div[data-cy='wb-list-item']:has(p:contains('flagd'))` | highlight/highlight x2 | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:171` |
+| `div[data-cy='wb-list-item']:has(p:contains('flagd'))` | highlight/highlight x2 | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='entity-list-item']:has(p:contains('frontendproxy'))` | highlight/hover | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Entities/components/EntityListItem/EntityListItem.component.tsx:93`; `grafana-asserts-app/src/features/Entities/components/EntityListItem/EntityListItem.component.tsx:95` |
 | `div[data-cy='wb-list-item']:has(p:contains('FeatureFlagStateChange')) button:nth-of-typ...` | hover | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('PostgreSQLHighConnections'))` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
-| `div[data-cy='wb-list-item']:has(p:contains('amend'))` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
+| `div[data-cy='wb-list-item']:has(p:contains('amend'))` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:171` |
 | `div[data-cy='wb-list-item']:has(p:contains('anomaly'))` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('frontend')) button:nth-of-type(3)` | highlight/hover | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p[data-original='KubePodCrashLooping'])` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
-| `div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalo...` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:171` |
+| `div[data-cy='wb-list-item']:has(p[data-original='outbound - grpc.oteldemo.ProductCatalo...` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client'))` | hover | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Entities/components/EntityListItem/EntityListItem.component.tsx:93`; `grafana-asserts-app/src/features/Entities/components/EntityListItem/EntityListItem.component.tsx:95` |
 | `div[role='dialog'] div[data-cy='entity-list-item']:has(p:contains('frontend-client')) b...` | highlight/hover | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Entities/components/EntityListItem/EntityListItem.component.tsx:93`; `grafana-asserts-app/src/features/Entities/components/EntityListItem/EntityListItem.component.tsx:95` |
 | `div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1)` | hover | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('checkoutservice')):nth-match(1) button:nth-...` | highlight/hover | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('frontend')):nth-match(1)` | highlight, hover | knowledge-graph-guide | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1)` | hover | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
-| `div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1) but...` | highlight/hover | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:171` |
+| `div[data-cy='wb-list-item']:has(p:contains('productcatalog-postgres')):nth-match(1) but...` | highlight/hover | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1)` | hover | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `div[data-cy='wb-list-item']:has(p:contains('productcatalogservice')):nth-match(1) butto...` | hover | rca-demo-ops, rca-demo-v2 | `grafana-asserts-app/src/features/RcaWorkbench/components/EntityRow.tsx:154`; `grafana-asserts-app/src/features/Assertions/components/AssertionsListItemWrap/AssertionsListItemWrap.component.tsx:158` |
 | `[data-testid='entity-drawer-apps-tab-serviceOverview']` | button, highlight | knowledge-graph-guide | `grafana-asserts-app/src/features/EntityDetails/hooks/useDrawerTabs.tsx:147` (medium confidence, token `entity-drawer-apps-tab- …(prefix)`) |
@@ -247,7 +247,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 | `div[data-testid='remote-configuration-page'] span:nth-match(3)` | highlight | otel-fleet-management | `grafana-collector-app/src/feature/common/e2eSelectors/pages.ts:23` |
 | `button[data-testid='fleet-inventory-add-collector-button']` | highlight | fleet-management-onboarding | `grafana-collector-app/src/feature/common/e2eSelectors/pages.ts:15` |
 | `div[data-testid^="collector-row-"]:nth-match(1)` | highlight | fleet-management-onboarding | `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CellWrapper.tsx:38`; `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CellWrapper.tsx:40` |
-| `tr:has([data-testid^="collector-row-"]) td:nth-child(2) [data-testid^="collector-row-"]...` | highlight | fleet-mgt-monitor-health-lj/view-health-dashboards | `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CellWrapper.tsx:38`; `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CellWrapper.tsx:40` |
+| `tr:has([data-testid^="collector-row-"]) td:nth-child(2) [data-testid^="collector-row-"]...` | highlight | fleet-mgt-monitor-health-lj/view-health-dashboards | `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CollectorListTable.tsx:174`; `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CellWrapper.tsx:38` |
 | `tr:has([data-testid^="collector-row-"]) td:nth-child(3) [aria-label="Healthy"], tr:has(...` | hover | fleet-mgt-monitor-health-lj/check-health-status | `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CellWrapper.tsx:38`; `grafana-collector-app/src/feature/collector-list/components/CollectorListTable/CellWrapper.tsx:40` |
 
 ## grafana-slo-app
@@ -260,7 +260,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 | `a[href="/a/grafana-slo-app/wizard/review"]` | highlight | create-availability-slo-lj/configure-targets | `grafana-slo-app/src/utils/grafanaExtensions.tsx:73`; `grafana-slo-app/src/utils/grafanaExtensions.tsx:125` |
 | `input[name="name"]` | highlight | create-availability-slo-lj/configure-targets | `grafana-slo-app/src/pages/SloReports/Report.tsx:23`; `grafana-slo-app/src/pages/SloReports/Report.tsx:27` |
 | `input[name="objective"]` | highlight | create-availability-slo-lj/configure-targets | `grafana-slo-app/src/pages/ManageSlos.tsx:25`; `grafana-slo-app/src/pages/SloPerformance.tsx:36` |
-| `input[name="timeWindow"]` | formfill | create-availability-slo-lj/create-availability-slo | `grafana-slo-app/src/components/Alerting/CollapseAlertRuleLabels.tsx:23`; `grafana-slo-app/src/components/Alerting/CollapseAlertRuleLabels.tsx:24` |
+| `input[name="timeWindow"]` | formfill | create-availability-slo-lj/create-availability-slo | `grafana-slo-app/src/components/ErrorBudgetPanel/BigTentErrorBudgetPanel.tsx:21`; `grafana-slo-app/src/components/ErrorBudgetPanel/BigTentErrorBudgetPanel.tsx:22` |
 | `textarea[name="description"]` | highlight | create-availability-slo-lj/configure-targets | `grafana-slo-app/src/pages/SloReports/Report.tsx:24`; `grafana-slo-app/src/pages/SloReports/Report.tsx:27` |
 
 ### MISSING from source (stale anchor?) (1)
@@ -331,7 +331,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 
 | selector | action | guides | evidence |
 |---|---|---|---|
-| `a[href*='adaptive-metrics']` | highlight | adaptive-metrics-recommendations | `grafana-adaptive-metrics-app/src/pages/NoAccess/index.tsx:7`; `grafana-adaptive-metrics-app/src/pages/Overview/index.tsx:89` |
+| `a[href*='adaptive-metrics']` | highlight | adaptive-metrics-recommendations | `grafana-adaptive-metrics-app/src/pages/NoAccess/index.tsx:7`; `grafana-adaptive-metrics-app/src/_test-utils_/utilities.tsx:19` |
 | `button:contains("Apply all recommendations")` | highlight | adaptive-logs-recommendations | `grafana-adaptive-metrics-app/src/components/PageHeader/RuleManagement/BatchApply.tsx:133`; `grafana-adaptive-metrics-app/src/hooks/context-hooks.ts:299` (low confidence, token `Apply all recommendations`) |
 | `input[placeholder="Metric name"]` | formfill | adaptive-metrics-lj/review-apply | `grafana-adaptive-metrics-app/src/components/PageHeader/Filters/SearchFilter/index.tsx:62`; `grafana-adaptive-metrics-app/src/components/Customizations/CustomizationDrawer/useCustomizationDrawerState.ts:25` |
 | `select, div:has(label:contains('Segment'))` | highlight | adaptive-metrics-recommendations | `grafana-adaptive-metrics-app/src/pages/App/PageDefinitions.tsx:51`; `grafana-adaptive-metrics-app/src/components/Configuration/Segments/header.tsx:22` (low confidence, token `Segment`) |
@@ -371,7 +371,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 | selector | action | guides | evidence |
 |---|---|---|---|
 | `td.title a[href="/a/grafana-irm-app/incidents/1"]:contains("Day in the Life Demo")` | highlight | rca-demo-ops, rca-demo-v2 | `irm/packages/@plugins/grafana-incident-datasource/pkg/datasource/testdata/activities.annotations.golden.jsonc:11` |
-| `button:text("Acknowledge")` | highlight | grafana-irm-configuration-lj/run-end-to-end-test | `irm/packages/@plugins/grafana-oncall-app/src/pages/incidents/Incidents.tsx:376`; `irm/packages/@grafana-irm/features/src/integrations/components/ServiceNowConfigDrawer/ServiceNowStatusSection.tsx:122` (low confidence, token `Acknowledge`) |
+| `button:text("Acknowledge")` | highlight | grafana-irm-configuration-lj/run-end-to-end-test | `irm/packages/@plugins/grafana-irm-app/src/pages/Integrations/Apps/OnCallSlackAdditionalFields.tsx:18`; `irm/packages/@plugins/grafana-oncall-app/src/pages/incidents/Incidents.tsx:376` (low confidence, token `Acknowledge`) |
 
 ### MISSING from source (stale anchor?) (1)
 
@@ -398,7 +398,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 | `div[data-testid="schedule-rotations"] button:first-of-type` | highlight | grafana-irm-configuration-lj/create-on-call-schedule, irm-configuration | `irm/packages/@plugins/grafana-oncall-app/src/containers/Rotations/Rotations.tsx:157`; `irm/packages/@grafana-irm/core/src/core/dom.ts:36` |
 | `[data-pathfinder="add-user-select"]` | highlight | grafana-irm-configuration-lj/create-on-call-schedule, irm-configuration | `irm/packages/@plugins/grafana-oncall-app/src/components/UserGroups/UserGroups.tsx:183` |
 | `[data-pathfinder="create-web-schedule-button"]` | button | grafana-irm-configuration-lj/create-on-call-schedule, irm-configuration | `irm/packages/@plugins/grafana-oncall-app/src/components/NewScheduleSelector/NewScheduleSelector.tsx:50` |
-| `[data-pathfinder="integration-grafanaalerting"]` | highlight | grafana-irm-configuration-lj/connect-grafana-alerting, irm-configuration | `irm/packages/@grafana-irm/components/src/components/Tutorial/Tutorial.tsx:15`; `irm/packages/@grafana-irm/components/src/components/Tutorial/Tutorial.tsx:38` (medium confidence, token `integration- …(prefix)`) |
+| `[data-pathfinder="integration-grafanaalerting"]` | highlight | grafana-irm-configuration-lj/connect-grafana-alerting, irm-configuration | `irm/packages/@grafana-irm/features/src/insights/oncall/components/Tutorial/Tutorial.tsx:15`; `irm/packages/@grafana-irm/features/src/insights/oncall/components/Tutorial/Tutorial.tsx:50` (medium confidence, token `integration- …(prefix)`) |
 | `[data-pathfinder="integration-name-input"]` | formfill | grafana-irm-configuration-lj/connect-grafana-alerting, irm-configuration | `irm/packages/@grafana-irm/features/src/integrations/components/IntegrationForm/IntegrationForm.tsx:210` |
 | `[data-pathfinder="new-contact-point-input"]` | formfill | grafana-irm-configuration-lj/connect-grafana-alerting, irm-configuration | `irm/packages/@grafana-irm/features/src/integrations/components/IntegrationForm/IntegrationForm.tsx:679` |
 | `[data-pathfinder="route-heading-0"]` | highlight | grafana-irm-configuration-lj/connect-grafana-alerting, irm-configuration | `irm/packages/@grafana-irm/features/src/integrations/components/RouteDisplay/RouteHeading.tsx:32` (medium confidence, token `route-heading- …(prefix)`) |
@@ -477,7 +477,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 | selector | action | guides | evidence |
 |---|---|---|---|
 | `[aria-label="Private data source connect"]` | highlight | prometheus-lj/select-private-connection | `grafana-pdc-app/src/module.tsx:73`; `grafana-pdc-app/src/feature/datasource-config/components/DataSourceExtensionFieldAgent.tsx:87` |
-| `[aria-label='Private data source connect']` | highlight | infinity-csv-lj/select-private-connection | `grafana-pdc-app/src/module.tsx:73`; `grafana-pdc-app/src/feature/private-networks/components/PrivateNetworkDetail/PrivateNetworkDetail.tsx:113` |
+| `[aria-label='Private data source connect']` | highlight | infinity-csv-lj/select-private-connection | `grafana-pdc-app/src/module.tsx:73`; `grafana-pdc-app/src/feature/datasource-config/components/DataSourceExtensionFieldAgent.tsx:87` |
 | `input[aria-label='Private data source connect']` | highlight | mysql-data-source-lj/test-connection | `grafana-pdc-app/src/module.tsx:73`; `grafana-pdc-app/src/feature/datasource-config/components/DataSourceExtensionFieldAgent.tsx:87` |
 
 ## k6-app
@@ -517,8 +517,8 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 
 | selector | action | guides | evidence |
 |---|---|---|---|
-| `a[href*='adaptive-logs']` | highlight | adaptive-logs-lj | `grafana-adaptivelogs-app/src/pages/Overview/GetStarted/GuidedOnboardingCallout.tsx:12`; `grafana-adaptivelogs-app/src/_test-utils_/utilities.tsx:11` |
-| `label[aria-label^='Show early detection patterns']` | highlight | adaptive-logs-recommendations | `grafana-adaptivelogs-app/src/components/RecommendationsTable/RecommendationsTableEmptyState.tsx:160`; `grafana-adaptivelogs-app/src/components/PageHeader/index.tsx:150` |
+| `a[href*='adaptive-logs']` | highlight | adaptive-logs-lj | `grafana-adaptivelogs-app/src/pages/Overview/GetStarted/GuidedOnboardingCallout.tsx:12`; `grafana-adaptivelogs-app/src/pages/Overview/index.tsx:15` |
+| `label[aria-label^='Show early detection patterns']` | highlight | adaptive-logs-recommendations | `grafana-adaptivelogs-app/src/components/PageHeader/index.tsx:150`; `grafana-adaptivelogs-app/src/components/PageHeader/index.tsx:152` |
 
 ## grafana-app-observability-app
 
@@ -526,16 +526,16 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 
 | selector | action | guides | evidence |
 |---|---|---|---|
-| `button:has(span:contains('productcatalogservice'))` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-app-observability-app/plugin/cypress/support/fixtures/serviceMap/data/1.json:382`; `grafana-app-observability-app/plugin/cypress/support/fixtures/serviceMap/data/1.json:386` (low confidence, token `productcatalogservice`) |
-| `a[href*="a/grafana-app-observability-app"]` | highlight | welcome-to-play/main-page | `grafana-app-observability-app/docs/development/run-app-platform.md:82`; `grafana-app-observability-app/plugin/cypress/support/commands/general/actions.ts:36` |
+| `button:has(span:contains('productcatalogservice'))` | highlight | rca-demo, rca-demo-ops, rca-demo-v2 | `grafana-app-observability-app/plugin/cypress/support/fixtures/serviceMap/data/1.json:382` (low confidence, token `productcatalogservice`) |
+| `a[href*="a/grafana-app-observability-app"]` | highlight | welcome-to-play/main-page | `grafana-app-observability-app/plugin/src/links.ts:86`; `grafana-app-observability-app/plugin/src/plugin.json:199` |
 
 ### testid already in source (3)
 
 | selector | action | guides | evidence |
 |---|---|---|---|
-| `a[data-testid="data-testid button-select-service"]:first-of-type` | highlight | explore-drilldowns-101 | `grafana-app-observability-app/plugin/cypress/support/commands/general/selectors.ts:4`; `grafana-app-observability-app/plugin/cypress/support/commands/general/selectors.ts:12` (medium confidence, token `data-testid …(prefix)`) |
+| `a[data-testid="data-testid button-select-service"]:first-of-type` | highlight | explore-drilldowns-101 | `grafana-app-observability-app/plugin/src/components/FilterBy/AdHocFilterRenderer.tsx:111`; `grafana-app-observability-app/plugin/src/components/FilterBy/AdHocFilterRenderer.tsx:133` (medium confidence, token `data-testid …(prefix)`) |
 | `a[data-testid='data-testid button-select-service']:first-of-type` | highlight | drilldown-logs-lj/view-logs | `grafana-app-observability-app/plugin/src/components/FilterBy/AdHocFilterRenderer.tsx:111`; `grafana-app-observability-app/plugin/src/components/FilterBy/AdHocFilterRenderer.tsx:133` (medium confidence, token `data-testid …(prefix)`) |
-| `input[data-testid='data-testid search-services-input']` | highlight | drilldown-logs-lj/view-logs | `grafana-app-observability-app/plugin/src/components/FilterBy/AdHocFilterRenderer.tsx:111`; `grafana-app-observability-app/plugin/cypress/support/commands/general/actions.ts:66` (medium confidence, token `data-testid …(prefix)`) |
+| `input[data-testid='data-testid search-services-input']` | highlight | drilldown-logs-lj/view-logs | `grafana-app-observability-app/plugin/src/components/FilterBy/AdHocFilterRenderer.tsx:111`; `grafana-app-observability-app/plugin/src/components/FilterBy/AdHocFilterRenderer.tsx:133` (medium confidence, token `data-testid …(prefix)`) |
 
 ## grafana-oncall-app
 
@@ -543,7 +543,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 
 | selector | action | guides | evidence |
 |---|---|---|---|
-| `div:text("Notify users from on-call schedule")` | highlight | grafana-irm-configuration-lj/create-escalation-chain, irm-configuration | `irm/packages/@plugins/grafana-irm-app/e2e-tests/utils/escalationChain.ts:8` (low confidence, token `Notify users from on-call schedule`) |
+| `div:text("Notify users from on-call schedule")` | highlight | grafana-irm-configuration-lj/create-escalation-chain, irm-configuration | `irm/packages/@plugins/grafana-oncall-app/e2e-tests/utils/escalationChain.ts:7` (low confidence, token `Notify users from on-call schedule`) |
 | `div:text("Notify users")` | highlight | grafana-irm-configuration-lj/create-escalation-chain, irm-configuration | `irm/packages/@plugins/grafana-irm-app/e2e-tests/utils/escalationChain.ts:7` (low confidence, token `Notify users`) |
 
 ## plugin-ui
@@ -640,7 +640,7 @@ Not covered: 23 rows with no clone in the registry set (RCA workbench demo app, 
 
 | selector | action | guides | evidence |
 |---|---|---|---|
-| `a[href*="a/grafana-k8s-app"]` | highlight | welcome-to-play/main-page | `grafana-k8s-app/dist/9328.js:1`; `grafana-k8s-app/dist/1343.js:1` (medium confidence, token `a/grafana-k8s-app`) |
+| `a[href*="a/grafana-k8s-app"]` | highlight | welcome-to-play/main-page | `grafana-k8s-app/dist/1123.js:1`; `grafana-k8s-app/dist/plugin.json:117` (medium confidence, token `a/grafana-k8s-app`) |
 
 ## loki
 

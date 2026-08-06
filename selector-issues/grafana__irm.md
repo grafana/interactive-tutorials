@@ -1,14 +1,14 @@
 # Stable selectors for Grafana Pathfinder tutorials (1 anchor, 1 tutorial)
 
-[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor steps to DOM selectors, and the ones below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes.
+[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor their steps to DOM selectors. We've identified that the guides mentioned below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes in your plugin however data-testids give us a more robust path forwards.
 
-## Add a `data-testid` (1)
+## Add `data-testid`s to the following JSX
 
 Any value works — we'll retarget the tutorials to whatever you pick.
 
 | element (current weak anchor) | tutorials | where (at 2026-08-04/05) |
 |---|---|---|
-| `button:text("Acknowledge")` | grafana-irm-configuration-lj/run-end-to-end-test | `packages/@plugins/grafana-oncall-app/src/pages/incidents/Incidents.tsx:376`<br>`packages/@grafana-irm/features/src/integrations/components/ServiceNowConfigDrawer/ServiceNowStatusSection.tsx:122`<br>_low confidence (matched `Acknowledge`)_ |
+| `button:text("Acknowledge")` | grafana-irm-configuration-lj/run-end-to-end-test | `packages/@plugins/grafana-irm-app/src/pages/Integrations/Apps/OnCallSlackAdditionalFields.tsx:18`<br>`packages/@plugins/grafana-oncall-app/src/pages/incidents/Incidents.tsx:376`<br>_low confidence (matched `Acknowledge`)_ |
 
 ### FYI — we'll retarget these ourselves, just don't rename the replacements (3)
 

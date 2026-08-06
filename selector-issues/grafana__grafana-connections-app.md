@@ -1,6 +1,6 @@
 # Stable selectors for Grafana Pathfinder tutorials (6 anchors, 13 tutorials)
 
-[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor steps to DOM selectors, and the ones below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes.
+[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor their steps to DOM selectors. We've identified that the guides mentioned below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes in your plugin however data-testids give us a more robust path forwards.
 
 ## ⚠️ Live in production, gone from `main` (3)
 
@@ -12,7 +12,7 @@ These match on production today (checked 2026-08-06) but not in `main` — tutor
 | `a:has([data-testid='datasource-mysql-card'])` | grafana-cloud-tour-lj/explore-connect-data | `src/features/catalog/CardContent/PermissionMissingModalContent/PermissionMissingModalContent.tsx:52`<br>`src/features/catalog/CardContent/FeaturedConnectionsModalContent/MySQLRouterModalContent.tsx:24`<br>_medium confidence (matched `datasource- …(prefix)`)_ |
 | `[data-testid='search-input-input']` | kafka-monitoring-lj/install-grafana-alloy | `search-input-input` |
 
-## Add a `data-testid` (2)
+## Add `data-testid`s to the following JSX
 
 Any value works — we'll retarget the tutorials to whatever you pick.
 

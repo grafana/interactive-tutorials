@@ -133,8 +133,9 @@ TOKEN_PATTERNS = [
 
 KIND_PRIORITY = {"testid": 0, "aria": 1, "attr": 2, "class": 3, "text": 4, "href": 5}
 
-TEST_FILE_HINTS = (".test.", ".spec.", "/tests/", "/e2e/", "/e2e-tests/", "/testdata/",
-                   "/__mocks__/", "/smoke-tests/", "-test.", "jest-setup")
+TEST_FILE_HINTS = (".test.", ".spec.", "/tests/", "/__tests__/", "/e2e/", "/e2e-tests/",
+                   "/testdata/", "/__mocks__/", "/smoke-tests/", "-test.", "jest-setup",
+                   "/cypress/", "/fixtures/", "/docs/", "/mocks/")
 
 
 def extract_tokens(selector):

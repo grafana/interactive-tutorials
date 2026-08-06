@@ -1,14 +1,14 @@
 # Stable selectors for Grafana Pathfinder tutorials (4 anchors, 4 tutorials)
 
-[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor steps to DOM selectors, and the ones below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes.
+[Pathfinder](https://grafana.com/docs/learning-journeys/) tutorials anchor their steps to DOM selectors. We've identified that the guides mentioned below target UI this plugin renders (audit: grafana/grafana#129672). Weak anchors (text/placeholder/positional) break silently when copy or layout changes in your plugin however data-testids give us a more robust path forwards.
 
-## Add a `data-testid` (3)
+## Add `data-testid`s to the following JSX
 
 Any value works — we'll retarget the tutorials to whatever you pick.
 
 | element (current weak anchor) | tutorials | where (at 2026-08-04/05) |
 |---|---|---|
-| `button:text('Next')` | otel-fleet-management | `src/feature/remote-configuration/components/edit/ConfigurationWizard.test.tsx:125`<br>_low confidence (matched `Next`)_ |
+| `button:text('Next')` | otel-fleet-management | _component not located by search — the value only appears in test/fixture files or is built dynamically; you'll know the component_ |
 | `#collector-status-filter` | fleet-mgt-monitor-health-lj/check-health-status, fleet-mgt-monitor-health-lj/determine-config | `src/feature/collector-list/components/CollectorListStatusFilter.tsx:50`<br>`src/feature/collector-list/components/CollectorListStatusFilter.tsx:55`<br>**✅ live** 2026-08-06: present on the fleet inventory tab |
 | `[aria-label="Search collectors"]` | fleet-mgt-monitor-health-lj/determine-config | `src/feature/collector-list/components/CollectorListBar/SearchInput.tsx:114`<br>`src/feature/remote-configuration/components/drawer/MatchedCollectorsTab.tsx:173` |
 
