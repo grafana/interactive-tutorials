@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "work-with-grafana-assistant-explain-a-query",
+  "title": "Explain a query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "If you already have a query and want to understand it, paste it into chat and ask for an explanation. You can also ask how to tighten a slow or overly broad query.\n\nA useful explanation covers the main parts of the query, not only a one-line summary."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "If this guide is docked in the sidebar, pop it out into a floating window so it stays visible beside **Assistant**."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "To ask Assistant to explain a query, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "explain-promql",
+      "title": "Ask Assistant to explain PromQL",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "content": "If the Assistant panel is closed, open **Assistant** from the top toolbar.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "In the chat input, paste this prompt (or substitute a query from your own stack):\n\n> Explain what this PromQL query does: `rate(http_requests_total{job=\"api\"}[5m])`",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] button[aria-label='Send message']",
+          "content": "Click **Send**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Judge whether the explanation is complete enough:\n\n- **Useful:** It covers the selectors (labels or filters), the functions or operations, and the range or window.\n- **Needs a follow-up:** It stays at a one-line summary, skips a part of the query, or conflicts with what you meant.\n\nIf it needs a follow-up, paste your intent (for example, \"I expected this to filter only production\") and ask for a corrected reading. You can refine the query itself in the next milestone."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You practiced reading an explanation against a checklist (selectors, functions, and range), not only skimming the reply.\n\nFor more examples, refer to [Query data](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/guides/querying/)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll refine a query draft with a follow-up prompt."
+    }
+  ]
+}
