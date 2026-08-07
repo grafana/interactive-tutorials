@@ -187,13 +187,27 @@ jobs:
             fi
           done
 
+          echo "Guide directories staged under packages/:"
+          find packages -maxdepth 1 -mindepth 1 -type d | sort
+
+      # SPIKE (RFC grafana/pathfinder-rfcs#14 — step-level progression tracking).
+      # Enrich every staged manifest.json with a `stats` rollup immediately
+      # before build-repository runs. Pure-Python, stdlib only, no credentials —
+      # safe to run in this sandboxed (no id-token) job. Guides are measured
+      # first, then paths/journeys roll up their milestones (see the script
+      # header for counting semantics and documented approximations). NOTE: until
+      # the companion pathfinder-app change relaxes build-repository AND the
+      # pinned ref above is bumped past it, `stats` is embedded in the manifests
+      # but does NOT propagate into repository.json.
+      - name: Compute manifest rollup stats (RFC pathfinder-rfcs#14 spike)
+        run: python3 .github/scripts/compute_manifest_stats.py packages
+
+      - name: Build Pathfinder repository.json
+        run: |
           # repository.json must live inside packages/ so "path" entries
           # resolve as siblings on the CDN.
           node pathfinder-app/dist/cli/cli/index.js build-repository packages/ -o packages/repository.json
 
-          echo "Guide directories staged under packages/:"
-          find packages -maxdepth 1 -mindepth 1 -type d | sort
-          echo ""
           echo "repository.json:"
           cat packages/repository.json
 

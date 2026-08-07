@@ -246,6 +246,20 @@ jobs:
           exit 1
         fi
 
+    # SPIKE (RFC grafana/pathfinder-rfcs#14 — step-level progression tracking).
+    # Enrich every manifest.json with a `stats` rollup immediately before
+    # build-repository runs, mirroring deploy.yml. Guides are measured first,
+    # then paths/journeys roll up their milestones (see the script header for
+    # counting semantics and documented approximations). This is BUILD-TIME
+    # ONLY: it mutates the ephemeral CI checkout so build-repository sees stats;
+    # it never commits back to the repo. The two excludes below mirror the
+    # build-repository invocation; note the script's DEFAULT_EXCLUDES is a
+    # superset (also docs/.cursor/.github/courses/etc), so on any dir the CLI
+    # would index but the script skips, that manifest would lack stats — none
+    # exist today (all package manifests live in package dirs).
+    - name: Compute manifest rollup stats (RFC pathfinder-rfcs#14 spike)
+      run: python3 .github/scripts/compute_manifest_stats.py . --exclude pathfinder-app --exclude shared
+
     - name: Build repository.json
       run: |
         echo "🔨 Generating repository.json from all packages..."
