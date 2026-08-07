@@ -1,0 +1,272 @@
+{
+  "id": "play-eurovision-tour",
+  "title": "Take a Tour of the Eurovision 2026 Dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "## Introduction\n\nThis dashboard shows a full breakdown of the results and voting for the 2026 Eurovision Song Contest Final, held in Vienna, Austria on 16th May 2026.  25 countries competed for the votes of professional juries and the viewing public.\n\nThe jury and public in each country each award points to 10 other countries: 12 points for their favourite down to 1 point for their tenth favourite (and 0 for everyone else).  The winner is the country with the highest combined points total.\n\nThe whole dashboard is built from simple CSV data using Grafana's Google Sheets data source, with SQL expressions used to transform and join the data.  As we tour it, we'll also point out two layout features that keep everything tidy: **tabbed layouts** and **repeating rows**.\n\nThis tour assumes you're viewing the dashboard on Grafana Play with the **Country** variable set to **All** — the first step takes care of that for you."
+    },
+    {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/d/eurovision/eurovision-2026?var-country=$__all",
+      "content": "Let's begin by opening the Eurovision 2026 dashboard with every country selected.",
+      "verify": "on-page:/d/eurovision/eurovision-2026"
+    },
+    {
+      "type": "markdown",
+      "content": "## Contest Overview\n\nThe first section of the dashboard summarizes the outcome of the contest.  Rather than stacking every panel on top of each other, it uses a **tabbed layout** so that related views share a single row.  Let's explore it."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-overview",
+      "title": "Contest Overview and Tabbed Layouts",
+      "requirements": [
+        "on-page:/d/eurovision/eurovision-2026"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Winner']",
+          "content": "The Contest Overview row uses a tabbed layout.  The Winner, Full Results, Popular Vote and Jury Vote tabs each show a different view of the same results without cluttering the dashboard.  Let's start on the **Winner** tab — click it to open it.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Podium Finishers']",
+          "content": "The Winner tab summarizes who won, their song and their winning video, along with these podium finishers: the top three countries ranked by combined points.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Points Breakdown by Type']",
+          "content": "This pie chart splits the winning country's points into the share that came from the professional juries and the share that came from the public televote.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Point Award Frequencies']",
+          "content": "And this bar chart shows how often the winning country was awarded each points value across all of the voting countries.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Full Results']",
+          "content": "Now click the **Full Results** tab to see every country's score in one chart.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Full Results']",
+          "content": "This stacked bar chart ranks all 25 countries by total points, with jury and televote points stacked together.  Tip: click **jury** or **televote** in the legend to show just that vote type on the graph, then click the same legend item again to bring both back into the stacked view.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Popular Vote']",
+          "content": "Now click the **Popular Vote** tab, which ranks the countries by public televote points only.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Jury Vote']",
+          "content": "Finally, click the **Jury Vote** tab to rank them by professional jury points only.  Notice how the two often disagree!",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've seen how a tabbed layout keeps four related views of the results in a single, tidy row.  Next, let's discover how each panel turns raw spreadsheet data into these visualizations."
+    },
+    {
+      "type": "markdown",
+      "content": "## SQL Expressions in Grafana\n\nEvery panel in this dashboard shares the same recipe.  The data always comes from a Google Sheet containing two simple tabs: one describing the finalists, their songs and running order, and one containing the raw voting data (which country awarded how many points to which country, from the jury or the televote).\n\nThe Google Sheets queries simply fetch that raw data.  All of the counting, summing, joining and sorting you see on screen is done inside Grafana using the **SQL expressions** transformation.  Let's look at one."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-sql",
+      "title": "Explore a SQL Expression",
+      "requirements": [
+        "on-page:/d/eurovision/eurovision-2026"
+      ],
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Switch to the Full Results tab, open that panel for editing, and switch to table view.",
+          "requirements": [
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Tab Full Results']",
+              "description": "First, click the Full Results tab to bring that panel back into view.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid='data-testid Panel header Full Results'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Now click Edit.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "label[aria-label='Table view']",
+              "description": "Click the toggle to view the data as a table."
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(1)",
+          "content": "This first query reads the raw voting data straight from the Google Sheet.  There's no aggregation here — it just returns every vote that was cast.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
+          "content": "This SQL expression sums each country's jury and televote points from those raw rows and sorts them into the final ranking.  Grafana runs the SQL over the query results, so the data source itself stays very simple.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click the **Back to dashboard** button to continue the tour.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "That single SQL expression did all of the aggregation for the Full Results chart.  Finally, let's see how the dashboard uses a variable to build a repeating, per-country section."
+    },
+    {
+      "type": "markdown",
+      "content": "## Repeating Rows and Variables\n\nThe lower part of the dashboard has a **repeating row** titled \"_Country_: Details\".  Grafana renders one copy of this row for every country you select, each with its own set of tabs — an Overview, the points awarded **to** that country, and the points given **by** that country.\n\nThis is driven by a dashboard **variable** named `country`.  The variable's values are read from the Google Sheet, and its value is substituted into the SQL expressions behind each panel — for example `WHERE country = \"${country}\"`.  The same variable even builds each country's YouTube link, by fetching that country's `youtube_id` and dropping it into a URL like `https://www.youtube.com/watch?v={{youtube_id}}`."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-variables",
+      "title": "Repeating Rows and Variables",
+      "requirements": [
+        "on-page:/d/eurovision/eurovision-2026"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Dashboard template variables Variable Value DropDown value link text country-input']",
+          "content": "This is the Country variable at the top of the dashboard.  It's a multi-value variable set to All, so the repeating row below shows every country — pick just the ones you're interested in to narrow it down.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Points Awarded to ${country}'] svg[data-testid='icon-ellipsis-v']",
+          "content": "Each repeating row has a \"Points Awarded to _Country_\" panel.  Open its menu, then choose Edit, to see the variable used inside a SQL expression.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
+          "content": "Study the SQL expression.  Note the `${country}` reference — the value of the variable for this repeated row (for example \"Austria\") is substituted into the expression when it's evaluated, so one panel definition serves every country.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click the **Back to dashboard** button to finish the tour.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Next Steps and Additional Resources\n\nWe hope you enjoyed this tour of the Eurovision 2026 dashboard.  Check out these resources to learn more about the techniques it uses:\n\n- [The Google Sheet used for the contest](https://docs.google.com/spreadsheets/d/1q0rR7luGqQUcb5spvhLaNMTe756NHyIXf6GktMpzEx0/view) (one tab for the finalists and songs, one tab for the voting).\n- [SQL expressions documentation](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/query-transform-data/sql-expressions/).\n- [Google Sheets data source documentation](https://grafana.com/grafana/plugins/grafana-googlesheets-datasource/).\n- [Tabbed layouts and repeating rows (dashboard groupings)](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/dashboard-groupings/).\n- [Dynamic text panel](https://grafana.com/grafana/plugins/marcusolsson-dynamictext-panel/) (used for the YouTube video links).\n- [Dynamic image panel](https://grafana.com/grafana/plugins/dalvany-image-panel/).\n"
+    }
+  ]
+}
