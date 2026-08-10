@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "## Introduction\n\nThis dashboard shows a full breakdown of the results and voting for the 2026 Eurovision Song Contest Final, held in Vienna, Austria on 16th May 2026.  25 countries competed for the votes of professional juries and the viewing public.\n\nThe jury and public in each country each award points to 10 other countries: 12 points for their favourite down to 1 point for their tenth favourite (and 0 for everyone else).  The winner is the country with the highest combined points total.\n\nThe whole dashboard is built from simple CSV data using Grafana's Google Sheets data source, with SQL expressions used to transform and join the data.  As we tour it, we'll also point out two layout features that keep everything tidy: **tabbed layouts** and **repeating rows**.\n\nThis tour assumes you're viewing the dashboard on Grafana Play with the **Country** variable set to **All** — the first step takes care of that for you."
+      "content": "## Introduction\n\nThis dashboard shows a full breakdown of the results and voting for the 2026 Eurovision Song Contest Final, held in Vienna, Austria on 16th May 2026.  25 countries competed for the votes of professional juries and the viewing public.\n\nThe jury and public in each country each award points to 10 other countries: 12 points for their favourite down to 1 point for their tenth favourite (and 0 for everyone else).  The winner is the country with the highest combined points total.\n\nThe whole dashboard is built from simple CSV data using Grafana's Google Sheets data source, with SQL expressions used to transform and join the data.  As we tour it, we'll also point out two layout features that keep everything tidy: **tabbed layouts** and **repeating rows**.\n\nThis tour assumes you're viewing the dashboard on Grafana Play with the **Country** variable set to **All** — the first step takes care of that for you.\n\nIf you'd like a more in-depth introduction to SQL expressions, try the [The Traitors UK dashboard](https://play.grafana.org/d/siqtdwm/the-traitors-uk-series-4) on Grafana Play and its interactive learning tour."
     },
     {
       "type": "interactive",
@@ -172,7 +172,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(1)",
-          "content": "This first query reads the raw voting data straight from the Google Sheet.  There's no aggregation here — it just returns every vote that was cast.",
+          "content": "This first query reads the raw voting data straight from the Google Sheet.  There's no aggregation here — it just returns every vote that was cast.\n\nNotice the **Hidden** badge on the query row.  Query A exists only to feed the SQL expression below it, which refers to those rows as table `A`.  Hiding a query keeps its results out of the visualization while still making them available to expressions — without it, this panel would try to plot several hundred individual votes on top of the 25 aggregated bars you actually want to see.  You can toggle it yourself with the crossed-out eye button (**Show response**) on the query row.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -222,7 +222,26 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "label[data-testid='data-testid Dashboard template variables submenu Label Country']",
-          "content": "This is the Country variable at the top of the dashboard.  It's a multi-value variable set to All, so the repeating row below shows every country — use the dropdown next to this label to pick just the ones you're interested in and narrow it down.",
+          "content": "This is the Country variable at the top of the dashboard.  It's a multi-value variable, and right now it's set to **All** — which is why there are 25 copies of the details row below, one per country.  Use the dropdown next to this label to pick just the countries you're interested in.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/eurovision/eurovision-2026?var-country=Croatia&var-country=United%20Kingdom",
+          "content": "Let's narrow it down to two countries so the rest of the tour is easier to follow: **Croatia**, who finished mid-table, and the **United Kingdom**, who propped up the scoreboard.",
+          "verify": "on-page:/d/eurovision/eurovision-2026"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "span[data-testid='data-testid dashboard-row-title-Croatia: Details']",
+          "content": "Twenty-five repeated rows just became two — \"Croatia: Details\" and \"United Kingdom: Details\".  Nothing about the dashboard changed except the variable's value; the row definition is written once and Grafana repeats it over whatever you select.",
           "requirements": [
             "exists-reftarget",
             "on-page:/d/eurovision/eurovision-2026"
@@ -232,7 +251,7 @@
         },
         {
           "type": "guided",
-          "content": "Open the first country's \"Points Awarded to\" panel for editing to see the variable used inside a SQL expression.",
+          "content": "Open Croatia's \"Points Awarded to\" panel for editing to see the variable used inside a SQL expression.",
           "requirements": [
             "on-page:/d/eurovision/eurovision-2026"
           ],
@@ -240,7 +259,7 @@
             {
               "action": "highlight",
               "reftarget": "a[data-testid^='data-testid Tab Points Awarded to']:nth-match(1)",
-              "description": "Scroll down to the first country's \"_Country_: Details\" row.  Each repeated row has its own Overview, \"Points Awarded to\" and \"Points Given by\" tabs — click the \"Points Awarded to\" tab.",
+              "description": "Scroll down to the \"Croatia: Details\" row.  Each repeated row has its own Overview, \"Points Awarded to\" and \"Points Given by\" tabs — click the \"Points Awarded to Croatia\" tab.",
               "lazyRender": true
             },
             {
@@ -262,7 +281,82 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
-          "content": "Study the SQL expression.  Note the `WHERE recipient_country = \"${country}\"` clause — the value of the variable for this repeated row (for example \"Albania\") is substituted in when the expression is evaluated, so one panel definition serves every country.  The same substitution is why the panel and its tab are titled with the country's actual name.",
+          "content": "Study the SQL expression.  Note the `WHERE recipient_country = \"${country}\"` clause — the value of the variable for this repeated row (here, \"Croatia\") is substituted in when the expression is evaluated, so one panel definition serves every country.  The same substitution is why the panel and its tab are titled with the country's actual name rather than `${country}`.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Click the **Back to dashboard** button to continue the tour.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Working Out Each Country's Rank\n\nLet's look at one more SQL expression, because it solves a problem you'll meet in plenty of dashboards: turning a total into a **position in a league table**.\n\nEach country's **Overview** tab shows where that country finished — 1st, 2nd, 3rd and so on.  Nothing in the spreadsheet stores a finishing position, so the dashboard has to work it out.  The trick it uses is to count how many countries scored *more* points than this one, and add one.  If three countries beat you, you came 4th.\n\nThis panel has no title (it's one of the small unlabelled stats on the Overview tab), so rather than hunting for it in a panel menu, the next step opens it for editing directly."
+    },
+    {
+      "type": "section",
+      "id": "guide-section-rank",
+      "title": "Ranking with a SQL Expression",
+      "requirements": [
+        "on-page:/d/eurovision/eurovision-2026"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Overview']:nth-match(1)",
+          "content": "First, click the **Overview** tab on Croatia's row.  Alongside the artist, song and running order you'll see a small stat showing Croatia finished **15th** — that's the panel we're about to open.  Scroll down to the United Kingdom's row and you'll see the same panel reporting **25th**, the same expression giving a different answer.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/eurovision/eurovision-2026"
+          ],
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/eurovision/eurovision-2026?var-country=Croatia&var-country=United%20Kingdom&editPanel=16",
+          "content": "Now let's open that ranking panel for editing.",
+          "verify": "on-page:/d/eurovision/eurovision-2026"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(1)",
+          "content": "As before, the first query is the plain Google Sheets query that fetches the raw voting rows.  It's hidden, so it feeds the expression below without being drawn on the panel.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
+          "content": "Here's the ranking expression.  Read it from the inside out: the subquery in the `FROM` clause totals up the points for every country, and the subquery in the `WHERE` clause totals up the points for this country.  `COUNT(*) + 1` then counts the countries whose total beat it and adds one, giving the finishing position.\n\nThis is a neat way to rank rows without a window function — and because `${country}` is substituted per repeated row, the same expression produces the right answer for all 25 countries.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid toggle-table-view']",
+          "content": "Toggle **Table view** to see what the expression actually returns: a single row with one `country_rank` column.  The stat panel just formats that number as an ordinal — \"15th\" for Croatia.",
           "requirements": [
             "exists-reftarget"
           ],
@@ -278,6 +372,13 @@
             "exists-reftarget"
           ],
           "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/eurovision/eurovision-2026?var-country=$__all",
+          "content": "Finally, let's set the **Country** variable back to **All**, so you're looking at the dashboard the way you found it — with all 25 countries repeated below.",
+          "verify": "on-page:/d/eurovision/eurovision-2026"
         }
       ]
     },
