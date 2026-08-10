@@ -162,8 +162,8 @@
             },
             {
               "action": "highlight",
-              "reftarget": "label[aria-label='Table view']",
-              "description": "Click the toggle to view the data as a table."
+              "reftarget": "input[data-testid='data-testid toggle-table-view']",
+              "description": "Click the Table view toggle to view the data as a table."
             }
           ],
           "completeEarly": true
@@ -221,8 +221,8 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='data-testid Dashboard template variables Variable Value DropDown value link text country-input']",
-          "content": "This is the Country variable at the top of the dashboard.  It's a multi-value variable set to All, so the repeating row below shows every country — pick just the ones you're interested in to narrow it down.",
+          "reftarget": "label[data-testid='data-testid Dashboard template variables submenu Label Country']",
+          "content": "This is the Country variable at the top of the dashboard.  It's a multi-value variable set to All, so the repeating row below shows every country — use the dropdown next to this label to pick just the ones you're interested in and narrow it down.",
           "requirements": [
             "exists-reftarget",
             "on-page:/d/eurovision/eurovision-2026"
@@ -231,21 +231,38 @@
           "lazyRender": true
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header Points Awarded to ${country}'] svg[data-testid='icon-ellipsis-v']",
-          "content": "Each repeating row has a \"Points Awarded to _Country_\" panel.  Open its menu, then choose Edit, to see the variable used inside a SQL expression.",
+          "type": "guided",
+          "content": "Open the first country's \"Points Awarded to\" panel for editing to see the variable used inside a SQL expression.",
           "requirements": [
-            "exists-reftarget",
             "on-page:/d/eurovision/eurovision-2026"
           ],
-          "lazyRender": true
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid^='data-testid Tab Points Awarded to']:nth-match(1)",
+              "description": "Scroll down to the first country's \"_Country_: Details\" row.  Each repeated row has its own Overview, \"Points Awarded to\" and \"Points Given by\" tabs — click the \"Points Awarded to\" tab.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid^='data-testid Panel header Points Awarded to'] svg[data-testid='icon-ellipsis-v']",
+              "description": "Click here to open that panel's menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Now click Edit.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
-          "content": "Study the SQL expression.  Note the `${country}` reference — the value of the variable for this repeated row (for example \"Austria\") is substituted into the expression when it's evaluated, so one panel definition serves every country.",
+          "content": "Study the SQL expression.  Note the `WHERE recipient_country = \"${country}\"` clause — the value of the variable for this repeated row (for example \"Albania\") is substituted in when the expression is evaluated, so one panel definition serves every country.  The same substitution is why the panel and its tab are titled with the country's actual name.",
           "requirements": [
             "exists-reftarget"
           ],
