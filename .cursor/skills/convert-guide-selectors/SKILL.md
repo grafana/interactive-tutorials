@@ -223,12 +223,20 @@ the entire reftarget unresolved, braces included, so it also disables the tokens
 Then confirm in a live instance: for a sample of converted steps, evaluate
 `document.querySelectorAll(':is([data-testid="V"], [aria-label="V"])').length === 1`.
 
-Validate at your **minimum supported Grafana version as well as current**. Be precise about what
-this catches: it surfaces selectors whose older form was matched by `aria-label` instead of
-`data-testid`. It does **not** prove a selector existed back then — `resolveSelectors` falls back to
-the newest version key, so a `12.4.0`-gated selector still reports OK when asked for `11.0.0`.
-`validate-paths.ts` prints a "Resolves differently per version" section; treat every entry there as
-a reason to keep the symbolic form.
+Validate at your **minimum supported Grafana version as well as current**. Two sections of the
+output do different jobs:
+
+- **"Resolves differently per version"** — selectors whose older form was matched by `aria-label`
+  instead of `data-testid`. Treat every entry as a reason to keep the symbolic form.
+- **"BELOW FLOOR"** — a resolved value is not proof the selector existed at that version.
+  `resolveSelector` falls back to the newest version key when none is `<=` the requested version, so
+  a `12.4.0`-gated selector resolves cleanly when asked for `11.0.0`, to a value that DOM never
+  carried. The script reads each path's lowest version key from the versioned tree and flags these
+  (trap 7). They are **warnings, not failures** — exit code still tracks hard resolution failures
+  only — because a newer-only selector is legitimate if your guide targets newer instances. Read
+  them; a below-floor path on a step that must work at your floor is a defect.
+
+`BELOW-FLOOR WARNINGS: 0` on the final line is the signal that the whole set is in range.
 
 ---
 

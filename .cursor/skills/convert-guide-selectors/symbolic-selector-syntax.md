@@ -241,11 +241,14 @@ So a selector introduced *above* your minimum supported version resolves cleanly
 that version's DOM never carried. `components.ResourcePicker.card` is defined only at `13.2.0`, yet
 against Grafana 9.0.0 it resolves to `data-testid resource-picker-card` and matches nothing.
 
-`SKILL.md` step 3 states the consequence for the verify gate. The mechanism is here because it also
-defeats the *divergence* report: a single-key path returns an identical value at every version, so it
-reads as maximally stable exactly when it is unsupported. When adopting a path, read its version keys
-in `packages/grafana-e2e-selectors/src/selectors/` — if the lowest is above your floor, the selector
-isn't available across your range, and no amount of green validation will say so.
+Note that this also defeats the *divergence* report: a single-key path returns an identical value at
+every version, so it reads as maximally stable exactly when it is unsupported.
+
+`validate-paths.ts` closes the gap by reading each path's lowest version key straight from the
+versioned tree and reporting anything whose floor is above a requested version under **BELOW FLOOR**
+(and inline as `WARN`). These are warnings rather than failures, because a newer-only selector is a
+legitimate choice when the guide targets newer instances — so the number on the final summary line is
+something to read, not just an exit code to check.
 
 This compounds trap 3's release gate: `find-unmerged-paths.py` catches a path that is in **no**
 release; this one is a path that is released but not in every version you support.

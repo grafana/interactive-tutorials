@@ -39,7 +39,7 @@ The embedded `{grafana:…}` form is required here because the reftarget qualifi
 
 `components.LayoutContainer` is only defined from **12.4.0**, and the row container attribute doesn't exist in the DOM before then -- so on an older instance neither the reference nor a literal matches anything. Don't target a row container below 12.4.0; disambiguate with `:nth-match()` instead.
 
-Note that `validate-paths.ts` will still report this path **OK** at 12.3.0. That is not a bug in your guide -- it's the resolver's below-floor fallback, and it means a green validation run is not proof of version support. See [trap 7](../convert-guide-selectors/symbolic-selector-syntax.md#7-a-path-below-its-floor-resolves-to-the-newest-value).
+`validate-paths.ts` flags this as `WARN … (defined only from 12.4.0)` and lists it under **BELOW FLOOR**, because the resolver's below-floor fallback would otherwise resolve it cleanly to a value 12.3.0 never carried. See [trap 7](../convert-guide-selectors/symbolic-selector-syntax.md#7-a-path-below-its-floor-resolves-to-the-newest-value).
 
 ### Chart / Visualization Selectors
 
@@ -346,12 +346,12 @@ Untitled panels are the one grade that stays on a literal `data-testid` -- the r
 
 ### Path Validation
 
-| Grafana version | Paths checked | Failures |
-|-----------------|---------------|----------|
-| {min supported} | {n} | 0 |
-| {current} | {n} | 0 |
+| Grafana version | Paths checked | Failures | Below floor |
+|-----------------|---------------|----------|-------------|
+| {min supported} | {n} | 0 | 0 |
+| {current} | {n} | 0 | 0 |
 
-Produced by `convert-guide-selectors/scripts/validate-paths.ts`. A non-zero failure count means the guide ships a reftarget that resolves to nothing.
+Produced by `convert-guide-selectors/scripts/validate-paths.ts`. A non-zero **failure** count means the guide ships a reftarget that resolves to nothing. A non-zero **below floor** count means a path resolves but its selector didn't exist at that version -- so it matches nothing there even though validation "passed".
 
 ### Suggestions
 - Panels with duplicate titles would benefit from unique titles for selector stability
