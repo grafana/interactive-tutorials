@@ -168,7 +168,13 @@ def main():
     str_map_pins = set(parse_kv(args.pin))
 
     def convert(ref):
-        if ref.startswith(('grafana:', 'panel:')) or '{grafana:' in ref:
+        # A panel: reftarget must stay whole. resolveSelectorForVersion tests for '{grafana:' before
+        # the panel: branch and returns early, so injecting a token here would strand the literal
+        # text 'panel:<title> > ' in front of a resolved :is(...) — matching nothing, silently.
+        if ref.startswith('panel:'):
+            report['untouched'].append((ref, 'panel: shorthand — cannot hold a {grafana:} token'))
+            return ref
+        if ref.startswith('grafana:') or '{grafana:' in ref:
             report['untouched'].append((ref, 'already symbolic'))
             return ref
 

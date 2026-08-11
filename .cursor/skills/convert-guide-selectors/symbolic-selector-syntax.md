@@ -15,7 +15,7 @@ How Pathfinder resolves `grafana:` reftargets, and the traps that come with them
 > Read the source, not a deployed bundle. What this file adds on top of the upstream doc: the
 > `{grafana:…}` embedded form (upstream documents only the bare and parameterized forms, though the
 > embedded form is covered by the plugin's own tests in `src/lib/dom/selector-generator.test.ts`),
-> the four traps below, and the conversion workflow.
+> the traps below, and the conversion workflow.
 
 ---
 
@@ -33,6 +33,14 @@ How Pathfinder resolves `grafana:` reftargets, and the traps that come with them
 The `:<arg>` split is on the **first** colon (`splitGrafanaPathParam`), and a path never contains
 one, so an argument may: `grafana:components.Panels.Panel.title:Latency: p99` passes
 `"Latency: p99"`.
+
+**An empty argument is inexpressible.** The split only fires when something follows the colon
+(`colonIndex < pathWithParam.length - 1`), so `grafana:components.Panels.Panel.title:` is read as the
+*path* `components.Panels.Panel.title:` — trailing colon included — and throws
+`Selector not found`. Omitting the colon is no better: the selector is a function, so it is called
+with `undefined` and yields `data-testid Panel header undefined`. Anything whose real argument is the
+empty string — an untitled dashboard panel, whose test id is `data-testid Panel header ` with a
+trailing space — must stay a literal.
 
 ## What the resolver actually does
 
@@ -87,6 +95,8 @@ Two things about `<rest>` that read wrong (`resolvePanelSelector`):
   as the **panel title** — so `panel:My panel button` looks for a panel titled `My panel button`.
 - Despite that `>`, `<rest>` is joined with a **descendant** combinator, not a child one:
   `panel:CPU > .legend` becomes `[data-viz-panel-key]:has(…) .legend`.
+
+**`panel:` cannot contain a `{grafana:…}` token — see trap 6.**
 
 ---
 
@@ -180,6 +190,65 @@ correct. Two consequences:
 
 The bare `grafana:<path>` form degrades differently — on error it returns the reftarget, so the step
 queries the literal text `grafana:components.Foo.bar`. Also nothing, but easier to spot.
+
+### 6. `panel:` and `{grafana:…}` are mutually exclusive
+
+`resolveSelectorForVersion` is a chain of **early returns**, and `{grafana:` is tested first:
+
+```ts
+// src/lib/dom/selector-resolver-core.ts
+if (reftarget.includes('{grafana:')) { return resolveEmbeddedGrafanaTokens(...); }
+if (reftarget.startsWith('grafana:')) { ... }
+if (reftarget.startsWith('panel:'))   { return resolvePanelSelector(reftarget); }
+```
+
+So a reftarget holding both **never reaches the `panel:` branch**. The token resolves and the
+`panel:` prefix is left in place as literal text:
+
+```
+in:  panel:CPU > {grafana:components.UPlotChart.container}
+out: panel:CPU > :is([data-testid='uplot-main-div'], [aria-label='uplot-main-div'])
+```
+
+That is not a valid selector and matches nothing. Nothing throws — the embedded resolver succeeded,
+so there is no `onError` either. This is the quietest failure of the six.
+
+Pick one syntax:
+
+```json
+// panel: shorthand — tail stays plain CSS
+"reftarget": "panel:CPU Usage > div[data-testid='uplot-main-div']"
+
+// fully symbolic — both halves version-aware, no panel: prefix
+"reftarget": "section{grafana:components.Panels.Panel.title:CPU Usage} {grafana:components.UPlotChart.container}"
+```
+
+Prefer the second: `panel:`'s own scope is a literal `[data-testid*="Panel header <title>"]`, so the
+shorthand is not version-aware on either half.
+
+### 7. A path below its floor resolves to the newest value
+
+`resolveSelector` (`packages/grafana-e2e-selectors/src/resolver.ts`) picks the highest version key
+that is `<=` the running version — but when **no** key qualifies, it does not fail:
+
+```ts
+if (!versionToUse) {
+  versionToUse = versions[versions.length - 1];   // newest, not oldest
+}
+```
+
+So a selector introduced *above* your minimum supported version resolves cleanly there, to a value
+that version's DOM never carried. `components.ResourcePicker.card` is defined only at `13.2.0`, yet
+against Grafana 9.0.0 it resolves to `data-testid resource-picker-card` and matches nothing.
+
+`SKILL.md` step 3 states the consequence for the verify gate. The mechanism is here because it also
+defeats the *divergence* report: a single-key path returns an identical value at every version, so it
+reads as maximally stable exactly when it is unsupported. When adopting a path, read its version keys
+in `packages/grafana-e2e-selectors/src/selectors/` — if the lowest is above your floor, the selector
+isn't available across your range, and no amount of green validation will say so.
+
+This compounds trap 3's release gate: `find-unmerged-paths.py` catches a path that is in **no**
+release; this one is a path that is released but not in every version you support.
 
 ---
 

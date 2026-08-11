@@ -180,6 +180,14 @@ code, out, res = run(['grafana:components.QueryEditorRows.rows',
 check('already-symbolic left alone', out.count('already symbolic') == 2, out)
 check('no double-wrapping', '{grafana:{grafana:' not in res, res)
 
+section('panel: shorthand is never tokenised')
+# resolveSelectorForVersion tests '{grafana:' before the panel: branch and returns early, so a
+# panel: reftarget carrying a token strands 'panel:<title> > ' as literal text and matches nothing.
+code, out, res = run(["panel:CPU Usage > div[data-testid='uplot-main-div']"], write=True)
+check('panel: left alone', 'panel: shorthand' in out, out)
+check('no token injected into panel:', '{grafana:' not in res, res)
+check('panel: reftarget unchanged', "panel:CPU Usage > div[data-testid='uplot-main-div']" in res, res)
+
 section('prose that documents a reftarget is not rewritten')
 # The key regex cannot match inside a string value: JSON escapes the inner quotes, so a markdown
 # block reads `\"reftarget\": ...` and never looks like the `"reftarget":` key. The structural guard
