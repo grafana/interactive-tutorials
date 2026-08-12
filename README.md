@@ -116,9 +116,9 @@ Primary documentation files in this repo:
 | Selectors | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) |
 
 
-## Grafana Learn terminology
+## Grafana Learn and Pathfinder content map
 
-The following diagram outlines the core terminology used across Grafana Learn resources.
+The following diagram outlines the core terminology used across Grafana Learn and Pathfinder resources.
 
 ![Grafana Learn terminology diagram](docs/img/grafana-learn-terminology.png)
 
