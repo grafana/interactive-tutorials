@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "This journey uses a Grafana Pyroscope data source named `grafanacloud-play-profiles` that contains some existing data. The next step checks whether you already have it and helps you add it if you don't."
+      "content": "This journey uses a Grafana Pyroscope data source named `grafanacloud-play-profiles` that contains demo profiling data. The next step checks whether you already have it and helps you add it if you don't."
     },
     {
       "type": "conditional",
@@ -101,12 +101,36 @@
     },
     {
       "type": "markdown",
-      "content": "With the data source in place, choose it in Profiles Drilldown.\n\nTo explore your services, complete the following steps:"
+      "content": "With the data source in place, choose it by name in Profiles Drilldown.\n\nTo explore your services, complete the following steps:"
     },
     {
       "type": "section",
       "autoCollapse": false,
       "blocks": [
+        {
+          "type": "markdown",
+          "content": "If you see the **Welcome to Grafana Profiles Drilldown** onboarding page, read through it and click **X** when you're done."
+        },
+        {
+          "type": "conditional",
+          "conditions": [
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "description": "Navigate to Profiles Drilldown only when the learner is not already there.",
+          "display": "inline",
+          "whenTrue": [],
+          "whenFalse": [
+            {
+              "type": "interactive",
+              "action": "navigate",
+              "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&searchText=",
+              "content": "Open **Profiles Drilldown** on the **All services** view.",
+              "objectives": [
+                "on-page:/a/grafana-pyroscope-app/explore"
+              ]
+            }
+          ]
+        },
         {
           "type": "interactive",
           "action": "formfill",
@@ -114,6 +138,7 @@
           "targetvalue": "grafanacloud-play-profiles",
           "content": "Select **grafanacloud-play-profiles** as the **Data source**.\n\nThe **All services** view shows a chart for each service.",
           "requirements": [
+            "has-datasource:grafanacloud-play-profiles",
             "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
           ]
@@ -166,11 +191,20 @@
           "content": "The **Profile types** tab shows each profile type available for `checkoutservice`. Each panel has **Labels** and **Flame graph** shortcuts."
         },
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&searchText=checkout",
+          "type": "multistep",
           "content": "Return to the **All services** view to continue. If you're already there, click **Skip**.",
-          "skippable": true
+          "skippable": true,
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&searchText=checkout"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#var-dataSource",
+              "targetvalue": "grafanacloud-play-profiles"
+            }
+          ]
         }
       ]
     },

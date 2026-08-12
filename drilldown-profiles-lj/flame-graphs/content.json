@@ -26,10 +26,19 @@
           "content": "Take a look at how CPU time is distributed across the call stack. Keep this picture in mind as a baseline."
         },
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=flame-graph&var-dataSource=grafanacloud-play-profiles&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-filters=region|=|eu-west-1",
+          "type": "multistep",
           "content": "In the **Filters** bar, change the `region` filter from `ap-south-1` to `eu-west-1`.",
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=flame-graph&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-filters=region|=|eu-west-1"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#var-dataSource",
+              "targetvalue": "grafanacloud-play-profiles"
+            }
+          ],
           "objectives": [
             "on-page:/a/grafana-pyroscope-app/explore"
           ]
@@ -62,10 +71,19 @@
           "content": "Nearly half the CPU time is used by the `PlaceOrder` function. Compared with `ap-south-1`, a lot more of that time is in regex-related calls."
         },
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=labels&var-dataSource=grafanacloud-play-profiles&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-groupBy=all&var-filters=&searchText=region",
-          "content": "Eye-balling two flame graphs works, but there's an easier way. Return to the **Labels** view with **region** filtered so you can open the per-region panels again."
+          "type": "multistep",
+          "content": "Eye-balling two flame graphs works, but there's an easier way. Return to the **Labels** view with **region** filtered so you can open the per-region panels again.",
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=labels&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-groupBy=all&var-filters=&searchText=region"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "#var-dataSource",
+              "targetvalue": "grafanacloud-play-profiles"
+            }
+          ]
         },
         {
           "type": "interactive",
