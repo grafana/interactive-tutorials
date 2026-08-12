@@ -132,15 +132,22 @@
           ]
         },
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "#var-dataSource",
-          "targetvalue": "grafanacloud-play-profiles",
+          "type": "multistep",
           "content": "Select **grafanacloud-play-profiles** as the **Data source**.\n\nThe **All services** view shows a chart for each service.",
           "requirements": [
             "has-datasource:grafanacloud-play-profiles",
             "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "#dataSource"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='option']:text('grafanacloud-play-profiles')"
+            }
           ]
         },
         {
@@ -191,20 +198,11 @@
           "content": "The **Profile types** tab shows each profile type available for `checkoutservice`. Each panel has **Labels** and **Flame graph** shortcuts."
         },
         {
-          "type": "multistep",
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&searchText=checkout",
           "content": "Return to the **All services** view to continue. If you're already there, click **Skip**.",
-          "skippable": true,
-          "steps": [
-            {
-              "action": "navigate",
-              "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&searchText=checkout"
-            },
-            {
-              "action": "formfill",
-              "reftarget": "#var-dataSource",
-              "targetvalue": "grafanacloud-play-profiles"
-            }
-          ]
+          "skippable": true
         }
       ]
     },
