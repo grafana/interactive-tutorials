@@ -1,0 +1,396 @@
+{
+  "id": "play-chicago-l-trains-tour",
+  "title": "Explore an Authenticated API with the Chicago L Trains Dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This dashboard is a live departures board for one platform on Chicago's L, and it runs on a single call to the Chicago Transit Authority's Train Tracker API. Twenty-five panels, one HTTP request: a JQ expression turns the response into a table, every stat panel reads that table back through Grafana's Dashboard data source, and the API key the CTA insists on is nowhere in the dashboard. You'll follow the data from the API to the board, then find out where that key is kept."
+    },
+    {
+      "type": "markdown",
+      "content": "First, get your bearings around the four parts of the board."
+    },
+    {
+      "type": "section",
+      "id": "departures-board",
+      "title": "The Departures Board",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-32']",
+          "content": "The header is an HTML text panel. Its gradient border runs through the eight official CTA line colours — Red, Orange, Yellow, Green, Blue, Brown, Purple and Pink — the same palette the arrival panels use below.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-20']",
+          "content": "The platform name is a stat panel with no data behind it at all. Its query is an empty inline JSON document, and the text you see comes from the panel's **No value** setting — a quick way to get a themed label that matches the stat panels around it.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-4']",
+          "content": "The next train to arrive gets the most space, with its destination on the right and a countdown on the left. The background is painted in the colour of the line that train runs on.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-5']",
+          "content": "Below it, the following three arrivals each get one compact row showing the same fields at a quarter of the height.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-2']",
+          "content": "At the very bottom is a table of every arrival the API returned, with all the fields the stat panels draw on. This is the only panel on the dashboard that calls the CTA API.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The board is a hero block, three compact rows and a table — and the table is where all the data comes from."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, look at the four stat panels that make up the next-train block and how each is configured."
+    },
+    {
+      "type": "section",
+      "id": "one-arrival",
+      "title": "How One Arrival Is Displayed",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-3']",
+          "content": "The countdown reduces the table's `minutes_until_arrival` field with **First**, so it always lands on the soonest train. Thresholds shade the background from green through yellow and amber to red as the train closes in, and a value mapping replaces a zero with **Approaching**.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-4']",
+          "content": "The destination takes its background from the train's line colour. That colour isn't configured in the panel — it arrives with the data, which you'll see shortly.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-27']",
+          "content": "This is the train's run number, the CTA's identifier for one individual train working its way around the system rather than for the route it's running.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-viz-panel-key='panel-14']",
+          "content": "Delay status comes from the API's delay flag. Two value mappings do the work: **true** becomes a red **Delayed**, **false** a green **On Time**.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "The three rows underneath repeat these same four fields for the second, third and fourth arrivals — sixteen stat panels in total. Their **1**, **2**, **3** and **4** labels use the same **No value** trick as the platform name."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Every figure on the board is a single reduced field from one table, restyled with thresholds, mappings and colours."
+    },
+    {
+      "type": "markdown",
+      "content": "Now open the table panel to see the one query that feeds the whole dashboard."
+    },
+    {
+      "type": "section",
+      "id": "the-api-query",
+      "title": "The Panel That Calls the API",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Open the table panel at the bottom of the dashboard for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-viz-panel-key='panel-2'] button[data-testid='panel-menu-button']",
+              "description": "Click here to open the panel menu.",
+              "requirements": ["exists-reftarget"],
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Queries']",
+          "content": "Switch to the **Queries** tab.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='infinity-query-row-wrapper-query-options']",
+          "content": "This is an Infinity query: type **JSON**, source **URL**, format **Table**, parser **JQ backend**. Infinity fetches the response on the Grafana backend and hands it straight to JQ.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='infinity-query-row-wrapper-url']",
+          "content": "The request itself is a plain **GET** against the CTA Train Tracker arrivals endpoint.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='infinity-query-row-children-url'] button:has(svg[data-testid='icon-cog'])",
+          "content": "Open the request options to see the query parameters sent with that GET.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='infinity-query-field-wrapper-url-query-params']",
+          "content": "Two parameters are set here. `stpid` selects a single platform — it's a stop ID rather than a station ID, so each direction of travel is a separate value — and `outputType` asks for JSON instead of the API's default XML. Now notice what's missing: there's no API key, even though the CTA rejects requests that don't carry one.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='infinity-query-row-collapse-show-parsing-options-&-result-fields']",
+          "content": "Open the parsing options to reveal the JQ expression.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='infinity-query-field-wrapper-rows/root'] textarea",
+          "content": "The JQ expression flattens each arrival into one row: destination, station, run number, platform and coordinates. It works out `minutes_until_arrival` by subtracting the API's own response timestamp from the arrival time, so the countdown is relative to when the data was generated rather than to the browser clock. It also translates the CTA's terse route codes — `Org`, `Brn`, `Pexp` — into line names and RGB colour strings, sorts the rows by arrival time, then numbers them.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+          "content": "Return to the dashboard to continue.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "One request and one JQ expression build the table that every other panel reads — with no credential anywhere in the query."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, open one of the compact arrival rows to see how it borrows that table instead of calling the API again."
+    },
+    {
+      "type": "section",
+      "id": "one-query-many-panels",
+      "title": "One Query, Sixteen Panels",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "guided",
+          "content": "Open the destination panel for the second arrival — the wide panel showing a destination on the first of the three compact rows.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-viz-panel-key='panel-5'] button[data-testid='panel-menu-button']",
+              "description": "Click here to open the panel menu.",
+              "requirements": ["exists-reftarget"],
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit.",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "content": "The data source is **-- Dashboard --**, Grafana's built-in way for one panel to consume another panel's results.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row']",
+          "content": "**Source panel** points at the table at the bottom of the dashboard. No second HTTP request happens — this panel is handed the rows the table already produced.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Transformations']",
+          "content": "Switch to the **Transformations** tab.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Transformation editor Filter data by values']",
+          "content": "**Filter data by values** keeps only the row where `row_number` equals 2, because this panel is the second arrival. The four panels in the hero block skip this step entirely — they reduce the whole table with **First**, which lands on the soonest train because JQ already sorted the rows.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Transformation editor Config from query results']",
+          "content": "**Config from query results** is the clever one. It takes the `line_color_code` column and applies it as the **Color** for the `destination` field, so the panel's background comes from the data rather than from a threshold or a field override. Add a new CTA line tomorrow and the board colours it correctly with no dashboard change.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "guided",
+          "content": "Return to the dashboard and leave edit mode.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
+              "description": "Click Exit edit to leave edit mode.",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Sixteen stat panels share one query: a filter picks which arrival to show, and a transformation paints it in the right line colour."
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, visit the data source to find the credential the dashboard never contains."
+    },
+    {
+      "type": "section",
+      "id": "where-the-key-lives",
+      "title": "Where the API Key Lives",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/edit/ff4mkn0pyb7cwb",
+          "content": "Open `infinity-transit-chicago`, the Infinity data source the table panel uses.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "The data source opens on its **Authentication** settings. Because you're browsing play.grafana.org anonymously, Grafana shows a **Missing rights** notice — you can read this configuration but not change it."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a:contains('API Key Value pair')",
+          "content": "Of the auth methods Infinity offers, this data source uses **API Key Value pair** — one key and one value, rather than basic auth, a bearer token or OAuth2.",
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='api key key']",
+          "content": "The credential's name is `key`, which is exactly what the CTA Train Tracker API expects to be given.",
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:contains('Reset')",
+          "content": "The value alongside it reads **configured** and cannot be displayed. Grafana encrypted it when the data source was saved, and nothing — not this page, not the API, not a dashboard export — will read it back. Changing it means resetting the field and entering a new key.",
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid radio-button-option query']",
+          "content": "**Add to** is set to **Query Param**, so Grafana appends `key=...` to the query string of every request. Picking **Header** instead would send the same secret as an HTTP header, which is what most modern APIs prefer.",
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='https://example.com']",
+          "content": "**Allowed hosts** pins this data source to `https://lapi.transitchicago.com`. If someone edited a panel query to point the request somewhere else, Grafana would refuse it rather than hand the key to another host.",
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "The data source runs in **proxy** mode, which is what ties this together. Your browser asks the Grafana backend for data; the backend makes the outbound call and attaches the key on the way out. The key never reaches the browser, never appears in the dashboard JSON, and survives being exported or shared — which is why a dashboard built on a paid-for API credential can live on a public Grafana instance."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/siwlw7f/chicago-l-trains",
+          "content": "Return to the dashboard.",
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The board is publishable because the credential sits in the data source — encrypted, restricted to one host, and applied server-side."
+    },
+    {
+      "type": "markdown",
+      "content": "## Further Resources\n\nThe dashboard refreshes every minute, so leave it open and watch the trains roll in. Here's what it's built on:\n\n- [CTA Train Tracker API](https://www.transitchicago.com/developers/traintracker/) — the live arrivals API, including how to request your own developer key.\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — query any HTTP API from Grafana.\n- [Infinity authentication docs](https://grafana.com/docs/plugins/yesoreyeram-infinity-datasource/latest/setup/authentication/) — API keys, bearer tokens, OAuth2 and allowed hosts.\n- [JQ Playground](https://jqplay.org/) — try JQ expressions like this dashboard's interactively.\n- [Config from query results transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#config-from-query-results) — drive colours, units and thresholds from your data.\n- [Filter data by values transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#filter-data-by-values) — pick out the rows a panel should show.\n- [Dashboard data source](https://grafana.com/docs/grafana/latest/datasources/dashboard/) — reuse one panel's results across many panels.\n- [New Zealand GeoNet dashboard](https://play.grafana.org/d/simgmgk/new-zealand-geonet) and [UK Carbon Intensity dashboard](https://play.grafana.org/d/siw7lpj/uk-carbon-intensity) — two more Infinity and JQ tours on Play."
+    }
+  ]
+}
