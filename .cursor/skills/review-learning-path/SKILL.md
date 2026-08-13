@@ -21,9 +21,9 @@ Help a **human reviewer** work through a `{slug}-lj/` pull request in **five pha
 
 **Skill memory:** State lives in `.cursor/pr-review-state/` (gitignored). Phase 1 dispatches [audit-guide](../audit-guide/SKILL.md), which writes `{milestone}/assets/` on the PR branch. See [Commit safety](#commit-safety).
 
-**Routing:** [reference-checks.md](reference-checks.md) · [comment-style.md](comment-style.md) · [learning-hub-standards.md](learning-hub-standards.md) · [github-review.md](github-review.md)
+**Routing:** [reference-checks.md](reference-checks.md) · [claim-check.md](claim-check.md) · [comment-style.md](comment-style.md) · [learning-hub-standards.md](learning-hub-standards.md) · [github-review.md](github-review.md)
 
-**Related:** [audit-guide](../audit-guide/SKILL.md) · [review-guide-pr.mdc](../../review-guide-pr.mdc)
+**Related:** [audit-guide](../audit-guide/SKILL.md) · [review-guide-pr.mdc](../../review-guide-pr.mdc) · [preflight-learning-path](../preflight-learning-path/SKILL.md) (author pre-PR mirror)
 
 ---
 
@@ -148,7 +148,7 @@ If `.cursor/pr-review-state/pr-{n}.json` exists:
 
 ## Phase 1: Static pass
 
-**Goal:** Audit every milestone + path consistency + Learning Hub checks. Output: **internal workbook only**.
+**Goal:** Audit every milestone + path consistency + Learning Hub checks + shared [claim-check](claim-check.md). Output: **internal workbook only**.
 
 Combines the former Phases 1–2 and workbook write.
 
@@ -162,15 +162,16 @@ Combines the former Phases 1–2 and workbook write.
 
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk all [reference-checks.md](reference-checks.md) checklists + [learning-hub-standards.md](learning-hub-standards.md).
-3. **Always scan** for [section intro markdown that may number as a step](reference-checks.md#section-intro-markdown-numbered-as-step) and [false noops](reference-checks.md#noop-and-non-interactive-steps). Put matches under **Verify in Block Editor**.
+3. **Always scan** for [section intro markdown that may number as a step](reference-checks.md#section-intro-markdown-numbered-as-a-step) and [false noops](reference-checks.md#noop-and-non-interactive-steps). Put matches under **Verify in Block Editor**.
 4. Run Pathfinder CLI validate if available.
-5. Tag every finding with [finding routing](reference-checks.md#finding-routing): **post inline**, **internal**, or **discard**.
-6. Write `pr-{n}-findings.md` — header: *"Reviewer workbook — internal only. Do not paste to PR."*
+5. Run the shared [claim-check](claim-check.md) pass. Write `pr-{n}-claim-check.md`. Route Contradicted / Unsupported / Overstated as **post inline** (same bar as preflight). Do not edit package JSON here.
+6. Tag every finding with [finding routing](reference-checks.md#finding-routing): **post inline**, **internal**, or **discard**.
+7. Write `pr-{n}-findings.md` — header: *"Reviewer workbook — internal only. Do not paste to PR."*
    - **Verify in Block Editor** — items that need live test to confirm (include section-intro markdown and false-noop candidates)
-   - **Post inline if confirmed** — static compliance issues (broken depends, id mismatch, CLI fail)
+   - **Post inline if confirmed** — static compliance issues (broken depends, id mismatch, CLI fail) and claim-check MUST FIX items
    - **Internal** — nits, LH editorial, selector polish, `website.yaml` gaps
-7. Mandatory audit cleanup; verify `git status`.
-8. **Do not** cite rule numbers or blocking counts in chat.
+8. Mandatory audit cleanup; verify `git status`.
+9. **Do not** cite rule numbers or blocking counts in chat.
 
 ### Checkpoint
 
@@ -399,6 +400,7 @@ Not a numbered phase. New review cycle for major author pushes. Use REST inline 
 |---|---|---|
 | `pr-{n}.json` | 0+ | State ([schema](github-review.md#state-file-schema)) |
 | `pr-{n}-findings.md` | 1 | **Internal workbook** — never paste to author |
+| `pr-{n}-claim-check.md` | 1 | Shared claim-check report ([claim-check.md](claim-check.md)) |
 | `pr-{n}-review-body.md` | 3 → 4 | Final summary for GitHub submit |
 
 Workbook frontmatter:
@@ -418,6 +420,7 @@ pr_number: {n}
 | Topic | Doc |
 |---|---|
 | Finding routing + checklists | [reference-checks.md](reference-checks.md) |
+| Claim-check (shared with preflight) | [claim-check.md](claim-check.md) |
 | Comment voice + summary | [comment-style.md](comment-style.md) |
 | Learning Hub checks (workbook) | [learning-hub-standards.md](learning-hub-standards.md) |
 | GitHub GraphQL | [github-review.md](github-review.md) |

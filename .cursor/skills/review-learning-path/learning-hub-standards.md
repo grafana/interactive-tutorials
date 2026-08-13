@@ -120,12 +120,12 @@ Count path `manifest.json` `milestones` entries (hands-on only; exclude framing 
 
 ### Value milestone (framing)
 
-Every path should open with **why** before **how**. In packages this is usually a framing directory (`business-value`, `value-*`, `advantages-*`, `welcome`) with markdown-only `content.json` — **not** listed in path `milestones`. See [framing vs not framing](reference-checks.md#framing-vs-not-framing): `end-journey` stays in `milestones`; markdown-only alone does not mean framing.
+Every path should open with **why** before **how**. In packages this is usually a framing directory (`business-value`, `value-*`, `advantages-*`, `welcome`) with markdown-only `content.json`. The website Learning Path still shows that framing; Pathfinder omits it from path `milestones` so the in-app UI stays action-oriented. See [framing vs not framing](reference-checks.md#framing-vs-not-framing): `end-journey` stays in `milestones`; markdown-only alone does not mean framing.
 
 | Check | Notes |
 |---|---|
 | No framing milestone and first hands-on jumps straight to steps without intro context | Editorial |
-| Framing ID incorrectly listed in path `milestones` | See [framing milestones](reference-checks.md#framing-milestones) |
+| Framing ID incorrectly listed in path `milestones` | Pathfinder-only fix — see [framing milestones](reference-checks.md#framing-milestones); keep the package for the website |
 | Value milestone is generic / no clear problem statement | Editorial |
 | Ambiguous prose package (e.g. `understanding-*`) in `milestones` | Internal until reviewer confirms framing vs path step |
 

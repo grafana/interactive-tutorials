@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "git-sync-dashboards-save-dashboard-git",
+  "title": "Save a dashboard to Git",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Saving a new dashboard opens the **Save dashboard** drawer. You name the dashboard, choose a Git Sync provisioned folder, then set the branch, filename, and commit comment so Grafana can push the dashboard JSON to your repository."
+    },
+    {
+      "type": "markdown",
+      "content": "To save a dashboard to Git, complete the following steps:"
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "If this guide is docked, pop it out so it stays visible when the save drawer opens."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In this section, you save the dashboard to a provisioned folder and commit it to main."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Save dashboard button']",
+          "content": "Click **Save** in the dashboard toolbar.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[aria-label='Save dashboard title field']",
+          "targetvalue": "HTTP Request Monitoring",
+          "content": "In the **Title** field, enter a descriptive name for the dashboard.\n\nFor example, enter `HTTP Request Monitoring`.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[aria-label='Save dashboard description field']",
+          "targetvalue": "Monitors HTTP request rates and error rates for web services",
+          "content": "In the **Description** field, enter a brief explanation of the dashboard's purpose.\n\nFor example, enter `Monitors HTTP request rates and error rates for web services`.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "In **Folder**, select your Git Sync provisioned folder (it shows a **Provisioned** label).\n\nAfter you select it, the drawer shows Git Sync fields such as **Branch** and **Filename**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#provisioned-ref",
+          "targetvalue": "main",
+          "content": "After the Git Sync fields appear, in the **Branch** field, enter `main` to commit directly to the main branch.\n\nIn later milestones, you'll use a new branch name to open a pull request instead.",
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#folder-path",
+          "targetvalue": "dashboards",
+          "content": "Optionally, in **Repository folder**, enter a subdirectory inside the repository.\n\nFor example, enter dashboards. Leave empty to save at the repository root.",
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#dashboard-filename",
+          "targetvalue": "http-monitoring.json",
+          "content": "In the **Filename** field, enter the dashboard file name.\n\nFor example, enter `http-monitoring.json`.",
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#provisioned-resource-form-comment",
+          "targetvalue": "Add HTTP request monitoring dashboard",
+          "content": "In the **Comment** field, enter a commit message describing the new dashboard.\n\nFor example, enter `Add HTTP request monitoring dashboard`.",
+          "doIt": false,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[type='submit']",
+          "content": "In the **Provisioned dashboard** drawer, scroll to the bottom if needed, then click **Save**.",
+          "tooltip": "Commits the dashboard JSON to your connected repository.",
+          "doIt": false,
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The dashboard is saved to the Git Sync provisioned folder and committed to the GitHub repository. With **Branch** set to `main`, Git Sync pushes a direct commit. The dashboard is now version controlled and synced with GitHub."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar to continue to the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll learn how to edit an existing synced dashboard."
+    }
+  ]
+}

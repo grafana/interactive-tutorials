@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-query-language-set-condition",
+  "title": "Set the alert condition and recovery",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Your query returns a percentage. Tell Grafana when that percentage is too high, then add a recovery threshold so the alert doesn't flap near the trigger point.\n\nSet the threshold to **5** so the alert fires when the error rate goes above 5%. Then set recovery to **3** so it returns to normal only after the rate drops below 3%."
+    },
+    {
+      "type": "section",
+      "id": "set-preview-and-recovery",
+      "title": "Set the condition and recovery threshold",
+      "requirements": [
+        "has-datasource:grafanacloud-play-prom"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:contains('WHEN QUERY')",
+          "content": "In the **Alert condition** section, leave **Is above** selected.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid alert-rule step-2'] input[type='number']",
+          "targetvalue": "5",
+          "content": "Set the threshold to `5`.",
+          "tooltip": "The query returns a percentage, so 5 means 5%.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Preview alert rule condition",
+          "content": "Click **Preview alert rule condition** to evaluate the threshold against your query.\n\nLook for a result row above the button (for example **Series 1** with a value). It may show **Normal** or **Firing**. With a threshold of **5**, **Normal** is expected when the error rate is under 5% right now.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Still in **Define query and alert condition**, turn on **Advanced options** at the top of that section."
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll down to the **Expressions** area and open the **C Threshold** block. Under **IS ABOVE**, turn on **Custom recovery threshold**."
+        },
+        {
+          "type": "markdown",
+          "content": "Still in **C Threshold**, in **Stop alerting (or pending state) when below**, set the value to **3**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The condition and recovery threshold are set. Next, you pick a folder and add labels so the alert is easy to find and organize."
+    }
+  ]
+}
