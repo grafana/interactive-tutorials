@@ -101,17 +101,46 @@
     },
     {
       "type": "markdown",
-      "content": "With the data source in place, choose it by name in Profiles Drilldown.\n\nIf you see the **Welcome to Grafana Profiles Drilldown** onboarding page, read through it and click **X** when you're done.\n\nTo explore your services, complete the following steps:"
+      "content": "With the data source in place, choose it by name in Profiles Drilldown.\n\nTo explore your services, complete the following steps:"
     },
     {
       "type": "section",
       "autoCollapse": false,
       "blocks": [
         {
+          "type": "markdown",
+          "content": "If you see the **Welcome to Grafana Profiles Drilldown** onboarding page, read through it and click **X** when you're done."
+        },
+        {
+          "type": "conditional",
+          "conditions": [
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "description": "Navigate to Profiles Drilldown only when the learner is not already there.",
+          "display": "inline",
+          "whenTrue": [],
+          "whenFalse": [
+            {
+              "type": "interactive",
+              "action": "navigate",
+              "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&searchText=",
+              "content": "Open **Profiles Drilldown** on the **All services** view.",
+              "objectives": [
+                "on-page:/a/grafana-pyroscope-app/explore"
+              ]
+            }
+          ]
+        },
+        {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=all&searchText=",
-          "content": "Open **Profiles Drilldown** on the **All services** view."
+          "action": "button",
+          "reftarget": "button[role='tab'][aria-label='All services']",
+          "content": "Open the **All services** view. If you're already there, click **Skip**.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -122,7 +151,7 @@
           "requirements": [
             "has-datasource:grafanacloud-play-profiles",
             "exists-reftarget",
-            "on-page:/a/grafana-pyroscope-app/explore?explorationType=all"
+            "on-page:/a/grafana-pyroscope-app/explore"
           ]
         },
         {
@@ -133,7 +162,7 @@
           "content": "In the Quick filter, type `checkout` so `checkoutservice` is on screen.",
           "requirements": [
             "exists-reftarget",
-            "on-page:/a/grafana-pyroscope-app/explore?explorationType=all"
+            "on-page:/a/grafana-pyroscope-app/explore"
           ]
         },
         {
@@ -143,7 +172,7 @@
           "content": "Make sure the **CPU** profile type (`process_cpu/cpu`) is selected.",
           "requirements": [
             "exists-reftarget",
-            "on-page:/a/grafana-pyroscope-app/explore?explorationType=all"
+            "on-page:/a/grafana-pyroscope-app/explore"
           ],
           "doIt": false
         }
