@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "With the high-CPU region isolated, open a lower-CPU region's flame graph first, then `eu-west-1`, so the difference is easier to see.\n\nA flame graph is a hierarchical view of call stacks. Horizontally, wider nodes cost more. Vertically, each level is a caller–callee relationship: the root sits at the top, and callees stack beneath their callers. **Self** time is spent in the function itself; **total** time is the function plus its callees.\n\nTo explore flame graphs, complete the following steps:"
+      "content": "A flame graph is a hierarchical view of call stacks. It answers one question: where did this service spend its resources? Here that resource is CPU time, since you're viewing a CPU profile.\n\nHorizontally, the full width is 100% of the current view, not the whole run. That view is the profile type, service, filters, and time range you selected. Each block is a function, and its width is the share of that total it accounts for, including everything it calls. Wider costs more. Left to right isn't a timeline: blocks aren't ordered by when they ran.\n\nVertically, each level is a caller–callee relationship. The root sits at the top, and callees stack beneath their callers. Depth shows how deep the call stack goes, not how expensive it is. A tall, narrow tower is a deep path that costs little. A short, wide block costs a lot.\n\n**Self** time is spent in the function itself. **Total** time is the function plus its callees. One function can appear as several blocks if it's called from several places, so check the table to see its total across the profile.\n\nThis path uses CPU. You'll look at a lower-CPU region's flame graph first, then `eu-west-1`, so the difference is easier to see.\n\nTo explore flame graphs, complete the following steps:"
     },
     {
       "type": "section",
@@ -15,15 +15,11 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header ap-south-1'] button[aria-label='Flame graph']",
-          "content": "Select **Flame graph** for `ap-south-1`, a lower-CPU region.",
+          "content": "Select **Flame graph** for `ap-south-1`, a lower-CPU region.\n\nTake a look at how CPU time is distributed across the call stack. Keep this picture in mind as a baseline.",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
           ]
-        },
-        {
-          "type": "markdown",
-          "content": "Take a look at how CPU time is distributed across the call stack. Keep this picture in mind as a baseline."
         },
         {
           "type": "interactive",
@@ -49,17 +45,13 @@
           "type": "interactive",
           "action": "hover",
           "reftarget": "canvas[data-testid='flameGraph']",
-          "content": "Hover over the top of the flame graph to inspect how much time this path uses.",
+          "content": "Hover over the top of the flame graph to inspect how much time this path uses.\n\nNearly half the CPU time is used by the `PlaceOrder` function. Compared with `ap-south-1`, a lot more of that time is in regex-related calls.",
           "tooltip": "Check the total time. This path accounts for a large share of CPU.",
           "doIt": false,
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
           ]
-        },
-        {
-          "type": "markdown",
-          "content": "Nearly half the CPU time is used by the `PlaceOrder` function. Compared with `ap-south-1`, a lot more of that time is in regex-related calls."
         },
         {
           "type": "interactive",
@@ -85,7 +77,7 @@
     },
     {
       "type": "markdown",
-      "content": "---\n\n### More to explore\n\n- [Flame graphs](https://grafana.com/docs/pyroscope/latest/introduction/flamegraphs/)\n- [Self vs. total metrics](https://grafana.com/docs/pyroscope/latest/view-and-analyze-profile-data/self-vs-total/)"
+      "content": "---\n\n### More to explore\n\n- [Flame graphs](https://grafana.com/docs/pyroscope/latest/introduction/flamegraphs/)\n- [Self vs. total metrics](https://grafana.com/docs/pyroscope/latest/view-and-analyze-profile-data/self-vs-total/)\n- [Flame graph sandwich view](https://grafana.com/blog/flame-graph-sandwich-view-mode-what-it-is-and-how-to-use-it/)"
     }
   ]
 }
