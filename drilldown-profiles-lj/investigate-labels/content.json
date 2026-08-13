@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "drilldown-profiles-investigate-labels",
+  "title": "Investigate a service with labels",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "`checkoutservice` is spiking. Labels help you see which dimension is driving that.\n\nThe **Labels** tab shows the labels for this service under the selected profile type (CPU in this case).\n\nTo investigate with labels, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header checkoutservice'] button[aria-label='Labels']",
+          "content": "The `checkoutservice` panel has some huge spikes. Click **Labels** on the panel to explore it further.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[aria-label='Quick filter']",
+          "targetvalue": "region",
+          "content": "In the **Search labels** field, type `region` so the **region** panel is on screen. If you already see it, click **Skip**.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid^='data-testid Panel header region'] button[aria-label='Select']",
+          "content": "At a glance, one region is using a lot more CPU than the other two. Click **Select** on the **region** panel.\n\nThat gives each region its own panel so you can compare CPU usage side by side.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Look at the separate region panels. `ap-south-1` and `us-east-2` have similar CPU usage, but `eu-west-1` uses quite a bit more. That points to `eu-west-1` as the place to investigate next."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've isolated the problem to a single region. Next, you'll pinpoint the exact function responsible."
+    }
+  ]
+}

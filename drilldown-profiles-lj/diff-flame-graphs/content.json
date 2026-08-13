@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "drilldown-profiles-diff-flame-graphs",
+  "title": "Compare with Diff flame graph",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Now compare the high-CPU region (`eu-west-1`) to a lower-CPU one (`ap-south-1`) with **Diff flame graph**. Put the behavior you expect on **Baseline** and what you're investigating on **Comparison**.\n\nThe view merges both profiles. It compares each function's share of each side's total time, not absolute time, so the two sides stay comparable even if they did different amounts of work. Width is both profiles combined; color is what changed. Red is a larger share in the comparison, green a smaller share (blue in the colorblind scheme), and gray little or no change. Searching also grays out functions that don't match. Stronger color means a bigger relative change.\n\nHover a function or read the table for **Baseline** and **Comparison** as % of each side's total. In the table, **Diff** is the relative change between them; it reads `new` when the function is absent from the baseline and `removed` when it's absent from the comparison.\n\nYou can also open **Diff flame graph** from the tabs and set region filters yourself. Here, you'll select them on the region panels instead.\n\nTo use **Diff flame graph**, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-pyroscope-app/explore?explorationType=labels&var-serviceName=checkoutservice&var-profileMetricId=process_cpu:cpu:nanoseconds:cpu:nanoseconds&var-groupBy=all&var-filters=&var-profileIdSelector=&var-spanSelector=&searchText=region",
+          "content": "Return to the **Labels** view with **region** filtered. If you already see the **region** panel with **Select**, or the per-region panels, click **Skip**.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid^='data-testid Panel header region'] button[aria-label='Select']",
+          "content": "Click **Select** on the **region** panel so each region has its own panel. If the per-region panels are already open, click **Skip**.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "guided",
+          "content": "Assign the high-CPU region as **Comparison** and a lower-CPU region as **Baseline**.",
+          "requirements": [
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='stats-panel-eu-west-1'] label:contains('Comparison')",
+              "description": "On the `eu-west-1` panel, select **Comparison**.",
+              "lazyRender": true,
+              "scrollContainer": "main"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='stats-panel-ap-south-1'] label:contains('Baseline')",
+              "description": "On the `ap-south-1` panel, select **Baseline**.",
+              "lazyRender": true,
+              "scrollContainer": "main"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button[aria-label='Compare']",
+          "content": "Click **Compare** to open the **Diff flame graph** view for the two regions.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Auto-select",
+          "content": "You can click and drag on the **Baseline** and **Comparison** graphs to highlight the time ranges you want to diff. For this path, click **Auto-select** to pick windows for you.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Search...']",
+          "targetvalue": "main",
+          "content": "In the table search bar, type `main` to filter the function list.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "You can see that `PlaceOrder` calls `processOrder`, which calls `validateOrderWithRegexp`. Hover over `validateOrderWithRegexp` and check its **Baseline** and **Comparison** percentages. `ap-south-1` spends no time there, so **Baseline** is 0% and the table marks the function **new**. That regex work exists only in `eu-west-1`, which confirms it as the cause of the increased CPU usage."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've found the function responsible for the higher CPU usage in `eu-west-1`. Next is an optional AI look at **Diff flame graph**."
+    }
+  ]
+}
