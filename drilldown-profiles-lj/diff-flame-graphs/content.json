@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Now compare the high-CPU region to a lower-CPU one with the **Diff flame graph** view. `eu-west-1` is more CPU-intensive than the others, so you'll set a lower-CPU region (`ap-south-1`) as the baseline and `eu-west-1` as the comparison.\n\nYou can also open **Diff flame graph** from the exploration tabs at the top, then set baseline and comparison filters to the region labels. Here, we can just click checkboxes instead.\n\nTo use **Diff flame graph**, complete the following steps:"
+      "content": "Now compare the high-CPU region (`eu-west-1`) to a lower-CPU one (`ap-south-1`) with **Diff flame graph**. Put the behavior you expect on **Baseline** and what you're investigating on **Comparison**.\n\nThe view merges both profiles. It compares each function's share of each side's total time, not absolute time, so the two sides stay comparable even if they did different amounts of work. Width is both profiles combined; color is what changed. Red is a larger share in the comparison, green a smaller share (blue in the colorblind scheme), and gray little or no change. Searching also grays out functions that don't match. Stronger color means a bigger relative change.\n\nHover a function or read the table for **Baseline** and **Comparison** as % of each side's total. In the table, **Diff** is the relative change between them; it reads `new` when the function is absent from the baseline and `removed` when it's absent from the comparison.\n\nYou can also open **Diff flame graph** from the tabs and set region filters yourself. Here, you'll select them on the region panels instead.\n\nTo use **Diff flame graph**, complete the following steps:"
     },
     {
       "type": "section",
@@ -73,10 +73,6 @@
           ]
         },
         {
-          "type": "markdown",
-          "content": "The **Diff flame graph** shows the percentage of total time spent in each function, not the absolute time. Similar to a git diff, you can see added versus removed. Red means added and green means removed.\n\nDifferent brightness shows how large the change is, but it's easier to see if you look at **Diff** % in the table or when you hover a function. It's the relative change in that function's percentage of total time from baseline to comparison."
-        },
-        {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[placeholder='Search...']",
@@ -89,7 +85,7 @@
         },
         {
           "type": "markdown",
-          "content": "You can see that `PlaceOrder` calls `processOrder`, which calls `validateOrderWithRegex`. Hovering over each function shows that `eu-west-1` spends a huge amount of time in `validateOrderWithRegex`, unlike `ap-south-1`, so this confirms that this is the cause of our increased CPU usage."
+          "content": "You can see that `PlaceOrder` calls `processOrder`, which calls `validateOrderWithRegexp`. Hover over `validateOrderWithRegexp` and check its **Baseline** and **Comparison** percentages. `ap-south-1` spends no time there, so **Baseline** is 0% and the table marks the function **new**. That regex work exists only in `eu-west-1`, which confirms it as the cause of the increased CPU usage."
         }
       ]
     },
