@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "configure-grafana-terraform-lp-install-provider",
+  "title": "Install the Grafana Terraform provider",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Install the Grafana Terraform provider\n\nThe Grafana Terraform provider enables you to manage Grafana Cloud resources using Terraform configuration files. Installing and configuring this provider is your first step toward managing your observability platform as code.\n\nTo install the Grafana Terraform provider, complete the following steps:\n\n1. Create a new directory for your Terraform configuration:\n\n   ```sh\n   mkdir grafana-terraform\n   cd grafana-terraform\n   ```\n\n1. Create a file named `provider.tf` with the following content:\n\n   ```hcl\n   terraform {\n     required_providers {\n       grafana = {\n         source  = \"grafana/grafana\"\n         version = \"~> 3.0\"\n       }\n     }\n   }\n\n   provider \"grafana\" {\n     url  = \"https://<YOUR_STACK>.grafana.net\"\n     auth = \"<YOUR_SERVICE_ACCOUNT_TOKEN>\"\n   }\n   ```\n\n1. Replace `<YOUR_STACK>` with your Grafana Cloud stack name.\n\n1. Replace `<YOUR_SERVICE_ACCOUNT_TOKEN>` with your service account token that starts with `glsa_`.\n\n1. Initialize Terraform to download the provider:\n\n   ```sh\n   terraform init\n   ```\n\nThe output confirms Terraform has downloaded and initialized the Grafana provider successfully.\n\nIn the next milestone, you'll configure SAML authentication with external group synchronization.\n"
+    }
+  ]
+}
