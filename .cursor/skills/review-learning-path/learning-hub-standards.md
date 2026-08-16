@@ -69,14 +69,15 @@ Do **not** put milestone-specific troubleshooting or side-path links on the path
 
 ### Landing screenshot
 
-Every path should show a compelling end-result screenshot when possible (dashboard, alert, data flowing). Conversion PRs sometimes drop website-relative images — note in review body rather than blocking merge when prose and steps are otherwise sound.
+Every path should show a compelling end-result screenshot when possible (dashboard, alert, data flowing) on the **website** render. Screenshots and embedded videos in `content.json` must be wrapped in a `conditional` with `conditions: ["renderer:website"]` so Pathfinder does not show them (live UI is already highlighted). Absence of screenshots/videos in the Pathfinder sidebar is expected and is not a review issue when the website branch still has them.
 
 | Check | Notes |
 |---|---|
-| No motivating visual at all | Note in review body |
+| No motivating visual at all on website | Note in review body |
 | Image shows outcome the path does not deliver | Misleading — route via [finding routing](reference-checks.md#finding-routing) |
 | Outdated UI in screenshot | Note in review body |
-| Valid `cta.image` on path `website.yaml` or markdown image with working URL | OK |
+| Valid `cta.image` on path `website.yaml` or website-gated image/video in `content.json` | OK |
+| Ungated `image` / `video` / markdown `![]()` visible in Pathfinder | Fix — wrap with `renderer:website` (see [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder)) |
 
 ---
 
@@ -287,10 +288,11 @@ During Phase 1, spot-check high-risk links on **conversion** PRs and any milesto
 
 Missing milestone videos is **not** a review issue — the video library is still growing.
 
-If `content.json` or markdown embeds video:
+If `content.json` embeds video (typed `video` block or markdown):
 
+- Gate with `renderer:website` so Pathfinder does not show the embed
 - Relevant to milestone content
-- Embed works
+- Embed works on the website render
 - Reflects current UI
 - Supplements — does not replace — written steps
 
@@ -302,7 +304,7 @@ Quick scan during Phase 1 (route via [finding routing](reference-checks.md#findi
 
 | Pitfall | Where to look |
 |---|---|
-| Missing landing screenshot | Path `content.json` / `website.yaml` |
+| Missing landing screenshot | Path `content.json` / `website.yaml` (website branch or `cta.image`; Pathfinder absence OK when gated) |
 | Vague instructions | Milestone interactive copy |
 | Missing sign-in / first UI step | First hands-on milestone |
 | Broken or outdated references | Links, menu labels, feature names |

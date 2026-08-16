@@ -358,6 +358,24 @@ Does **not** test connectivity -- use `datasource-configured` for that.
 }
 ```
 
+**Website-only screenshots and videos** (learning paths): wrap `image` / `video` blocks so Pathfinder hides them while the website keeps them:
+
+```json
+{
+  "type": "conditional",
+  "conditions": ["renderer:website"],
+  "whenTrue": [
+    {
+      "type": "video",
+      "src": "https://www.youtube.com/embed/VIDEO_ID",
+      "provider": "youtube",
+      "title": "Overview"
+    }
+  ],
+  "whenFalse": []
+}
+```
+
 This requirement is evaluated differently by different rendering tools, allowing the same guide source to produce different content in different contexts.
 
 ---
