@@ -1,10 +1,10 @@
 {
   "id": "block-editor-tutorial",
-  "title": "Welcome to Frontend Observability",
+  "title": "Welcome to Grafana Cloud Frontend Observability",
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this guide, we'll walk you through Grafana Cloud Frontend Observability. You will learn how to navigate through the Frontend Observability application and how to send metrics to your first dashboard.\n\nYou can follow along with the video below."
+      "content": "[Grafana Cloud Frontend Observability](https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-applications/frontend-observability/?pg=frontend-observability&plcmt=hero-btn-2&cta=docs) lets you see how real users experience your web app. By collecting telemetry directly from the browser, it helps teams measure performance, detect errors, and monitor interactions across devices, browsers, and network conditions. It's powered by the [Grafana Faro Web SDK](https://github.com/grafana/faro-web-sdk/), a lightweight library that captures real user metrics, errors, logs, and client-side traces.\n\nIn this guide, you'll learn how to navigate the Frontend Observability application and send your first metrics from Faro to Frontend Observability Dashboard.\n\nYou can follow along with the video below."
     },
     {
       "type": "video",
@@ -15,13 +15,19 @@
       "end": 274
     },
     {
+      "type": "markdown",
+      "content": "### Navigating Frontend Observability\n\n\n\nWe'll start by learning how to get around the Frontend Observability app."
+    },
+    {
       "type": "section",
-      "id": "guide-section-84199",
       "title": "Navigate Around Frontend Observability",
+      "requirements": [
+        "navmenu-open"
+      ],
       "blocks": [
         {
           "type": "multistep",
-          "content": "Navigate to frontend observability app\n\n[TODO: HOW CAN I ENSURE THE NAVIGATION NEAR FRONTEND IS OPEN]",
+          "content": "Open the navigation menu and select **Frontend** under the **Observability** section.\n\n[TODO: HOW CAN I ENSURE THE NAVIGATION NEAR FRONTEND IS OPEN]",
           "steps": [
             {
               "action": "highlight",
@@ -32,16 +38,13 @@
               "reftarget": "{grafana:components.NavMenu.Menu} button[data-testid='data-testid navigation mega-menu section toggle /a/grafana-kowalski-app']"
             }
           ],
-          "requirements": [
-            "navmenu-open"
-          ],
           "skippable": true
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/a/grafana-kowalski-app']",
-          "content": "Frontend - where all dashboards live",
+          "content": "The first tab of the app is **Frontend**. Every dashboard you've created lives here (active, stale, and no data), and you can search for a specific one.",
           "requirements": [
             "exists-reftarget",
             "navmenu-open"
@@ -52,7 +55,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/a/grafana-kowalski-app/errors']",
-          "content": "Errors -",
+          "content": "The second tab is **Errors**. Here you can see every error across your applications and filter them by dashboard name, error, and version.",
           "requirements": [
             "exists-reftarget",
             "navmenu-open"
@@ -63,7 +66,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/a/grafana-kowalski-app/config']",
-          "content": "Configuration -",
+          "content": "The third tab is **Configuration**. Here you can see your alert setup, enable or disable alerts, and view the apps each alert is associated with.",
           "requirements": [
             "exists-reftarget",
             "navmenu-open"
@@ -74,7 +77,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/a/grafana-kowalski-app/learn']",
-          "content": "Learn -",
+          "content": "The final tab is **Learn**. Here you'll find essential Frontend Observability resources, from documentation to guides, to help you get more out of Frontend Observability.",
           "requirements": [
             "exists-reftarget",
             "navmenu-open"
@@ -85,14 +88,12 @@
     },
     {
       "type": "section",
-      "id": "guide-section-20354",
-      "title": "Creating your first check",
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/a/grafana-kowalski-app']",
-          "content": "Return Back to Frontend with dashboard",
+          "content": "Let's head back to the **Frontend** tab and create our first Frontend Observability dashboard.",
           "requirements": [
             "exists-reftarget",
             "navmenu-open"
@@ -102,90 +103,77 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='data-testid App plugin page grafana-kowalski-app'] a[data-testid='btn-create-app']",
-          "content": "Create New Dashboard",
+          "content": "Select **Create New** to create a new Frontend Observability dashboard.",
           "requirements": [
             "exists-reftarget"
           ]
         },
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "div[data-testid='input-wrapper'] input[data-testid='app-name']",
-          "targetvalue": "QuickPizza:App",
-          "content": "Name of new dashboard"
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "div[data-testid='input-wrapper'] input[data-testid='cors-0']",
-          "targetvalue": "http://localhost:3333",
-          "content": "Website",
-          "requirements": [
-            "exists-reftarget"
+          "type": "multistep",
+          "content": "Give your application a unique name and add the domain you want to monitor, so Frontend Observability knows which frontend to collect and analyze data for.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input[data-testid='app-name']",
+              "targetvalue": "QuickPizza:App"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div[data-testid='input-wrapper'] input[data-testid='cors-0']",
+              "targetvalue": "http://localhost:3333"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "form[data-testid='web-app-form'] button[data-testid='new-app-submit']"
+            }
           ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "form[data-testid='web-app-form'] button[data-testid='new-app-submit']",
-          "content": "Move to next section",
-          "requirements": [
-            "exists-reftarget"
+          "type": "multistep",
+          "content": "Let's connect our web application. You have 4 options based on preference we recommend you choose choose manual instrumentation\n\nOnce selected you will see instrumentation directions for setting up faro to send metrics to Frontend Observability \n\nTODO: No Selector",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Manual instrumentation"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div:nth-match(1)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid App plugin page grafana-kowalski-app'] div"
+            },
+            {
+              "action": "button",
+              "reftarget": "Continue"
+            }
           ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "Manual instrumentation",
-          "content": "You have 4 options, choose manual instrumentation\nTODO: No Selector",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div:nth-match(1)",
-          "content": "Choose package",
-          "requirements": [
-            "exists-reftarget"
+          "type": "multistep",
+          "content": "The final step is to turn on alerting to get notified when errors spike or your Core Web Vitals fall below the recommended thresholds. You can fine-tune the threshold values later in the app settings page.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div:nth-match(2)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "span:nth-match(1)"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#alert-error_count"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid App plugin page grafana-kowalski-app'] a"
+            }
           ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid App plugin page grafana-kowalski-app'] div",
-          "content": "Add Faro to Application",
-          "requirements": [
-            "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Continue",
-          "content": "TODO - selector test button",
-          "requirements": [
-            "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "Continue",
-          "content": "Source Map\nTODO: continue",
-          "requirements": [
-            "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "div[data-testid='data-testid App plugin page grafana-kowalski-app'] a",
-          "content": "Complete"
         }
-      ]
+      ],
+      "title": "Creating your first check"
     },
     {
       "type": "interactive",
