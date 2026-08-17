@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "This dashboard is a live departures board for one platform on Chicago's L, and it runs on a single call to the Chicago Transit Authority's Train Tracker API. Twenty-five panels, one HTTP request: a JQ expression turns the response into a table, every stat panel reads that table back through Grafana's Dashboard data source, and the API key the CTA insists on is nowhere in the dashboard. You'll follow the data from the API to the board, then find out where that key is kept."
+      "content": "This dashboard is a live departures board for one platform on Chicago's L, and it runs on a single call to the Chicago Transit Authority's Train Tracker API. Twenty-five panels, one HTTP request. A JQ expression turns the response into a table. Every stat panel reads that table back through Grafana's Dashboard data source. And the API key that the CTA uses to control and monitor API usage is never exposed to the dashboard or the browser. You'll follow the data from the API to the board, then find out where that key is kept."
     },
     {
       "type": "markdown",
@@ -191,11 +191,16 @@
           "doIt": false
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='infinity-query-row-collapse-show-parsing-options-&-result-fields']",
+          "type": "guided",
           "content": "Open the parsing options to reveal the JQ expression.",
-          "requirements": ["exists-reftarget"]
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='infinity-query-row-collapse-show-parsing-options-&-result-fields']",
+              "description": "Click here to open the parsing options section.",
+              "lazyRender": true
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -312,7 +317,7 @@
     },
     {
       "type": "markdown",
-      "content": "Finally, visit the data source to find the credential the dashboard never contains."
+      "content": "Finally, here's where the credential the dashboard never contains actually lives."
     },
     {
       "type": "section",
@@ -321,76 +326,30 @@
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/connections/datasources/edit/ff4mkn0pyb7cwb",
-          "content": "Open `infinity-transit-chicago`, the Infinity data source the table panel uses.",
-          "requirements": ["exists-reftarget"]
+          "type": "markdown",
+          "content": "The key lives in `infinity-transit-chicago`, the Infinity data source the table panel uses — and as an anonymous visitor to play.grafana.org, you can't open its settings page at all; Grafana reserves that page for editors and admins. That's the point: the credential is out of reach even to look at, let alone copy."
         },
         {
           "type": "markdown",
-          "content": "The data source opens on its **Authentication** settings. Because you're browsing play.grafana.org anonymously, Grafana shows a **Missing rights** notice — you can read this configuration but not change it."
+          "content": "If you had those rights, here's what its **Authentication** tab would show: the auth method is **API Key Value pair** — one key and one value, rather than basic auth, a bearer token or OAuth2. The credential's name is `key`, exactly what the CTA Train Tracker API expects, and its value reads **configured** rather than the key itself. Grafana encrypted it when the data source was saved, and nothing — not this page, not the API, not a dashboard export — will read it back. Changing it means resetting the field and entering a new key."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a:contains('API Key Value pair')",
-          "content": "Of the auth methods Infinity offers, this data source uses **API Key Value pair** — one key and one value, rather than basic auth, a bearer token or OAuth2.",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "input[placeholder='api key key']",
-          "content": "The credential's name is `key`, which is exactly what the CTA Train Tracker API expects to be given.",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button:contains('Reset')",
-          "content": "The value alongside it reads **configured** and cannot be displayed. Grafana encrypted it when the data source was saved, and nothing — not this page, not the API, not a dashboard export — will read it back. Changing it means resetting the field and entering a new key.",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "input[data-testid='data-testid radio-button-option query']",
-          "content": "**Add to** is set to **Query Param**, so Grafana appends `key=...` to the query string of every request. Picking **Header** instead would send the same secret as an HTTP header, which is what most modern APIs prefer.",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "input[placeholder='https://example.com']",
-          "content": "**Allowed hosts** pins this data source to `https://lapi.transitchicago.com`. If someone edited a panel query to point the request somewhere else, Grafana would refuse it rather than hand the key to another host.",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
-          "doIt": false
+          "type": "markdown",
+          "content": "**Add to** is set to **Query Param**, so Grafana appends `key=...` to the query string of every request the data source makes; picking **Header** instead would send the same secret as an HTTP header, which is what most modern APIs prefer. **Allowed hosts** pins the data source to `https://lapi.transitchicago.com` — if someone edited a panel query to point the request somewhere else, Grafana would refuse it rather than hand the key to another host."
         },
         {
           "type": "markdown",
           "content": "The data source runs in **proxy** mode, which is what ties this together. Your browser asks the Grafana backend for data; the backend makes the outbound call and attaches the key on the way out. The key never reaches the browser, never appears in the dashboard JSON, and survives being exported or shared — which is why a dashboard built on a paid-for API credential can live on a public Grafana instance."
         },
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/siwlw7f/chicago-l-trains",
-          "content": "Return to the dashboard.",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"]
+          "type": "markdown",
+          "content": "The board is publishable because the credential sits in the data source — encrypted, restricted to one host, and applied server-side."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "The board is publishable because the credential sits in the data source — encrypted, restricted to one host, and applied server-side."
-    },
-    {
-      "type": "markdown",
-      "content": "## Further Resources\n\nThe dashboard refreshes every minute, so leave it open and watch the trains roll in. Here's what it's built on:\n\n- [CTA Train Tracker API](https://www.transitchicago.com/developers/traintracker/) — the live arrivals API, including how to request your own developer key.\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — query any HTTP API from Grafana.\n- [Infinity authentication docs](https://grafana.com/docs/plugins/yesoreyeram-infinity-datasource/latest/setup/authentication/) — API keys, bearer tokens, OAuth2 and allowed hosts.\n- [JQ Playground](https://jqplay.org/) — try JQ expressions like this dashboard's interactively.\n- [Config from query results transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#config-from-query-results) — drive colours, units and thresholds from your data.\n- [Filter data by values transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#filter-data-by-values) — pick out the rows a panel should show.\n- [Dashboard data source](https://grafana.com/docs/grafana/latest/datasources/dashboard/) — reuse one panel's results across many panels.\n- [New Zealand GeoNet dashboard](https://play.grafana.org/d/simgmgk/new-zealand-geonet) and [UK Carbon Intensity dashboard](https://play.grafana.org/d/siw7lpj/uk-carbon-intensity) — two more Infinity and JQ tours on Play."
+      "content": "## Further Resources\n\nThe dashboard refreshes every minute, so leave it open and watch the trains roll in. Here's what it's built on:\n\n- [CTA Train Tracker API](https://www.transitchicago.com/developers/traintracker/) — the live arrivals API, including how to request your own developer key.\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — query any HTTP API from Grafana.\n- [Infinity authentication docs](https://grafana.com/docs/plugins/yesoreyeram-infinity-datasource/latest/configure/) — API keys, bearer tokens, OAuth2 and allowed hosts.\n- [JQ Playground](https://jqplay.org/) — try JQ expressions like this dashboard's interactively.\n- [Config from query results transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#config-from-query-results) — drive colours, units and thresholds from your data.\n- [Filter data by values transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#filter-data-by-values) — pick out the rows a panel should show.\n- [Dashboard data source](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/query-transform-data/share-query/) — reuse one panel's results across many panels."
     }
   ]
 }
