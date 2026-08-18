@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "configure-grafana-terraform-lp-update-configuration",
+  "title": "Update and redeploy Terraform configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Update and redeploy Terraform configuration\n\nMaking configuration changes through Terraform demonstrates the power of infrastructure as code. You can review, test, and apply changes with confidence, knowing every modification is tracked and reproducible.\n\nTo update and redeploy your configuration, complete the following steps:\n\n1. Open the file `alerts_billing.tf` in your text editor.\n\n1. Search for `is_paused = true`.\n\n1. Change at least one alert to `is_paused = false`:\n\n   ```hcl\n   resource \"grafana_rule_group\" \"billing_alerts\" {\n     name             = \"Billing Alerts\"\n     folder_uid       = grafana_folder.it.uid\n     interval_seconds = 300\n\n     rule {\n       name      = \"High Cost Alert\"\n       condition = \"A\"\n       is_paused = false  // Changed from true\n       \n       // ...existing configuration...\n     }\n   }\n   ```\n\n1. Review the changes Terraform will apply:\n\n   ```sh\n   terraform plan\n   ```\n\n1. Apply the configuration changes:\n\n   ```sh\n   terraform apply\n   ```\n\n1. When prompted, type `yes` to confirm.\n\n1. Sign in to Grafana Cloud as an administrator.\n\n1. Navigate to **Alerting** > **Alert rules**.\n\n1. Open the **Billing Alerts** folder.\n\nThe previously paused alerts are now active and evaluating.\n\nThis workflow demonstrates the value of infrastructure as code. You can test alerts in development by pausing them, deploy to production, and enable them when ready—all through version-controlled configuration files.\n\nIn the next milestone, you'll reach your destination and explore next steps.\n"
+    }
+  ]
+}

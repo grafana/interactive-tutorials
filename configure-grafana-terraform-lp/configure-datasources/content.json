@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "configure-grafana-terraform-lp-configure-datasources",
+  "title": "Configure data sources with LBAC",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Configure data sources with label-based access control (LBAC)\n\nConfiguring data sources as code ensures consistent configuration across your environment. Adding label-based access controls (LBAC) restricts which teams can query specific data sources, implementing the principle of least privilege.\n\nTo configure data sources with access controls, complete the following steps:\n\n1. Create a file named `datasourceprometheus.tf` for your Prometheus data source:\n\n   ```hcl\n   resource \"grafana_data_source\" \"prometheus\" {\n     type = \"prometheus\"\n     name = \"--Prometheus\"\n     url  = \"https://prometheus.example.com\"\n     \n     json_data_encoded = jsonencode({\n       httpMethod = \"POST\"\n     })\n   }\n   ```\n\n1. Create a file named `datasourcetestdata.tf` for testing:\n\n   ```hcl\n   resource \"grafana_data_source\" \"testdata\" {\n     type = \"testdata\"\n     name = \"--TestData\"\n   }\n   ```\n\n1. Create a file named `datasourceinfinity.tf` for the Infinity plugin:\n\n   ```hcl\n   resource \"grafana_data_source\" \"infinity\" {\n     type = \"yesoreyeram-infinity-datasource\"\n     name = \"--Infinity\"\n   }\n   ```\n\n1. Create a file named `datasource_perms.tf` for label-based access control:\n\n   ```hcl\n   resource \"grafana_data_source_permission\" \"testdata_finance\" {\n     datasource_id = grafana_data_source.testdata.id\n     \n     permissions {\n       team_id    = grafana_team.finance.id\n       permission = \"Query\"\n     }\n   }\n\n   resource \"grafana_data_source_permission\" \"infinity_marketing\" {\n     datasource_id = grafana_data_source.infinity.id\n     \n     permissions {\n       team_id    = grafana_team.marketing.id\n       permission = \"Query\"\n     }\n   }\n   ```\n   \n1. Apply the configuration:\n\n   ```sh\n   terraform apply\n   ```\n\nThe data sources are created with team-specific query permissions. Only Finance can query the TestData source, and only Marketing can query the Infinity source.\n\nIn the next milestone, you'll create dashboard folders and apply team permissions.\n"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "configure-grafana-terraform-lp-configure-rbac",
+  "title": "Configure role-based access controls",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Configure role-based access controls\n\nImplementing role-based access control (RBAC) provides granular permissions management to control feature access.\n\nTo configure RBAC, complete the following steps:\n\n1. Create a file named `userrbac.tf` for custom RBAC roles:\n\n   ```hcl\n   resource \"grafana_role\" \"finance_reporting\" {\n     name        = \"Finance Reporting Access\"\n     description = \"Provides reporting capabilities to Finance team\"\n     version     = 1\n     uid         = \"finance_reporting_v1\"\n     \n     permissions {\n       action = \"reports:send\"\n     }\n     \n     permissions {\n       action = \"reports:read\"\n     }\n   }\n\n   resource \"grafana_team_role_assignment\" \"finance_reporting\" {\n     role_uid = grafana_role.finance_reporting.uid\n     team_id  = grafana_team.finance.id\n   }\n   ```\n\n1. Add Marketing team application access:\n\n   ```hcl\n   resource \"grafana_role\" \"marketing_apps\" {\n     name        = \"Marketing Additional Apps\"\n     description = \"Provides K8s app access to Marketing\"\n     version     = 1\n     uid         = \"marketing_apps_v1\"\n     \n     permissions {\n       action = \"plugins:app:access\"\n       scope  = \"plugins:id:grafana-k8s-app\"\n     }\n   }\n\n   resource \"grafana_team_role_assignment\" \"marketing_apps\" {\n     role_uid = grafana_role.marketing_apps.uid\n     team_id  = grafana_team.marketing.id\n   }\n   ```\n\n1. Apply the configuration:\n\n   ```sh\n   terraform apply\n   ```\n\nYou've just set custom RBAC roles to grant specific feature access.\n\nIn the next milestone, you'll create data sources and configure their access permissions.\n"
+    }
+  ]
+}
