@@ -452,9 +452,9 @@ Content transformation rules:
 - For non-wrapping shortcodes with a `heading` attribute (e.g., `{{< docs/icon-heading heading="## Here's what to expect" >}}`), extract and preserve the heading value as a markdown header in the output
 - Convert remaining markdown into one or more `markdown` blocks
 - Preserve learning objectives, prerequisites, and descriptive prose
-- **Remove image links that use website-relative paths** — markdown images like `![alt text](/media/docs/...)` reference paths that only resolve on the Grafana website and will not function in Pathfinder. Strip these image references entirely (including their alt text and surrounding syntax). Retain any surrounding prose but clean up orphaned whitespace or empty paragraphs left behind.
+- **Gate screenshots and videos for website-only rendering** — do not leave ungated `image` / `video` blocks or markdown `![...](...)` embeds in Pathfinder. Wrap typed media in a `conditional` with `conditions: ["renderer:website"]` and empty `whenFalse`. For markdown that mixes prose with images, use a dual-branch conditional: `whenTrue` keeps the original markdown (with images); `whenFalse` keeps prose with image markdown removed. Prefer absolute `https://grafana.com/media/...` URLs when available. Relative `/media/...` paths still work on the website branch; Pathfinder never shows that branch. See [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder).
 - **Remove "Grafana Cloud account" prerequisites** — any prerequisite or requirement bullet point that says the user needs a Grafana Cloud account (e.g., "A Grafana Cloud account. To create an account, refer to...") is redundant for Pathfinder users, who are already in Grafana. Remove these bullet points entirely.
-- **Record all removed content in migration notes** — for every image link or prerequisite removed by the above rules, record the exact text that was removed in the migration notes under a `## Content Removed During Migration` section. This provides a clear audit trail of what was stripped from the original website content.
+- **Record gated media and removed prerequisites in migration notes** — for every screenshot/video wrapped in a `renderer:website` conditional, and for every prerequisite removed by the above rules, record the change under `## Content Removed During Migration` (or a `## Website-only media` subsection). This provides a clear audit trail.
 - Do NOT add a markdown title (`## Title`) — the `title` field handles that
 
 #### 9. Validate
@@ -605,7 +605,7 @@ status: complete  # set to "incomplete" when any TODO items are present
 ## Content Removed During Migration
 
 - <list each piece of content removed from path-level content.json, with the removal reason>
-- Example: `Removed image: ![Example Logs Drilldown user interface](/media/docs/learning-journey/logs-drilldown/logs-drilldown.png)` — website-relative image path
+- Example: `Website-only media: ![Example Logs Drilldown user interface](/media/docs/learning-journey/logs-drilldown/logs-drilldown.png)` — gated with `renderer:website`
 - Example: `Removed prerequisite: "A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account)."` — redundant for Pathfinder users
 
 ## Dangling References
