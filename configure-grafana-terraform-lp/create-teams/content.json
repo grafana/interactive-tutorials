@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "configure-grafana-terraform-lp-create-teams",
+  "title": "Create teams with external group sync",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Create teams with external group sync\n\nCreating teams with external group synchronization automates user access management. When users sign in through your identity provider, they're automatically added to the appropriate Grafana teams based on their group memberships.\n\nTo create teams with external group sync, complete the following steps:\n\n1. Create a file named `teams.tf` in your Terraform directory.\n\n1. Add the team definitions with external group mappings:\n\n   ```hcl\n   resource \"grafana_team\" \"finance\" {\n     name = \"Finance\"\n     \n     team_sync {\n       groups = [\"Finance\"]\n     }\n   }\n\n   resource \"grafana_team\" \"marketing\" {\n     name = \"Marketing\"\n     \n     team_sync {\n       groups = [\"Marketing\"]\n     }\n   }\n\n   resource \"grafana_team\" \"it\" {\n     name = \"IT\"\n     \n     team_sync {\n       groups = [\"IT\"]\n     }\n   }\n   ```\n\n1. Apply the configuration:\n\n   ```sh\n   terraform apply\n   ```\n\n1. When prompted, type `yes` to confirm the changes.\n\nThe teams are created and configured to sync with your identity provider groups. Users in these groups are automatically added to the corresponding Grafana teams when they sign in.\n\nIn the next milestone, you'll implement custom RBAC roles and label-based access controls.\n"
+    }
+  ]
+}
