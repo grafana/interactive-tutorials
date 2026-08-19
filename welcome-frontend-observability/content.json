@@ -36,10 +36,10 @@
           "action": "navigate",
           "reftarget": "/a/grafana-kowalski-app/apps/new",
           "content": "Open **Create New** to start the **Connect web application** wizard. It has four steps, and the first two are all you need to start receiving data.",
-          "showMe": false,
           "requirements": [
             "on-page:/a/grafana-kowalski-app"
           ],
+          "showMe": false,
           "verify": "on-page:/a/grafana-kowalski-app/apps/new"
         },
         {
@@ -72,11 +72,11 @@
           "reftarget": "form[data-testid='web-app-form'] button[data-testid='app-form-edit-app-add-origin-button']",
           "content": "Use **Add origin** when the same frontend runs on more than one origin, such as staging and production. One origin is enough here.",
           "tooltip": "Each origin has to match exactly unless you use a wildcard.",
-          "doIt": false,
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
@@ -123,11 +123,11 @@
           "reftarget": "div[data-testid='app-form-new-app-manual-instrumentation-package-manager-selector']",
           "content": "Pick how you install the SDK. **NPM** and **Yarn** add Faro as a dependency, and **CDN** gives you a script tag instead.",
           "tooltip": "Choose CDN when you cannot change the build, for example on a static site or inside a template.",
-          "doIt": false,
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
@@ -174,11 +174,11 @@
           "reftarget": "button[data-testid='data-testid Tab 1. Install source map bundler plugin']",
           "content": "Production JavaScript is minified, so a stack trace points at something like `t.default.a` rather than your code. A bundler plugin uploads the source maps that undo that.",
           "tooltip": "There are plugins for Webpack and for Rollup or Vite.",
-          "doIt": false,
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
@@ -186,11 +186,11 @@
           "reftarget": "button[data-testid='data-testid Tab 2. Configure source map uploads']",
           "content": "The second tab has the plugin configuration, including the app ID and key it needs to upload on every build.",
           "tooltip": "Uploads happen at build time, so this belongs in your CI pipeline rather than in local development.",
-          "doIt": false,
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
@@ -226,11 +226,11 @@
           "reftarget": "input[data-testid='shared-select-alerts-checkbox-error_count']",
           "content": "**Errors Count** fires when your error count grows day over day across the last 24 hours. It is the one most teams turn on first, because it catches a bad release without needing a threshold you have to guess at.",
           "tooltip": "Comparing against yesterday means normal traffic growth does not trigger it.",
-          "doIt": false,
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
@@ -238,11 +238,11 @@
           "reftarget": "input[data-testid='shared-select-alerts-checkbox-lcp_p75']",
           "content": "The **Web Vitals** rules watch the Core Web Vitals instead. This one fires when Largest Contentful Paint goes above 4000ms, which is the point where a page feels slow to load.",
           "tooltip": "Every threshold here is editable later in the application settings.",
-          "doIt": false,
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": false
         },
         {
           "type": "interactive",
@@ -264,6 +264,18 @@
     {
       "type": "markdown",
       "content": "Up next: reading your Frontend Observability dashboard, so you know what the errors, sessions, and Web Vitals panels are actually telling you."
+    },
+    {
+      "type": "input",
+      "id": "check-loki",
+      "prompt": "Finally you can check to see if the right data is coming into Grafana Cloud",
+      "inputType": "datasource",
+      "variableName": "loki",
+      "placeholder": "Select cloud logs datasource",
+      "datasourceFilter": "loki",
+      "dataCheckQuery": "{app_id=~\".+\"}",
+      "dataCheckFailureMessage": "There is currently no app_id being written to Loki at the moment.",
+      "dataCheckBlocking": true
     }
   ]
 }
