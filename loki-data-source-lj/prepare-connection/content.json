@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "loki-data-source-prepare",
+  "title": "Prepare Loki connection details",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before adding the Loki data source, gather the URL, authentication credentials, and (if applicable) tenant ID for your Loki backend. Having these ready avoids back-and-forth while filling out the data source form.\n\nThe connection URL and authentication method depend on which flavor of Loki you're connecting to. Use the table in the next step to find the URL format for your environment.\n\nTo prepare your Loki connection details, complete the following steps:"
+    },
+    {
+      "type": "markdown",
+      "content": "**1. Identify your Loki environment.** The Loki data source supports three common environments:\n\n- **Self-managed Loki** — Loki you run yourself, typically at `http://<host>:3100`.\n- **Grafana Cloud Logs** — The fully-managed Loki backend included with Grafana Cloud.\n- **Grafana Enterprise Logs (GEL)** — The self-hosted enterprise logging backend.\n\n**Note:** Grafana Cloud already includes a pre-configured `grafanacloud-<stack>-logs` data source. Add a Loki data source manually when you need to connect to a self-managed Loki instance or require a custom configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "**2. Record the query URL for your environment:**\n\n| Environment | URL format | Example |\n| --- | --- | --- |\n| Self-managed Loki | `http://<host>:3100` | `http://loki:3100` |\n| Grafana Cloud Logs | `https://logs-prod-<zone>.grafana.net` | `https://logs-prod-006.grafana.net` |\n| Grafana Enterprise Logs | URL of your GEL gateway | `https://gel.example.com` |\n\nThe default port for self-managed Loki is `3100`."
+    },
+    {
+      "type": "markdown",
+      "content": "**3. Choose an authentication method:**\n\n- **Basic authentication** — Authenticates with a username and password. Required for Grafana Cloud Logs.\n- **Forward OAuth Identity** — Forwards the querying user's OAuth access token and OIDC ID token.\n- **No Authentication** — For Loki instances with no auth configured (typical for local or internal deployments).\n\nIf your Loki instance sits behind a reverse proxy with its own auth, match the proxy's expected credentials."
+    },
+    {
+      "type": "markdown",
+      "content": "**4. Create an access token (Grafana Cloud Logs only).** If you're connecting to **Grafana Cloud Logs**, create a Cloud Access Policy token with the `logs:read` scope:\n\n1. In the Grafana Cloud Portal, open your stack and select **Loki**.\n2. Copy the URL and note the numeric **instance ID** — this is your username.\n3. Create an **Access Policy** with `logs:read` scope.\n4. Generate a **token** under the access policy; this is your password.\n\n**Important:** Don't use your Grafana login credentials. The instance ID is the username, and the access policy token is the password."
+    },
+    {
+      "type": "markdown",
+      "content": "**5. Record your tenant ID (multi-tenant only).** If your Loki instance is multi-tenant, record your tenant ID. You'll add it as an `X-Scope-OrgID` HTTP header in the Authentication section of the data source settings.\n\nThe same header must also be set on the write path (for example, in your Alloy or Promtail configuration) so ingested logs land in the correct tenant."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you add the Loki data source in Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Grafana Cloud access policies](https://grafana.com/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/)\n- [Loki multi-tenancy](https://grafana.com/docs/loki/latest/operations/multi-tenancy/)\n- [Private data source connections](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/)"
+    }
+  ]
+}

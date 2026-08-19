@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "loki-data-source-configure-auth",
+  "title": "Configure authentication",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The Loki data source supports several authentication methods, including **Basic authentication**, **Forward OAuth Identity**, and **No Authentication**. Grafana Cloud Logs requires basic authentication with a Cloud Access Policy token.\n\nTo configure authentication, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#auth-method-select",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "In the **Authentication** section, select an authentication method from the drop-down:\n\n- **Basic authentication** — Enter a username and password. Use this for Grafana Cloud Logs.\n- **Forward OAuth Identity** — Forward the querying user's OAuth access token and OIDC ID token.\n- **No Authentication** — For Loki instances with no authentication configured."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#basic-auth-user-input",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "For **Basic authentication**: in the **User** field, enter the username.\n\nFor **Grafana Cloud Logs**, enter your stack's numeric instance ID (shown in the Cloud Portal on the Loki details page). For example, enter `123456`.\n\nFor self-managed Loki, enter the username configured in your reverse proxy or gateway.\n\n**Important:** Don't use your Grafana login credentials."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#basic-auth-password-input",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "In the **Password** field, enter the password.\n\nFor **Grafana Cloud Logs**, paste a Cloud Access Policy token with the `logs:read` scope.\n\nFor self-managed Loki, enter the password configured in your reverse proxy or gateway.\n\n**Security note:** Passwords and tokens are encrypted at rest by Grafana. Rotate access policy tokens periodically."
+        },
+        {
+          "type": "markdown",
+          "content": "**Optional — multi-tenant Loki:** If your Loki instance is multi-tenant, expand the **HTTP Headers** subsection and add a header:\n\n- **Header:** `X-Scope-OrgID`\n- **Value:** your tenant ID\n\nThis header is required on both the query path (configured here) and the write path (configured in your Alloy or Promtail configuration) so logs land in the correct tenant."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you save the data source and test the connection."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure the Loki data source](https://grafana.com/docs/grafana/latest/datasources/loki/configure-loki-data-source/)\n- [Grafana Cloud access policies](https://grafana.com/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/)\n- [Loki multi-tenancy](https://grafana.com/docs/loki/latest/operations/multi-tenancy/)"
+    }
+  ]
+}
