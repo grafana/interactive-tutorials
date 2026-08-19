@@ -23,7 +23,7 @@
       "blocks": [
         {
           "type": "guided",
-          "content": "Create an empty schedule to hold your rotation.",
+          "content": "Create an empty schedule. IRM opens a rotation editor over the schedule as soon as it is created.",
           "requirements": [
             "navmenu-open"
           ],
@@ -76,6 +76,15 @@
               ],
               "description": "Create the schedule",
               "tooltip": "Creating the schedule opens it so you can add a rotation."
+            },
+            {
+              "action": "button",
+              "reftarget": "button[aria-label=\"Cancel\"]",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "description": "Close the rotation popup",
+              "tooltip": "Closing it returns you to the schedule, where the rotation controls become available."
             }
           ]
         }
@@ -83,11 +92,11 @@
     },
     {
       "type": "markdown",
-      "content": "The schedule exists but nobody is in it yet, so IRM would find no one to notify."
+      "content": "The schedule exists and the popup is out of the way, but nobody is in the rota yet, so IRM would still find no one to notify."
     },
     {
       "type": "markdown",
-      "content": "IRM opens the rotation editor for you as soon as the schedule is created, so you can go straight to adding people. To fill the rotation, complete the following steps:"
+      "content": "With the popup closed, the schedule's own rotation controls are available. To fill the rotation, complete the following steps:"
     },
     {
       "type": "section",
@@ -99,9 +108,18 @@
       "blocks": [
         {
           "type": "guided",
-          "content": "Add users to the rotation that is already open, then save it. **Add rotation** stays disabled while an unsaved rotation is open, and becomes available afterwards for adding a second layer.",
+          "content": "Add a rotation, put at least one person in it, and save.",
           "stepTimeout": 45000,
           "steps": [
+            {
+              "action": "button",
+              "reftarget": "[data-pathfinder=\"add-rotation-button\"]",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "description": "Add a rotation",
+              "tooltip": "This reopens the rotation editor. It is disabled while an unsaved rotation is already open."
+            },
             {
               "action": "highlight",
               "reftarget": "[data-pathfinder=\"add-user-select\"]",
