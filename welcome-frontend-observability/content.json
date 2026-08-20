@@ -1,0 +1,281 @@
+{
+  "id": "welcome-frontend-observability",
+  "title": "Welcome to Grafana Cloud Frontend Observability",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "[Grafana Cloud Frontend Observability](https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-applications/frontend-observability/) shows you how real users experience your web app. It collects telemetry straight from the browser, so you can measure performance, catch errors, and follow interactions across devices, browsers, and network conditions.\n\nIt runs on the [Grafana Faro Web SDK](https://github.com/grafana/faro-web-sdk/), a lightweight library that captures real user metrics, errors, logs, and client-side traces.\n\nIn this guide you'll walk the how to **Connect your web application** : create an application, get the Faro snippet that starts sending it data, then look at the optional source map and alerting steps. You can follow along with the video below."
+    },
+    {
+      "type": "video",
+      "src": "https://youtube.com/embed/AfVDnsriwXQ",
+      "provider": "youtube",
+      "title": "Getting Started With Frontend Observability",
+      "start": 174,
+      "end": 274
+    },
+    {
+      "type": "markdown",
+      "content": "An **application** is how Frontend Observability groups everything Faro sends from one frontend. To create yours, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "create-application",
+      "title": "Create an application",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-kowalski-app",
+          "content": "Open **Frontend Observability**. Every application you create is listed here, grouped into **Active**, **Stale**, and **No data**.",
+          "showMe": false,
+          "verify": "on-page:/a/grafana-kowalski-app"
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-kowalski-app/apps/new",
+          "content": "Open **Create New** to start the process to **Connect your web application**. It has four steps, and the first two are all you need to start receiving data.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app"
+          ],
+          "showMe": false,
+          "verify": "on-page:/a/grafana-kowalski-app/apps/new"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "form[data-testid='web-app-form'] input[data-testid='app-name']",
+          "targetvalue": "quickpizza-frontend",
+          "content": "In the **Application name** field, enter a name that identifies this frontend. Faro stamps it on every signal it sends, so it is how you tell one application apart from another.\n\n**quickpizza-frontend** is filled in for you.",
+          "tooltip": "QuickPizza is the demo app these guides use, so the name matches the frontend you instrument in a moment.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "form[data-testid='web-app-form'] input[data-testid='cors-0']",
+          "targetvalue": "http://localhost:3333",
+          "content": "In **Allowed origins**, enter the origin your app is served from. Frontend Observability rejects data from anywhere else, so another site cannot write into your application.\n\n**http://localhost:3333** is filled in for you.",
+          "tooltip": "QuickPizza serves on port 3333 when you run it locally. Swap in your own origin, or a wildcard such as *.example.com.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "form[data-testid='web-app-form'] button[data-testid='app-form-edit-app-add-origin-button']",
+          "content": "Use **Add origin** when the same frontend runs on more than one origin, such as staging and production. One origin is enough here.",
+          "tooltip": "Each origin has to match exactly unless you use a wildcard.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "form[data-testid='web-app-form'] button[data-testid='new-app-submit']",
+          "content": "Click **Next** to create the application. Grafana Cloud generates a collector endpoint for it, which is the address Faro posts to.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your application now exists with a collector endpoint waiting for data. Nothing is reporting yet, because your frontend doesn't know about it."
+    },
+    {
+      "type": "markdown",
+      "content": "To send Frontend Observability its first data, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "connect-application",
+      "title": "Connect your web application",
+      "requirements": [
+        "section-completed:create-application"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='apps-sdk-instructions-instrumentation-mode-manual-card'] button",
+          "content": "Frontend Observability offers four ways to add Faro. Three of them hand the work to an agent, and on a real codebase they save a lot of time: **Grafana Assistant** opens a pull request through your GitHub or GitLab connection, and the **Claude Code** and **Cursor** skills wire it up in your editor.\n\nChoose **Manual instrumentation** here, so you can see exactly what gets added before you let an agent do it for you.",
+          "tooltip": "The agent options are usually the faster route in practice. Manual is the one that shows you what Faro actually needs.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='app-form-new-app-manual-instrumentation-package-manager-selector']",
+          "content": "Pick how you install the SDK. **NPM** and **Yarn** add Faro as a dependency, and **CDN** gives you a script tag instead.",
+          "tooltip": "Choose CDN when you cannot change the build, for example on a static site or inside a template.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='copy-agent-install']",
+          "content": "Click **Copy**, then paste the snippet into your app's entry point so it runs before the rest of your code. Your collector URL and application name are already filled in.",
+          "tooltip": "Starting Faro early means it captures errors that happen while the page is still loading.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='app-form-new-app-manual-instrumentation-continue-button']",
+          "content": "Click **Continue** to move on to source maps.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Faro now has everything it needs. Once that snippet is deployed and someone loads a page, sessions and errors start appearing against your application."
+    },
+    {
+      "type": "markdown",
+      "content": "The next two steps are optional, so this section only shows you what they do. To look at source maps, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "upload-source-maps",
+      "title": "Upload source maps",
+      "requirements": [
+        "section-completed:connect-application"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab 1. Install source map bundler plugin']",
+          "content": "Production JavaScript is minified, so a stack trace points at something like `t.default.a` rather than your code. A bundler plugin uploads the source maps that undo that.",
+          "tooltip": "There are plugins for Webpack and for Rollup or Vite.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab 2. Configure source map uploads']",
+          "content": "The second tab has the plugin configuration, including the app ID and key it needs to upload on every build.",
+          "tooltip": "Uploads happen at build time, so this belongs in your CI pipeline rather than in local development.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='app-form-new-app-web-source-map-continue-button']",
+          "content": "Click **Continue**. You can set source maps up later from the application settings.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Source maps are what turn an unreadable production stack trace back into a line in your own code."
+    },
+    {
+      "type": "markdown",
+      "content": "The last step offers a set of ready-made alert rules. To finish connecting your application, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "enable-alerting",
+      "title": "Enable alerting",
+      "requirements": [
+        "section-completed:upload-source-maps"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='shared-select-alerts-checkbox-error_count']",
+          "content": "**Errors Count** fires when your error count grows day over day across the last 24 hours. It is the one most teams turn on first, because it catches a bad release without needing a threshold you have to guess at.",
+          "tooltip": "Comparing against yesterday means normal traffic growth does not trigger it.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='shared-select-alerts-checkbox-lcp_p75']",
+          "content": "The **Web Vitals** rules watch the Core Web Vitals instead. This one fires when Largest Contentful Paint goes above 4000ms, which is the point where a page feels slow to load.",
+          "tooltip": "Every threshold here is editable later in the application settings.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='app-form-new-app-web-alerting-complete-button']",
+          "content": "Click **Complete** to finish. This takes you back to the application list, where your new application is waiting for its first data.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/a/grafana-kowalski-app"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your app is now connected! Your application may appear under **No data** until Faro sends data for the first time, then it will move to **Active**."
+    },
+    {
+      "type": "markdown",
+      "content": "Up next: reading your Frontend Observability dashboard, so you know what the errors, sessions, and Web Vitals panels are actually telling you."
+    },
+    {
+      "type": "input",
+      "id": "check-loki",
+      "prompt": "Finally you can check to see if the right data is coming into Grafana Cloud",
+      "inputType": "datasource",
+      "variableName": "loki",
+      "placeholder": "Select cloud logs datasource",
+      "datasourceFilter": "loki",
+      "dataCheckQuery": "{app_id=~\".+\"}",
+      "dataCheckFailureMessage": "There is currently no app_id being written to Loki at the moment.",
+      "dataCheckBlocking": true
+    }
+  ]
+}
