@@ -439,13 +439,15 @@ Validate all packages in the repo:
 node dist/cli/cli/index.js validate --packages .
 ```
 
-Stamp computed completion stats into every manifest, then build `repository.json` from all packages. Run them in this order — see [stats](#stats):
+Stamp computed completion stats into every manifest, then build `repository.json` from all packages. Run them in this order — see [stats](#stats). Unlike the two commands above, this block runs from the root of **this** repository, with a `grafana-pathfinder-app` checkout at `./pathfinder-app`, which is how CI invokes it:
 
 ```bash
-node dist/cli/cli/index.js build-stats . --exclude pathfinder-app --exclude shared
-node dist/cli/cli/index.js build-repository . --exclude pathfinder-app --exclude shared -o repository.json
+# cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
+# checked out (and built) at ./pathfinder-app.
+node pathfinder-app/dist/cli/cli/index.js build-stats . --exclude pathfinder-app --exclude shared
+node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app --exclude shared -o repository.json
 ```
 
-`build-stats` rewrites every `manifest.json` in place. Do not commit the result; the stamped stats belong to CI, not to the repo. To check for drift without writing anything, add `--check`.
+`build-stats` rewrites every `manifest.json` in place, so the working directory matters: run it from a `grafana-pathfinder-app` checkout instead and `.` resolves to that repo, rewriting its own bundled package manifests. Do not commit the result; the stamped stats belong to CI, not to the repo. To check for drift without writing anything, add `--check`.
 
-These commands are run from a [grafana-pathfinder-app](https://github.com/grafana/grafana-pathfinder-app) checkout. CI runs them automatically; see `.github/workflows/validate-json.yml` for the PR-time run and `.github/workflows/deploy.yml` for the run that produces the published tree.
+The `validate --package` and `validate --packages` commands above are run from a [grafana-pathfinder-app](https://github.com/grafana/grafana-pathfinder-app) checkout, where the CLI sits at `dist/cli/cli/index.js`; the `build-stats`/`build-repository` block is run from this repository's root, where the CLI sits at `pathfinder-app/dist/cli/cli/index.js`. CI runs them automatically; see `.github/workflows/validate-json.yml` for the PR-time run and `.github/workflows/deploy.yml` for the run that produces the published tree.

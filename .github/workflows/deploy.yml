@@ -66,10 +66,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          # Track pathfinder-app's engines.node so `npm ci` and the built CLI run on a
-          # compatible version. The new pin declares ">=24"; a hardcoded 22 was fine for
-          # the old pin but is a mismatch for this one.
-          node-version-file: pathfinder-app/package.json
+          # Pinned explicitly rather than read from pathfinder-app's engines.node, which is
+          # the open-ended ">=24" the new pin declares. 24 satisfies it, and pinning the
+          # major keeps this publish path from drifting onto a newer (possibly non-LTS
+          # Current) Node on its own as runner images update.
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: pathfinder-app/package-lock.json
 
@@ -150,10 +151,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          # Track pathfinder-app's engines.node so `npm ci` and the built CLI run on a
-          # compatible version. The new pin declares ">=24"; a hardcoded 22 was fine for
-          # the old pin but is a mismatch for this one.
-          node-version-file: pathfinder-app/package.json
+          # Pinned explicitly rather than read from pathfinder-app's engines.node, which is
+          # the open-ended ">=24" the new pin declares. 24 satisfies it, and pinning the
+          # major keeps this publish path from drifting onto a newer (possibly non-LTS
+          # Current) Node on its own as runner images update.
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: pathfinder-app/package-lock.json
 
