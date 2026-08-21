@@ -71,8 +71,10 @@ This repo's content is rendered by the Grafana Pathfinder app. Authoritative sch
 - `src/interactive-engine/action-handlers/` — action handlers (button, formfill, navigate, hover, popout, guided)
 - `src/cli/utils/block-registry.ts` — `CLI_EXCLUDED_BLOCK_TYPES` (e.g., `grot-guide` is hand-authored in the block editor)
 
-If a doc here disagrees with the schema, the schema wins. Validate locally from a Pathfinder CLI checkout:
+If a doc here disagrees with the schema, the schema wins. Validate locally from **this repository's root**, pointing at a built `grafana-pathfinder-app` checkout — `.` must resolve to this repo, or the run silently validates Pathfinder's own bundled packages instead:
 
 ```bash
 node {pathfinder-app}/dist/cli/cli/index.js validate --packages .
 ```
+
+Working directory rules for the other CLI commands (`build-stats`, `build-repository`) live in [docs/manifest-reference.md](docs/manifest-reference.md#validation).
