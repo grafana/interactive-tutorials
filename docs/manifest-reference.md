@@ -14,7 +14,7 @@ Run this from a [grafana-pathfinder-app](https://github.com/grafana/grafana-path
 
 - [PATHFINDER-PACKAGE-DESIGN.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/design/PATHFINDER-PACKAGE-DESIGN.md) — package format spec
 - [package-authoring.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/package-authoring.md) — manifest field reference and templates
-- [CLI_TOOLS.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) — `validate --package`, `build-repository`, `build-graph`, `schema manifest`
+- [CLI_TOOLS.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) — `validate --package`, `build-repository`, `build-stats`, `build-graph`, `schema manifest`
 
 ---
 
@@ -73,6 +73,7 @@ prometheus-lj/
 | `conflicts` | `string[]` | No | `[]` | Packages that conflict (mutually exclusive). Schema-only in MVP. |
 | `replaces` | `string[]` | No | `[]` | Packages this one supersedes entirely. Schema-only in MVP. |
 | `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"` or `"journey"`. |
+| `stats` | `object` | **No — never hand-author** | — | Completion block counts, computed by CI. See [stats](#stats). |
 
 ### author
 
@@ -149,6 +150,42 @@ Rules are evaluated most-specific-first:
 > **Note:** `"play"` is not a valid `tier` value. Play.grafana.org is a specific cloud instance — model it as `tier: "cloud"` + `instance: "play.grafana.org"`, not as a distinct tier.
 >
 > **Note:** Never copy a regex pattern into `instance`. The `instance` field is a concrete hostname used to target a specific test environment. A regex `source` predicate in the match expression is a routing rule, not an instance identifier. `.*\\.grafana\\.net` specifically means "all Grafana Cloud instances" → `tier: "cloud"` with no `instance`.
+
+---
+
+### stats
+
+`stats` holds the block counts that completion tracking measures a reader against. **Do not write this field by hand, and do not commit it.** It is computed from the guide's own content by `pathfinder-cli build-stats` during CI, so the denominator is guaranteed to match the content it describes and no author can assert a wrong one.
+
+```json
+"stats": {
+  "version": 1,
+  "blockCount": 22,
+  "sectionCount": 2,
+  "completableBlockCount": 18,
+  "finalCompletablePosition": 21
+}
+```
+
+| Key | Meaning |
+|-----|---------|
+| `version` | Rule version of the stamp, bumped when the counting rule changes. Says nothing about whether the guide changed. |
+| `blockCount` | The completion denominator. |
+| `sectionCount` | Section containers. Authoring insight only; not part of the denominator. |
+| `completableBlockCount` | Counted blocks that can emit completion evidence. |
+| `finalCompletablePosition` | Position of the last completable block, `0` when there is none. |
+
+**What counts.** Every block counts once, except containers (`section`, `assistant`, `collapsible`), which contribute their contents and nothing of their own. `multistep` and `guided` each count as one; their inner steps are outside the denominator. `conditional` counts as one and neither branch is descended into. `snippet-ref` counts as one, and its resolved contents inherit that single position — the stamped number is the pre-inlining count. A `path` rolls up as its own cover page followed by its milestones in declared order.
+
+**Reaching 100%.** Completion is `n / blockCount` with no special case, so a guide reaches 100% only when `finalCompletablePosition === blockCount`. Anything less means the guide needs a "Mark as complete" affordance at its foot; that field is the signal for it. Most packages in this repo are currently in that state.
+
+**Where it comes from.** Both CI workflows run `build-stats` over the package tree immediately before `build-repository` — `.github/workflows/deploy.yml` stamps the staged `packages/` tree that ships to the CDN, and `.github/workflows/validate-json.yml` stamps a throwaway copy at PR time as a fail-fast gate. Neither commits the result: like `repository.json`, `graph.json`, and the snippet and course indexes, `stats` is a build artifact, and the committed `manifest.json` files in this repo stay free of it.
+
+The ordering of the two commands matters. `build-stats` writes the manifests and `build-repository` denormalizes them into `repository.json`. As of this writing `build-repository` does not forward the `stats` key, so `repository.json` carries no stats either way; the ordering becomes load-bearing once [grafana-pathfinder-app#1662](https://github.com/grafana/grafana-pathfinder-app/pull/1662) lands and unknown manifest keys start flowing through.
+
+**`build-stats` is deliberately stricter than its siblings.** A milestone missing from the scanned tree, a duplicated milestone, a milestone reachable through two parents, or a manifest that fails schema validation each abort the whole run and leave the tree completely unstamped rather than half-stamped. `build-graph` warns in the same situations and `build-repository` degrades a bad manifest to a warning. The practical consequence for CI: if an `--exclude`d subtree contains a package that a path lists as a milestone, `build-stats` fails where `build-repository` would have quietly omitted the entry. Before adding an `--exclude` to either workflow, check that the excluded tree holds no milestone any path references.
+
+**`stats.blockCount` is not `inspect`'s `blockCount`.** `pathfinder-cli inspect --format json` counts the whole tree, containers included and conditional branches descended; `stats.blockCount` counts neither. The two disagree by design on the same guide — `inspect` answers "how many blocks are in this file", `stats` answers "what is the reader measured against". On `explore-drilldowns-101`, `inspect` reports 24 and `stats` reports 22; the difference is its two `section` containers.
 
 ---
 
@@ -402,10 +439,13 @@ Validate all packages in the repo:
 node dist/cli/cli/index.js validate --packages .
 ```
 
-Build `repository.json` from all packages:
+Stamp computed completion stats into every manifest, then build `repository.json` from all packages. Run them in this order — see [stats](#stats):
 
 ```bash
-node dist/cli/cli/index.js build-repository . -o repository.json
+node dist/cli/cli/index.js build-stats . --exclude pathfinder-app --exclude shared
+node dist/cli/cli/index.js build-repository . --exclude pathfinder-app --exclude shared -o repository.json
 ```
 
-These commands are run from a [grafana-pathfinder-app](https://github.com/grafana/grafana-pathfinder-app) checkout. CI runs them automatically; see `.github/workflows/validate-json.yml`.
+`build-stats` rewrites every `manifest.json` in place. Do not commit the result; the stamped stats belong to CI, not to the repo. To check for drift without writing anything, add `--check`.
+
+These commands are run from a [grafana-pathfinder-app](https://github.com/grafana/grafana-pathfinder-app) checkout. CI runs them automatically; see `.github/workflows/validate-json.yml` for the PR-time run and `.github/workflows/deploy.yml` for the run that produces the published tree.
