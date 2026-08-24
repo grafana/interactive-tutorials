@@ -4,113 +4,135 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this interactive guide you'll learn how to set up and run a ping check in Grafana Cloud Synthetic Monitoring. You will:\n\n- Understand what a ping check is and when to use it\n- Create and configure a ping check for any endpoint\n- Select probe locations for global monitoring coverage\n- Set up alerting so you're notified when your endpoint goes down\n\n### **Why Use Ping Checks?**\n\n- **Verify reachability** – Confirm that an endpoint is online and responding to ICMP packets\n- **Measure latency** – Track round-trip response time from probe locations around the world\n- **Detect downtime proactively** – Get alerted before your users notice an outage\n\n"
+      "content": "A ping check is the simplest synthetic check there is. It sends ICMP echo packets to a host from probes around the world and records whether the host answered and how long it took.\n\nThat makes it the right tool for three jobs: confirming a host is reachable at all, tracking round-trip latency from real geographic locations, and catching an outage before your users report it. What it does not do is test your application, so pair it with an HTTP check when you care about what the endpoint returns.\n\nIn this guide you'll create a ping check against a host, choose where it runs from, and turn on an alert for when it stops answering."
+    },
+    {
+      "type": "conditional",
+      "conditions": [
+        "renderer:website"
+      ],
+      "whenTrue": [
+        {
+          "type": "video",
+          "src": "https://www.youtube.com/embed/GAzh8nHj2w8",
+          "provider": "youtube",
+          "title": "How To Ping Check with Grafana Cloud Synthetic Monitoring"
+        }
+      ],
+      "whenFalse": []
     },
     {
       "type": "markdown",
-      "content": "## Section 1: Navigate to Synthetic Monitoring\n\nLet's start by navigating to the Testing & Synthetics section in Grafana Cloud. This is where you create and manage all your synthetic checks."
+      "content": "Every check type lives behind the **API Endpoint** form, so that is where you start. To open it, complete the following step:"
     },
     {
       "type": "section",
       "id": "navigate-synthetics",
-      "title": "Navigate to Synthetic Monitoring",
+      "title": "Open the check editor",
       "objectives": [
         "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
       ],
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
-          "content": "In the main menu, navigate to **Testing & Synthetics**.",
-          "requirements": [
-            "navmenu-open"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[id='pageContent'] a[href='/a/grafana-synthetic-monitoring-app/home']",
-          "content": "Click **Synthetic Monitoring** to open the Synthetics home page.",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "objectives": [
-            "on-page:/a/grafana-synthetic-monitoring-app/home"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='action create check']",
-          "content": "Click **Create new check** to get started.",
-          "requirements": [
-            "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
-          "content": "Select **API Endpoint** as the check type. This not only allows you to perform Ping checks, but also HTTP, DNS, TCP, and Traceroute checks are all found here.",
-          "requirements": [
-            "exists-reftarget"
-          ]
+          "action": "navigate",
+          "reftarget": "/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+          "content": "Open **Create new check** and choose **API Endpoint**. Ping, HTTP, DNS, TCP, and Traceroute checks are all configured from this one form.",
+          "showMe": false,
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## Section 2: Configure the Ping Check\n\nNow let's configure the ping check. You'll give it a name, set the request type to Ping, and specify the target endpoint you want to monitor."
+      "content": "The editor opens on **Request**, the first of five numbered steps down the left-hand side."
+    },
+    {
+      "type": "markdown",
+      "content": "A check needs three things before it can run: a name, a protocol, and something to talk to. To supply them, complete the following steps:"
     },
     {
       "type": "section",
       "id": "configure-ping-check",
-      "title": "Configure the Ping Check",
+      "title": "Configure the request",
+      "requirements": [
+        "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='checkEditor form job']",
           "targetvalue": "MyApp:Ping",
-          "content": "Enter a **Job Name** for your check, for example **MyApp:Ping**.",
+          "content": "In **Job name**, enter a name for the check. It becomes the `job` label on every metric the check writes, so pick something you will recognise on a dashboard.\n\n**MyApp:Ping** is filled in for you.",
+          "tooltip": "Grouping related checks under one job name makes them easy to query together later.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "label[title='Check a host for availability and response time.']",
-          "content": "Set the **Request Type** to **Ping**.",
+          "reftarget": "input[data-testid='data-testid radio-button-option ping']",
+          "content": "Set **Request type** to **Ping**. This switches the form to ICMP and drops the HTTP-only fields such as method and headers.",
+          "tooltip": "Ping tests reachability at the network layer, so it answers even when the web server behind it is down.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[name='target'][placeholder='grafana.com']",
-          "content": "Enter your **Request Target**. Here you can add the hostname or IP address to ping check, for this example we will type in **grafana.com**.",
-          "targetvalue": "grafana.com"
+          "reftarget": "input[name='target']",
+          "targetvalue": "grafana.com",
+          "content": "In **Request target**, enter the hostname or IP address to ping.\n\n**grafana.com** is filled in for you.",
+          "tooltip": "A ping target is a host, not a URL, so leave off the scheme and any path.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## Section 3: Optional Parameters\n\nIn this section you can add optional parameters like uptime and labels to your ping check. These can be left as defaults for a basic setup."
+      "content": "That is a working check. Everything from here on is tuning."
+    },
+    {
+      "type": "conditional",
+      "conditions": [
+        "renderer:website"
+      ],
+      "whenTrue": [
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/docs/learning-journey/detect-outages-synthetic-monitoring/grafana-cloud-synthetic-monitoring-create-ping-check-2.png",
+          "alt": "Synthetic Monitoring application in Grafana Cloud, showing the API Endpoint check creation page with Ping selected as the request type"
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "Steps 2 and 3 cover how long to wait for a reply and how to label the results. To review them, complete the following steps:"
     },
     {
       "type": "section",
       "id": "optional-parameters",
-      "title": "Review Optional Parameters",
+      "title": "Review timeout and labels",
+      "requirements": [
+        "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor navigation uptime']",
-          "content": "Click **Uptime** to move to the next configuration section.",
+          "content": "Open **Uptime**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
@@ -118,100 +140,144 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "form[data-testid='checkEditor form']",
-          "content": "Optionally adjust the **Timeout** value if required.",
+          "content": "**Timeout** is how long a probe waits for a reply before recording the attempt as failed. The default suits most hosts, but raise it if you are pinging somewhere genuinely distant from your probes.",
+          "tooltip": "A timeout shorter than your real round-trip time will report an outage that is not happening.",
+          "doIt": false,
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
-          ],
-          "skippable": true,
-          "doIt": false
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor navigation labels']",
-          "content": "Move to the **Labels** section.",
+          "content": "Open **Labels**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
         {
           "type": "multistep",
-          "content": "Optionally add **Labels** to help organize your checks.",
+          "content": "Add a label. Labels are attached to the check's metrics, so they are how you filter a dashboard down to one service or one environment later.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+          ],
+          "skippable": true,
           "steps": [
             {
               "action": "button",
               "reftarget": "Label",
               "requirements": [
                 "exists-reftarget"
-              ]
+              ],
+              "tooltip": "Add an empty label row."
             },
             {
               "action": "formfill",
               "reftarget": "input[aria-label='Custom labels 1 name']",
-              "targetvalue": "service"
+              "targetvalue": "service",
+              "tooltip": "The label name is the dimension you will group or filter by."
             },
             {
               "action": "formfill",
               "reftarget": "input[aria-label='Custom labels 1 value']",
-              "targetvalue": "test"
+              "targetvalue": "test",
+              "tooltip": "Keep values to a small, predictable set so the metric stays cheap to query."
             }
-          ],
-          "skippable": true
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## Section 4: Select Probe Locations\n\nProbes are monitoring agents located around the globe that send ICMP echo packets to your target. Selecting multiple locations gives you a global view of your endpoint's availability and latency."
+      "content": "Labels cost nothing now and save you a lot of filtering once you have more than a handful of checks."
+    },
+    {
+      "type": "markdown",
+      "content": "Where a check runs from decides what it can tell you. To choose probes and frequency, complete the following steps:"
     },
     {
       "type": "section",
       "id": "configure-execution",
-      "title": "Select Probe Locations and Frequency",
+      "title": "Choose probes and frequency",
+      "requirements": [
+        "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor navigation execution']",
-          "content": "Click **Execution** to move to the probe configuration section.",
+          "content": "Open **Execution**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "label[data-testid='checkEditor form probeLabel']:first-of-type",
-          "content": "Select one or more **Probe Locations** to run the ping check from.",
+          "reftarget": "label[data-testid='checkEditor form probeLabel']:contains('North California')",
+          "content": "Select at least one probe. **North California** is highlighted as a starting point, and picking a few spread across regions is what turns a reachability check into a latency comparison.",
+          "tooltip": "One probe tells you whether a host is up. Several tell you whether a problem is global or regional.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[id^='option-60000-radiogroup-']",
-          "content": "Optionally adjust the **Probe Frequency**. The default of 1 minute is suitable for most checks.",
-          "skippable": true,
-          "doIt": false
+          "reftarget": "input[data-testid='data-testid radio-button-option 60000']",
+          "content": "**Frequency** is how often every probe runs the check. One minute is the default and a sensible starting point.",
+          "tooltip": "Each probe runs on its own schedule, so more probes at a higher frequency means proportionally more executions.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## Section 5: Configure Alerting\n\nAlerting ensures you're notified as soon as your endpoint becomes unreachable. Set a failure threshold that makes sense for your service's tolerance for downtime."
+      "content": "Your check now runs from real locations on a fixed schedule."
+    },
+    {
+      "type": "conditional",
+      "conditions": [
+        "renderer:website"
+      ],
+      "whenTrue": [
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/docs/learning-journey/detect-outages-synthetic-monitoring/grafana-cloud-synthetic-monitoring-create-ping-check-probes.png",
+          "alt": "Synthetic Monitoring application in Grafana Cloud, showing the API Endpoint check creation page in the Execution step, with North California, Singapore, and Frankfurt selected"
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "A check nobody looks at is not monitoring. To alert on it and save, complete the following steps:"
     },
     {
       "type": "section",
       "id": "configure-alerting",
-      "title": "Configure Alerting",
+      "title": "Add alerting and save",
+      "requirements": [
+        "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor navigation alerting']",
-          "content": "Click **Alerting** to move to the alerting configuration section.",
+          "content": "Open **Alerting**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
@@ -219,8 +285,22 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox']",
-          "content": "Enable the **Probe Failed Executions** alert by clicking the checkbox.",
+          "content": "Enable **Probe Failed Executions**. This is the outage alert: it fires when enough probes stop getting a reply.",
+          "tooltip": "Requiring more than one failed execution avoids paging someone over a single dropped packet.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='checkEditor alerts PingRequestDurationTooHighAvg selectedCheckbox']",
+          "content": "**Ping Request Duration** is the slow-but-up alert. Reachability alerts stay quiet while latency climbs, so this is the one that catches a host degrading rather than failing.",
+          "tooltip": "Worth enabling once you know your normal round-trip time, so the threshold means something.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ]
         },
@@ -228,20 +308,33 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor feat-adhoc-check testButton']",
-          "content": "Optionally click **Test** to validate the ping check before saving.",
-          "skippable": true
+          "content": "Click **Test** to run the check once, right now, without saving it. This is the quickest way to catch a typo in the target.",
+          "tooltip": "A test run uses your selected probes but does not create the check or write metrics.",
+          "skippable": true,
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor form submit']",
-          "content": "Click **Save** to create your ping check. Grafana Cloud will begin executing it immediately."
+          "content": "Click **Save**. The check starts running immediately and its first results appear within a couple of minutes.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## Congratulations!\n\nYou've successfully set up a ping check in Grafana Cloud Synthetic Monitoring. You can now:\n\n- View results in the **Synthetic Monitoring dashboard**, which shows uptime, reachability, and average latency\n- Monitor **response latency by probe location** to understand your endpoint's global performance\n- Receive **alerts** the moment your endpoint becomes unreachable\n\n"
+      "content": "Your ping check is live, running from the probes you chose, and will alert you when the host stops answering."
+    },
+    {
+      "type": "markdown",
+      "content": "From here, the check's own dashboard shows uptime, reachability, and latency broken down by probe, which is where a regional problem becomes obvious. Adding an HTTP check against the same host is the usual next step, since ping tells you the host is up and HTTP tells you your application is."
     }
   ]
 }

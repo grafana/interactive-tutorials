@@ -66,9 +66,11 @@ jobs:
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         repository: grafana/grafana-pathfinder-app
-        # Pin: pathfinder main after e6dde89 (TypeScript 6.0.3) has package.json/lock out of
-        # sync (npm ci: Missing typescript@5.9.3). Revisit when upstream lockfile is fixed.
-        ref: 342121e6ef884afeddcc680f2a8f6ca60b687488
+        # Pin: bumped from 342121e6 now the upstream lockfile is back in sync (npm ci passes).
+        # The old pin predated the input block's dataCheck* fields and rejected them as unknown.
+        # Bumped again from 2262da89: this pin must include grafana-pathfinder-app#1661,
+        # which added `build-stats`; 2262da89 predates it and has no such command.
+        ref: 4d697f8088262ec41b735a8ed0cc0ab2390b483f
         path: pathfinder-app
         persist-credentials: false
 
@@ -245,6 +247,34 @@ jobs:
           echo "❌ $FAILED package(s) failed validation"
           exit 1
         fi
+
+    # Stamps every manifest.json with its computed completion stats. This step MUST
+    # stay immediately before "Build repository.json": build-stats writes the manifests,
+    # build-repository denormalizes them into repository.json. Today the ordering is
+    # inert because build-repository never assigns `stats`; it becomes load-bearing the
+    # moment grafana-pathfinder-app#1662 (manifest-extension passthrough) lands, after
+    # which an index built before the manifests are stamped omits stats for every package.
+    #
+    # This writes into the checkout and nothing commits it, so the stamped manifests
+    # live only for the duration of the job. The value here is fail-fast: build-stats is
+    # the strictest command in the pipeline, so running it at PR time catches a tree
+    # shape that would abort the deploy — an unresolvable, duplicated, or double-parented
+    # milestone — while the change is still reviewable.
+    #
+    # Same root and same excludes as build-repository below, deliberately. build-stats is
+    # stricter than its sibling: a package that a path lists as a milestone but that sits
+    # inside an excluded subtree aborts the whole run and leaves the tree unstamped, where
+    # build-repository would merely omit the entry and succeed. Verified against the real
+    # tree at the time of writing — 665 packages stamped, exit 0, no warnings — so neither
+    # `pathfinder-app` nor `shared` holds a milestone any path references. Adding an
+    # --exclude for a subtree that does hold one would turn this step into a hard stop.
+    - name: Stamp manifest stats
+      run: |
+        echo "🔢 Computing completion block stats into every manifest.json..."
+        echo ""
+        node pathfinder-app/dist/cli/cli/index.js build-stats . --exclude pathfinder-app --exclude shared
+        echo ""
+        echo "🔢 manifest stats stamped"
 
     - name: Build repository.json
       run: |

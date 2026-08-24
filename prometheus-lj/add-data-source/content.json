@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "prometheus-add-data-source",
   "title": "Add the Prometheus data source",
   "blocks": [
@@ -22,7 +22,7 @@
     },
     {
       "type": "markdown",
-      "content": "In this milestone, you add the Prometheus data source and give it a name."
+      "content": "In this milestone, you add the Prometheus data source."
     },
     {
       "type": "markdown",
@@ -34,47 +34,40 @@
     },
     {
       "type": "section",
+      "id": "add-prometheus-data-source",
       "autoCollapse": false,
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[href='/connections/datasources']",
-          "requirements": [
-            "navmenu-open",
-            "exists-reftarget"
-          ],
-          "content": "In the Grafana side menu, click **Connections > Data sources**."
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "verify": "on-page:/connections/datasources",
+          "tooltip": "This page lists every data source already connected to your instance, so scan it first — an existing Prometheus connection is often reusable.",
+          "content": "Open **Connections > Data sources**."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid=\"data-testid data-source-add-button\"]",
+          "verify": "on-page:/connections/datasources/new",
           "requirements": [
             "on-page:/connections/datasources",
             "exists-reftarget"
           ],
+          "tooltip": "The next screen is a searchable catalogue of the data source plugins installed here; nothing is created until you choose a type.",
           "content": "Click **Add new data source**."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[aria-label=\"Add new data source Prometheus\"]",
+          "action": "button",
+          "reftarget": "Prometheus",
+          "verify": "on-page:/connections/datasources/edit",
           "requirements": [
             "on-page:/connections/datasources/new",
             "exists-reftarget"
           ],
-          "content": "Select **Prometheus** from the list of data sources."
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "[data-testid=\"data-testid Data source settings page name input field\"]",
-          "doIt": false,
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "content": "In the **Name** field, enter a descriptive name for your data source.\n\nFor example: `My Prometheus Server`\n\n> **Did you know?** The name of the data source is displayed on dashboard panels, so it's important to choose a meaningful name. If there are multiple data sources for a dashboard panel, the default toggle determines which data source appears by default."
+          "tooltip": "Your choice here decides which settings form and query editor you get, so pick Prometheus even when your metrics live in a Prometheus-compatible store such as Mimir or Thanos.",
+          "content": "Select **Prometheus**. Grafana creates the data source and opens its settings."
         }
       ]
     },
