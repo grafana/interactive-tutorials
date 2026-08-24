@@ -430,7 +430,9 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 Validate individual packages:
 
 ```bash
-node dist/cli/cli/index.js validate --package <directory>
+# cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
+# checked out (and built) at ./pathfinder-app.
+node pathfinder-app/dist/cli/cli/index.js validate --package <directory>
 ```
 
 Validate every package in the repo, nested milestones included — enumerate `manifest.json` recursively and validate each directory. This is the repo-wide check, and the form CI runs (`.github/workflows/validate-json.yml`):
@@ -438,12 +440,26 @@ Validate every package in the repo, nested milestones included — enumerate `ma
 ```bash
 # cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
 # checked out (and built) at ./pathfinder-app.
-find . -name manifest.json -type f \
-  -not -path "./pathfinder-app/*" -not -path "./shared/*" -not -path "./.git/*" |
-  while IFS= read -r manifest_file; do
-    node pathfinder-app/dist/cli/cli/index.js validate --package "$(dirname "$manifest_file")"
-  done
+PASSED=0
+FAILED=0
+while IFS= read -r manifest_file; do
+  dir="$(dirname "$manifest_file")"
+  if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir"; then
+    PASSED=$((PASSED + 1))
+  else
+    echo "❌ package validation failed: $dir"
+    FAILED=$((FAILED + 1))
+  fi
+done < <(find . -name manifest.json -type f \
+           -not -path "./pathfinder-app/*" \
+           -not -path "./shared/*" \
+           -not -path "./.git/*")
+
+echo "passed: $PASSED  failed: $FAILED"
+[ "$FAILED" -eq 0 ]
 ```
+
+Two details in that snippet are load-bearing. The counters must be fed by process substitution (`done < <(find ...)`), not by piping `find` into `while`: a pipe runs the loop body in a subshell, so the counters are discarded when it exits and the pipeline reports only the last iteration's status — a failure on package 200 of 665 would scroll away under 400-odd later `✅ PASS` trailers and still leave `$?` at 0. And the closing `[ "$FAILED" -eq 0 ]` is what makes the run's exit status reflect the whole tree; it is spelled as a test rather than `exit 1` so that pasting the block into an interactive shell does not close it.
 
 The `--packages` form — the one [CLAUDE.md](../CLAUDE.md) documents — is depth-1 only: `validatePackageTree` reads the root once and validates only immediate children containing `content.json`, which from this repository's root is 128 of the 665 packages. Nested milestone packages (`automate-k6-cicd-lj/<milestone>/`, for example) are skipped without a word, so do not rely on it after editing one:
 
