@@ -4,7 +4,7 @@
 
 This repository's authoring intelligence lives in [`.cursor/`](.cursor/) and [`docs/`](docs/). Both Claude Code and Cursor read these files; references use standard markdown links so both tools resolve them natively.
 
-The canonical critical rules list (21 rules; all blocking) lives in [`AGENTS.md`](AGENTS.md#critical-rules). Cursor reads `AGENTS.md` as its entry point; Claude reads this file. **Read those rules before authoring or reviewing any guide — every rule there is blocking.**
+The canonical critical rules list (21 rules; all blocking) lives in [`AGENTS.md`](AGENTS.md#critical-rules). Cursor reads `AGENTS.md` as its entry point; Claude reads this file. **Read those rules before authoring or reviewing any guide — every rule there is blocking.** Before committing or pushing, read [AGENTS.md — Committing and pushing](AGENTS.md#committing-and-pushing).
 
 When a doc here disagrees with the upstream schema, the schema wins. Authoritative schemas come from [`grafana-pathfinder-app`](https://github.com/grafana/grafana-pathfinder-app) (`src/types/json-guide.types.ts` and `src/types/json-guide.schema.ts`).
 
@@ -71,10 +71,10 @@ This repo's content is rendered by the Grafana Pathfinder app. Authoritative sch
 - `src/interactive-engine/action-handlers/` — action handlers (button, formfill, navigate, hover, popout, guided)
 - `src/cli/utils/block-registry.ts` — `CLI_EXCLUDED_BLOCK_TYPES` (e.g., `grot-guide` is hand-authored in the block editor)
 
-If a doc here disagrees with the schema, the schema wins. Validate locally from **this repository's root**, pointing at a built `grafana-pathfinder-app` checkout — `.` must resolve to this repo, or the run silently validates Pathfinder's own bundled packages instead:
+If a doc here disagrees with the schema, the schema wins. Validate locally from **this repository's root**, pointing at a built `grafana-pathfinder-app` checkout — `.` must resolve to this repo:
 
 ```bash
 node {pathfinder-app}/dist/cli/cli/index.js validate --packages .
 ```
 
-Working directory rules for the other CLI commands (`build-stats`, `build-repository`) live in [docs/manifest-reference.md](docs/manifest-reference.md#validation).
+This form is depth-1 only: it reaches the 128 immediate children that hold a `content.json`, not the 665 packages in the tree, so a nested milestone package is skipped in silence. Run it from the wrong root and it fails loudly (`No package directories found`) rather than false-passing; it is `build-stats` and `build-repository` that discover recursively and would quietly operate on Pathfinder's own manifests. The repo-wide enumeration loop and the working directory rules for those two commands live in [docs/manifest-reference.md](docs/manifest-reference.md#validation).

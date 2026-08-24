@@ -433,7 +433,19 @@ Validate individual packages:
 node dist/cli/cli/index.js validate --package <directory>
 ```
 
-Validate all packages in the repo — this is the form [CLAUDE.md](../CLAUDE.md) documents:
+Validate every package in the repo, nested milestones included — enumerate `manifest.json` recursively and validate each directory. This is the repo-wide check, and the form CI runs (`.github/workflows/validate-json.yml`):
+
+```bash
+# cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
+# checked out (and built) at ./pathfinder-app.
+find . -name manifest.json -type f \
+  -not -path "./pathfinder-app/*" -not -path "./shared/*" -not -path "./.git/*" |
+  while IFS= read -r manifest_file; do
+    node pathfinder-app/dist/cli/cli/index.js validate --package "$(dirname "$manifest_file")"
+  done
+```
+
+The `--packages` form — the one [CLAUDE.md](../CLAUDE.md) documents — is depth-1 only: `validatePackageTree` reads the root once and validates only immediate children containing `content.json`, which from this repository's root is 128 of the 665 packages. Nested milestone packages (`automate-k6-cicd-lj/<milestone>/`, for example) are skipped without a word, so do not rely on it after editing one:
 
 ```bash
 # cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
@@ -452,4 +464,4 @@ node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinde
 
 `build-stats` rewrites every `manifest.json` in place, so the working directory matters: run it from a `grafana-pathfinder-app` checkout instead and `.` resolves to that repo, rewriting its own bundled package manifests. Do not commit the result; the stamped stats belong to CI, not to the repo. To check for drift without writing anything, add `--check`.
 
-Working directory differs by command, so check it before running one. `validate --package <directory>` takes an explicit path and is cwd-agnostic — point the CLI path at wherever your `grafana-pathfinder-app` checkout is. `validate --packages .`, `build-stats .`, and `build-repository .` all resolve `.` against the current directory and must run from this repository's root, with the CLI reached at `pathfinder-app/dist/cli/cli/index.js`; run any of them from a `grafana-pathfinder-app` checkout and they operate on that repo's own bundled packages instead — a silent false pass for `validate --packages`. CI runs them automatically; see `.github/workflows/validate-json.yml` for the PR-time run and `.github/workflows/deploy.yml` for the run that produces the published tree.
+Working directory differs by command, so check it before running one. `validate --package <directory>` takes an explicit path and is cwd-agnostic — point the CLI path at wherever your `grafana-pathfinder-app` checkout is. `validate --packages .`, `build-stats .`, and `build-repository .` all resolve `.` against the current directory and must run from this repository's root, with the CLI reached at `pathfinder-app/dist/cli/cli/index.js`; run `build-stats .` or `build-repository .` from a `grafana-pathfinder-app` checkout and they walk that repo's own tree instead, silently, because both discover packages recursively — and for `build-stats` that is a destructive in-place rewrite. `validate --packages .` fails loudly there rather than false-passing (`No package directories found under ...`, exit 1), since that checkout has no immediate child directory containing `content.json`. CI runs them automatically; see `.github/workflows/validate-json.yml` for the PR-time run and `.github/workflows/deploy.yml` for the run that produces the published tree.
