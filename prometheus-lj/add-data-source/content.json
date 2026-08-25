@@ -4,12 +4,21 @@
   "title": "Add the Prometheus data source",
   "blocks": [
     {
-      "type": "video",
-      "src": "https://www.youtube.com/embed/_ojYThjkpN0",
-      "provider": "youtube",
-      "title": "Add the Prometheus data source",
-      "start": 230,
-      "end": 268
+      "type": "conditional",
+      "conditions": [
+        "renderer:website"
+      ],
+      "whenTrue": [
+        {
+          "type": "video",
+          "src": "https://www.youtube.com/embed/_ojYThjkpN0",
+          "provider": "youtube",
+          "title": "Add the Prometheus data source",
+          "start": 230,
+          "end": 268
+        }
+      ],
+      "whenFalse": []
     },
     {
       "type": "markdown",
@@ -41,7 +50,10 @@
           "action": "highlight",
           "reftarget": "[data-testid=\"data-testid data-source-add-button\"]",
           "verify": "on-page:/connections/datasources/new",
-          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
+          "requirements": [
+            "on-page:/connections/datasources",
+            "exists-reftarget"
+          ],
           "tooltip": "The next screen is a searchable catalogue of the data source plugins installed here; nothing is created until you choose a type.",
           "content": "Click **Add new data source**."
         },
@@ -50,7 +62,10 @@
           "action": "button",
           "reftarget": "Prometheus",
           "verify": "on-page:/connections/datasources/edit",
-          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ],
           "tooltip": "Your choice here decides which settings form and query editor you get, so pick Prometheus even when your metrics live in a Prometheus-compatible store such as Mimir or Thanos.",
           "content": "Select **Prometheus**. Grafana creates the data source and opens its settings."
         }

@@ -76,6 +76,50 @@ website/                        # read-only; needed for create/convert, not for 
 
 When converting, the agent maps existing website front matter (including legacy `pathfinder_data` if present) into `website.yaml`. Do not edit the website repo for these workflows. See [frontmatter-schema](../.cursor/commands/create-learning-path/reference/frontmatter-schema.md) if you need the field mapping.
 
+## Screenshots and videos (website-only in Pathfinder)
+
+Pathfinder already highlights the live Grafana UI, so screenshots and embedded videos belong on the website render, not in the in-product sidebar. Keep the media in `content.json`; gate it with a `conditional` so Pathfinder hides it and the website still shows it.
+
+**Dedicated `image` / `video` blocks** — wrap in place:
+
+```json
+{
+  "type": "conditional",
+  "conditions": ["renderer:website"],
+  "whenTrue": [
+    {
+      "type": "image",
+      "src": "https://grafana.com/media/docs/example.png",
+      "alt": "Example dashboard"
+    }
+  ],
+  "whenFalse": []
+}
+```
+
+**Markdown that embeds images** (`![alt](url)` in the same string as prose) — dual-branch so Pathfinder keeps the text:
+
+```json
+{
+  "type": "conditional",
+  "conditions": ["renderer:website"],
+  "whenTrue": [
+    {
+      "type": "markdown",
+      "content": "Overview:\n\n![Diagram](https://grafana.com/media/docs/diagram.png)\n\nNext steps follow."
+    }
+  ],
+  "whenFalse": [
+    {
+      "type": "markdown",
+      "content": "Overview:\n\nNext steps follow."
+    }
+  ]
+}
+```
+
+Do not gate plain YouTube *links* in “More to explore” (text links only). `website.yaml` `cta.image` is Learning Hub chrome and does not need this wrapper. See [`renderer:website`](requirements-reference.md#rendererrenderer) and [image / video / conditional blocks](json-guide-reference.md).
+
 ## How to test and review
 
 Interactive milestones store CSS selectors inside each step in `content.json`. Pathfinder uses those selectors to find the right control in the Grafana UI when a learner clicks **Show me** (highlight) or **Do it** (act on their behalf).
