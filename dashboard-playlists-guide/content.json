@@ -1,0 +1,203 @@
+{
+  "id": "dashboard-playlists-guide",
+  "title": "Create and run dashboard playlists",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A playlist cycles through dashboards on a set interval — useful for NOC walls, standups, and shared displays.\n\nIn this guide, you'll learn how to:\n- Open the Playlists page\n- Create a playlist with a name, interval, and dashboards\n- Start a playlist in a view mode\n- Share a playlist link"
+    },
+    {
+      "type": "markdown",
+      "content": "In the following section, you are going to open playlists from the Dashboards menu. You need the Editor role or higher to create and manage playlists, and at least two dashboards to add."
+    },
+    {
+      "type": "section",
+      "id": "navigate-to-playlists",
+      "title": "Open Playlists",
+      "objectives": [
+        "on-page:/playlists"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavMenu.Menu} button[data-testid='data-testid navigation mega-menu section toggle /dashboards']",
+          "content": "Expand **Dashboards** in the main menu.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/playlists']",
+          "content": "Click **Playlists**.",
+          "requirements": [
+            "exists-reftarget",
+            "navmenu-open"
+          ],
+          "verify": "on-page:/playlists"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You should see existing playlists (the list may be empty) and a way to create a new one."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next section, you will create a playlist with a name, an interval between dashboards, and the dashboards to include, either by title or by tag."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#pageContent a[href='/playlists/new']",
+          "content": "Click **New playlist**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "grafana:pages.PlaylistForm.name",
+          "content": "In the Name field, enter a descriptive name.",
+          "targetvalue": "Test playlist",
+          "requirements": [
+            "on-page:/playlists/new"
+          ],
+          "objectives": [
+            "form-valid"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "grafana:pages.PlaylistForm.interval",
+          "content": "In the **Interval** field, enter the time interval each dashboard is displayed before moving on to the next dashboard.",
+          "targetvalue": "5s",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/playlists/new"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "fieldset>div:has(input[data-testid='data-testid Select container-input'])",
+          "content": "In the **Add dashboards** section, add dashboards to the playlist using the Add by title dropdown.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "fieldset>div:has(input[data-testid='data-testid MultiSelect container-input'])",
+          "content": "Alternatively, you can also add dashboards by selecting a tag.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#pageContent button:text('Save')",
+          "content": "Click the **Save** button to save all your changes.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ],
+      "id": "create-playlist",
+      "title": "Create a playlist",
+      "requirements": [
+        "on-page:/playlists"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your playlist should appear in the list with the dashboards you added."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next section, you will start the playlist and choose a view mode. Modes change how menus and navigation appear, which is useful for wall displays versus interactive browsing."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Start playlist'):nth-match(1)",
+          "content": "Find a playlist and click the **Start playlist** button.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "In the dialog box that opens, select one of the [four available playlist modes](https://grafana.com/docs/grafana/latest/visualizations/dashboards/create-manage-playlists/#playlist-modes).\n\n| Mode | Description |\n|------| ------------|\n|Normal | The main menu and navigation bar remain visible, dashboard controls are hidden, and the playlist controls are displayed at the top of the screen. |\n|Normal mode (with auto-fit panels) | Same as Normal mode, with the addition of dashboard panels automatically adjusted to optimize space on screen. |\n| Kiosk | The main menu, navigation bar, and dashboard controls are hidden. You can disable the playlist manually by pressing the `Esc` key after the playlist has started. This briefly displays the playlist controls at the top of the screen. |\n| Kiosk mode (with auto fit panels) | Same as Kiosk mode, with the addition of dashboard panels automatically adjusted to optimize space on screen. |"
+        },
+        {
+          "type": "markdown",
+          "content": "Disable any dashboard controls that you don’t want displayed while the list plays; these controls are enabled and visible by default. Select from:\n\n- **Time and refresh**\n- **Variables**\n- **Dashboard links**\n\n"
+        },
+        {
+          "type": "markdown",
+          "content": "Click the **Start &lt;playlist name&gt;** button to start the playlist."
+        }
+      ],
+      "id": "start-playlist",
+      "title": "Start a playlist",
+      "requirements": [
+        "on-page:/playlists"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Each dashboard displays for the interval you set when creating the playlist."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next section, you will share a playlist by copying the link for the view mode you want."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Share playlist']:nth-match(1)",
+          "content": "Click the share icon of the playlist you want to share.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Select the view mode you prefer (Normal or Kiosk), then click **Copy** next to the **Link URL** to copy it to your clipboard.\n\n"
+        }
+      ],
+      "id": "share-playlist",
+      "title": "Share a playlist",
+      "requirements": [
+        "on-page:/playlists"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Anyone who has access to your Grafana instance and that URL can start the same playlist in that view mode."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\nYou did it! 🎉\n\nYou’ve created a playlist, launched it in view mode, and learned how to share it with others. Keep experimenting by adding more dashboards, or explore [Manage playlists](https://grafana.com/docs/grafana/latest/visualizations/dashboards/create-manage-playlists/) to see what else you can do.\n\nReady to go beyond the guide? Sign up for a free Grafana Cloud account and start putting your new skills into practice.\n\n[**Explore Grafana Cloud for free →**](https://grafana.com/auth/sign-up/create-user)"
+    }
+  ]
+}
