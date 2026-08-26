@@ -11,17 +11,32 @@
   "startingLocation": "/dashboards",
   "targeting": {
     "match": {
-      "or": [
+      "and": [
         {
-          "and": [
-            { "urlPrefix": "/dashboards" },
-            { "targetPlatform": "cloud" }
-          ]
+          "source": ".*\\.grafana\\.net"
         },
         {
-          "and": [
-            { "urlPrefix": "/d/" },
-            { "targetPlatform": "cloud" }
+          "or": [
+            {
+              "and": [
+                {
+                  "urlPrefix": "/dashboards"
+                },
+                {
+                  "targetPlatform": "cloud"
+                }
+              ]
+            },
+            {
+              "and": [
+                {
+                  "urlPrefix": "/d/"
+                },
+                {
+                  "targetPlatform": "cloud"
+                }
+              ]
+            }
           ]
         }
       ]
@@ -44,5 +59,8 @@
     "data-transformation-lj",
     "visualization-metrics-lj"
   ],
-  "suggests": ["visualization-logs", "visualization-traces-lj"]
+  "suggests": [
+    "visualization-logs",
+    "visualization-traces-lj"
+  ]
 }
