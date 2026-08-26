@@ -19,6 +19,29 @@
           "verify": "on-page:/a/grafana-synthetic-monitoring-app/home"
         },
         {
+          "type": "conditional",
+          "conditions": [
+            "exists-reftarget"
+          ],
+          "reftarget": "button[data-testid='app-init init-button']",
+          "whenTrue": [
+            {
+              "type": "interactive",
+              "action": "highlight",
+              "reftarget": "button[data-testid='app-init init-button']",
+              "content": "Click **Get started** to initialize Synthetic Monitoring.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "type": "markdown",
+              "content": "Wait until the Synthetic Monitoring home page shows **Create new check**."
+            }
+          ],
+          "whenFalse": []
+        },
+        {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='action create check']",
