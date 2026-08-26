@@ -16,24 +16,18 @@
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "multistep",
-          "content": "In Grafana Cloud, click **Connections > Data sources**.",
-          "requirements": ["navmenu-open"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/datasources']"
-            }
-          ]
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "content": "In Grafana Cloud, open **Connections > Data sources**.",
+          "verify": "on-page:/connections/datasources"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid data-source-add-button']",
+          "requirements": ["on-page:/connections/datasources", "exists-reftarget"],
+          "verify": "on-page:/connections/datasources/new",
           "content": "Click **Add new data source**."
         },
         {
@@ -41,20 +35,23 @@
           "action": "formfill",
           "reftarget": "[placeholder='Filter by name or type']",
           "targetvalue": "Infinity",
+          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
           "content": "In the **Search** field, enter `Infinity`."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label='Add new data source Infinity']",
+          "action": "button",
+          "reftarget": "Infinity",
+          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
+          "verify": "on-page:/connections/datasources/edit",
           "content": "From the search results, click the **Infinity** tile."
         },
         {
           "type": "interactive",
-          "action": "formfill",
-          "reftarget": "[data-testid='data-testid Data source settings page name input field']",
-          "targetvalue": "My Infinity Data Source",
-          "content": "Enter a name for the data source.",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Edit title']",
+          "content": "To rename the data source, click the edit icon next to the data source name, then enter a meaningful name.",
+          "requirements": ["on-page:/connections/datasources/edit", "exists-reftarget"],
           "doIt": false
         }
       ]

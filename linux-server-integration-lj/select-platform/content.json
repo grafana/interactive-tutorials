@@ -30,25 +30,32 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
-          "content": "Click **Connections > Add new connection** in the left-side menu.",
-          "requirements": [
-            "navmenu-open"
-          ]
+          "action": "navigate",
+          "reftarget": "/connections/add-new-connection",
+          "verify": "on-page:/connections/add-new-connection",
+          "content": "Open **Connections > Add new connection**."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='search-input-input']",
           "content": "Filter the connections by typing `Linux Server` in the search.",
-          "targetvalue": "Linux Server"
+          "targetvalue": "Linux Server",
+          "requirements": [
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/add-new-connection/linux-node']",
-          "content": "Click the **Linux Server** tile."
+          "content": "Click the **Linux Server** tile.",
+          "verify": "on-page:/connections/add-new-connection/linux-node",
+          "requirements": [
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "markdown",
@@ -60,6 +67,7 @@
           "reftarget": "div[data-testid='collector-os-selection'] input",
           "content": "Select the **operating system** that matches your Linux distribution.",
           "requirements": [
+            "on-page:/connections/add-new-connection/linux-node",
             "exists-reftarget"
           ],
           "doIt": false
@@ -70,6 +78,7 @@
           "reftarget": "div[data-testid='collector-arch-selection'] input",
           "content": "Select the **architecture** that matches your system (Amd64 for x86_64, Arm64 for aarch64).",
           "requirements": [
+            "on-page:/connections/add-new-connection/linux-node",
             "exists-reftarget"
           ],
           "doIt": false

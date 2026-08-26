@@ -12,25 +12,26 @@
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "multistep",
-          "content": "Navigate to **Connections > Add new connection**.",
-          "requirements": ["navmenu-open"],
-          "steps": [
-            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']" },
-            { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']" }
-          ]
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/add-new-connection",
+          "content": "Open **Connections > Add new connection**.",
+          "verify": "on-page:/connections/add-new-connection"
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "[aria-label='Search connections by name']",
           "targetvalue": "IIS",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"],
           "content": "In the search box, type **IIS** to filter the integrations."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/add-new-connection/microsoft-iis']",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"],
+          "verify": "on-page:/connections/add-new-connection/microsoft-iis",
           "content": "Click the **Microsoft IIS** tile to select the integration."
         }
       ]
