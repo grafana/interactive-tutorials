@@ -114,12 +114,42 @@ The `targeting` object contains a `match` expression that determines when the gu
 
 | Predicate | Example | Meaning |
 |-----------|---------|---------|
-| `urlPrefix` | `"/alerting"` | Current URL path starts with value |
+| `urlPrefix` | `"/alerting"` | Current URL path starts with value (literal `startsWith`) |
 | `urlPrefixIn` | `["/alerting", "/alerts"]` | Current URL path starts with any value |
+| `urlRegex` | `"/connections/add-new-connection/?$"` | Current URL path matches (auto-anchored with `^`, case-insensitive) |
 | `source` | `"play.grafana.org"` | Request origin matches (regex) |
-| `targetPlatform` | `"cloud"` | Grafana deployment type |
+| `targetPlatform` | `"cloud"` | Grafana deployment type (`"oss"`, `"cloud"`, or `"any"`) |
+| `tag` | `"selected-datasource:prometheus"` | Context tag is present |
+| `userRole` | `"Admin"` | Org role equals value |
+
+The engine also accepts `datasource`, `datasourceIn`, `allDatasources`, `noDatasources`,
+`userRoleIn`, `tagIn`, `allTags`, `cohort`, `cohortIn`, `targetPlatformIn` and `sourceIn`, none
+of which are currently used in this repository. Any name outside that vocabulary is silently
+dropped, which leaves an always-true child — so a typo widens a match instead of narrowing it.
+
+`tag` values come from the plugin's context engine. The ones in use here are
+`selected-datasource:<type>` (a Grafana datasource *type* id, e.g. `prometheus`,
+`yesoreyeram-infinity-datasource`) and `panel-type:<viz>` (e.g. `timeseries`, `logs`, `traces`).
 
 **Combinators:** `and` (all must match), `or` (any must match). Can be nested.
+
+**Scoring matters as much as correctness.** A match expression is scored, not just tested, and
+the recommender returns everything above zero: `and` yields the *fraction* of children that
+matched, while `or` yields 1 or 0. An `and` holding a child that is true regardless of the page
+(`targetPlatform`, `tag`, `userRole`, `datasource`) therefore scores above zero on every page and
+surfaces the guide everywhere. Keep the root of `match` an `or` so scoring stays binary, and make
+sure every `or` branch constrains the URL. Results are sorted on score alone with no tie-break
+and capped at 10, so specificity earns nothing — reducing how many guides match a page is the
+only lever. See
+[.cursor/how-to-write-recommendations.mdc](../.cursor/how-to-write-recommendations.mdc#how-matching-scores)
+for the full rules and `scripts/lint-targeting.py` to check a change.
+
+**Two matchers, different vocabularies.** The recommender service understands every predicate
+above. The plugin's built-in matcher — used when the online recommender is disabled, the OSS
+default — understands only `urlPrefix`, `urlPrefixIn`, `targetPlatform`, `and` and `or`, and
+discards an entry entirely if any other predicate appears anywhere in its tree. `urlRegex`,
+`tag`, `source` and `userRole` are safe for guides that are Cloud-gated regardless; avoid them
+when a guide must also surface on OSS.
 
 ### testEnvironment
 
