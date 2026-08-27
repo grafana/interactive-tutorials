@@ -108,6 +108,15 @@ change_request: "Apply review ideas: notification beat, Firing chip step, toolti
 
 **After**: "Walk through it: **Alert activity** (alerts that are firing), one open rule, the condition it watches, and where its notifications go."
 
+## Addendum — follow-up edits (same session, user-directed)
+
+- **Edit `blocks[0]`** (twice): dropped the "**What you will learn:**" label; rewrote the scenario concretely (checkout response time, disk space examples → the pain → the alert rule definition → bridge to Play, including the honesty clause "the number it watches is made up, but the watching is real"); then extended the promise with "You'll start where rules are defined".
+- **Add `blocks[1]`–`blocks[3]`** (shifting later paths by 3): new one-step section `where-rules-are-defined` ("See where rules are defined") with a `navigate` to `/alerting/list` plus intro/summary bookends. Verified live: page loads for anonymous users with h1 "Alert rules"; **no New alert rule button for visitors**, so copy says "With edit permissions, this is also where you'd create a new one; Play visitors can look but not touch." No highlight step — the rule list is virtualised (`load-more-rule-groups`), and a navigate-only step avoids rule 21 entirely.
+- **Edit closer**: now opens "A rule is defined once, on **Alert rules**."
+- **Edit `manifest.json`**: `startingLocation` → `/alerting/list`; description mentions the definitions page.
+- **Edit website slide `06d-alerting/index.md`**: walk-through sentence now starts with "where rules are defined".
+- **Live research** (rules API, anonymous): 105 rules on Play, 11 firing at check time. `Random Single Serie` is synthetic (testdata `random_walk`, 0–100, threshold 75). Others watch real running demo services: `QuickPizza Memory Utilization Outliers` (real per-pod memory), `CheckoutServiceP95Latency` (real p95 from RPC histograms of a live checkout service). Guide copy unchanged by this — our rule's honesty clause stands.
+
 ## Unchanged paths
 
 `blocks[3]` (post-section-1 bookend) — byte-identical. Section ids, guide id, title, all reftargets/verify/objectives on pre-existing steps, `manifest.json` targeting/startingLocation.
