@@ -41,6 +41,18 @@ Live verification (2026-08-27 ~17:15 CT, anonymous):
 
 Edits: navigate reftarget/verify/objectives → `/d/avzwehmz`; section + step requirements → `on-page:/d/avzwehmz`; panel beat retargeted to the power chart; guided hover retargeted to Current Power; range option → `now-1h to now`; intro/step copy wind-farm flavored; `manifest.json` targeting `urlPrefix` → `/d/avzwehmz`, description updated. Website tracking docs updated (`getting-started-guide-outline.md`, `outline.md`, `doc-facts.md`).
 
+## Addendum — panel menu fully automated (same session, user-directed)
+
+User asked whether the panel-menu flow could run without any user action (highlight panel → highlight menu → menu opens). Replaced the `guided` hover-and-click block with a `multistep`.
+
+Why it works (verified against engine source and live DOM, 2026-08-27 ~17:40 CT):
+
+- The menu icon's reveal is **pure CSS `:hover`** — dispatching synthetic `mouseenter`/`mouseover`/`mousemove` on the panel leaves `visibility: hidden` (tested live via CDP). So no automation can show the fade-in itself.
+- But Pathfinder's focus handler (`focus-handler.ts` `handleDoMode`) clicks invisible targets anyway ("Continue anyway (non-breaking)" then `element.click()`), and a JS click on the hidden menu button **does open the menu** (verified live earlier on the Stats dashboard).
+- `interactive-multi-step.tsx` runs each step as show (highlight + tooltip) then do, with a delay — so one **Do it** plays: panel highlighted → corner highlighted → menu pops open.
+
+Edits: `blocks[5].blocks[1]` guided → multistep; step 1 `hover` on the Current Power header (show highlights the panel; do dispatches harmless synthetic hover), step 2 `highlight` on the menu button (show boxes the corner where the icon lives; do clicks it and the menu opens with **View**, **Share**, **Inspect**). Copy reframed from "move your mouse and click" to "watch: the menu opens". Dropped `stepTimeout`/`skippable` (no user action to time out on); added `exists-reftarget` (menu button is always in the DOM, just hidden).
+
 ## Validation
 
-Pathfinder CLI `validate --package .`: PASS (re-run after the switch).
+Pathfinder CLI `validate --packages` (repo root): PASS (re-run after the multistep change).
