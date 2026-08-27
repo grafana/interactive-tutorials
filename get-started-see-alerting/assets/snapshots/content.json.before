@@ -1,0 +1,83 @@
+{
+  "id": "get-started-see-alerting",
+  "title": "See an alert rule",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**What you will learn:** An alert rule is a question asked on a schedule, with a line that must not be crossed. You'll find the rule list and open one real rule to see the question and the line."
+    },
+    {
+      "type": "markdown",
+      "content": "First, find a rule worth opening:"
+    },
+    {
+      "type": "section",
+      "id": "find-a-rule",
+      "title": "Find a rule",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/list",
+          "verify": "on-page:/alerting/list",
+          "objectives": ["on-page:/alerting/list"],
+          "content": "Open the alert rule list. In the main menu it lives under **Alerts & IRM**. Every rule this Grafana watches is here, grouped in folders."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/alerting/grafana/namespaces/demo-alerting-examples/groups/Alerts%20linked%20to%20dashboards/view']",
+          "verify": "on-page:/alerting/grafana/namespaces/demo-alerting-examples",
+          "content": "Click the group **Alerts linked to dashboards**. A group holds rules that are checked together, on the same schedule.",
+          "requirements": ["on-page:/alerting/list", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/alerting/grafana/random-single-serie/view']",
+          "verify": "on-page:/alerting/grafana/random-single-serie",
+          "content": "Click **Random Single Serie** to open the rule itself.",
+          "requirements": ["on-page:/alerting/grafana/namespaces/demo-alerting-examples", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You navigated list, group, rule: the same three levels every alert in Grafana lives in."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, read what this rule watches:"
+    },
+    {
+      "type": "section",
+      "id": "read-the-rule",
+      "title": "Read the rule",
+      "requirements": ["on-page:/alerting/grafana/random-single-serie"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='queries-container']",
+          "content": "This is the question: a query the rule asks on a schedule, with the answer drawn as a chart.",
+          "tooltip": "Grafana asks this on the rule's schedule, whether or not anyone is looking.",
+          "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='expressions-container']",
+          "content": "This is the line: the **alert condition**. When the answer crosses it, the rule fires and a notification goes out.",
+          "tooltip": "The threshold that turns a number into a decision: above the line means fire, below means stay quiet.",
+          "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**What you have learned:** A rule is a question plus a line: a query asked on a schedule, and a condition that decides when to fire. Grafana keeps watch so you don't have to."
+    }
+  ]
+}

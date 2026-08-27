@@ -1,0 +1,82 @@
+{
+  "id": "get-started-see-drilldown",
+  "title": "Narrow down without a query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**What you will learn:** Drilldown investigates by clicking, not by writing queries. You'll pick a kind of data, narrow to one metric, and see where to narrow further."
+    },
+    {
+      "type": "markdown",
+      "content": "First, pick a kind of data:"
+    },
+    {
+      "type": "section",
+      "id": "pick-a-kind",
+      "title": "Pick a kind of data",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/drilldown']",
+          "content": "Click **Drilldown** in the main menu. Each kind of data gets its own door: numbers, text records, request maps, and resource use.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main a[href='/a/grafana-metricsdrilldown-app/drilldown']",
+          "verify": "on-page:/a/grafana-metricsdrilldown-app",
+          "content": "Click **Metrics**, the numbers recorded over time. Every metric appears as a chart, before you ask for anything.",
+          "requirements": ["on-page:/drilldown", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You picked a kind of data, and Drilldown showed everything it has. No query written."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, narrow the view down to one thing:"
+    },
+    {
+      "type": "section",
+      "id": "narrow-it-down",
+      "title": "Narrow it down",
+      "requirements": ["on-page:/a/grafana-metricsdrilldown-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid^='select-action']",
+          "content": "Click **Select** on the first metric. The view narrows to that one metric, broken down by its labels.",
+          "tooltip": "One click narrows from everything to one thing. The breakdown that opens splits it further, one chart per label.",
+          "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "input[placeholder='+ label = value']",
+          "content": "This is a **filter**: pick a label and a value, and every chart narrows to match. Clicking filters is the whole workflow.",
+          "tooltip": "Each pick narrows the result. Stack a few and you've cornered the problem, without writing a query.",
+          "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "button[data-testid='data-testid Tab Related logs']",
+          "content": "One problem leaves marks in more than one kind of data. **Related logs** hops from these numbers to the matching text records.",
+          "tooltip": "The same investigation can jump between kinds of data: a spike in the numbers often has a matching error line in the text.",
+          "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**What you have learned:** Drilldown starts from everything and narrows with clicks: pick a kind of data, pick one thing, filter by labels. The related tabs carry the same investigation into other kinds of data."
+    }
+  ]
+}
