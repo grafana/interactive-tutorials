@@ -35,13 +35,23 @@
         {
           "type": "guided",
           "content": "Click **Install the Quick Pizza SRE demo**. This deploys the tutorial data sources and refreshes the page.",
-          "completeEarly": true,
           "steps": [
             {
-              "action": "highlight",
+              "action": "button",
               "reftarget": "button[data-testid='install-quickpizza']",
-              "lazyRender": true
+              "lazyRender": true,
+              "requirements": [
+                "exists-reftarget"
+              ]
             }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "After install, Grafana refreshes the page and the tutorial Prometheus data source **grafanacloud-play-prom** becomes available.",
+          "requirements": [
+            "has-datasource:grafanacloud-play-prom"
           ]
         }
       ]
