@@ -4,11 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "**What you will learn:** An alert rule is a question asked on a schedule, with a line that must not be crossed. You'll see alerts that are firing right now, then open one rule to see the question and the line."
+      "content": "**What you will learn:** An alert rule is a question asked on a schedule, with a line that must not be crossed. Here's the situation: somewhere on Play, a number drifts on its own, and every so often it wanders too high. Nobody wants to babysit it — so a rule watches it instead. You'll see the alerts firing right now (the ones past their line), then open that rule to read its question, its line, and where its message goes."
     },
     {
       "type": "markdown",
-      "content": "First, see alerts that are firing:"
+      "content": "First, see alerts that are firing right now:"
     },
     {
       "type": "section",
@@ -21,14 +21,23 @@
           "reftarget": "/alerting/alerts",
           "verify": "on-page:/alerting/alerts",
           "objectives": ["on-page:/alerting/alerts"],
-          "content": "Open **Alert activity**. This page lists alerts that have crossed their line. Play already filters it to **Firing**."
+          "content": "Open **Alert activity**. This is where you look when you want to know what's wrong right now."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid triage state-filter firing']",
+          "content": "The **Firing** filter is already on, so every alert listed has crossed its line. The count rises and falls as rules fire and recover.",
+          "tooltip": "A live tally of crossed lines: it climbs when rules fire and drops when the numbers come back down.",
+          "requirements": ["on-page:/alerting/alerts", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='data-testid triage groups-container']",
-          "content": "Each row is an alert firing right now, grouped in folders. **Demo: Alerting** is Play's demo set.",
+          "content": "Each row is one alert firing right now, grouped in folders. **Demo: Alerting** is Play's demo set — the rule you're about to meet lives there.",
           "tooltip": "Grafana is watching these rules, and each one has already crossed its line.",
           "requirements": ["on-page:/alerting/alerts", "exists-reftarget"]
         }
@@ -40,7 +49,7 @@
     },
     {
       "type": "markdown",
-      "content": "Next, open one rule to see why it can fire:"
+      "content": "Next, meet the rule that does the watching:"
     },
     {
       "type": "section",
@@ -53,14 +62,14 @@
           "reftarget": "/alerting/grafana/random-single-serie/view",
           "verify": "on-page:/alerting/grafana/random-single-serie",
           "objectives": ["on-page:/alerting/grafana/random-single-serie"],
-          "content": "Open **Random Single Serie** to see the question and the line."
+          "content": "Open **Random Single Serie**, one of the demo rules from the folder you just saw. This is the watcher from our story: it guards a number that drifts on its own."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='queries-container']",
-          "content": "This is the question: a query the rule asks on a schedule, with the answer drawn as a chart.",
+          "content": "This is the question: a query the rule asks every few minutes, with the answer drawn as a chart. That's the drifting number, checked on a schedule.",
           "tooltip": "Grafana asks this on the rule's schedule, whether or not anyone is looking.",
           "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
         },
@@ -69,15 +78,24 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='expressions-container']",
-          "content": "This is the line: the **alert condition**. When the answer crosses it, the rule fires and a notification goes out.",
-          "tooltip": "The threshold that turns a number into a decision: above the line means fire, below means stay quiet.",
+          "content": "This is the line: the **alert condition**. This rule fires when the answer climbs above its threshold — the moment \"too high\" stops being an opinion.",
+          "tooltip": "The threshold that turns a number into a decision: cross it and the rule fires.",
+          "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid Tab Notifications']",
+          "content": "Firing isn't the end of the story: the rule sends a message to a person or channel, so someone can act. The **Notifications** tab keeps the record of every message this rule has sent.",
+          "tooltip": "When the line is crossed, Grafana tells someone — and the record of every send lands here.",
           "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "**What you have learned:** Firing alerts show up on **Alert activity**. A rule is a question plus a line: a query asked on a schedule, and a condition that decides when to fire. Grafana keeps watch so you don't have to."
+      "content": "**What you have learned:** The drifting number can go off the rails at 3 a.m. and nobody has to be watching. The rule asks the question, checks the line, and sends the message — and the firing alert lands on **Alert activity**. Grafana keeps watch so you don't have to."
     }
   ]
 }
