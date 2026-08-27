@@ -28,6 +28,19 @@ Snapshot of the prior version: `assets/snapshots/content.json.before`.
 
 Quiz deliberately omitted (user declined).
 
+## Addendum — dashboard switch (same session, user-directed)
+
+User asked for a better dashboard than Stats. Switched to **Demo Wind Farm** (`/d/avzwehmz/demo-wind-farm`, Examples folder) — physically relatable (power, turbine RPM, wind) and has varied panel types (2 time series charts + stat/gauge panels) instead of all-stat.
+
+Live verification (2026-08-27 ~17:15 CT, anonymous):
+
+- 9 panels; headers include `Wind Farm - Total Average Power (Watts)` and `Current Power` (used as targets, both verified in DOM).
+- Panel menu buttons present (9) and CSS-hidden until hover — guided hover beat unchanged, retargeted to **Current Power**.
+- Default time range **Last 12 hours**. At **Last 1 hour**: all panels have data, 0 "No data". At **Last 5 minutes**: one panel shows "No data" and one chart drops out — so the range step now picks **Last 1 hour** (`now-1h to now`), not Last 5 minutes.
+- Range option still requires clicking the inner `label` (not the `li`).
+
+Edits: navigate reftarget/verify/objectives → `/d/avzwehmz`; section + step requirements → `on-page:/d/avzwehmz`; panel beat retargeted to the power chart; guided hover retargeted to Current Power; range option → `now-1h to now`; intro/step copy wind-farm flavored; `manifest.json` targeting `urlPrefix` → `/d/avzwehmz`, description updated. Website tracking docs updated (`getting-started-guide-outline.md`, `outline.md`, `doc-facts.md`).
+
 ## Validation
 
-Pathfinder CLI `validate --package .`: PASS.
+Pathfinder CLI `validate --package .`: PASS (re-run after the switch).
