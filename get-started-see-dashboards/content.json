@@ -75,20 +75,21 @@
           ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid TimePicker Open Button']",
-          "content": "Click the **time range** at the top right. It sets the window of time the whole page shows.",
-          "tooltip": "The window of time the whole page is showing. Every panel follows it.",
-          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid TimePicker time range option now-1h to now'] label",
-          "content": "Choose **Last 1 hour** and watch: every panel on the page redraws to the new window at once.",
-          "tooltip": "One change here re-asks every question on the page for the new window of time.",
-          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"]
+          "type": "multistep",
+          "content": "The **time range** at the top right sets the window of time the whole page shows. Open it and choose **Last 1 hour**, then watch: every panel on the page redraws to the new window at once.",
+          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid TimePicker Open Button']",
+              "tooltip": "The window of time the whole page is showing. Every panel follows it."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid TimePicker time range option now-1h to now'] label",
+              "tooltip": "One change here re-asks every question on the page for the new window of time."
+            }
+          ]
         }
       ]
     },
