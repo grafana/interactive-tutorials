@@ -72,8 +72,8 @@ jobs:
         # which added `build-stats`; 2262da89 predates it and has no such command.
         # Bumped again from 4d697f80 to keep this validator on the same CLI as deploy.yml, whose
         # `build-repository` needed grafana-pathfinder-app#1662 to forward the `stats` key at all.
-        # Carries #1684's new `callout` block type, so a guide using one validates here.
-        ref: acbf39b4fbad1459a807754e2d54488e3d58df3e
+        # Carries #1684's new `callout` block type and #1750's snippet catalog validation support.
+        ref: 37d755c5f67cad6268d8ee38f64bf06313acf4b9
         path: pathfinder-app
         persist-credentials: false
 
@@ -228,12 +228,17 @@ jobs:
         PASSED=0
         FAILED=0
 
+        SNIPPET_CATALOG_ARGS=()
+        if [ -f /tmp/snippets-index.json ]; then
+          SNIPPET_CATALOG_ARGS=(--snippets-catalog /tmp/snippets-index.json)
+        fi
+
         while IFS= read -r manifest_file; do
           if [ -n "$manifest_file" ]; then
             dir="$(dirname "$manifest_file")"
             echo "📦 Validating package: $dir"
 
-            if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir"; then
+            if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir" "${SNIPPET_CATALOG_ARGS[@]}"; then
               PASSED=$((PASSED + 1))
             else
               echo "❌ Package validation failed: $dir"
