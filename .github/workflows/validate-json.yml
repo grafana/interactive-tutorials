@@ -117,12 +117,17 @@ jobs:
         PASSED=0
         FAILED=0
 
+        SNIPPET_CATALOG_ARGS=()
+        if [ -f /tmp/snippets-index.json ]; then
+          SNIPPET_CATALOG_ARGS=(--snippets-catalog /tmp/snippets-index.json)
+        fi
+
         # Find and iterate through each content.json file
         while IFS= read -r file; do
           if [ -n "$file" ]; then
             echo "📄 Validating: $file"
 
-            if node pathfinder-app/dist/cli/cli/index.js validate --strict "$file"; then
+            if node pathfinder-app/dist/cli/cli/index.js validate --strict "${SNIPPET_CATALOG_ARGS[@]}" "$file"; then
               PASSED=$((PASSED + 1))
             else
               echo "❌ Validation failed for: $file"
