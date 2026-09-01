@@ -120,6 +120,9 @@ jobs:
         SNIPPET_CATALOG_ARGS=()
         if [ -f /tmp/snippets-index.json ]; then
           SNIPPET_CATALOG_ARGS=(--snippets-catalog /tmp/snippets-index.json)
+          echo "Snippet-reference validation enabled with /tmp/snippets-index.json."
+        else
+          echo "::warning::Snippet catalog not found; snippet-reference validation is skipped."
         fi
 
         # Find and iterate through each content.json file
@@ -231,6 +234,9 @@ jobs:
         SNIPPET_CATALOG_ARGS=()
         if [ -f /tmp/snippets-index.json ]; then
           SNIPPET_CATALOG_ARGS=(--snippets-catalog /tmp/snippets-index.json)
+          echo "Snippet-reference validation enabled with /tmp/snippets-index.json."
+        else
+          echo "::warning::Snippet catalog not found; snippet-reference validation is skipped."
         fi
 
         while IFS= read -r manifest_file; do
