@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "loki-data-source-configure-url",
+  "title": "Configure the connection URL",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The connection URL tells Grafana where to send log queries. The format depends on your Loki environment.\n\nUse the URL format that matches your backend:\n\n| Environment | URL format | Example |\n| --- | --- | --- |\n| Self-managed Loki | `http://<host>:3100` | `http://loki:3100` |\n| Grafana Cloud Logs | `https://logs-prod-<zone>.grafana.net` | `https://logs-prod-006.grafana.net` |\n| Grafana Enterprise Logs | URL of your GEL gateway | `https://gel.example.com` |\n\nTo configure the connection URL, complete the following step:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[aria-label='Data source connection URL']",
+          "targetvalue": "https://logs-prod-006.grafana.net",
+          "doIt": false,
+          "requirements": ["exists-reftarget"],
+          "content": "In the **URL** field under the **Connection** section, enter the query URL for your Loki backend.\n\nFor example, for Grafana Cloud Logs, enter a URL like `https://logs-prod-006.grafana.net`. For self-managed Loki, enter a URL like `http://loki:3100`.\n\n**Tip:** Enter only the base URL. Don't append API paths such as `/loki/api/v1/push` — that endpoint is for *sending* logs to Loki (with an agent like Grafana Alloy), not for querying, and appending it is a common cause of a failed **Save & test**. To send logs *to* Loki, refer to [Send log data to Loki](https://grafana.com/docs/loki/latest/send-data/)."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you configure authentication for the connection."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure the Loki data source](https://grafana.com/docs/grafana/latest/datasources/loki/configure/)\n- [Network security for data sources](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/data-sources/)"
+    }
+  ]
+}
