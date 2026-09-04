@@ -1,10 +1,14 @@
 {
   "id": "clickhouse-data-source-add",
-  "title": "Add the ClickHouse data source",
+  "title": "Install and add the ClickHouse data source",
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this milestone, you install the ClickHouse plugin (if it isn't already) and create a new ClickHouse data source. Adding a data source requires the Grafana organization administrator role.\n\nTo add the data source, complete the following steps."
+      "content": "The ClickHouse data source isn't built into Grafana; it's an installable plugin. In this milestone, you install the ClickHouse plugin from the plugin catalog and then add a new ClickHouse data source. Both actions require the Grafana organization administrator role."
+    },
+    {
+      "type": "markdown",
+      "content": "To install and add the data source, complete the following steps:"
     },
     {
       "type": "section",
@@ -12,41 +16,32 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[href='/connections/datasources']",
-          "requirements": [
-            "navmenu-open",
-            "exists-reftarget"
-          ],
-          "content": "In the navigation menu, click **Connections > Data sources**."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid data-source-add-button']",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "content": "Click **Add new data source**."
+          "action": "navigate",
+          "reftarget": "/plugins",
+          "content": "Open **Administration > Plugins and data > Plugins**.",
+          "verify": "on-page:/plugins"
         },
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[aria-label='Search connections by name']",
+          "reftarget": "input[placeholder='Search Grafana plugins']",
           "targetvalue": "ClickHouse",
           "requirements": [
+            "on-page:/plugins",
             "exists-reftarget"
           ],
-          "content": "In the search field, enter `ClickHouse`."
+          "content": "In the **Search** field, enter `ClickHouse` to filter the available plugins."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='datasource-grafana-clickhouse-datasource-card']",
+          "reftarget": "a[href='/plugins/grafana-clickhouse-datasource']",
           "requirements": [
+            "on-page:/plugins",
             "exists-reftarget"
           ],
-          "content": "Select the **ClickHouse** connection (published by Grafana Labs)."
+          "verify": "on-page:/plugins/grafana-clickhouse-datasource",
+          "content": "Locate the **ClickHouse** data source plugin (published by Grafana Labs) and click it to view the plugin details."
         },
         {
           "type": "interactive",
@@ -55,18 +50,50 @@
           "doIt": false,
           "skippable": true,
           "requirements": [
+            "on-page:/plugins/grafana-clickhouse-datasource",
             "exists-reftarget"
           ],
-          "content": "If the ClickHouse plugin isn't installed yet, click **Install** and wait for it to finish. If it's already installed, skip this step."
+          "content": "Click **Install** and wait for the status to change to **Installed**. If the plugin is already installed, skip this step."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "content": "Open **Connections > Data sources**.",
+          "verify": "on-page:/connections/datasources"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid data-source-add-button']",
           "requirements": [
+            "on-page:/connections/datasources",
             "exists-reftarget"
           ],
-          "content": "Click **Add new data source** to create a ClickHouse connection."
+          "verify": "on-page:/connections/datasources/new",
+          "content": "Click **Add new data source** in the upper right of the page."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Filter by name or type']",
+          "targetvalue": "ClickHouse",
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ],
+          "content": "In the search field, enter `ClickHouse` to filter the available data source types."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "ClickHouse",
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/connections/datasources/edit",
+          "content": "Click **ClickHouse** to select the data source and begin configuration."
         }
       ]
     },
@@ -76,7 +103,7 @@
     },
     {
       "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\n- [Add the ClickHouse data source](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/configure/#add-the-data-source)\n- [Data source plugins for Grafana](https://grafana.com/grafana/plugins/data-source-plugins/)"
+      "content": "---\n\n### More to explore (optional)\n\n- [Install the ClickHouse data source](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/configure/#install-the-data-source)\n- [Data source plugins for Grafana](https://grafana.com/grafana/plugins/data-source-plugins/)"
     }
   ]
 }
