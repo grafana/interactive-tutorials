@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this milestone, you add the ClickHouse data source in Grafana Cloud and give it a descriptive name. Adding a data source requires the Grafana organization administrator role.\n\nTo add the data source, complete the following steps."
+      "content": "In this milestone, you install the ClickHouse plugin (if it isn't already) and create a new ClickHouse data source. Adding a data source requires the Grafana organization administrator role.\n\nTo add the data source, complete the following steps."
     },
     {
       "type": "section",
@@ -32,7 +32,7 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[placeholder='Filter by name or type']",
+          "reftarget": "input[aria-label='Search connections by name']",
           "targetvalue": "ClickHouse",
           "requirements": [
             "exists-reftarget"
@@ -41,29 +41,38 @@
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "ClickHouse",
+          "action": "highlight",
+          "reftarget": "[data-testid='datasource-grafana-clickhouse-datasource-card']",
           "requirements": [
             "exists-reftarget"
           ],
-          "content": "From the search results, click **ClickHouse**."
+          "content": "Select the **ClickHouse** connection (published by Grafana Labs)."
         },
         {
           "type": "interactive",
-          "action": "formfill",
-          "reftarget": "input[placeholder='Name']",
-          "targetvalue": "ClickHouse observability",
+          "action": "button",
+          "reftarget": "Install",
           "doIt": false,
+          "skippable": true,
           "requirements": [
             "exists-reftarget"
           ],
-          "content": "In the **Name** field, enter a descriptive name for this data source.\n\nFor example, enter `ClickHouse observability`. The name appears on dashboard panels, so choose something meaningful."
+          "content": "If the ClickHouse plugin isn't installed yet, click **Install** and wait for it to finish. If it's already installed, skip this step."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid data-source-add-button']",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "Click **Add new data source** to create a ClickHouse connection."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You now have a ClickHouse data source ready to configure.\n\nIn the next milestone, you'll enter the connection details and credentials for your ClickHouse server."
+      "content": "You now have a ClickHouse data source ready to configure. It's named `grafana-clickhouse-datasource` by default; you can rename it by clicking the name at the top of the settings page, for example to `ClickHouse observability`. The name appears on dashboard panels, so choose something meaningful.\n\nIn the next milestone, you'll enter the connection details and credentials for your ClickHouse server."
     },
     {
       "type": "markdown",

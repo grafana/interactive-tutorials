@@ -13,7 +13,7 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "",
+          "reftarget": "[data-testid='clickhouse-v2-config-host-input']",
           "targetvalue": "clickhouse.example.com",
           "doIt": false,
           "requirements": [
@@ -24,39 +24,28 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "",
+          "reftarget": "[data-testid='data-testid radio-button-option native']",
           "doIt": false,
           "requirements": [
             "exists-reftarget"
           ],
-          "content": "For **Protocol**, choose **Native** for best performance, or **HTTP** if your network requires HTTP-based connectivity (for example, through a reverse proxy)."
+          "content": "For **Protocol**, select **Native** for best performance. Choose **HTTP** instead if your network requires HTTP-based connectivity, for example through a reverse proxy."
         },
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "",
+          "reftarget": "[data-testid='clickhouse-v2-config-port-input']",
           "targetvalue": "9000",
           "doIt": false,
           "requirements": [
             "exists-reftarget"
           ],
-          "content": "In the **Port** field, enter the port that matches your protocol. Native uses `9000` (or `9440` with TLS); HTTP uses `8123` (or `8443` with TLS)."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "",
-          "doIt": false,
-          "skippable": true,
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "content": "If your ClickHouse server uses TLS, enable **Secure connection**, then set the **Port** to a TLS-enabled port. Grafana doesn't change the port automatically when you toggle TLS."
+          "content": "In the **Server port** field, enter the port that matches your protocol. Native uses `9000` (or `9440` with TLS); HTTP uses `8123` (or `8443` with TLS)."
         },
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "",
+          "reftarget": "input[aria-label='Username']",
           "targetvalue": "grafana_reader",
           "doIt": false,
           "requirements": [
@@ -67,25 +56,18 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "",
+          "reftarget": "input[aria-label='Password']",
           "doIt": false,
           "requirements": [
             "exists-reftarget"
           ],
           "content": "In the **Password** field, enter the password for your read-only user.\n\nFor your security, enter this value yourself rather than having Grafana fill it in."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "",
-          "doIt": false,
-          "skippable": true,
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "content": "Leave **Default database** blank on Grafana Cloud. ClickHouse Cloud already routes to the correct database, and setting a name that doesn't match can cause an `Unknown database` error. On self-hosted ClickHouse, you can optionally set the database you query most often."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Optional settings:**\n\n- **Secure Connection:** If your ClickHouse server uses TLS, enable **Secure Connection**, then set the **Server port** to a TLS-enabled port. Grafana doesn't change the port automatically when you toggle TLS.\n- **Default database:** On Grafana Cloud, leave the default database unset. ClickHouse Cloud already routes to the correct database, and setting a name that doesn't match can cause an `Unknown database` error."
     },
     {
       "type": "markdown",
