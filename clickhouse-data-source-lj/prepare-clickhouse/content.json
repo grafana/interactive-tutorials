@@ -1,0 +1,52 @@
+{
+  "id": "clickhouse-data-source-prepare",
+  "title": "Prepare a read-only ClickHouse user",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Grafana runs the queries you write exactly as written and does not restrict SQL. To keep your data safe, connect Grafana with a **read-only** ClickHouse user so a mistaken or malicious query can't modify or drop tables.\n\nThere's one important nuance: the ClickHouse data source client sets `max_execution_time` on every query to enforce the query timeout. A plain `readonly = 1` user is blocked from changing any setting, so you must also allow that one setting to change in read-only mode. If you skip this, the connection test can pass but queries fail at runtime with `Cannot modify 'max_execution_time': Setting is locked`."
+    },
+    {
+      "type": "markdown",
+      "content": "## Before you begin\n\n- Confirm your ClickHouse server is running and reachable from Grafana Cloud on its query port (Native `9000`/`9440`, or HTTP `8123`/`8443`).\n- You'll need an account that can create users and alter settings profiles in ClickHouse.\n\nIf your ClickHouse administrator has already given you a read-only user and connection details, you can skip ahead to the next milestone."
+    },
+    {
+      "type": "markdown",
+      "content": "To prepare a read-only user, complete the following steps."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Connect to your ClickHouse server as an administrative user, for example with `clickhouse-client`:\n\n```bash\nclickhouse-client --user default --password\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Create a dedicated user for Grafana:\n\n```sql\nCREATE USER grafana_reader IDENTIFIED BY 'REPLACE_WITH_STRONG_PASSWORD';\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Grant read access to the databases you want to query. For example, to grant read access to a single database:\n\n```sql\nGRANT SELECT ON otel.* TO grafana_reader;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Create a settings profile that keeps the user read-only but lets the plugin change `max_execution_time`:\n\n```sql\nCREATE SETTINGS PROFILE grafana_reader_profile\n  SETTINGS readonly = 1,\n           max_execution_time CHANGEABLE_IN_READONLY\n  TO grafana_reader;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Verify the user can run a query with the timeout setting applied:\n\n```bash\nclickhouse-client --user grafana_reader --password --query \"SELECT 1 SETTINGS max_execution_time = 30\"\n```"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Note the host, port, user name, and password. You'll enter these when you configure the data source.\n\nIn the next milestone, you'll add the ClickHouse data source in Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure a read-only ClickHouse user](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/configure/#clickhouse-user-and-permissions)\n- [Creating users and roles in ClickHouse](https://clickhouse.com/docs/en/operations/access-rights)"
+    }
+  ]
+}

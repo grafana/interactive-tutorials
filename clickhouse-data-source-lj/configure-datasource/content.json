@@ -1,0 +1,99 @@
+{
+  "id": "clickhouse-data-source-configure",
+  "title": "Configure the ClickHouse connection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you enter the connection details so Grafana Cloud can reach your ClickHouse server. You'll set the server address, protocol, port, and the read-only credentials you created earlier.\n\nTo configure the connection, complete the following steps."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "",
+          "targetvalue": "clickhouse.example.com",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "In the **Server address** field, enter the hostname or IP address of your ClickHouse server.\n\nFor example, enter `clickhouse.example.com`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "For **Protocol**, choose **Native** for best performance, or **HTTP** if your network requires HTTP-based connectivity (for example, through a reverse proxy)."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "",
+          "targetvalue": "9000",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "In the **Port** field, enter the port that matches your protocol. Native uses `9000` (or `9440` with TLS); HTTP uses `8123` (or `8443` with TLS)."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "If your ClickHouse server uses TLS, enable **Secure connection**, then set the **Port** to a TLS-enabled port. Grafana doesn't change the port automatically when you toggle TLS."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "",
+          "targetvalue": "grafana_reader",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "In the **Username** field, enter the read-only user you created earlier.\n\nFor example, enter `grafana_reader`."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "In the **Password** field, enter the password for your read-only user.\n\nFor your security, enter this value yourself rather than having Grafana fill it in."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "Leave **Default database** blank on Grafana Cloud. ClickHouse Cloud already routes to the correct database, and setting a name that doesn't match can cause an `Unknown database` error. On self-hosted ClickHouse, you can optionally set the database you query most often."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your connection details are in place.\n\nIn the next milestone, you'll save and test the connection."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure the ClickHouse data source](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/configure/#configure-settings)\n- [ClickHouse protocol support and default ports](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/configure/#clickhouse-protocol-support)"
+    }
+  ]
+}
