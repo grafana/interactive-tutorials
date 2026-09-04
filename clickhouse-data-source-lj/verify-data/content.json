@@ -1,0 +1,66 @@
+{
+  "id": "clickhouse-data-source-verify",
+  "title": "Verify your ClickHouse data",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Confirm the data source works end to end by running a query in Explore. Every ClickHouse server exposes the `system` database, so you can verify the connection even before you know your own table names.\n\nTo verify your data, complete the following steps."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/explore']",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "content": "In the navigation menu, click **Explore**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "doIt": false,
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "From the data source dropdown at the top-left, select your ClickHouse data source.\n\nFor example, select **ClickHouse observability**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-rows']",
+          "doIt": false,
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Switch the editor to **SQL** and enter a simple query to confirm the connection:\n\n```sql\nSELECT name FROM system.tables LIMIT 10\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Run query']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Click **Run query**.\n\nYou should see a list of table names in the results panel below the editor. That confirms Grafana is querying ClickHouse successfully."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Confirm successful access**\n\nAfter running the query, you should see:\n\n- Rows returned in the Explore results panel\n- No connection errors or timeouts\n- Table names from your ClickHouse server\n\n**Congratulations!** You've connected ClickHouse to Grafana Cloud and confirmed it returns data."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [ClickHouse query editor](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/query-editor/)\n- [Build dashboards in Grafana](https://grafana.com/docs/grafana/latest/dashboards/)"
+    }
+  ]
+}
