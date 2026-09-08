@@ -48,7 +48,81 @@
     },
     {
       "type": "markdown",
-      "content": "One score for the whole application tells you something is slow, not where. To find the page responsible, complete the following steps:"
+      "content": "We'll start with Core Web Vitals. These metrics were [created by Google](https://developers.google.com/search/docs/appearance/core-web-vitals) to measure loading performance, interactivity, and visual stability the way real users experience them. Faro collects them using Google's [web-vitals library](https://github.com/GoogleChrome/web-vitals), and the dashboard scores each one against Google's thresholds: green is good, yellow needs improvement, and red is poor.\n\nTo read all five, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "core-web-vitals",
+      "title": "Read the Core Web Vitals",
+      "requirements": [
+        "section-completed:open-application"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(1)",
+          "content": "**TTFB**, Time to First Byte, is the time between the request and the first byte of the response. It covers redirects, DNS lookup, connection and TLS negotiation, and the request itself.\n\nAim for under **800ms**. A high TTFB points at the backend, not the browser: slow server processing, thin caching, or no CDN.",
+          "tooltip": "The bar underneath marks the good, needs-improvement, and poor thresholds, with a pointer at the current value.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/2410",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(2)",
+          "content": "**FCP**, First Contentful Paint, is how long the browser takes to render any DOM content: text, an image, an SVG.\n\nAim for under **1.8s**. Cut render-blocking resources, load visible content first, and drop unused CSS and JavaScript.",
+          "tooltip": "This is the moment the page stops looking blank, which is what makes a site feel fast on a slow connection.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/2410",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(3)",
+          "content": "**LCP**, Largest Contentful Paint, is when the largest element in the viewport finishes rendering, usually a hero image or headline.\n\nAim for under **2.5s**. Compress large assets, cut server response time, and remove render-blocking JavaScript and CSS.",
+          "tooltip": "This is the clearest signal of when the page becomes useful rather than merely visible.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/2410",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(4)",
+          "content": "**CLS**, Cumulative Layout Shift, measures unexpected movement of content while the page is alive. It is the metric behind clicking the wrong thing because the page jumped.\n\nAim for under **0.1**. Set dimensions on images and videos, preload fonts, reserve space before injecting content, and keep pages eligible for the back/forward cache.",
+          "tooltip": "CLS is a unitless score rather than a duration, so the thresholds are 0.1 and 0.25.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/2410",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(5)",
+          "content": "**INP**, Interaction to Next Paint, is the time from a user interaction to the next visual update. It looks at every interaction in the session and reports the slowest, outliers aside, so it reflects responsiveness rather than one lucky click.\n\nAim for under **200ms**. Fix a bad INP by breaking up long JavaScript tasks, deferring non-critical work, and rendering updates sooner.",
+          "tooltip": "Because it takes the slowest interaction, a single blocking handler on one control can sink the whole score.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/2410",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now let's move on to the **Page Loads &amp; Page Performance** metric. This shows how many pages loaded in your selected timeframe and splits them into successful loads and error encounters, which tells you that something is going wrong but not where. To find the page responsible, complete the following steps:"
     },
     {
       "type": "section",
@@ -62,8 +136,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Page Loads']",
-          "content": "**Page Loads** counts how many times a full page loaded in this time range. Read it alongside **JS errors** and **User action errors** to see whether traffic or breakage is moving.",
-          "tooltip": "Page load counts also show you when your users are actually around, which is useful for scheduling deploys.",
+          "content": "**Page Loads** counts how many times a full page loaded in this time range. Read it alongside **JS errors** and **User action errors** .",
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/2410",
             "exists-reftarget"
@@ -88,7 +161,6 @@
           "action": "highlight",
           "reftarget": "div[data-testid='page-performance-table']",
           "content": "**Page Performance** breaks every metric down by page ID. Page IDs are generated by the Grafana Faro Cloud receiver, and you can override them when you instrument your app.",
-          "tooltip": "Each cell carries its own colour, so one red column across several rows usually means a shared component rather than a single page.",
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/2410",
             "exists-reftarget"
@@ -166,84 +238,6 @@
             "exists-reftarget"
           ],
           "skippable": true
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "content": "Core Web Vitals were [created by Google](https://developers.google.com/search/docs/appearance/core-web-vitals) to measure loading performance, interactivity, and visual stability the way real users experience them. Faro collects them with Google's [web-vitals library](https://github.com/GoogleChrome/web-vitals), and the dashboard scores each one green, yellow, or red against Google's thresholds.\n\nTo read all five, complete the following steps:"
-    },
-    {
-      "type": "markdown",
-      "content": "Whichever tile is not green is where to start. On this demo application that is usually one of the paint metrics, **FCP** or **LCP**, which points at how much work the browser has to do before it can show anything.\n\nIf you have used these dashboards before, you may remember **FID**, First Input Delay. Google [replaced FID with INP](https://web.dev/blog/inp-cwv-launch) because INP measures responsiveness better, and Frontend Observability is dropping FID to match."
-    },
-    {
-      "type": "section",
-      "id": "core-web-vitals",
-      "title": "Read the Core Web Vitals",
-      "requirements": [
-        "section-completed:open-application"
-      ],
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div:has(> div > div > h3):nth-match(1)",
-          "content": "**TTFB**, Time to First Byte, is the time between the request and the first byte of the response. It covers redirects, DNS lookup, connection and TLS negotiation, and the request itself.\n\nAim for under **800ms**. A high TTFB points at the backend, not the browser: slow server processing, thin caching, or no CDN.",
-          "tooltip": "The bar underneath marks the good, needs-improvement, and poor thresholds, with a pointer at the current value.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/2410",
-            "exists-reftarget"
-          ],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div:has(> div > div > h3):nth-match(2)",
-          "content": "**FCP**, First Contentful Paint, is how long the browser takes to render any DOM content: text, an image, an SVG.\n\nAim for under **1.8s**. Cut render-blocking resources, load visible content first, and drop unused CSS and JavaScript.",
-          "tooltip": "This is the moment the page stops looking blank, which is what makes a site feel fast on a slow connection.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/2410",
-            "exists-reftarget"
-          ],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div:has(> div > div > h3):nth-match(3)",
-          "content": "**LCP**, Largest Contentful Paint, is when the largest element in the viewport finishes rendering, usually a hero image or headline.\n\nAim for under **2.5s**. Compress large assets, cut server response time, and remove render-blocking JavaScript and CSS.",
-          "tooltip": "This is the clearest signal of when the page becomes useful rather than merely visible.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/2410",
-            "exists-reftarget"
-          ],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div:has(> div > div > h3):nth-match(4)",
-          "content": "**CLS**, Cumulative Layout Shift, measures unexpected movement of content while the page is alive. It is the metric behind clicking the wrong thing because the page jumped.\n\nAim for under **0.1**. Set dimensions on images and videos, preload fonts, reserve space before injecting content, and keep pages eligible for the back/forward cache.",
-          "tooltip": "CLS is a unitless score rather than a duration, so the thresholds are 0.1 and 0.25.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/2410",
-            "exists-reftarget"
-          ],
-          "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div:has(> div > div > h3):nth-match(5)",
-          "content": "**INP**, Interaction to Next Paint, is the time from a user interaction to the next visual update. It looks at every interaction in the session and reports the slowest, outliers aside, so it reflects responsiveness rather than one lucky click.\n\nAim for under **200ms**. Fix a bad INP by breaking up long JavaScript tasks, deferring non-critical work, and rendering updates sooner.",
-          "tooltip": "Because it takes the slowest interaction, a single blocking handler on one control can sink the whole score.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/2410",
-            "exists-reftarget"
-          ],
-          "doIt": false
         }
       ]
     },
