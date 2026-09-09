@@ -1,0 +1,277 @@
+{
+  "id": "k8s-connect-first-cluster",
+  "title": "Connect your first Kubernetes cluster",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This wizard collects everything the Helm chart needs across four steps, starting here with the cluster's name and platform."
+    },
+    {
+      "type": "section",
+      "id": "stack-and-platform",
+      "title": "Stack and platform",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='config-step-nav-1']",
+          "content": "The configuration wizard has four steps: **Stack and platform**, **Monitoring type**, **Backend and token**, and **Deployment**. Each step unlocks only once the one before it is complete, so there's no jumping ahead.",
+          "tooltip": "Progress through the wizard is tracked here, and each step unlocks only once the one before it is complete.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='cluster-name-input']",
+          "targetvalue": "production-us-east",
+          "formHint": "The name this cluster appears under in Grafana",
+          "content": "The **Cluster name** field is pre-filled with my-cluster. Every metric, log and trace from this cluster is labeled with this name, so set it to match what your team already calls the cluster.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='namespace-input']",
+          "targetvalue": "monitoring",
+          "formHint": "Lowercase, alphanumeric, dashes allowed inside",
+          "content": "Set the **Namespace** the collector deploys into. It must be lowercase and alphanumeric, with dashes allowed inside the name but not at either end.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='platform-card-kubernetes']",
+          "content": "The **Kubernetes** card is already selected by default. The platform you pick decides which features are available \u2014 GKE Autopilot and EKS on Fargate disable node-level collection \u2014 so confirm Kubernetes to continue.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='config-next-button']",
+          "content": "Select **Next** to move on to the monitoring type step.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The cluster now has a name, a target namespace, and a confirmed platform."
+    },
+    {
+      "type": "markdown",
+      "content": "Step 2 turns your chosen monitoring type into a set of feature toggles you can fine-tune."
+    },
+    {
+      "type": "section",
+      "id": "monitoring-type",
+      "title": "Monitoring type",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='monitoring-type-kubernetes-monitoring']",
+          "targetstate": "true",
+          "content": "**Kubernetes Monitoring** is ticked by default and enables cluster metrics, cost, energy, events and pod logs collection. **Application Observability** is the other option, and you can select it in addition.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='config-details-toggle']",
+          "content": "Select **Show config details** to reveal the roughly twelve individual collectors bundled into the monitoring type; the button then reads **Hide config details**.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='feature-toggle-clusterMetrics']",
+          "targetstate": "true",
+          "content": "**Cluster Metrics** collects node, pod and container resource metrics and is on by default \u2014 confirm it stays enabled.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='feature-toggle-clusterEvents']",
+          "targetstate": "true",
+          "content": "**Cluster Events** ships the Kubernetes events that explain why a pod restarted to Loki as logs, and is on by default \u2014 confirm it stays enabled.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='config-next-button']",
+          "content": "Select **Next** to move on to the backend and token step \u2014 it requires the backend integration to be installed first.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Kubernetes Monitoring is selected, with cluster metrics and cluster events collection confirmed on."
+    },
+    {
+      "type": "markdown",
+      "content": "Step 3 installs the Grafana Cloud backend integration and captures the token the collector will use to write data \u2014 step 4 isn't reachable until both are in place."
+    },
+    {
+      "type": "section",
+      "id": "backend-and-token",
+      "title": "Backend and token",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "callout",
+          "title": "Install the backend integration",
+          "content": "The panel at the top of this step has a button to install the Kubernetes Monitoring backend integration, which comes from a separate plugin. Installation may take a moment, and if the panel is missing entirely, that plugin isn't present on this stack."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='access-policy-token-type']",
+          "content": "Choose how to supply the token: **Create a new token**, **Use an existing token**, or **Use a stored Kubernetes Secret** \u2014 **Create a new token** is selected by default. Pick whichever matches how your org issues credentials.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='access-policy-existing-token-input']",
+          "content": "This field appears once **Use an existing token** is chosen. Paste in a token with permission to publish metrics, logs and traces \u2014 Grafana does not store it.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='config-next-button']",
+          "content": "**Next** stays disabled until the backend is installed and a token is supplied \u2014 hover over it to see which of the two is still missing.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "With the backend installed and a token supplied, the wizard can generate a deployment for you to run."
+    },
+    {
+      "type": "markdown",
+      "content": "The final step turns your choices into a deployment command to run against the cluster, though it's unreachable on a stack that doesn't have the backend integration installed."
+    },
+    {
+      "type": "section",
+      "id": "deployment",
+      "title": "Deployment",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='platform-card-helm']",
+          "content": "Pick a deployment method from three cards \u2014 **Helm**, **Terraform**, or **ArgoCD** \u2014 with **Helm** selected by default; this choice changes what's generated below, not what gets collected.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='clipboard-content']",
+          "content": "The generated `helm upgrade --install` command carries the cluster name, namespace, enabled features and token \u2014 check that kubectl points at the right cluster before you run it.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='config-back-button']",
+          "content": "Select **Back** to change anything \u2014 the generated command is recomputed from the wizard state, so editing a toggle and returning here updates what you copy.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now have a generated deployment command for this cluster, plus a way back to change any of it."
+    }
+  ]
+}
