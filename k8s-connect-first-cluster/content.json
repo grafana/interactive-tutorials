@@ -51,13 +51,14 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='install-alloy-unified-helm-prepare-deploy-panel'] button",
-          "tooltip": "Installs the rules the dashboards are built on.",
-          "doIt": true,
+          "tooltip": "Already installed? Skip this step.",
+          "doIt": false,
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-k8s-app/configuration"
           ],
-          "content": "Start by installing the backend. This adds the alerting and recording rules that every Kubernetes dashboard in this app is built on \u2014 without them the dashboards load but stay empty. It takes a few seconds, and **Next** stays disabled until it finishes."
+          "content": "Start by installing the backend \u2014 the alerting and recording rules that every Kubernetes dashboard in this app is built on. Without them the dashboards load but stay empty, and **Next** stays disabled until it finishes.\n\n**If the panel already says the rules are installed, skip this step.** The guide won't press the button for you here: once the backend is in place that same spot becomes **Uninstall**, and clicking it blind would tear out the rules you already have.",
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -112,9 +113,10 @@
             "exists-reftarget",
             "on-page:/a/grafana-k8s-app/configuration"
           ],
-          "content": "Give the token a name you'll recognise months from now, when you're looking at a list of tokens and working out which one is safe to revoke. Something that says where it's used beats something that says when you made it.",
+          "content": "Give the token a name you'll recognise months from now, when you're looking at a list of tokens and working out which one is safe to revoke. Something that says where it's used beats something that says when you made it.\n\nAlready have a token you'd rather use? Switch to **Use an existing token** and skip the next three steps.",
           "targetvalue": "k8s-monitoring-alloy",
-          "formHint": "A name you'll recognise later"
+          "formHint": "A name you'll recognise later",
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -126,7 +128,8 @@
             "exists-reftarget",
             "on-page:/a/grafana-k8s-app/configuration"
           ],
-          "content": "You don't need to touch the permissions. These let the collector send your cluster's data and read back what it sent, and nothing else."
+          "content": "You don't need to touch the permissions. These let the collector send your cluster's data and read back what it sent, and nothing else.",
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -138,7 +141,8 @@
             "exists-reftarget",
             "on-page:/a/grafana-k8s-app/configuration"
           ],
-          "content": "Select **Create token** yourself. This one's left to you on purpose: it creates a real credential on your Grafana Cloud account, and that's your decision to make.\n\n**Copy it as soon as it appears.** You won't be shown it again, and the command at the end needs it."
+          "content": "Select **Create token** yourself. This one's left to you on purpose: it creates a real credential on your Grafana Cloud account, and that's your decision to make.\n\n**Copy it as soon as it appears.** You won't be shown it again, and the command at the end needs it.",
+          "skippable": true
         },
         {
           "type": "interactive",
