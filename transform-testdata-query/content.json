@@ -11,7 +11,7 @@
       "type": "callout",
       "id": "before-you-start",
       "title": "Before you start",
-      "content": "You need edit rights on a dashboard. The first section adds a TestData data source if you have not got one, which needs an administrator \u2014 skip it if one already exists."
+      "content": "You need edit rights on a dashboard. The first section adds a TestData data source and completes on its own if you already have one; creating it needs an administrator."
     },
     {
       "type": "markdown",
@@ -49,6 +49,9 @@
           "tooltip": "Grafana creates the data source as soon as you choose a type, with no separate save step.",
           "skippable": true
         }
+      ],
+      "objectives": [
+        "has-datasource:grafana-testdata-datasource"
       ]
     },
     {
@@ -164,8 +167,9 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Next to **Queries**, open the **Transformations** tab.",
-          "tooltip": "The number beside the name counts how many are applied, and it reads zero right now."
+          "content": "Next to **Queries**, open the **Transformations** tab. If your panel editor shows a sidebar with a **Transformations** section instead of tabs, you are on the new query editor and there is nothing to open here \u2014 skip this step.",
+          "tooltip": "The number beside the name counts how many are applied, and it reads zero right now.",
+          "skippable": true
         },
         {
           "type": "multistep",
@@ -175,7 +179,7 @@
             {
               "id": "open-transform-drawer",
               "action": "highlight",
-              "reftarget": "{grafana:components.Transforms.addTransformationButton}",
+              "reftarget": "[data-testid='data-testid add transformation button'], [aria-label='Add transformation']",
               "requirements": [
                 "exists-reftarget"
               ],
@@ -239,7 +243,7 @@
             {
               "id": "open-drawer-again",
               "action": "highlight",
-              "reftarget": "{grafana:components.Transforms.addTransformationButton}",
+              "reftarget": "[data-testid='data-testid add transformation button'], [aria-label='Add transformation']",
               "requirements": [
                 "exists-reftarget",
                 "on-page:/dashboard/new"
