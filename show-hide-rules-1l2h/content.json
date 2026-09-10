@@ -12,13 +12,9 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "{grafana:components.NavMenu.Menu} a[data-testid='data-testid Nav menu item'][href='/dashboards']",
-          "content": "Open **Dashboards** from the main menu.",
-          "requirements": [
-            "exists-reftarget",
-            "navmenu-open"
-          ]
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "content": "Open **Dashboards** from the main menu."
         },
         {
           "type": "multistep",
@@ -56,24 +52,11 @@
           "content": "Click **Configure visualization**."
         },
         {
-          "type": "guided",
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='input-wrapper'] input[data-testid='data-testid Select a data source']",
           "content": "Open the data source selector, search for `-- Gra`, and select the **-- Grafana --** data source.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "{grafana:components.DataSourcePicker.container} svg[data-testid='icon-angle-down']"
-            },
-            {
-              "action": "formfill",
-              "reftarget": "div[data-testid='input-wrapper'] input[data-testid='data-testid Select a data source']",
-              "targetvalue": "-- Gra"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "{grafana:components.Card.heading} button"
-            }
-          ],
-          "stepTimeout": 30000,
+          "targetvalue": "-- Grafana --",
           "completeEarly": true
         },
         {
@@ -109,9 +92,18 @@
           "doIt": false
         },
         {
-          "type": "interactive",
-          "action": "noop",
-          "content": "Click the panel header to bring it back into focus. Now the sidebar shows panel configuration options."
+          "type": "guided",
+          "content": "Click the panel header to bring it back into focus. Now the sidebar shows panel configuration options.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.Panels.Panel.headerContainer"
+            },
+            {
+              "action": "button",
+              "reftarget": "Settings"
+            }
+          ]
         },
         {
           "type": "multistep",
@@ -129,13 +121,13 @@
         },
         {
           "type": "interactive",
-          "action": "highlight",
+          "action": "formfill",
           "reftarget": "{grafana:pages.Dashboard.Sidebar.conditionalRendering.timeRange.select} div:has(input[data-testid='data-testid Dashboard Conditional Rendering Time range select-input'])",
           "content": "Set the time range to **1 hour**.",
+          "targetvalue": "1 hour",
           "requirements": [
             "exists-reftarget"
-          ],
-          "doIt": false
+          ]
         },
         {
           "type": "multistep",
