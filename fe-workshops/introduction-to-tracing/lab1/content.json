@@ -1,0 +1,243 @@
+{
+  "id": "introduction-to-tracing-lab1-breakout",
+  "title": "Traces Drilldown Breakout",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "# Traces Drilldown Breakout\n\nTraces Drilldown can easily track down errors occurring in traces without the need for TraceQL. This breakout will go over the RED metrics and how they can be used to quickly surface errors in an application.\n\nThere is a support ticket that some of the products are not showing up in the catalog in our application. Instead of a fully populated products page, users are seeing an empty page. In the image below, you see that there are no products listed in the `Hot Products` portion of the page."
+    },
+    {
+      "type": "image",
+      "src": "img/otel-products.png",
+      "alt": "OpenTelemetry demo Hot Products - empty products section"
+    },
+    {
+      "type": "markdown",
+      "content": "The products section of the page is expected to be populated with telescopes, such as in the following image:"
+    },
+    {
+      "type": "image",
+      "src": "img/otel-products-populated.png",
+      "alt": "OpenTelemetry demo Hot Products - populated with telescopes"
+    },
+    {
+      "type": "markdown",
+      "content": "Use Traces Drilldown to determine why this is occurring."
+    },
+    {
+      "type": "section",
+      "id": "lab1-errors",
+      "title": "Traces Drilldown - Errors",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "## Traces Drilldown - Errors\n\n\n**1.** Go to `Traces Drilldown` and change the time range to view the last 30 minutes. First you'll filter by errors, and you'll do this across all the spans in the traces.\n   * Select the `Errors` panel and select `All spans` as the filter. The `Root spans` filter will show only one span (the first spans, or root span) of a trace. Switch to `All spans` so that you can query every matching span in every trace. This will allow you to drill down into every operation within the traces."
+        },
+        {
+          "type": "image",
+          "src": "img/1-rate.png",
+          "alt": "Rate - Errors panel with All spans filter"
+        },
+        {
+          "type": "markdown",
+          "content": "**2.** Traces Drilldown groups errors by the `service.name` resource attribute by default. This can be changed to group by the `service.namespace`, `cluster`, and many other attributes. In this breakout, you will continue to examine the errors using the `service.name` attribute. Note that there's a few services reporting errors fairly frequently."
+        },
+        {
+          "type": "image",
+          "src": "img/2-errors.png",
+          "alt": "Errors grouped by service.name"
+        },
+        {
+          "type": "markdown",
+          "content": "**3.** A lot of the errors are on the `frontend` and `frontendproxy` service. Filter via the `frontendproxy` service to see what can be determined.\n   * Select `Add to filters` on the `frontendproxy` service"
+        },
+        {
+          "type": "image",
+          "src": "img/3-errors-breakdown.png",
+          "alt": "Errors - Breakdown with frontendproxy filter"
+        },
+        {
+          "type": "markdown",
+          "content": "**4.** You'll have a quick look at the Root cause errors tab here, to see if Traces Drilldown has determined something obviously wrong.\n   * Select the `Root cause errors` tab. Use this tab to immediately see the chain of errors that are causing issues higher up in traces."
+        },
+        {
+          "type": "image",
+          "src": "img/4-errors-root-cause.png",
+          "alt": "Errors - Root Cause tab"
+        },
+        {
+          "type": "markdown",
+          "content": "**5.** The investigation shows that there's something going on with the `productcatalogservice` backend. Now, you could dive into the traces from here, but dig around a little comparing attributes in that service first to see if there's anything else that might be going on. To do this, you'll cancel the filter for the `frontendproxy` service and go and look specifically at the `productcatalogservice`. (The root cause may also be attributed to the `recommendationservice`, because it calls the `productcatalogservice`. You may continue with the same steps, simply filter on the `recommendationservice` instead).\n   * Remove the `resource.service.name = frontendproxy` filter by selecting the `x` on the selected service in the filter tab."
+        },
+        {
+          "type": "image",
+          "src": "img/5-remove-filter.png",
+          "alt": "Errors - Remove Filter"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Select the `Breakdown` tab. This will split the selected metric by the values of a chosen resource or span attribute.\n   * Select `Add to filters` for the `productcatalogservice`"
+        },
+        {
+          "type": "image",
+          "src": "img/5-errors-breakdown-2.png",
+          "alt": "Errors - Breakdown by productcatalogservice"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Select the `Comparison` tab. This tab helps you surface and rank which span attributes are most correlated with the selected metric so you can immediately spot what's driving your trace-level issues.\n     * The Comparison tab performs a statistical analysis to identify which span attributes are most correlated with your selected metric (in this case, errors for the `productcatalogservice`).\n     * The baseline is therefore any spans which do not have an error set on them. Comparisons are calculated based on the difference between spans in the baseline and those spans with an error set upon them."
+        },
+        {
+          "type": "image",
+          "src": "img/5-errors-comparison.png",
+          "alt": "Errors - Comparison tab"
+        },
+        {
+          "type": "markdown",
+          "content": "**6.** A quick look at the comparison tab shows that compared to the baseline spans, there's a particular span, the `name` span, in the `productcatalogservice` that is having a problem 100% of the time. That's definitely correlating with what was seen in the previous trace from the `frontendproxy` service.\n   * Select `Inspect` in the `name` panel. This performs a grouping by the `name` span attribute. To undo the grouping and see all the attributes, select `All` in the `Group by` filter."
+        },
+        {
+          "type": "image",
+          "src": "img/6-comparison-span-name.png",
+          "alt": "Comparison - Span Name"
+        },
+        {
+          "type": "image",
+          "src": "img/6-list-product.png",
+          "alt": "Span Name Inspection - list product"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Select the `Exceptions` tab to see if there are any exceptions occurring on the spans. There is one exception which has, in this example, 128 occurrences: `pq: sorry, too many clients already`."
+        },
+        {
+          "type": "image",
+          "src": "img/6-exception.png",
+          "alt": "Errors - Exceptions tab"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Select the `Errored traces` tab to examine all the erroring traces now and pick one, because whichever trace is selected is going to include this error."
+        },
+        {
+          "type": "image",
+          "src": "img/6-errors-traces.png",
+          "alt": "Errors - Errored Traces tab"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Select any `Trace Name` from the erroring traces to get to a trace view"
+        },
+        {
+          "type": "image",
+          "src": "img/6-errors-trace-view.png",
+          "alt": "Errors - Trace view"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Resize the left-side panel slightly so that the trace visualization is the majority of the view"
+        },
+        {
+          "type": "markdown",
+          "content": "**7.** You can see the trace visualization here, and there's a cascade of errors pointing to the span that's causing problems. You'll expand that span out to see if there's any additional information.\n   * Select the erroring span"
+        },
+        {
+          "type": "image",
+          "src": "img/7-errors-span.png",
+          "alt": "Erroring Span"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Expand the `Events` drop-down"
+        },
+        {
+          "type": "image",
+          "src": "img/7-span-events.png",
+          "alt": "Span Events"
+        },
+        {
+          "type": "markdown",
+          "content": "**8.** This quickly lets you see the error. There are too many connections to the underlying Postgres database that is serving the product information. You can raise an issue now and either scale up the database, or modify the service to use a smaller pool of connections and wait for a free connection. You've successfully used Traces Drilldown to go from no knowledge of what's causing our error to finding the exact reason for our customers' issues, and you have not had to write any TraceQL queries to do so."
+        },
+        {
+          "type": "markdown",
+          "content": "**9.** If you drilled down into the `recommendationservice` instead, you will see an error similar to the one below, stating that the product catalog service is unavailable. From here, you can continue the same steps that were already performed on the `productcatalogservice`."
+        },
+        {
+          "type": "image",
+          "src": "img/9-errors-span-recommendation.png",
+          "alt": "Errors - recommendation service span"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "lab1-duration",
+      "title": "Traces Drilldown - Duration",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "## Traces Drilldown - Duration\n\nThere is another report that some, but not all, customers are having a problem with long wait times when trying to use the site when looking at and buying products. Typically, investigating with TraceQL and writing queries helps uncover the issue, but Traces Drilldown lets you pinpoint root cause without needing to write any queries at all."
+        },
+        {
+          "type": "markdown",
+          "content": "**1.** There are problems with latency, so select the `Duration` filter, select All spans to look across all the spans from the traces.\n   * Remove any filters previously selected, and select the `Breakdown` tab.\n   * Select the `Duration` filter, group by the `service.name` attribute, and then `All spans`."
+        },
+        {
+          "type": "image",
+          "src": "img/1-duration.png",
+          "alt": "Duration - Breakdown by service.name"
+        },
+        {
+          "type": "markdown",
+          "content": "**2.** Traces Drilldown will automatically select the slowest traces it finds (although you can manually select a duration window if you wish to do so manually). You can immediately see that there are two services here with quite long spans, `checkoutservice` and `productcatalogservice-europe`. This is interesting since the querying our catalogs are split across two regions, Europe and the rest of the world, and the `productcatalogueservice` for the rest of the world seems to be OK. Select the `checkoutservice` to get an idea of what's going on with it as our customers are stating that they're having problems making purchases:\n   * Select `Add to filters` on the `checkoutservice` and group by `service.namespace`"
+        },
+        {
+          "type": "image",
+          "src": "img/2-duration-breakdown.png",
+          "alt": "Duration - Breakdown by checkoutservice"
+        },
+        {
+          "type": "markdown",
+          "content": "**3.** Traces Drilldown will attempt to look at all correlateable instances of the metric type (in this case durations) and then determine a common pattern of why the latency might be high. Select the `Root cause latency` tab, to see if it has any suggestions as to what might be going on.\n   * Select `Root cause latency` tab"
+        },
+        {
+          "type": "image",
+          "src": "img/3-duration-root-cause.png",
+          "alt": "Duration - Root Cause Latency"
+        },
+        {
+          "type": "markdown",
+          "content": "**4.** It looks as though the `productcatalogueservice-europe` service is indeed a common cause for very high durations of requests via the `checkoutservice`. Traces Drilldown lets you view a sample of different traces where that span is showing long duration, so you'll select one of them, which will show you the relevant trace.\n   * Select the link on the `db.Query` span, and select one of the suggested `View linked span` entries\n   * Expand the `productcatalogservice-europe/db.Query` span"
+        },
+        {
+          "type": "image",
+          "src": "img/4-duration-trace-view.png",
+          "alt": "Duration - Trace View"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Select the `db.Query` span"
+        },
+        {
+          "type": "image",
+          "src": "img/4-duration-span.png",
+          "alt": "Duration - db.Query span"
+        },
+        {
+          "type": "markdown",
+          "content": "   * Expand the span attributes of the `db.Query` span"
+        },
+        {
+          "type": "image",
+          "src": "img/4-duration-span-expanded.png",
+          "alt": "Duration - db.Query span attributes expanded"
+        },
+        {
+          "type": "markdown",
+          "content": "**5.** So now looking at one of these spans in the trace, you can look at the duration and the attributes for the span. One of these attributes shows a `db.statement` with a `pg_sleep()` inside it. This has got to be the cause for this long duration; if multiple statements are occurring at the same time, this will no doubt be the reason why all the queries are taking so long to complete. You've solved the issue within a matter of seconds."
+        }
+      ]
+    }
+  ]
+}
