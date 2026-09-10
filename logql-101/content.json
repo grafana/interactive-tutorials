@@ -4,37 +4,214 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "# Welcome to LogQL 101! 📝\n\nWelcome to your hands-on introduction to LogQL - Grafana Loki's powerful query language for logs! This interactive guide will teach you how to search, filter, and analyze logs like a pro.\n\nLogQL is inspired by PromQL (Prometheus Query Language) and provides a simple yet powerful way to query and aggregate log data. Let's get started!"
+      "content": "Welcome to LogQL 101.\n\nIn this guide you will learn how to:\n\n- Select a Loki data source in Explore\n- Write basic LogQL queries using label selectors\n- Refine results with line filters and JSON parsing\n- Make results easier to scan with formatting\n- Avoid common pitfalls when converting logs to metrics"
     },
     {
       "type": "markdown",
-      "content": "## 🎯 What You'll Learn\n\n- 🔍 **Basic log queries** - Search and filter logs\n- 🏷️ **Label selectors** - Filter by metadata\n- 📊 **Log aggregations** - Count and summarize log data\n- ⚡ **Advanced patterns** - Parse and extract values from logs"
+      "content": "## Section 1: Write your first LogQL query ✍️\n\nWhat you will learn in this section:\n\n- Select the data source used by this guide\n- Set the time range intentionally for your queries\n- Write a label selector, run a query, and view results"
     },
     {
-      "type": "markdown",
-      "content": "## 🚀 Let's Get Started\n\nIn this tutorial, you'll learn how to craft powerful LogQL queries to extract insights from your log data. We'll start with simple queries and progressively build up to more advanced use cases."
-    },
-    {
-      "type": "markdown",
-      "content": "## 📚 Select Your Data Source\n\nBefore we can query logs, we need to select a Loki data source. The data source picker allows you to choose which Loki instance to query against."
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/explore\"]",
+      "requirements": ["navmenu-open", "exists-reftarget"],
+      "skippable": true,
+      "tooltip": "Explore is where you run ad-hoc queries against your data sources.",
+      "content": "Click **Explore** in the sidebar to open the Explore view."
     },
     {
       "type": "section",
-      "id": "select-datasource",
-      "title": "Select Your Data Source",
+      "id": "write-first-logql-query",
+      "title": "Write your first LogQL query",
+      "requirements": ["on-page:/explore", "has-datasource:loki"],
       "blocks": [
         {
           "type": "multistep",
-          "requirements": ["exists-reftarget"],
-          "content": "Click on the **data source picker**, then select the **Loki Demo Kit (loki_nginx)** data source.",
+          "content": "Select **LokiNGINXLogs** in the Data source menu. This datasource contains logs from an Nginx web server and we'll be using it for the rest of this tutorial.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "input[data-testid=\"data-testid Select a data source\"]"
+              "reftarget": "input[data-testid=\"data-testid Select a data source\"]",
+              "tooltip": "Select the data source used by this guide."
+            },
+            {
+              "action": "button",
+              "reftarget": "LokiNGINXLogs"
+            }
+          ]
+        }
+        ,
+        {
+          "type": "multistep",
+          "content": "Open the time range menu (clock icon), then select **Last 7 days**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid TimePicker Open Button\"]",
+              "tooltip": "Log results are always scoped to the selected time range. Pick a range intentionally so you know what time window your query is searching."
             },
             {
               "action": "highlight",
-              "reftarget": "button:has(span:contains(\"loki_nginx\"))"
+              "reftarget": "#TimePickerContent label:contains(\"Last 7 days\")"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"QueryEditorModeToggle\"] input[id^=\"option-code-radiogroup\"]",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Use Code mode to type LogQL directly.",
+          "content": "There are two modes to write LogQL queries: Builder and Code. Use Code mode to type LogQL directly."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "{service_name=\"nginx_access_log\"}",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Run the query to see matching log lines.",
+          "content": "In Loki, the most basic query is a label selector. You can read more about labels [here](https://grafana.com/docs/loki/latest/get-started/labels/). For now, type a label selector query:\n\n`{service_name=\"nginx_access_log\"}`"
+        },
+        {
+          "type": "markdown",
+          "content": "This query means, \"Show me all logs within this time range that have the service name `nginx_access_log`.\""
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "This runs your query using the current time range and data source selection.",
+          "content": "Click **Run query** to execute the query and view the results."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"data-testid panel content\"]:has(span.field.log-syntax-highlight.log-line-body)",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "skippable": false,
+          "tooltip": "This area shows the results for your last query.",
+          "content": "Notice the results area. These are results Loki found that match your query."
+        },
+        {
+          "type": "markdown",
+          "content": "There's a lot going on here, and it can be difficult to look through the raw log line to find what you're looking for. Let's break it down."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "skippable": false,
+          "tooltip": "Click on a log line to see its details and labels.",
+          "content": "Click on the first log line to expand it and view its details."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Log line\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "This shows the original log line as it was ingested.",
+          "content": "This is the **Log line** section. Here you can see the original log line exactly as it was ingested into Loki."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Indexed label\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "Indexed labels are key-value pairs attached to log streams.",
+          "content": "This is the **Indexed labels** section. These are indexed metadata used for filtering logs in your queries. You can read more about how to add labels [here](https://grafana.com/docs/loki/latest/get-started/labels/#loki-labels-examples)."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Structured\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "Structured metadata provides additional context without affecting stream identity.",
+          "content": "This is the **Structured metadata** section. This contains additional fields that aren't part of the log stream's identity. You can read more about structured metadata [here](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/)."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Using the log details panel helps you read the log line and understand the context of the log entry. But you might still be daunted by the sheer volume of results. By default, Loki returns 1000 results. That can be a lot of data to look through if you're looking for something specific."
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\n- How to select a Loki data source\n- How to change the time range used for queries\n- How to start with a label selector\n- How to run a query and view results"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 2: Refine results with line filters 🔎"
+    },
+    {
+      "type": "markdown",
+      "content": "By default, Loki returns 1000 results. That can be a lot of data to look through if you're looking for something specific."
+    },
+    {
+      "type": "markdown",
+      "content": "What you will learn in this section:\n\n- How to narrow results using line filters\n- Why line filters can match more than you expect"
+    },
+    {
+      "type": "markdown",
+      "content": "After selecting a time range and using label selectors, using [line filter expressions](https://grafana.com/docs/loki/latest/query/log_queries/#line-filter-expression) is the next best way to narrow results. Line filters let you filter by text anywhere in the log line. Let's use them to find HTTP 500 errors."
+    },
+    {
+      "type": "section",
+      "id": "line-filters",
+      "title": "Refine results with line filters",
+      "requirements": ["on-page:/explore", "has-datasource:loki"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "More label selectors = more precise queries.",
+          "content": "Start by adding another label selector to narrow the search:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"}`\n\nAdding more than one label selector helps get you more precise. The more precise your query is, the fewer results it returns, and the faster and more cheaply your query runs."
+        },
+        {
+          "type": "multistep",
+          "content": "Now add a simple line filter, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"",
+              "tooltip": "Line filters match text anywhere in each log line."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Uh-oh, this is noisier than expected. `|= \"500\"` matches any log line containing that text, not even if it's not the HTTP status code. Next we’ll make it more precise."
+        },
+        {
+          "type": "multistep",
+          "content": "Exclude a common success code, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\"`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\" != \"200\"",
+              "tooltip": "Combining include and exclude filters can reduce noise."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
             }
           ]
         }
@@ -42,120 +219,271 @@
     },
     {
       "type": "markdown",
-      "content": "## ✍️ Write Your First LogQL Query\n\nNow that we have our data source selected and Code mode enabled, let's write our first LogQL query! Every LogQL query starts with a label selector enclosed in curly braces."
+      "content": "Well, that narrows it down further-- we're now only seeing lines that have a \"500\" and do not have \"200\". But it's still just looking for those numbers anywhere in the log line. There's still a better way to write this query."
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\n- How to use line filters to narrow results\n- Why line filters can match more than you expect"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 3: Parse JSON for precise filtering 🧩\n\nWhat you will learn in this section:\n\n- How to parse JSON logs\n- How to filter by a specific field"
+    },
+    {
+      "type": "markdown",
+      "content": "Because these Nginx access logs are already in JSON format, parsing them with `| json` lets LogQL extract fields like `status` so you can filter precisely—without accidentally matching \"500\" somewhere else in the line.\n\nThe `json` parser is one of several [parser expressions](https://grafana.com/docs/loki/latest/query/log_queries/#parser-expression) available in LogQL. Learn more about the [JSON parser expression](https://grafana.com/docs/loki/latest/query/log_queries/#json) in the docs."
     },
     {
       "type": "section",
-      "id": "first-query",
-      "title": "Write Your First LogQL Query",
-      "requirements": ["section-completed:select-datasource"],
+      "id": "json-query",
+      "title": "Parse JSON for precise filtering",
+      "requirements": ["on-page:/explore", "has-datasource:loki"],
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid=\"QueryEditorModeToggle\"] label[for^=\"option-code-radiogroup\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "The **Code mode** allows you to write LogQL queries directly as text, giving you full control over the query syntax. This is perfect for learning LogQL's powerful query language.",
-          "content": "Switch to **Code** mode by clicking the raw query toggle to write LogQL directly."
-        },
-        {
-          "type": "interactive",
           "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\"}",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Always start a LogQL query with a label selector. They always appear within curly braces.",
-          "content": "Write your first query by typing `{service_name=\"nginx_access_log\"}` into the query field.\n\nThis query selects all log lines from the Nginx access log service. Label selectors use the format `{label_name=\"value\"}` to filter logs by specific attributes. Add as many label selectors as you can to filter your results down faster!"
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label=\"Run query\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "The **Run query** button executes your LogQL query and displays the results. This is how you see the actual log data that matches your query criteria.",
-          "content": "Click the **Run query** button to execute your LogQL query and see the results."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid=\"data-testid panel content\"]",
-          "requirements": ["exists-reftarget"],
-          "doIt": false,
-          "tooltip": "The **panel content** area displays the results of your LogQL query. This is where you can see the actual log data that matches your query criteria.",
-          "content": "Notice the **panel content** area where your query results are displayed. You can see that the query returned 1000 log lines, which is the default limit. Let's try to narrow down our search further."
-        },
-        {
-          "type": "markdown",
-          "content": "The `|=` operator is a filter expression used to filter log lines by the presence of a specific string. Let's use it to try to find HTTP 500 errors in the logs."
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Let's refine our query by adding more specific filters. We're adding a **host** label selector to filter by a specific server, and using the **line filter** `|= \"500\"` to only show log entries containing \"500\" (HTTP 500 errors).",
-          "content": "Type a more specific query: `{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} |= \"500\"` to filter for 500 errors from a specific host."
+          "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Parsing structured logs lets you filter by fields instead of raw text.",
+          "content": "Parse JSON and filter by the `status` field:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"`"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Now let's execute this refined query to see the filtered results.",
-          "content": "Click the **Run query** button to execute the refined query and see the filtered results."
-        },
-        {
-          "type": "markdown",
-          "content": "Oops! We meant to filter for HTTP 500 errors, but the query returns lines that have \"500\" anywhere in the body. We'll have to be more specific."
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\", host=\"apfelstrudel\"} |= \"500\" != \"200\"",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Let's combine both approaches! We'll use **|= \"500\"** to include lines containing \"500\" and **!= \"200\"** to exclude lines containing \"200\". This gives us a more precise filter for HTTP 500 errors.",
-          "content": "Type a combined query: `{service_name=\"nginx_access_log\", host=\"apfelstrudel\"} |= \"500\" != \"200\"` to filter for lines containing \"500\" but not \"200\"."
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "This runs your query using the current time range and data source selection.",
+          "content": "Click **Run query** to execute the query and view the results."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Now let's execute this combined query to see the filtered results that contain \"500\" but not \"200\".",
-          "content": "Click the **Run query** button to execute the query and see the filtered error logs."
+          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Click on a log line to see its details and parsed fields.",
+          "content": "Click on the first log line to expand it and view its details."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Parsed field\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Parsed fields show values extracted by your query pipeline.",
+          "content": "Notice the **Parsed field** section. This contains fields extracted from the log line by your query. Click the label to expand it."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Well, that narrows it down further-- we're now only seeing lines that have a \"500\" and do not have \"200\". But there's still a better way to write this query."
+      "content": "**Parsed fields** are values extracted from each log line at query time (during the pipeline stages).\n\nBecause these logs are JSON, `| json` automatically parses the JSON object and populates fields from its keys. Those parsed fields are what let you filter precisely (like `status = \"500\"`) and format output (like `{{.request_uri}}`) without relying on fragile text matching."
+    },
+    {
+      "type": "markdown",
+      "content": "But what if you want to see specific fields for *all* log lines without clicking each one? In the next section, you'll learn how to format the output so the fields you care about are always visible."
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\n- How to parse JSON logs\n- How to filter by a specific field"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 4: Format output with line_format 🧹\n\nCompared to line filters, using `| json` is a better fit here because these Nginx logs are structured. But now we're hitting a different problem: even when you filter correctly, the output can still be too cluttered to quickly understand what's happening.\n\nNext we'll make the results more meaningful by displaying only what we need.\n\nWhat you will learn in this section:\n\n- How to format each log line for easier scanning"
     },
     {
       "type": "section",
-      "id": "json-query",
-      "title": "Use JSON parsing for precise filtering",
-      "requirements": ["section-completed:first-query"],
+      "id": "line-format",
+      "title": "Format output with line_format",
+      "requirements": ["on-page:/explore", "has-datasource:loki"],
       "blocks": [
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Here's a much better approach! We'll use the **| json** parser to extract structured data from the log lines, then filter by the **status** field directly. This is more precise than string matching.",
-          "content": "Type a better query: `{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"` to parse JSON and filter by the status field."
+          "type": "multistep",
+          "content": "Add `line_format` and run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\"`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.status}} {{.request_uri}}\"",
+              "tooltip": "Formatting changes how results display without changing which lines match."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]",
-          "requirements": ["exists-reftarget"],
-          "tooltip": "Now let's execute this JSON-based query to see the precise HTTP 500 error logs.",
-          "content": "Click the **Run query** button to execute the JSON parsing query and see the filtered results."
+          "reftarget": "div[data-testid=\"logRows\"] div[style*=\"top: 0px\"] span.field.log-syntax-highlight.log-line-body",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Click on a log line to see its details and parsed fields.",
+          "content": "Click on the first log line to expand it and view its details."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div.log-line-inline-details div[class*=\"collapse__header-label\"]:contains(\"Parsed field\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "Parsed fields can be used in your line_format template.",
+          "content": "Look at the **Parsed fields** section. Any of these fields can be added to your `line_format` template using `{{.fieldname}}` syntax. Let's add `request_method` to see the HTTP method alongside each result."
+        },
+        {
+          "type": "multistep",
+          "content": "Update the query to include `request_method`:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"",
+              "tooltip": "Add more fields to make the formatted output more informative."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now you see only the information relevant to you. You can still click into any log line to view the full log or other parsed fields when needed."
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\n- How to format each log line for easier scanning"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 5: Use regex for complex patterns 🧵\n\nSometimes exact matches aren't enough. When you need to match patterns—like URIs containing numeric IDs, or values that vary in format—regex gives you the flexibility to express those rules. In LogQL, you can apply regex to specific parsed fields using `=~` (match) or `!~` (exclude), keeping your queries precise.\n\n**Note:** LogQL also has a [regexp parser expression](https://grafana.com/docs/loki/latest/query/log_queries/#regular-expression) for extracting fields from unstructured text. This section focuses on regex pattern matching with `=~` and `!~` operators on already-parsed fields.\n\nWhat you will learn in this section:\n\n- How to apply regex to a specific parsed field\n- When regex is the right tool for the job"
+    },
+    {
+      "type": "section",
+      "id": "regex-last-resort",
+      "title": "Use regex for complex patterns",
+      "requirements": ["on-page:/explore", "has-datasource:loki"],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Match only URIs that include an ID segment, then run the query:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"",
+              "tooltip": "Regex on a specific field is more precise than regex on the full line."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "What if you want to catch all server errors, not just 500? Using `status =~ \"5..\"` matches 500, 502, 503, and any other 5xx code in one pattern. Update your query to use this pattern:\n\n`{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status =~ \"5..\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "{service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status =~ \"5..\" | request_uri =~ \".*/id/[0-9]+.*\" | line_format \"{{.request_method}} {{.status}} {{.request_uri}}\"",
+              "tooltip": "Regex can also match patterns in field values, not just URIs."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**Tip:** Just like `=~` matches a regex pattern, `!~` excludes lines that match. For example, `| request_uri !~ \"/admin\"` filters out any requests to admin pages."
+    },
+    {
+      "type": "markdown",
+      "content": "**Performance note:** Regex is more expensive to evaluate than exact matches. At scale, prefer `=` and `!=` when they can do the job—save regex for patterns that truly need it."
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\n- How to apply regex to a specific parsed field\n- Why exact matches are preferred when possible (regex is more expensive at scale)"
+    },
+    {
+      "type": "markdown",
+      "content": "## Section 6: Turn logs into a chart 📈\n\nSo far you've been filtering and reading individual log lines. But sometimes you need to see the bigger picture—how often are errors happening? Is the rate increasing? Turning logs into metrics lets you spot trends, create dashboards, and set up alerts based on log data.\n\nWhat you will learn in this section:\n\n- How to count matching log lines over time\n- How to avoid common series limit errors"
+    },
+    {
+      "type": "markdown",
+      "content": "`count_over_time` is a LogQL function that counts how many log lines match your query within each time window. The syntax wraps your log query and adds a time range in square brackets:\n\n`count_over_time( {your_log_query} [time_window] )`\n\nThe `[time_window]` (like `[1h]` or `[5m]`) defines how wide each bucket is. Loki counts matching lines in each bucket and returns the result as a time series you can graph."
+    },
+    {
+      "type": "section",
+      "id": "metrics-teaser",
+      "title": "Turn logs into a chart",
+      "requirements": ["on-page:/explore", "has-datasource:loki"],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Use `count_over_time` to count the number of HTTP 500s over time. Notice how we wrap our existing log query and add `[1h]` to define 1-hour buckets:\n\n`count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h])",
+              "tooltip": "This turns a log query into a time series by counting matches over time."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:contains(\"maximum number of series\")",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "This error occurs when your query produces too many unique time series.",
+          "content": "Oops! You've hit a **series limit error**. This happens because `| json` parsing creates many unique label combinations, and each combination becomes a separate series. Loki limits how many series a single query can return."
+        },
+        {
+          "type": "markdown",
+          "content": "To fix this, we need to aggregate the results into fewer series. Wrapping the query with `sum()` combines all the series into one."
+        },
+        {
+          "type": "multistep",
+          "content": "Wrap the query with `sum()` and run it:\n\n`sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))`",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea.inputarea.monaco-mouse-cursor-text",
+              "targetvalue": "sum(count_over_time({service_name=\"nginx_access_log\", host=\"appfelstrudel\"} | json | status = \"500\"[1h]))",
+              "tooltip": "Aggregating reduces series count by combining many series into one."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid RefreshPicker run button\"]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now you have a time series chart showing HTTP 500 errors over time. This same pattern—wrap with `count_over_time`, aggregate with `sum()`—works for any log query you want to visualize as a metric. You can add this to dashboards or use it as the basis for alerts."
+    },
+    {
+      "type": "markdown",
+      "content": "### What you have learned\n\n- How to count log matches over time\n- How to reduce series cardinality with aggregation"
+    },
+    {
+      "type": "markdown",
+      "content": "## Wrap up\n\nA practical LogQL workflow is:\n\n- Start with labels to narrow the search\n- Add line filters to refine\n- Prefer parsing for precision\n- Format results to scan quickly\n- Use regex only when you can't parse\n- Aggregate when turning logs into metrics\n\nFor more tips on writing efficient queries, see the [Query best practices](https://grafana.com/docs/loki/latest/query/bp-query/) documentation."
     }
   ]
 }
