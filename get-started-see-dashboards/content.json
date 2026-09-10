@@ -1,0 +1,99 @@
+{
+  "id": "get-started-see-dashboards",
+  "title": "Use dashboards to check a system's health",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A dashboard is a saved page of panels: one place to check whether a system is healthy. In Grafana Cloud, that's often the first thing you open. No query to write, nothing to rebuild. The one you'll open is a demo wind farm: power produced, turbine speed, and wind, all on the same page, updating as you watch."
+    },
+    {
+      "type": "markdown",
+      "content": "To open a dashboard, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-a-dashboard",
+      "title": "Open a dashboard",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click **Dashboards** in the main menu. This page lists every saved dashboard, grouped in folders.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/avzwehmz/demo-wind-farm",
+          "verify": "on-page:/d/avzwehmz",
+          "objectives": ["on-page:/d/avzwehmz"],
+          "content": "Open **Demo Wind Farm**, one of the dashboards in the **Examples** folder. It watches a small wind farm: power produced, turbine speed, and wind."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You opened a saved dashboard from the dashboard list. No setup, just a click."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, read the dashboard and try its controls:"
+    },
+    {
+      "type": "section",
+      "id": "read-the-dashboard",
+      "title": "Read the dashboard",
+      "requirements": ["on-page:/d/avzwehmz"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid Panel header Wind Farm - Total Average Power (Watts)']",
+          "content": "Each rectangle is a **panel**: one view of the data. This chart tracks the farm's power output over time. Others on the page show single numbers, like **Current Power**.",
+          "tooltip": "One view of the data. A dashboard is a saved page of these.",
+          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"]
+        },
+        {
+          "type": "multistep",
+          "content": "Each panel has a menu that lets you view, share, or inspect just that panel. It hides in the panel's top-right corner until your mouse is over the panel. Watch **Current Power**: the menu opens.",
+          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"],
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "[data-testid='data-testid Panel header Current Power']",
+              "tooltip": "This panel, like every panel, keeps a menu in its top-right corner."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Panel menu Current Power']",
+              "tooltip": "The menu lives here. **View**, **Share**, and **Inspect** give you a closer look at this one panel."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "The **time range** at the top right sets the window of time the whole page shows. Open it and choose **Last 1 hour**, then watch: every panel on the page redraws to the new window at once.",
+          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid TimePicker Open Button']",
+              "tooltip": "The window of time the whole page is showing. Every panel follows it."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid TimePicker time range option now-1h to now'] label",
+              "tooltip": "One change here redraws every panel on the page for the new window of time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Change the time range once and every panel follows. That's enough to read almost any dashboard you meet in Grafana Cloud."
+    }
+  ]
+}
