@@ -13,7 +13,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 ## Critical Rules
 
 1. **Use `navmenu-open`** for any step targeting navigation menu elements
-2. **Use stable selectors** -- prefer `data-testid`, button text, and semantic attributes over CSS classes
+2. **Use stable selectors** -- prefer a `grafana:` symbolic reference, then `data-testid`, button text, and semantic attributes over CSS classes ([why](docs/selectors-and-testids.md#symbolic-selector-references))
 3. **No markdown titles in guides** -- the guide `title` is rendered by the app frame; a leading `## Title` duplicates it
 4. **No multistep singletons** -- a `multistep` with one step must be a plain `interactive` block
 5. **Include `exists-reftarget` for selector-targeting steps** -- the repo convention is to list `exists-reftarget` in the `requirements` array for any block or step with a `reftarget`.
@@ -41,6 +41,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Author/edit a guide | [authoring-guide.mdc](.cursor/authoring-guide.mdc) | [common-workflows.mdc](.cursor/common-workflows.mdc), [tutorial-patterns.mdc](.cursor/tutorial-patterns.mdc), [proven-patterns.mdc](.cursor/proven-patterns.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc), [best-practices.mdc](.cursor/best-practices.mdc), `shared/snippets/`, `docs/` |
 | Audit an existing guide | [audit-guide](.cursor/skills/audit-guide/SKILL.md) skill | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md), [best-practices.mdc](.cursor/best-practices.mdc) |
 | Update/modify an existing guide | [update-guide](.cursor/skills/update-guide/SKILL.md) skill | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
+| Convert a guide's selectors to `grafana:` references | [convert-guide-selectors](.cursor/skills/convert-guide-selectors/SKILL.md) skill | [symbolic-selector-syntax.md](.cursor/skills/convert-guide-selectors/symbolic-selector-syntax.md), [selectors-and-testids.md](docs/selectors-and-testids.md) |
 | Review a guide PR | [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc), `docs/` |
 | Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
