@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Confirm the data source works end to end by running a query in Explore. Every ClickHouse server exposes the `system` database, so you can verify the connection even before you know your own table names.\n\nTo verify your data, complete the following steps."
+      "content": "Confirm the data source works end to end by running a query in Explore. A simple `SELECT 1` confirms Grafana can query ClickHouse and get a result back, without needing access to any specific table.\n\nTo verify your data, complete the following steps."
     },
     {
       "type": "section",
@@ -34,13 +34,24 @@
         {
           "type": "interactive",
           "action": "highlight",
+          "reftarget": "[data-testid='data-testid radio-button-option sql']",
+          "skippable": true,
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "The editor opens in **Query Builder** mode by default. Switch it to **SQL Editor**.\n\nSkip this step if the editor is already set to **SQL Editor**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
           "reftarget": "[data-testid='query-editor-rows']",
           "doIt": false,
           "requirements": [
             "on-page:/explore",
             "exists-reftarget"
           ],
-          "content": "Switch the editor to **SQL** and enter a simple query to confirm the connection:\n\n```sql\nSELECT name FROM system.tables LIMIT 10\n```"
+          "content": "In the SQL editor, enter a simple query to confirm the connection:\n\n```sql\nSELECT 1\n```"
         },
         {
           "type": "interactive",
@@ -50,13 +61,13 @@
             "on-page:/explore",
             "exists-reftarget"
           ],
-          "content": "Click **Run query**.\n\nYou should see a list of table names in the results panel below the editor. That confirms Grafana is querying ClickHouse successfully."
+          "content": "Click **Run query**.\n\nYou should see a single row with the value `1` in the results panel below the editor. That confirms Grafana is querying ClickHouse successfully."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "**Confirm successful access**\n\nAfter running the query, you should see:\n\n- Rows returned in the Explore results panel\n- No connection errors or timeouts\n- Table names from your ClickHouse server\n\n**Congratulations!** You've connected ClickHouse to Grafana Cloud and confirmed it returns data."
+      "content": "**Confirm successful access**\n\nAfter running the query, you should see:\n\n- A single row with the value `1` in the Explore results panel\n- No connection errors or timeouts\n\n**Congratulations!** You've connected ClickHouse to Grafana Cloud and confirmed it returns data."
     },
     {
       "type": "markdown",
