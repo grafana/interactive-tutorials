@@ -1,0 +1,286 @@
+{
+  "id": "transform-testdata-query",
+  "title": "Transform query results with the TestData data source",
+  "blocks": [
+    {
+      "type": "markdown",
+      "id": "intro",
+      "content": "A transformation runs **after** your query returns and **before** the visualization draws. Instead of rewriting the query, you reshape the frame it produced: reduce a series to a single number, rename and reorder fields, drop rows, join two queries together.\n\nMost transformation tutorials need Prometheus. This one does not. The **TestData** data source ships with every Grafana, so the query half behaves the same everywhere and you can concentrate on the transformation half."
+    },
+    {
+      "type": "callout",
+      "id": "before-you-start",
+      "title": "Before you start",
+      "content": "You need edit rights on a dashboard. The first section adds a TestData data source and completes on its own if you already have one; creating it needs an administrator."
+    },
+    {
+      "type": "markdown",
+      "id": "before-setup",
+      "content": "First, make sure there is something to query."
+    },
+    {
+      "type": "section",
+      "id": "add-testdata",
+      "title": "Add the TestData data source",
+      "requirements": [
+        "is-admin"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-datasource-types",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "content": "Open the list of data source types under **Connections**.",
+          "tooltip": "TestData generates its own data, so there is nothing to connect and no credentials to enter.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "id": "pick-testdata",
+          "action": "button",
+          "reftarget": "TestData",
+          "content": "Choose **TestData** from the list.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources/new"
+          ],
+          "verify": "on-page:/connections/datasources/edit",
+          "tooltip": "Grafana creates the data source as soon as you choose a type, with no separate save step.",
+          "skippable": true
+        }
+      ],
+      "objectives": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "after-setup",
+      "content": "With a data source in place, build a panel whose results are worth reshaping."
+    },
+    {
+      "type": "section",
+      "id": "build-query",
+      "title": "Build a query worth transforming",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "open-panel-editor",
+          "content": "Create a panel and open the panel editor.",
+          "steps": [
+            {
+              "id": "goto-new-dashboard",
+              "action": "navigate",
+              "reftarget": "/dashboard/new",
+              "tooltip": "An unsaved dashboard is enough; nothing here needs saving.",
+              "description": "Start a new dashboard."
+            },
+            {
+              "id": "add-panel",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new",
+                "min-version:13.1.0"
+              ],
+              "tooltip": "The Add pane opens with the dashboard, and this drops an empty panel onto the canvas.",
+              "description": "Add a panel."
+            },
+            {
+              "id": "open-editor",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Sidebar.configurePanelButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new",
+                "min-version:13.1.0"
+              ],
+              "tooltip": "This opens the editor, where the Queries and Transformations tabs live.",
+              "description": "Open the panel editor."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "choose-testdata",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "TestData",
+          "requirements": [
+            "exists-reftarget",
+            "has-datasource:grafana-testdata-datasource"
+          ],
+          "formHint": "TestData",
+          "content": "Set the panel's **Data source** to **TestData**.",
+          "tooltip": "Typing filters the list and picks the match, so there is nothing left to click afterwards."
+        },
+        {
+          "type": "multistep",
+          "id": "shape-the-query",
+          "content": "Ask for three series, so there is something to reduce.",
+          "steps": [
+            {
+              "id": "set-series-count",
+              "action": "formfill",
+              "reftarget": "input[name='seriesCount']",
+              "targetvalue": "3",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "formHint": "3",
+              "tooltip": "The default Random Walk scenario returns one series, and three makes a transformation's effect visible.",
+              "description": "Set Series count to 3."
+            },
+            {
+              "id": "run-the-query",
+              "action": "highlight",
+              "reftarget": "{grafana:components.RefreshPicker.runButtonV2}",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Three random walks should appear in the panel above.",
+              "description": "Run the query."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "after-query",
+      "content": "Three series, one query. The tabs below the panel run in the order they are listed: the query fetches, transformations rewrite what it returned, and the visualization draws whatever comes out the end. Nothing you do next changes what Grafana asked the data source for."
+    },
+    {
+      "type": "section",
+      "id": "first-transformation",
+      "title": "Add your first transformation",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-transform-tab",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Transformations}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Next to **Queries**, open the **Transformations** tab. If your panel editor shows a sidebar with a **Transformations** section instead of tabs, you are on the new query editor and there is nothing to open here \u2014 skip this step.",
+          "tooltip": "The number beside the name counts how many are applied, and it reads zero right now.",
+          "skippable": true
+        },
+        {
+          "type": "multistep",
+          "id": "add-reduce",
+          "content": "Apply the **Reduce** transformation.",
+          "steps": [
+            {
+              "id": "open-transform-drawer",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid add transformation button'], [aria-label='Add transformation']",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "A drawer opens listing every transformation Grafana ships.",
+              "description": "Open the transformation list."
+            },
+            {
+              "id": "search-reduce",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Transforms.searchInput}",
+              "targetvalue": "Reduce",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "formHint": "Reduce",
+              "tooltip": "There are more than thirty to choose from, so searching beats scrolling.",
+              "description": "Search for Reduce."
+            },
+            {
+              "id": "pick-reduce",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Transforms.card:Reduce} button",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Reduce collapses every series to one row per field, using a calculation you choose.",
+              "description": "Select Reduce."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "see-the-result",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.toggleTableView}",
+          "targetstate": "true",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Turn on **Table view** to read the frame the transformation produced.",
+          "tooltip": "Three time series have become three rows, each with a name and one calculated value."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "after-first",
+      "content": "The **Mode** and **Calculations** fields are the two that matter here. *Series to rows* gives one row per series; *Reduce fields* keeps the frame's shape and replaces each field with its calculated value. Change **Calculations** from Max to Mean and the numbers change without the query re-running, because nothing about the query changed.\n\nOne transformation is a calculation. Two make a pipeline, and then order starts to matter."
+    },
+    {
+      "type": "section",
+      "id": "chain-a-second",
+      "title": "Chain a second transformation",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "add-organize",
+          "content": "Add **Organize fields by name** after Reduce.",
+          "steps": [
+            {
+              "id": "open-drawer-again",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid add transformation button'], [aria-label='Add transformation']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "The same control, now reading Add another transformation.",
+              "description": "Open the transformation list again."
+            },
+            {
+              "id": "search-organize",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Transforms.searchInput}",
+              "targetvalue": "Organize",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "formHint": "Organize",
+              "tooltip": "Organize fields by name renames, reorders and hides fields.",
+              "description": "Search for Organize."
+            },
+            {
+              "id": "pick-organize",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Transforms.card:Organize fields by name} button",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "It operates on the fields Reduce produced, not on the ones the query returned.",
+              "description": "Select Organize fields by name."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "outro",
+      "content": "This is the point of the exercise. **Organize fields by name** lists the columns Reduce produced. Put Organize first instead and it would list the three series, and its renames would be thrown away by Reduce a moment later. Each transformation is numbered, so you can drag one above another to reorder the pipeline, or use the eye icon to disable a step without deleting it.\n\nWorth trying next, on the same panel:\n\n- **Filter data by values** \u2014 drop rows by a condition instead of filtering in the query.\n- **Add field from calculation** \u2014 a new field from arithmetic across existing ones.\n- **Join by field** \u2014 add a second query and line the two frames up on a shared field.\n\nWhen a transformation is greyed out, that is Grafana saying it cannot apply to the shape of data you currently have. Change the scenario in the **Queries** tab and the list changes with it."
+    }
+  ]
+}
