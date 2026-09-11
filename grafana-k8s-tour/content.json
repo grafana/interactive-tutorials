@@ -1,0 +1,282 @@
+{
+  "id": "grafana-k8s-tour",
+  "title": "Tour the Kubernetes Monitoring app",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This tour has three independent sections you can take in any order \u2014 start here to see how the home page's three views divide cluster health, efficiency and alerts, and where firing alerts collect on their own page."
+    },
+    {
+      "type": "section",
+      "id": "tour-overview",
+      "title": "The Kubernetes Overview and alerts",
+      "requirements": [
+        "has-permission:grafana-k8s-app.alerts:read",
+        "has-permission:grafana-k8s-app.home:read"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-overview",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/home/overview",
+          "content": "Open the **Overview** view \u2014 the default read on your cluster's health.",
+          "tooltip": "Cluster health, at a glance, is the first thing this app shows you.",
+          "doIt": true,
+          "requirements": []
+        },
+        {
+          "type": "interactive",
+          "id": "home-datasource",
+          "action": "highlight",
+          "reftarget": "[data-testid='prometheus-picker']",
+          "content": "Every view on this page \u2014 **Overview**, **Efficiency** and **Alerts** \u2014 scopes its panels to whichever cluster's Prometheus is picked here.",
+          "tooltip": "Every panel across all three home views reads from whichever cluster's Prometheus is chosen here.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/home/overview"
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "home-other-views",
+          "content": "See what the **Efficiency** and **Alerts** views answer that Overview doesn't.",
+          "requirements": [],
+          "steps": [
+            {
+              "id": "home-other-views-efficiency",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/home/efficiency",
+              "tooltip": "Efficiency turns the same cluster into a right-sizing question: what's requested vs. what's actually used.",
+              "requirements": []
+            },
+            {
+              "id": "home-other-views-alerts",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/home/alerts",
+              "tooltip": "This view rolls firing alerts into the same page as health and efficiency.",
+              "requirements": []
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "open-alerts-page",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/alerts",
+          "content": "Open the standalone **Alerts** page, where every firing alert across your clusters lands in one list.",
+          "tooltip": "Firing alerts across every connected cluster collect here, independent of which cluster you last viewed.",
+          "doIt": true,
+          "requirements": []
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've now seen how Overview, Efficiency and Alerts split one cluster's story, and where every cluster's firing alerts land on their own page."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, change what the Clusters table shows with two shared controls, then find those same controls waiting on every other inventory list."
+    },
+    {
+      "type": "section",
+      "id": "tour-lists",
+      "title": "The inventory lists and their shared controls",
+      "requirements": [
+        "has-permission:grafana-k8s-app.all-jobs:read",
+        "has-permission:grafana-k8s-app.cluster:read",
+        "has-permission:grafana-k8s-app.namespace:read",
+        "has-permission:grafana-k8s-app.nodes:read",
+        "has-permission:grafana-k8s-app.workload:read"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-clusters",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/navigation/cluster",
+          "content": "Open the **Clusters** list \u2014 the inventory view every other list in this app mirrors.",
+          "tooltip": "This table's columns and view switch are the same pattern every inventory list in the app uses.",
+          "doIt": true,
+          "requirements": []
+        },
+        {
+          "type": "guided",
+          "id": "column-picker-walkthrough",
+          "content": "Open the column picker to choose which fields the **Clusters** table shows.",
+          "requirements": [
+            "on-page:/a/grafana-k8s-app/navigation/cluster"
+          ],
+          "steps": [
+            {
+              "id": "column-picker-open",
+              "action": "button",
+              "reftarget": "[data-testid='column-picker-button']",
+              "tooltip": "This opens the list of fields you can add or remove from the table.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/cluster"
+              ]
+            },
+            {
+              "id": "column-picker-menu",
+              "action": "highlight",
+              "reftarget": "[data-testid='column-picker-menu']",
+              "tooltip": "Tick or untick any field here and the table updates immediately.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/cluster"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "usage-cost-switch",
+          "action": "highlight",
+          "reftarget": "[data-testid='TableViewSwitch']",
+          "content": "Next to the column picker sits the usage/cost switch \u2014 flip it yourself to see every quantity column swap between raw usage and its dollar cost.",
+          "tooltip": "Flipping this swaps every quantity column between raw usage and what it costs.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/navigation/cluster"
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "inventory-lists-tour",
+          "content": "**Namespaces**, **Workloads**, **Nodes** and **Jobs** carry the same column picker and usage/cost switch you just used on Clusters.",
+          "requirements": [],
+          "steps": [
+            {
+              "id": "open-namespaces",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/navigation/namespace",
+              "tooltip": "Namespaces break the same cluster totals down by team or tenant.",
+              "requirements": []
+            },
+            {
+              "id": "open-workloads",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/navigation/workload",
+              "tooltip": "Workloads is where you'd look for the deployment or statefulset actually driving a number.",
+              "requirements": []
+            },
+            {
+              "id": "open-nodes",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/navigation/nodes",
+              "tooltip": "Nodes shows the machines underneath every pod you've been looking at.",
+              "requirements": []
+            },
+            {
+              "id": "open-jobs",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/navigation/all-jobs/jobs",
+              "tooltip": "Jobs covers the run-to-completion workloads the other lists don't track well.",
+              "requirements": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The column picker and usage/cost switch you just used on Clusters work the same way on Namespaces, Workloads, Nodes and Jobs \u2014 for the CPU and memory drilldowns inside any of them, see the k8s-cpu and k8s-mem guides."
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, follow the money from where spend concentrates to what it could be, then confirm the metrics behind those numbers are actually arriving and what they cost in series."
+    },
+    {
+      "type": "section",
+      "id": "tour-cost-and-cardinality",
+      "title": "Cost, and what your metrics cost",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "has-permission:grafana-k8s-app.cost:read"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-cost-overview",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/cost/overview",
+          "content": "Open the cost **Overview**, which ranks spend by cluster and surfaces the workloads spending the most.",
+          "tooltip": "This is where infrastructure spend gets broken down by cluster and by the workloads driving it.",
+          "doIt": true,
+          "requirements": []
+        },
+        {
+          "type": "interactive",
+          "id": "cost-datasource",
+          "action": "highlight",
+          "reftarget": "[data-testid='prometheus-picker']",
+          "content": "Cost figures here scope to whichever cluster's Prometheus is picked, the same control you saw on the home page.",
+          "tooltip": "Every cost figure on this page comes from whichever cluster's Prometheus is chosen here.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/cost/overview"
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "savings-and-metrics-status",
+          "content": "See what that spend could be with savings applied, then confirm the metrics behind these numbers are actually flowing in.",
+          "requirements": [],
+          "steps": [
+            {
+              "id": "open-savings",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/cost/savings",
+              "tooltip": "Savings recalculates the same spend against right-sized requests, so you can see the gap.",
+              "requirements": []
+            },
+            {
+              "id": "open-metrics-status",
+              "action": "navigate",
+              "reftarget": "/a/grafana-k8s-app/configuration/metrics-status",
+              "tooltip": "Before trusting any of those numbers, this confirms each cluster is actually still sending metrics.",
+              "requirements": []
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "metrics-status-datasource",
+          "action": "highlight",
+          "reftarget": "[data-testid='prometheus-picker']",
+          "content": "The same data source control scopes these per-cluster status panels.",
+          "tooltip": "This status view scopes to whichever cluster's Prometheus is chosen here too.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration/metrics-status"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "open-cardinality",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/configuration/cardinality",
+          "content": "Open **Cardinality**, scoped to the same Prometheus, to see what those metrics cost in series \u2014 job and metric names ranked by how many series each one adds.",
+          "tooltip": "Cardinality carries over the same Prometheus scope you just had on Metrics status.",
+          "doIt": true,
+          "requirements": []
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've traced spend from cost overview through savings, then confirmed the metrics behind those numbers are arriving and counted what they cost in series."
+    }
+  ]
+}
