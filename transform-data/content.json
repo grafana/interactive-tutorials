@@ -26,21 +26,21 @@
           ]
         },
         {
-          "type": "multistep",
-          "content": "Click the **Add new element** icon and then click **Panel**. When the new panel is added to the dashboard, click **Configure**.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid='data-testid sidebar add new panel']"
-            },
-            {
-              "action": "button",
-              "reftarget": "Configure"
-            }
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.Sidebar.newPanelButton",
+          "content": "Click or drag a panel onto the dashboard.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Configure visualization",
+          "content": "On the panel, click **Configure visualization**.",
+          "requirements": [
+            "exists-reftarget"
           ]
         },
         {
@@ -61,14 +61,11 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Visualizations']",
-          "content": "Click **All visualizations** to display the full list of visualization types."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Plugin visualization item Time series']",
-          "content": "Select **Time series**."
+          "reftarget": "div[role='button']:nth-match(4)",
+          "content": "Grafana suggests visualizations based on the data source and query you've entered. For this special data source and query type, one of the suggestions is Time series. Select the first time series suggestion.",
+          "requirements": [
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
@@ -92,30 +89,28 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "Great! You've set up a basic dashboard. Now let's check out transformations."
+          "content": "Great! You've set up a basic dashboard. Now let's check out transformations.\n\n\n\nNote: In this interactive guide, we're using the **New query editor** experience. This guide will not work with the **Classic query editor**."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Transformations']",
-          "content": "Below the panel, click the **Transformations** tab."
+          "action": "button",
+          "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add transformation']",
+          "content": "Below the panel, click the Add element icon (blue plus sign) next to the word **Transformations** in the **Data** sidebar.",
+          "requirements": [
+            "exists-reftarget"
+          ]
         },
         {
           "type": "markdown",
-          "content": "Awesome! You've arrived at the Transformations tab. Here, you can choose from several options to improve how your data displays insights for you."
+          "content": "Awesome! You've arrived at the Transformations editor. Here, you can choose from several options to improve how your data displays insights for you.\n\n\n\nYou can scroll up and down to see all of the available transformations. Now let's try one."
         },
         {
-          "type": "multistep",
-          "content": "To save space, not all of the available transformations are displayed initially. Scroll to the bottom of the tab and click **+ Show more** to open the **Add another transformation** drawer. \n\nThen scroll down and select **Add field by calculation**.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid='data-testid add transformation button']"
-            },
-            {
-              "action": "button",
-              "reftarget": "Add field from calculation"
-            }
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add field from calculation",
+          "content": "Select **Add field by calculation**.",
+          "requirements": [
+            "exists-reftarget"
           ]
         },
         {
@@ -132,7 +127,7 @@
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid add transformation button']"
+              "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add transformation']"
             },
             {
               "action": "button",
@@ -141,28 +136,12 @@
           ]
         },
         {
-          "type": "multistep",
-          "content": "Click **Filter** and choose which parts of the data the transformation applies to.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Filter']:nth-match(1)"
-            },
-            {
-              "action": "formfill",
-              "reftarget": "input:nth-of-type(1):nth-match(2)",
-              "targetvalue": "Annotations"
-            },
-            {
-              "action": "formfill",
-              "reftarget": "input:nth-of-type(1):nth-match(2)",
-              "targetvalue": "Query and Transformation"
-            },
-            {
-              "action": "formfill",
-              "reftarget": "input:nth-of-type(1):nth-match(3)",
-              "targetvalue": "Query"
-            }
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Transformation editor Filter fields by name'] button:text('A-series')",
+          "content": "Click the **A-series** pill to filter out that field.",
+          "requirements": [
+            "exists-reftarget"
           ]
         },
         {
@@ -171,34 +150,27 @@
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Show transform help']"
+              "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Show transformation help']"
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Drawer close']"
+              "reftarget": "#floating-boundary button[data-testid='data-testid Drawer close']"
             }
           ]
         },
         {
           "type": "multistep",
-          "content": "Use this icon to delete a single transformation.",
+          "content": "If you decide you don't need it, use this icon to delete a transformation.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Remove']:nth-match(2)"
+              "reftarget": "button[aria-label='Remove transformation']"
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Confirm Modal Danger Button']"
+              "reftarget": "{grafana:components.PanelEditor.General.content} button[aria-label='Confirm']"
             }
           ]
-        },
-        {
-          "type": "interactive",
-          "action": "hover",
-          "reftarget": "button[data-testid='data-testid remove all transformations button']",
-          "content": "Or use this button located at the bottom of the tab to delete all transformations if you don't need them anymore.",
-          "doIt": false
         }
       ]
     },
