@@ -25,7 +25,8 @@ Tag every finding when writing the workbook. **Author-facing change requests alw
 | False `noop` (learner action, no `reftarget`) | Framing ambiguity (“is this framing?”) until confirmed | Fresh-stack retest notes (unless live failed) |
 | Missing required section bookends (rule 14) | Pure LH wording polish (boilerplate synonym) when structure is fine | |
 | Missing / broken required `website.yaml` identity fields (`menuTitle`, `description`, `journey.*`) | Overly broad `targeting.match` without impact | |
-| Learning Hub structure the author must change (missing path intro, wrong group/skill, hard cross-path deps, conversion prose gap) | Landing screenshot / milestone-count notes | |
+| Learning Hub structure the author must change (missing path intro, wrong group/skill, hard cross-path deps, conversion prose gap) | Missing landing screenshot / milestone-count notes | |
+| Ungated `image` / `video` / markdown `![]()` visible in Pathfinder | | |
 | Missing `exists-reftarget`, `navmenu-open` **when live fails** | | |
 | Outdated `data-testid` when live fails | | |
 | `:contains()` when stable `data-testid` in DOM and live fails | | |
@@ -76,6 +77,7 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | Multistep singleton, focus-before-formfill, `noop` misuse | post inline if compliance; else internal |
 | Secrets `doIt: true` | post inline |
 | Missing `verify` on save | internal until live fails |
+| Ungated `image`/`video`/markdown `![]()` (no `renderer:website` conditional) | **post inline** — wrap in `conditional` (`renderer:website`, `whenFalse: []`; dual-branch for mixed prose+images). See [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) |
 
 LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — **post inline** when the author must change structure or required fields; **internal** for wording polish only.
 

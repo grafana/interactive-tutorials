@@ -71,6 +71,10 @@ Do **not** put milestone-specific troubleshooting or side-path links on the path
 
 Every path should show a compelling end-result screenshot when possible (dashboard, alert, data flowing) on the **website** render. Screenshots and embedded videos in `content.json` must be wrapped in a `conditional` with `conditions: ["renderer:website"]` so Pathfinder does not show them (live UI is already highlighted). Absence of screenshots/videos in the Pathfinder sidebar is expected and is not a review issue when the website branch still has them.
 
+Markdown that mixes prose with `![alt](url)` needs a **dual-branch** conditional, not a single wrap-and-hide: `whenTrue` keeps the markdown with images (website), `whenFalse` keeps the same prose with the image syntax stripped (Pathfinder) — dropping the whole block would lose the prose too.
+
+**Two different findings, don't conflate them:** no screenshot/video at all is expected and not an issue (**internal**, see [finding routing](reference-checks.md#finding-routing)); a screenshot, video, or markdown image that IS present but not wrapped in `renderer:website` is a **Fix** the author must make before merge (**post inline**).
+
 | Check | Notes |
 |---|---|
 | No motivating visual at all on website | Note in review body |

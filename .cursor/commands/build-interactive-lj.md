@@ -18,7 +18,7 @@ Follow these phases in order:
 
 1. **Validate environment.** Confirm the `interactive-tutorials` repo is writable and the `website` repo is readable in the workspace (website is a read-only source), and that Playwright MCP is available.
 2. **Read existing milestones and feature docs.** Locate the learning path in `website/content/docs/learning-paths/[slug]/`. List every milestone directory. Then read the canonical Grafana docs for every product/feature referenced in the milestones — these are the authoritative source for all factual claims.
-3. **Scaffold content files.** Create `content.json` for every milestone in the interactive-tutorials repo — interactive blocks for UI steps, markdown blocks for conceptual content. Because the website markdown is no longer used to render this learning path, capture all conceptual prose from each milestone's `index.md` body as markdown blocks so no content is lost. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks. **Exception: the `business-value` milestone gets markdown blocks only — no interactive blocks, sections, or guided blocks.**
+3. **Scaffold content files.** Create `content.json` for every milestone in the interactive-tutorials repo — interactive blocks for UI steps, markdown blocks for conceptual content. Because the website markdown is no longer used to render this learning path, capture all conceptual prose from each milestone's `index.md` body as markdown blocks so no content is lost. If that prose contains `![alt](url)` image markdown, or the source page has a screenshot/video, gate it for website-only rendering rather than dropping it: wrap dedicated `image`/`video` blocks in a `conditional` with `conditions: ["renderer:website"]` and `whenFalse: []`; for markdown mixing prose and images, use a dual-branch conditional (`whenTrue` = the original markdown with images, `whenFalse` = the same prose with the image syntax stripped). See [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder). Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks. **Exception: the `business-value` milestone gets markdown blocks only — no interactive blocks, sections, or guided blocks.**
 4. **Create website metadata files.** Create a `website.yaml` for the path and each milestone, derived from the front matter of the corresponding website markdown files. Map the path `_index.md` front matter into the path-level `website.yaml` and each milestone `index.md` front matter into that milestone's `website.yaml` (for example, `title` → `menuTitle`, plus `description`, `weight`, step ordering, `cta`, `related_journeys` at the path level, and `side_journeys` at the step level). These files take the place of the markdown front matter as the package's source of website metadata; the website markdown itself stays unchanged. Refer to `docs/website-yaml-reference.md`.
 5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. **Exception: exclude `business-value` from the path-level `milestones` array.** The `business-value` milestone still gets its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a registered stop on the path.
 6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
@@ -34,7 +34,7 @@ For background on how this command relates to `/create-learning-path`, refer to 
 1. **Never modify the website repo.** The `website` repo is a read-only source. Read the learning path markdown, frontmatter, and canonical docs from it, but never add `pathfinder_data`, insert the `{{< pathfinder/json >}}` shortcode, or otherwise write to it. All generated files live in the interactive-tutorials repo.
 2. **Read all canonical feature docs before writing content.** Identify every Grafana product/feature referenced in the milestones. Read the docs pages in full from the local `website` repo first, then WebFetch. These docs are the authoritative source for all factual claims — never rely on training data.
 3. **Scaffold ALL milestones.** Every milestone needs a `content.json`, including conceptual, intro, and conclusion pages. Pathfinder tracks progress through every milestone.
-4. **Capture all content in `content.json`.** Since the website no longer renders this learning path, every milestone's conceptual prose must be carried into its `content.json` as markdown blocks. Nothing should remain only in the website markdown.
+4. **Capture all content in `content.json`.** Since the website no longer renders this learning path, every milestone's conceptual prose must be carried into its `content.json` as markdown blocks. Nothing should remain only in the website markdown. Gate any carried-over screenshot, video, or markdown image behind a `renderer:website` conditional (dual-branch for mixed prose+images) — don't leave it ungated just because it came from the website source.
 5. **`business-value` is markdown-only.** The `business-value` milestone always uses markdown blocks exclusively. Never add interactive, section, guided, or multistep blocks to it.
 6. **Exclude `business-value` from the path manifest.** Do not include the `business-value` milestone in the path-level `manifest.json` `milestones` array. It has its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a path stop. The path's `milestones` array starts with the first interactive milestone.
 7. **Include supplementary content from frontmatter.** Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each `index.md` and add them as markdown blocks at the end of the `blocks` array.
@@ -56,6 +56,7 @@ For background on how this command relates to `/create-learning-path`, refer to 
 - Never use non-standard CSS (`:contains()`, `:has-text()`)
 - Never use data-dependent selectors — use `^=` starts-with patterns
 - Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
+- Never leave a screenshot, video, or markdown image ungated in `content.json` — wrap it in a `conditional` with `conditions: ["renderer:website"]` (see Step 3)
 
 ---
 
@@ -70,6 +71,7 @@ Consult these during the workflow:
 | `create-learning-path/reference/frontmatter-schema.md` | Reading website front matter fields and CTA types (source only) |
 | `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
+| `docs/learning-path-authoring.md` | Gating screenshots/videos for website-only rendering |
 | `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |
 
 ---
@@ -78,7 +80,7 @@ Consult these during the workflow:
 
 ### Block types
 
-`markdown` · `interactive` · `multistep` · `section` · `guided`
+`markdown` · `interactive` · `multistep` · `section` · `guided` · `conditional`
 
 ### Action types
 
