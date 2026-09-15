@@ -153,7 +153,25 @@
           "requirements": ["on-page:/explore", "exists-reftarget"]
         },
         {
-          "type": "markdown",
+          "type": "guided",
+          "requirements": ["on-page:/explore"],
+          "skippable": true,
+          "content": "The query editor has two modes. Switch to **Code** mode so you can type the query directly. If **Code** is already selected, skip this step.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:has(input[title='Code'])",
+              "requirements": ["exists-reftarget"],
+              "description": "Select Code mode"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.Prometheus.queryEditor.code.queryField} textarea.inputarea",
+          "targetvalue": "up",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
           "content": "In the query field, enter `up`. It's the simplest Prometheus query, and it returns one row per target your Prometheus scrapes."
         },
         {
