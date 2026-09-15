@@ -1,0 +1,120 @@
+{
+  "id": "get-started-connect-data",
+  "title": "Connect a data source and query it",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A system you already run holds your data. You'll connect Grafana Cloud to it, test the connection, and run a first query. The data stays where it is — nothing gets copied in."
+    },
+    {
+      "type": "markdown",
+      "content": "First, add the connection. You need the **Admin** role in your stack:"
+    },
+    {
+      "type": "section",
+      "id": "add-your-data-source",
+      "title": "Add your data source",
+      "requirements": ["has-role:admin"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Click **Connections** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Click **Add new connection**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "input[data-testid='search-input-input']",
+          "content": "Search for the system that holds your data, for example InfluxDB or CloudWatch, then open it from the results.",
+          "tooltip": "Type the name of the system you already run. The results filter as you type.",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add new data source",
+          "content": "On your data source's page, click **Add new data source**.",
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "input[id='basic-settings-name']",
+          "content": "Name the connection something you'll recognize later.",
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Fill in the connection details. The fields depend on your system, but every data source asks two things: where the data lives, and how to sign in. Type credentials yourself — this guide never fills them for you."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save & test",
+          "content": "Click **Save & test**. It saves the connection and checks that it works.",
+          "requirements": ["exists-reftarget", "form-valid"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your data source is connected and tested."
+    },
+    {
+      "type": "markdown",
+      "content": "Now confirm you can query it:"
+    },
+    {
+      "type": "section",
+      "id": "query-it-in-explore",
+      "title": "Query it in Explore",
+      "requirements": ["section-completed:add-your-data-source"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "content": "Click **Explore** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid Data source picker select container']",
+          "content": "Open the picker and choose the data source you just added.",
+          "tooltip": "Every query runs against one of your connected data stores. This picker chooses which one.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "The query editor below the picker is specific to your data source, in its own query language — data that lives in InfluxDB is queried in InfluxQL, for example. Start small: ask for one thing you know your system holds."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Run query**. The result comes back drawn below.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You queried your own data in place — nothing was copied into Grafana Cloud, so this connection doesn't add to the usage Grafana Cloud bills for. When a query is worth keeping, build a dashboard from it."
+    }
+  ]
+}

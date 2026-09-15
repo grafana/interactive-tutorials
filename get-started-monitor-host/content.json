@@ -1,0 +1,131 @@
+{
+  "id": "get-started-monitor-host",
+  "title": "Monitor a host or service with an integration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Nothing sends data to Grafana Cloud yet? An integration fixes that. It sets up a small collector — Grafana Alloy — on your machine and ships prebuilt dashboards, so your first metrics arrive without building anything."
+    },
+    {
+      "type": "markdown",
+      "content": "First, find the integration for what you run:"
+    },
+    {
+      "type": "section",
+      "id": "find-your-integration",
+      "title": "Find your integration",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Click **Connections** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Click **Add new connection**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "input[data-testid='search-input-input']",
+          "content": "Search for what you want to monitor — a Linux server, Windows, or MySQL, for example — then open its tile from the results.",
+          "tooltip": "Type the technology you want to monitor. The results filter as you type.",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You found your integration. Everything you need to connect it is on this page."
+    },
+    {
+      "type": "markdown",
+      "content": "Now install the collector on the machine you want to monitor:"
+    },
+    {
+      "type": "section",
+      "id": "set-up-the-collector",
+      "title": "Set up the collector",
+      "requirements": ["section-completed:find-your-integration", "on-page:/connections/add-new-connection"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='agent-config-button']",
+          "content": "Click **Run Grafana Alloy**. This opens setup for the collector that gathers and sends your machine's data.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "input[data-testid='generate-token-name-input']",
+          "content": "Name a new API token and click **Create token**. The token is how the collector signs in to your stack — create and copy it yourself, this guide never fills in secrets.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "The dialog builds an install command that includes your token. Copy it, then run it in a terminal on the machine you're monitoring. When it finishes, Alloy is running."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Test Alloy connection",
+          "content": "Back in the dialog, click **Test Alloy connection** to confirm the collector is connected.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Proceed to install integration",
+          "content": "Click **Proceed to install integration** to close the dialog.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The collector is running on your machine and sending data to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, add the prebuilt dashboards:"
+    },
+    {
+      "type": "section",
+      "id": "install-the-dashboards",
+      "title": "Install the dashboards",
+      "requirements": ["section-completed:set-up-the-collector", "on-page:/connections/add-new-connection"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='install-button']",
+          "content": "Click **Install**. This adds the integration's dashboards and alert rules to your stack.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href^='/dashboards/f/integration']",
+          "content": "Click **View Dashboards** and open one. Your machine's metrics are already on it.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You're monitoring a real machine on a dashboard you didn't have to build."
+    },
+    {
+      "type": "markdown",
+      "content": "One habit worth starting now: your machine produces more metrics than the dashboards use. The **Advanced integration** toggle on the configuration page sends only the subset the dashboards, alerts, and rules need instead of everything — that keeps your bill down as you add more hosts."
+    }
+  ]
+}
