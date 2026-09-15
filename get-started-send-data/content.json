@@ -4,11 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "You already run a collector — Prometheus, for example — and it stays. You'll point it at Grafana Cloud so what it collects is stored there too. Nothing new gets installed. This guide walks one method: Prometheus remote write, Prometheus's built-in way to forward metrics."
+      "content": "You already run a collector such as Prometheus, and you keep running it. This guide shows you how to configure it to also send the metrics it collects to Grafana Cloud, without installing anything new. It uses Prometheus remote write, the forwarding feature built into Prometheus."
     },
     {
       "type": "markdown",
-      "content": "First, open the setup page for hosted Prometheus metrics:"
+      "content": "First, open the setup page for hosted Prometheus metrics."
     },
     {
       "type": "section",
@@ -48,11 +48,11 @@
     },
     {
       "type": "markdown",
-      "content": "The setup page is open. Everything you need — the destination address, a credential, and the configuration — comes from here."
+      "content": "The setup page is open. It provides everything you need, including the destination address, a credential, and the configuration."
     },
     {
       "type": "markdown",
-      "content": "Now create a token and copy the configuration. You need the **Admin** role in your stack:"
+      "content": "Now create a token and copy the configuration. You need the **Admin** role in your stack."
     },
     {
       "type": "section",
@@ -66,21 +66,21 @@
         },
         {
           "type": "markdown",
-          "content": "Create a new API token: give it a name you'll recognize and click **Create token**. The token is how Prometheus signs in to your stack, and the page adds it to the configuration snippet for you. Type nothing by hand."
+          "content": "Create a new API token. Give it a name you'll recognize and click **Create token**. The token is how Prometheus signs in to your stack, and the page adds it to the configuration snippet for you. Type nothing by hand."
         },
         {
           "type": "markdown",
-          "content": "Copy the configuration snippet. It's a `remote_write` block: the endpoint to send to, your stack's username, and the token as the password."
+          "content": "Copy the configuration snippet. It's a `remote_write` block that contains the endpoint to send to, your stack's username, and the token as the password."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You have what this page exists to give you: a `remote_write` block with your stack's address and credentials."
+      "content": "You have a `remote_write` block with your stack's address and credentials. That's everything this page exists to give you."
     },
     {
       "type": "markdown",
-      "content": "Next, add it to Prometheus on the machine that runs it:"
+      "content": "Next, add it to Prometheus on the machine that runs it."
     },
     {
       "type": "section",
@@ -94,7 +94,7 @@
         },
         {
           "type": "markdown",
-          "content": "Restart Prometheus to load the change — `systemctl restart prometheus` on most Linux hosts. Your scrape configs, recording rules, and alerts don't change. Prometheus just gains a second destination."
+          "content": "Restart Prometheus to load the change. On most Linux hosts, run `systemctl restart prometheus`. Your scrape configs, recording rules, and alerts don't change. Prometheus just gains a second destination."
         }
       ]
     },
@@ -104,7 +104,7 @@
     },
     {
       "type": "markdown",
-      "content": "Finally, confirm the data is arriving:"
+      "content": "Finally, confirm the data is arriving."
     },
     {
       "type": "section",
@@ -124,13 +124,13 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='data-testid Data source picker select container']",
-          "content": "Open the picker and choose the data source whose name ends in **-prom**. Every stack comes with one — it reads the metrics you just sent.",
+          "content": "Open the picker and choose the data source whose name ends in **-prom**. Every stack comes with one, and it reads the metrics you just sent.",
           "tooltip": "Every query runs against one of your connected data stores. This picker chooses which one.",
           "requirements": ["on-page:/explore", "exists-reftarget"]
         },
         {
           "type": "markdown",
-          "content": "In the query field, enter `up` — the simplest Prometheus query: one row per target your Prometheus scrapes."
+          "content": "In the query field, enter `up`. It's the simplest Prometheus query, and it returns one row per target your Prometheus scrapes."
         },
         {
           "type": "interactive",
@@ -143,11 +143,11 @@
     },
     {
       "type": "markdown",
-      "content": "Your collector didn't change — it just sends to Grafana Cloud now, and you queried the result."
+      "content": "Your collector didn't change. It just sends to Grafana Cloud now, and you queried the result."
     },
     {
       "type": "markdown",
-      "content": "One habit worth starting now: what you send is what usage-based billing counts. Prometheus can filter what remote write forwards — `write_relabel_configs` in the same block — so send the metrics you use, not everything you scrape."
+      "content": "Note: What you send is what usage-based billing counts. Prometheus can filter what remote write forwards using `write_relabel_configs` in the same block, so send the metrics you use, not everything you scrape."
     }
   ]
 }
