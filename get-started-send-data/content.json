@@ -61,24 +61,36 @@
       "requirements": ["section-completed:open-the-setup-page", "has-role:admin", "on-page:/connections/add-new-connection/hmInstancePromId"],
       "blocks": [
         {
-          "type": "markdown",
-          "content": "Under **Choose a method for forwarding metrics**, select **From my local Prometheus server**. This sends metrics straight from Prometheus using its built-in remote write. The page preselects **Via Grafana Alloy**, which installs a separate collector instead, and that's exactly what you're avoiding."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(img[alt='icon of remote'])",
+          "content": "Under **Choose a method for forwarding metrics**, select **From my local Prometheus server**. This sends metrics straight from Prometheus using its built-in remote write. The page preselects **Via Grafana Alloy**, which installs a separate collector instead, and that's exactly what you're avoiding.",
+          "requirements": ["on-page:/connections/add-new-connection/hmInstancePromId", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(p:contains('single Prometheus instance'))",
+          "content": "Under **Choose your use case for forwarding metrics**, select **Send metrics from a single Prometheus instance**. This guide walks that path. The other cards cover multiple or high-availability Prometheus setups, and the page adjusts its instructions if you pick one of those.",
+          "requirements": ["on-page:/connections/add-new-connection/hmInstancePromId", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(p:contains('Directly'))",
+          "content": "Under **Configure remote_write**, keep **Directly** selected for how to send the metrics. It remote writes straight from Prometheus, while **Via Grafana Alloy** would route them through a separate collector.",
+          "requirements": ["on-page:/connections/add-new-connection/hmInstancePromId", "exists-reftarget"]
         },
         {
           "type": "markdown",
-          "content": "Under **Choose your use case for forwarding metrics**, select **Send metrics from a single Prometheus instance**. This guide walks that path. The other cards cover multiple or high-availability Prometheus setups, and the page adjusts its instructions if you pick one of those."
+          "content": "Create a new API token. Give it a name you'll recognize and click **Create token**. The token is how Prometheus signs in to your stack, and the page adds it to the configuration snippet for you."
         },
         {
-          "type": "markdown",
-          "content": "Under **Configure remote_write**, keep **Directly** selected for how to send the metrics. It remote writes straight from Prometheus, while **Via Grafana Alloy** would route them through a separate collector."
-        },
-        {
-          "type": "markdown",
-          "content": "Create a new API token. Give it a name you'll recognize and click **Create token**. The token is how Prometheus signs in to your stack, and the page adds it to the configuration snippet for you. Type nothing by hand."
-        },
-        {
-          "type": "markdown",
-          "content": "Copy the configuration snippet. It's a `remote_write` block that contains the endpoint to send to, your stack's username, and the token as the password."
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Copy to clipboard",
+          "content": "Copy the configuration snippet. It's a `remote_write` block that contains the endpoint to send to, your stack's username, and the token as the password.",
+          "requirements": ["on-page:/connections/add-new-connection/hmInstancePromId", "exists-reftarget"]
         }
       ]
     },
