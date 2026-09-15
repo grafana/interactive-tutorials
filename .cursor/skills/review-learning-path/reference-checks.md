@@ -16,6 +16,8 @@ Checklists for [review-learning-path/SKILL.md](SKILL.md) Phase 1 (static pass). 
 
 Tag every finding when writing the workbook. **Author-facing change requests always go on the GitHub diff as short inline comments** (path-wide OK) after Phase 3 approval. The workbook is reviewer-private scratch — never the channel for telling the author what to fix.
 
+**One finding per cell.** Never bundle findings of differing severity into the same routing-table cell — a soft "not an issue" note and a hard "author must fix" finding sharing a cell means the whole cell inherits the softer routing, and the hard finding gets silently swallowed. (This exact bug — "Landing screenshot notes" conflating "no screenshot yet" with "screenshot present but ungated" — is why the [#562](https://github.com/grafana/interactive-tutorials/issues/562) fix split the row below into two.) When adding or editing a cell, ask whether it actually names one severity.
+
 | Post inline (author must change) | Internal (workbook only) | Discard |
 |---|---|---|
 | Block Editor / Playwright runtime fail (reviewer-reported) | Selector polish when live passed | Audit noise with no runtime impact |
@@ -77,7 +79,7 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | Multistep singleton, focus-before-formfill, `noop` misuse | post inline if compliance; else internal |
 | Secrets `doIt: true` | post inline |
 | Missing `verify` on save | internal until live fails |
-| Ungated `image`/`video`/markdown `![]()` (no `renderer:website` conditional) | **post inline** — wrap in `conditional` (`renderer:website`, `whenFalse: []`; dual-branch for mixed prose+images). See [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) |
+| Ungated `image`/`video`/markdown `![]()` (no `renderer:website` conditional) | **post inline** — wrap in `conditional` (`renderer:website`, `whenFalse: []`; dual-branch for mixed prose+images). Do not flag plain YouTube text links or `website.yaml` `cta.image` — those are out of scope for this gate. See [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) |
 
 LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — **post inline** when the author must change structure or required fields; **internal** for wording polish only.
 

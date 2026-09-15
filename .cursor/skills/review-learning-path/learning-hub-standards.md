@@ -309,6 +309,7 @@ Quick scan during Phase 1 (route via [finding routing](reference-checks.md#findi
 | Pitfall | Where to look |
 |---|---|
 | Missing landing screenshot | Path `content.json` / `website.yaml` (website branch or `cta.image`; Pathfinder absence OK when gated) |
+| Ungated media visible in Pathfinder | Any `image`/`video`/markdown `![]()` in `content.json` without a `renderer:website` conditional — see [Landing screenshot](#landing-screenshot) |
 | Vague instructions | Milestone interactive copy |
 | Missing sign-in / first UI step | First hands-on milestone |
 | Broken or outdated references | Links, menu labels, feature names |
