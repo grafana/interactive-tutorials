@@ -1,0 +1,153 @@
+{
+  "id": "get-started-send-data",
+  "title": "Send data from a collector you already run",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You already run a collector — Prometheus, for example — and it stays. You'll point it at Grafana Cloud so what it collects is stored there too. Nothing new gets installed. This guide walks one method: Prometheus remote write, Prometheus's built-in way to forward metrics."
+    },
+    {
+      "type": "markdown",
+      "content": "First, open the setup page for hosted Prometheus metrics:"
+    },
+    {
+      "type": "section",
+      "id": "open-the-setup-page",
+      "title": "Open the setup page",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Click **Connections** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Click **Add new connection**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='search-input-input']",
+          "targetvalue": "Hosted Prometheus",
+          "content": "Search for **Hosted Prometheus** to filter the catalog.",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/add-new-connection/hmInstancePromId']",
+          "content": "Click the **Hosted Prometheus metrics** tile.",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The setup page is open. Everything you need — the destination address, a credential, and the configuration — comes from here."
+    },
+    {
+      "type": "markdown",
+      "content": "Now create a token and copy the configuration. You need the **Admin** role in your stack:"
+    },
+    {
+      "type": "section",
+      "id": "create-a-token-and-copy-the-config",
+      "title": "Create a token and copy the config",
+      "requirements": ["section-completed:open-the-setup-page", "has-role:admin", "on-page:/connections/add-new-connection/hmInstancePromId"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Choose to forward metrics with your existing **Prometheus** server, not Grafana Alloy. The page adjusts its instructions to match."
+        },
+        {
+          "type": "markdown",
+          "content": "Create a new API token: give it a name you'll recognize and click **Create token**. The token is how Prometheus signs in to your stack, and the page adds it to the configuration snippet for you. Type nothing by hand."
+        },
+        {
+          "type": "markdown",
+          "content": "Copy the configuration snippet. It's a `remote_write` block: the endpoint to send to, your stack's username, and the token as the password."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have what this page exists to give you: a `remote_write` block with your stack's address and credentials."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, add it to Prometheus on the machine that runs it:"
+    },
+    {
+      "type": "section",
+      "id": "update-prometheus",
+      "title": "Update Prometheus",
+      "requirements": ["section-completed:create-a-token-and-copy-the-config"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "On the machine running Prometheus, open `prometheus.yml` and paste the snippet at the end of the file. If the file already has a `remote_write` section, add the new endpoint under the existing one instead."
+        },
+        {
+          "type": "markdown",
+          "content": "Restart Prometheus to load the change — `systemctl restart prometheus` on most Linux hosts. Your scrape configs, recording rules, and alerts don't change. Prometheus just gains a second destination."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Prometheus is forwarding every metric it scrapes to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, confirm the data is arriving:"
+    },
+    {
+      "type": "section",
+      "id": "confirm-data-is-arriving",
+      "title": "Confirm data is arriving",
+      "requirements": ["section-completed:update-prometheus"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "content": "Click **Explore** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid Data source picker select container']",
+          "content": "Open the picker and choose the data source whose name ends in **-prom**. Every stack comes with one — it reads the metrics you just sent.",
+          "tooltip": "Every query runs against one of your connected data stores. This picker chooses which one.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "In the query field, enter `up` — the simplest Prometheus query: one row per target your Prometheus scrapes."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Run query**. Rows coming back means your metrics are in Grafana Cloud. If it's empty, give it a minute after the restart and run it again.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your collector didn't change — it just sends to Grafana Cloud now, and you queried the result."
+    },
+    {
+      "type": "markdown",
+      "content": "One habit worth starting now: what you send is what usage-based billing counts. Prometheus can filter what remote write forwards — `write_relabel_configs` in the same block — so send the metrics you use, not everything you scrape."
+    }
+  ]
+}

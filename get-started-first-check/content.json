@@ -1,0 +1,174 @@
+{
+  "id": "get-started-first-check",
+  "title": "Create your first uptime check",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Is your site up right now? Synthetic Monitoring answers that continuously — probes around the world test your target on a schedule, from outside your network, whether or not your browser is open. You'll create the simplest kind: a ping check."
+    },
+    {
+      "type": "markdown",
+      "content": "First, open Synthetic Monitoring:"
+    },
+    {
+      "type": "section",
+      "id": "open-synthetic-monitoring",
+      "title": "Open Synthetic Monitoring",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
+          "content": "Click **Testing & synthetics** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-synthetic-monitoring-app/home']",
+          "content": "Click **Synthetics**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "conditional",
+          "conditions": ["exists-reftarget"],
+          "reftarget": "button[data-testid='app-init init-button']",
+          "whenTrue": [
+            {
+              "type": "interactive",
+              "action": "highlight",
+              "reftarget": "button[data-testid='app-init init-button']",
+              "content": "Click **Get started** to set up Synthetic Monitoring in your stack. First-time setup needs the **Admin** role.",
+              "requirements": ["exists-reftarget"]
+            }
+          ],
+          "whenFalse": []
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Synthetic Monitoring is open and ready to run checks."
+    },
+    {
+      "type": "markdown",
+      "content": "Now create the check. You need the **Editor** or **Admin** role:"
+    },
+    {
+      "type": "section",
+      "id": "create-a-ping-check",
+      "title": "Create a ping check",
+      "requirements": ["section-completed:open-synthetic-monitoring", "is-editor", "on-page:/a/grafana-synthetic-monitoring-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='action create check']",
+          "content": "Click **Create new check**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
+          "content": "Click **API Endpoint** — ping lives here, alongside HTTP, DNS, and TCP checks.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='checkEditor form job']",
+          "targetvalue": "my-first-uptime-check",
+          "content": "Name the check so you can find it again later.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid radio-button-option ping']",
+          "content": "Under **Request type**, click **Ping** — send a network packet, wait for a response.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "doIt": false,
+          "reftarget": "input[name='target'][placeholder='grafana.com']",
+          "targetvalue": "grafana.com",
+          "content": "Enter the hostname to check — your own site, or `grafana.com` to try it out.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation execution']",
+          "content": "Click **Execution** to choose where the check runs from.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "label[data-testid='checkEditor form probeLabel']:first-of-type",
+          "content": "Select one or more probe locations. Pick places near your users — and one far away, to see the difference distance makes.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor form submit']",
+          "content": "Click **Save**. The check starts running on its schedule — every minute by default — and its dashboard opens.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your check is live. Probes are already pinging the target from the locations you picked."
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, read the results on the dashboard that just opened:"
+    },
+    {
+      "type": "section",
+      "id": "read-the-results",
+      "title": "Read the results",
+      "requirements": ["section-completed:create-a-ping-check", "on-page:/a/grafana-synthetic-monitoring-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "hover",
+          "doIt": false,
+          "reftarget": "section[data-testid='data-testid Panel header Uptime']",
+          "content": "**Uptime** is the percentage of checks that succeeded. Give it a few minutes to populate, and refresh if it's empty.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "hover",
+          "doIt": false,
+          "reftarget": "section[data-testid='data-testid Panel header Reachability']",
+          "content": "**Reachability** shows how often the target responds, per probe location.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "hover",
+          "doIt": false,
+          "reftarget": "section[data-testid='data-testid Panel header Average latency']",
+          "content": "**Average latency** shows how long the response takes from each location — distance shows up here.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have continuous, outside-in monitoring of your site — and it keeps running after you close this browser."
+    },
+    {
+      "type": "markdown",
+      "content": "One habit worth starting now: a check's usage scales with how often it runs times how many probes run it. Every minute from five locations is five times the executions of one. Tune frequency and probe count to what the target deserves, not the maximum."
+    }
+  ]
+}
