@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Dashboards, alerts, and everything else in Grafana Cloud work on the data you send it. An integration is the fastest way to start sending some. It sets up a small collector called Grafana Alloy on your machine and ships prebuilt dashboards, so your first metrics arrive without building anything."
+      "content": "You have a host or app, and nothing collects data from it yet. An integration is a packaged setup for one technology. It installs a small collector called Grafana Alloy that reads data from your machine and sends it to Grafana Cloud, and it ships prebuilt dashboards, so your first visualizations appear without writing a query."
     },
     {
       "type": "markdown",
@@ -62,7 +62,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='agent-config-button']",
-          "content": "Click **Run Grafana Alloy** and work through the dialog, where you will:\n\n- Create an API token\n- Copy the install command and run it in a terminal on the machine you're monitoring\n- Click **Test Alloy connection** to confirm the collector is connected\n\nWhen the test passes, click **Proceed to install integration** to close the dialog.",
+          "content": "Click **Run Grafana Alloy** and work through the dialog, where you will:\n\n- Create an API token\n- Copy the install command and run it in a terminal on the machine you're monitoring\n- Click **Test Alloy connection** to confirm the collector is connected\n\n- When the test passes, click **Proceed to install integration** to close the dialog.",
           "requirements": ["exists-reftarget"]
         }
       ]
@@ -103,7 +103,38 @@
     },
     {
       "type": "markdown",
-      "content": "Your machine produces more metrics than the dashboards use. The **Advanced integration** toggle on the configuration page sends only the subset the dashboards, alerts, and rules need instead of everything, which keeps your bill down as you add more hosts."
+      "content": "Dashboards are one view of the data. To see the raw metrics arriving, look in Metrics Drilldown."
+    },
+    {
+      "type": "section",
+      "id": "confirm-data-is-flowing",
+      "title": "Confirm data is flowing",
+      "requirements": ["section-completed:install-the-dashboards"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/drilldown']",
+          "content": "Click **Drilldown** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main a[href='/a/grafana-metricsdrilldown-app/drilldown']",
+          "verify": "on-page:/a/grafana-metricsdrilldown-app",
+          "content": "Click **Metrics**. Every metric in your stack appears as a live chart, no query needed.",
+          "requirements": ["on-page:/drilldown", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Look for metric names from your integration, for example names starting with `node_` for a Linux server or `windows_` for Windows. Those charts are your machine's data arriving right now. If you don't see them yet, give it a minute or two and refresh."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Data is flowing. You've confirmed that your machine's metrics are arriving in Grafana Cloud."
     }
   ]
 }
