@@ -4,11 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "A number you care about, like the response time of a checkout page or the free disk space on a database server, drifts up and down all day. That's fine, until the day it climbs past the point where trouble starts. Nobody can sit and watch a chart in case that happens. That's the job of an alert rule. Every few minutes, it checks the number and compares it against a line that must not be crossed. In Grafana Cloud, you write the rule once, and Grafana keeps watch so you don't have to. Grafana Play runs a demo rule that does exactly this. The number it watches is made up, but the watching is real, and its line sits at 75. Anything above 75 means trouble, and the rule fires."
+      "content": "Some numbers are worth keeping an eye on, like the response time of a checkout page or the free disk space on a database server. They drift up and down all day, and that's normal until one climbs high enough to cause trouble. Nobody can sit and watch a chart waiting for that to happen. That's what alert rules are for. A rule checks a value every few minutes and compares it against a threshold you set. In Grafana Cloud, you write the rule once and Grafana keeps watch from then on. Grafana Play runs a demo rule that works exactly this way. The value it watches is made up, but the rule is real, and its threshold is 75. When the value climbs above 75, the rule fires."
     },
     {
       "type": "markdown",
-      "content": "First, go where alert rules are defined:"
+      "content": "First, go where alert rules are defined."
     },
     {
       "type": "section",
@@ -21,7 +21,7 @@
           "reftarget": "/alerting/list",
           "verify": "on-page:/alerting/list",
           "objectives": ["on-page:/alerting/list"],
-          "content": "Open **Alert rules**. Every rule on Grafana Play is listed here — each one a question and a line that someone wrote down. On your own Grafana, this page has a **New alert rule** button for writing a new one; Grafana Play hides it from visitors, so here you can look but not touch."
+          "content": "Open **Alert rules**. Every rule on Grafana Play is listed here. Each one watches a value and fires when it crosses a threshold. On your own Grafana, this page has a **New alert rule** button for writing a new one; Grafana Play hides it from visitors, so here you can look but not touch."
         }
       ]
     },
@@ -31,7 +31,7 @@
     },
     {
       "type": "markdown",
-      "content": "Next, see alerts that are firing right now:"
+      "content": "Next, see alerts that are firing right now."
     },
     {
       "type": "section",
@@ -51,8 +51,8 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='data-testid triage state-filter firing']",
-          "content": "The **Firing** filter is already on, so every alert listed has crossed its line. The count rises and falls as rules fire and recover.",
-          "tooltip": "A live tally of crossed lines: it climbs when rules fire and drops when the numbers come back down.",
+          "content": "The **Firing** filter is already on, so everything listed here has crossed its threshold. The count rises and falls as rules fire and recover.",
+          "tooltip": "A live count of firing alerts. It climbs when rules fire and drops when the values recover.",
           "requirements": ["on-page:/alerting/alerts", "exists-reftarget"]
         },
         {
@@ -60,19 +60,19 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='data-testid triage groups-container']",
-          "content": "Each row is one alert firing right now, grouped in folders. **Demo: Alerting** is Grafana Play's demo set — the rule you're about to meet lives there.",
-          "tooltip": "Grafana is watching these rules, and each one has already crossed its line.",
+          "content": "Each row is one alert firing right now, grouped in folders. **Demo: Alerting** is Grafana Play's demo set, and the rule you're about to meet lives there.",
+          "tooltip": "Grafana is watching these rules, and each one has already crossed its threshold.",
           "requirements": ["on-page:/alerting/alerts", "exists-reftarget"]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You saw alerts in action: firing means the line was crossed, and **Alert activity** is where you look."
+      "content": "You saw alerts in action. Firing means a rule's threshold was crossed, and **Alert activity** is where you look when something's wrong."
     },
     {
       "type": "markdown",
-      "content": "Next, meet the rule that does the watching:"
+      "content": "Next, meet the rule that does the watching."
     },
     {
       "type": "section",
@@ -85,15 +85,15 @@
           "reftarget": "/alerting/grafana/random-single-serie/view",
           "verify": "on-page:/alerting/grafana/random-single-serie",
           "objectives": ["on-page:/alerting/grafana/random-single-serie"],
-          "content": "Open **Random Single Serie**, one of the demo rules from the folder you just saw. This is the watcher from our story: it guards a number that drifts on its own."
+          "content": "Open **Random Single Serie**, one of the demo rules from the folder you just saw. This is the rule from the intro, watching a value that drifts on its own."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='queries-container']",
-          "content": "This is the question: a query the rule asks every few minutes, with the answer drawn as a chart. That's the drifting number, checked on a schedule.",
-          "tooltip": "Grafana asks this on the rule's schedule, whether or not anyone is looking.",
+          "content": "This is the query the rule runs every few minutes. The chart shows its result over time, the drifting value from the intro.",
+          "tooltip": "Grafana runs this query on the rule's schedule, whether or not anyone is looking.",
           "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
         },
         {
@@ -101,8 +101,8 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='expressions-container']",
-          "content": "This is the line: the **alert condition**. This rule fires when the answer climbs above its threshold — the moment \"too high\" stops being an opinion.",
-          "tooltip": "The threshold that turns a number into a decision: cross it and the rule fires.",
+          "content": "This is the **alert condition**, the threshold the query result is compared against. When the result climbs above it, the rule fires.",
+          "tooltip": "The rule fires when the query result crosses this threshold.",
           "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
         },
         {
@@ -110,15 +110,15 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='data-testid Tab Notifications']",
-          "content": "Firing isn't the end of the story: the rule sends a message to a person or channel, so someone can act. The **Notifications** tab keeps the record of every message this rule has sent.",
-          "tooltip": "When the line is crossed, Grafana tells someone — and the record of every send lands here.",
+          "content": "Firing isn't the end of the story. The rule sends a message to a person or channel, so someone can act. The **Notifications** tab keeps the record of every message this rule has sent.",
+          "tooltip": "When the rule fires, Grafana notifies someone, and the history of those notifications lives here.",
           "requirements": ["on-page:/alerting/grafana/random-single-serie", "exists-reftarget"]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "A rule is defined once. From then on Grafana Cloud keeps watch: it asks the question, checks the line, and sends the message. When you're ready to write one of your own, the Grafana Alerting 101 guide walks you through it."
+      "content": "You write a rule once, and Grafana Cloud takes it from there. It runs the query, checks the threshold, and sends the notification. When you're ready to write a rule of your own, the Grafana Alerting 101 guide walks you through it."
     }
   ]
 }
