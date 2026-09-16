@@ -4,11 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Picture this. You run an online store, and this morning checkout is twice as slow as usual. No dashboard covers checkout latency, because nobody predicted this problem. Dashboards show what someone already thought to watch. When the question is new, you need a way to investigate.\n\nThat's what Drilldown is for. Start from one of the signals, click filters, and narrow down until you've found what changed, all without writing a query. In this guide you'll practice that kind of investigation. The data here comes from a demo system rather than a store, but the moves are the same ones you'd use on your own Grafana Cloud data."
+      "content": "Picture this. You run an online store, and this morning checkout is twice as slow as usual. No dashboard covers checkout latency, because nobody predicted this problem. Dashboards show what someone already thought to watch. When the question is new, you need a way to investigate.\n\nThat's what Drilldown is for. Start from one of the signals, click filters, and narrow down until you've found what changed, all without writing a query. In this guide you'll practice that kind of investigation, from the first metric to the log lines that explain it. The data here comes from a demo system rather than a store, but the moves are the same ones you'd use on your own Grafana Cloud data."
     },
     {
       "type": "markdown",
-      "content": "First, open Drilldown and see where an investigation starts."
+      "content": "First, open Drilldown to start the investigation."
     },
     {
       "type": "section",
@@ -27,7 +27,7 @@
           "action": "highlight",
           "reftarget": "main a[href='/a/grafana-metricsdrilldown-app/drilldown']",
           "verify": "on-page:/a/grafana-metricsdrilldown-app",
-          "content": "Click **Metrics**.\n\nMetrics are numbers recorded over time, and a slow checkout is a number. Every metric appears as a chart before you ask for anything, so you start with everything on the table.",
+          "content": "Click **Metrics**.\n\nMetrics are numbers recorded over time, and a slow checkout is a number. The moment the page opens, every metric is already drawn as a chart, so you can see all of them before you start narrowing down.",
           "requirements": ["on-page:/drilldown", "exists-reftarget"]
         }
       ]
@@ -62,21 +62,51 @@
           "content": "Notice the filter field.\n\nPick a label and a value, and every chart narrows to match. Each pick asks a question. Is it one server? One region? Clicking filters is the whole workflow.",
           "tooltip": "Each pick narrows the result, and a few stacked together identify the problem without writing a query.",
           "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "doIt": false,
-          "reftarget": "button[data-testid='data-testid Tab Related logs']",
-          "content": "Find the **Related logs** tab.\n\nA spike in the numbers often has a matching error in the logs. This tab jumps from the metric you're watching straight to those text records, so you keep going without starting over.",
-          "tooltip": "One click carries the investigation from the numbers to the matching text records.",
-          "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Start from everything, narrow with clicks, jump to the matching logs. That's an investigation in Grafana Cloud, and you never wrote a query. When you uncover something worth watching from then on, that's when someone builds a dashboard, and the [guide on dashboards](https://interactive-learning.grafana.net/guides/get-started-see-dashboards) shows you how to read one."
+      "content": "You went from every metric to one, and from one to its labeled slices. The chart now tells you when things changed."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, find out why. The reason is usually written in the logs."
+    },
+    {
+      "type": "section",
+      "id": "follow-into-logs",
+      "title": "Follow it into the logs",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-lokiexplore-app/explore",
+          "verify": "on-page:/a/grafana-lokiexplore-app",
+          "content": "Open the **Logs** section of Drilldown.\n\nMetrics are numbers, and numbers tell you when. Logs are the lines a service writes while it runs, and they usually tell you why. Every service that writes logs appears here with a chart of how much it's logging."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid button-select-service'][href*='/service/checkoutservice/']",
+          "verify": "on-page:/a/grafana-lokiexplore-app/explore/service/checkoutservice",
+          "content": "Click **Show logs** on **checkoutservice**.\n\nCheckout is slow, and this is the service that runs it, so its logs are the place to look for the cause.",
+          "requirements": ["on-page:/a/grafana-lokiexplore-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid^='data-testid Panel header Logs']",
+          "content": "Read the log lines.\n\nEach line is one thing the service wrote down while it ran. The volume chart above them counts the lines over time, split by level, so a sudden group of errors is easy to see.",
+          "tooltip": "The raw record of what the service did, lined up against the same window of time you were just investigating.",
+          "requirements": ["on-page:/a/grafana-lokiexplore-app/explore/service/checkoutservice", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You started with a slow metric and ended at the logs of the service that caused it. In the story of the slow checkout, this is where you find the cause, error messages that began at the same time the latency doubled. You looked at every metric, narrowed down with clicks, and read the logs, and you never wrote a query. That's an investigation in Grafana Cloud. When you find something worth watching permanently, someone builds a dashboard for it, and the [guide on dashboards](https://interactive-learning.grafana.net/guides/get-started-see-dashboards) shows you how to read one."
     }
   ]
 }
