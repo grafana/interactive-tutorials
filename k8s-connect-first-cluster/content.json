@@ -1,0 +1,389 @@
+{
+  "id": "k8s-connect-first-cluster",
+  "title": "Connect your first Kubernetes cluster",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Connecting a cluster runs through five steps, and the wizard won't let you skip ahead. You'll install the backend, create a credential, pick how much of Alloy to run, choose what to collect, and leave with a command to run against your cluster."
+    },
+    {
+      "type": "markdown",
+      "content": "First, get to the right screen."
+    },
+    {
+      "type": "section",
+      "id": "open-configuration",
+      "title": "Open the configuration page",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/configuration",
+          "tooltip": "Takes you to the Kubernetes app's configuration page.",
+          "doIt": true,
+          "requirements": [],
+          "content": "Everything up to the last step happens on one page: **Kubernetes** in the left-hand nav, then **Configuration**. If you're already there this keeps you where you are.",
+          "verify": "on-page:/a/grafana-k8s-app/configuration"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You're on the Cluster configuration tab, at step one of five."
+    },
+    {
+      "type": "markdown",
+      "content": "Step one does two things: it installs what Grafana needs to make sense of your data, and it asks where your cluster runs."
+    },
+    {
+      "type": "section",
+      "id": "backend-and-distribution",
+      "title": "Backend and distribution",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='install-alloy-unified-helm-prepare-deploy-panel'] button",
+          "tooltip": "Already installed? Skip this step.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Start by installing the backend \u2014 the alerting and recording rules that every Kubernetes dashboard in this app is built on. Without them the dashboards load but stay empty, and **Next** stays disabled until it finishes.\n\n**If the panel already says the rules are installed, skip this step.** The guide won't press the button for you here: once the backend is in place that same spot becomes **Uninstall**, and clicking it blind would tear out the rules you already have.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='platform-card-kubernetes']",
+          "tooltip": "Pick where your cluster actually runs.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Then tell it where your cluster runs. **Kubernetes** covers EKS on EC2, GKE and anything self-managed. Be accurate here: managed platforms like GKE Autopilot and EKS on Fargate give nobody access to the underlying nodes, so picking one of those quietly removes a few collectors later on."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='config-next-button']",
+          "tooltip": "That's the groundwork done.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Backend installed and platform chosen. Next up is the credential."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Grafana can interpret your data now, and knows what kind of cluster it's coming from."
+    },
+    {
+      "type": "markdown",
+      "content": "Alloy needs permission to send data to Grafana Cloud. That's an access policy token, and you create it here."
+    },
+    {
+      "type": "section",
+      "id": "access-token",
+      "title": "Access token",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='generate-token-name-input']",
+          "tooltip": "Name it for where it's used, not when you made it.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Give the token a name you'll recognise months from now, when you're looking at a list of tokens and working out which one is safe to revoke. Something that says where it's used beats something that says when you made it.\n\nAlready have a token you'd rather use? Switch to **Use an existing token** and skip the next three steps.",
+          "targetvalue": "k8s-monitoring-alloy",
+          "formHint": "A name you'll recognise later",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='generate-token-scopes-field']",
+          "tooltip": "Nothing to change \u2014 Grafana sets these for you.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "You don't need to touch the permissions. These let the collector send your cluster's data and read back what it sent, and nothing else.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='generate-token-submit-button']",
+          "tooltip": "Your call. Copy the token when it appears.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Select **Create token** yourself. This one's left to you on purpose: it creates a real credential on your Grafana Cloud account, and that's your decision to make.\n\n**Copy it as soon as it appears.** You won't be shown it again, and the command at the end needs it.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='config-next-button']",
+          "tooltip": "Enables once the token exists.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "With the token in place, **Next** wakes up."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Alloy has permission to write to your stack."
+    },
+    {
+      "type": "markdown",
+      "content": "Now the size of the thing. This is about how much Alloy you run, not what it collects."
+    },
+    {
+      "type": "section",
+      "id": "choose-setup",
+      "title": "Choose setup",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='install-alloy-unified-helm-choose-setup-deployment-standard']",
+          "tooltip": "Standard suits most first clusters.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "**Standard** is the right starting point for almost any first cluster. **Lightweight** trims resource use for small or edge clusters; **Scalable** splits collection across several Alloy instances for large ones. You can change this later by re-running the chart, so it isn't a decision to agonise over."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='install-alloy-unified-helm-choose-setup-learn-scalable-trigger']",
+          "tooltip": "Expands what a tier actually changes.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Each card can explain itself if you want the detail behind the choice \u2014 worth a look if your cluster is unusually large or unusually constrained."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='config-next-button']",
+          "tooltip": "On to what gets collected.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "That's the shape of the deployment settled."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've chosen how much collector to run."
+    },
+    {
+      "type": "markdown",
+      "content": "This step is the one that shapes your bill as well as your dashboards, so it's worth a minute rather than a click."
+    },
+    {
+      "type": "section",
+      "id": "monitoring",
+      "title": "Monitoring",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='enable-k8s-monitoring-card']",
+          "tooltip": "The metrics, events and logs behind every dashboard.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "**Kubernetes monitoring** is the core of the app: node and pod resource usage, Kubernetes' own events, and pod logs. It's on and required here, since this page exists to configure exactly that. The menu on the card is where you'd tune individual collectors once you know what you're missing."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='auto-discover-services-card']",
+          "tooltip": "Optional \u2014 leave it off for a first cluster.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "**Auto-discover services** picks up anything in the cluster already exposing Prometheus metrics or OpenTelemetry annotations. Useful later; leave it off for a first cluster so you can see what the baseline costs before adding to it."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='config-next-button']",
+          "tooltip": "Last step generates the command.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Everything else can wait \u2014 each extra collector costs something, and you can turn them on once you know what you're missing."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You're collecting the essentials and nothing you'll be surprised by."
+    },
+    {
+      "type": "markdown",
+      "content": "Last step. Everything you've chosen becomes a single command to run against the cluster."
+    },
+    {
+      "type": "section",
+      "id": "deployment",
+      "title": "Deployment",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='install-alloy-unified-helm-cluster-name-input']",
+          "tooltip": "Use the name your team already calls this cluster.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Name the cluster. Whatever goes here is stamped on every metric, log and trace it produces, so use the name your team already says out loud \u2014 `production-eu-west` is only an example. Worth getting right now: change it later and everything you've already collected stays filed under the old name.",
+          "targetvalue": "production-eu-west",
+          "formHint": "An example \u2014 replace it with your own"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='install-alloy-unified-helm-namespace-input']",
+          "tooltip": "Where the collector runs. `monitoring` is fine.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "This is where Alloy itself gets deployed, not what it watches \u2014 it sees the whole cluster either way. `monitoring` is a fine choice unless your team has a convention of its own.",
+          "targetvalue": "monitoring",
+          "formHint": "Lowercase, alphanumeric, dashes inside"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='install-alloy-unified-helm-copy-command']",
+          "tooltip": "Copies the command with your choices baked in.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Copy the command. It carries the cluster name, namespace, tier, collectors and token already filled in. One thing to check before you paste it: make sure `kubectl` is pointed at the cluster you think it is. It's the mistake everyone makes once."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='install-alloy-unified-helm-test-connection']",
+          "tooltip": "Checks Grafana can see the cluster.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Once the command has run, **Test connection** checks whether anything is actually arriving. Give the pods a minute to start before you press it \u2014 an immediate failure usually just means Alloy hasn't finished coming up."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The command is on your clipboard and the wizard can tell you when it lands."
+    },
+    {
+      "type": "markdown",
+      "content": "Run it, then watch for the data."
+    },
+    {
+      "type": "section",
+      "id": "see-it-arrive",
+      "title": "Check the data is arriving",
+      "requirements": [
+        "on-page:/a/grafana-k8s-app/configuration"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Metrics status']",
+          "tooltip": "Where you find out whether it worked.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Open **Metrics status**. This is the page that answers the only question that matters in the next five minutes: is anything actually arriving?"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='status-panel']:nth-match(1)",
+          "tooltip": "Green means that collector is reporting.",
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration"
+          ],
+          "content": "Each panel is one collector, and each turns green when Grafana has seen data from it. Give it a minute or two \u2014 they don't all light up at once, and a couple staying dark usually means that collector wasn't part of what you enabled rather than anything being broken."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "That's a cluster connected: installed, authorised, sized, collecting and reporting. From here the rest of the app \u2014 nodes, workloads, cost \u2014 is populated with your own data."
+    }
+  ]
+}
