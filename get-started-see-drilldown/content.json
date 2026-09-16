@@ -4,11 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Dashboards show what someone already thought to watch. When checkout latency doubles and no saved page covers it, you need to find out what just changed. That's what Drilldown is for. Start with Metrics, Logs, Traces, or Profiles, click filters, and narrow down until you've found the spike. You don't write a query. In Grafana Cloud, this is how you hunt when you don't yet know what you're looking for."
+      "content": "Picture this. You run an online store, and this morning checkout is twice as slow as usual. No dashboard covers checkout latency, because nobody predicted this problem. Dashboards show what someone already thought to watch. When the question is new, you need a way to investigate.\n\nThat's what Drilldown is for. Start from one of the signals, click filters, and narrow down until you've found what changed, all without writing a query. In this guide you'll practice that kind of investigation. The data here comes from a demo system rather than a store, but the moves are the same ones you'd use on your own Grafana Cloud data."
     },
     {
       "type": "markdown",
-      "content": "First, open Drilldown and start with Metrics:"
+      "content": "First, open Drilldown and see where an investigation starts."
     },
     {
       "type": "section",
@@ -19,7 +19,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/drilldown']",
-          "content": "Click **Drilldown** in the main menu. Four sections: **Metrics**, **Logs**, **Traces**, and **Profiles**.",
+          "content": "Click **Drilldown** in the main menu.\n\nThe page that opens offers four starting points, one for each signal your systems produce. Those are **Metrics**, **Logs**, **Traces**, and **Profiles**.",
           "requirements": ["navmenu-open", "exists-reftarget"]
         },
         {
@@ -27,7 +27,7 @@
           "action": "highlight",
           "reftarget": "main a[href='/a/grafana-metricsdrilldown-app/drilldown']",
           "verify": "on-page:/a/grafana-metricsdrilldown-app",
-          "content": "Click **Metrics**, the numbers recorded over time. Every metric appears as a chart, before you ask for anything.",
+          "content": "Click **Metrics**.\n\nMetrics are numbers recorded over time, and a slow checkout is a number. Every metric appears as a chart before you ask for anything, so you start with everything on the table.",
           "requirements": ["on-page:/drilldown", "exists-reftarget"]
         }
       ]
@@ -38,7 +38,7 @@
     },
     {
       "type": "markdown",
-      "content": "Next, narrow the view down to one thing:"
+      "content": "Next, narrow the view from everything down to the one thing that changed."
     },
     {
       "type": "section",
@@ -50,8 +50,8 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid^='select-action']",
-          "content": "Click **Select** on the first metric. The view narrows to that one metric, broken down by its labels.",
-          "tooltip": "One click narrows from everything to one thing. The breakdown that opens splits it further, one chart per label.",
+          "content": "Click **Select** on the first metric.\n\nIn a real investigation you'd pick the metric that tracks checkout latency. The view narrows to that one metric, broken down by its labels.",
+          "tooltip": "One click narrows from everything to one thing, and the breakdown that opens splits it further with one chart per label.",
           "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
         },
         {
@@ -59,8 +59,8 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "input[placeholder='+ label = value']",
-          "content": "This is a **filter**: pick a label and a value, and every chart narrows to match. Clicking filters is the whole workflow.",
-          "tooltip": "Each pick narrows the result. Stack a few and you've cornered the problem, without writing a query.",
+          "content": "Notice the filter field.\n\nPick a label and a value, and every chart narrows to match. Each pick asks a question. Is it one server? One region? Clicking filters is the whole workflow.",
+          "tooltip": "Each pick narrows the result, and a few stacked together identify the problem without writing a query.",
           "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
         },
         {
@@ -68,15 +68,15 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "button[data-testid='data-testid Tab Related logs']",
-          "content": "A spike in the numbers often has a matching error in the logs. **Related logs** jumps from this metric to those text records.",
-          "tooltip": "A spike in the numbers often has a matching error waiting in the logs.",
+          "content": "Find the **Related logs** tab.\n\nA spike in the numbers often has a matching error in the logs. This tab jumps from the metric you're watching straight to those text records, so you keep going without starting over.",
+          "tooltip": "One click carries the investigation from the numbers to the matching text records.",
           "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Start from everything, narrow with clicks, jump to the matching logs. That's an investigation in Grafana Cloud, and you never wrote a query."
+      "content": "Start from everything, narrow with clicks, jump to the matching logs. That's an investigation in Grafana Cloud, and you never wrote a query. When you uncover something worth watching from then on, that's when someone builds a dashboard, and the [guide on dashboards](https://interactive-learning.grafana.net/guides/get-started-see-dashboards) shows you how to read one."
     }
   ]
 }
