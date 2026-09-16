@@ -70,10 +70,11 @@ Apply the same five-phase coach rules (cite shared reference-checks; do not soft
 - Secrets `doIt: true`; confirmed 404s; conversion prose only in legacy markdown
 - Fragile / wrong selectors when live fails, or stable `data-testid` exists in DOM and the guide uses a weak selector
 - **Claim-check MUST FIX:** Contradicted, Unsupported, or Overstated product facts per shared [claim-check.md](../review-learning-path/claim-check.md) (made-up counts, invented names, docs contradictions)
+- **Ungated website-only media:** an `image`/`video` block or markdown `![]()` visible in Pathfinder without a `renderer:website` conditional wrapper (dual-branch for markdown mixing prose + images). See [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder). Do not gate plain YouTube text links or `website.yaml` `cta.image`.
 
 ### Never surface
 
-Wording polish, justified `:contains()` when live passed, CODEOWNERS reminders, audit noise, selector polish when live passed, landing screenshot notes, milestone-count guidelines.
+Wording polish, justified `:contains()` when live passed, CODEOWNERS reminders, audit noise, selector polish when live passed, landing-screenshot **absence** notes (no screenshot yet — not the same as ungated media, which must surface above), milestone-count guidelines.
 
 ---
 

@@ -21,7 +21,7 @@ Follow these phases in order:
 1. **Validate environment.** Confirm the `interactive-tutorials` repo is writable and the `website` repo is readable in the workspace, and that Playwright MCP is available. The `website` repo is a read-only source — it's used only to read canonical docs and any existing source markdown. All generated files are written to interactive-tutorials.
 2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch.
 3. **Propose path options.** Review existing paths in `interactive-tutorials/[slug]-lj` for structural patterns. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
-4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content.
+4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Gate any screenshot, embedded video, or markdown image behind a `renderer:website` conditional — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`.
 5. **Create website metadata files.** Create `website.yaml` for the path and each milestone. Refer to `docs/website-yaml-reference.md`.
 6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. Where fields can't be derived, ask the user to provide values before generating.
 7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
@@ -56,6 +56,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 - Never use data-dependent selectors — use `^=` starts-with patterns
 - Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
 - All links in content.json must be absolute URLs (`https://grafana.com/docs/...`), not relative
+- Never leave a screenshot, video, or markdown image ungated in `content.json` — wrap it in a `conditional` with `conditions: ["renderer:website"]` (see Step 4)
 
 ---
 
@@ -69,6 +70,7 @@ Consult these during the workflow:
 | `build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
 | `build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
 | `docs/manifest-reference.md` | Generating manifest.json files |
+| `docs/learning-path-authoring.md` | Gating screenshots/videos for website-only rendering |
 | `.cursor/proven-patterns.mdc` | Reusable patterns for common Grafana UI elements (auto-loaded) |
 
 ---
@@ -77,7 +79,7 @@ Consult these during the workflow:
 
 ### Block types
 
-`markdown` · `interactive` · `multistep` · `section` · `guided`
+`markdown` · `interactive` · `multistep` · `section` · `guided` · `conditional`
 
 ### Action types
 
