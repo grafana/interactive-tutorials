@@ -4,11 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Dashboards are saved pages someone already built. When you want to look at the data directly, Grafana Cloud has a page for that: Explore. Pick a data source, run a query, read the chart. Nothing to save, nothing to build — adjust the query and run it again until you see what you need. On Grafana Play it opens with a working sample query, so you can see the shape of the page before you write one of your own."
+      "content": "Picture this. A teammate asks you a question in the middle of a conversation. Did the service really get slower after yesterday's release? No dashboard shows that exact number, and it isn't worth building one for a question you'll ask once. It isn't a job for Drilldown either. Drilldown is for hunting when you don't yet know what you're looking for, and here the question is already precise. You just need the answer. Explore is the page for that. Pick a data source, run a query, read the chart, then adjust and run again until you see what you need.\n\nIn this guide you'll learn to read the Explore page. Some instances open it with a sample query already running, and others open it empty, but the page reads the same either way."
     },
     {
       "type": "markdown",
-      "content": "First, find where Explore lives:"
+      "content": "First, find where Explore lives."
     },
     {
       "type": "section",
@@ -19,18 +19,18 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
-          "content": "Click **Explore** in the main menu. On Play it opens with a working sample query.",
+          "content": "Click **Explore** in the main menu.\n\nUnlike a dashboard, this page isn't something other people look at. It's your own workspace, and queries you run here don't change any dashboard or affect anyone else.",
           "requirements": ["navmenu-open", "exists-reftarget"]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "That's Explore: one page for looking at your data directly. Nothing saved, nothing built."
+      "content": "That's Explore. One page for asking your data a direct question, with nothing to set up first."
     },
     {
       "type": "markdown",
-      "content": "Next, read the page from top to bottom:"
+      "content": "Next, read the page from top to bottom. Three parts do all the work here."
     },
     {
       "type": "section",
@@ -43,15 +43,21 @@
           "action": "highlight",
           "doIt": false,
           "reftarget": "[data-testid='data-testid Data source picker select container']",
-          "content": "The **data source** picker chooses where the query runs: a connection to a place that already holds your data.",
+          "content": "Notice the **data source** picker.\n\nIt chooses where the query runs. A data source is a connection to a place that already holds your data, so answering a question starts with picking which store to ask.",
           "tooltip": "Every query runs against one of your connected data stores. This picker chooses which one.",
           "requirements": ["on-page:/explore", "exists-reftarget"]
         },
         {
           "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22one%22%3A%7B%22datasource%22%3A%22grafana%22%2C%22queries%22%3A%5B%7B%22queryType%22%3A%22randomWalk%22%2C%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22datasource%22%2C%22uid%22%3A%22grafana%22%7D%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D",
+          "content": "Load a sample query.\n\nThis one uses the **-- Grafana --** test data source that's built into every Grafana instance, so it works before you've connected any data of your own. The query generates fake data, which gives the page something to draw."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
-          "content": "Click **Run query** to run the query again.",
+          "content": "Click **Run query**.\n\nThis sends the query on the page to the data source. In a real investigation you'd edit the query first, then run it again to see the most up-to-date data.",
           "tooltip": "Sends the query on this page to the data source and redraws the result below.",
           "requirements": ["on-page:/explore", "exists-reftarget"]
         },
@@ -59,8 +65,9 @@
           "type": "interactive",
           "action": "highlight",
           "doIt": false,
+          "skippable": true,
           "reftarget": "[data-testid='data-testid Panel header Graph']",
-          "content": "The result comes back drawn as a chart. Change the query, run it again, and the picture changes with it.",
+          "content": "Read the chart below the query.\n\nThis one draws the fake data from the sample query, and in a real investigation it would hold your data. Change the query, run it again, and the picture changes with it. That loop of adjust and run is how you close in on the answer you came for.",
           "tooltip": "This is the result of the query above it, drawn the same way a dashboard panel would draw it.",
           "requirements": ["on-page:/explore", "exists-reftarget"]
         }
@@ -68,7 +75,7 @@
     },
     {
       "type": "markdown",
-      "content": "Pick a data source, run a query, read the chart. That's Explore: a scratch pad for your data, no dashboard required."
+      "content": "You had one precise question, and Explore answered it without saving or building anything. Pick a data source, run a query, read the chart. That loop works for any question you can put into a query. When you can't, because all you know is that something looks wrong, that's an investigation, and the [guide on Drilldown](https://interactive-learning.grafana.net/guides/get-started-see-drilldown) shows you how to run one with clicks instead of queries."
     }
   ]
 }
