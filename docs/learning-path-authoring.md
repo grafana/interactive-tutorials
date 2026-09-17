@@ -137,7 +137,7 @@ Rule of thumb:
 - Teaching a click, fill, or navigate in the Grafana UI needs selectors. The agent discovers them. You smoke-test **Show me** / **Do it**.
 - Explaining concepts with no UI target stays markdown only. No selectors.
 
-The create and convert commands already treat `business-value` as markdown-only (no interactive blocks). Intro and conclusion milestones are often mostly markdown too.
+The convert command treats a source `business-value` milestone as markdown-only (no interactive blocks) when it ports one over from an existing website learning journey. `/create-learning-path` should not add a generic "case for observability" / "value of observability" milestone at all — it's redundant boilerplate that teaches nothing specific to the path (see [issue #597](https://github.com/grafana/interactive-tutorials/issues/597)); open with product-specific value or advantages content instead. Intro and conclusion milestones are often mostly markdown too.
 
 ### Playwright MCP
 
