@@ -90,3 +90,16 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) | Convert an existing website learning path to an interactive package |
 | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | Author pre-PR self-review for a learning path (mirrors review checks + shared claim-check, then optional fixes) |
 | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
+
+## Committing and pushing
+
+Branch protection on this repository enforces **verified commit signatures** as a push rule. An unsigned commit is not rejected when you make it — it is rejected by the remote at push time, with `GH013: Repository rule violations found` naming each offending SHA. Fixing it after the fact means rewriting the commit, which changes its SHA and can leave local tooling holding a diverged ref.
+
+So: leave `commit.gpgsign` enabled and never disable it for a commit here (no `-c commit.gpgsign=false`, no `--no-gpg-sign`). Check before pushing with `git log --pretty='%h %G? %s' main..HEAD` — every commit must show `G`.
+
+## Maintaining this file
+
+Keep this file for knowledge useful to almost every future agent session in this project.
+Do not repeat what the codebase already shows; point to the authoritative file or command instead.
+Prefer rewriting or pruning existing entries over appending new ones.
+When updating this file, preserve this bar for all agents and keep entries concise.

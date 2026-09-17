@@ -10,27 +10,40 @@
   "startingLocation": "/connections/datasources/influxdb",
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "targetPlatform": "cloud"
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources"
+            },
+            {
+              "tag": "selected-datasource:influxdb"
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
         },
         {
-          "or": [
+          "and": [
             {
-              "and": [
-                {
-                  "urlPrefix": "/connections/datasources"
-                },
-                {
-                  "tag": "selected-datasource:influxdb"
-                }
+              "urlPrefixIn": [
+                "/connections/datasources/influxdb",
+                "/connections/add-new-connection/influxdb"
               ]
             },
             {
-              "urlPrefix": "/connections/datasources/influxdb"
+              "targetPlatform": "cloud"
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlRegex": "/connections/add-new-connection/?$"
             },
             {
-              "urlPrefix": "/connections/add-new-connection"
+              "targetPlatform": "cloud"
             }
           ]
         }

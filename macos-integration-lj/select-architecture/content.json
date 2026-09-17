@@ -13,23 +13,26 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
-          "content": "Click **Connections > Add new connection** in the left-side menu.",
-          "requirements": ["navmenu-open"]
+          "action": "navigate",
+          "reftarget": "/connections/add-new-connection",
+          "verify": "on-page:/connections/add-new-connection",
+          "content": "Open **Connections > Add new connection**."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='search-input-input']",
           "content": "Filter the connections by typing `macOS` in the search.",
-          "targetvalue": "macOS"
+          "targetvalue": "macOS",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/add-new-connection/macos-node']",
-          "content": "Click the **macOS** tile."
+          "content": "Click the **macOS** tile.",
+          "verify": "on-page:/connections/add-new-connection/macos-node",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
         },
         {
           "type": "markdown",
@@ -40,7 +43,7 @@
           "action": "highlight",
           "reftarget": "div[data-testid='collector-arch-selection'] input",
           "content": "Select the **architecture** that matches your Mac.\n\nIf you are unsure of your Mac's architecture, open Terminal and run `uname -m`. If it returns `x86_64`, you have an Intel Mac: select **Amd64**. If it returns `arm64`, select **Arm64**.",
-          "requirements": ["exists-reftarget"],
+          "requirements": ["on-page:/connections/add-new-connection/macos-node", "exists-reftarget"],
           "doIt": false
         },
         {
@@ -48,7 +51,7 @@
           "action": "highlight",
           "reftarget": "div[data-testid='collector-installation-method'] input",
           "content": "Select the **Homebrew** installation method.",
-          "requirements": ["exists-reftarget"],
+          "requirements": ["on-page:/connections/add-new-connection/macos-node", "exists-reftarget"],
           "doIt": false
         }
       ]

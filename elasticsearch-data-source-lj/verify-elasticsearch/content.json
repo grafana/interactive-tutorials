@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "elasticsearch-data-source-verify-elasticsearch",
+  "title": "Verify Elasticsearch is accessible",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Before you connect Grafana to Elasticsearch, confirm that your Elasticsearch instance is running and that you have the information Grafana needs to establish a connection."
+    },
+    {
+      "type": "markdown",
+      "content": "### Gather connection details\n\nCollect the following values before proceeding:\n\n| Detail | Required | Example |\n|--------|----------|---------|\n| **URL** | Yes | `http://elasticsearch.example.com:9200` |\n| **Index name** | Recommended | `logs-*` or `[filebeat-]YYYY.MM.DD` |\n| **Time field name** | No (defaults to `@timestamp`) | `@timestamp` |\n| **Authentication** | Depends on your setup | Username and password, or API key |\n\nThe URL is the only required connection value. **Index name** and **Time field name** are optional Elasticsearch details — Grafana defaults the time field to `@timestamp` — but setting them makes querying easier. The Elasticsearch data source supports v7.17 or later, v8.x, v9.x, and Elastic Cloud Serverless."
+    },
+    {
+      "type": "markdown",
+      "content": "### Verify connectivity\n\nConfirm Elasticsearch is reachable by running this command from your terminal:\n\n```bash\ncurl -s -o /dev/null -w \"%{http_code}\" http://YOUR_ELASTICSEARCH_HOST:9200\n```\n\nA `200` response confirms that Elasticsearch is accepting connections. If your instance requires authentication, add credentials with `-u username:password` or an API key header.\n\n**If Elasticsearch is behind a firewall:** You'll need [Private data source connect (PDC)](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/) to allow Grafana Cloud to reach it. Set up PDC before continuing."
+    },
+    {
+      "type": "markdown",
+      "content": "### Confirm read permissions\n\nWhen Elasticsearch security features are enabled, the user or API key that Grafana connects with needs the following cluster privileges:\n\n- **monitor** — Retrieves version information for the connected Elasticsearch instance.\n- **view_index_metadata** — Accesses the mapping definitions of indices.\n- **read** — Performs search and retrieval operations on indices.\n\n**Security tip:** Scope the credentials to the minimum privileges Grafana needs — read access to the indices you want to query. Refer to [Configure the Elasticsearch data source](https://grafana.com/docs/grafana/latest/datasources/elasticsearch/configure/) for details."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll add Elasticsearch as a data source in Grafana Cloud."
+    }
+  ]
+}

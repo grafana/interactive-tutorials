@@ -4,12 +4,21 @@
   "title": "Select PDC and test connection",
   "blocks": [
     {
-      "type": "video",
-      "src": "https://www.youtube.com/embed/_ojYThjkpN0",
-      "provider": "youtube",
-      "title": "Select PDC and test connection",
-      "start": 343,
-      "end": 364
+      "type": "conditional",
+      "conditions": [
+        "renderer:website"
+      ],
+      "whenTrue": [
+        {
+          "type": "video",
+          "src": "https://www.youtube.com/embed/_ojYThjkpN0",
+          "provider": "youtube",
+          "title": "Select PDC and test connection",
+          "start": 343,
+          "end": 364
+        }
+      ],
+      "whenFalse": []
     },
     {
       "type": "markdown",
@@ -38,7 +47,9 @@
           "reftarget": "input[aria-label='Private data source connect']",
           "doIt": false,
           "skippable": true,
-          "requirements": ["exists-reftarget"],
+          "requirements": [
+            "exists-reftarget"
+          ],
           "tooltip": "Only PDC agents already registered in your Grafana Cloud stack appear in this list, so an empty list means no agent has connected yet.",
           "content": "In the **Private data source connect** field, select the name of a PDC agent.\n\n> For the test connection to be successful, you must select a PDC agent that's running."
         },
@@ -46,7 +57,9 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "Save & test",
-          "requirements": ["exists-reftarget"],
+          "requirements": [
+            "exists-reftarget"
+          ],
           "tooltip": "Saving runs a health check that queries the Prometheus API over the connection you just configured, so a green result proves the whole path works end to end.",
           "content": "Click **Save & test**.\n\nWhen successful, you'll see the message: `Successfully queried the Prometheus API.`"
         }

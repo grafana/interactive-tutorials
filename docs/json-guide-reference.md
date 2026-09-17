@@ -126,6 +126,23 @@ Embed images with optional dimensions.
 | `width` | number | ❌ | Display width in pixels |
 | `height` | number | ❌ | Display height in pixels |
 
+**Learning paths:** Gate screenshots for website-only rendering so Pathfinder does not show them (the live UI is already highlighted). Wrap the block in a `conditional` with `conditions: ["renderer:website"]` and empty `whenFalse`. See [Screenshots and videos](learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder).
+
+```json
+{
+  "type": "conditional",
+  "conditions": ["renderer:website"],
+  "whenTrue": [
+    {
+      "type": "image",
+      "src": "https://grafana.com/media/docs/example.png",
+      "alt": "Example dashboard"
+    }
+  ],
+  "whenFalse": []
+}
+```
+
 ### Video Block
 
 Embed YouTube or native HTML5 video.
@@ -149,6 +166,8 @@ Embed YouTube or native HTML5 video.
 | `title` | string | ❌ | — | Video title for accessibility |
 | `start` | number | ❌ | — | Start time in seconds |
 | `end` | number | ❌ | — | End time in seconds |
+
+**Learning paths:** Gate embedded videos the same way as images (`renderer:website` conditional, empty `whenFalse`) so they appear on the website but not in Pathfinder.
 
 ---
 
@@ -290,6 +309,8 @@ Shows different content based on runtime condition evaluation. Conditions use re
 **ConditionalSectionConfig:** `{ title?: string, requirements?: string[], objectives?: string[] }`
 
 **Display modes:** `"inline"` (default) renders content directly without wrapper. `"section"` wraps content with section styling, collapse controls, and "Do" button — use with `whenTrueSectionConfig`/`whenFalseSectionConfig` to give each branch its own title and objectives.
+
+**Website-only media:** Use `conditions: ["renderer:website"]` to show screenshots/videos on the website and hide them in Pathfinder. For markdown that mixes prose with `![...](url)`, put the full markdown (with images) in `whenTrue` and a prose-only copy (images stripped) in `whenFalse`.
 
 ### Multistep Block
 

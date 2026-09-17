@@ -13,10 +13,10 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
-          "content": "Click **Connections > Add new connection** in the left-side menu.",
-          "requirements": ["navmenu-open"]
+          "action": "navigate",
+          "reftarget": "/connections/add-new-connection",
+          "verify": "on-page:/connections/add-new-connection",
+          "content": "Open **Connections > Add new connection**."
         },
         {
           "type": "interactive",
@@ -24,14 +24,15 @@
           "reftarget": "input[data-testid='search-input-input']",
           "content": "Filter the connections by typing `MySQL` in the search.",
           "targetvalue": "MySQL",
-          "requirements": ["exists-reftarget"]
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/add-new-connection/mysql']",
           "content": "Click the **MySQL** tile to open the setup page.",
-          "requirements": ["exists-reftarget"]
+          "verify": "on-page:/connections/add-new-connection/mysql",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
         },
         {
           "type": "markdown",
@@ -42,7 +43,7 @@
           "action": "highlight",
           "reftarget": "div[data-testid='collector-os-selection'] input",
           "content": "Select the **operating system** that matches your platform.",
-          "requirements": ["exists-reftarget"],
+          "requirements": ["on-page:/connections/add-new-connection/mysql", "exists-reftarget"],
           "doIt": false
         },
         {
@@ -50,7 +51,7 @@
           "action": "highlight",
           "reftarget": "div[data-testid='collector-arch-selection'] input",
           "content": "Select the **architecture** that matches your system (Amd64 for x86_64, Arm64 for aarch64).\n\nIf you are unsure of the architecture, run `uname -m` in your terminal. If it returns `x86_64`, select **Amd64**. If it returns `aarch64`, select **Arm64**.",
-          "requirements": ["exists-reftarget"],
+          "requirements": ["on-page:/connections/add-new-connection/mysql", "exists-reftarget"],
           "doIt": false
         }
       ]

@@ -7,29 +7,33 @@
   "testEnvironment": { "tier": "cloud" },
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "or": [
+          "and": [
             {
-              "and": [
+              "or": [
                 {
-                  "urlPrefix": "/connections/datasources"
+                  "and": [
+                    {
+                      "urlPrefix": "/connections/datasources"
+                    },
+                    {
+                      "tag": "selected-datasource:prometheus"
+                    }
+                  ]
                 },
                 {
-                  "tag": "selected-datasource:prometheus"
+                  "urlPrefix": "/connections/datasources/prometheus"
+                },
+                {
+                  "urlRegex": "/connections/add-new-connection/?$"
                 }
               ]
             },
             {
-              "urlPrefix": "/connections/datasources/prometheus"
-            },
-            {
-              "urlRegex": "/connections/add-new-connection/?$"
+              "targetPlatform": "cloud"
             }
           ]
-        },
-        {
-          "targetPlatform": "cloud"
         }
       ]
     }

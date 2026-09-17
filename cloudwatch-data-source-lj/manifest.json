@@ -10,27 +10,37 @@
   "startingLocation": "/connections/datasources/new",
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "targetPlatform": "cloud"
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources"
+            },
+            {
+              "tag": "selected-datasource:cloudwatch"
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
         },
         {
-          "or": [
-            {
-              "and": [
-                {
-                  "urlPrefix": "/connections/datasources"
-                },
-                {
-                  "tag": "selected-datasource:cloudwatch"
-                }
-              ]
-            },
+          "and": [
             {
               "urlPrefix": "/connections/datasources/cloudwatch"
             },
             {
-              "urlPrefix": "/connections/add-new-connection"
+              "targetPlatform": "cloud"
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlRegex": "/connections/add-new-connection/?$"
+            },
+            {
+              "targetPlatform": "cloud"
             }
           ]
         }

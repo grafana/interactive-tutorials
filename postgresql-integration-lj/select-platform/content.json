@@ -17,23 +17,26 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
-          "content": "Click **Connections > Add new connection** in the left-side menu.",
-          "requirements": ["navmenu-open"]
+          "action": "navigate",
+          "reftarget": "/connections/add-new-connection",
+          "verify": "on-page:/connections/add-new-connection",
+          "content": "Open **Connections > Add new connection**."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='search-input-input']",
           "targetvalue": "PostgreSQL",
-          "content": "Filter the connections by typing `PostgreSQL` in the search."
+          "content": "Filter the connections by typing `PostgreSQL` in the search.",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/connections/add-new-connection/postgres']",
-          "content": "Click the **PostgreSQL** tile to open the setup page."
+          "content": "Click the **PostgreSQL** tile to open the setup page.",
+          "verify": "on-page:/connections/add-new-connection/postgres",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
         },
         {
           "type": "markdown",
@@ -44,6 +47,7 @@
           "action": "highlight",
           "reftarget": "div[data-testid='collector-os-selection']",
           "content": "Select the **operating system** that matches your platform.",
+          "requirements": ["on-page:/connections/add-new-connection/postgres", "exists-reftarget"],
           "doIt": false
         },
         {
@@ -51,6 +55,7 @@
           "action": "highlight",
           "reftarget": "div[data-testid='collector-arch-selection']",
           "content": "Select the **architecture** that matches your system (Amd64 for x86_64, Arm64 for aarch64).\n\nIf you are unsure of the architecture of a Linux machine, run `uname -m` in your terminal. If it returns `x86_64`, select **Amd64**. If it returns `aarch64`, select **Arm64**. If the command returns anything else, your system isn't supported by Grafana Alloy; you need to use a 64-bit x86 or ARM system.",
+          "requirements": ["on-page:/connections/add-new-connection/postgres", "exists-reftarget"],
           "doIt": false
         },
         {
