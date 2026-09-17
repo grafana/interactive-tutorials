@@ -1,0 +1,112 @@
+{
+  "id": "get-started-demo-data",
+  "title": "Explore demo data from an instrumented app",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You don't need an instrumented app to see what one looks like in Grafana Cloud. The **Demo Data Dashboards** app installs the telemetry of QuickPizza, a fictional pizza service, into hosted data sources that are free to use and don't count toward your usage. This guide installs the demo and runs a first query against its data."
+    },
+    {
+      "type": "markdown",
+      "content": "First, install the QuickPizza demo."
+    },
+    {
+      "type": "section",
+      "id": "install-the-demo",
+      "title": "Install the QuickPizza demo",
+      "objectives": ["has-datasource:grafanacloud-play-prom"],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Expand **More apps** in the main menu, then open **Demo Data Dashboards**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label*='section: More apps']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-demodashboards-app']"
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Click **Install the Quick Pizza SRE demo**. This deploys the demo data sources and dashboards, then refreshes the page.",
+          "completeEarly": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='install-quickpizza']",
+              "lazyRender": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "QuickPizza's telemetry is now in your stack: a **QuickPizza** dashboards folder, plus data sources for its metrics, logs, and traces."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, query that data yourself."
+    },
+    {
+      "type": "section",
+      "id": "query-the-demo-data",
+      "title": "Query the demo data",
+      "requirements": ["section-completed:install-the-demo", "has-datasource:grafanacloud-play-prom"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "content": "Click **Explore** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid Data source picker select container']",
+          "content": "Open the picker and choose **grafanacloud-play-prom**. It holds the demo's metrics.",
+          "tooltip": "Every query runs against one of your connected data stores. This picker chooses which one.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:has(input[title='Code'])",
+          "content": "The query editor has two modes. Switch to **Code** mode so you can type the query directly. If **Code** is already selected, this changes nothing.",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.Prometheus.queryEditor.code.queryField} textarea.inputarea",
+          "targetvalue": "quickpizza_server_http_requests_total",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "content": "In the query field, enter `quickpizza_server_http_requests_total`. It counts every request QuickPizza's server has handled."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Run query**. The rows coming back are real telemetry from a running, instrumented app.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You queried the metrics of an instrumented app without instrumenting anything yourself."
+    },
+    {
+      "type": "markdown",
+      "content": "The dashboards in the **QuickPizza** folder are built on these same data sources, and you can influence the numbers by visiting the live site at [quickpizza.grafana.fun](https://quickpizza.grafana.fun/). When you have an app of your own to instrument, everything you saw here works the same way on your data."
+    }
+  ]
+}
