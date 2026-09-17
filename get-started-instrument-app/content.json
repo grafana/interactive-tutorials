@@ -154,11 +154,59 @@
     },
     {
       "type": "markdown",
-      "content": "You've connected an instrumented app to Grafana Cloud and confirmed its data is arriving."
+      "content": "You've connected an instrumented app to Grafana Cloud and confirmed its data is arriving. The same picker has matching **-logs** and **-traces** data sources for your app's other signals."
     },
     {
       "type": "markdown",
-      "content": "The same picker has matching **-logs** and **-traces** data sources for your app's other signals. And what you send counts toward usage-based billing, so instrument what you use."
+      "content": "Finally, if you're an administrator, you can activate **Application Observability** to see your service in a purpose-built catalog instead of raw query results. Activation is optional: it needs a plan that supports the knowledge graph, it works from the traces your app sends, and it starts host-hours billing."
+    },
+    {
+      "type": "section",
+      "id": "see-your-service",
+      "title": "See your service in Application Observability",
+      "requirements": ["section-completed:confirm-data-is-arriving", "has-role:admin"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item']:contains('Observability')",
+          "content": "Click **Observability** in the main menu. The knowledge graph onboarding page opens with three dataset options.",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Applications",
+          "content": "Click **Applications**.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Activate",
+          "content": "Review the dialog and click **Activate**. This enables metric generation from your traces, and billing is based on host hours.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Build knowledge graph",
+          "content": "Click **Build knowledge graph**. The status changes to **Knowledge graph built**, and discovery starts running on your telemetry.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "When discovery finishes, open **Observability > Application** in the main menu. Your service appears in the services catalog with its performance metrics, and clicking it drills into rates, errors, durations, and traces."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your app's telemetry now powers Application Observability and the knowledge graph, the views this data was made for. What you send counts toward usage-based billing, so instrument what you use."
     }
   ]
 }
