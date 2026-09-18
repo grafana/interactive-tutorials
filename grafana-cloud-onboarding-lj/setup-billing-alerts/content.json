@@ -36,24 +36,25 @@
           "verify": "on-page:/a/grafana-cmab-app/usage-alerts"
         },
         {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Create alert",
-          "content": "Click **+ Create alert** to open the alert builder.",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-cmab-app/usage-alerts"
-          ],
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "All Products",
-          "content": "Select **All Products** for a monthly organization spend alert, or pick **Metrics**, **Logs**, or **Traces** for a product-specific alert.",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-cmab-app/usage-alerts"
+          "type": "multistep",
+          "content": "Click **+ Create alert** to open the alert builder. Select **All Products** for a monthly organization spend alert, or pick **Metrics**, **Logs**, or **Traces** for a product-specific alert.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Create alert",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-cmab-app/usage-alerts"
+              ]
+            },
+            {
+              "action": "button",
+              "reftarget": "All Products",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-cmab-app/usage-alerts"
+              ]
+            }
           ],
           "skippable": true
         },
@@ -71,21 +72,22 @@
         },
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "If a **Contact point** field is shown, scroll to it and choose where Grafana sends the notification. If you don't have one yet, use **View or create contact points** to set one up.",
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Create alerts",
-          "content": "Review your settings, then click **Create alerts** to save.",
+          "action": "highlight",
+          "reftarget": "label:contains('50% of threshold')",
+          "content": "Select **50% of threshold** as the first alert level.",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-cmab-app/usage-alerts"
           ],
-          "skippable": true,
-          "verify": "on-page:/a/grafana-cmab-app/usage-alerts"
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "If a **Contact point** field is shown, scroll to it and choose where Grafana sends the notification. If you don't have one yet, use **View or create contact points** to set one up."
+        },
+        {
+          "type": "markdown",
+          "content": "Review your settings, then click **Create alerts** to save."
         },
         {
           "type": "interactive",
@@ -104,11 +106,8 @@
       "content": "To review or change an alert later, return to the **Usage Alerts** tab and select it."
     },
     {
-      "type": "interactive",
-      "action": "navigate",
-      "reftarget": "https://grafana.com/docs/grafana-cloud/cost-management-and-billing/usage-cost-alerts/manage-alerts/",
-      "content": "Optional: open the docs for managing existing usage alerts in a new browser tab.",
-      "skippable": true
+      "type": "markdown",
+      "content": "For more information, refer to [Manage existing alerts](https://grafana.com/docs/grafana-cloud/cost-management-and-billing/usage-cost-alerts/manage-alerts/)."
     },
     {
       "type": "markdown",
