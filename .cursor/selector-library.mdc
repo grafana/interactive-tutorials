@@ -1,21 +1,45 @@
 ---
-description: Catalog of stable CSS selectors for Grafana UI elements including navigation, editor, drilldown, data source, and form selectors.
+description: Catalog of stable selectors for Grafana UI elements including symbolic grafana: references, navigation, editor, drilldown, data source, and form selectors.
 globs:
   - "**/content.json"
 ---
 # Selector Library Quick Reference
 
 > **Full documentation**: See [docs/selectors-and-testids.md](../docs/selectors-and-testids.md)
+> · **Syntax and traps**: [symbolic-selector-syntax.md](skills/convert-guide-selectors/symbolic-selector-syntax.md)
+> · **Converting a guide**: the `convert-guide-selectors` skill
 
 ## Selector Priority
 
-1. `data-testid` attributes (most stable)
-2. Semantic attributes: `href`, `aria-*`, `id`, `role`
-3. `:contains()` text matching (reliable for buttons/labels)
-4. `:has()` structural matching (match by descendants)
-5. **Avoid**: Auto-generated CSS classes like `.css-8mjxyo`
+1. **Symbolic `grafana:` references** -- resolve through `@grafana/e2e-selectors` per Grafana version
+2. `data-testid` attributes -- stable, but pinned to one version's value
+3. Semantic attributes: `href`, `aria-*`, `id`, `role`
+4. `:contains()` text matching -- matches **translated** copy; breaks in any non-English UI
+5. `:has()` structural matching (match by descendants)
+6. **Avoid**: Auto-generated CSS classes like `.css-8mjxyo`
+
+## Symbolic References (Preferred)
+
+A `grafana:` reftarget resolves through `@grafana/e2e-selectors` against the **running** Grafana version and matches `data-testid` **or** `aria-label`. A literal `data-testid` is a snapshot of one version's value in one attribute.
+
+| Form | Use for | Example |
+|------|---------|---------|
+| `grafana:<path>` | the whole reftarget | `grafana:components.TimePicker.openButton` |
+| `grafana:<path>:<arg>` | parameterized selectors | `grafana:components.Tab.title:Related metrics` |
+| `{grafana:<path>}` | inside a larger CSS expression | `a{grafana:components.Tab.title:Winner}` |
+
+`<path>` is a dotted path into the package's `components` or `pages` exports. Verify every path before shipping -- one unresolvable token voids the whole reftarget:
+
+```bash
+GRAFANA_REPO=~/Repos/grafana npx tsx skills/convert-guide-selectors/scripts/validate-paths.ts \
+  '["components.TimePicker.openButton"]' "12.4.0,13.2.0"
+```
+
+**Only reference selectors that exist in a shipped release.** A selector newly merged to grafana/grafana resolves to nothing on the instances your guide runs against today.
 
 ## Navigation Selectors
+
+Nav menu **items** are the one documented exception -- they stay literal. Pathfinder regex-matches this exact shape to auto-expand a collapsed menu section, and a resolved reference defeats that fix. The `[href]` discriminator isn't in the selector package anyway.
 
 ```
 Home:        a[data-testid='data-testid Nav menu item'][href='/']
@@ -26,9 +50,14 @@ Connections: a[data-testid='data-testid Nav menu item'][href='/connections']
 Admin:       a[data-testid='data-testid Nav menu item'][href='/admin']
 ```
 
-## Button by Text (Preferred)
+The surrounding container has no such constraint: `{grafana:components.NavMenu.Menu}`.
 
-Use `action: "button"` instead of CSS selectors:
+## Button by Text
+
+`action: "button"` is the most readable option when nothing better exists, but it is a **text match** -- it compares against translated copy exactly as `:contains()` does, so it works in English and silently matches nothing in every other locale.
+
+Where a `grafana:` reference or a `data-testid` exists for the button, use that instead. Where none does, that's a gap to fix in grafana/grafana rather than paper over here.
+
 ```json
 { "action": "button", "reftarget": "Save & test" }
 { "action": "button", "reftarget": "Add new data source" }
@@ -36,6 +65,8 @@ Use `action: "button"` instead of CSS selectors:
 ```
 
 ## Form Elements
+
+No package selectors for these; `id` is already version-independent.
 
 ```
 Data source name:  input[id='basic-settings-name']
@@ -45,29 +76,49 @@ Query editor:      textarea.inputarea.monaco-mouse-cursor-text
 
 ## Advanced Selectors
 
-### `:nth-match(n)` - Global nth element
+### `panel:<title>` - Scope into a panel
 ```json
-"reftarget": "div[data-testid='panel']:nth-match(3)"
+"reftarget": "panel:CPU Usage > div[data-testid='uplot-main-div']"
 ```
+Expands to `[data-viz-panel-key]:has([data-testid*="Panel header <title>"]) <rest>`. The separator must be exactly `" > "`, spaces included, and joins with a **descendant** combinator despite the `>`.
 
-### `:contains('text')` - By text content
-```json
-"reftarget": "div:contains('checkoutservice')"
-```
+> ⚠️ **`panel:` and `{grafana:}` are mutually exclusive.** The resolver dispatches on `{grafana:` **first** and returns immediately, so a reftarget containing both never reaches the `panel:` branch -- `panel:CPU > {grafana:…}` resolves the token and leaves the literal text `panel:CPU > ` in front of it, matching nothing. Pick one:
+>
+> ```json
+> // panel: shorthand -- the tail stays plain CSS
+> "reftarget": "panel:CPU Usage > div[data-testid='uplot-main-div']"
+>
+> // fully symbolic -- both halves version-aware, no panel: prefix
+> "reftarget": "section{grafana:components.Panels.Panel.title:CPU Usage} {grafana:components.UPlotChart.container}"
+> ```
 
 ### `:has(selector)` - Parent with child
 ```json
 "reftarget": "div[data-cy='item']:has(p:contains('service'))"
 ```
 
+### `:contains('text')` - By text content
+```json
+"reftarget": "div:contains('checkoutservice')"
+```
+Matches translated copy -- see Selector Priority above.
+
+### `:nth-match(n)` - Global nth element
+```json
+"reftarget": "div[data-testid='panel']:nth-match(3)"
+```
+**Last resort.** The index counts what is *currently rendered*, and Grafana lazy-renders panels and virtualizes long lists, so `n` shifts as the user scrolls. Scope to a container (`panel:<title> > ...`, or a row-scoped selector) instead. See [dashboard-selector-strategies.md](skills/autogen-guide-dashboard/dashboard-selector-strategies.md).
+
 ## Drilldown Selectors
 
 ```
 Metrics drilldown app: a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']
-Select metric action:  button[data-testid="select-action_<metric_name>"]
-Related metrics tab:   button[data-testid="data-testid Tab Related metrics"]
-Related logs tab:      button[data-testid="data-testid Tab Related logs"]
+Select metric action:  button[data-testid^="select-action_"]
+Related metrics tab:   grafana:components.Tab.title:Related metrics
+Related logs tab:      grafana:components.Tab.title:Related logs
 ```
+
+The drilldown app entrypoint is a nav item, so it stays literal. `select-action_` is a plugin test id with a metric-name suffix -- match the prefix with `^=` rather than pinning one metric.
 
 ## Hover-Dependent UI
 
@@ -93,6 +144,6 @@ Virtualized tables, paginated lists, and dashboard rows below the fold do not re
 
 - Engine tries native `querySelector()` first, falls back to JS parsing
 - Use specific base selectors to narrow scope
-- Prefer `data-testid` for speed and stability
+- **Prefer attribute matching over text or structure** -- a `grafana:` reference or a `data-testid` resolves to a single attribute lookup, while `:contains()` and `:has()` fall back to walking the DOM in JS. A reference costs one extra map lookup at resolve time and is the most *stable* option; a literal `data-testid` is marginally faster and pins one version
 - Test in target browsers when using `:has()` on older Firefox
 - For virtualized targets, set `lazyRender: true` so the engine scrolls them into view
