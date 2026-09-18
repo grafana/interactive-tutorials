@@ -26,3 +26,9 @@ lists, dashboard rows below the fold) is inside a `guided` block with
 `lazyRender: true` on the step. Plain `interactive` will fail there.
 12. Check that `navigate` actions chaining to another guide use the `openGuide`
 field (`"openGuide": "bundled:<guide-id>"`), not the legacy `?doc=` query param.
+13. Heuristic lint is not schema validation. After the checks above, run
+`scripts/validate-path.sh` on the package directory (or the `content.json`
+file). That is the same `validate --strict` check CI runs. If the CLI is
+missing, retry with `--fetch`. Do not treat a skipped CLI run as a pass —
+unknown fields such as `hint` on a `multistep` look fine to this checklist
+and still fail in CI.

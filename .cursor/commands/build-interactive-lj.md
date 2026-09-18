@@ -23,7 +23,7 @@ Follow these phases in order:
 5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. **Exception: exclude `business-value` from the path-level `milestones` array.** The `business-value` milestone still gets its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a registered stop on the path.
 6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
 7. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
-8. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
+8. **Verify and wrap up.** Cross-check all factual claims against live docs. Run `scripts/validate-path.sh {path_dir}` from the interactive-tutorials repo root (retry with `--fetch` if the CLI is missing). Update `.github/CODEOWNERS`. Provide a summary of all files created.
 
 For background on how this command relates to `/create-learning-path`, refer to `.cursor/learning-path-workflows/workflows.md`.
 
