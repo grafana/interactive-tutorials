@@ -1,0 +1,699 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "grafana-timeseries-signal-detective",
+  "title": "Signal detective: advanced time series techniques",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Turn two random signals into a chart you can investigate: compare peaks, tune overlapping lines, give one series its own axis, and add a meaningful zero reference. This single walkthrough creates and saves the dashboard from scratch using the built-in **-- Grafana --** data source, with no extra data source setup. The signals are synthetic practice data, not evidence of a real incident. This walkthrough uses the new query editor."
+    },
+    {
+      "type": "markdown",
+      "content": "Open a new dashboard to begin the lab."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Open the starting page",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-new-dashboard",
+          "action": "navigate",
+          "reftarget": "/dashboard/new",
+          "content": "Open the new dashboard page.",
+          "requirements": [],
+          "doIt": true,
+          "tooltip": "Start a fresh practice dashboard."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have reached the starting page for your practice dashboard."
+    },
+    {
+      "type": "markdown",
+      "content": "Create a Time series panel with a clear title and two synthetic queries for comparison."
+    },
+    {
+      "type": "section",
+      "id": "build-your-time-series-lab",
+      "title": "Build your time series lab",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "lab-step-1",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+          "content": "Select **Add a panel** to create a place for your two practice signals.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new",
+            "navmenu-open"
+          ],
+          "doIt": true,
+          "tooltip": "Create a place to plot your practice signals."
+        },
+        {
+          "type": "interactive",
+          "id": "lab-step-2",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.configurePanelButton}",
+          "content": "Select **Edit visualization** to configure the panel and its queries.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new",
+            "navmenu-open"
+          ],
+          "doIt": true,
+          "tooltip": "Open the visualization configuration."
+        },
+        {
+          "type": "interactive",
+          "id": "lab-step-3",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "content": "Select **-- Grafana --** as the data source; the built-in source supplies synthetic data so you can practice without connecting a service.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "targetvalue": "-- Grafana --",
+          "tooltip": "Generate synthetic data without connecting an external service."
+        },
+        {
+          "type": "multistep",
+          "id": "choose-time-series",
+          "content": "Choose **Time series** to plot the signals over time.",
+          "steps": [
+            {
+              "id": "lab-step-4",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Tab.title:Visualizations}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Select **All visualizations** to open the visualization choices.",
+              "tooltip": "Browse the available ways to display data."
+            },
+            {
+              "id": "lab-step-5",
+              "action": "highlight",
+              "reftarget": "{grafana:components.PluginVisualization.item:Time series}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Select **Time series** to compare how both signals change over time.",
+              "tooltip": "Plot the values against time."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "lab-step-6",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldInput:Title}",
+          "content": "Set **Title** to `Signal detective` so you can identify this panel throughout the lab.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "targetvalue": "Signal detective",
+          "tooltip": "Give the panel a name that describes its purpose."
+        },
+        {
+          "type": "multistep",
+          "id": "lab-step-7",
+          "content": "Open **Add query or expression**, then choose **Add query** to create query B.",
+          "requirements": [],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.PanelEditor.General.content} button[aria-label='Add query or expression']",
+              "description": "Open **Add query or expression** in the query sidebar.",
+              "tooltip": "Choose what to add to the query list.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "body:has({grafana:components.PanelEditor.General.content}) [role='menuitem']:text('Add query')",
+              "description": "Select **Add query** to create and select query B.",
+              "tooltip": "Create a second query for comparison.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
+            }
+          ]
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "-- Grafana --",
+          "tooltip": "Use the same built-in source for the second signal.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "id": "lab-query-b-datasource",
+          "doIt": true,
+          "content": "Select **-- Grafana --** for query B so both signals use synthetic data."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.RefreshPicker.runButtonV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "content": "Click **Refresh** to run both queries and display A-series and B-series.",
+          "tooltip": "Run both queries so their signals appear together."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have used the built-in data source to prepare a named Time series panel for comparing two synthetic signals."
+    },
+    {
+      "type": "quiz",
+      "id": "synthetic-signal-check",
+      "question": "What can these two random series help you practice?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "practice",
+          "text": "Comparing signal shapes and reading visualization settings.",
+          "correct": true
+        },
+        {
+          "id": "incident",
+          "text": "Confirming that a real service has a latency incident.",
+          "correct": false,
+          "hint": "The values are synthetic and do not describe a real service."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Compare values with a shared sorted tooltip and a Max legend calculation, then make overlapping traces easier to read."
+    },
+    {
+      "type": "section",
+      "id": "make-peaks-easier-to-investigate",
+      "title": "Make peaks easier to investigate",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "peak-option-1",
+          "content": "Select **All** for **Tooltip mode** to compare both synthetic signals at the same timestamp.",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Tooltip Tooltip mode} [data-testid='data-testid radio-button-option multi']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "tooltip": "Compare all signals at the same instant."
+        },
+        {
+          "type": "interactive",
+          "id": "peak-option-2",
+          "content": "Select **Descending** for **Values sort order** so the largest value at the hovered timestamp appears first; the leading series can change as you move through time.",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Tooltip Values sort order} [data-testid='data-testid radio-button-option desc']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "tooltip": "Place the largest value first at the hovered timestamp."
+        },
+        {
+          "type": "interactive",
+          "id": "peak-option-3",
+          "content": "Select **Table** for the legend mode to give each series a row with room for summary calculations.",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Legend Mode} [data-testid='data-testid radio-button-option table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "tooltip": "Make room for per-series summary values."
+        },
+        {
+          "type": "interactive",
+          "id": "peak-option-4",
+          "content": "Set **Values** to **Max** to compare each series\u2019 highest value across the displayed data; this differs from the tooltip\u2019s value at one timestamp.",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Legend Values} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "targetvalue": "Max",
+          "tooltip": "Find each signal\u2019s peak across the displayed data."
+        },
+        {
+          "type": "interactive",
+          "id": "peak-option-5",
+          "content": "Set **Line width** to 2 to make both traces easier to follow where they overlap.",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Line width} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "targetvalue": "2",
+          "tooltip": "Make overlapping traces easier to follow."
+        },
+        {
+          "type": "interactive",
+          "id": "peak-option-6",
+          "content": "Set **Fill opacity** to 15 so the area beneath each trace stays subtle and overlapping lines remain readable.",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Fill opacity} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "targetvalue": "15",
+          "tooltip": "Keep the fill subtle enough to see both traces."
+        },
+        {
+          "type": "interactive",
+          "id": "peak-option-7",
+          "content": "Select **Opacity** for **Gradient mode** to fade the fill while keeping each line distinct.",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Gradient mode} [data-testid='data-testid radio-button-option opacity']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "doIt": true,
+          "tooltip": "Fade the area beneath each line."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The tooltip now compares values at one timestamp, the table legend summarizes peaks across the displayed data, and subtle fill keeps both traces readable."
+    },
+    {
+      "type": "quiz",
+      "id": "tooltip-versus-max",
+      "question": "Why can the first series in the descending tooltip differ from the series with the largest Max in the legend?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "timestamp",
+          "text": "The tooltip compares one timestamp; Max summarizes the displayed data.",
+          "correct": true
+        },
+        {
+          "id": "fill",
+          "text": "Opacity gradient changes the data values.",
+          "correct": false,
+          "hint": "Gradient changes appearance, not the values."
+        },
+        {
+          "id": "order",
+          "text": "Descending sort permanently puts one series first.",
+          "correct": false,
+          "hint": "The order can change with the hovered timestamp."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Match B-series by name and place it on the right axis to compare two independent scales."
+    },
+    {
+      "type": "section",
+      "id": "give-one-series-its-own-axis",
+      "title": "Give one series its own axis",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "match-b-series",
+          "content": "Match B-series by name using **Add field override**, then **Fields with name**.",
+          "requirements": [],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.ValuePicker.button:Add field override}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Select **Add field override** to change one series without changing the panel defaults.",
+              "id": "match-b-series-1",
+              "tooltip": "Customize a single series without changing the defaults."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.ValuePicker.select:Add field override} input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Fields with name",
+              "description": "Choose **Fields with name** to match one exact field name.",
+              "id": "match-b-series-2",
+              "tooltip": "Match an exact series name."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:panel-options-override-0 Fields with name} input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "B-series",
+              "description": "Select **B-series** so the override applies only to that signal.",
+              "id": "match-b-series-3",
+              "tooltip": "Limit this override to the second signal."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "place-right-axis",
+          "content": "Add **Axis > Placement** and select **Right** for B-series.",
+          "requirements": [],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.ValuePicker.button:Add override property}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Select **Add override property** to choose what changes for B-series.",
+              "id": "place-right-axis-4",
+              "tooltip": "Choose which property this override changes."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.ValuePicker.select:Add override property} input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Axis > Placement",
+              "description": "Choose **Axis > Placement** to control which side displays its scale.",
+              "id": "place-right-axis-5",
+              "tooltip": "Control where the selected series scale appears."
+            }
+          ]
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.OptionsGroup.group:panel-options-override-0} input[title='Right']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "id": "place-right-axis-6",
+          "tooltip": "Separate the selected series from the default scale.",
+          "type": "interactive",
+          "content": "Select **Right** so only B-series uses the right axis.",
+          "doIt": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.General.content}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "Inspect the preview: B-series should use the right axis while the other signal uses the left; compare their tick labels before comparing line heights.",
+          "doIt": false,
+          "tooltip": "Compare tick labels before comparing line heights."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You used a field override to separate B-series from the default axis; independent scales can make unrelated signals look correlated."
+    },
+    {
+      "type": "quiz",
+      "id": "independent-axis-check",
+      "question": "Two lines now overlap on separate axes. What can you conclude?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "They have the same values.",
+          "correct": false,
+          "hint": "Each axis can map a different value to the same height."
+        },
+        {
+          "id": "b",
+          "text": "Read each axis scale before comparing values; overlap alone proves no correlation.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "One signal caused the other.",
+          "correct": false,
+          "hint": "An axis placement change cannot establish causation."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Compare scales, set flexible axis bounds, and add a visual zero reference before returning to the dashboard."
+    },
+    {
+      "type": "section",
+      "id": "put-spikes-in-context",
+      "title": "Put spikes in context",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "put-spikes-in-context-1",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Axis Scale} [data-testid='data-testid radio-button-option symlog']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Select **Symlog** and compare the shape of the signals: this scale accepts zero and negative values while compressing larger magnitudes; a logarithmic scale cannot represent zero or negative values.",
+          "doIt": true,
+          "tooltip": "Compress large magnitudes while retaining zero and negative values."
+        },
+        {
+          "type": "interactive",
+          "id": "put-spikes-in-context-2",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Axis Scale} [data-testid='data-testid radio-button-option linear']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Select **Linear** again: equal vertical distances now represent equal absolute differences, making the size of changes easier to compare.",
+          "doIt": true,
+          "tooltip": "Restore equal distances for equal absolute differences."
+        },
+        {
+          "type": "interactive",
+          "id": "put-spikes-in-context-3",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Axis Soft min} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Set **Soft min** to `-100` to give the chart a consistent lower reference while allowing the axis to expand for lower outliers.",
+          "doIt": true,
+          "targetvalue": "-100",
+          "tooltip": "Allow lower outliers beyond this preferred bound."
+        },
+        {
+          "type": "interactive",
+          "id": "put-spikes-in-context-4",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Axis Soft max} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Set **Soft max** to `100` to give the chart an upper reference that can expand for higher outliers; hard bounds can clip values outside the displayed range.",
+          "doIt": true,
+          "targetvalue": "100",
+          "tooltip": "Allow higher outliers beyond this preferred bound."
+        },
+        {
+          "type": "interactive",
+          "id": "put-spikes-in-context-5",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Thresholds Thresholds} input[aria-label='Threshold 1']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Set **Threshold 1** to `0` as an illustrative reference for values crossing zero; this visual threshold creates no alert rule.",
+          "doIt": true,
+          "targetvalue": "0",
+          "tooltip": "Use zero as an illustrative reference rather than an alert."
+        },
+        {
+          "type": "interactive",
+          "id": "put-spikes-in-context-6",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Thresholds Show thresholds} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Set **Show thresholds** to **As lines (dashed)** so the zero reference is visible without covering the signals.",
+          "doIt": true,
+          "targetvalue": "As lines (dashed)",
+          "tooltip": "Draw the reference without obscuring the traces."
+        },
+        {
+          "type": "interactive",
+          "id": "put-spikes-in-context-7",
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavToolbar.editDashboard.backToDashboardButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Select **Back to dashboard** to view the configured panel in the dashboard.",
+          "doIt": true,
+          "tooltip": "Inspect the configured panel on its dashboard."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have compared symlog and linear scales, used soft bounds that preserve outliers, and added a dashed zero reference without creating an alert."
+    },
+    {
+      "type": "quiz",
+      "id": "soft-bound-check",
+      "question": "With a soft maximum of 100, what happens if a signal rises above 100?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "expand",
+          "text": "The axis can expand to include the outlier.",
+          "correct": true
+        },
+        {
+          "id": "clip",
+          "text": "The value is always clipped at 100.",
+          "correct": false,
+          "hint": "A soft bound leaves room for data outside the preferred range."
+        },
+        {
+          "id": "alert",
+          "text": "Grafana automatically creates an alert.",
+          "correct": false,
+          "hint": "Axis bounds and visual thresholds do not create alert rules."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Save the dashboard with a recognizable name, then inspect the finished result to confirm the lab configuration is still present."
+    },
+    {
+      "type": "section",
+      "id": "keep-your-signal-detective-dashboard",
+      "title": "Keep your signal detective dashboard",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "save-dashboard-drawer",
+          "content": "Save the dashboard as `Time series lab - Signal detective`; this sequence opens the drawer, enters the name, and saves while the drawer covers the guide.",
+          "requirements": [],
+          "steps": [
+            {
+              "id": "save-step-1",
+              "action": "highlight",
+              "reftarget": "{grafana:components.NavToolbar.editDashboard.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Keep your queries and display settings together.",
+              "description": "Click **Save** to open the save form for the dashboard you just built."
+            },
+            {
+              "id": "save-step-2",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveAsTitleInput}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Time series lab - Signal detective",
+              "tooltip": "Give the practice dashboard a recognizable name.",
+              "description": "Name the dashboard Time series lab - Signal detective so you can recognize and reuse this practice setup."
+            },
+            {
+              "id": "save-step-3",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Persist the dashboard and its panel configuration.",
+              "description": "Click **Save** to persist the dashboard and its panel configuration."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "save-step-4",
+          "content": "Inspect the finished dashboard: check that both synthetic signals appear, the table legend includes **Max**, and the styling, series override, soft bounds, and illustrative zero threshold remain as configured; the threshold creates no alert.",
+          "action": "highlight",
+          "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/",
+            "has-dashboard-named:Time series lab - Signal detective"
+          ],
+          "doIt": false,
+          "showMe": true,
+          "tooltip": "Confirm the saved chart retains every setting you explored.",
+          "verify": "has-dashboard-named:Time series lab - Signal detective"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Saving keeps the two queries and panel configuration together as a reusable dashboard; the finished view lets you check the result."
+    },
+    {
+      "type": "markdown",
+      "content": "You have completed the signal detective lab: shared tooltips compare a timestamp, legend calculations summarize the displayed data, and deliberate styling and bounds help you read the signals without changing their values."
+    }
+  ]
+}
