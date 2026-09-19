@@ -66,7 +66,7 @@ Apply the same five-phase coach rules (cite shared reference-checks; do not soft
 - **Fake steps in sections:** missing bookends outside the section; in-section intro markdown that numbers as a step (e.g. first child "You'll …")
 - **False noops:** learner-action copy with `noop` and no `reftarget`
 - Missing / broken required `website.yaml` identity; Learning Hub structure the author must change
-- Path root / manifest `id` mismatch; Pathfinder CLI validate failure
+- Path root / manifest `id` mismatch; Pathfinder CLI `validate --strict` failure, or CLI not run
 - Secrets `doIt: true`; confirmed 404s; conversion prose only in legacy markdown
 - Fragile / wrong selectors when live fails, or stable `data-testid` exists in DOM and the guide uses a weak selector
 - **Claim-check MUST FIX:** Contradicted, Unsupported, or Overstated product facts per shared [claim-check.md](../review-learning-path/claim-check.md) (made-up counts, invented names, docs contradictions)
@@ -143,7 +143,7 @@ When live was skipped or incomplete, readiness must include **Not live-tested** 
 Recommend **Ready for PR** only when all are true:
 
 1. Zero open **Fix before PR** (post-inline) items
-2. Pathfinder CLI validate passed, or CLI unavailable was noted and no other blockers
+2. Pathfinder CLI `scripts/validate-path.sh {path_dir}` passed. A skipped or missing CLI is **not** a pass.
 3. Playwright: no unexplained **missing** selectors on claimed-tested milestones (or documented stack prerequisite)
 4. Block Editor: `already-tested` or successful `walk-me` (not `skip-smoke`) for new/conversion interactive, **or** author accepts **Open PR with notes**
 5. `git status` clean of audit-guide artifacts under `{path_dir}`
@@ -161,7 +161,7 @@ Recommend **Ready for PR** only when all are true:
 
 Include in `{slug}-readiness.md`:
 
-- [ ] Path `{path_dir}` validates with Pathfinder CLI (or CLI unavailable noted)
+- [ ] Path `{path_dir}` passed `scripts/validate-path.sh` (`validate --strict` + `--package`)
 - [ ] First hands-on milestone `depends: []`
 - [ ] No framing IDs in path `manifest.json` `milestones` (Pathfinder-only omission; framing packages remain for the website)
 - [ ] `schemaVersion: "1.1.0"` or omitted on milestone `content.json`
@@ -217,8 +217,12 @@ Legacy state files with numeric `phase` are invalid for resume: ask **start fres
 
 ## Pathfinder CLI validate
 
+Run from the **interactive-tutorials** repo root. This is the same check CI runs on every `content.json` (`validate --strict`) plus `validate --package` for each package under the path. Do **not** use `validate --packages`: it is depth-1 and is not `--strict`, so unknown fields (for example `hint` on a `multistep`) pass locally and fail on push.
+
 ```bash
-node {pathfinder-app}/dist/cli/cli/index.js validate --packages {path_dir}
+scripts/validate-path.sh {path_dir}
 ```
 
-CLI failure → Fix before PR. CLI missing → note in readiness; do not abort the whole preflight.
+If `dist/cli/cli/index.js` is missing, retry with `--fetch` (clones the SHA pinned in `.github/workflows/validate-json.yml` into gitignored `.pathfinder-cli/`). Or set `PATHFINDER_APP` / `PATHFINDER_CLI` to a sibling `grafana-pathfinder-app` checkout.
+
+CLI failure or a skipped run → Fix before PR. Do not recommend **Ready for PR** when this did not pass.

@@ -163,7 +163,7 @@ Combines the former Phases 1–2 and workbook write.
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk all [reference-checks.md](reference-checks.md) checklists + [learning-hub-standards.md](learning-hub-standards.md).
 3. **Always scan** for [section intro markdown that may number as a step](reference-checks.md#section-intro-markdown-numbered-as-a-step) and [false noops](reference-checks.md#noop-and-non-interactive-steps). Put matches under **Verify in Block Editor**.
-4. Run Pathfinder CLI validate if available.
+4. Run `scripts/validate-path.sh {path_dir}` from the interactive-tutorials repo root (same `validate --strict` check as CI). If the CLI is missing, retry with `--fetch`. Schema failure or a skipped CLI run is **post inline**. Do not treat “CLI unavailable” as a pass.
 5. Run the shared [claim-check](claim-check.md) pass. Write `pr-{n}-claim-check.md`. Route Contradicted / Unsupported / Overstated as **post inline** (same bar as preflight). Do not edit package JSON here.
 6. Tag every finding with [finding routing](reference-checks.md#finding-routing): **post inline**, **internal**, or **discard**.
 7. Write `pr-{n}-findings.md` — header: *"Reviewer workbook — internal only. Do not paste to PR."*
