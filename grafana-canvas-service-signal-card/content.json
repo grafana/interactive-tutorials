@@ -1,0 +1,1092 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "grafana-canvas-service-signal-card",
+  "title": "Service signal card: build a data-driven Canvas",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Build a service signal card with a numeric value, a threshold-driven background, and an aligned label. This standalone lab uses synthetic TestData; its colors do not assess production service health."
+    },
+    {
+      "type": "markdown",
+      "content": "Open Dashboards as the starting point for this standalone Canvas lab."
+    },
+    {
+      "type": "section",
+      "id": "open-your-visualization-workspace",
+      "title": "Open your visualization workspace",
+      "blocks": [
+        {
+          "id": "open-your-visualization-workspace-step-1",
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "requirements": [],
+          "type": "interactive",
+          "content": "Open Dashboards to begin with a saved workspace.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Open Dashboards to begin with a saved workspace."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a starting workspace for creating a new dashboard."
+    },
+    {
+      "type": "markdown",
+      "content": "Prepare a TestData source if your organization does not already have one."
+    },
+    {
+      "type": "section",
+      "id": "prepare-testdata-once",
+      "title": "Prepare TestData once",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "prepare-testdata-once-setup-testdata",
+          "content": "Create and test the synthetic data source.",
+          "steps": [
+            {
+              "id": "prepare-testdata-once-step-1",
+              "action": "navigate",
+              "reftarget": "/connections/datasources/new",
+              "requirements": [],
+              "description": "Open the shared Add data source page.",
+              "tooltip": "Open the shared Add data source page."
+            },
+            {
+              "id": "prepare-testdata-once-step-2",
+              "action": "formfill",
+              "reftarget": "{grafana:pages.AddDataSource.searchInput}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/datasources"
+              ],
+              "targetvalue": "TestData",
+              "description": "Find TestData; no external service or credentials are needed.",
+              "tooltip": "Find TestData; no external service or credentials are needed."
+            },
+            {
+              "id": "prepare-testdata-once-step-3",
+              "action": "highlight",
+              "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/datasources"
+              ],
+              "description": "Create the TestData source.",
+              "tooltip": "Create the TestData source."
+            },
+            {
+              "id": "prepare-testdata-once-step-4",
+              "action": "highlight",
+              "reftarget": "{grafana:pages.DataSource.saveAndTest}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/datasources"
+              ],
+              "description": "Check that the synthetic source works.",
+              "tooltip": "Check that the synthetic source works."
+            }
+          ],
+          "skippable": true
+        }
+      ],
+      "requirements": [
+        "is-admin"
+      ],
+      "objectives": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "TestData supplies synthetic values without an external service or credentials."
+    },
+    {
+      "type": "conditional",
+      "id": "practice-source-ready",
+      "conditions": [
+        "has-datasource:grafana-testdata-datasource"
+      ],
+      "whenTrue": [
+        {
+          "type": "input",
+          "id": "choose-practice-source",
+          "inputType": "datasource",
+          "variableName": "practiceSource",
+          "datasourceFilter": "grafana-testdata-datasource",
+          "prompt": "Select your TestData source; its name may differ in your organization.",
+          "required": true,
+          "requirements": [
+            "has-datasource:grafana-testdata-datasource"
+          ]
+        }
+      ],
+      "whenFalse": [
+        {
+          "type": "markdown",
+          "content": "Complete TestData setup before choosing the practice source; an administrator can create it if needed."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Create a new dashboard, select your practice source, and choose Canvas."
+    },
+    {
+      "type": "section",
+      "id": "build-the-canvas-panel",
+      "title": "Build the Canvas panel",
+      "blocks": [
+        {
+          "id": "build-the-canvas-panel-step-1",
+          "action": "navigate",
+          "reftarget": "/dashboard/new",
+          "requirements": [],
+          "type": "interactive",
+          "content": "Create a fresh dashboard for this lab.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Create a fresh dashboard for this lab."
+        },
+        {
+          "id": "build-the-canvas-panel-step-2",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "Add a panel for your synthetic signals.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Add a panel for your synthetic signals."
+        },
+        {
+          "id": "build-the-canvas-panel-step-3",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.configurePanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "Open the visualization editor.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Open the visualization editor."
+        },
+        {
+          "id": "build-the-canvas-panel-step-4",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "{{practiceSource}}",
+          "type": "interactive",
+          "content": "Use the TestData source you selected.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Query the existing source chosen for this lab."
+        },
+        {
+          "type": "multistep",
+          "id": "build-the-canvas-panel-viz",
+          "content": "Choose the Canvas visualization.",
+          "steps": [
+            {
+              "id": "build-the-canvas-panel-step-5",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Tab.title:Visualizations}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Open the visualization chooser.",
+              "tooltip": "Open the visualization chooser."
+            },
+            {
+              "id": "build-the-canvas-panel-step-6",
+              "action": "highlight",
+              "reftarget": "{grafana:components.PluginVisualization.item:Canvas}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Select Canvas.",
+              "tooltip": "Select Canvas."
+            }
+          ]
+        },
+        {
+          "id": "build-the-canvas-panel-step-7",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldInput:Title}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Service signal card",
+          "type": "interactive",
+          "content": "Give the panel a recognizable name.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Give the panel a recognizable name."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Canvas gives you a workspace where individual elements can display query fields."
+    },
+    {
+      "type": "markdown",
+      "content": "Generate one random signal bounded between 0 and 100."
+    },
+    {
+      "type": "section",
+      "id": "create-bounded-practice-signals",
+      "title": "Create bounded practice signals",
+      "blocks": [
+        {
+          "id": "create-bounded-practice-signals-step-1",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.min}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "0",
+          "type": "interactive",
+          "content": "Keep the synthetic values at or above zero.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Keep the synthetic values at or above zero."
+        },
+        {
+          "id": "create-bounded-practice-signals-step-2",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.max}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "100",
+          "type": "interactive",
+          "content": "Cap the synthetic values at 100.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Cap the synthetic values at 100."
+        },
+        {
+          "id": "create-bounded-practice-signals-step-3",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.startValue}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "50",
+          "type": "interactive",
+          "content": "Start the random walk halfway through the range.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Start the random walk halfway through the range."
+        },
+        {
+          "id": "create-bounded-practice-signals-step-4",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.seriesCount}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "1",
+          "type": "interactive",
+          "content": "Generate 1 synthetic signal.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Generate 1 synthetic signal."
+        },
+        {
+          "id": "create-bounded-practice-signals-step-5",
+          "action": "highlight",
+          "reftarget": "{grafana:components.RefreshPicker.runButtonV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "Run the query to see your practice data.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Run the query to see your practice data."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A bounded random walk makes it easier to interpret this practice card."
+    },
+    {
+      "type": "quiz",
+      "id": "practice-data-check",
+      "question": "What does this synthetic signal tell you?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "How the visualization behaves with practice data.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Whether Checkout is healthy in production.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Name the metric layer and bind its displayed number to A-series."
+    },
+    {
+      "type": "section",
+      "id": "bind-a-value-to-the-canvas",
+      "title": "Bind a value to the canvas",
+      "blocks": [
+        {
+          "id": "bind-a-value-to-the-canvas-step-1",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Canvas Experimental element types} input[type='checkbox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "false",
+          "type": "interactive",
+          "content": "Keep the lab on standard Canvas element types.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Keep the practice layout on standard element types."
+        },
+        {
+          "id": "bind-a-value-to-the-canvas-step-2",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layer Elements} [title='Element 1']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "Select the starting metric element from the layer tree.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Select the starting metric element from the layer tree."
+        },
+        {
+          "type": "multistep",
+          "id": "bind-a-value-to-the-canvas-rename-metric",
+          "content": "Name the metric layer Signal value.",
+          "steps": [
+            {
+              "id": "bind-a-value-to-the-canvas-step-3",
+              "action": "highlight",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layer Elements} [title='Element 1'] button[title='Edit layer name']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Give the metric element a useful layer name.",
+              "tooltip": "Make this layer easier to identify when editing the layout."
+            },
+            {
+              "id": "bind-a-value-to-the-canvas-step-4",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layer Elements} input[type='text']:not([aria-label='for screen reader'])",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Signal value",
+              "description": "Name this element Signal value.",
+              "tooltip": "Name this element Signal value."
+            }
+          ]
+        },
+        {
+          "id": "bind-a-value-to-the-canvas-step-5",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Metric value Text} input[role='combobox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "A-series",
+          "type": "interactive",
+          "content": "Bind the displayed number to the synthetic signal.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Read the number from the query field instead of entering fixed text."
+        },
+        {
+          "id": "bind-a-value-to-the-canvas-step-6",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Standard options Decimals} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "1",
+          "type": "interactive",
+          "content": "Keep the displayed value readable with one decimal.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Show enough precision for this practice signal without crowding the card."
+        },
+        {
+          "id": "bind-a-value-to-the-canvas-step-7",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Metric value Text size} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "36",
+          "type": "interactive",
+          "content": "Make the signal value prominent.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Make the signal value prominent."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The layer name identifies the element, while its field binding supplies the displayed value."
+    },
+    {
+      "type": "markdown",
+      "content": "Bind the card background to the signal and set an illustrative threshold."
+    },
+    {
+      "type": "section",
+      "id": "make-color-carry-meaning",
+      "title": "Make color carry meaning",
+      "blocks": [
+        {
+          "id": "make-color-carry-meaning-step-1",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Thresholds Thresholds} input[aria-label='Threshold 1']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "70",
+          "type": "interactive",
+          "content": "Use 70 as an illustrative warning boundary; this creates no alert.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Use this boundary to demonstrate a color change without creating an alert."
+        },
+        {
+          "id": "make-color-carry-meaning-step-2",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Background (metric-value) Color} input[role='combobox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "A-series",
+          "type": "interactive",
+          "content": "Drive the element background from the same field and its thresholds.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Use the same field for the value and its threshold-driven color."
+        },
+        {
+          "id": "make-color-carry-meaning-step-3",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Border (metric-value) Radius} input[type='text']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "12",
+          "type": "interactive",
+          "content": "Round the signal card corners.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Soften the corners of the value card."
+        },
+        {
+          "id": "make-color-carry-meaning-step-4",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.General.content}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "The number shows the latest non-null sample. Its background follows field thresholds, not a fixed paint color.",
+          "doIt": false,
+          "showMe": true,
+          "tooltip": "The number shows the latest non-null sample. Its background follows field thresholds, not a fixed paint color."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Field thresholds drive the background color; the threshold does not create an alert."
+    },
+    {
+      "type": "quiz",
+      "id": "background-check",
+      "question": "What makes the card background respond to the signal?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Binding the background to A-series and using its thresholds.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Giving the metric layer a descriptive name.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Setting a fixed background paint color.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Set the value card dimensions and position numerically."
+    },
+    {
+      "type": "section",
+      "id": "place-the-card-precisely",
+      "title": "Place the card precisely",
+      "blocks": [
+        {
+          "id": "place-the-card-precisely-step-1",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('width') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "280",
+          "type": "interactive",
+          "content": "Give the value card a comfortable width.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Give the value card a comfortable width."
+        },
+        {
+          "id": "place-the-card-precisely-step-2",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('height') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "100",
+          "type": "interactive",
+          "content": "Make the value card tall enough for the large number.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Make the value card tall enough for the large number."
+        },
+        {
+          "id": "place-the-card-precisely-step-3",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('top') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "90",
+          "type": "interactive",
+          "content": "Leave room above the value for a label.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Leave room above the value for a label."
+        },
+        {
+          "id": "place-the-card-precisely-step-4",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('left') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "40",
+          "type": "interactive",
+          "content": "Place the value card with a consistent left margin.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Place the value card with a consistent left margin."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Explicit dimensions and offsets make the layout repeatable."
+    },
+    {
+      "type": "markdown",
+      "content": "Add a centered service label and align it above the value card."
+    },
+    {
+      "type": "section",
+      "id": "add-a-label-that-explains-the-value",
+      "title": "Add a label that explains the value",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "add-a-label-that-explains-the-value-add-text",
+          "content": "Add a text element.",
+          "steps": [
+            {
+              "id": "add-a-label-that-explains-the-value-step-1",
+              "action": "highlight",
+              "reftarget": "{grafana:components.ValuePicker.button:Add item}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Open the element picker.",
+              "tooltip": "Open the element picker."
+            },
+            {
+              "id": "add-a-label-that-explains-the-value-step-2",
+              "action": "formfill",
+              "reftarget": "{grafana:components.ValuePicker.select:Add item} input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Text",
+              "description": "Add a Text element.",
+              "tooltip": "Add a Text element."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "add-a-label-that-explains-the-value-rename-label",
+          "content": "Name the text layer Service label.",
+          "steps": [
+            {
+              "id": "add-a-label-that-explains-the-value-step-3",
+              "action": "highlight",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layer Elements} [title='Element 2'] button[title='Edit layer name']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Name the label element.",
+              "tooltip": "Make this layer easier to identify when editing the layout."
+            },
+            {
+              "id": "add-a-label-that-explains-the-value-step-4",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layer Elements} input[type='text']:not([aria-label='for screen reader'])",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Service label",
+              "description": "Use Service label in the layer tree.",
+              "tooltip": "Use Service label in the layer tree."
+            }
+          ]
+        },
+        {
+          "id": "add-a-label-that-explains-the-value-step-5",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Text Text} input:not([type='radio']):not([role='combobox'])",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Checkout - practice",
+          "type": "interactive",
+          "content": "Label this as a synthetic service signal.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Give the changing number a clear service context."
+        },
+        {
+          "id": "add-a-label-that-explains-the-value-step-6",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Text Text size} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "24",
+          "type": "interactive",
+          "content": "Make the label readable.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Make the label readable."
+        },
+        {
+          "id": "add-a-label-that-explains-the-value-step-7",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Text Align text} input[title='Center']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "type": "interactive",
+          "content": "Center the label text above the number.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Align the label centrally above the numeric value."
+        },
+        {
+          "id": "add-a-label-that-explains-the-value-step-8",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('width') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "280",
+          "type": "interactive",
+          "content": "Match the label width to the value card.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Match the label width to the value card."
+        },
+        {
+          "id": "add-a-label-that-explains-the-value-step-9",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('height') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "50",
+          "type": "interactive",
+          "content": "Give the label a compact height.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Give the label a compact height."
+        },
+        {
+          "id": "add-a-label-that-explains-the-value-step-10",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('top') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "30",
+          "type": "interactive",
+          "content": "Place the label above the value card.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Place the label above the value card."
+        },
+        {
+          "id": "add-a-label-that-explains-the-value-step-11",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('left') + div input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "40",
+          "type": "interactive",
+          "content": "Align the label with the card.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Align the label with the card."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Separate text and metric elements let you combine context with a changing value."
+    },
+    {
+      "type": "markdown",
+      "content": "Disable inline editing and inspect the completed practice card."
+    },
+    {
+      "type": "section",
+      "id": "protect-the-finished-layout",
+      "title": "Protect the finished layout",
+      "blocks": [
+        {
+          "id": "protect-the-finished-layout-step-1",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Canvas Inline editing} input[type='checkbox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "false",
+          "type": "interactive",
+          "content": "Disable inline editing so dashboard clicks do not move your elements.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Keep dashboard interactions from accidentally moving the finished layout."
+        },
+        {
+          "id": "protect-the-finished-layout-step-2",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.General.content}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "Inspect the label and data-bound card; this is a demonstration, not a production health assessment.",
+          "doIt": false,
+          "showMe": true,
+          "tooltip": "Inspect the label and data-bound card; this is a demonstration, not a production health assessment."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Turning off inline editing protects the layout from accidental movement."
+    },
+    {
+      "type": "quiz",
+      "id": "layout-check",
+      "question": "What does disabling inline editing do?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Prevents dashboard clicks from moving Canvas elements.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Stops the query from refreshing its values.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Save the dashboard and check that the label and numeric value remain visible."
+    },
+    {
+      "type": "section",
+      "id": "keep-your-finished-dashboard",
+      "title": "Keep your finished dashboard",
+      "blocks": [
+        {
+          "id": "keep-your-finished-dashboard-step-1",
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavToolbar.editDashboard.backToDashboardButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "type": "interactive",
+          "content": "Return to the dashboard.",
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Return to the dashboard."
+        },
+        {
+          "type": "multistep",
+          "id": "keep-your-finished-dashboard-save",
+          "content": "Save this dashboard as Canvas lab - Service signal card.",
+          "steps": [
+            {
+              "id": "keep-your-finished-dashboard-step-2",
+              "action": "highlight",
+              "reftarget": "{grafana:components.NavToolbar.editDashboard.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Open the save drawer.",
+              "tooltip": "Open the save drawer."
+            },
+            {
+              "id": "keep-your-finished-dashboard-step-3",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveAsTitleInput}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Canvas lab - Service signal card",
+              "description": "Name your saved dashboard.",
+              "tooltip": "Give this practice dashboard a recognizable name for later retrieval."
+            },
+            {
+              "id": "keep-your-finished-dashboard-step-4",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "description": "Save the dashboard.",
+              "tooltip": "Save the dashboard."
+            }
+          ]
+        },
+        {
+          "id": "keep-your-finished-dashboard-step-5",
+          "action": "highlight",
+          "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/",
+            "has-dashboard-named:Canvas lab - Service signal card"
+          ],
+          "type": "interactive",
+          "content": "Inspect the saved Canvas lab - Service signal card dashboard: Checkout - practice should sit above a large numeric value. The card background follows the illustrative boundary at 70, its corners are rounded, and inline editing is off. These synthetic values do not report production health.",
+          "doIt": false,
+          "showMe": true,
+          "verify": "has-dashboard-named:Canvas lab - Service signal card",
+          "tooltip": "Inspect the saved dashboard and check the finished configuration."
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your saved dashboard preserves the labelled card and its data-driven configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "Use your TestData source to build a separate systems map while keeping your service signal card saved."
+    },
+    {
+      "type": "section",
+      "id": "systems-map-showcase",
+      "title": "This is what you can build",
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ],
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "build-systems-map",
+          "content": "Build a five-service systems map. This block inserts a complete dashboard definition, connects your TestData source, and saves Canvas lab - Checkout systems map.",
+          "steps": [
+            {
+              "id": "systems-map-step-1",
+              "action": "navigate",
+              "reftarget": "/dashboard/import",
+              "description": "Open dashboard import to create a separate example map.",
+              "tooltip": "Open dashboard import to create a separate example map."
+            },
+            {
+              "id": "systems-map-step-2",
+              "action": "formfill",
+              "reftarget": "{grafana:components.DashboardImportPage.textarea}",
+              "description": "Insert the complete Canvas map, including five field-bound services and four connections.",
+              "tooltip": "Insert the complete Canvas map, including five field-bound services and four connections.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/import"
+              ],
+              "targetvalue": "{\"id\":null,\"uid\":null,\"title\":\"Canvas lab - Checkout systems map\",\"schemaVersion\":42,\"version\":0,\"editable\":true,\"tags\":[\"canvas\",\"pathfinder\",\"synthetic-demo\"],\"timezone\":\"browser\",\"time\":{\"from\":\"now-6h\",\"to\":\"now\"},\"panels\":[{\"datasource\":{\"type\":\"grafana-testdata-datasource\",\"uid\":\"${DS_PRACTICE}\"},\"fieldConfig\":{\"defaults\":{\"color\":{\"mode\":\"thresholds\"},\"decimals\":0,\"thresholds\":{\"mode\":\"absolute\",\"steps\":[{\"value\":null,\"color\":\"green\"},{\"value\":60,\"color\":\"orange\"},{\"value\":80,\"color\":\"red\"}]},\"unit\":\"percent\"}},\"gridPos\":{\"x\":0,\"y\":0,\"w\":24,\"h\":20},\"id\":1,\"options\":{\"inlineEditing\":false,\"panZoom\":false,\"root\":{\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"border\":{\"color\":{\"fixed\":\"dark-green\"}},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"},\"elements\":[{\"name\":\"Map heading\",\"type\":\"text\",\"config\":{\"text\":{\"fixed\":\"Checkout systems map\"},\"size\":21,\"align\":\"center\",\"valign\":\"middle\",\"color\":{\"fixed\":\"#ccccdc\"}},\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"placement\":{\"left\":0,\"top\":4,\"width\":300,\"height\":38,\"rotation\":0},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"}},{\"background\":{\"color\":{\"field\":\"Gateway\",\"fixed\":\"#D9D9D9\"}},\"border\":{\"color\":{\"fixed\":\"dark-green\"},\"radius\":12},\"config\":{\"align\":\"center\",\"color\":{\"fixed\":\"#000000\"},\"size\":26,\"text\":{\"field\":\"Gateway\",\"fixed\":\"\",\"mode\":\"field\"},\"valign\":\"bottom\"},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"},\"links\":[],\"name\":\"Gateway\",\"placement\":{\"left\":10,\"top\":70,\"width\":110,\"height\":100,\"rotation\":0},\"type\":\"metric-value\",\"connections\":[{\"targetName\":\"Checkout\",\"path\":\"straight\",\"source\":{\"x\":0,\"y\":-1},\"target\":{\"x\":0,\"y\":1},\"color\":{\"fixed\":\"#8e8e9e\"},\"size\":{\"fixed\":3},\"direction\":{\"mode\":\"fixed\",\"fixed\":\"forward\"}}]},{\"name\":\"Gateway label\",\"type\":\"text\",\"config\":{\"text\":{\"fixed\":\"Gateway\"},\"size\":16,\"align\":\"center\",\"valign\":\"middle\",\"color\":{\"fixed\":\"#111217\"}},\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"placement\":{\"left\":10,\"top\":78,\"width\":110,\"height\":32,\"rotation\":0},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"}},{\"background\":{\"color\":{\"field\":\"Checkout\",\"fixed\":\"#D9D9D9\"}},\"border\":{\"color\":{\"fixed\":\"dark-green\"},\"radius\":12},\"config\":{\"align\":\"center\",\"color\":{\"fixed\":\"#000000\"},\"size\":26,\"text\":{\"field\":\"Checkout\",\"fixed\":\"\",\"mode\":\"field\"},\"valign\":\"bottom\"},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"},\"links\":[],\"name\":\"Checkout\",\"placement\":{\"left\":10,\"top\":230,\"width\":110,\"height\":100,\"rotation\":0},\"type\":\"metric-value\",\"connections\":[{\"targetName\":\"Payments\",\"path\":\"straight\",\"source\":{\"x\":1,\"y\":0},\"target\":{\"x\":-1,\"y\":0},\"color\":{\"fixed\":\"#8e8e9e\"},\"size\":{\"fixed\":3},\"direction\":{\"mode\":\"fixed\",\"fixed\":\"forward\"}},{\"targetName\":\"Inventory\",\"path\":\"straight\",\"source\":{\"x\":1,\"y\":0},\"target\":{\"x\":-1,\"y\":0},\"color\":{\"fixed\":\"#8e8e9e\"},\"size\":{\"fixed\":3},\"direction\":{\"mode\":\"fixed\",\"fixed\":\"forward\"}},{\"targetName\":\"Database\",\"path\":\"straight\",\"source\":{\"x\":0,\"y\":-1},\"target\":{\"x\":0,\"y\":1},\"color\":{\"fixed\":\"#8e8e9e\"},\"size\":{\"fixed\":3},\"direction\":{\"mode\":\"fixed\",\"fixed\":\"forward\"}}]},{\"name\":\"Checkout label\",\"type\":\"text\",\"config\":{\"text\":{\"fixed\":\"Checkout\"},\"size\":16,\"align\":\"center\",\"valign\":\"middle\",\"color\":{\"fixed\":\"#111217\"}},\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"placement\":{\"left\":10,\"top\":238,\"width\":110,\"height\":32,\"rotation\":0},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"}},{\"background\":{\"color\":{\"field\":\"Payments\",\"fixed\":\"#D9D9D9\"}},\"border\":{\"color\":{\"fixed\":\"dark-green\"},\"radius\":12},\"config\":{\"align\":\"center\",\"color\":{\"fixed\":\"#000000\"},\"size\":26,\"text\":{\"field\":\"Payments\",\"fixed\":\"\",\"mode\":\"field\"},\"valign\":\"bottom\"},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"},\"links\":[],\"name\":\"Payments\",\"placement\":{\"left\":180,\"top\":150,\"width\":110,\"height\":100,\"rotation\":0},\"type\":\"metric-value\",\"connections\":[]},{\"name\":\"Payments label\",\"type\":\"text\",\"config\":{\"text\":{\"fixed\":\"Payments\"},\"size\":16,\"align\":\"center\",\"valign\":\"middle\",\"color\":{\"fixed\":\"#111217\"}},\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"placement\":{\"left\":180,\"top\":158,\"width\":110,\"height\":32,\"rotation\":0},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"}},{\"background\":{\"color\":{\"field\":\"Inventory\",\"fixed\":\"#D9D9D9\"}},\"border\":{\"color\":{\"fixed\":\"dark-green\"},\"radius\":12},\"config\":{\"align\":\"center\",\"color\":{\"fixed\":\"#000000\"},\"size\":26,\"text\":{\"field\":\"Inventory\",\"fixed\":\"\",\"mode\":\"field\"},\"valign\":\"bottom\"},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"},\"links\":[],\"name\":\"Inventory\",\"placement\":{\"left\":180,\"top\":330,\"width\":110,\"height\":100,\"rotation\":0},\"type\":\"metric-value\",\"connections\":[]},{\"name\":\"Inventory label\",\"type\":\"text\",\"config\":{\"text\":{\"fixed\":\"Inventory\"},\"size\":16,\"align\":\"center\",\"valign\":\"middle\",\"color\":{\"fixed\":\"#111217\"}},\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"placement\":{\"left\":180,\"top\":338,\"width\":110,\"height\":32,\"rotation\":0},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"}},{\"background\":{\"color\":{\"field\":\"Database\",\"fixed\":\"#D9D9D9\"}},\"border\":{\"color\":{\"fixed\":\"dark-green\"},\"radius\":12},\"config\":{\"align\":\"center\",\"color\":{\"fixed\":\"#000000\"},\"size\":26,\"text\":{\"field\":\"Database\",\"fixed\":\"\",\"mode\":\"field\"},\"valign\":\"bottom\"},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"},\"links\":[],\"name\":\"Database\",\"placement\":{\"left\":10,\"top\":490,\"width\":110,\"height\":100,\"rotation\":0},\"type\":\"metric-value\",\"connections\":[]},{\"name\":\"Database label\",\"type\":\"text\",\"config\":{\"text\":{\"fixed\":\"Database\"},\"size\":16,\"align\":\"center\",\"valign\":\"middle\",\"color\":{\"fixed\":\"#111217\"}},\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"placement\":{\"left\":10,\"top\":498,\"width\":110,\"height\":32,\"rotation\":0},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"}},{\"name\":\"Map caption\",\"type\":\"text\",\"config\":{\"text\":{\"fixed\":\"Sample utilization: Inventory is hot\"},\"size\":15,\"align\":\"center\",\"valign\":\"middle\",\"color\":{\"fixed\":\"#ccccdc\"}},\"background\":{\"color\":{\"fixed\":\"transparent\"}},\"placement\":{\"left\":0,\"top\":615,\"width\":300,\"height\":32,\"rotation\":0},\"constraint\":{\"horizontal\":\"left\",\"vertical\":\"top\"}}],\"name\":\"Checkout system\",\"placement\":{\"height\":100,\"left\":0,\"rotation\":0,\"top\":0,\"width\":100},\"type\":\"frame\"},\"showAdvancedTypes\":false,\"tooltip\":{\"disableForOneClick\":false,\"mode\":\"single\"},\"zoomToContent\":false},\"pluginVersion\":\"13.3.0-34793047961\",\"targets\":[{\"refId\":\"A\",\"scenarioId\":\"csv_content\",\"csvContent\":\"Gateway,Checkout,Payments,Inventory,Database\\n12,43,27,86,61\",\"datasource\":{\"type\":\"grafana-testdata-datasource\",\"uid\":\"${DS_PRACTICE}\"}}],\"title\":\"Checkout systems map\",\"type\":\"canvas\",\"description\":\"A small dependency map built from declarative Canvas JSON. Fixed synthetic utilization values demonstrate field-driven colors; this is not production telemetry.\"}],\"__inputs\":[{\"name\":\"DS_PRACTICE\",\"label\":\"Practice TestData\",\"description\":\"Use the TestData source selected in this guide.\",\"type\":\"datasource\",\"pluginId\":\"grafana-testdata-datasource\",\"pluginName\":\"TestData\"}]}"
+            },
+            {
+              "id": "systems-map-step-3",
+              "action": "highlight",
+              "reftarget": "{grafana:components.DashboardImportPage.submit}",
+              "description": "Load the map definition.",
+              "tooltip": "Load the map definition.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/import"
+              ]
+            },
+            {
+              "id": "systems-map-step-4",
+              "action": "formfill",
+              "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+              "description": "Connect the map to the TestData source you selected earlier.",
+              "tooltip": "Connect the map to the TestData source you selected earlier.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/import"
+              ],
+              "targetvalue": "{{practiceSource}}"
+            },
+            {
+              "id": "systems-map-step-5",
+              "action": "highlight",
+              "reftarget": "{grafana:components.ImportDashboardForm.submit}",
+              "description": "Import and save the systems map.",
+              "tooltip": "Import and save the systems map.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/import"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "systems-map-inspect",
+          "action": "highlight",
+          "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
+          "content": "Follow Gateway \u2192 Checkout, then the arrows to Payments, Inventory, and Database. Inventory is red at 86%, Database is orange at 61%, and the remaining services are green. Each number and background binds to its own query field. These are fixed synthetic utilization samples; the connections are drawn explicitly, not discovered automatically.",
+          "tooltip": "Inspect the connected services and find the illustrative utilization hotspot.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/",
+            "has-dashboard-named:Canvas lab - Checkout systems map"
+          ],
+          "verify": "has-dashboard-named:Canvas lab - Checkout systems map"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your card and connected map combine positioned elements, field bindings, thresholds, and directional connections that you can adapt to your own system."
+    }
+  ]
+}
