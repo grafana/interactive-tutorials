@@ -1,0 +1,777 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "grafana-barchart-signal-comparison",
+  "title": "Signal comparison: advanced bar chart techniques",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Start a standalone lab that turns synthetic signals into a saved comparison chart."
+    },
+    {
+      "type": "section",
+      "id": "open-your-visualization-workspace",
+      "title": "Open your visualization workspace",
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "requirements": [],
+          "tooltip": "Begin from the specified workspace for this part of the lab.",
+          "type": "interactive",
+          "content": "Open Dashboards to begin with a saved workspace.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have opened the workspace where this independent dashboard will begin."
+    },
+    {
+      "type": "markdown",
+      "content": "Prepare a synthetic data source if one is missing; existing TestData automatically completes this setup on Cloud or OSS."
+    },
+    {
+      "type": "section",
+      "id": "prepare-testdata-once",
+      "title": "Prepare TestData once",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "prepare-testdata-once-setup-testdata",
+          "content": "Create and test **TestData** if needed.",
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/connections/datasources/new",
+              "requirements": [],
+              "tooltip": "Begin from the specified workspace for this part of the lab.",
+              "description": "Open the shared Add data source page."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:pages.AddDataSource.searchInput}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/datasources"
+              ],
+              "targetvalue": "TestData",
+              "tooltip": "Find the built-in synthetic option without connecting an external service.",
+              "description": "Find TestData; no external service or credentials are needed. Set the value to `TestData`."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/datasources"
+              ],
+              "tooltip": "Create a reusable source of generated practice samples.",
+              "description": "Create the TestData source."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:pages.DataSource.saveAndTest}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/datasources"
+              ],
+              "tooltip": "Confirm that the generated samples are available.",
+              "description": "Check that the synthetic source works."
+            }
+          ]
+        }
+      ],
+      "requirements": [
+        "is-admin"
+      ],
+      "objectives": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can reuse an existing synthetic source, while creating one requires administrator access and no external credentials."
+    },
+    {
+      "type": "conditional",
+      "id": "practice-source-ready",
+      "conditions": [
+        "has-datasource:grafana-testdata-datasource"
+      ],
+      "whenTrue": [
+        {
+          "type": "input",
+          "id": "choose-practice-source",
+          "inputType": "datasource",
+          "variableName": "practiceSource",
+          "datasourceFilter": "grafana-testdata-datasource",
+          "prompt": "Select your TestData source; its name may differ in your organization.",
+          "required": true,
+          "requirements": [
+            "has-datasource:grafana-testdata-datasource"
+          ]
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "Create a fresh panel and select the source that will supply your practice signals."
+    },
+    {
+      "type": "section",
+      "id": "build-the-bar-chart-panel",
+      "title": "Build the Bar chart panel",
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/dashboard/new",
+          "requirements": [],
+          "tooltip": "Begin from the specified workspace for this part of the lab.",
+          "type": "interactive",
+          "content": "Create a fresh dashboard for this lab.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Add space for the synthetic comparison.",
+          "type": "interactive",
+          "content": "Add a panel for your synthetic signals.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.configurePanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Open the controls for data and presentation.",
+          "type": "interactive",
+          "content": "Open the visualization editor.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "{{practiceSource}}",
+          "tooltip": "Use the source name selected earlier in this guide.",
+          "type": "interactive",
+          "content": "Use the TestData source you selected. Set the value to `{{practiceSource}}`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "multistep",
+          "id": "build-the-bar-chart-panel-viz",
+          "content": "Choose **Bar chart**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Tab.title:Visualizations}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Choose a display suited to categorical comparisons.",
+              "description": "Open the visualization chooser."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.PluginVisualization.item:Bar chart}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Compare numeric summaries across named categories.",
+              "description": "Select Bar chart."
+            }
+          ]
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldInput:Title}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Signal comparison",
+          "tooltip": "Make the result recognizable when you return to it.",
+          "type": "interactive",
+          "content": "Give the panel a recognizable name. Set the value to `Signal comparison`.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a named comparison panel connected to your chosen synthetic source."
+    },
+    {
+      "type": "markdown",
+      "content": "Generate three random walks bounded from 0 to 100, each starting at 50."
+    },
+    {
+      "type": "section",
+      "id": "create-bounded-practice-signals",
+      "title": "Create bounded practice signals",
+      "blocks": [
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.min}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "0",
+          "tooltip": "Prevent generated samples from falling below zero.",
+          "type": "interactive",
+          "content": "Keep the synthetic values at or above zero. Set the value to `0`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.max}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "100",
+          "tooltip": "Keep generated samples within the practice range.",
+          "type": "interactive",
+          "content": "Cap the synthetic values at 100. Set the value to `100`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.startValue}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "50",
+          "tooltip": "Begin each generated walk halfway through the range.",
+          "type": "interactive",
+          "content": "Start the random walk halfway through the range. Set the value to `50`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.seriesCount}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "3",
+          "tooltip": "Create enough signals for a categorical comparison.",
+          "type": "interactive",
+          "content": "Generate 3 synthetic signals. Set the value to `3`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.RefreshPicker.runButtonV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Generate samples using the settings you just entered.",
+          "type": "interactive",
+          "content": "Run the query to see your practice data.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have produced bounded practice signals for learning visual interpretation without implying real service health."
+    },
+    {
+      "type": "quiz",
+      "id": "check-create-bounded-practice-signals",
+      "question": "What do the three bounded random walks represent?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Synthetic practice signals for learning chart interpretation.",
+          "correct": true,
+          "hint": "The samples are generated for this lab and have no production meaning."
+        },
+        {
+          "id": "b",
+          "text": "Measurements proving the health of three production services.",
+          "correct": false,
+          "hint": "The samples are generated for this lab and have no production meaning."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Reduce the samples to one category per signal and compare its peak with its average."
+    },
+    {
+      "type": "section",
+      "id": "turn-time-series-into-categories",
+      "title": "Turn time series into categories",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "turn-time-series-into-categories-reduce",
+          "content": "Add **Reduce** to summarize the signals.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Transforms.addTransformationButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Reshape the samples before displaying them.",
+              "description": "Open the transformation chooser."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.TransformTab.newTransform:Reduce} button",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Summarize many samples into comparable statistics.",
+              "description": "Add Reduce to summarize each signal."
+            }
+          ]
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.Transforms.Reduce.modeLabel} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Series to rows",
+          "tooltip": "Produce a separate category for each signal.",
+          "type": "interactive",
+          "content": "Use one output row for each series. Set the value to `Series to rows`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.Transforms.Reduce.calculationsLabel} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Mean",
+          "tooltip": "Keep the existing peak statistic and include an average.",
+          "type": "interactive",
+          "content": "Add Mean alongside the default Max calculation. Set the value to `Mean`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.General.content}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Compare the peak and average within each signal category.",
+          "type": "interactive",
+          "content": "Compare three signal categories, each with a peak and average bar.",
+          "doIt": false,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have turned three time series into categorical rows with **Max** and **Mean** values."
+    },
+    {
+      "type": "quiz",
+      "id": "check-turn-time-series-into-categories",
+      "question": "Why keep peak and average as paired bars instead of stacking them?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "They are two summaries of the same samples, not parts of a meaningful total.",
+          "correct": true,
+          "hint": "A peak and an average describe the same series in different ways; adding them is misleading."
+        },
+        {
+          "id": "b",
+          "text": "Their sum measures the total amount of signal traffic.",
+          "correct": false,
+          "hint": "A peak and an average describe the same series in different ways; adding them is misleading."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Arrange the paired bars horizontally and tune spacing so each category is easy to compare."
+    },
+    {
+      "type": "section",
+      "id": "make-comparisons-easy-to-read",
+      "title": "Make comparisons easy to read",
+      "blocks": [
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Orientation} input[title='Horizontal']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "tooltip": "Give category labels room beside their values.",
+          "type": "interactive",
+          "content": "Use horizontal bars so category labels have room.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Show values} input[title='Always']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "tooltip": "Read the numbers without estimating lengths.",
+          "type": "interactive",
+          "content": "Print the values alongside the bars.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Stacking} input[title='Off']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "tooltip": "Keep two summaries separate because their sum is not a meaningful total.",
+          "type": "interactive",
+          "content": "Keep the peak and mean side by side; they are not parts of a total.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Group width} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "0.7",
+          "tooltip": "Separate categories while keeping each pair together.",
+          "type": "interactive",
+          "content": "Separate category groups while keeping paired bars close. Set the value to `0.7`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Bar width} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "0.8",
+          "tooltip": "Leave space between neighboring comparisons.",
+          "type": "interactive",
+          "content": "Leave a small gap between neighboring bars. Set the value to `0.8`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Bar radius} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "0.1",
+          "tooltip": "Soften the corners slightly without changing their meaning.",
+          "type": "interactive",
+          "content": "Round the bar corners slightly. Set the value to `0.1`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Standard options Decimals} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "1",
+          "tooltip": "Keep the displayed numbers concise.",
+          "type": "interactive",
+          "content": "Keep value labels concise with one decimal. Set the value to `1`.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have kept peak and average side by side, with readable labels and distinct category groups."
+    },
+    {
+      "type": "markdown",
+      "content": "Add subtle styling and shared context while keeping the synthetic scale honestly labeled."
+    },
+    {
+      "type": "section",
+      "id": "add-useful-visual-context",
+      "title": "Add useful visual context",
+      "blocks": [
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Line width} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "1",
+          "tooltip": "Add a thin boundary to distinguish neighboring fills.",
+          "type": "interactive",
+          "content": "Give each bar a thin outline. Set the value to `1`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Fill opacity} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "80",
+          "tooltip": "Keep fills visible without making them fully opaque.",
+          "type": "interactive",
+          "content": "Keep the bars visible without making them opaque. Set the value to `80`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Bar chart Gradient mode} input[title='Opacity']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "tooltip": "Fade the fill toward the baseline for a subtle treatment.",
+          "type": "interactive",
+          "content": "Fade the fill toward the baseline.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Tooltip Tooltip mode} input[title='All']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "tooltip": "Inspect both statistics together for a category.",
+          "type": "interactive",
+          "content": "Compare both statistics in one tooltip.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Legend Mode} input[title='Table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "tooltip": "Give the calculations distinct rows for reference.",
+          "type": "interactive",
+          "content": "Give the two calculations clear legend rows.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Axis Label} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Illustrative value",
+          "tooltip": "Describe the synthetic scale without assigning a real unit.",
+          "type": "interactive",
+          "content": "Label the synthetic scale without implying a real unit. Set the value to `Illustrative value`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.General.content}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Compare the peak and average within each signal category.",
+          "type": "interactive",
+          "content": "Compare peak and mean within each category; a large gap suggests variability in the synthetic samples.",
+          "doIt": false,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can compare both statistics with a shared tooltip and table legend, without implying a real measurement unit."
+    },
+    {
+      "type": "quiz",
+      "id": "check-add-useful-visual-context",
+      "question": "What does a large gap between peak and average suggest here?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Variability in the generated samples.",
+          "correct": true,
+          "hint": "The chart summarizes synthetic samples, so the gap supports comparison rather than a service-health conclusion."
+        },
+        {
+          "id": "b",
+          "text": "Proof that a real service is failing.",
+          "correct": false,
+          "hint": "The chart summarizes synthetic samples, so the gap supports comparison rather than a service-health conclusion."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Save the finished dashboard and inspect the retained comparison chart."
+    },
+    {
+      "type": "section",
+      "id": "keep-your-finished-dashboard",
+      "title": "Keep your finished dashboard",
+      "blocks": [
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavToolbar.editDashboard.backToDashboardButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Return with the configured panel ready to save.",
+          "type": "interactive",
+          "content": "Return to the dashboard.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "multistep",
+          "id": "keep-your-finished-dashboard-save",
+          "content": "Save the dashboard as Bar chart lab - Signal comparison.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.NavToolbar.editDashboard.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Open the naming and persistence controls.",
+              "description": "Open the save drawer."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveAsTitleInput}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Bar chart lab - Signal comparison",
+              "tooltip": "Give this lab a distinctive name for later retrieval.",
+              "description": "Name your saved dashboard. Set the value to `Bar chart lab - Signal comparison`."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Persist the completed configuration.",
+              "description": "Save the dashboard."
+            }
+          ]
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/",
+            "has-dashboard-named:Bar chart lab - Signal comparison"
+          ],
+          "tooltip": "Confirm that the saved view retains the paired comparison and its labels.",
+          "type": "interactive",
+          "content": "Inspect the saved dashboard named Bar chart lab - Signal comparison: the Signal comparison panel should show three categories with horizontal, unstacked peak and average bars, visible values, distinct spacing, subtle gradient and outline, a table legend, and the axis label Illustrative value; inspect the shared tooltip to compare both statistics.",
+          "doIt": false,
+          "showMe": true,
+          "verify": "has-dashboard-named:Bar chart lab - Signal comparison"
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have saved a standalone dashboard and checked the visible configuration you built."
+    }
+  ]
+}
