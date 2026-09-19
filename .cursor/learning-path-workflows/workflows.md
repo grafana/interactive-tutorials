@@ -77,7 +77,7 @@ The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, a
 ## Tips
 
 - **Plan for session length.** Paths with 7+ milestones often take two sessions. A natural break point is after Phase 2 (all content and manifests on disk). Resume at Phase 3 (selector discovery) in a new session.
-- **Selector fixes have a 3-attempt limit.** If a selector can't be resolved after 3 tries, the AI marks it `TODO:manual-review` and moves on. You can fix these by hand later.
+- **Selector fixes have a 3-attempt limit.** If a selector can't be resolved after 3 tries, put the learner action in `markdown` (or fold it into the next interactive step). Do not use `noop` as a selector fallback.
 
 ---
 
