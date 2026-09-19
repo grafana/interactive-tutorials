@@ -1,0 +1,167 @@
+{
+  "id": "get-started-k6-test-builder",
+  "title": "Run a load test in the Test Builder",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "See how a website or API holds up under traffic before your users find out. You'll build a performance test in a visual editor, run it from Grafana Cloud, and read the results. Nothing to install, no script to write."
+    },
+    {
+      "type": "markdown",
+      "content": "First, open the Test Builder. You need the **Editor** or **Admin** role in your stack."
+    },
+    {
+      "type": "section",
+      "id": "open-the-test-builder",
+      "title": "Open the Test Builder",
+      "requirements": ["is-editor", "plugin-enabled:k6-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
+          "content": "Click **Testing & synthetics** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app']",
+          "content": "Click **Performance**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='create-test-button']",
+          "content": "Click **Create test**.",
+          "requirements": ["on-page:/a/k6-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:has(input[name='new-test-target'][value='http'])",
+          "content": "Choose **HTTP API**. That's the kind of test the Test Builder creates.",
+          "requirements": ["on-page:/a/k6-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href$='/tests/new/builder']",
+          "content": "Skip the main options. For the no-code path, click **Try the Test Builder** at the bottom.",
+          "requirements": ["on-page:/a/k6-app", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The Test Builder is open. It's a visual editor that writes the test script for you."
+    },
+    {
+      "type": "markdown",
+      "content": "Now build the test and run it."
+    },
+    {
+      "type": "section",
+      "id": "build-and-run-your-test",
+      "title": "Build and run your test",
+      "requirements": ["section-completed:open-the-test-builder", "on-page:/a/k6-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Enter a test name...']",
+          "targetvalue": "My first load test",
+          "doIt": false,
+          "content": "Name the test so you can find it again later.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Request",
+          "content": "Click **Request** to add an HTTP request, the thing your test will do over and over.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='request-settings']",
+          "targetvalue": "https://quickpizza.grafana.com",
+          "content": "Enter the URL to test. `https://quickpizza.grafana.com` is Grafana's demo site, and you have permission to load test it. Only ever test endpoints you own or have permission to test, because the traffic is real.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Review the summary above the builder before you run. It estimates what the run costs in VUh (virtual user hours) and how long it takes."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create and run",
+          "content": "Click **Create and run**. Grafana Cloud starts sending traffic to the target and opens the results page.",
+          "verify": "on-page:/a/k6-app/runs",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your test is running from a load generator in the cloud, not your machine."
+    },
+    {
+      "type": "markdown",
+      "content": "The results page opened by itself. Here's how to read it."
+    },
+    {
+      "type": "section",
+      "id": "read-the-results",
+      "title": "Read the results",
+      "requirements": ["section-completed:build-and-run-your-test", "on-page:/a/k6-app/runs"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "div[data-testid='meta-bar']",
+          "content": "Review the bar at the top. It tracks the run status, cost in VUh, virtual users, and where the traffic comes from.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "div[data-testid='performance-overview-chart']",
+          "content": "Watch the results stream in while the test runs. You can see how many requests are being sent, how fast the target answers, and whether any fail.",
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "div[data-testid='cloud-insights']",
+          "content": "Check Cloud Insights when the run finishes. It scores the run against best practices and flags problems automatically.",
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab ANALYSIS']",
+          "content": "Click **ANALYSIS** to explore every metric the run recorded, when the overview isn't enough.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You ran a real load test and read its results, entirely in Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "Note: Every run bills VUh, which is virtual users times duration. The builder shows the estimate before you run, so check it before you scale a test up. When you're ready for realistic traffic, shape it in the scenario **Options** with ramp-ups, steady load, or a fixed number of iterations."
+    }
+  ]
+}
