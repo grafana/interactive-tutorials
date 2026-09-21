@@ -1,0 +1,1782 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "frontend-observability-data-tour",
+  "title": "Understand your frontend data: a guided tour",
+  "blocks": [
+    {
+      "type": "callout",
+      "title": "Explore your own web application",
+      "content": "Use an instrumented web application and a time range with telemetry in Grafana 13.1.0 or later. Work through the chapters at your own pace. Skip optional panels or chapters when their data or controls are unavailable; no settings changes are needed."
+    },
+    {
+      "type": "markdown",
+      "content": "Start with an instrumented web application whose data you want to understand."
+    },
+    {
+      "type": "section",
+      "id": "chapter-1",
+      "title": "Choose your application and investigation window",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "frontend-observability-data-tour-step-1",
+          "action": "navigate",
+          "reftarget": "/a/grafana-kowalski-app/apps",
+          "requirements": [],
+          "content": "Open **Frontend Observability**. This tour explains your existing telemetry; it does not require a particular application name or sample value.",
+          "doIt": true,
+          "showMe": false,
+          "tooltip": "Start with the telemetry already collected for your application."
+        },
+        {
+          "id": "frontend-observability-data-tour-step-2",
+          "action": "highlight",
+          "reftarget": "[data-testid='apps-list-search-input']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Optionally narrow the list before opening the first application.",
+          "type": "interactive",
+          "content": "Use the search to narrow the list to a web application if needed. The next step opens the first application shown. Active, stale, and no-data groups describe ingestion status; they do not grade application health.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "id": "frontend-observability-data-tour-open-first-app",
+          "action": "highlight",
+          "reftarget": "[data-testid^='apps-app-card-name-']:nth-match(1)",
+          "content": "Open the **first application tile** in the current list. **Do it** selects it for you, so the following steps can inspect its Overview. No application name or ID is fixed in this guide.",
+          "tooltip": "Open the first application in the current list.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app"
+          ],
+          "verify": "on-page:/a/grafana-kowalski-app/apps/",
+          "doIt": true,
+          "showMe": true,
+          "lazyRender": true,
+          "skippable": false
+        },
+        {
+          "id": "frontend-observability-data-tour-step-3",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Overview}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Begin with the selected application\u2019s traffic and performance.",
+          "type": "interactive",
+          "content": "Open **Overview** for your selected application. This is the starting point for traffic, errors, and user-perceived performance.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-4",
+          "action": "highlight",
+          "reftarget": "{grafana:components.TimePicker.openButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Choose a period with telemetry and keep it consistent.",
+          "type": "interactive",
+          "content": "Read the selected time window. The tour keeps this range while comparing panels. You can adjust it if you want to investigate another period. A blank panel can mean no samples, restrictive filters, or missing instrumentation; it is not evidence of zero problems.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-5",
+          "action": "highlight",
+          "reftarget": "[data-testid='shared-cascading-filter-picker-pill']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Check which population the active selections include.",
+          "type": "interactive",
+          "content": "Filters narrow the population being measured, such as browser, version, or page. Read the active filters before drawing a conclusion. If present, the RUM / k6 switch separates real-user observations from synthetic browser runs.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have selected the application and time window that give every later panel its context."
+    },
+    {
+      "type": "markdown",
+      "content": "Use the headline counts and trend to decide whether a change needs investigation."
+    },
+    {
+      "type": "section",
+      "id": "chapter-2",
+      "title": "Read traffic and errors together",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-6",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Page Loads}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Compare recorded activity with a similarly busy period.",
+          "type": "interactive",
+          "content": "**Page Loads** counts recorded loads in the selected scope. It describes activity, not unique people or the number of sessions. Compare a busy period with a similar traffic period.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-7",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:JS errors}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Repeated exceptions can come from the same person.",
+          "type": "interactive",
+          "content": "**JS errors** counts reported JavaScript exceptions. One user can generate many exceptions, so a large count does not directly tell you how many people were affected.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-8",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:User action errors}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Skip this signal when interaction instrumentation is absent.",
+          "type": "interactive",
+          "content": "**User action errors** connects failures to recorded interactions. Action instrumentation is optional: skip this panel if your application does not send actions, and continue with errors and sessions.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-9",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Page Loads & Errors}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Look for failures that change independently of traffic.",
+          "type": "interactive",
+          "content": "**Page Loads & Errors** puts activity and failures on a shared time axis. Find whether errors increase with traffic or change independently; use the same time window in later pages.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-10",
+          "action": "highlight",
+          "reftarget": "[data-testid='interactive-table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Compare routes while keeping sample volume in mind.",
+          "type": "interactive",
+          "content": "**Page Performance** breaks results down by page or route. Compare traffic, errors, and vital measurements to find an affected route. A route with few samples deserves more caution than one with many. The search narrows the table; it does not change every chart.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Traffic supplies context for error counts; matching spikes suggest a time window to investigate, not proof of a cause."
+    },
+    {
+      "type": "markdown",
+      "content": "Separate loading, visual stability, and interaction responsiveness before comparing your readings."
+    },
+    {
+      "type": "section",
+      "id": "chapter-3",
+      "title": "Understand the web-vital gauges",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-11",
+          "action": "highlight",
+          "reftarget": "h3:contains(\"TTFB\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Both network conditions and server response contribute to this wait.",
+          "type": "interactive",
+          "content": "**TTFB**: Time to First Byte measures the wait for the first response byte. Network conditions and server response time both contribute; this is not a measurement of backend execution alone. Read the gauge against its displayed thresholds.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-12",
+          "action": "highlight",
+          "reftarget": "h3:contains(\"FCP\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Check when the first useful content appears.",
+          "type": "interactive",
+          "content": "**FCP**: First Contentful Paint measures when initial content first appears. It tells you when the page begins to look useful, not when its main content has finished rendering. Read the gauge against its displayed thresholds.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-13",
+          "action": "highlight",
+          "reftarget": "h3:contains(\"LCP\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Check when the largest visible content element renders.",
+          "type": "interactive",
+          "content": "**LCP**: Largest Contentful Paint measures when the largest visible content element renders. Use it to investigate slow main-content loading; it is not a complete-page finish time. Read the gauge against its displayed thresholds.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-14",
+          "action": "highlight",
+          "reftarget": "h3:contains(\"CLS\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Interpret visual movement as a unitless score.",
+          "type": "interactive",
+          "content": "**CLS**: Cumulative Layout Shift measures unexpected visual movement. It is a unitless score, not milliseconds. A stable page can still be slow to load. Read the gauge against its displayed thresholds.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-15",
+          "action": "highlight",
+          "reftarget": "h3:contains(\"INP\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Missing samples can mean no qualifying interaction occurred.",
+          "type": "interactive",
+          "content": "**INP**: Interaction to Next Paint measures responsiveness to user interactions. Some visits have no qualifying interaction, so missing INP samples do not necessarily mean broken collection. Read the gauge against its displayed thresholds.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-16",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Page Load (TTFB, FCP, LCP) - p75}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Read the value below which 75% of observations fall.",
+          "type": "interactive",
+          "content": "The loading trend compares three p75 measurements over time. p75 means 75% of the measured observations are at or below that value; it is not an average or a promise that 75% of users are happy.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-17",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Cumulative Layout Shift (CLS) - p75}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Look for changes in visual stability over time.",
+          "type": "interactive",
+          "content": "The CLS trend helps you spot when layout stability changed. Correlate a rise with a release or route, then inspect the affected population before attributing a cause.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-18",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Input Response time (INP) - p75}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Compare responsiveness using the same filters and period.",
+          "type": "interactive",
+          "content": "The INP trend shows whether interaction responsiveness deteriorates during a particular period. Compare like-for-like filters and remember that the slowest quarter is not represented by p75 alone.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The vitals measure different parts of the experience, so a good value for one cannot compensate for a poor value in another."
+    },
+    {
+      "type": "quiz",
+      "id": "check-percentiles",
+      "question": "What does a p75 timing tell you?",
+      "completionMode": "max-attempts",
+      "maxAttempts": 2,
+      "skippable": true,
+      "choices": [
+        {
+          "id": "a",
+          "text": "75% of measured observations are at or below this value.",
+          "correct": true,
+          "hint": "Read the remaining slower observations and sample volume too."
+        },
+        {
+          "id": "b",
+          "text": "It is the average duration for all users.",
+          "correct": false,
+          "hint": "A percentile locates a point in the distribution; an average combines all values."
+        },
+        {
+          "id": "c",
+          "text": "75% of users had a good experience.",
+          "correct": false,
+          "hint": "The percentile alone does not establish a satisfaction threshold."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Move from the overall trend to groups of failures and their affected population."
+    },
+    {
+      "type": "section",
+      "id": "chapter-4",
+      "title": "Find and prioritize errors",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-19",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Errors}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Find recurring failures to prioritize for investigation.",
+          "type": "interactive",
+          "content": "Open **Errors**. Grouping similar exceptions helps you prioritize recurring failures rather than reading every occurrence separately.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-20",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Errors history}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Compare the timing of failure spikes with application traffic.",
+          "type": "interactive",
+          "content": "**Errors history** shows how failures change over the selected period. Locate a spike and compare its timing with the Overview trend; counts and affected-session rates answer different questions.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-21",
+          "action": "highlight",
+          "reftarget": "[data-testid='errors-table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Assess both recurrence and reach before choosing a failure.",
+          "type": "interactive",
+          "content": "Read the error groups, trend, counts, and affected sessions or pages shown in your table. A frequent error may be concentrated in one session; a less frequent error may affect many sessions. Use search to find a message you recognize.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-22",
+          "action": "highlight",
+          "reftarget": "[data-testid='errors-table'] a[href*='/errors/']:nth-match(1)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Open the first recorded error group.",
+          "type": "interactive",
+          "content": "Open the **first error group** in the current results. **Do it** opens its details so we can examine recurrence and impact. If no error groups are recorded, skip this step and the error-detail steps; continue with Sessions.",
+          "doIt": true,
+          "showMe": true,
+          "verify": "on-page:/errors/"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Error volume, reach, and timing help you choose what to inspect next."
+    },
+    {
+      "type": "markdown",
+      "content": "If you opened an error, connect its recurrence to affected users, pages, sessions, and individual occurrences."
+    },
+    {
+      "type": "section",
+      "id": "chapter-5",
+      "title": "Explain an individual error",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-23",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Total events}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Repeated retries can increase occurrences without increasing reach.",
+          "type": "interactive",
+          "content": "Count occurrences of this error, not distinct users. Repeated retries can increase this without increasing its reach. The **Trend** card compares recurrence across time; use its direction alongside counts rather than treating a change as a cause. **First seen** reports the earliest recorded observation, which may be later than when the defect was introduced.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-24",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Affected users}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Missing identity limits how many people can be identified.",
+          "type": "interactive",
+          "content": "Read the users identified in this error group. Missing user identity limits what the application can report; do not equate unidentified sessions with zero affected people.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-25",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Affected pages}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Check whether a failure spans multiple routes.",
+          "type": "interactive",
+          "content": "See how widely the error appears across recorded pages. A shared component can fail on several routes.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-26",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Affected sessions}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Distinguish a repeatedly failing visit from widespread impact.",
+          "type": "interactive",
+          "content": "Count the sessions affected by this error. This helps distinguish one repeatedly failing visit from a widespread issue.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-27",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Error history}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Compare this failure\u2019s timing with releases and broader trends.",
+          "type": "interactive",
+          "content": "Read when this specific error occurred. Compare that window with releases and the global error trend. The **Attribute Explorer** breaks the affected population down by available attributes such as browser or version. Check sample sizes before interpreting concentration as a cause.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-28",
+          "action": "highlight",
+          "reftarget": "h6:contains(\"Error instances\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Inspect a recorded occurrence and its available stack frames.",
+          "type": "interactive",
+          "content": "**Error instances** lists individual occurrences. Inspect the available stack trace and occurrence details to connect the grouped error to a session. Source maps can make stack frames readable; absent source maps do not mean the error lacks a stack. **Suspect commits**, when configured, offers candidate code changes to investigate rather than a confirmed root cause. Its usefulness depends on the repository connection and available stack information; skip it when absent.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-29",
+          "action": "highlight",
+          "reftarget": "[data-testid='shared-drilldown-page-title-back-link']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Leave the selected error detail before moving to visits.",
+          "type": "interactive",
+          "content": "Return to the application before continuing. If you skipped the detail view, skip this step too.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can distinguish repeated events from affected entities and use individual occurrences to investigate the failure."
+    },
+    {
+      "type": "markdown",
+      "content": "Use session-level data to move from aggregate impact to one recorded visit."
+    },
+    {
+      "type": "section",
+      "id": "chapter-6",
+      "title": "Find a session worth investigating",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-30",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Sessions}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Find a recorded visit by its time and context.",
+          "type": "interactive",
+          "content": "Open **Sessions**. This page helps you find a visit by its time, errors, page, browser, and other recorded context.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-31",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Sessions Overview}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Locate a period of interest without treating visits as people.",
+          "type": "interactive",
+          "content": "**Sessions Overview** shows the session activity trend. Use it to locate a period of interest; session lifecycle events and unique-user counts are different measures.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-32",
+          "action": "highlight",
+          "reftarget": "[data-testid='sessions-overview-table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Use recorded context to choose a visit worth investigating.",
+          "type": "interactive",
+          "content": "Read the session table and its error counts, timestamp, page, and lifecycle information. Search for a session or context you recognize. A dash means the value is unavailable, not necessarily zero.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-33",
+          "action": "highlight",
+          "reftarget": "[data-testid='sessions-overview-table'] a[href*='/sessions/']:nth-match(1)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Open the first recorded session.",
+          "type": "interactive",
+          "content": "Open the **first session** in the current results. **Do it** takes you into that visit so we can follow its summary and timeline. If the table is empty, skip this step and the session-detail steps; continue with User actions.",
+          "doIt": true,
+          "showMe": true,
+          "verify": "on-page:/sessions/"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A session connects signals from a visit; it is not necessarily a unique person or a complete recording."
+    },
+    {
+      "type": "markdown",
+      "content": "If a session is available, connect its summary to the ordered activity timeline."
+    },
+    {
+      "type": "section",
+      "id": "chapter-7",
+      "title": "Reconstruct the session experience",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-34",
+          "action": "highlight",
+          "reftarget": "section > header > span:contains(\"Session\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Read the recorded environment and experience for this visit.",
+          "type": "interactive",
+          "content": "The session summary identifies the visit, lifecycle, and user when supplied. **Environment** gives browser, platform, and application-version context; **User Experience** combines error counts and web vitals for this visit. Missing fields are not inferred.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-35",
+          "action": "highlight",
+          "reftarget": "[data-testid='user-journey-table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Follow the recorded sequence without assuming causation.",
+          "type": "interactive",
+          "content": "The activity timeline orders the signals recorded during this visit: page changes, measurements, exceptions, requests, logs, and events. Read elapsed time and page context together; temporal proximity alone does not prove causation.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-36",
+          "action": "highlight",
+          "reftarget": "[data-testid='sessions-user-journey-table-filter-show-all-button']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Narrow the sequence to the kinds of signals you need.",
+          "type": "interactive",
+          "content": "Category chips filter the timeline so you can focus on errors, web vitals, lifecycle, network, actions, or logs. Their counts help you see which signals exist. **Show all** restores the category selection.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-37",
+          "action": "highlight",
+          "reftarget": "[data-testid='sessions-user-journey-table-filter-category-chip-custom']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Look for application-defined milestones when they were instrumented.",
+          "type": "interactive",
+          "content": "Custom events are application-defined milestones, such as completing a business step. They are different from measured user actions. If no custom events were instrumented, skip this step; the rest of the timeline is still useful.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-38",
+          "action": "highlight",
+          "reftarget": "[data-testid='sessions-user-journey-table-search-input']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Locate a relevant message or value within this visit.",
+          "type": "interactive",
+          "content": "Timeline search narrows the recorded messages and values within this session. Combine it with category filters when investigating a particular occurrence; this tour continues with the session traces without requiring you to search or open an event.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-39",
+          "action": "highlight",
+          "reftarget": "{grafana:components.RadioButton.container} input[title=\"Traces\"]",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Inspect related distributed operations when collection is configured.",
+          "type": "interactive",
+          "content": "Select **Traces** to inspect recorded distributed traces related to this session. Trace collection and propagation are optional; an empty trace list does not invalidate the session timeline.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-40",
+          "action": "highlight",
+          "reftarget": ":is([data-testid='traces-table-container'], [data-testid='data-testid traces container'])",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Follow a recorded operation into downstream spans when connected.",
+          "type": "interactive",
+          "content": "Trace results connect browser activity to downstream spans when instrumentation and context propagation are present. Use a trace to investigate a particular operation, not as proof that every request in the session was captured.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-41",
+          "action": "highlight",
+          "reftarget": "[data-testid='shared-drilldown-page-title-back-link']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Leave the selected visit before comparing instrumented interactions.",
+          "type": "interactive",
+          "content": "Return to the application before continuing. If you skipped the detail view, skip this step too.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can follow the sequence of a visit and distinguish optional events, logs, traces, and replay from required session context."
+    },
+    {
+      "type": "callout",
+      "title": "Optional evidence beyond the timeline",
+      "content": "Session replay can add a visual reconstruction when it is collected and available. Critical user journeys can add context about important paths through an application. This tour does not walk through either feature; use them as supporting evidence when your application supports them."
+    },
+    {
+      "type": "markdown",
+      "content": "If your application records user actions, compare frequency, failures, and duration."
+    },
+    {
+      "type": "section",
+      "id": "chapter-8",
+      "title": "Measure optional user actions",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-42",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:User actions}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Explore recorded interactions, or skip when none are available.",
+          "type": "interactive",
+          "content": "Open **User actions**. If the page offers instrumentation instructions or has no action data, skip this chapter and continue to HTTP.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-43",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Total user actions}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Count only the interactions captured by instrumentation.",
+          "type": "interactive",
+          "content": "Count the instrumented actions performed in this window. These are not necessarily every click, every event, or every business conversion.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-44",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Erroneous User Actions}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Interpret the share of failures alongside the sample volume.",
+          "type": "interactive",
+          "content": "Read the share of recorded actions associated with errors. Compare it with total action volume so a small sample does not look more conclusive than it is.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-45",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:User Action Duration (avg)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "A central value can hide a minority of very slow interactions.",
+          "type": "interactive",
+          "content": "The average gives a central view of action duration but can hide a minority of very slow interactions.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-46",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:User Action Duration (P95)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Compare the slower tail with the central duration.",
+          "type": "interactive",
+          "content": "p95 describes the slower tail: 95% of measured action durations are at or below this value. Compare it with the average to see whether a minority experiences much longer waits.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-47",
+          "action": "highlight",
+          "reftarget": "[data-testid='user-actions-table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Choose a meaningful interaction by volume, latency, and failures.",
+          "type": "interactive",
+          "content": "Compare named actions by volume, duration, and errors. The importance filter narrows the list. The next step opens the first recorded action for you.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-48",
+          "action": "highlight",
+          "reftarget": "[data-testid='user-actions-table'] a[href*='/actions/']:nth-match(1)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Open the first recorded user action.",
+          "type": "interactive",
+          "content": "Open the **first user action** in the current results. **Do it** opens its performance, errors, requests, and related sessions. If your application has no recorded actions, skip this step and the action-detail steps; continue with HTTP.",
+          "doIt": true,
+          "showMe": true,
+          "verify": "on-page:/actions/"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Action metrics describe instrumented interactions; absent action data is a supported skip, not a reason to stop the tour."
+    },
+    {
+      "type": "markdown",
+      "content": "For a selected action, inspect its metrics and related signals."
+    },
+    {
+      "type": "section",
+      "id": "chapter-9",
+      "title": "Connect an action to supporting evidence",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-49",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Total executions}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Compare this interaction\u2019s execution volume with the broader picture.",
+          "type": "interactive",
+          "content": "This is the execution count for the selected action; compare it with the broader action volume.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-50",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Error rate}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Judge how often recorded executions encounter failures.",
+          "type": "interactive",
+          "content": "The selected action error rate helps you judge how often its executions encounter recorded errors.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-51",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Duration p95}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Prioritize interactions whose slower executions create long waits.",
+          "type": "interactive",
+          "content": "The duration tail helps you prioritize actions whose slower executions frustrate users.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-52",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Duration, Executions, and Errors}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Compare timing and demand without assuming they share a cause.",
+          "type": "interactive",
+          "content": "Read duration, executions, and errors over time together. A traffic increase, latency rise, and error spike may overlap without sharing a cause.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-53",
+          "action": "highlight",
+          "reftarget": "h6:contains(\"Top Errors\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Inspect matching failures within the selected interaction\u2019s scope.",
+          "type": "interactive",
+          "content": "Inspect error groups associated with this action. An empty list means there are no matching recorded errors in scope, not that every possible failure was observed.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-54",
+          "action": "highlight",
+          "reftarget": "h6:contains(\"Error Count by Browser\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Account for differences in browser traffic before comparing counts.",
+          "type": "interactive",
+          "content": "Compare browsers to look for concentration. Browser traffic differs, so raw counts alone cannot establish that one browser is less reliable.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-55",
+          "action": "highlight",
+          "reftarget": "{grafana:components.RadioButton.container} input[title=\"HTTP Requests\"]",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Inspect network dependencies associated with this interaction.",
+          "type": "interactive",
+          "content": "Select **HTTP Requests** to see the requests associated with this action and investigate slow or failing dependencies.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-56",
+          "action": "highlight",
+          "reftarget": "h6:contains(\"Http requests\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Use recorded URLs and timings as investigation leads.",
+          "type": "interactive",
+          "content": "Read the associated request data. Recorded URLs and timings provide a lead for investigation; missing propagation or instrumentation can leave this view incomplete.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-57",
+          "action": "highlight",
+          "reftarget": "{grafana:components.RadioButton.container} input[title=\"Sessions\"]",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Find visits in which the selected interaction occurred.",
+          "type": "interactive",
+          "content": "Select **Sessions** to see the visits in which this action occurred.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-58",
+          "action": "highlight",
+          "reftarget": "h6:contains(\"Involved sessions\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Reconstruct what happened before and after an interaction.",
+          "type": "interactive",
+          "content": "Use an involved session to reconstruct what happened before and after the action. The list is scoped to the selected action and time range.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-59",
+          "action": "highlight",
+          "reftarget": "[data-testid='shared-drilldown-page-title-back-link']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Leave the interaction detail before reviewing browser network health.",
+          "type": "interactive",
+          "content": "Return to the application before continuing. If you skipped the detail view, skip this step too.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The action view connects slow or failing interactions to evidence you can investigate."
+    },
+    {
+      "type": "markdown",
+      "content": "Use request counts and timing summaries to separate reliability from latency and payload size."
+    },
+    {
+      "type": "section",
+      "id": "chapter-10",
+      "title": "Read browser HTTP health",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-60",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:HTTP}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Inspect the network activity observed by the browser.",
+          "type": "interactive",
+          "content": "Open **HTTP** to inspect browser-observed network requests. If your application does not collect this signal, read the explanations and skip unavailable panels.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-61",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Requests (total)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Collection and sampling can differ from server-side volume.",
+          "type": "interactive",
+          "content": "Count recorded requests in scope. This is not necessarily the same as server-side request volume because collection, filtering, and sampling can differ.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-62",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Errors (total)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Network failures may occur without a normal response.",
+          "type": "interactive",
+          "content": "Read the count of requests classified as errors. Network failures can occur without a normal HTTP response.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-63",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Errors (rate)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Read failures relative to the amount of recorded traffic.",
+          "type": "interactive",
+          "content": "Compare failures with request volume. An error count and an error rate answer different questions; inspect both before prioritizing.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-64",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:TTFB (p75)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Include network effects when interpreting the first-response wait.",
+          "type": "interactive",
+          "content": "Read the p75 wait for the first byte of a response. This includes effects beyond application execution, such as the network.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-65",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Duration (p75)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Compare the full request timing with its first-response wait.",
+          "type": "interactive",
+          "content": "Read the p75 recorded request duration. Compare it with TTFB to see whether time is spent waiting for the response or completing the transfer.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-66",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Transfer size (p75)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Payload size provides context but does not identify a bottleneck.",
+          "type": "interactive",
+          "content": "Read the p75 transferred bytes. Larger payloads can contribute to slower requests, but size alone does not identify the bottleneck.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The HTTP summaries describe browser-observed requests and timings, which can include network and client-side effects."
+    },
+    {
+      "type": "markdown",
+      "content": "Compare the HTTP trend panels, then use the request table or traces to narrow the investigation."
+    },
+    {
+      "type": "section",
+      "id": "chapter-11",
+      "title": "Investigate HTTP trends and dependencies",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-67",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:RED Metrics}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Separate increased demand from worsening reliability or latency.",
+          "type": "interactive",
+          "content": "Compare request rate, errors, and duration over time. These three signals help you distinguish higher demand from deteriorating reliability or latency.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-68",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Health correlation}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Treat aligned changes as investigation leads rather than proof.",
+          "type": "interactive",
+          "content": "Compare the signals presented on the shared time axis. Correlation suggests where to investigate; it is not proof of a causal relationship.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-69",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Duration}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Look for sustained increases and isolated latency spikes.",
+          "type": "interactive",
+          "content": "Look for sustained increases or isolated latency spikes. Check that the selected period and filters match the other panels.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-70",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Calls and erroneous calls}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Check whether failures increase proportionally with traffic.",
+          "type": "interactive",
+          "content": "Compare total calls with erroneous calls to see whether failures grow proportionally with traffic.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-71",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Status codes}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Distinguish response classes from requests without a usable response.",
+          "type": "interactive",
+          "content": "Inspect the response-status distribution. Use the status filter when needed; distinguish normal responses, client errors, server errors, and requests without a usable response.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-72",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Resource timings (p75)}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Missing phase detail can reflect cross-origin timing restrictions.",
+          "type": "interactive",
+          "content": "Break request time into the phases displayed by the browser. Cross-origin timing restrictions can hide detail, so unavailable phase timings do not mean those phases took zero time.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-73",
+          "action": "highlight",
+          "reftarget": "[data-testid='http-requests-table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Find a dependency worth examining by volume, failures, and timing.",
+          "type": "interactive",
+          "content": "Compare recorded domains or endpoints by request volume, errors, and timings. Drilldown links narrow the same questions to a dependency; choose a meaningful row from your own data when investigating beyond this tour.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-74",
+          "action": "highlight",
+          "reftarget": "{grafana:components.RadioButton.container} input[title=\"Traces\"]",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Inspect distributed operations if tracing is configured.",
+          "type": "interactive",
+          "content": "Select **Traces** for trace-backed investigation. Skip this if distributed tracing is not configured.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-75",
+          "action": "highlight",
+          "reftarget": ":is([data-testid='traces-table-container'], [data-testid='data-testid traces container'])",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Connected browser and backend context is needed for the full path.",
+          "type": "interactive",
+          "content": "Use a recorded trace to examine spans for a specific operation. Browser and backend context must be connected for an end-to-end view; not every request is guaranteed to have a trace.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can move from aggregate network health to a particular dependency or operation."
+    },
+    {
+      "type": "quiz",
+      "id": "check-missing-telemetry",
+      "question": "A request timing panel is blank. What should you conclude?",
+      "completionMode": "max-attempts",
+      "maxAttempts": 2,
+      "skippable": true,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Check the time range, filters, collection, and available samples before interpreting it.",
+          "correct": true,
+          "hint": "Unavailable observations and a measured zero are different."
+        },
+        {
+          "id": "b",
+          "text": "Every request completed instantly.",
+          "correct": false,
+          "hint": "A blank panel does not measure a duration of zero."
+        },
+        {
+          "id": "c",
+          "text": "There were no problems in the application.",
+          "correct": false,
+          "hint": "Missing telemetry cannot prove application health."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "If Geolocation is available and enabled for this app, compare regions using the same metric."
+    },
+    {
+      "type": "section",
+      "id": "chapter-12",
+      "title": "Explore optional geographic context",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-76",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Geolocation}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Explore available regional context without changing collection.",
+          "type": "interactive",
+          "content": "Open **Geolocation** if this tab is available. If collection is disabled or your role cannot access it, skip this chapter; do not enable collection merely to complete the tour.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-77",
+          "action": "highlight",
+          "reftarget": "[data-testid='apps-geo-kpi-selector-combobox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Compare the same measurement across regions and check sample volume.",
+          "type": "interactive",
+          "content": "The metric selector changes what the map and table compare, such as page loads, error rate, or a web vital. Compare the same metric across regions and watch for small samples.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-78",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Map}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Interpret regional prominence using the displayed measurement scale.",
+          "type": "interactive",
+          "content": "Read the map color or scale for the selected metric. A visually prominent region is not automatically the region with the most affected users.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-79",
+          "action": "highlight",
+          "reftarget": "[data-testid='interactive-table']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Check regional values while accounting for missing location detail.",
+          "type": "interactive",
+          "content": "The adjacent table provides the regional values behind the map. Available geographic detail depends on collection settings; missing regions are not evidence of zero traffic.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Geographic patterns provide investigation context; they depend on collected location data and should be interpreted alongside sample volume."
+    },
+    {
+      "type": "markdown",
+      "content": "If Settings is available, learn how collection and presentation options affect what you see."
+    },
+    {
+      "type": "section",
+      "id": "chapter-13",
+      "title": "Understand settings that shape your data",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-80",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Settings}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Review collection and presentation options without changing values.",
+          "type": "interactive",
+          "content": "Open **Settings** if your permissions allow it. This chapter explains the settings; leave their existing values unchanged.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-81",
+          "action": "highlight",
+          "reftarget": "[data-testid='app-form-edit-app-form']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Recognize how origins and attributes shape accepted telemetry.",
+          "type": "interactive",
+          "content": "Application name identifies the app; allowed origins control accepted browser origins; default attributes enrich signals. The RUM/k6 option affects whether synthetic and real-user data are combined.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-82",
+          "action": "button",
+          "reftarget": "[data-testid='sourceMaps']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Learn how matching uploads improve minified stack frames.",
+          "type": "interactive",
+          "content": "**Source Maps** makes minified JavaScript stack traces understandable when matching maps are uploaded. Missing maps reduce diagnostic detail; they do not suppress the underlying exception.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-83",
+          "action": "button",
+          "reftarget": "[data-testid='webSDK']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Review how instrumentation choices determine available signals.",
+          "type": "interactive",
+          "content": "**Web SDK Config** explains application instrumentation. Collection choices determine which signals exist; this tour does not install or change the SDK.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-84",
+          "action": "button",
+          "reftarget": "[data-testid='geolocation']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Respect existing choices about geographic collection and specificity.",
+          "type": "interactive",
+          "content": "**Geolocation** controls collection and geographic specificity. Follow your organization's data-handling choices; enabling it is outside this tour.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-85",
+          "action": "button",
+          "reftarget": "[data-testid='alerting']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Read configured notification scope independently of panel readings.",
+          "type": "interactive",
+          "content": "**Alerting** turns selected conditions into ongoing notifications. An alert evaluates its own configured rules and scope; a panel reading alone does not imply an alert will fire.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-86",
+          "action": "button",
+          "reftarget": "[data-testid='customTabs']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Use each embedded dashboard\u2019s descriptions for its customer-defined metrics.",
+          "type": "interactive",
+          "content": "**Custom Tabs** embeds configured dashboards into this application. Their names and panels are customer-defined, so use each dashboard's descriptions to understand its metrics.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-87",
+          "action": "button",
+          "reftarget": "[data-testid='github']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps"
+          ],
+          "skippable": true,
+          "lazyRender": true,
+          "tooltip": "Inspect optional source context if it is configured and accessible.",
+          "type": "interactive",
+          "content": "The optional **GitHub** integration relates the app to source context where configured. Availability and permissions vary; skip it if you do not use it.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can recognize which settings explain missing detail without changing a customer configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "Return to Overview and decide which evidence would answer your next question."
+    },
+    {
+      "type": "section",
+      "id": "chapter-14",
+      "title": "Choose your next investigation",
+      "requirements": [],
+      "blocks": [
+        {
+          "id": "frontend-observability-data-tour-step-88",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Overview}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0",
+            "section-completed:chapter-13"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Return to the starting view and choose your next investigation.",
+          "type": "interactive",
+          "content": "Return to **Overview**. Name one observation from your own data and the next page you would use to investigate it. Avoid drawing conclusions from a blank panel or a single count.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "frontend-observability-data-tour-step-89",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Page Loads & Errors}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-kowalski-app/apps",
+            "min-version:13.1.0"
+          ],
+          "skippable": false,
+          "lazyRender": true,
+          "tooltip": "Connect one observation to the page that can provide supporting evidence.",
+          "type": "interactive",
+          "content": "Use the traffic-and-errors trend as your starting context. For slow experience, compare vitals and page performance; for failures, use Errors and Sessions; for slow dependencies, use HTTP. User actions, custom events, replay, and critical user journeys add context when your application supports them.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can now choose between performance trends, grouped errors, individual sessions, instrumented actions, and network evidence."
+    }
+  ]
+}
