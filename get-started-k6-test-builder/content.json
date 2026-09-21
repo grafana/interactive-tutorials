@@ -17,18 +17,19 @@
       "requirements": ["is-editor", "plugin-enabled:k6-app"],
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
-          "content": "Click **Testing & synthetics** in the main menu.",
-          "requirements": ["navmenu-open", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app']",
-          "content": "Click **Performance**.",
-          "requirements": ["navmenu-open", "exists-reftarget"]
+          "type": "multistep",
+          "content": "Expand **Testing & synthetics** in the main menu, then click **Performance**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label*='section: Testing & synthetics']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app']"
+            }
+          ]
         },
         {
           "type": "interactive",
