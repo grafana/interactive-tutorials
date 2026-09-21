@@ -5,33 +5,18 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Turn two random signals into a chart you can investigate: compare peaks, tune overlapping lines, give one series its own axis, and add a meaningful zero reference. This single walkthrough creates and saves the dashboard from scratch using the built-in **-- Grafana --** data source, with no extra data source setup. The signals are synthetic practice data, not evidence of a real incident. This walkthrough uses the new query editor."
+      "content": "Compare two generated time series using shared tooltips, legend calculations, line styling, and separate axes. Then explore axis scales and add a zero reference line. You will build and save a dashboard using the built-in **-- Grafana --** data source and the new query editor."
     },
     {
-      "type": "markdown",
-      "content": "Open a new dashboard to begin the lab."
-    },
-    {
-      "type": "section",
-      "id": "open-the-starting-page",
-      "title": "Open the starting page",
+      "type": "interactive",
+      "id": "open-new-dashboard",
+      "action": "navigate",
+      "reftarget": "/dashboard/new",
+      "content": "Open the new dashboard page.",
       "requirements": [],
-      "blocks": [
-        {
-          "type": "interactive",
-          "id": "open-new-dashboard",
-          "action": "navigate",
-          "reftarget": "/dashboard/new",
-          "content": "Open the new dashboard page.",
-          "requirements": [],
-          "doIt": true,
-          "tooltip": "Start a fresh practice dashboard."
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "content": "You have reached the starting page for your practice dashboard."
+      "doIt": true,
+      "tooltip": "Start a fresh practice dashboard.",
+      "verify": "on-page:/dashboard/new"
     },
     {
       "type": "markdown",
@@ -45,14 +30,27 @@
       "blocks": [
         {
           "type": "interactive",
+          "id": "open-add-for-time-series",
+          "action": "highlight",
+          "reftarget": "{grafana:pages.Dashboard.Sidebar.addButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Open **Add** to access the controls for adding a panel.",
+          "tooltip": "Open the controls for adding dashboard elements.",
+          "doIt": true,
+          "targetstate": "aria-expanded:true"
+        },
+        {
+          "type": "interactive",
           "id": "lab-step-1",
           "action": "highlight",
           "reftarget": "{grafana:components.Sidebar.newPanelButton}",
-          "content": "Select **Add a panel** to create a place for your two practice signals.",
+          "content": "In the **Add** pane, click **Panel** to add a panel for the two time series.",
           "requirements": [
             "exists-reftarget",
-            "on-page:/dashboard/new",
-            "navmenu-open"
+            "on-page:/dashboard/new"
           ],
           "doIt": true,
           "tooltip": "Create a place to plot your practice signals."
@@ -65,8 +63,7 @@
           "content": "Select **Edit visualization** to configure the panel and its queries.",
           "requirements": [
             "exists-reftarget",
-            "on-page:/dashboard/new",
-            "navmenu-open"
+            "on-page:/dashboard/new"
           ],
           "doIt": true,
           "tooltip": "Open the visualization configuration."
@@ -88,7 +85,7 @@
         {
           "type": "multistep",
           "id": "choose-time-series",
-          "content": "Choose **Time series** to plot the signals over time.",
+          "content": "If visualization suggestions are shown, open **All visualizations** and choose **Time series**. Skip this step if the panel options are already shown.",
           "steps": [
             {
               "id": "lab-step-4",
@@ -112,14 +109,15 @@
               "description": "Select **Time series** to compare how both signals change over time.",
               "tooltip": "Plot the values against time."
             }
-          ]
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
           "id": "lab-step-6",
           "action": "formfill",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldInput:Title}",
-          "content": "Set **Title** to `Signal detective` so you can identify this panel throughout the lab.",
+          "content": "In **Panel options**, set **Title** to `Signal detective` to identify the panel.",
           "requirements": [
             "exists-reftarget",
             "on-page:/dashboard/new"
@@ -189,25 +187,6 @@
       "content": "You have used the built-in data source to prepare a named Time series panel for comparing two synthetic signals."
     },
     {
-      "type": "quiz",
-      "id": "synthetic-signal-check",
-      "question": "What can these two random series help you practice?",
-      "completionMode": "correct-only",
-      "choices": [
-        {
-          "id": "practice",
-          "text": "Comparing signal shapes and reading visualization settings.",
-          "correct": true
-        },
-        {
-          "id": "incident",
-          "text": "Confirming that a real service has a latency incident.",
-          "correct": false,
-          "hint": "The values are synthetic and do not describe a real service."
-        }
-      ]
-    },
-    {
       "type": "markdown",
       "content": "Compare values with a shared sorted tooltip and a Max legend calculation, then make overlapping traces easier to read."
     },
@@ -220,7 +199,7 @@
         {
           "type": "interactive",
           "id": "peak-option-1",
-          "content": "Select **All** for **Tooltip mode** to compare both synthetic signals at the same timestamp.",
+          "content": "In the panel edit pane, open **Tooltip** and select **All** for **Tooltip mode** to compare both series at the same timestamp.",
           "action": "highlight",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Tooltip Tooltip mode} [data-testid='data-testid radio-button-option multi']",
           "requirements": [
@@ -233,7 +212,7 @@
         {
           "type": "interactive",
           "id": "peak-option-2",
-          "content": "Select **Descending** for **Values sort order** so the largest value at the hovered timestamp appears first; the leading series can change as you move through time.",
+          "content": "In **Tooltip**, select **Descending** for **Values sort order** to list the largest value first at each timestamp.",
           "action": "highlight",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Tooltip Values sort order} [data-testid='data-testid radio-button-option desc']",
           "requirements": [
@@ -246,7 +225,7 @@
         {
           "type": "interactive",
           "id": "peak-option-3",
-          "content": "Select **Table** for the legend mode to give each series a row with room for summary calculations.",
+          "content": "In **Legend**, select **Table** for **Mode** to show summary calculations beside each series.",
           "action": "highlight",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Legend Mode} [data-testid='data-testid radio-button-option table']",
           "requirements": [
@@ -259,7 +238,7 @@
         {
           "type": "interactive",
           "id": "peak-option-4",
-          "content": "Set **Values** to **Max** to compare each series\u2019 highest value across the displayed data; this differs from the tooltip\u2019s value at one timestamp.",
+          "content": "In **Legend**, set **Values** to **Max** to compare the highest value of each series over the displayed time range.",
           "action": "formfill",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Legend Values} input",
           "requirements": [
@@ -273,7 +252,7 @@
         {
           "type": "interactive",
           "id": "peak-option-5",
-          "content": "Set **Line width** to 2 to make both traces easier to follow where they overlap.",
+          "content": "In **Graph styles**, set **Line width** to `2` to make overlapping lines easier to follow.",
           "action": "formfill",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Line width} input",
           "requirements": [
@@ -287,7 +266,7 @@
         {
           "type": "interactive",
           "id": "peak-option-6",
-          "content": "Set **Fill opacity** to 15 so the area beneath each trace stays subtle and overlapping lines remain readable.",
+          "content": "In **Graph styles**, set **Fill opacity** to `15` to keep both lines visible where their filled areas overlap.",
           "action": "formfill",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Fill opacity} input",
           "requirements": [
@@ -301,7 +280,7 @@
         {
           "type": "interactive",
           "id": "peak-option-7",
-          "content": "Select **Opacity** for **Gradient mode** to fade the fill while keeping each line distinct.",
+          "content": "In **Graph styles**, select **Opacity** for **Gradient mode** to fade the fill beneath each line.",
           "action": "highlight",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Gradient mode} [data-testid='data-testid radio-button-option opacity']",
           "requirements": [
@@ -500,7 +479,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Select **Symlog** and compare the shape of the signals: this scale accepts zero and negative values while compressing larger magnitudes; a logarithmic scale cannot represent zero or negative values.",
+          "content": "In **Axis**, select **Symlog** and compare the shape of the signals: this scale accepts zero and negative values while compressing larger magnitudes; a logarithmic scale cannot represent zero or negative values.",
           "doIt": true,
           "tooltip": "Compress large magnitudes while retaining zero and negative values."
         },
@@ -513,7 +492,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Select **Linear** again: equal vertical distances now represent equal absolute differences, making the size of changes easier to compare.",
+          "content": "In **Axis**, select **Linear** again: equal vertical distances now represent equal absolute differences, making the size of changes easier to compare.",
           "doIt": true,
           "tooltip": "Restore equal distances for equal absolute differences."
         },
@@ -526,7 +505,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Set **Soft min** to `-100` to give the chart a consistent lower reference while allowing the axis to expand for lower outliers.",
+          "content": "In **Axis**, set **Soft min** to `-100` to give the chart a consistent lower reference while allowing the axis to expand for lower outliers.",
           "doIt": true,
           "targetvalue": "-100",
           "tooltip": "Allow lower outliers beyond this preferred bound."
@@ -540,7 +519,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Set **Soft max** to `100` to give the chart an upper reference that can expand for higher outliers; hard bounds can clip values outside the displayed range.",
+          "content": "In **Axis**, set **Soft max** to `100` to give the chart an upper reference that can expand for higher outliers; hard bounds can clip values outside the displayed range.",
           "doIt": true,
           "targetvalue": "100",
           "tooltip": "Allow higher outliers beyond this preferred bound."
@@ -554,7 +533,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Set **Threshold 1** to `0` as an illustrative reference for values crossing zero; this visual threshold creates no alert rule.",
+          "content": "In **Thresholds**, set **Threshold 1** to `0` as an illustrative reference for values crossing zero; this visual threshold creates no alert rule.",
           "doIt": true,
           "targetvalue": "0",
           "tooltip": "Use zero as an illustrative reference rather than an alert."
@@ -568,7 +547,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Set **Show thresholds** to **As lines (dashed)** so the zero reference is visible without covering the signals.",
+          "content": "In **Thresholds**, set **Show thresholds** to **As lines (dashed)** so the zero reference is visible without covering the signals.",
           "doIt": true,
           "targetvalue": "As lines (dashed)",
           "tooltip": "Draw the reference without obscuring the traces."
