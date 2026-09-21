@@ -1,33 +1,23 @@
 {
   "schemaVersion": "1.1.0",
   "id": "grafana-table-signal-workbench",
-  "title": "Signal workbench: advanced table techniques",
+  "title": "Build a table with filters, summaries, and gauges",
   "blocks": [
     {
       "type": "markdown",
       "content": "Start in **Dashboards** and build a standalone table with synthetic signals, readable rows, summary calculations, and numeric gauges."
     },
     {
-      "type": "section",
-      "id": "open-your-visualization-workspace",
-      "title": "Open your visualization workspace",
-      "blocks": [
-        {
-          "action": "navigate",
-          "reftarget": "/dashboards",
-          "requirements": [],
-          "id": "step-1",
-          "tooltip": "Begin the independent build from this workspace.",
-          "type": "interactive",
-          "content": "Open Dashboards to begin with a saved workspace.",
-          "doIt": true,
-          "showMe": true
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "content": "You have opened the starting workspace for an independent dashboard build."
+      "action": "navigate",
+      "reftarget": "/dashboards",
+      "requirements": [],
+      "id": "step-1",
+      "tooltip": "Begin the independent build from this workspace.",
+      "type": "interactive",
+      "content": "Open **Dashboards** to begin.",
+      "doIt": true,
+      "showMe": true,
+      "verify": "on-page:/dashboards"
     },
     {
       "type": "markdown",
@@ -39,58 +29,42 @@
       "title": "Prepare TestData once",
       "blocks": [
         {
-          "type": "multistep",
-          "id": "prepare-testdata-once-setup-testdata",
-          "content": "Create and test the synthetic source.",
-          "steps": [
-            {
-              "action": "navigate",
-              "reftarget": "/connections/datasources/new",
-              "requirements": [],
-              "id": "step-2",
-              "tooltip": "Prepare a synthetic source only when one is missing.",
-              "description": "Open the shared Add data source page.",
-              "skippable": true
-            },
-            {
-              "action": "formfill",
-              "reftarget": "{grafana:pages.AddDataSource.searchInput}",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "targetvalue": "TestData",
-              "id": "step-3",
-              "tooltip": "No external credentials are needed for this practice data.",
-              "description": "Find TestData; no external service or credentials are needed. Set the value to TestData.",
-              "skippable": true
-            },
-            {
-              "action": "highlight",
-              "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "id": "step-4",
-              "tooltip": "Create a local source of synthetic samples.",
-              "description": "Create the TestData source.",
-              "skippable": true
-            },
-            {
-              "action": "highlight",
-              "reftarget": "{grafana:pages.DataSource.saveAndTest}",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "id": "step-5",
-              "tooltip": "Confirm the synthetic source is ready to query.",
-              "description": "Check that the synthetic source works.",
-              "skippable": true
-            }
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "requirements": [],
+          "id": "step-2",
+          "tooltip": "Prepare a synthetic source only when one is missing.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Open **Add data source**."
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:pages.AddDataSource.searchInput}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
           ],
-          "skippable": true
+          "targetvalue": "TestData",
+          "id": "step-3",
+          "tooltip": "No external credentials are needed for this practice data.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Search for **TestData**."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
+          ],
+          "id": "step-4",
+          "tooltip": "Create a local source of synthetic samples.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Click **TestData** to create the data source.",
+          "verify": "on-page:/connections/datasources/edit"
         }
       ],
       "requirements": [
@@ -147,6 +121,20 @@
           "showMe": true
         },
         {
+          "type": "interactive",
+          "id": "prepare-panel-add-pane",
+          "action": "highlight",
+          "reftarget": "{grafana:pages.Dashboard.Sidebar.addButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new",
+            "min-version:13.3.0"
+          ],
+          "targetstate": "aria-expanded:true",
+          "content": "Open **Add** to show the controls for creating a panel.",
+          "tooltip": "Show the controls for adding dashboard elements."
+        },
+        {
           "action": "highlight",
           "reftarget": "{grafana:components.Sidebar.newPanelButton}",
           "requirements": [
@@ -156,7 +144,7 @@
           "id": "step-7",
           "tooltip": "Create space for the synthetic signals.",
           "type": "interactive",
-          "content": "Add a panel for your synthetic signals.",
+          "content": "Click **Panel** to add a panel.",
           "doIt": true,
           "showMe": true
         },
@@ -170,7 +158,7 @@
           "id": "step-8",
           "tooltip": "Adjust the query and presentation together.",
           "type": "interactive",
-          "content": "Open the visualization editor.",
+          "content": "Click **Edit visualization** to open the panel editor.",
           "doIt": true,
           "showMe": true
         },
@@ -185,7 +173,7 @@
           "id": "step-9",
           "tooltip": "Use the source selected in this guide.",
           "type": "interactive",
-          "content": "Use the TestData source you selected. Set the value to {{practiceSource}}.",
+          "content": "In the data source picker, select {{practiceSource}}.",
           "doIt": true,
           "showMe": true
         },
@@ -203,7 +191,7 @@
               ],
               "id": "step-10",
               "tooltip": "Choose how to display the returned samples.",
-              "description": "Open the visualization chooser."
+              "description": "Click **All visualizations**."
             },
             {
               "action": "highlight",
@@ -214,7 +202,7 @@
               ],
               "id": "step-11",
               "tooltip": "Display samples as rows and columns.",
-              "description": "Select Table."
+              "description": "Select **Table**."
             }
           ]
         },
@@ -229,7 +217,7 @@
           "id": "step-12",
           "tooltip": "Make the finished panel easy to recognize.",
           "type": "interactive",
-          "content": "Give the panel a recognizable name. Set the value to Signal workbench.",
+          "content": "Set **Title** to `Signal workbench`.",
           "doIt": true,
           "showMe": true
         }
@@ -262,7 +250,7 @@
           "id": "step-13",
           "tooltip": "Keep the generated values nonnegative.",
           "type": "interactive",
-          "content": "Keep the synthetic values at or above zero. Set the value to 0.",
+          "content": "Set **Min** to `0`.",
           "doIt": true,
           "showMe": true
         },
@@ -277,7 +265,7 @@
           "id": "step-14",
           "tooltip": "Keep the generated values within the practice range.",
           "type": "interactive",
-          "content": "Cap the synthetic values at 100. Set the value to 100.",
+          "content": "Set **Max** to `100`.",
           "doIt": true,
           "showMe": true
         },
@@ -292,22 +280,7 @@
           "id": "step-15",
           "tooltip": "Begin halfway between the two bounds.",
           "type": "interactive",
-          "content": "Start the random walk halfway through the range. Set the value to 50.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "action": "formfill",
-          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.seriesCount}:is(input)",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "1",
-          "id": "step-16",
-          "tooltip": "Keep the exercise focused on one numeric field.",
-          "type": "interactive",
-          "content": "Generate 1 synthetic signal. Set the value to 1.",
+          "content": "Set **Start value** to `50`.",
           "doIt": true,
           "showMe": true
         },
@@ -374,7 +347,7 @@
           "id": "step-18",
           "tooltip": "Keep timestamps visible during horizontal scrolling.",
           "type": "interactive",
-          "content": "Keep the timestamp visible while scrolling horizontally. Set the value to 1.",
+          "content": "Under **Table**, set **Frozen columns** to `1` to keep timestamps visible while scrolling horizontally.",
           "doIt": true,
           "showMe": true
         },
@@ -389,7 +362,7 @@
           "id": "step-19",
           "tooltip": "Give rows more breathing room.",
           "type": "interactive",
-          "content": "Give rows more breathing room.",
+          "content": "Under **Table**, set **Cell height** to **Medium** to give rows more space.",
           "doIt": true,
           "showMe": true
         },
@@ -404,7 +377,7 @@
           "id": "step-20",
           "tooltip": "Reserve enough horizontal space to scan each column.",
           "type": "interactive",
-          "content": "Reserve enough width for readable columns. Set the value to 140.",
+          "content": "Under **Table**, set **Minimum column width** to `140`.",
           "doIt": true,
           "showMe": true
         },
@@ -419,7 +392,7 @@
           "id": "step-21",
           "tooltip": "Let long headings use more than one line.",
           "type": "interactive",
-          "content": "Allow long column headings to wrap.",
+          "content": "Under **Table**, enable **Wrap header text** so long column headings can wrap.",
           "doIt": true,
           "showMe": true
         },
@@ -434,7 +407,7 @@
           "id": "step-22",
           "tooltip": "Split loaded rows into pages without limiting the query.",
           "type": "interactive",
-          "content": "Divide the loaded rows into pages; this does not limit the query.",
+          "content": "Under **Table**, enable **Enable pagination** to divide loaded rows into pages without limiting the query.",
           "doIt": true,
           "showMe": true
         },
@@ -449,7 +422,7 @@
           "id": "step-23",
           "tooltip": "Allow readers to narrow visible values by column.",
           "type": "interactive",
-          "content": "Enable interactive column filters.",
+          "content": "Under **Table**, enable **Column filter** to filter individual columns.",
           "doIt": true,
           "showMe": true
         },
@@ -464,7 +437,7 @@
           "id": "step-24",
           "tooltip": "Round the display without changing the underlying samples.",
           "type": "interactive",
-          "content": "Display one decimal without changing the underlying values. Set the value to 1.",
+          "content": "Under **Standard options**, set **Decimals** to `1` without changing the underlying values.",
           "doIt": true,
           "showMe": true
         }
@@ -517,7 +490,7 @@
           "id": "step-25",
           "tooltip": "Summarize the average of the numeric samples.",
           "type": "interactive",
-          "content": "Add Mean to summarize the numeric samples. Set the value to Mean.",
+          "content": "Under **Table footer**, select **Mean** in **Calculation** to show the average.",
           "doIt": true,
           "showMe": true
         },
@@ -532,7 +505,7 @@
           "id": "step-26",
           "tooltip": "Compare the peak against the average.",
           "type": "interactive",
-          "content": "Also add Max to compare the peak with the mean. Set the value to Max.",
+          "content": "In **Calculation**, also select **Max** to compare the peak with the average.",
           "doIt": true,
           "showMe": true
         },
@@ -547,7 +520,7 @@
           "id": "step-27",
           "tooltip": "Allow access to contents when the displayed value is truncated.",
           "type": "interactive",
-          "content": "Enable inspecting cell contents when a displayed value is truncated.",
+          "content": "Under **Cell options**, enable **Cell value inspect** to inspect truncated values.",
           "doIt": true,
           "showMe": true
         }
@@ -603,7 +576,7 @@
               ],
               "id": "step-28",
               "tooltip": "Scope presentation changes to a specific field.",
-              "description": "Create an override for the signal column."
+              "description": "Click **Add field override**."
             },
             {
               "action": "formfill",
@@ -615,7 +588,7 @@
               "targetvalue": "Fields with name",
               "id": "step-29",
               "tooltip": "Match the field using its displayed name.",
-              "description": "Choose a field by its name. Set the value to Fields with name."
+              "description": "Select **Fields with name**."
             },
             {
               "action": "formfill",
@@ -627,7 +600,7 @@
               "targetvalue": "A-series",
               "id": "step-30",
               "tooltip": "Leave timestamps outside this numeric override.",
-              "description": "Match only the numeric signal, leaving Time alone. Set the value to A-series."
+              "description": "Select **A-series** to apply the override only to the numeric column."
             }
           ]
         },
@@ -645,7 +618,7 @@
               ],
               "id": "step-31",
               "tooltip": "Choose which presentation setting to override.",
-              "description": "Add a cell presentation override."
+              "description": "Click **Add override property**."
             },
             {
               "action": "formfill",
@@ -657,7 +630,7 @@
               "targetvalue": "Cell options > Cell type",
               "id": "step-32",
               "tooltip": "Configure how each matching value is rendered.",
-              "description": "Choose the cell type property. Set the value to Cell options > Cell type."
+              "description": "Select **Cell options > Cell type**."
             }
           ]
         },
@@ -672,7 +645,7 @@
           "id": "step-33",
           "tooltip": "Use bar length to help compare numeric samples.",
           "type": "interactive",
-          "content": "Render values as inline gauges. Set the value to Gauge.",
+          "content": "Set **Cell type** to **Gauge**.",
           "doIt": true,
           "showMe": true
         },
@@ -687,7 +660,7 @@
           "id": "step-34",
           "tooltip": "Use a continuous fill to compare lengths.",
           "type": "interactive",
-          "content": "Use a gradient fill to compare gauge lengths.",
+          "content": "Set **Gauge display mode** to **Gradient** to compare gauge lengths.",
           "doIt": true,
           "showMe": true
         },
@@ -753,7 +726,7 @@
           "id": "step-36",
           "tooltip": "Return with the panel configuration ready to save.",
           "type": "interactive",
-          "content": "Return to the dashboard.",
+          "content": "Click **Back** to return to the dashboard.",
           "doIt": true,
           "showMe": true
         },
@@ -771,7 +744,7 @@
               ],
               "id": "step-37",
               "tooltip": "Keep the next three actions together while the drawer is open.",
-              "description": "Open the save drawer."
+              "description": "Click **Save** to open the save drawer."
             },
             {
               "action": "formfill",
@@ -783,7 +756,7 @@
               "targetvalue": "Table lab - Signal workbench",
               "id": "step-38",
               "tooltip": "Give this workbench a reusable dashboard name.",
-              "description": "Name your saved dashboard. Set the value to Table lab - Signal workbench."
+              "description": "Set **Title** to `Table lab - Signal workbench`."
             },
             {
               "action": "highlight",
@@ -794,7 +767,7 @@
               ],
               "id": "step-39",
               "tooltip": "Persist the finished configuration.",
-              "description": "Save the dashboard."
+              "description": "Click **Save**."
             }
           ]
         },
