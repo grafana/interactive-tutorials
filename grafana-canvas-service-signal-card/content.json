@@ -8,30 +8,16 @@
       "content": "Build a service signal card with a numeric value, a threshold-driven background, and an aligned label. This standalone lab uses synthetic TestData; its colors do not assess production service health."
     },
     {
-      "type": "markdown",
-      "content": "Open Dashboards as the starting point for this standalone Canvas lab."
-    },
-    {
-      "type": "section",
-      "id": "open-your-visualization-workspace",
-      "title": "Open your visualization workspace",
-      "blocks": [
-        {
-          "id": "open-your-visualization-workspace-step-1",
-          "action": "navigate",
-          "reftarget": "/dashboards",
-          "requirements": [],
-          "type": "interactive",
-          "content": "Open Dashboards to begin with a saved workspace.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Open Dashboards to begin with a saved workspace."
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "content": "You have a starting workspace for creating a new dashboard."
+      "id": "open-your-visualization-workspace-step-1",
+      "action": "navigate",
+      "reftarget": "/dashboards",
+      "requirements": [],
+      "type": "interactive",
+      "content": "Open **Dashboards** to begin.",
+      "doIt": true,
+      "showMe": true,
+      "tooltip": "Open Dashboards to begin with a saved workspace.",
+      "verify": "on-page:/dashboards"
     },
     {
       "type": "markdown",
@@ -43,54 +29,43 @@
       "title": "Prepare TestData once",
       "blocks": [
         {
-          "type": "multistep",
-          "id": "prepare-testdata-once-setup-testdata",
-          "content": "Create and test the synthetic data source.",
-          "steps": [
-            {
-              "id": "prepare-testdata-once-step-1",
-              "action": "navigate",
-              "reftarget": "/connections/datasources/new",
-              "requirements": [],
-              "description": "Open the shared Add data source page.",
-              "tooltip": "Open the shared Add data source page."
-            },
-            {
-              "id": "prepare-testdata-once-step-2",
-              "action": "formfill",
-              "reftarget": "{grafana:pages.AddDataSource.searchInput}",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "targetvalue": "TestData",
-              "description": "Find TestData; no external service or credentials are needed.",
-              "tooltip": "Find TestData; no external service or credentials are needed."
-            },
-            {
-              "id": "prepare-testdata-once-step-3",
-              "action": "highlight",
-              "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "description": "Create the TestData source.",
-              "tooltip": "Create the TestData source."
-            },
-            {
-              "id": "prepare-testdata-once-step-4",
-              "action": "highlight",
-              "reftarget": "{grafana:pages.DataSource.saveAndTest}",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "description": "Check that the synthetic source works.",
-              "tooltip": "Check that the synthetic source works."
-            }
+          "id": "prepare-testdata-once-step-1",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "requirements": [],
+          "tooltip": "Open the shared Add data source page.",
+          "type": "interactive",
+          "content": "Open **Add data source**.",
+          "skippable": true,
+          "verify": "on-page:/connections/datasources/new"
+        },
+        {
+          "id": "prepare-testdata-once-step-2",
+          "action": "formfill",
+          "reftarget": "{grafana:pages.AddDataSource.searchInput}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
           ],
+          "targetvalue": "TestData",
+          "tooltip": "Find TestData; no external service or credentials are needed.",
+          "type": "interactive",
+          "content": "Search for **TestData**.",
           "skippable": true
+        },
+        {
+          "id": "prepare-testdata-once-step-3",
+          "action": "highlight",
+          "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
+          ],
+          "tooltip": "Create the TestData source.",
+          "type": "interactive",
+          "content": "Click **TestData** to create the data source.",
+          "skippable": true,
+          "verify": "on-page:/connections/datasources/edit"
         }
       ],
       "requirements": [
@@ -149,7 +124,22 @@
           "content": "Create a fresh dashboard for this lab.",
           "doIt": true,
           "showMe": true,
-          "tooltip": "Create a fresh dashboard for this lab."
+          "tooltip": "Create a fresh dashboard for this lab.",
+          "verify": "on-page:/dashboard/new"
+        },
+        {
+          "type": "interactive",
+          "id": "prepare-panel-add-pane",
+          "action": "highlight",
+          "reftarget": "{grafana:pages.Dashboard.Sidebar.addButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new",
+            "min-version:13.3.0"
+          ],
+          "targetstate": "aria-expanded:true",
+          "content": "Open **Add** to show the controls for creating a panel.",
+          "tooltip": "Show the controls for adding dashboard elements."
         },
         {
           "id": "build-the-canvas-panel-step-2",
@@ -160,7 +150,7 @@
             "on-page:/dashboard/new"
           ],
           "type": "interactive",
-          "content": "Add a panel for your synthetic signals.",
+          "content": "Click **Panel** to add a panel.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Add a panel for your synthetic signals."
@@ -174,7 +164,7 @@
             "on-page:/dashboard/new"
           ],
           "type": "interactive",
-          "content": "Open the visualization editor.",
+          "content": "Click **Edit visualization** to open the panel editor.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Open the visualization editor."
@@ -189,7 +179,7 @@
           ],
           "targetvalue": "{{practiceSource}}",
           "type": "interactive",
-          "content": "Use the TestData source you selected.",
+          "content": "In the data source picker, select {{practiceSource}}.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Query the existing source chosen for this lab."
@@ -207,7 +197,7 @@
                 "exists-reftarget",
                 "on-page:/dashboard/new"
               ],
-              "description": "Open the visualization chooser.",
+              "description": "Click **All visualizations**.",
               "tooltip": "Open the visualization chooser."
             },
             {
@@ -233,7 +223,7 @@
           ],
           "targetvalue": "Service signal card",
           "type": "interactive",
-          "content": "Give the panel a recognizable name.",
+          "content": "In **Panel options**, set **Title** to `Service signal card`.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Give the panel a recognizable name."
@@ -266,7 +256,7 @@
           ],
           "targetvalue": "0",
           "type": "interactive",
-          "content": "Keep the synthetic values at or above zero.",
+          "content": "In query **A**, set **Min** to `0`.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Keep the synthetic values at or above zero."
@@ -281,7 +271,7 @@
           ],
           "targetvalue": "100",
           "type": "interactive",
-          "content": "Cap the synthetic values at 100.",
+          "content": "In query **A**, set **Max** to `100`.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Cap the synthetic values at 100."
@@ -296,25 +286,10 @@
           ],
           "targetvalue": "50",
           "type": "interactive",
-          "content": "Start the random walk halfway through the range.",
+          "content": "In query **A**, set **Start value** to `50`.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Start the random walk halfway through the range."
-        },
-        {
-          "id": "create-bounded-practice-signals-step-4",
-          "action": "formfill",
-          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.seriesCount}:is(input)",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "1",
-          "type": "interactive",
-          "content": "Generate 1 synthetic signal.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Generate 1 synthetic signal."
         },
         {
           "id": "create-bounded-practice-signals-step-5",
@@ -340,26 +315,8 @@
       "content": "A bounded random walk makes it easier to interpret this practice card."
     },
     {
-      "type": "quiz",
-      "id": "practice-data-check",
-      "question": "What does this synthetic signal tell you?",
-      "completionMode": "correct-only",
-      "choices": [
-        {
-          "id": "a",
-          "text": "How the visualization behaves with practice data.",
-          "correct": true
-        },
-        {
-          "id": "b",
-          "text": "Whether Checkout is healthy in production.",
-          "correct": false
-        }
-      ]
-    },
-    {
       "type": "markdown",
-      "content": "Name the metric layer and bind its displayed number to A-series."
+      "content": "Name the metric element in the layer tree, then bind it to a query field: the name helps you find the element, while the binding supplies its displayed number."
     },
     {
       "type": "section",
@@ -376,7 +333,7 @@
           ],
           "targetstate": "false",
           "type": "interactive",
-          "content": "Keep the lab on standard Canvas element types.",
+          "content": "In **Canvas**, turn off **Experimental element types** to use the standard elements.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Keep the practice layout on standard element types."
@@ -390,7 +347,7 @@
             "on-page:/dashboard/new"
           ],
           "type": "interactive",
-          "content": "Select the starting metric element from the layer tree.",
+          "content": "In **Layer**, select **Element 1** in **Elements**.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Select the starting metric element from the layer tree."
@@ -435,7 +392,7 @@
           ],
           "targetvalue": "A-series",
           "type": "interactive",
-          "content": "Bind the displayed number to the synthetic signal.",
+          "content": "In **Metric value**, set **Text** to **A-series** to display its latest non-null sample.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Read the number from the query field instead of entering fixed text."
@@ -450,7 +407,7 @@
           ],
           "targetvalue": "1",
           "type": "interactive",
-          "content": "Keep the displayed value readable with one decimal.",
+          "content": "In **Standard options**, set **Decimals** to `1`.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Show enough precision for this practice signal without crowding the card."
@@ -465,7 +422,7 @@
           ],
           "targetvalue": "36",
           "type": "interactive",
-          "content": "Make the signal value prominent.",
+          "content": "In **Metric value**, set **Text size** to `36` to make the number prominent.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Make the signal value prominent."
@@ -481,7 +438,7 @@
     },
     {
       "type": "markdown",
-      "content": "Bind the card background to the signal and set an illustrative threshold."
+      "content": "Make the background respond to the signal: a fixed color stays unchanged, while a field binding uses that field’s value and thresholds to choose its color."
     },
     {
       "type": "section",
@@ -498,7 +455,7 @@
           ],
           "targetvalue": "70",
           "type": "interactive",
-          "content": "Use 70 as an illustrative warning boundary; this creates no alert.",
+          "content": "In **Thresholds**, set the existing threshold to `70`; this colors values at or above 70 differently without creating an alert.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Use this boundary to demonstrate a color change without creating an alert."
@@ -513,25 +470,10 @@
           ],
           "targetvalue": "A-series",
           "type": "interactive",
-          "content": "Drive the element background from the same field and its thresholds.",
+          "content": "In **Background**, set **Color** to **A-series** so the field’s threshold color fills this element.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Use the same field for the value and its threshold-driven color."
-        },
-        {
-          "id": "make-color-carry-meaning-step-3",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Border (metric-value) Radius} input[type='text']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "12",
-          "type": "interactive",
-          "content": "Round the signal card corners.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Soften the corners of the value card."
         },
         {
           "id": "make-color-carry-meaning-step-4",
@@ -589,64 +531,66 @@
       "title": "Place the card precisely",
       "blocks": [
         {
-          "id": "place-the-card-precisely-step-1",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('width') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "280",
-          "type": "interactive",
-          "content": "Give the value card a comfortable width.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Give the value card a comfortable width."
+          "type": "multistep",
+          "id": "size-value-card",
+          "content": "In **Layout** → **Quick placement**, set **width** to `280` and **height** to `100` to size the value card.",
+          "steps": [
+            {
+              "id": "place-the-card-precisely-step-1",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('width') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "280",
+              "tooltip": "Give the value card a comfortable width.",
+              "description": "In **Layout** → **Quick placement**, set **width** to `280`."
+            },
+            {
+              "id": "place-the-card-precisely-step-2",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('height') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "100",
+              "tooltip": "Make the value card tall enough for the large number.",
+              "description": "In **Layout** → **Quick placement**, set **height** to `100`."
+            }
+          ]
         },
         {
-          "id": "place-the-card-precisely-step-2",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('height') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "100",
-          "type": "interactive",
-          "content": "Make the value card tall enough for the large number.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Make the value card tall enough for the large number."
-        },
-        {
-          "id": "place-the-card-precisely-step-3",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('top') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "90",
-          "type": "interactive",
-          "content": "Leave room above the value for a label.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Leave room above the value for a label."
-        },
-        {
-          "id": "place-the-card-precisely-step-4",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('left') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "40",
-          "type": "interactive",
-          "content": "Place the value card with a consistent left margin.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Place the value card with a consistent left margin."
+          "type": "multistep",
+          "id": "position-value-card",
+          "content": "In **Layout** → **Quick placement**, set **top** to `90` and **left** to `40` to leave room for a label above the card.",
+          "steps": [
+            {
+              "id": "place-the-card-precisely-step-3",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('top') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "90",
+              "tooltip": "Leave room above the value for a label.",
+              "description": "In **Layout** → **Quick placement**, set **top** to `90`."
+            },
+            {
+              "id": "place-the-card-precisely-step-4",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('left') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "40",
+              "tooltip": "Place the value card with a consistent left margin.",
+              "description": "In **Layout** → **Quick placement**, set **left** to `40`."
+            }
+          ]
         }
       ],
       "requirements": [
@@ -736,7 +680,7 @@
           ],
           "targetvalue": "Checkout - practice",
           "type": "interactive",
-          "content": "Label this as a synthetic service signal.",
+          "content": "In **Text**, set **Text** to `Checkout - practice` to give the number context.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Give the changing number a clear service context."
@@ -751,7 +695,7 @@
           ],
           "targetvalue": "24",
           "type": "interactive",
-          "content": "Make the label readable.",
+          "content": "In **Text**, set **Text size** to `24`.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Make the label readable."
@@ -766,70 +710,72 @@
           ],
           "targetstate": "true",
           "type": "interactive",
-          "content": "Center the label text above the number.",
+          "content": "In **Text**, set **Align text** to **Center**.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Align the label centrally above the numeric value."
         },
         {
-          "id": "add-a-label-that-explains-the-value-step-8",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('width') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "280",
-          "type": "interactive",
-          "content": "Match the label width to the value card.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Match the label width to the value card."
+          "type": "multistep",
+          "id": "size-service-label",
+          "content": "In **Layout** → **Quick placement**, set **width** to `280` and **height** to `50` to match the card’s width.",
+          "steps": [
+            {
+              "id": "add-a-label-that-explains-the-value-step-8",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('width') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "280",
+              "tooltip": "Match the label width to the value card.",
+              "description": "In **Layout** → **Quick placement**, set **width** to `280`."
+            },
+            {
+              "id": "add-a-label-that-explains-the-value-step-9",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('height') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "50",
+              "tooltip": "Give the label a compact height.",
+              "description": "In **Layout** → **Quick placement**, set **height** to `50`."
+            }
+          ]
         },
         {
-          "id": "add-a-label-that-explains-the-value-step-9",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('height') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "50",
-          "type": "interactive",
-          "content": "Give the label a compact height.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Give the label a compact height."
-        },
-        {
-          "id": "add-a-label-that-explains-the-value-step-10",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('top') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "30",
-          "type": "interactive",
-          "content": "Place the label above the value card.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Place the label above the value card."
-        },
-        {
-          "id": "add-a-label-that-explains-the-value-step-11",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('left') + div input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "40",
-          "type": "interactive",
-          "content": "Align the label with the card.",
-          "doIt": true,
-          "showMe": true,
-          "tooltip": "Align the label with the card."
+          "type": "multistep",
+          "id": "position-service-label",
+          "content": "In **Layout** → **Quick placement**, set **top** to `30` and **left** to `40` to align the label above the card.",
+          "steps": [
+            {
+              "id": "add-a-label-that-explains-the-value-step-10",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('top') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "30",
+              "tooltip": "Place the label above the value card.",
+              "description": "In **Layout** → **Quick placement**, set **top** to `30`."
+            },
+            {
+              "id": "add-a-label-that-explains-the-value-step-11",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Layout Quick placement} label:text('left') + div input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "40",
+              "tooltip": "Align the label with the card.",
+              "description": "In **Layout** → **Quick placement**, set **left** to `40`."
+            }
+          ]
         }
       ],
       "requirements": [
@@ -859,7 +805,7 @@
           ],
           "targetstate": "false",
           "type": "interactive",
-          "content": "Disable inline editing so dashboard clicks do not move your elements.",
+          "content": "In **Canvas**, turn off **Inline editing** to prevent dashboard clicks from moving elements.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Keep dashboard interactions from accidentally moving the finished layout."
@@ -923,7 +869,7 @@
             "on-page:/dashboard/new"
           ],
           "type": "interactive",
-          "content": "Return to the dashboard.",
+          "content": "Click **Back** to return to the dashboard.",
           "doIt": true,
           "showMe": true,
           "tooltip": "Return to the dashboard."
@@ -941,7 +887,7 @@
                 "exists-reftarget",
                 "on-page:/dashboard/new"
               ],
-              "description": "Open the save drawer.",
+              "description": "Click **Save** to open the save drawer.",
               "tooltip": "Open the save drawer."
             },
             {
@@ -979,7 +925,7 @@
             "has-dashboard-named:Canvas lab - Service signal card"
           ],
           "type": "interactive",
-          "content": "Inspect the saved Canvas lab - Service signal card dashboard: Checkout - practice should sit above a large numeric value. The card background follows the illustrative boundary at 70, its corners are rounded, and inline editing is off. These synthetic values do not report production health.",
+          "content": "Inspect the saved Canvas lab - Service signal card dashboard: Checkout - practice should sit above a large numeric value, the background should follow the illustrative threshold at 70, and inline editing should be off.",
           "doIt": false,
           "showMe": true,
           "verify": "has-dashboard-named:Canvas lab - Service signal card",
@@ -996,7 +942,7 @@
     },
     {
       "type": "markdown",
-      "content": "Use your TestData source to build a separate systems map while keeping your service signal card saved."
+      "content": "Import a separate five-service example with manually drawn connections to see how these techniques scale into a systems map; your service signal card remains saved."
     },
     {
       "type": "section",
@@ -1045,7 +991,7 @@
               "id": "systems-map-step-4",
               "action": "formfill",
               "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
-              "description": "Connect the map to the TestData source you selected earlier.",
+              "description": "In the data source picker, select {{practiceSource}}.",
               "tooltip": "Connect the map to the TestData source you selected earlier.",
               "requirements": [
                 "exists-reftarget",
@@ -1071,7 +1017,7 @@
           "id": "systems-map-inspect",
           "action": "highlight",
           "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
-          "content": "Follow Gateway \u2192 Checkout, then the arrows to Payments, Inventory, and Database. Inventory is red at 86%, Database is orange at 61%, and the remaining services are green. Each number and background binds to its own query field. These are fixed synthetic utilization samples; the connections are drawn explicitly, not discovered automatically.",
+          "content": "Follow Gateway → Checkout, then the arrows to Payments, Inventory, and Database. Inventory is red at 86%, Database is orange at 61%, and the remaining services are green. Each number and background binds to its own query field. These are fixed synthetic utilization samples; the connections are drawn explicitly, not discovered automatically.",
           "tooltip": "Inspect the connected services and find the illustrative utilization hotspot.",
           "doIt": false,
           "showMe": true,
