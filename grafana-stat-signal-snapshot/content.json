@@ -8,26 +8,15 @@
       "content": "Start this standalone lab from **Dashboards** to build and save a synthetic signal snapshot."
     },
     {
-      "type": "section",
-      "id": "open-your-visualization-workspace",
-      "title": "Open your visualization workspace",
-      "blocks": [
-        {
-          "id": "step-1",
-          "action": "navigate",
-          "reftarget": "/dashboards",
-          "requirements": [],
-          "tooltip": "Move to the workspace for the next part of this lab.",
-          "type": "interactive",
-          "content": "Open Dashboards to begin with a saved workspace.",
-          "doIt": true,
-          "showMe": true
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "content": "You have opened the starting workspace for this independent lab."
+      "id": "step-1",
+      "action": "navigate",
+      "reftarget": "/dashboards",
+      "requirements": [],
+      "tooltip": "Move to the workspace for the next part of this lab.",
+      "type": "interactive",
+      "content": "Open **Dashboards** to begin.",
+      "doIt": true,
+      "showMe": true
     },
     {
       "type": "markdown",
@@ -39,54 +28,42 @@
       "title": "Prepare TestData once",
       "blocks": [
         {
-          "type": "multistep",
-          "id": "prepare-testdata-once-setup-testdata",
-          "content": "Create and test the synthetic source.",
-          "steps": [
-            {
-              "id": "step-2",
-              "action": "navigate",
-              "reftarget": "/connections/datasources/new",
-              "requirements": [],
-              "tooltip": "Move to the workspace for the next part of this lab.",
-              "description": "Open the shared Add data source page."
-            },
-            {
-              "id": "step-3",
-              "action": "formfill",
-              "reftarget": "{grafana:pages.AddDataSource.searchInput}",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "tooltip": "Find a synthetic source without supplying credentials.",
-              "targetvalue": "TestData",
-              "description": "Search for TestData."
-            },
-            {
-              "id": "step-4",
-              "action": "highlight",
-              "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "tooltip": "Create reusable practice data locally within Grafana.",
-              "description": "Select **TestData** to create the source."
-            },
-            {
-              "id": "step-5",
-              "action": "highlight",
-              "reftarget": "{grafana:pages.DataSource.saveAndTest}",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources"
-              ],
-              "tooltip": "Confirm that the synthetic source can respond.",
-              "description": "Click **Save & test** to check the source."
-            }
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "requirements": [],
+          "id": "step-2",
+          "tooltip": "Prepare a synthetic source only when one is missing.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Open **Add data source**."
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:pages.AddDataSource.searchInput}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
           ],
-          "skippable": true
+          "targetvalue": "TestData",
+          "id": "step-3",
+          "tooltip": "No external credentials are needed for this practice data.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Search for **TestData**."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
+          ],
+          "id": "step-4",
+          "tooltip": "Create a local source of synthetic samples.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Click **TestData** to create the data source.",
+          "verify": "on-page:/connections/datasources/edit"
         }
       ],
       "requirements": [
@@ -143,6 +120,20 @@
           "showMe": true
         },
         {
+          "type": "interactive",
+          "id": "prepare-panel-add-pane",
+          "action": "highlight",
+          "reftarget": "{grafana:pages.Dashboard.Sidebar.addButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new",
+            "min-version:13.3.0"
+          ],
+          "targetstate": "aria-expanded:true",
+          "content": "Open **Add** to show the controls for creating a panel.",
+          "tooltip": "Show the controls for adding dashboard elements."
+        },
+        {
           "id": "step-7",
           "action": "highlight",
           "reftarget": "{grafana:components.Sidebar.newPanelButton}",
@@ -152,7 +143,7 @@
           ],
           "tooltip": "Make space for a synthetic signal.",
           "type": "interactive",
-          "content": "Add a panel for the synthetic signal.",
+          "content": "Click **Panel** to add a panel.",
           "doIt": true,
           "showMe": true
         },
@@ -166,7 +157,7 @@
           ],
           "tooltip": "Configure how the data will be presented.",
           "type": "interactive",
-          "content": "Open the visualization editor.",
+          "content": "Click **Edit visualization** to open the panel editor.",
           "doIt": true,
           "showMe": true
         },
@@ -181,7 +172,7 @@
           "tooltip": "Use the source chosen earlier even if its name differs.",
           "targetvalue": "{{practiceSource}}",
           "type": "interactive",
-          "content": "Select your chosen **TestData** source in the query editor.",
+          "content": "In the data source picker, select {{practiceSource}}.",
           "doIt": true,
           "showMe": true
         },
@@ -199,7 +190,7 @@
                 "on-page:/dashboard/new"
               ],
               "tooltip": "Choose how to represent the signal.",
-              "description": "Open **Visualizations**."
+              "description": "Open **All visualizations**."
             },
             {
               "id": "step-11",
@@ -225,7 +216,7 @@
           "tooltip": "Make this result easy to recognize later.",
           "targetvalue": "Signal snapshot",
           "type": "interactive",
-          "content": "Set **Title** to Signal snapshot.",
+          "content": "Under **Panel options**, set **Title** to `Signal snapshot`.",
           "doIt": true,
           "showMe": true
         }
@@ -258,7 +249,7 @@
           "tooltip": "Prevent generated values from falling below zero.",
           "targetvalue": "0",
           "type": "interactive",
-          "content": "Set **Min** to 0.",
+          "content": "In query **A**, set **Min** to `0`.",
           "doIt": true,
           "showMe": true
         },
@@ -273,7 +264,7 @@
           "tooltip": "Keep generated values within the practice range.",
           "targetvalue": "100",
           "type": "interactive",
-          "content": "Set **Max** to 100.",
+          "content": "In query **A**, set **Max** to `100`.",
           "doIt": true,
           "showMe": true
         },
@@ -288,7 +279,7 @@
           "tooltip": "Begin the synthetic walk halfway through its bounds.",
           "targetvalue": "50",
           "type": "interactive",
-          "content": "Set **Start value** to 50.",
+          "content": "In query **A**, set **Start value** to `50`.",
           "doIt": true,
           "showMe": true
         },
@@ -316,28 +307,8 @@
       "content": "You have generated one bounded synthetic signal for the visualization exercises."
     },
     {
-      "type": "quiz",
-      "id": "bounded-data-check",
-      "question": "What does this bounded random walk represent?",
-      "completionMode": "correct-only",
-      "choices": [
-        {
-          "id": "a",
-          "text": "Synthetic practice data for learning visual interpretation.",
-          "correct": true,
-          "hint": "Bounds make a controlled practice example; no production metrics are involved."
-        },
-        {
-          "id": "b",
-          "text": "A measurement proving production service health.",
-          "correct": false,
-          "hint": "Bounds make a controlled practice example; no production metrics are involved."
-        }
-      ]
-    },
-    {
       "type": "markdown",
-      "content": "Compare individual samples with a calculated summary, then label the mean and show one decimal place."
+      "content": "Compare individual samples with a summary: **All values** displays separate readings, while **Calculate** combines them into one value per signal; you will use **Mean** to average the readings."
     },
     {
       "type": "section",
@@ -355,7 +326,7 @@
           "tooltip": "Inspect individual samples before selecting a summary.",
           "targetstate": "true",
           "type": "interactive",
-          "content": "Select **All values** to inspect individual samples.",
+          "content": "Under **Value options**, set **Show** to **All values** to display individual samples.",
           "doIt": true,
           "showMe": true
         },
@@ -370,7 +341,7 @@
           "tooltip": "Keep the individual sample preview manageable.",
           "targetvalue": "5",
           "type": "interactive",
-          "content": "Set **Limit** to 5.",
+          "content": "Under **Value options**, set **Limit** to `5` to display up to five samples.",
           "doIt": true,
           "showMe": true
         },
@@ -385,7 +356,7 @@
           "tooltip": "Reduce each signal to one summary.",
           "targetstate": "true",
           "type": "interactive",
-          "content": "Select **Calculate** to return to one summary per signal.",
+          "content": "Under **Value options**, set **Show** to **Calculate** to display one summary per signal.",
           "doIt": true,
           "showMe": true
         },
@@ -400,7 +371,7 @@
           "tooltip": "Average the values in the displayed time range.",
           "targetvalue": "Mean",
           "type": "interactive",
-          "content": "Set **Calculation** to **Mean**.",
+          "content": "Under **Value options**, set **Calculation** to **Mean** to average the samples returned for the displayed time range.",
           "doIt": true,
           "showMe": true
         },
@@ -415,7 +386,7 @@
           "tooltip": "Use consistent precision for an easy-to-read result.",
           "targetvalue": "1",
           "type": "interactive",
-          "content": "Set **Decimals** to 1.",
+          "content": "Under **Standard options**, set **Decimals** to `1`.",
           "doIt": true,
           "showMe": true
         },
@@ -430,7 +401,7 @@
           "tooltip": "Make the synthetic nature of the number explicit.",
           "targetvalue": "Practice signal",
           "type": "interactive",
-          "content": "Set **Display name** to Practice signal.",
+          "content": "Under **Standard options**, set **Display name** to `Practice signal`.",
           "doIt": true,
           "showMe": true
         }
@@ -441,7 +412,7 @@
     },
     {
       "type": "markdown",
-      "content": "You have learned how **All values** differs from **Calculate** and configured **Mean** across the displayed time range."
+      "content": "Your main number is now the average of the returned samples across the displayed time range, rather than just the last sample; the five-value preview limit does not limit this calculation."
     },
     {
       "type": "quiz",
@@ -465,7 +436,7 @@
     },
     {
       "type": "markdown",
-      "content": "Combine a label, a centered layout, an area sparkline, and a gradient background to give the number context."
+      "content": "Add a label, sparkline, and background color so the average has context: samples of 10, 50, and 90 average 50, but the sparkline reveals their rise."
     },
     {
       "type": "section",
@@ -483,52 +454,7 @@
           "tooltip": "Keep identifying context beside the summary.",
           "targetvalue": "Value and name",
           "type": "interactive",
-          "content": "Set **Text mode** to **Value and name**.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "id": "step-25",
-          "action": "highlight",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Wide layout} input[title='Off']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "tooltip": "Place identifying text above the number.",
-          "targetstate": "true",
-          "type": "interactive",
-          "content": "Set **Wide layout** to **Off**.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "id": "step-26",
-          "action": "highlight",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Orientation} input[title='Horizontal']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "tooltip": "Arrange the presentation along the horizontal direction.",
-          "targetstate": "true",
-          "type": "interactive",
-          "content": "Select **Horizontal** for **Orientation**.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "id": "step-27",
-          "action": "highlight",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Text alignment} input[title='Center']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "tooltip": "Balance the content within the available space.",
-          "targetstate": "true",
-          "type": "interactive",
-          "content": "Select **Center** for **Text alignment**.",
+          "content": "Under **Stat styles**, set **Text mode** to **Value and name** to label the summary.",
           "doIt": true,
           "showMe": true
         },
@@ -543,7 +469,7 @@
           "tooltip": "Expose variation that an average alone can hide.",
           "targetstate": "true",
           "type": "interactive",
-          "content": "Select **Area** for **Graph mode**.",
+          "content": "Under **Stat styles**, set **Graph mode** to **Area** to see how samples vary over time.",
           "doIt": true,
           "showMe": true
         },
@@ -558,7 +484,7 @@
           "tooltip": "Carry the level-based color through the card background.",
           "targetvalue": "Background Gradient",
           "type": "interactive",
-          "content": "Set **Color mode** to **Background Gradient**.",
+          "content": "Under **Stat styles**, set **Color mode** to **Background Gradient** to color the background using the calculated mean.",
           "doIt": true,
           "showMe": true
         }
@@ -569,11 +495,11 @@
     },
     {
       "type": "markdown",
-      "content": "You have paired the summary value with a name and a sparkline that reveals variation hidden by the mean."
+      "content": "The sparkline shows variation hidden by the average, while the background color represents the calculated mean."
     },
     {
       "type": "markdown",
-      "content": "Set a color boundary and show percent change with coloring appropriate to a lower-is-better practice scenario."
+      "content": "Set a threshold for the mean and compare it with percent change: a first sample of 50 and last sample of 60 gives (60 − 50) / 50 × 100 = 20%, regardless of the samples between them."
     },
     {
       "type": "section",
@@ -591,7 +517,7 @@
           "tooltip": "Use 70 as an illustrative color boundary without creating an alert.",
           "targetvalue": "70",
           "type": "interactive",
-          "content": "Set **Threshold 1** to 70; this is a color boundary and creates no alert.",
+          "content": "Under **Thresholds**, set the existing threshold value to `70`; the mean now determines which threshold color fills the background, without creating an alert.",
           "doIt": true,
           "showMe": true
         },
@@ -606,7 +532,7 @@
           "tooltip": "Add first-to-last movement as context for the average.",
           "targetstate": "true",
           "type": "interactive",
-          "content": "Enable **Show percent change**.",
+          "content": "Under **Stat styles**, enable **Show percent change** to compare the first and last samples rather than the mean.",
           "doIt": true,
           "showMe": true
         },
@@ -621,7 +547,7 @@
           "tooltip": "Treat a decrease as favorable in this practice scenario.",
           "targetvalue": "Inverted",
           "type": "interactive",
-          "content": "Set **Percent change color mode** to **Inverted** for this lower-is-better example.",
+          "content": "Under **Stat styles**, set **Percent change color mode** to **Inverted**: decreases appear green and increases red for this lower-is-better example.",
           "doIt": true,
           "showMe": true
         },
@@ -635,7 +561,7 @@
           ],
           "tooltip": "Interpret level, variation, and change together without inferring real service health.",
           "type": "interactive",
-          "content": "Compare the mean, area sparkline, and percent change: the mean summarizes the time range, the sparkline exposes variation, and percent change compares first and last values; these synthetic readings do not establish service health.",
+          "content": "Compare the mean, sparkline, and percent change: the mean summarizes all samples, the sparkline shows their path, and percent change compares the endpoints. A low mean can coexist with a rising last sample.",
           "doIt": false,
           "showMe": true
         }
@@ -646,7 +572,7 @@
     },
     {
       "type": "markdown",
-      "content": "You have distinguished the signal level from its first-to-last change without treating synthetic data as evidence of service health."
+      "content": "Inverted coloring changes only the interpretation of the percent-change indicator: a decrease is green and an increase red, while the data, calculation, and mean-based threshold color stay unchanged."
     },
     {
       "type": "quiz",
@@ -687,7 +613,7 @@
           ],
           "tooltip": "Keep the panel settings while returning to the larger workspace.",
           "type": "interactive",
-          "content": "Return to the dashboard.",
+          "content": "Click **Back** to return to the dashboard.",
           "doIt": true,
           "showMe": true
         },
@@ -705,7 +631,7 @@
                 "on-page:/dashboard/new"
               ],
               "tooltip": "Persist the work through one uninterrupted drawer sequence.",
-              "description": "Open the save drawer."
+              "description": "Click **Save** to open the save drawer."
             },
             {
               "id": "step-36",
@@ -728,7 +654,7 @@
                 "on-page:/dashboard/new"
               ],
               "tooltip": "Persist the finished configuration.",
-              "description": "Save the dashboard."
+              "description": "Click **Save** to save the dashboard."
             }
           ]
         },
