@@ -217,7 +217,7 @@
           "id": "step-12",
           "tooltip": "Make the finished panel easy to recognize.",
           "type": "interactive",
-          "content": "Set **Title** to `Signal workbench`.",
+          "content": "Under **Panel options**, set **Title** to `Signal workbench`.",
           "doIt": true,
           "showMe": true
         }
@@ -250,7 +250,7 @@
           "id": "step-13",
           "tooltip": "Keep the generated values nonnegative.",
           "type": "interactive",
-          "content": "Set **Min** to `0`.",
+          "content": "In query **A**, set **Min** to `0`.",
           "doIt": true,
           "showMe": true
         },
@@ -265,7 +265,7 @@
           "id": "step-14",
           "tooltip": "Keep the generated values within the practice range.",
           "type": "interactive",
-          "content": "Set **Max** to `100`.",
+          "content": "In query **A**, set **Max** to `100`.",
           "doIt": true,
           "showMe": true
         },
@@ -280,7 +280,7 @@
           "id": "step-15",
           "tooltip": "Begin halfway between the two bounds.",
           "type": "interactive",
-          "content": "Set **Start value** to `50`.",
+          "content": "In query **A**, set **Start value** to `50`.",
           "doIt": true,
           "showMe": true
         },
@@ -308,28 +308,8 @@
       "content": "You have bounded synthetic samples for comparing display settings without interpreting them as real service health."
     },
     {
-      "type": "quiz",
-      "id": "knowledge-check-3",
-      "question": "What do the generated values tell you?",
-      "completionMode": "correct-only",
-      "choices": [
-        {
-          "id": "1",
-          "text": "They provide practice data for interpreting visual settings.",
-          "correct": true,
-          "hint": "The random walk is synthetic and bounded for this exercise."
-        },
-        {
-          "id": "2",
-          "text": "They measure the health of a real service.",
-          "correct": false,
-          "hint": "No production service was queried."
-        }
-      ]
-    },
-    {
       "type": "markdown",
-      "content": "Adjust row spacing, column layout, pagination, filters, and decimal display to make the table easier to scan."
+      "content": "Keep timestamps visible, divide loaded rows into pages, and add column filters so you can inspect a large result without changing the query."
     },
     {
       "type": "section",
@@ -348,51 +328,6 @@
           "tooltip": "Keep timestamps visible during horizontal scrolling.",
           "type": "interactive",
           "content": "Under **Table**, set **Frozen columns** to `1` to keep timestamps visible while scrolling horizontally.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "action": "highlight",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table Cell height} input[title='Medium']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetstate": "true",
-          "id": "step-19",
-          "tooltip": "Give rows more breathing room.",
-          "type": "interactive",
-          "content": "Under **Table**, set **Cell height** to **Medium** to give rows more space.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table Minimum column width} input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetvalue": "140",
-          "id": "step-20",
-          "tooltip": "Reserve enough horizontal space to scan each column.",
-          "type": "interactive",
-          "content": "Under **Table**, set **Minimum column width** to `140`.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "action": "highlight",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table Wrap header text} input[type='checkbox']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetstate": "true",
-          "id": "step-21",
-          "tooltip": "Let long headings use more than one line.",
-          "type": "interactive",
-          "content": "Under **Table**, enable **Wrap header text** so long column headings can wrap.",
           "doIt": true,
           "showMe": true
         },
@@ -448,7 +383,7 @@
     },
     {
       "type": "markdown",
-      "content": "You have separated table readability settings from query limits and underlying numeric precision."
+      "content": "Pagination organizes the rows already returned by the query; it does not fetch fewer rows, and **Decimals** changes only their displayed precision."
     },
     {
       "type": "quiz",
@@ -472,12 +407,12 @@
     },
     {
       "type": "markdown",
-      "content": "Add **Mean** and **Max** to the footer and enable inspection of truncated cell values."
+      "content": "Add footer calculations to compare the average sample (**Mean**) with the largest sample (**Max**); a high peak can be hidden by a moderate average."
     },
     {
       "type": "section",
       "id": "summarize-and-inspect-values",
-      "title": "Summarize and inspect values",
+      "title": "Compare average and peak values",
       "blocks": [
         {
           "action": "formfill",
@@ -490,7 +425,7 @@
           "id": "step-25",
           "tooltip": "Summarize the average of the numeric samples.",
           "type": "interactive",
-          "content": "Under **Table footer**, select **Mean** in **Calculation** to show the average.",
+          "content": "Under **Table footer**, in **Calculation**, select **Mean** to show the average.",
           "doIt": true,
           "showMe": true
         },
@@ -505,22 +440,7 @@
           "id": "step-26",
           "tooltip": "Compare the peak against the average.",
           "type": "interactive",
-          "content": "In **Calculation**, also select **Max** to compare the peak with the average.",
-          "doIt": true,
-          "showMe": true
-        },
-        {
-          "action": "highlight",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Cell options Cell value inspect} input[type='checkbox']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "targetstate": "true",
-          "id": "step-27",
-          "tooltip": "Allow access to contents when the displayed value is truncated.",
-          "type": "interactive",
-          "content": "Under **Cell options**, enable **Cell value inspect** to inspect truncated values.",
+          "content": "Under **Table footer**, in **Calculation**, also select **Max** to compare the peak with the average.",
           "doIt": true,
           "showMe": true
         }
@@ -531,7 +451,7 @@
     },
     {
       "type": "markdown",
-      "content": "You have paired average and peak summaries with access to cell contents that may be truncated."
+      "content": "The footer summarizes the numeric samples while keeping the individual rows available for inspection."
     },
     {
       "type": "quiz",
@@ -555,7 +475,7 @@
     },
     {
       "type": "markdown",
-      "content": "Apply a field override to **A-series** so numeric values become gradient gauges while **Time** retains its time display."
+      "content": "Apply an override to **A-series**, the numeric measurement column, so bar lengths compare its samples while **Time** remains readable as timestamps."
     },
     {
       "type": "section",
@@ -565,7 +485,7 @@
         {
           "type": "multistep",
           "id": "turn-one-numeric-column-into-gauges-matcher",
-          "content": "Match only **A-series**.",
+          "content": "Click **Add field override**, choose **Fields with name**, then select **A-series** to limit the change to measurements.",
           "steps": [
             {
               "action": "highlight",
@@ -607,7 +527,7 @@
         {
           "type": "multistep",
           "id": "turn-one-numeric-column-into-gauges-property",
-          "content": "Add the cell type override.",
+          "content": "In the **A-series** override, click **Add override property** and select **Cell options > Cell type**.",
           "steps": [
             {
               "action": "highlight",
@@ -645,7 +565,7 @@
           "id": "step-33",
           "tooltip": "Use bar length to help compare numeric samples.",
           "type": "interactive",
-          "content": "Set **Cell type** to **Gauge**.",
+          "content": "In the **A-series** override, set **Cell type** to **Gauge** to compare samples by bar length.",
           "doIt": true,
           "showMe": true
         },
@@ -660,7 +580,7 @@
           "id": "step-34",
           "tooltip": "Use a continuous fill to compare lengths.",
           "type": "interactive",
-          "content": "Set **Gauge display mode** to **Gradient** to compare gauge lengths.",
+          "content": "In the **A-series** override, set **Gauge display mode** to **Gradient** for a continuous color fill.",
           "doIt": true,
           "showMe": true
         },
@@ -672,9 +592,9 @@
             "on-page:/dashboard/new"
           ],
           "id": "step-35",
-          "tooltip": "Automatic bounds reflect the automatically chosen display range rather than percent capacity.",
+          "tooltip": "A full bar marks the top of the loaded numeric range, not a capacity limit.",
           "type": "interactive",
-          "content": "Compare gauges with the footer; automatic gauge bounds represent the automatically chosen display range, not percent capacity.",
+          "content": "Compare the gauges with **Max** in the footer. With automatic bounds, this one-column table scales gauges from its smallest to largest loaded sample. If samples span 40–80, an 80 fills the gauge even though the generator allows 100.",
           "doIt": false,
           "showMe": true
         }
@@ -685,7 +605,7 @@
     },
     {
       "type": "markdown",
-      "content": "You have scoped a visual encoding to one numeric field and learned that automatic gauge bounds show the automatically chosen display range."
+      "content": "The override changes only **A-series**; its longest gauge represents the largest loaded sample, not a measured capacity limit."
     },
     {
       "type": "quiz",
@@ -695,9 +615,9 @@
       "choices": [
         {
           "id": "1",
-          "text": "No, automatic bounds represent the automatically chosen display range.",
+          "text": "No, it marks the largest loaded sample in this table, not a capacity limit.",
           "correct": true,
-          "hint": "These synthetic values do not describe capacity."
+          "hint": "Automatic bounds come from loaded numeric values; they are not the generator bounds."
         },
         {
           "id": "2",
