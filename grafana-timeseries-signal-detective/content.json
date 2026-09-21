@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Compare two generated time series using shared tooltips, legend calculations, line styling, and separate axes. Then explore axis scales and add a zero reference line. You will build and save a dashboard using the built-in **-- Grafana --** data source and the new query editor."
+      "content": "Compare two generated time series using shared tooltips, legend calculations, and separate axes, then explore scales, flexible bounds, and a zero reference line. You will build and save a dashboard with synthetic practice data from **-- Grafana --**."
     },
     {
       "type": "interactive",
@@ -188,7 +188,7 @@
     },
     {
       "type": "markdown",
-      "content": "Compare values with a shared sorted tooltip and a Max legend calculation, then make overlapping traces easier to read."
+      "content": "Compare values at one timestamp with a shared tooltip and peaks across the displayed time range with a legend calculation."
     },
     {
       "type": "section",
@@ -199,7 +199,7 @@
         {
           "type": "interactive",
           "id": "peak-option-1",
-          "content": "In the panel edit pane, open **Tooltip** and select **All** for **Tooltip mode** to compare both series at the same timestamp.",
+          "content": "In the panel edit pane, open **Tooltip** and set **Tooltip mode** to **All** to compare both series at the same timestamp.",
           "action": "highlight",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Tooltip Tooltip mode} [data-testid='data-testid radio-button-option multi']",
           "requirements": [
@@ -212,7 +212,7 @@
         {
           "type": "interactive",
           "id": "peak-option-2",
-          "content": "In **Tooltip**, select **Descending** for **Values sort order** to list the largest value first at each timestamp.",
+          "content": "In **Tooltip**, set **Values sort order** to **Descending** to list the largest value first at each timestamp.",
           "action": "highlight",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Tooltip Values sort order} [data-testid='data-testid radio-button-option desc']",
           "requirements": [
@@ -225,7 +225,7 @@
         {
           "type": "interactive",
           "id": "peak-option-3",
-          "content": "In **Legend**, select **Table** for **Mode** to show summary calculations beside each series.",
+          "content": "In **Legend**, set **Mode** to **Table** to show summary calculations beside each series.",
           "action": "highlight",
           "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Legend Mode} [data-testid='data-testid radio-button-option table']",
           "requirements": [
@@ -247,54 +247,13 @@
           ],
           "doIt": true,
           "targetvalue": "Max",
-          "tooltip": "Find each signal\u2019s peak across the displayed data."
-        },
-        {
-          "type": "interactive",
-          "id": "peak-option-5",
-          "content": "In **Graph styles**, set **Line width** to `2` to make overlapping lines easier to follow.",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Line width} input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "doIt": true,
-          "targetvalue": "2",
-          "tooltip": "Make overlapping traces easier to follow."
-        },
-        {
-          "type": "interactive",
-          "id": "peak-option-6",
-          "content": "In **Graph styles**, set **Fill opacity** to `15` to keep both lines visible where their filled areas overlap.",
-          "action": "formfill",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Fill opacity} input",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "doIt": true,
-          "targetvalue": "15",
-          "tooltip": "Keep the fill subtle enough to see both traces."
-        },
-        {
-          "type": "interactive",
-          "id": "peak-option-7",
-          "content": "In **Graph styles**, select **Opacity** for **Gradient mode** to fade the fill beneath each line.",
-          "action": "highlight",
-          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Graph styles Gradient mode} [data-testid='data-testid radio-button-option opacity']",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/dashboard/new"
-          ],
-          "doIt": true,
-          "tooltip": "Fade the area beneath each line."
+          "tooltip": "Find each signal’s peak across the displayed data."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "The tooltip now compares values at one timestamp, the table legend summarizes peaks across the displayed data, and subtle fill keeps both traces readable."
+      "content": "The tooltip compares both values at the hovered timestamp, while **Max** summarizes each series across the displayed data, so their rankings can differ."
     },
     {
       "type": "quiz",
@@ -323,7 +282,7 @@
     },
     {
       "type": "markdown",
-      "content": "Match B-series by name and place it on the right axis to compare two independent scales."
+      "content": "Give B-series its own axis, a useful option when signals have different units or very different ranges."
     },
     {
       "type": "section",
@@ -334,7 +293,7 @@
         {
           "type": "multistep",
           "id": "match-b-series",
-          "content": "Match B-series by name using **Add field override**, then **Fields with name**.",
+          "content": "In **Overrides**, click **Add field override**, choose **Fields with name**, then select **B-series** to change only that signal.",
           "requirements": [],
           "steps": [
             {
@@ -377,7 +336,7 @@
         {
           "type": "multistep",
           "id": "place-right-axis",
-          "content": "Add **Axis > Placement** and select **Right** for B-series.",
+          "content": "For the B-series override, use **Add override property** to add **Axis > Placement**.",
           "requirements": [],
           "steps": [
             {
@@ -415,7 +374,7 @@
           "id": "place-right-axis-6",
           "tooltip": "Separate the selected series from the default scale.",
           "type": "interactive",
-          "content": "Select **Right** so only B-series uses the right axis.",
+          "content": "In the B-series override, set **Axis > Placement** to **Right** so that series has its own scale.",
           "doIt": true
         },
         {
@@ -434,7 +393,7 @@
     },
     {
       "type": "markdown",
-      "content": "You used a field override to separate B-series from the default axis; independent scales can make unrelated signals look correlated."
+      "content": "Each axis maps its own values to the panel height, so overlapping lines can have different values; read the tick labels or tooltip rather than treating overlap as equal values or proof of correlation."
     },
     {
       "type": "quiz",
@@ -462,7 +421,11 @@
     },
     {
       "type": "markdown",
-      "content": "Compare scales, set flexible axis bounds, and add a visual zero reference before returning to the dashboard."
+      "content": "A large spike can flatten smaller changes on a linear scale. Symlog compresses larger magnitudes and stays approximately linear near zero, so it can show both; unlike a logarithmic scale, it supports zero and negative values. The scale changes spacing, not the samples."
+    },
+    {
+      "type": "markdown",
+      "content": "Compare how scales display large and small changes, then add flexible bounds and a zero reference line."
     },
     {
       "type": "section",
@@ -479,9 +442,9 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "In **Axis**, select **Symlog** and compare the shape of the signals: this scale accepts zero and negative values while compressing larger magnitudes; a logarithmic scale cannot represent zero or negative values.",
+          "content": "In **Axis**, set **Scale** to **Symlog** to compress large magnitudes while keeping zero and negative values visible.",
           "doIt": true,
-          "tooltip": "Compress large magnitudes while retaining zero and negative values."
+          "tooltip": "Compare small changes near zero with larger excursions on the compressed scale."
         },
         {
           "type": "interactive",
@@ -492,7 +455,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "In **Axis**, select **Linear** again: equal vertical distances now represent equal absolute differences, making the size of changes easier to compare.",
+          "content": "In **Axis**, set **Scale** back to **Linear**: equal vertical distances represent equal absolute changes again.",
           "doIt": true,
           "tooltip": "Restore equal distances for equal absolute differences."
         },
@@ -561,7 +524,7 @@
             "exists-reftarget",
             "on-page:/dashboard/new"
           ],
-          "content": "Select **Back to dashboard** to view the configured panel in the dashboard.",
+          "content": "Click **Back** to view the configured panel in the dashboard.",
           "doIt": true,
           "tooltip": "Inspect the configured panel on its dashboard."
         }
@@ -651,7 +614,7 @@
         {
           "type": "interactive",
           "id": "save-step-4",
-          "content": "Inspect the finished dashboard: check that both synthetic signals appear, the table legend includes **Max**, and the styling, series override, soft bounds, and illustrative zero threshold remain as configured; the threshold creates no alert.",
+          "content": "Inspect the saved dashboard: both signals should appear, the table legend should show **Max**, B-series should use the right axis, and the soft bounds and dashed zero reference should remain configured.",
           "action": "highlight",
           "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
           "requirements": [
@@ -672,7 +635,7 @@
     },
     {
       "type": "markdown",
-      "content": "You have completed the signal detective lab: shared tooltips compare a timestamp, legend calculations summarize the displayed data, and deliberate styling and bounds help you read the signals without changing their values."
+      "content": "You can now distinguish timestamp comparisons from whole-range summaries and choose axes, scales, and bounds without confusing their appearance with changes to the data."
     }
   ]
 }
