@@ -147,7 +147,7 @@
         },
         {
           "action": "highlight",
-          "reftarget": "[data-testid='catalog-uninstrumented-filter-radio'] input[title='Instrumented']",
+          "reftarget": "[data-testid='catalog-uninstrumented-filter-radio'] input[title='Instrumented'] + label",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-asserts-app/catalog"
@@ -159,18 +159,26 @@
           "showMe": true
         },
         {
-          "action": "highlight",
-          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-asserts-app/catalog"
+          "type": "guided",
+          "id": "open-first-catalog-service",
+          "content": "Scroll the service list into view, then open the first service as your starting entity; its name depends on your instance. If the list is empty, clear the filters or return after a service is available.",
+          "completeEarly": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/catalog"
+              ],
+              "description": "Inspect the first available service.",
+              "lazyRender": true,
+              "scrollContainer": "#pageContent"
+            }
           ],
-          "tooltip": "Inspect the first available service.",
-          "lazyRender": true,
-          "type": "interactive",
-          "content": "Open the first service as your starting entity; its name will depend on your instance.",
-          "doIt": true,
-          "showMe": true
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/catalog"
+          ]
         },
         {
           "action": "highlight",

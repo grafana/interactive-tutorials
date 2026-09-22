@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "fleet-mgt-monitor-health-check-health-status",
   "title": "Check the health status of a collector",
   "blocks": [
@@ -19,14 +19,40 @@
           "action": "highlight",
           "reftarget": "#collector-status-filter",
           "content": "Use the **Status** dropdown to filter the fleet by status.",
-          "doIt": false
+          "doIt": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/fleet-management"
+          ]
         },
         {
-          "type": "interactive",
-          "action": "hover",
-          "reftarget": "tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Healthy\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Warning\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Warning, inactive\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Error\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Status unavailable\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Applying configuration\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Unresponsive\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(3) [aria-label=\"Configuration error\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Healthy\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Warning\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Warning, inactive\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Error\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Status unavailable\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Applying configuration\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Unresponsive\"], tr:has([data-testid^=\"collector-row-\"]) td:nth-child(2) [aria-label=\"Configuration error\"]",
-          "content": "Hover over a collector status indicator to learn more."
+          "type": "guided",
+          "id": "inspect-first-collector-status",
+          "content": "Hover over the first available collector status indicator to learn more. If no collectors are shown, clear the filters or register a collector first. On a touch device, read the status descriptions below and skip this step. Scroll the collector list into view before starting.",
+          "skippable": true,
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "[data-testid^=\"collector-row-\"] :is([aria-label=\"Healthy\"], [aria-label=\"Warning\"], [aria-label=\"Warning, inactive\"], [aria-label=\"Error\"], [aria-label=\"Status unavailable\"], [aria-label=\"Applying configuration\"], [aria-label=\"Unresponsive\"], [aria-label=\"Configuration error\"]):nth-match(1)",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/fleet-management"
+              ],
+              "lazyRender": true,
+              "scrollContainer": "#pageContent",
+              "description": "Hover to read the current health details.",
+              "skippable": true
+            }
+          ],
+          "requirements": [
+            "on-page:/a/grafana-collector-app/fleet-management"
+          ]
         }
+      ],
+      "id": "inspect-collector-health",
+      "title": "Inspect collector health",
+      "requirements": [
+        "on-page:/a/grafana-collector-app/fleet-management"
       ]
     },
     {
