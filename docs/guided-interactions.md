@@ -196,27 +196,39 @@ Individual steps can declare their own requirements:
 }
 ```
 
-### Per-step `lazyRender` and `scrollContainer`
+### Lazy targets and current runtime support
 
-When a step targets an element inside a virtualized container (long table, paginated list, below-fold dashboard row), set `lazyRender: true` on that step. Optionally set `scrollContainer` to the CSS selector of the scrolling parent (default `.scrollbar-view`). The engine scrolls the target into view before highlighting it.
+Guided actions scroll an existing target into view before asking the learner to interact. They do not currently discover targets that are absent from the DOM until scrolling. Although the step schema accepts `lazyRender` and `scrollContainer`, the guided parser does not forward them, and the guided handler retries element lookup without progressive scrolling.
+
+For automatic discovery, use a standalone `interactive` block:
 
 ```json
 {
-  "type": "guided",
-  "content": "Open the row for the service that is below the fold.",
-  "steps": [
-    {
-      "action": "button",
-      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
-      "lazyRender": true,
-      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
-      "description": "Click checkoutservice"
-    }
-  ]
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "[data-testid='collector-status-summary']",
+  "requirements": ["exists-reftarget"],
+  "lazyRender": true,
+  "scrollContainer": "#pageContent",
+  "doIt": false,
+  "content": "Read the collector status summary."
 }
 ```
 
-A plain `interactive` block targeting a virtualized element will fail intermittently because `exists-reftarget` waits but cannot scroll. Prefer `guided` with `lazyRender: true`.
+The individual **Show me** / **Do it** handlers perform discovery, including when the block is inside a section. `exists-reftarget` does not prevent their buttons from running when lazy discovery is available. Use `doIt: false` for read-only observations; **Show me** highlights and completes the observation without requiring a manual hover.
+
+Verify the scrolling container for the target layout. Grafana's `#pageContent` has scrolling enabled when its extension sidebar is open. An inner virtualized list may have a different container; scrolling does not switch pagination pages. The current discovery helper scrolls forward from the current position, so it does not guarantee finding an unmounted target above it.
+
+**Do section** follows a separate path: it does not forward lazy-scroll properties or call the standalone discovery wrapper. It also does not preserve `doIt: false` in its step registry, so individual observation behavior must not be described as a guarantee about bulk execution. Guided blocks pause bulk execution for the learner. Keep page/permission prerequisites on the guided block itself; internal guided action requirements are not evaluated by the current handler.
+
+These limitations were checked against [Pathfinder commit 339cd31d](https://github.com/grafana/grafana-pathfinder-app/tree/339cd31d95c636b82b66f27e3496eb1f49aa0fa4) on 22 September 2026:
+
+- `src/docs-retrieval/json-parser.ts`: `convertInteractiveBlock` forwards lazy properties; `convertGuidedBlock` does not.
+- `src/components/interactive-tutorial/interactive-step.tsx`: `lazyScrollAvailable` enables individual actions and `executeWithLazyScroll` runs discovery.
+- `src/interactive-engine/action-handlers/guided-handler.ts`: target lookup retries, followed by scrolling an existing element into view.
+- `src/components/interactive-tutorial/step-type-registry.ts` and `interactive-section.tsx`: bulk execution bypasses the individual action wrapper.
+
+Recheck these paths when the runtime changes. Prefer the supported automatic action over a manual fallback when its target and container are known.
 
 ## Integration with sections
 

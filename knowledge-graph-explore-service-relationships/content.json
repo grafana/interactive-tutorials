@@ -61,9 +61,9 @@
           "showMe": true
         },
         {
-          "type": "guided",
+          "type": "multistep",
           "id": "exact-service-query",
-          "content": "Reopen the suggestions and select the exact **Show all Services** query.",
+          "content": "Select the exact **Show all Services** query from the suggestions.",
           "steps": [
             {
               "action": "highlight",
@@ -72,8 +72,7 @@
                 "exists-reftarget",
                 "on-page:/a/grafana-asserts-app/entities"
               ],
-              "tooltip": "Reopen the available suggestions.",
-              "description": "Reopen the suggestions after searching."
+              "tooltip": "Reopen the available suggestions."
             },
             {
               "action": "highlight",
@@ -82,10 +81,11 @@
                 "exists-reftarget",
                 "on-page:/a/grafana-asserts-app/entities"
               ],
-              "tooltip": "Choose the exact service query.",
-              "lazyRender": true,
-              "description": "Choose the exact **Show all Services** query."
+              "tooltip": "Choose the exact service query."
             }
+          ],
+          "requirements": [
+            "on-page:/a/grafana-asserts-app/entities"
           ]
         },
         {
@@ -159,26 +159,19 @@
           "showMe": true
         },
         {
-          "type": "guided",
+          "type": "interactive",
           "id": "open-first-catalog-service",
-          "content": "Scroll the service list into view, then open the first service as your starting entity; its name depends on your instance. If the list is empty, clear the filters or return after a service is available.",
-          "completeEarly": true,
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/a/grafana-asserts-app/catalog"
-              ],
-              "description": "Inspect the first available service.",
-              "lazyRender": true,
-              "scrollContainer": "#pageContent"
-            }
-          ],
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
           "requirements": [
+            "exists-reftarget",
             "on-page:/a/grafana-asserts-app/catalog"
-          ]
+          ],
+          "lazyRender": true,
+          "scrollContainer": "#pageContent",
+          "content": "Open the first service as your starting entity; its name depends on your instance. If the list is empty, clear the filters or return after a service is available.",
+          "doIt": true,
+          "showMe": true
         },
         {
           "action": "highlight",

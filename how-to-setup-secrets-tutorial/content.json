@@ -43,20 +43,70 @@
       ],
       "blocks": [
         {
-          "type": "markdown",
-          "content": "Click **Create secret** for quickpizza-username. Skip these steps if it already exists."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-username'])) section[data-testid='config-content'] button:not([aria-label]):not([disabled])",
+          "content": "Click **Create secret** for quickpizza-username. If it already exists, skip to its saved-name confirmation.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Enter `quickpizza-username` in **Name**."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-username'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) #secret-name:not([readonly])",
+          "content": "Enter `quickpizza-username` in **Name**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "targetvalue": "quickpizza-username",
+          "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Describe the credential in **Description**."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-username'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) #secret-description",
+          "content": "Describe the credential in **Description**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "targetvalue": "QuickPizza username",
+          "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Enter the QuickPizza username in **Value** yourself, then click **Save**. Wait for the dialog to close before continuing."
+          "type": "guided",
+          "content": "Enter the QuickPizza username in **Value** yourself. If this secret already exists, skip to its saved-name confirmation.",
+          "skippable": true,
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-username'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) #secret-value",
+              "targetvalue": "^.+$",
+              "validateInput": true,
+              "description": "Enter the credential value yourself; it is never filled automatically.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ],
+              "skippable": true
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-username'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) button[type='submit']:not([disabled])",
+          "content": "Click **Save** and wait for the dialog to close.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -72,20 +122,70 @@
           "skippable": false
         },
         {
-          "type": "markdown",
-          "content": "Click **Create secret** for quickpizza-password. Skip these steps if it already exists."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-password'])) section[data-testid='config-content'] button:not([aria-label]):not([disabled])",
+          "content": "Click **Create secret** for quickpizza-password. If it already exists, skip to its saved-name confirmation.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Enter `quickpizza-password` in **Name**."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-password'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) #secret-name:not([readonly])",
+          "content": "Enter `quickpizza-password` in **Name**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "targetvalue": "quickpizza-password",
+          "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Describe the credential in **Description**."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-password'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) #secret-description",
+          "content": "Describe the credential in **Description**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "targetvalue": "QuickPizza password",
+          "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "Enter the QuickPizza password in **Value** yourself, then click **Save**. Wait for the dialog to close before continuing."
+          "type": "guided",
+          "content": "Enter the QuickPizza password in **Value** yourself. If this secret already exists, skip to its saved-name confirmation.",
+          "skippable": true,
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-password'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) #secret-value",
+              "targetvalue": "^.+$",
+              "validateInput": true,
+              "description": "Enter the credential value yourself; it is never filled automatically.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ],
+              "skippable": true
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "body:not(:has(button[aria-label='Edit quickpizza-password'])) [data-testid='config secret-edit-modal']:has(#secret-name:not([readonly])) button[type='submit']:not([disabled])",
+          "content": "Click **Save** and wait for the dialog to close.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -186,12 +286,63 @@
           ]
         },
         {
-          "type": "markdown",
-          "content": "Open **Execution** and select the probes to run your browser check. Then open **Alerting** and choose any alerts you want to enable."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation execution']",
+          "content": "Open **Execution**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "Click **Save** and wait for the saved check page to open. Confirm that the new check appears in **Checks** before continuing."
+          "type": "guided",
+          "content": "Select the first available probe for this example, then resume the section. You can choose additional locations in **Execution**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "label[data-testid='checkEditor form probeLabel']:nth-match(1)",
+              "targetstate": "true",
+              "description": "Select a probe location for this check.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation alerting']",
+          "content": "Open **Alerting** and review any alerts you want to enable.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor form submit']:not([disabled])",
+          "content": "Click **Save**. Wait for the saved check page to open.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "h1:text('Test:QuickPizza')",
+          "content": "Confirm that the saved check dashboard shows **Test:QuickPizza**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget",
+          "skippable": false
         }
       ],
       "requirements": [
@@ -222,16 +373,148 @@
           "skippable": true
         },
         {
-          "type": "markdown",
-          "content": "To update quickpizza-username, click its **Edit** action, make your changes, and click **Save**. Confirm that you return to the secrets list before continuing."
+          "type": "guided",
+          "content": "Optionally update quickpizza-username. Skip this step to keep the current value; cancel any open dialog before skipping.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "is-admin"
+          ],
+          "skippable": true,
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Edit quickpizza-username']",
+              "description": "Open the username secret.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='config secret-edit-modal'] button:text('Reset')",
+              "description": "Reset the configured value so you can enter its replacement.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid='config secret-edit-modal'] textarea#secret-value:not([disabled])",
+              "description": "Enter the replacement username yourself.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ],
+              "targetvalue": "^.+$",
+              "validateInput": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='config secret-edit-modal'] button[type='submit']:not([disabled])",
+              "description": "Save the updated secret.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ]
+            }
+          ]
         },
         {
-          "type": "markdown",
-          "content": "If you no longer need quickpizza-password, click its **Delete** action, type `DELETE`, and confirm. Verify that the secret disappears from the list."
+          "type": "interactive",
+          "action": "hover",
+          "reftarget": "body:not(:has([data-testid='config secret-edit-modal'])) button[aria-label='Edit quickpizza-username']",
+          "content": "The secrets list is visible after the update or skipped edit.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "exists-reftarget"
+          ],
+          "verify": "exists-reftarget",
+          "skippable": false
         },
         {
-          "type": "markdown",
-          "content": "If you no longer need quickpizza-username, click its **Delete** action, type `DELETE`, and confirm. Verify that the secret disappears from the list."
+          "type": "guided",
+          "content": "Optionally delete quickpizza-password if you no longer need it. Skip this step to keep it; cancel any open dialog before skipping.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "is-admin"
+          ],
+          "skippable": true,
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Delete quickpizza-password']",
+              "description": "Open the confirmation for quickpizza-password.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[role='dialog'] input[data-testid='data-testid Confirm Modal Input']",
+              "description": "Type DELETE to confirm this deletion.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ],
+              "targetvalue": "DELETE",
+              "validateInput": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='dialog'] button[data-testid='data-testid Confirm Modal Danger Button']:not([disabled])",
+              "description": "Delete the named secret only if you no longer need it.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "content": "Optionally delete quickpizza-username if you no longer need it. Skip this step to keep it; cancel any open dialog before skipping.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+            "is-admin"
+          ],
+          "skippable": true,
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Delete quickpizza-username']",
+              "description": "Open the confirmation for quickpizza-username.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[role='dialog'] input[data-testid='data-testid Confirm Modal Input']",
+              "description": "Type DELETE to confirm this deletion.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ],
+              "targetvalue": "DELETE",
+              "validateInput": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='dialog'] button[data-testid='data-testid Confirm Modal Danger Button']:not([disabled])",
+              "description": "Delete the named secret only if you no longer need it.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/config/secrets",
+                "exists-reftarget"
+              ]
+            }
+          ]
         }
       ],
       "requirements": [

@@ -159,8 +159,40 @@
           ]
         },
         {
-          "type": "markdown",
-          "content": "Optionally add a label. On **Labels**, click **Label** or **Add label** to create a new row, then enter `service` as its name and `test` as its value. Leave existing labels unchanged. Skip this step if you have reached the label limit."
+          "type": "multistep",
+          "content": "Add a service label in a new row without changing existing labels. Skip if the label limit is reached.",
+          "skippable": true,
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button:not([disabled]):text('Label')",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div:has(> div > button:not([aria-label])) > div:has(input[name^='labels.'][name$='.name']):not(:has(~ div input[name^='labels.'][name$='.name'])) input[name^='labels.'][name$='.name']",
+              "targetvalue": "service",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "div:has(> div > button:not([aria-label])) > div:has(input[name^='labels.'][name$='.name']):not(:has(~ div input[name^='labels.'][name$='.name'])) input[name^='labels.'][name$='.value']",
+              "targetvalue": "test",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+                "exists-reftarget"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -265,7 +297,20 @@
             "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
           ],
-          "doIt": false
+          "targetstate": "true"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "targetstate": "true",
+          "reftarget": "label:has(input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox']:checked)",
+          "content": "**Probe Failed Executions** is enabled.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget"
         },
         {
           "type": "interactive",
