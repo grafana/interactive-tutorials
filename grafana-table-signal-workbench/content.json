@@ -1,0 +1,735 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "grafana-table-signal-workbench",
+  "title": "Build a table with filters, summaries, and gauges",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Start in **Dashboards** and build a standalone table with synthetic signals, readable rows, summary calculations, and numeric gauges."
+    },
+    {
+      "type": "markdown",
+      "content": "Open **Dashboards** as the starting point for this lab."
+    },
+    {
+      "type": "section",
+      "id": "open-your-visualization-workspace",
+      "title": "Open your visualization workspace",
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "requirements": [],
+          "id": "step-1",
+          "tooltip": "Begin the independent build from this workspace.",
+          "type": "interactive",
+          "content": "Open **Dashboards** to begin.",
+          "doIt": true,
+          "showMe": true,
+          "verify": "on-page:/dashboards"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have opened the workspace where you will create your practice dashboard."
+    },
+    {
+      "type": "markdown",
+      "content": "Prepare **TestData** if it is missing; an existing source skips this setup, while creating one requires an administrator on Cloud or OSS."
+    },
+    {
+      "type": "section",
+      "id": "prepare-testdata-once",
+      "title": "Prepare TestData once",
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "requirements": [],
+          "id": "step-2",
+          "tooltip": "Prepare a synthetic source only when one is missing.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Open **Add data source**."
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:pages.AddDataSource.searchInput}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
+          ],
+          "targetvalue": "TestData",
+          "id": "step-3",
+          "tooltip": "No external credentials are needed for this practice data.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Search for **TestData**."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
+          ],
+          "id": "step-4",
+          "tooltip": "Create a local source of synthetic samples.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Click **TestData** to create the data source.",
+          "verify": "on-page:/connections/datasources/edit"
+        }
+      ],
+      "requirements": [
+        "is-admin"
+      ],
+      "objectives": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a synthetic source to practice with without external services or credentials."
+    },
+    {
+      "type": "conditional",
+      "id": "practice-source-ready",
+      "conditions": [
+        "has-datasource:grafana-testdata-datasource"
+      ],
+      "whenTrue": [
+        {
+          "type": "input",
+          "id": "choose-practice-source",
+          "inputType": "datasource",
+          "variableName": "practiceSource",
+          "datasourceFilter": "grafana-testdata-datasource",
+          "prompt": "Select your TestData source; its name may differ in your organization.",
+          "required": true,
+          "requirements": [
+            "has-datasource:grafana-testdata-datasource"
+          ]
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "Create a fresh dashboard, connect your selected source, and name a **Table** panel."
+    },
+    {
+      "type": "section",
+      "id": "build-the-table-panel",
+      "title": "Build the Table panel",
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/dashboard/new",
+          "requirements": [],
+          "id": "step-6",
+          "tooltip": "Start with a fresh workspace for this lab.",
+          "type": "interactive",
+          "content": "Create a fresh dashboard for this lab.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "id": "prepare-panel-add-pane",
+          "action": "highlight",
+          "reftarget": "{grafana:pages.Dashboard.Sidebar.addButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new",
+            "min-version:13.3.0"
+          ],
+          "targetstate": "aria-expanded:true",
+          "content": "Open **Add** to show the controls for creating a panel.",
+          "tooltip": "Show the controls for adding dashboard elements."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "id": "step-7",
+          "tooltip": "Create space for the synthetic signals.",
+          "type": "interactive",
+          "content": "Click **Panel** to add a panel.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.configurePanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "id": "step-8",
+          "tooltip": "Adjust the query and presentation together.",
+          "type": "interactive",
+          "content": "Click **Edit visualization** to open the panel editor.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "{{practiceSource}}",
+          "id": "step-9",
+          "tooltip": "Use the source selected in this guide.",
+          "type": "interactive",
+          "content": "In the data source picker, select {{practiceSource}}.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "multistep",
+          "id": "build-the-table-panel-viz",
+          "content": "Choose the **Table** visualization.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Tab.title:Visualizations}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "id": "step-10",
+              "tooltip": "Choose how to display the returned samples.",
+              "description": "Click **All visualizations**."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.PluginVisualization.item:Table}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "id": "step-11",
+              "tooltip": "Display samples as rows and columns.",
+              "description": "Select **Table**."
+            }
+          ]
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldInput:Title}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Signal workbench",
+          "id": "step-12",
+          "tooltip": "Make the finished panel easy to recognize.",
+          "type": "interactive",
+          "content": "Under **Panel options**, set **Title** to `Signal workbench`.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a named panel connected to the source chosen for this sitting."
+    },
+    {
+      "type": "markdown",
+      "content": "Generate one random walk from 50 within a range of 0 to 100 so you can focus on reading the table."
+    },
+    {
+      "type": "section",
+      "id": "create-bounded-practice-signals",
+      "title": "Create bounded practice signals",
+      "blocks": [
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.min}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "0",
+          "id": "step-13",
+          "tooltip": "Keep the generated values nonnegative.",
+          "type": "interactive",
+          "content": "In query **A**, set **Min** to `0`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.max}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "100",
+          "id": "step-14",
+          "tooltip": "Keep the generated values within the practice range.",
+          "type": "interactive",
+          "content": "In query **A**, set **Max** to `100`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.startValue}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "50",
+          "id": "step-15",
+          "tooltip": "Begin halfway between the two bounds.",
+          "type": "interactive",
+          "content": "In query **A**, set **Start value** to `50`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.RefreshPicker.runButtonV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "id": "step-17",
+          "tooltip": "Load samples using the configured range.",
+          "type": "interactive",
+          "content": "Run the query to see your practice data.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have bounded synthetic samples for comparing display settings without interpreting them as real service health."
+    },
+    {
+      "type": "markdown",
+      "content": "Keep timestamps visible, divide loaded rows into pages, and add column filters so you can inspect a large result without changing the query."
+    },
+    {
+      "type": "section",
+      "id": "make-a-dense-table-readable",
+      "title": "Make a dense table readable",
+      "blocks": [
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table Frozen columns} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "1",
+          "id": "step-18",
+          "tooltip": "Keep timestamps visible during horizontal scrolling.",
+          "type": "interactive",
+          "content": "Under **Table**, set **Frozen columns** to `1` to keep timestamps visible while scrolling horizontally.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table Enable pagination} input[type='checkbox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "id": "step-22",
+          "tooltip": "Split loaded rows into pages without limiting the query.",
+          "type": "interactive",
+          "content": "Under **Table**, enable **Enable pagination** to divide loaded rows into pages without limiting the query.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table Column filter} input[type='checkbox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "id": "step-23",
+          "tooltip": "Allow readers to narrow visible values by column.",
+          "type": "interactive",
+          "content": "Under **Table**, enable **Column filter** to filter individual columns.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Standard options Decimals} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "1",
+          "id": "step-24",
+          "tooltip": "Round the display without changing the underlying samples.",
+          "type": "interactive",
+          "content": "Under **Standard options**, set **Decimals** to `1` without changing the underlying values.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Pagination organizes the rows already returned by the query; it does not fetch fewer rows, and **Decimals** changes only their displayed precision."
+    },
+    {
+      "type": "quiz",
+      "id": "knowledge-check-4",
+      "question": "What changes when pagination is enabled?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "1",
+          "text": "Loaded rows are divided into pages.",
+          "correct": true,
+          "hint": "Pagination controls presentation; it does not limit the query."
+        },
+        {
+          "id": "2",
+          "text": "The data source returns fewer samples.",
+          "correct": false,
+          "hint": "Query limits and page layout are separate concerns."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Add footer calculations to compare the average sample (**Mean**) with the largest sample (**Max**); a high peak can be hidden by a moderate average."
+    },
+    {
+      "type": "section",
+      "id": "summarize-and-inspect-values",
+      "title": "Compare average and peak values",
+      "blocks": [
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table footer Calculation} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Mean",
+          "id": "step-25",
+          "tooltip": "Summarize the average of the numeric samples.",
+          "type": "interactive",
+          "content": "Under **Table footer**, in **Calculation**, select **Mean** to show the average.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Table footer Calculation} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Max",
+          "id": "step-26",
+          "tooltip": "Compare the peak against the average.",
+          "type": "interactive",
+          "content": "Under **Table footer**, in **Calculation**, also select **Max** to compare the peak with the average.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The footer summarizes the numeric samples while keeping the individual rows available for inspection."
+    },
+    {
+      "type": "quiz",
+      "id": "knowledge-check-5",
+      "question": "Why keep both Mean and Max in the footer?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "1",
+          "text": "To compare the average sample with the peak.",
+          "correct": true,
+          "hint": "The two summaries describe different aspects of the numeric samples."
+        },
+        {
+          "id": "2",
+          "text": "To replace every sample with one rounded value.",
+          "correct": false,
+          "hint": "Footer calculations summarize samples; decimal formatting affects display."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Apply an override to **A-series**, the numeric measurement column, so bar lengths compare its samples while **time** remains readable as timestamps."
+    },
+    {
+      "type": "section",
+      "id": "turn-one-numeric-column-into-gauges",
+      "title": "Turn one numeric column into gauges",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "turn-one-numeric-column-into-gauges-matcher",
+          "content": "Click **Add field override**, choose **Fields with name**, then select **A-series** to limit the change to measurements.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.ValuePicker.button:Add field override}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "id": "step-28",
+              "tooltip": "Scope presentation changes to a specific field.",
+              "description": "Click **Add field override**."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.ValuePicker.select:Add field override} input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Fields with name",
+              "id": "step-29",
+              "tooltip": "Match the field using its displayed name.",
+              "description": "Select **Fields with name**."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:panel-options-override-0 Fields with name} input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "A-series",
+              "id": "step-30",
+              "tooltip": "Leave timestamps outside this numeric override.",
+              "description": "Select **A-series** to apply the override only to the numeric column."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "turn-one-numeric-column-into-gauges-property",
+          "content": "In the **A-series** override, click **Add override property** and select **Cell options > Cell type**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.ValuePicker.button:Add override property}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "id": "step-31",
+              "tooltip": "Choose which presentation setting to override.",
+              "description": "Click **Add override property**."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.ValuePicker.select:Add override property} input",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Cell options > Cell type",
+              "id": "step-32",
+              "tooltip": "Configure how each matching value is rendered.",
+              "description": "Select **Cell options > Cell type**."
+            }
+          ]
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:components.OptionsGroup.group:panel-options-override-0} input[role='combobox']:not([id='panel-options-override-0-matcher'])",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetvalue": "Gauge",
+          "id": "step-33",
+          "tooltip": "Use bar length to help compare numeric samples.",
+          "type": "interactive",
+          "content": "In the **A-series** override, set **Cell type** to **Gauge** to compare samples by bar length.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.OptionsGroup.group:panel-options-override-0} input[title='Gradient']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "targetstate": "true",
+          "id": "step-34",
+          "tooltip": "Use a continuous fill to compare lengths.",
+          "type": "interactive",
+          "content": "In the **A-series** override, set **Gauge display mode** to **Gradient** for a continuous color fill.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.General.content}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "id": "step-35",
+          "tooltip": "A full bar marks the top of the loaded numeric range, not a capacity limit.",
+          "type": "interactive",
+          "content": "Compare the gauges with **Max** in the footer. With automatic bounds, this one-column table scales gauges from its smallest to largest loaded sample. If samples span 40–80, an 80 fills the gauge even though the generator allows 100.",
+          "doIt": false,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The override changes only **A-series**; its longest gauge represents the largest loaded sample, not a measured capacity limit."
+    },
+    {
+      "type": "quiz",
+      "id": "knowledge-check-6",
+      "question": "Does a full automatically scaled gauge mean 100% capacity?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "1",
+          "text": "No, it marks the largest loaded sample in this table, not a capacity limit.",
+          "correct": true,
+          "hint": "Automatic bounds come from loaded numeric values; they are not the generator bounds."
+        },
+        {
+          "id": "2",
+          "text": "Yes, its length always measures capacity.",
+          "correct": false,
+          "hint": "The gauge bounds have not been defined as a capacity scale."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Save the finished dashboard under a recognizable name and inspect the retained table configuration."
+    },
+    {
+      "type": "section",
+      "id": "keep-your-finished-dashboard",
+      "title": "Keep your finished dashboard",
+      "blocks": [
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavToolbar.editDashboard.backToDashboardButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "id": "step-36",
+          "tooltip": "Return with the panel configuration ready to save.",
+          "type": "interactive",
+          "content": "Click **Back** to return to the dashboard.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "multistep",
+          "id": "keep-your-finished-dashboard-save",
+          "content": "Save the dashboard as Table lab - Signal workbench.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.NavToolbar.editDashboard.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "id": "step-37",
+              "tooltip": "Keep the next three actions together while the drawer is open.",
+              "description": "Click **Save** to open the save drawer."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveAsTitleInput}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "targetvalue": "Table lab - Signal workbench",
+              "id": "step-38",
+              "tooltip": "Give this workbench a reusable dashboard name.",
+              "description": "Set **Title** to `Table lab - Signal workbench`."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "id": "step-39",
+              "tooltip": "Persist the finished configuration.",
+              "description": "Click **Save**."
+            }
+          ]
+        },
+        {
+          "action": "highlight",
+          "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/",
+            "has-dashboard-named:Table lab - Signal workbench"
+          ],
+          "id": "step-40",
+          "tooltip": "Check the retained layout and numeric presentation together.",
+          "type": "interactive",
+          "content": "Inspect **Table lab - Signal workbench**: **Signal workbench** should show pagination, a frozen first column, column filters, and one decimal; its footer should contain **Mean** and **Max**, with gradient gauges in **A-series** and timestamps in **time**.",
+          "doIt": false,
+          "showMe": true,
+          "verify": "has-dashboard-named:Table lab - Signal workbench"
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have saved a reusable table workbench combining readable rows, numeric gauges, and average and peak summaries."
+    }
+  ]
+}
