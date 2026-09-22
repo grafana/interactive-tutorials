@@ -1,0 +1,301 @@
+{
+  "id": "transform-testdata-query",
+  "title": "Transform query results with the TestData data source",
+  "blocks": [
+    {
+      "type": "markdown",
+      "id": "intro",
+      "content": "Transformations change query results before Grafana displays them in a panel. You can calculate a single value from a series, rename columns, or combine results from multiple queries.\n\nGrafana stores query results in data frames: tables of rows and columns, where each column is called a field. In this guide, you will create a dashboard and use sample data from the **TestData** data source to try two transformations."
+    },
+    {
+      "type": "callout",
+      "id": "before-you-start",
+      "title": "Before you start",
+      "content": "You need permission to create dashboards. If your Grafana instance does not already have a TestData data source, an administrator must add one in the first section."
+    },
+    {
+      "type": "markdown",
+      "id": "before-setup",
+      "content": "Add a TestData data source to generate sample data, or skip this section if one already exists."
+    },
+    {
+      "type": "section",
+      "id": "add-testdata",
+      "title": "Add the TestData data source",
+      "requirements": [
+        "is-admin"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-datasource-types",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "content": "Open the list of data source types under **Connections**.",
+          "tooltip": "Generate sample data without connecting to an external service or entering credentials.",
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "id": "pick-testdata",
+          "action": "button",
+          "reftarget": "TestData",
+          "content": "Click **TestData** to create the data source.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources/new"
+          ],
+          "verify": "on-page:/connections/datasources/edit",
+          "tooltip": "Grafana creates the data source immediately.",
+          "skippable": true
+        }
+      ],
+      "objectives": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "after-setup",
+      "content": "You now have a data source that generates sample data for your panel."
+    },
+    {
+      "type": "markdown",
+      "id": "before-query",
+      "content": "Create a new dashboard and add a panel that queries three sample time series."
+    },
+    {
+      "type": "section",
+      "id": "build-query",
+      "title": "Create a dashboard and query sample data",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "open-panel-editor",
+          "content": "Create a new dashboard, add a panel, and open the panel editor.",
+          "steps": [
+            {
+              "id": "goto-new-dashboard",
+              "action": "navigate",
+              "reftarget": "/dashboard/new",
+              "tooltip": "Use an unsaved dashboard to try the transformations.",
+              "description": "Start a new dashboard."
+            },
+            {
+              "id": "add-panel",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new",
+                "min-version:13.1.0"
+              ],
+              "tooltip": "Add an empty panel to the new dashboard.",
+              "description": "Add a panel."
+            },
+            {
+              "id": "open-editor",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Sidebar.configurePanelButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new",
+                "min-version:13.1.0"
+              ],
+              "tooltip": "Configure the panel query and transformations.",
+              "description": "Open the panel editor."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "choose-testdata",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "TestData",
+          "requirements": [
+            "exists-reftarget",
+            "has-datasource:grafana-testdata-datasource"
+          ],
+          "formHint": "TestData",
+          "content": "Set the panel's **Data source** to **TestData**.",
+          "tooltip": "Select the source of sample data for this panel."
+        },
+        {
+          "type": "multistep",
+          "id": "shape-the-query",
+          "content": "Set **Series count** to `3`, then run the query.",
+          "steps": [
+            {
+              "id": "set-series-count",
+              "action": "formfill",
+              "reftarget": "input[name='seriesCount']",
+              "targetvalue": "3",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "formHint": "3",
+              "tooltip": "Generate three time series to compare before and after the transformation.",
+              "description": "Set Series count to 3."
+            },
+            {
+              "id": "run-the-query",
+              "action": "highlight",
+              "reftarget": "{grafana:components.RefreshPicker.runButtonV2}",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Display the three time series in the panel preview.",
+              "description": "Run the query."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "after-query",
+      "content": "Your new dashboard has a panel with three sample time series from one query."
+    },
+    {
+      "type": "markdown",
+      "id": "before-first",
+      "content": "Apply **Reduce** to calculate a summary value for each series and inspect the result in **Table view**."
+    },
+    {
+      "type": "section",
+      "id": "first-transformation",
+      "title": "Add your first transformation",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-transform-tab",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Tab.title:Transformations}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Click **Transformations** next to **Queries**; if your editor has a **Transformations** sidebar section instead, skip this step.",
+          "tooltip": "Configure how Grafana processes the query results.",
+          "skippable": true
+        },
+        {
+          "type": "multistep",
+          "id": "add-reduce",
+          "content": "Apply the **Reduce** transformation.",
+          "steps": [
+            {
+              "id": "open-transform-drawer",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid add transformation button'], [aria-label='Add transformation']",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Choose a transformation to apply to the query results.",
+              "description": "Open the transformation list."
+            },
+            {
+              "id": "search-reduce",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Transforms.searchInput}",
+              "targetvalue": "Reduce",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "formHint": "Reduce",
+              "tooltip": "Filter the list to find the transformation.",
+              "description": "Search for Reduce."
+            },
+            {
+              "id": "pick-reduce",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Transforms.card:Reduce} button",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Calculate a summary value for each series.",
+              "description": "Select Reduce."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "see-the-result",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.toggleTableView}",
+          "targetstate": "true",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "content": "Turn on **Table view** to inspect the transformed results.",
+          "tooltip": "Compare each series name with its calculated value."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "after-first",
+      "content": "You used **Reduce** to calculate a summary value for each series."
+    },
+    {
+      "type": "markdown",
+      "id": "before-chain",
+      "content": "Add **Organize fields by name** to see how a second transformation uses the results of the first."
+    },
+    {
+      "type": "section",
+      "id": "chain-a-second",
+      "title": "Chain a second transformation",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "add-organize",
+          "content": "Add **Organize fields by name** after Reduce.",
+          "steps": [
+            {
+              "id": "open-drawer-again",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid add transformation button'], [aria-label='Add transformation']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Choose another transformation to process the current results.",
+              "description": "Open the transformation list again."
+            },
+            {
+              "id": "search-organize",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Transforms.searchInput}",
+              "targetvalue": "Organize",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "formHint": "Organize",
+              "tooltip": "Find the option for renaming, reordering, and hiding columns.",
+              "description": "Search for Organize."
+            },
+            {
+              "id": "pick-organize",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Transforms.card:Organize fields by name} button",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "Work with the columns produced by the previous transformation.",
+              "description": "Select Organize fields by name."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "outro",
+      "content": "You added **Organize fields by name** after **Reduce**, so it lists the columns produced by that first transformation.\n\nEach transformation receives the results of the one before it, so their order matters. Try renaming a column in **Organize fields by name**, then check the result in **Table view**.\n\nTo explore further, try **Filter data by values** to remove rows that match a condition, or **Add field from calculation** to calculate a new column from existing values."
+    }
+  ]
+}
