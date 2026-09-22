@@ -1,0 +1,186 @@
+{
+  "id": "get-started-instrument-app",
+  "title": "Send your app's telemetry to Grafana Cloud",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Your app is instrumented with OpenTelemetry, and you want its metrics, logs, and traces in Grafana Cloud. This guide gets the connection details from your stack, adds them to your app as environment variables, and confirms data is arriving. If your app isn't instrumented yet, [install the demo data](bundled:get-started-demo-data) first to see what you're working toward.\n\nFirst, open the OpenTelemetry setup page."
+    },
+    {
+      "type": "section",
+      "id": "open-the-setup-page",
+      "title": "Open the setup page",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Click **Connections** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Click **Add new connection**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='search-input-input']",
+          "targetvalue": "OpenTelemetry",
+          "doIt": false,
+          "content": "Search for **OpenTelemetry** to filter the catalog.",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Click the **OpenTelemetry (OTLP)** tile.\n\nIt's the language-agnostic path for an app that's already instrumented."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "View connection details",
+          "content": "Click **View connection details**.\n\nThe environment tiles above it generate collector setups. Your app is already instrumented, so jump straight to the endpoint and authentication details.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The setup page is open. It provides everything your app needs, including the endpoint address, a credential, and the configuration.\n\nNow create a token and copy the configuration. You need the **Admin** role in your stack."
+    },
+    {
+      "type": "section",
+      "id": "create-a-token-and-copy-the-config",
+      "title": "Create a token and copy the config",
+      "requirements": ["section-completed:open-the-setup-page", "has-role:admin"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Follow the page's instructions to create a new API token. Give it a name you'll recognize and click **Create token**.\n\nThe token is how your app signs in to your stack, and the page adds it to the configuration for you."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Copy to clipboard",
+          "content": "Copy the configuration.\n\nIt sets three environment variables, `OTEL_EXPORTER_OTLP_PROTOCOL`, `OTEL_EXPORTER_OTLP_ENDPOINT`, and `OTEL_EXPORTER_OTLP_HEADERS`, which carry the protocol, your stack's endpoint, and the credential.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have the environment variables your app needs to send telemetry to your stack.\n\nNext, add them to your app."
+    },
+    {
+      "type": "section",
+      "id": "configure-your-app",
+      "title": "Configure your app",
+      "requirements": ["section-completed:create-a-token-and-copy-the-config"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Set the environment variables where your app runs, in its shell, container, or deployment configuration, then restart or redeploy the app.\n\nThe OpenTelemetry SDK reads them at startup and sends every signal to your stack."
+        },
+        {
+          "type": "markdown",
+          "content": "These steps happen outside of Grafana Cloud, so this guide can't detect them. Once your app restarts with the variables set, click **Mark section as complete** below to continue."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your app is sending its telemetry to Grafana Cloud.\n\nFinally, confirm the data is arriving."
+    },
+    {
+      "type": "section",
+      "id": "confirm-data-is-arriving",
+      "title": "Confirm data is arriving",
+      "requirements": ["section-completed:configure-your-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "content": "Click **Explore** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid Data source picker select container']",
+          "content": "Choose the data source whose name ends in **-prom** in the picker.\n\nEvery stack comes with one, and it stores the metrics your app sends.",
+          "tooltip": "Every query runs against one of your connected data stores. This picker chooses which one.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:has(input[title='Code'])",
+          "content": "Switch the query editor to **Code** mode so you can type the query directly.\n\nIf **Code** is already selected, this changes nothing.",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.Prometheus.queryEditor.code.queryField} textarea.inputarea",
+          "targetvalue": "target_info",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "content": "Enter `target_info` in the query field.\n\nGrafana Cloud creates this metric from every OpenTelemetry sender's resource attributes, so it returns one row per instrumented app."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Run query**.\n\nA row with your service's name means your app's telemetry is in Grafana Cloud. If it's empty, give the app a minute after the restart and run it again.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've connected an instrumented app to Grafana Cloud and confirmed its data is arriving. The same picker has matching **-logs** and **-traces** data sources for your app's other signals.\n\nFinally, if you're an administrator, you can activate **Application Observability** to see your service in a purpose-built catalog instead of raw query results.\n\n> **Caution:** Activation is optional. It needs a plan that supports the knowledge graph, it works from the traces your app sends, and it starts host-hours billing."
+    },
+    {
+      "type": "section",
+      "id": "see-your-service",
+      "title": "See your service in Application Observability",
+      "requirements": ["section-completed:confirm-data-is-arriving", "has-role:admin"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/observability']",
+          "content": "Click **Observability** in the main menu.\n\nWhat opens next depends on whether Application Observability is already active on your stack.",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "skippable": true
+        },
+        {
+          "type": "markdown",
+          "content": "Check which page opened.\n\nIf you see an **Observability** overview with a list of services, Application Observability is already activated on your stack, and you can skip to the last step of this section. If you see an onboarding page with three dataset options (Kubernetes, Applications, and Hosts), activate it with the next two steps."
+        },
+        {
+          "type": "markdown",
+          "content": "Click the **Applications** dataset option, review the dialog, then click **Activate**.\n\nThis enables metric generation from your traces, and billing is based on host hours."
+        },
+        {
+          "type": "markdown",
+          "content": "Click **Build knowledge graph**.\n\nThe status changes to **Knowledge graph built**, and discovery starts running on your telemetry."
+        },
+        {
+          "type": "markdown",
+          "content": "When discovery finishes, open **Observability > Application** in the main menu. Your service appears in the services catalog with its performance metrics, and clicking it drills into rates, errors, durations, and traces."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your app's telemetry now powers Application Observability and the knowledge graph, the views this data was made for. What you send counts toward usage-based billing, so instrument what you use."
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "id": "get-started-monitor-host",
+  "title": "Monitor a host or service with an integration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You have a host or app, and nothing collects data from it yet. An integration is a packaged setup for one technology. It installs a small collector called Grafana Alloy that reads data from your machine and sends it to Grafana Cloud, and it ships prebuilt dashboards, so your first visualizations appear without writing a query."
+    },
+    {
+      "type": "markdown",
+      "content": "First, find the integration for what you run."
+    },
+    {
+      "type": "section",
+      "id": "find-your-integration",
+      "title": "Find your integration",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "Click **Connections** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Click **Add new connection**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "input[data-testid='search-input-input']",
+          "content": "Search for what you want to monitor, for example a Linux server, Windows, or MySQL, then select its tile from the results.",
+          "tooltip": "Type the technology you want to monitor. The results filter as you type.",
+          "requirements": ["on-page:/connections/add-new-connection", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You found your integration. Everything you need to connect it is on this page."
+    },
+    {
+      "type": "markdown",
+      "content": "Now install the collector on the machine you want to monitor."
+    },
+    {
+      "type": "section",
+      "id": "set-up-the-collector",
+      "title": "Set up the collector",
+      "requirements": ["section-completed:find-your-integration", "on-page:/connections/add-new-connection"],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Setup looks a little different for each integration. Some ask you to choose the operating system and architecture of the machine you're monitoring, and others ask for details such as connection settings. Fill in whatever your integration asks for by following the instructions on the page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='agent-config-button']",
+          "content": "Click **Run Grafana Alloy** and work through the dialog, where you will:\n\n- Create an API token\n- Copy the install command and run it in a terminal on the machine you're monitoring\n- Click **Test Alloy connection** to confirm the collector is connected\n\n- When the test passes, click **Proceed to install integration** to close the dialog.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The collector is running on your machine and sending data to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "Time to add the prebuilt dashboards. Installing them adds dashboards and alert rules to your stack, which requires the **Admin** role."
+    },
+    {
+      "type": "section",
+      "id": "install-the-dashboards",
+      "title": "Install the dashboards",
+      "requirements": ["section-completed:set-up-the-collector", "on-page:/connections/add-new-connection", "has-role:admin"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='install-button']",
+          "content": "Click **Install**. This adds the integration's dashboards and alert rules to your stack.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "guided",
+          "content": "Click **View Dashboards** and open one. Your machine's metrics are already on it.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[href^='/dashboards/f/integration']",
+              "lazyRender": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You're monitoring a real machine on a dashboard you didn't have to build."
+    },
+    {
+      "type": "markdown",
+      "content": "Dashboards are one view of the data. To see the raw metrics arriving, look in Metrics Drilldown."
+    },
+    {
+      "type": "section",
+      "id": "confirm-data-is-flowing",
+      "title": "Confirm data is flowing",
+      "requirements": ["section-completed:install-the-dashboards"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/drilldown']",
+          "content": "Click **Drilldown** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main a[href='/a/grafana-metricsdrilldown-app/drilldown']",
+          "verify": "on-page:/a/grafana-metricsdrilldown-app",
+          "content": "Click **Metrics**. Every metric in your stack appears as a live chart, no query needed.",
+          "requirements": ["on-page:/drilldown", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Look for metric names from your integration, for example names starting with `node_` for a Linux server or `windows_` for Windows. Those charts are your machine's data arriving right now. If you don't see them yet, give it a minute or two and refresh."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Data is flowing. You've confirmed that your machine's metrics are arriving in Grafana Cloud."
+    }
+  ]
+}
