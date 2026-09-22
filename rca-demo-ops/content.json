@@ -8,7 +8,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 1: Start from an Alert\n\nOpen the alert context used by this demo."
+      "content": "Open the alert context used by this demo."
     },
     {
       "type": "section",
@@ -28,7 +28,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 2: Jump to Investigation\n\nThe **Search Product Latency** alert fired—users are experiencing slow product searches. This SLO-based alert includes a direct link to the RCA Workbench, scoped to \"productcatalogservice\" and connected services. In production, you'd receive this in Slack and use the link to jump straight into an investigation."
+      "content": "The **Search Product Latency** alert fired—users are experiencing slow product searches. This SLO-based alert includes a direct link to the RCA Workbench, scoped to \"productcatalogservice\" and connected services. In production, you'd receive this in Slack and use the link to jump straight into an investigation."
     },
     {
       "type": "section",
@@ -48,7 +48,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 3: Get Familiar with the RCA Workbench\n\nYou're now viewing a **timeline of insights** for \"productcatalogservice\" and connected services. Insights appear as ticks — red for errors, yellow for warnings, blue for changes. Notice the blue change followed by cascading red errors? That's your first clue."
+      "content": "You're now viewing a **timeline of insights** for \"productcatalogservice\" and connected services. Insights appear as ticks — red for errors, yellow for warnings, blue for changes. Notice the blue change followed by cascading red errors? That's your first clue."
     },
     {
       "type": "section",
@@ -100,7 +100,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 4: Investigate the Initial Change\n\nNote the **blue notification** at the front of the timeline, before the red errors cascaded. Let's drill into it — a feature flag change called \"productCatalogReadFromPostgres\" was turned on. This occurred *before* the productcatalog service (our alert trigger) started failing and cascading to connected services."
+      "content": "Note the **blue notification** at the front of the timeline, before the red errors cascaded. Let's drill into it — a feature flag change called \"productCatalogReadFromPostgres\" was turned on. This occurred *before* the productcatalog service (our alert trigger) started failing and cascading to connected services."
     },
     {
       "type": "section",
@@ -153,7 +153,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 5: Investigate Frontend Impact\n\n*Skip this if you don't want to learn about front end observability.*\n\nThe frontend service shows a massive red blob — heavily impacted with error buildups and **anomalies** (OOTB detection of metrics falling outside expected range). Let's drill into the \"GetProduct\" endpoint anomaly — critical for an ecommerce platform where users can't buy products if they can't view them."
+      "content": "*Skip this if you don't want to learn about front end observability.*\n\nThe frontend service shows a massive red blob — heavily impacted with error buildups and **anomalies** (OOTB detection of metrics falling outside expected range). Let's drill into the \"GetProduct\" endpoint anomaly — critical for an ecommerce platform where users can't buy products if they can't view them."
     },
     {
       "type": "section",
@@ -192,7 +192,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 6 (Optional): Quantify User Impact\n\n*Skip this if you skipped Section 5.*\n\nWe've found backend anomalies, but what about actual user impact? The **KPI Drawer** integrates Frontend Observability, letting us investigate browser behavior without leaving the RCA Workbench. Every service has a KPI drawer, dynamically populated based on what the knowledge graph discovered — this one includes frontend observability."
+      "content": "*Skip this if you skipped Section 5.*\n\nWe've found backend anomalies, but what about actual user impact? The **KPI Drawer** integrates Frontend Observability, letting us investigate browser behavior without leaving the RCA Workbench. Every service has a KPI drawer, dynamically populated based on what the knowledge graph discovered — this one includes frontend observability."
     },
     {
       "type": "section",
@@ -258,7 +258,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 7 (Optional): Track with Grafana IRM\n\n**Grafana IRM** provides a central hub to track findings, participants, and progress. In production, you can declare incidents directly from Slack. This creates an incident in Grafana IRM and opens a dedicated Slack channel. For this demo, we have a **pre-created incident** tracking our investigation with issue details and alert groups."
+      "content": "**Grafana IRM** provides a central hub to track findings, participants, and progress. In production, you can declare incidents directly from Slack. This creates an incident in Grafana IRM and opens a dedicated Slack channel. For this demo, we have a **pre-created incident** tracking our investigation with issue details and alert groups."
     },
     {
       "type": "section",
@@ -297,7 +297,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 8: Investigate the Database\n\nThe \"productcatalog-postgres\" service shows yellow warnings. There are few insights here, but the Knowledge Graph detects even small anomalies that relate to bigger problems. Out of the box PostgreSQL alerts show **PostgreSQLHighConnections** firing intermittently."
+      "content": "The \"productcatalog-postgres\" service shows yellow warnings. There are few insights here, but the Knowledge Graph detects even small anomalies that relate to bigger problems. Out of the box PostgreSQL alerts show **PostgreSQLHighConnections** firing intermittently."
     },
     {
       "type": "section",
@@ -345,7 +345,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 9: Investigate the Product Catalog Service\n\nThe \"productcatalogservice\" is at the center of this incident. Grafana combines **application and infrastructure signals** in one view: no context switching required. Hovering reveals: latency anomalies (5 endpoints), Kubernetes pod crash looping, and /ListProducts endpoint errors. Let's check if crashes are frequent or a one-off."
+      "content": "The \"productcatalogservice\" is at the center of this incident. Grafana combines **application and infrastructure signals** in one view: no context switching required. Hovering reveals: latency anomalies (5 endpoints), Kubernetes pod crash looping, and /ListProducts endpoint errors. Let's check if crashes are frequent or a one-off."
     },
     {
       "type": "section",
@@ -393,7 +393,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 10: Find the Root Cause\n\nThe **KPI Drawer** for productcatalogservice is dynamically populated with relevant dashboards—Properties, Service Overview (App O11y), Kubernetes, Traces, and Logs. The RCA Workbench ties together all observability signals without dashboard hunting or context switching.\n\nWhat we see is that there were errors and latency on the /ListProducts endpoint and that all of the errors show too many clients connecting to the database. Stack traces show null pointer exceptions and crashes with database connection failures. The ultimate root cause is that switching a feature flag introduced a bug causing null pointer exceptions and preventing database connections."
+      "content": "The **KPI Drawer** for productcatalogservice is dynamically populated with relevant dashboards—Properties, Service Overview (App O11y), Kubernetes, Traces, and Logs. The RCA Workbench ties together all observability signals without dashboard hunting or context switching.\n\nWhat we see is that there were errors and latency on the /ListProducts endpoint and that all of the errors show too many clients connecting to the database. Stack traces show null pointer exceptions and crashes with database connection failures. The ultimate root cause is that switching a feature flag introduced a bug causing null pointer exceptions and preventing database connections."
     },
     {
       "type": "section",
@@ -535,7 +535,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 11: Confirm Database Impact\n\nWe found the service bug — now let's verify the impact on the database. The KPI Drawer auto-discovered that we're using PostgreSQL and populated postgres-specific dashboards. We'll see: auto-discovered properties, active connections spiking/dropping (matching service crashes), and \"too many clients\" errors confirming the connection overload."
+      "content": "We found the service bug — now let's verify the impact on the database. The KPI Drawer auto-discovered that we're using PostgreSQL and populated postgres-specific dashboards. We'll see: auto-discovered properties, active connections spiking/dropping (matching service crashes), and \"too many clients\" errors confirming the connection overload."
     },
     {
       "type": "section",
@@ -604,7 +604,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 13: Visualize the Blast Radius\n\nThe **Graph tab** shows a topology visualization of how services connect, using the same knowledge graph data powering the timeline. It's a real-time view with no manual diagramming required."
+      "content": "The **Graph tab** shows a topology visualization of how services connect, using the same knowledge graph data powering the timeline. It's a real-time view with no manual diagramming required."
     },
     {
       "type": "section",
@@ -627,7 +627,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 14: Quantify Business Impact\n\nHaving found the technical root cause, let's examine the business question: **How much revenue did we lose?** The RCA Workbench is **extensible**: we can attach custom dashboards to entity types so your curated KPIs appear automatically. For this demo, a **Business** dashboard is attached to the checkout services, showing revenue and abandonment metrics."
+      "content": "Having found the technical root cause, let's examine the business question: **How much revenue did we lose?** The RCA Workbench is **extensible**: we can attach custom dashboards to entity types so your curated KPIs appear automatically. For this demo, a **Business** dashboard is attached to the checkout services, showing revenue and abandonment metrics."
     },
     {
       "type": "section",
@@ -684,7 +684,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Section 15 (Optional): AI-Powered Investigation\n\n**⚠️ Experimental:** Workbench AI is experimental feature!\n\n**What it does:** Workbench AI can automatically perform all the steps we just did: analyzing services, chronological sequence, KPI signals, and forming a hypothesis. Instantaneous. We didn't lead with this so you'd experience the RCA Workbench magic first and understand what's happening under the hood."
+      "content": "**⚠️ Experimental:** Workbench AI is experimental feature!\n\n**What it does:** Workbench AI can automatically perform all the steps we just did: analyzing services, chronological sequence, KPI signals, and forming a hypothesis. Instantaneous. We didn't lead with this so you'd experience the RCA Workbench magic first and understand what's happening under the hood."
     },
     {
       "type": "section",
