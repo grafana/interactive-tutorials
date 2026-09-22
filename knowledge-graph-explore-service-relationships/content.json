@@ -1,0 +1,359 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "knowledge-graph-explore-service-relationships",
+  "title": "Explore service relationships with Knowledge Graph",
+  "blocks": [
+    {
+      "type": "callout",
+      "title": "Before you begin",
+      "content": "Allow 8\u201312 minutes and use the current Knowledge Graph interface with existing service telemetry and relationships. This example opens the first instrumented catalog service and requires at least one connected entity. No admin configuration changes are needed."
+    },
+    {
+      "type": "markdown",
+      "content": "Open Knowledge Graph to begin a dependency investigation using existing telemetry."
+    },
+    {
+      "type": "section",
+      "id": "open-graph",
+      "title": "Open Knowledge Graph",
+      "requirements": [],
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/a/grafana-asserts-app/entities",
+          "requirements": [],
+          "tooltip": "Open the investigation starting point.",
+          "type": "interactive",
+          "content": "Open Knowledge Graph to investigate a service and its connected entities.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You opened the starting point for investigating modeled entities and their relationships."
+    },
+    {
+      "type": "markdown",
+      "content": "Read the service landscape and distinguish relationship context from evidence of health."
+    },
+    {
+      "type": "section",
+      "id": "read-graph",
+      "title": "Read the service landscape",
+      "requirements": [
+        "plugin-enabled:grafana-asserts-app"
+      ],
+      "blocks": [
+        {
+          "action": "formfill",
+          "reftarget": "[data-testid='entities-search-query-select']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/entities"
+          ],
+          "tooltip": "Search for the service query.",
+          "targetvalue": "Show all Services",
+          "type": "interactive",
+          "content": "Search for Show all Services.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "guided",
+          "id": "exact-service-query",
+          "content": "Reopen the suggestions and select the exact **Show all Services** query.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='entities-search-query-select']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/entities"
+              ],
+              "tooltip": "Reopen the available suggestions.",
+              "description": "Reopen the suggestions after searching."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='option']:text('Show all Services')",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/entities"
+              ],
+              "tooltip": "Choose the exact service query.",
+              "lazyRender": true,
+              "description": "Choose the exact **Show all Services** query."
+            }
+          ]
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='graph-toolbar-fitView-btn']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/entities"
+          ],
+          "tooltip": "Fit all visible entities into view.",
+          "type": "interactive",
+          "content": "Fit the graph to view its entities and relationships. Nodes represent entities, and links describe observed relationships. Read the selected time, environment, region, and namespace as the scope of this view. The outer health ring represents the entity\u2019s own insight severity; the inner ring represents connected insight severity. Muted rings or missing metrics do not prove health.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You scoped the service landscape and learned what entity and connected health rings represent."
+    },
+    {
+      "type": "markdown",
+      "content": "Use the catalog to establish the identity of one instrumented service."
+    },
+    {
+      "type": "section",
+      "id": "identify-service",
+      "title": "Establish the service identity",
+      "requirements": [
+        "plugin-enabled:grafana-asserts-app"
+      ],
+      "blocks": [
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-nav-btn']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/entities"
+          ],
+          "tooltip": "Open the tabular entity inventory.",
+          "type": "interactive",
+          "content": "Open **Entity catalog**, the tabular entry into the same modeled entities, to select an inspectable service.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-main-tab-performance']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "tooltip": "Show available service signals.",
+          "type": "interactive",
+          "content": "Open **Performance** to see the available service signals.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-uninstrumented-filter-radio'] input[title='Instrumented']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "tooltip": "Limit results to instrumented services.",
+          "type": "interactive",
+          "content": "Select **Instrumented** to show services with their own instrumentation; inferred dependencies may fall outside this filter.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "tooltip": "Inspect the first available service.",
+          "lazyRender": true,
+          "type": "interactive",
+          "content": "Open the first service as your starting entity; its name will depend on your instance.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-drawer-overview-tab']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "tooltip": "Inspect the entity attributes.",
+          "type": "interactive",
+          "content": "Open **Properties** to inspect the service identity and its available attributes.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-details-copy-name']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/catalog"
+          ],
+          "tooltip": "Read the scoped service identity.",
+          "type": "interactive",
+          "content": "Read the service name together with its environment and namespace, and identify one property useful for your investigation. The same name in another environment or namespace can refer to a different entity; observe the identity without clicking the copy control.",
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You identified a service by its name, scope, and properties rather than its name alone."
+    },
+    {
+      "type": "markdown",
+      "content": "Follow a connected entity while preserving the starting service and investigation path."
+    },
+    {
+      "type": "section",
+      "id": "follow-dependency",
+      "title": "Follow a connection",
+      "requirements": [
+        "plugin-enabled:grafana-asserts-app"
+      ],
+      "blocks": [
+        {
+          "type": "guided",
+          "id": "connection-modal-journey",
+          "content": "Open the connections, read the relationship context, follow a neighbor, and inspect its graph while keeping the investigation together.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='entity-details-connected-entities']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/catalog"
+              ],
+              "tooltip": "Explore entities linked to this service.",
+              "description": "Open **Connections** to inspect entities linked to this service."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='connected-entity-navigate-btn']:nth-match(1)",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/catalog"
+              ],
+              "tooltip": "Continue through the first connected entity.",
+              "lazyRender": true,
+              "description": "Before continuing, read the available relationship labels, entity types, and insight indicators. Upstream and downstream describe service relationship direction; Pod and Namespace links describe hosting or membership. Use the types actually shown: a connected warning is context, not proof of cause. Then click the first neighbor\u2019s **Connections** button to continue the traversal; clicking its name opens KPIs."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='connected-entities-graph-link']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/catalog"
+              ],
+              "tooltip": "Graph the current entity and its relationships.",
+              "description": "Before opening **View Graph**, read the breadcrumb: it preserves the starting service and identifies the current neighbor. Compare their identities to explain your investigation path. Then open **View Graph**, which uses the current neighbor and its relationships."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You followed a typed relationship and retained the original service in the breadcrumb."
+    },
+    {
+      "type": "quiz",
+      "id": "connection-evidence",
+      "question": "What does an insight warning on a connected entity tell you?",
+      "choices": [
+        {
+          "id": "context",
+          "text": "It is a reason to investigate that connection.",
+          "correct": true,
+          "hint": "A relationship and warning provide context; confirming a cause requires additional evidence."
+        },
+        {
+          "id": "cause",
+          "text": "It proves the connected entity caused the service problem.",
+          "correct": false,
+          "hint": "Being connected does not establish causation."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Explain the search generated for your current entity and choose the next evidence to inspect."
+    },
+    {
+      "type": "section",
+      "id": "focused-graph",
+      "title": "Explain the focused graph",
+      "requirements": [
+        "plugin-enabled:grafana-asserts-app"
+      ],
+      "blocks": [
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-advanced-search']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/entities"
+          ],
+          "tooltip": "Check the generated identity filters.",
+          "type": "interactive",
+          "content": "Read the generated filters in **Advanced search**: the current entity type and name, its available environment and namespace, and connected entity types. Check that they describe the neighbor you followed; no save is needed.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-search-close-btn']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/entities"
+          ],
+          "tooltip": "Return to the focused graph.",
+          "type": "interactive",
+          "content": "Close **Advanced search** to inspect the focused graph.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='graph-toolbar-fitView-btn']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/entities"
+          ],
+          "tooltip": "Fit the graph and choose the next investigation.",
+          "type": "interactive",
+          "content": "Fit the focused graph and choose a caller, dependency, or supporting resource to investigate next, using the relationships and insight evidence actually shown. A KPI dashboard, traces, or logs can supply the next evidence; a connection alone cannot establish the cause.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You traced the focused graph back to the current entity\u2019s identity and chose a next investigation based on available evidence."
+    },
+    {
+      "type": "quiz",
+      "id": "graph-scope",
+      "question": "After following a neighbor, which entity does View Graph use?",
+      "choices": [
+        {
+          "id": "neighbor",
+          "text": "The current neighbor and its relationships.",
+          "correct": true,
+          "hint": "The generated search uses the currently explored entity identity and connected types."
+        },
+        {
+          "id": "original",
+          "text": "Always the original service.",
+          "correct": false,
+          "hint": "The breadcrumb preserves the original service, but the graph uses the current focus."
+        }
+      ]
+    }
+  ]
+}

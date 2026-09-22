@@ -1,0 +1,150 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "application-observability-investigate-service",
+  "title": "Investigate a service with Application Observability",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Open the service catalog to investigate existing telemetry without configuring ingestion."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Open the service catalog",
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/a/grafana-asserts-app/services",
+          "requirements": [],
+          "type": "interactive",
+          "content": "Open the service catalog.",
+          "showMe": true,
+          "doIt": true,
+          "tooltip": "Open the catalog to begin your investigation."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The service catalog is the starting point for an investigation scoped to one service."
+    },
+    {
+      "type": "callout",
+      "title": "Before you begin",
+      "content": "Use an instance with Application Observability enabled and existing instrumented services; this guide does not set up telemetry."
+    },
+    {
+      "type": "markdown",
+      "content": "Filter to instrumented services, inspect RED metrics, and compare traces, instrumentation quality, and entity metadata for the same service."
+    },
+    {
+      "type": "section",
+      "id": "investigate-a-service-with-application",
+      "title": "Investigate one service",
+      "requirements": [
+        "plugin-enabled:grafana-asserts-app"
+      ],
+      "blocks": [
+        {
+          "type": "guided",
+          "id": "open-instrumented-service",
+          "content": "Choose **Performance**, filter to **Instrumented**, then open the first service; inferred services are outside this investigation.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='catalog-main-tab-performance']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/services"
+              ],
+              "description": "Select Performance.",
+              "tooltip": "Inspect service performance."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='catalog-uninstrumented-filter-radio'] input[title='Instrumented']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/services"
+              ],
+              "description": "Select Instrumented.",
+              "tooltip": "Filter the catalog to services with instrumentation."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-asserts-app/services"
+              ],
+              "description": "Select the first instrumented service.",
+              "lazyRender": true,
+              "tooltip": "Open the first service in the filtered catalog."
+            }
+          ]
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-drawer-apps-tab-serviceOverview']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/services"
+          ],
+          "type": "interactive",
+          "content": "Inspect **Service overview**: request rate shows traffic, error ratio shows the proportion of failed requests, and latency shows response time; compare all three over the same time range.",
+          "showMe": true,
+          "doIt": false,
+          "tooltip": "Compare traffic, failures, and response time over the same time range."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-drawer-traces-tab']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/services"
+          ],
+          "type": "interactive",
+          "content": "Select **Traces** and check that the selected service remains in context; inspect the results or explicitly note the empty state for the current time range.",
+          "showMe": true,
+          "doIt": true,
+          "tooltip": "Inspect available trace evidence for the selected service."
+        },
+        {
+          "type": "callout",
+          "title": "Read missing data carefully",
+          "content": "An empty trace view does not establish that a service is healthy or unhealthy; describe what the view actually shows."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-drawer-quality-tab']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/services"
+          ],
+          "type": "interactive",
+          "content": "Select **Quality report** for the same service and inspect the instrumentation checks, or explicitly note that the report is still being generated; these checks describe telemetry quality, not whether the service is healthy.",
+          "showMe": true,
+          "doIt": true,
+          "tooltip": "Distinguish telemetry quality from service health."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='entity-drawer-overview-tab']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/services"
+          ],
+          "type": "interactive",
+          "content": "Select **Properties** and inspect the available entity metadata to confirm which service your investigation describes.",
+          "showMe": true,
+          "doIt": true,
+          "tooltip": "Confirm the entity metadata for your investigation."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You followed one service from RED metrics to trace evidence, instrumentation quality or its report-generation state, and entity metadata while preserving its context."
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "postgresql-data-source-prepare",
+  "title": "Prepare PostgreSQL database configuration",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you prepare the PostgreSQL configuration required for monitoring. This includes creating a dedicated read-only user for Grafana and gathering the connection details you'll need later.\n\nGrafana doesn't validate the safety of queries, so a user with broad privileges could run harmful SQL such as `DROP TABLE`. Creating a dedicated user with only `SELECT` permissions on the schemas and tables you need follows security best practices and limits risk.\n\n**Prerequisites**:\n\n- Check that your PostgreSQL server is up and running.\n- Make sure your firewall allows connections to the PostgreSQL server (the default port is `5432`).\n\nTo prepare your PostgreSQL database configuration, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Connect to your PostgreSQL server as an administrative user:\n\n```bash\npsql -U postgres -h localhost\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Create a dedicated read-only user for Grafana:\n\n```sql\nCREATE USER grafanareader WITH PASSWORD 'password';\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Grant the user access to the schema and read access to the tables you want to visualize. Replace `schema` and `table` with your own names:\n\n```sql\nGRANT USAGE ON SCHEMA schema TO grafanareader;\nGRANT SELECT ON schema.table TO grafanareader;\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Exit the PostgreSQL client:\n\n```sql\n\\q\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Test the new user's connection:\n\n```bash\npsql -U grafanareader -h localhost -d your_database -c \"SELECT version();\"\n```"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll add the PostgreSQL data source to your Grafana Cloud instance."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure the PostgreSQL data source](https://grafana.com/docs/grafana/latest/datasources/postgres/configure/)\n- [Data source plugins for Grafana](https://grafana.com/grafana/plugins/data-source-plugins/)"
+    }
+  ]
+}

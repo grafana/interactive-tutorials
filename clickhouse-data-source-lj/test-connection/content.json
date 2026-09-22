@@ -1,0 +1,41 @@
+{
+  "id": "clickhouse-data-source-test",
+  "title": "Save and test the connection",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "With the connection details entered, save the data source and confirm Grafana can reach ClickHouse.\n\nTo test the connection, complete the following step."
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save & test",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "content": "Click **Save & test**.\n\nWhen the test succeeds, you'll see the message `Data source is working`. This confirms Grafana can reach ClickHouse and that the credentials are valid."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've saved the data source and confirmed Grafana can reach ClickHouse."
+    },
+    {
+      "type": "markdown",
+      "content": "**If the test fails**\n\nThe plugin prefixes each error with a category in square brackets so you can pinpoint the problem quickly:\n\n- `[config]` -- a connection setting is missing or invalid, such as an empty host, an out-of-range port, or malformed JSON. Recheck the **Server address** and **Server port**.\n- `[auth]` -- the credentials or privileges are wrong. Re-check the username and password for your read-only user.\n- `[network]` -- Grafana can't reach ClickHouse. Confirm the host, port, and that any firewall allows Grafana Cloud.\n- `[tls]` -- a TLS or certificate problem. Check that **Secure Connection** and the port match your server.\n\nIf the test reports `failed to create ClickHouse client`, clear the **Default database** field and try again -- a database name that doesn't exist is a common cause, especially on ClickHouse Cloud.\n\nIf the test passes but queries later fail with `Cannot modify 'max_execution_time': Setting is locked`, revisit the read-only user's settings profile from the earlier milestone."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll verify your data by running a query in Explore."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Failed to create ClickHouse client](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/troubleshooting/#failed-to-create-clickhouse-client)\n- [Setting is locked (readonly)](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/troubleshooting/#setting-is-locked-readonly)\n- [Full troubleshooting guide](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/troubleshooting/)"
+    }
+  ]
+}
