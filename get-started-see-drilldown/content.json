@@ -94,12 +94,17 @@
           "requirements": ["on-page:/a/grafana-lokiexplore-app", "exists-reftarget"]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid button-select-service'][href*='/service/checkoutservice/']",
-          "verify": "on-page:/a/grafana-lokiexplore-app/explore/service/checkoutservice",
+          "type": "guided",
           "content": "Click **Show logs** on **checkoutservice**.\n\nCheckout is slow, and this is the service that runs it, so its logs are the place to look for the cause.",
-          "requirements": ["on-page:/a/grafana-lokiexplore-app", "exists-reftarget"]
+          "requirements": ["on-page:/a/grafana-lokiexplore-app"],
+          "completeEarly": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid button-select-service'][href*='/service/checkoutservice/']",
+              "lazyRender": true
+            }
+          ]
         },
         {
           "type": "interactive",
