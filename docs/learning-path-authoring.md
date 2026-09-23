@@ -36,6 +36,8 @@ Feature: Setting up MongoDB monitoring with the Grafana Cloud integration
 Audience: Grafana beginners who have MongoDB running and want metrics in Grafana Cloud
 ```
 
+If a learning journey in docs-ai already has a signed-off plan for this path, give `/create-learning-path` that journey's docs-ai PR instead of a feature/audience description — it skips the proposal step and builds straight from the approved outline.
+
 For convert, run `/build-interactive-lj` and give the website learning-path slug (for example `mysql-data-source`).
 
 ## Session shape (create or convert)
@@ -170,6 +172,7 @@ Screenshots for opening **dev mode** and the Block Editor are in the [repo READM
 - Authors: run [`/preflight-learning-path`](../.cursor/commands/preflight-learning-path.md) before opening a PR (static checks + live DOM; optional Block Editor walk).
 - Reviewers: run [`/review-learning-path-pr`](../.cursor/commands/review-learning-path-pr.md) after the PR exists.
 - Add the `lh-learning-path` label to learning path PRs, and set **Status** on the [Learning Hub board](https://github.com/orgs/grafana/projects/1108/views/2), so the PR appears on the board with the right workflow state.
+- If this path came from a learning journey in docs-ai and carries an embed shortcode back to it: merge **this** PR before merging the `website` PR that adds the shortcode. Never the other order — a published slide whose shortcode points at a path not yet on `interactive-tutorials`'s default branch renders as a broken, empty embed.
 
 Preflight reports under `.cursor/lp-preflight-state/` are local and gitignored. Do not force-add them to your PR.
 
