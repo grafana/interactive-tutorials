@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "adaptive-metrics-use-auto-apply-enable-for-default",
+  "title": "Enable auto-apply for the Default segment",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Start here if you are not using segmentation yet. The Default segment holds the metrics that are not assigned to a named segment."
+    },
+    {
+      "type": "markdown",
+      "content": "1. Open **Adaptive Metrics**.\n1. On **Overview**, click **Enable auto-apply** next to the **Segment** dropdown. The **Enable auto-apply per segment** dialog opens.\n1. Select the **Default segment**. If only Default exists, the dialog recommends creating more segments and includes **Go to Segments**. You can still enable auto-apply for Default. This path does not create a segment.\n1. Select an **Auto-apply mode**.\n1. Click **Apply**."
+    },
+    {
+      "type": "markdown",
+      "content": "| Mode | What it applies |\n| --- | --- |\n| **Coverage-first** | Every recommendation, including ones expected to add series when new usage of previously aggregated data needs coverage. Use it when adapting to observed usage matters more than limiting estimated series growth. |\n| **Cost-first** | Recommendations expected to reduce or maintain the series count. Increases only go up to the budget from reductions in the same cycle. Recommendations past that budget stay unapplied. Use it when limiting estimated series growth matters more than expanding coverage. |"
+    },
+    {
+      "type": "markdown",
+      "content": "Cost-first uses the series count estimates from the last analysis cycle. It does not compare the live series count before and after the rule changes. It is a guardrail on those estimates, not a guarantee that the series count never increases.\n\nBoth modes can skip some or all recommendations if the segment is at or near its limit on aggregation rules. An aggregation rule combines time series into fewer series.\n\nWhile auto-apply is on in Cost-first, you can't apply the leftover recommendations from the UI. Turn auto-apply off for that segment to apply them yourself, or apply them with the API."
+    }
+  ]
+}
