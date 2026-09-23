@@ -77,6 +77,15 @@
       ]
     },
     {
+      "type": "input",
+      "id": "prometheus-source-choice",
+      "prompt": "Choose the Prometheus data source containing the node CPU metrics for your alert.",
+      "inputType": "datasource",
+      "variableName": "prometheusSource",
+      "datasourceFilter": "prometheus",
+      "required": true
+    },
+    {
       "type": "markdown",
       "content": "Now that Grafana knows where to send alerts, let's define **when** an alert should fire.\n\nWe'll start by creating an alert query. This is a PromQL query that will be used to determine what data to alert on."
     },
@@ -107,9 +116,15 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[data-testid='data-testid Select a data source']",
-          "targetvalue": "prometheus",
-          "content": "Select your **prometheus** data source."
+          "reftarget": "#pageContent {grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "{{prometheusSource}}",
+          "requirements": [
+            "on-page:/alerting/new",
+            "var-prometheusSource:*",
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "content": "Select **{{prometheusSource}}** in the **Data source** picker."
         },
         {
           "type": "interactive",

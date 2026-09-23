@@ -32,6 +32,15 @@
       "content": "In this section, you create a dashboard, query your JSON endpoint with the Infinity data source, and save the result as a table panel."
     },
     {
+      "type": "input",
+      "id": "infinity-source-choice",
+      "prompt": "Choose the Infinity data source you configured earlier, using the name you gave it.",
+      "inputType": "datasource",
+      "variableName": "infinitySource",
+      "datasourceFilter": "yesoreyeram-infinity-datasource",
+      "required": true
+    },
+    {
       "type": "markdown",
       "content": "To build a dashboard with the Infinity data source, complete the following steps:"
     },
@@ -84,23 +93,21 @@
           "content": "Pop this guide out into a floating panel so the data source list and save dialog don't cover it."
         },
         {
-          "type": "multistep",
-          "content": "In the query section at the bottom of the screen, open the **Data source** dropdown and search for `Infinity`.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "input[data-testid='data-testid Select a data source']"
-            },
-            {
-              "action": "formfill",
-              "reftarget": "input[data-testid='data-testid Select a data source']",
-              "targetvalue": "Infinity"
-            }
-          ]
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent {grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "{{infinitySource}}",
+          "requirements": [
+            "on-page:/d",
+            "var-infinitySource:*",
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "content": "Select **{{infinitySource}}** in the **Data source** picker."
         },
         {
           "type": "markdown",
-          "content": "From the filtered list, select the Infinity data source you created earlier. Choose the one that matches the name you set."
+          "content": "The panel now uses the Infinity data source you configured earlier."
         },
         {
           "type": "interactive",

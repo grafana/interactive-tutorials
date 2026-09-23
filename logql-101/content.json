@@ -15,6 +15,15 @@
       "content": "## 🚀 Let's Get Started\n\nIn this tutorial, you'll learn how to craft powerful LogQL queries to extract insights from your log data. We'll start with simple queries and progressively build up to more advanced use cases."
     },
     {
+      "type": "input",
+      "id": "loki-source-choice",
+      "prompt": "Choose the Loki data source containing the Nginx sample logs used in this guide.",
+      "inputType": "datasource",
+      "variableName": "lokiSource",
+      "datasourceFilter": "loki",
+      "required": true
+    },
+    {
       "type": "markdown",
       "content": "Before we can query logs, we need to select a Loki data source. The data source picker allows you to choose which Loki instance to query against."
     },
@@ -24,19 +33,17 @@
       "title": "Select Your Data Source",
       "blocks": [
         {
-          "type": "multistep",
-          "requirements": ["exists-reftarget"],
-          "content": "Click on the **data source picker**, then select the **Loki Demo Kit (loki_nginx)** data source.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "input[data-testid=\"data-testid Select a data source\"]"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "button:has(span:contains(\"loki_nginx\"))"
-            }
-          ]
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent {grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "{{lokiSource}}",
+          "requirements": [
+            "on-page:/explore",
+            "var-lokiSource:*",
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "content": "Select **{{lokiSource}}** in the **Data source** picker."
         }
       ]
     },

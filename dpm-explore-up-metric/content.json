@@ -3,6 +3,15 @@
   "title": "Explore DPM with the up metric",
   "blocks": [
     {
+      "type": "input",
+      "id": "prometheus-source-choice",
+      "prompt": "Choose the Prometheus data source containing the scraped metrics you want to inspect.",
+      "inputType": "datasource",
+      "variableName": "prometheusSource",
+      "datasourceFilter": "prometheus",
+      "required": true
+    },
+    {
       "type": "markdown",
       "content": "Use this guide to estimate data points per minute (DPM) for a familiar Prometheus metric. DPM measures how often each active series sends data to Grafana Cloud, so unexpectedly high DPM can increase ingestion volume and cost."
     },
@@ -40,29 +49,17 @@
       ],
       "blocks": [
         {
-          "type": "multistep",
-          "content": "Open the data source picker and choose a Prometheus data source. **Do it** selects the first Prometheus option in the list. If your stack has more than one Prometheus data source, choose the one that contains the scraped metrics you want to inspect.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "grafana:components.DataSourcePicker.inputV2",
-              "requirements": [
-                "exists-reftarget"
-              ],
-              "tooltip": "Open the data source picker."
-            },
-            {
-              "action": "highlight",
-              "reftarget": "div[data-testid=\"data-source-card\"]:has(small:contains(\"Prometheus\")) button:nth-match(1)",
-              "requirements": [
-                "exists-reftarget"
-              ],
-              "tooltip": "Select the first Prometheus data source in the list."
-            }
-          ],
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent {grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "{{prometheusSource}}",
           "requirements": [
-            "on-page:/explore"
-          ]
+            "on-page:/explore",
+            "var-prometheusSource:*",
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "content": "Select **{{prometheusSource}}** in the **Data source** picker."
         },
         {
           "type": "markdown",
