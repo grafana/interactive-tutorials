@@ -3,6 +3,23 @@
   "title": "How to import external alerting resources into Grafana alerting",
   "blocks": [
     {
+      "type": "input",
+      "id": "alertmanager-source-choice",
+      "prompt": "Choose the Alertmanager data source whose configuration you want to import.",
+      "inputType": "datasource",
+      "variableName": "alertmanagerSource",
+      "datasourceFilter": "alertmanager",
+      "required": true
+    },
+    {
+      "type": "input",
+      "id": "rules-source-choice",
+      "prompt": "Choose the Prometheus, Mimir, or Loki data source containing the rules to import. Alert rule management must be enabled for this source.",
+      "inputType": "datasource",
+      "variableName": "rulesSource",
+      "required": true
+    },
+    {
       "type": "section",
       "id": "guide-section-42089",
       "title": "Alerting: Import Wizard",
@@ -45,9 +62,16 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "#pageContent input[role='combobox']",
-          "targetvalue": "alerting-demo-alertmanager",
-          "content": "Select the data source containing the Alertmanager configuration you'd like to import."
+          "reftarget": "#pageContent {grafana:pages.Alerting.ImportToGMA.alertmanagerDataSourceField} input[role='combobox']",
+          "targetvalue": "{{alertmanagerSource}}",
+          "content": "Select **{{alertmanagerSource}}** as the import source.",
+          "requirements": [
+            "on-page:/alerting/import-to-gma",
+            "var-alertmanagerSource:*",
+            "min-version:13.2.0",
+            "exists-reftarget"
+          ],
+          "doIt": true
         },
         {
           "type": "interactive",
@@ -65,12 +89,15 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "div[data-testid='input-wrapper'] #data-source-picker",
-          "content": "Select Data source option: you will import alert rules from a data source.",
-          "targetvalue": "alerting-demo-prom",
+          "reftarget": "#pageContent input#data-source-picker",
+          "content": "Select **{{rulesSource}}** as the import source.",
+          "targetvalue": "{{rulesSource}}",
           "requirements": [
+            "on-page:/alerting/import-to-gma",
+            "var-rulesSource:*",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": true
         },
         {
           "type": "guided",
