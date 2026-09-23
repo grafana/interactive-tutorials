@@ -46,42 +46,42 @@
       ],
       "blocks": [
         {
-          "type": "guided",
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-main-tab-performance']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/services"
+          ],
+          "tooltip": "Inspect service performance.",
+          "type": "interactive",
           "id": "open-instrumented-service",
-          "content": "Choose **Performance**, filter to **Instrumented**, then open the first service; inferred services are outside this investigation.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='catalog-main-tab-performance']",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/a/grafana-asserts-app/services"
-              ],
-              "description": "Select Performance.",
-              "tooltip": "Inspect service performance."
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='catalog-uninstrumented-filter-radio'] input[title='Instrumented']",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/a/grafana-asserts-app/services"
-              ],
-              "description": "Select Instrumented.",
-              "tooltip": "Filter the catalog to services with instrumentation."
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/a/grafana-asserts-app/services"
-              ],
-              "description": "Select the first instrumented service.",
-              "lazyRender": true,
-              "tooltip": "Open the first service in the filtered catalog."
-            }
-          ]
+          "content": "Select **Performance**."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-uninstrumented-filter-radio'] input[title='Instrumented'] + label",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/services"
+          ],
+          "tooltip": "Filter the catalog to services with instrumentation.",
+          "type": "interactive",
+          "id": "filter-instrumented-services",
+          "content": "Select **Instrumented** to exclude inferred services."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-asserts-app/services"
+          ],
+          "lazyRender": true,
+          "tooltip": "Open the first service in the filtered catalog.",
+          "type": "interactive",
+          "id": "open-first-instrumented-service",
+          "content": "Open the first instrumented service in the filtered catalog.",
+          "scrollContainer": "#pageContent"
         },
         {
           "action": "highlight",

@@ -31,23 +31,21 @@
       "title": "Create an on-call schedule",
       "blocks": [
         {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-irm-app/schedules",
+          "content": "Open **Schedules**.",
+          "showMe": false,
+          "verify": "on-page:/a/grafana-irm-app/schedules"
+        },
+        {
           "type": "guided",
           "content": "Create an empty schedule. IRM opens a rotation editor over the schedule as soon as it is created.",
           "requirements": [
-            "navmenu-open"
+            "on-page:/a/grafana-irm-app/schedules"
           ],
           "stepTimeout": 45000,
           "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid=\"data-testid Nav menu item\"][href=\"/a/grafana-irm-app/schedules\"]",
-              "requirements": [
-                "navmenu-open",
-                "exists-reftarget"
-              ],
-              "description": "Open Schedules",
-              "tooltip": "Click to open the list of on-call schedules."
-            },
             {
               "action": "button",
               "reftarget": "[data-pathfinder=\"new-schedule-button\"]",
@@ -122,8 +120,9 @@
           "steps": [
             {
               "action": "button",
-              "reftarget": "[data-pathfinder=\"add-rotation-button\"]",
+              "reftarget": "button[data-testid=\"add-rotation-button\"], button[data-pathfinder=\"add-rotation-button\"]",
               "requirements": [
+                "on-page:/a/grafana-irm-app/schedules/",
                 "exists-reftarget"
               ],
               "description": "Add a rotation",
@@ -147,6 +146,9 @@
               "description": "Create the rotation",
               "tooltip": "This stays disabled until at least one user is selected."
             }
+          ],
+          "requirements": [
+            "on-page:/a/grafana-irm-app/schedules/"
           ]
         }
       ]

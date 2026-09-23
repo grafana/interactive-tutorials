@@ -191,27 +191,24 @@ Example: `"reftarget": "div[data-cy='item']:has(h3:contains('Service')) button[d
 
 ## Lazy-Rendered Targets
 
-Virtualized containers (tables, paginated lists, dashboard rows below the fold) keep off-screen elements out of the DOM until scrolled into view. `exists-reftarget` waits but cannot scroll. Set `lazyRender: true` on the step (and optionally `scrollContainer`, default `.scrollbar-view`) so the engine scrolls the target into view before highlighting or acting.
-
-Use a `guided` block, not a plain `interactive` — user-paced detection avoids racing the scroll.
+Targets already in the DOM scroll into view automatically. For targets mounted only after scrolling, use a standalone `interactive` block with `lazyRender: true` and a verified `scrollContainer`. Keep `exists-reftarget`: the standalone action buttons permit lazy discovery when that is the unmet condition.
 
 ```json
 {
-  "type": "guided",
-  "content": "Open the row for `checkoutservice` (it may be below the fold).",
-  "steps": [
-    {
-      "action": "button",
-      "reftarget": "div[data-cy='wb-list-item']:has(p:contains('checkoutservice'))",
-      "lazyRender": true,
-      "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view",
-      "description": "Click checkoutservice"
-    }
-  ]
+  "type": "interactive",
+  "action": "highlight",
+  "reftarget": "[data-testid='collector-status-summary']",
+  "requirements": ["exists-reftarget"],
+  "lazyRender": true,
+  "scrollContainer": "#pageContent",
+  "doIt": false,
+  "content": "Read the collector status summary."
 }
 ```
 
-See [docs/json-guide-reference.md — Step Structure](../docs/json-guide-reference.md#step-structure). Dashboard authors: see also [`skills/autogen-guide-dashboard/dashboard-guide-rules.md` — Lazy Rendering](skills/autogen-guide-dashboard/dashboard-guide-rules.md).
+`#pageContent` is Grafana's scrolling main region when the extension sidebar is open; verify it for the target layout. Discovery scrolls the selected container, not pagination controls or every nested scroller.
+
+Use the block's individual **Show me** / **Do it**. Current `guided` conversion drops lazy-scroll properties, and **Do section** bypasses the standalone discovery handler. Do not replace automated observations with manual guided hovers to obtain scrolling. See [runtime evidence and limitations](../docs/guided-interactions.md#lazy-targets-and-current-runtime-support).
 
 ## Best Practices
 
@@ -298,9 +295,9 @@ Every interactive step that touches the DOM should have contextual requirements 
 
 Never use auto-generated CSS classes, bare `div`/`span`, or `nth-of-type` without a stable parent. Prefer `data-testid`, button text, or semantic attributes.
 
-### Plain Interactive on Below-Fold Targets
+### Missing Lazy Discovery
 
-A plain `interactive` step targeting a virtualized list, paginated table, or dashboard row below the fold will fail intermittently — `exists-reftarget` waits but cannot scroll. Convert to a `guided` block with `lazyRender: true` on the step.
+If a target is absent until scrolling, use standalone `interactive` with `lazyRender: true` and the verified scrolling container. Guided steps cannot discover absent targets in the current runtime. A target merely below the fold but already mounted does not require progressive discovery.
 
 ### Legacy `?doc=` Query String
 
@@ -325,7 +322,7 @@ Before finalizing a guide:
 - [ ] User-centric language per style guide
 - [ ] `popout` steps have `targetvalue: "sidebar"` or `"floating"` (no other values are valid)
 - [ ] `openGuide` used (not legacy `?doc=`) when chaining a guide after `navigate`
-- [ ] `lazyRender: true` on any step targeting virtualized content (tables, below-fold panels, long lists) — and the step is inside a `guided` block
+- [ ] Targets absent until scrolling use standalone `interactive` with `lazyRender: true` and a verified container; individual action and **Do section** behavior are checked separately
 
 ## Schema Validation
 

@@ -8,85 +8,199 @@
       "content": "This milestone is hands-on with **QuickPizza** at `https://quickpizza.grafana.com`. You do not need your own API or credentials to complete the steps.\n\nYou open Grafana Assistant, choose **k6 Script Authoring**, paste a starter prompt, then continue in the Cloud script editor when possible."
     },
     {
+      "type": "markdown",
+      "content": "Open Performance, then open Grafana Assistant to prepare a script."
+    },
+    {
       "type": "section",
       "id": "open-performance-and-assistant",
       "title": "Open Performance and Grafana Assistant",
       "blocks": [
         {
-          "type": "markdown",
-          "content": "You will open **Testing & synthetics**, go to **Performance**, then open Grafana Assistant from the toolbar."
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/k6-app",
+          "content": "Open **Performance**.",
+          "showMe": false,
+          "verify": "on-page:/a/k6-app"
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
-          "content": "In the main menu, select **Testing & synthetics**.",
-          "requirements": ["navmenu-open"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/k6-app']",
-          "content": "Select **Performance** (Grafana Cloud k6).",
-          "requirements": ["navmenu-open"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "reftarget": "button[data-testid='extension-toolbar-button-open']",
           "content": "Open **Assistant** from the top toolbar.",
           "hint": "If you do not see the Assistant control, confirm Assistant is enabled for your stack or ask your administrator.",
-          "requirements": ["on-page:/a/k6-app"]
-        },
-        {
-          "type": "markdown",
-          "content": "You should now see the Assistant panel and be in the Grafana Cloud k6 Performance area."
+          "requirements": [
+            "on-page:/a/k6-app",
+            "exists-reftarget"
+          ],
+          "skippable": true
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You should now see the Assistant panel and be in the Grafana Cloud k6 Performance area."
+    },
+    {
+      "type": "markdown",
+      "content": "Choose k6 Script Authoring and send a prompt for a short QuickPizza test."
     },
     {
       "type": "section",
       "id": "script-authoring-and-prompt",
       "title": "Choose k6 Script Authoring and paste the QuickPizza prompt",
-      "requirements": ["section-completed:open-performance-and-assistant"],
+      "requirements": [
+        "section-completed:open-performance-and-assistant"
+      ],
       "blocks": [
         {
-          "type": "markdown",
-          "content": "You will select **k6 Script Authoring** in the Assistant mode selector, then paste the example prompt in your own words if you prefer."
+          "type": "multistep",
+          "id": "choose-k6-authoring-mode",
+          "content": "Open the Assistant mode selector and choose **k6 Script Authoring**.",
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='pde-lab-mode-selector-pill']",
+              "description": "Open the mode selector.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='pde-lab-mode-selector-option-k6-authoring']",
+              "description": "Choose k6 Script Authoring.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            }
+          ]
         },
         {
-          "type": "markdown",
-          "content": "In the Assistant panel, open the **mode selector** (bottom of the panel) and choose **k6 Script Authoring**.\n\nPaste a prompt that names QuickPizza, success criteria, pacing, and a short run length. For example:\n\n> Create a minimal k6 HTTP test for `https://quickpizza.grafana.com` that checks for a 200 response, uses `sleep(1)` between iterations, and runs for 10 iterations.\n\nTreat the reply as a **draft**. Wording can differ by stack and model.\n\nFor product details and optional OpenAPI context, refer to [Use k6 Script Authoring mode](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/k6-script-authoring-mode/#write-a-new-test)."
-        },
-        {
-          "type": "markdown",
-          "content": "You should see Assistant return a k6 script draft you can copy or continue with in the script editor."
+          "type": "guided",
+          "id": "enter-quickpizza-prompt",
+          "content": "Paste this starter prompt, or adapt it to describe your intended test:\n\n> Create a minimal k6 HTTP test for https://quickpizza.grafana.com that checks for a 200 response, uses sleep(1) between iterations, and runs for 10 iterations.\n\nClick **Send** when the complete prompt is ready.",
+          "stepTimeout": 120000,
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid='prompt-input'] [role='textbox'][contenteditable='true']:not([aria-disabled='true'])",
+              "description": "Enter a complete prompt describing the test, success criteria, pacing, and run length.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='prompt-input'] button[aria-label='Send message']:not([disabled])",
+              "description": "When your message is complete, click Send.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            }
+          ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Assistant returns a draft; review the generated request, checks, pacing, and run length before using it."
+    },
+    {
+      "type": "markdown",
+      "content": "Ask Assistant to open its draft in the Cloud script editor, then choose your project and review the test."
     },
     {
       "type": "section",
       "id": "cloud-script-editor-and-verify",
       "title": "Open the script editor and smoke-check (recommended)",
-      "requirements": ["section-completed:script-authoring-and-prompt"],
+      "requirements": [
+        "section-completed:script-authoring-and-prompt"
+      ],
       "blocks": [
         {
-          "type": "markdown",
-          "content": "You will ask Assistant to open the Cloud script editor, pick a k6 project, then save or run a short test from the UI."
+          "type": "guided",
+          "id": "request-k6-script-editor",
+          "content": "Ask Assistant to open the Cloud script editor. You can enter: **Open the k6 script editor.** Click **Send** when ready.",
+          "stepTimeout": 120000,
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid='prompt-input'] [role='textbox'][contenteditable='true']:not([aria-disabled='true'])",
+              "description": "Ask Assistant to open the k6 script editor.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='prompt-input'] button[aria-label='Send message']:not([disabled])",
+              "description": "When your message is complete, click Send.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "id": "reply-with-k6-project",
+          "content": "If Assistant asks which project should hold the test, enter the project you want and click **Send**. Skip this step if the editor opens without a project question.",
+          "stepTimeout": 120000,
+          "requirements": [
+            "on-page:/a/k6-app"
+          ],
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid='prompt-input'] [role='textbox'][contenteditable='true']:not([aria-disabled='true'])",
+              "description": "Enter your chosen project only when Assistant asks for it.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='prompt-input'] button[aria-label='Send message']:not([disabled])",
+              "description": "When your message is complete, click Send.",
+              "requirements": [
+                "on-page:/a/k6-app",
+                "exists-reftarget"
+              ]
+            }
+          ],
+          "skippable": true
         },
         {
           "type": "markdown",
-          "content": "Ask Assistant to open the k6 script editor—for example: **Open the k6 script editor.** Assistant asks which k6 project should hold the test; pick the project you want.\n\nIn the editor, use **Create** to save or **Create and Run** for a short smoke run. Refer to [Open the k6 script editor](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/k6-script-authoring-mode/#open-the-k6-script-editor) and [Use the script editor](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/script-editor/).\n\nOptional: if you have an OpenAPI or Swagger spec, attach or paste it in the same thread before or after the prompt so the draft has fewer placeholder `// TODO:` comments."
+          "content": "In the editor, use **Create** to save or **Create and Run** for a short smoke run. Review the draft before running it. See [Use the script editor](https://grafana.com/docs/grafana-cloud/testing/k6/author-run/script-editor/)."
         },
         {
           "type": "markdown",
           "content": "Review the draft and confirm it includes a request to `https://quickpizza.grafana.com` (or paths under that host), at least one `check()` for status 200, `sleep(1)` or equivalent pacing, and sensible `options` for a short run."
-        },
-        {
-          "type": "markdown",
-          "content": "You should have validated the draft in Cloud or be ready to copy it for an optional local check."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have reviewed the draft in Cloud or are ready to copy it for an optional local check."
     },
     {
       "type": "section",
