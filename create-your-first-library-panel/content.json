@@ -1,0 +1,187 @@
+{
+  "id": "create-your-first-library-panel",
+  "title": "Create your first library panel",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You'll start from a blank dashboard so there's nothing in the way of building your first panel."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Open the starting page",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "content": "Open a new dashboard to give yourself a blank canvas for the panel you're about to build.",
+          "reftarget": "/dashboard/new",
+          "tooltip": "Takes you to a blank dashboard ready for its first panel.",
+          "doIt": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "With the blank dashboard open, you're ready to add a panel."
+    },
+    {
+      "type": "markdown",
+      "content": "Add a Stat panel, choose its visualization, and give it a name you'll recognize later."
+    },
+    {
+      "type": "section",
+      "id": "build-the-visualization",
+      "title": "Build the visualization",
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "build-stat-panel",
+          "content": "Work through the panel editor to pick the **Stat** visualization and title it **CPU usage**.",
+          "steps": [
+            {
+              "parent": "build-stat-panel",
+              "action": "button",
+              "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new", "navmenu-open"],
+              "tooltip": "Adds a new, unconfigured panel to the dashboard.",
+              "description": "Select **Panel** to add a new panel to the dashboard."
+            },
+            {
+              "parent": "build-stat-panel",
+              "action": "button",
+              "reftarget": "{grafana:components.UnconfiguredPanel.actionButton:configure}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Opens the panel editor so you can pick a visualization.",
+              "description": "Select **Configure** to open the panel editor."
+            },
+            {
+              "parent": "build-stat-panel",
+              "action": "button",
+              "reftarget": "{grafana:components.Tab.title:Visualizations}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Switches to the full visualization list.",
+              "description": "A panel that's never had a visualization chosen opens on **Suggestions**, where Stat isn't listed, so switch to **All visualizations** to search the full set."
+            },
+            {
+              "parent": "build-stat-panel",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.VizTypePicker.searchInput}",
+              "targetvalue": "Stat",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Filters the list down to matching visualizations.",
+              "description": "Search for **Stat** to find it quickly."
+            },
+            {
+              "parent": "build-stat-panel",
+              "action": "button",
+              "reftarget": "{grafana:components.PluginVisualization.item:Stat}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Applies this visualization type to the panel.",
+              "description": "Select the **Stat** card to apply it."
+            },
+            {
+              "parent": "build-stat-panel",
+              "action": "formfill",
+              "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldInput:Title}",
+              "targetvalue": "CPU usage",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Names the panel so you can recognize it later.",
+              "description": "Give the panel the title **CPU usage**."
+            },
+            {
+              "parent": "build-stat-panel",
+              "action": "button",
+              "reftarget": "{grafana:components.NavToolbar.editDashboard.backToDashboardButton}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Returns to the dashboard with your panel in place.",
+              "description": "Select **Back to dashboard** to see the panel on the canvas."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The dashboard now has a Stat panel named CPU usage, sitting on the canvas and ready to be promoted to the library."
+    },
+    {
+      "type": "markdown",
+      "content": "Turn that panel into a library panel so it's ready to reuse elsewhere."
+    },
+    {
+      "type": "section",
+      "id": "save-it-to-the-panel-library",
+      "title": "Save it to the panel library",
+      "blocks": [
+        {
+          "type": "guided",
+          "id": "open-library-panel-menu",
+          "content": "Open the panel's menu and follow it through to **New library panel** -- the submenu only stays open while your pointer is over it.",
+          "steps": [
+            {
+              "parent": "open-library-panel-menu",
+              "action": "hover",
+              "reftarget": "{grafana:components.Panels.Panel.title:CPU usage}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Reveals the controls that stay hidden until you need them.",
+              "description": "Hover over the panel's header to reveal its controls."
+            },
+            {
+              "parent": "open-library-panel-menu",
+              "action": "button",
+              "reftarget": "{grafana:components.Panels.Panel.menu:CPU usage}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Opens the panel's menu of actions.",
+              "description": "Select the panel menu."
+            },
+            {
+              "parent": "open-library-panel-menu",
+              "action": "hover",
+              "reftarget": "{grafana:components.Panels.Panel.menuItems:More...}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "This item opens its submenu on hover, not on click.",
+              "description": "Hover over **More...** to open its submenu."
+            },
+            {
+              "parent": "open-library-panel-menu",
+              "action": "button",
+              "reftarget": "{grafana:components.Panels.Panel.menuItems:New library panel}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Starts turning this panel into a reusable library panel.",
+              "description": "Select **New library panel** as soon as the submenu appears."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "create-library-panel",
+          "content": "Name the library panel and create it.",
+          "steps": [
+            {
+              "parent": "create-library-panel",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Drawer.NewLibraryPanelDrawer.nameInput}",
+              "targetvalue": "CPU usage",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Names the library panel that gets saved to your library.",
+              "description": "Name the library panel **CPU usage**."
+            },
+            {
+              "parent": "create-library-panel",
+              "action": "button",
+              "reftarget": "{grafana:components.Drawer.NewLibraryPanelDrawer.createButton}",
+              "requirements": ["exists-reftarget", "on-page:/dashboard/new"],
+              "tooltip": "Saves this panel to the library.",
+              "description": "Select **Create library panel** to finish."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The drawer closes and **CPU usage** is now a library panel linked to this dashboard panel -- open the panel's menu again and **New library panel** has been replaced by **Unlink library panel** and **Replace library panel**, which is how you confirm the link without leaving the dashboard. To see it listed alongside your other reusable panels, head to **Dashboards > Library panels**."
+    }
+  ]
+}
