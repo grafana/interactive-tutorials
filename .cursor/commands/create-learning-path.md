@@ -24,8 +24,8 @@ Follow these phases in order:
 4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Gate any screenshot, embedded video, or markdown image behind a `renderer:website` conditional — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`.
 5. **Create website metadata files.** Create `website.yaml` for the path and each milestone. Refer to `docs/website-yaml-reference.md`.
 6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. Where fields can't be derived, ask the user to provide values before generating.
-7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
-8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
+7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML). If an element has no stable selector after 3 tries, write the instruction as `markdown` (or fold it into the next real interactive step). Do **not** use `action: "noop"` as a selector fallback.
+8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports. If Show me cannot target the control, convert that learner action to `markdown` rather than `noop`.
 9. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
 
 For background on how this command relates to `/build-interactive-lj`, refer to `.cursor/learning-path-workflows/workflows.md`.
@@ -40,7 +40,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 4. **Use Playwright for selectors.** Never guess. Always inspect the actual DOM at `learn.grafana.net`.
 5. **User handles all Pathfinder testing.** Tell the user which `content.json` to import. Wait for their feedback. Never import JSON or click interactive buttons yourself.
 6. **Ask before fixing.** When the user reports a broken selector, explain and propose a fix, then wait for approval.
-7. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
+7. **3-attempt limit per selector.** If a selector fails after 3 tries, stop targeting it. Put the learner action in `markdown`, or fold it into the next interactive step's `content`. Never use `action: "noop"` for click, open, type, fill, or select copy. Never leave `TODO:manual-review` as a silent skip.
 8. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
 9. **Verify docs accuracy.** After testing, cross-check all factual claims against live Grafana documentation.
 10. **No generic "case for observability" milestone.** Do not scaffold a generic "case for observability" / "value of observability" / "business-value" milestone that just explains what observability is in the abstract. It's redundant boilerplate that duplicates content across every path and teaches nothing specific to this one (see [issue #597](https://github.com/grafana/interactive-tutorials/issues/597)). If the path genuinely needs a value-proposition milestone, make it product-specific from the start (for example "The advantages of Grafana Kubernetes Monitoring"), not a generic observability primer.
@@ -56,6 +56,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 - Never use non-standard CSS (`:contains()`, `:has-text()`)
 - Never use data-dependent selectors — use `^=` starts-with patterns
 - Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
+- Never use `action: "noop"` for a learner action (click, open, type, fill, select, turn off) when Pathfinder cannot target the control. Use `markdown`, or fold the instruction into the next real interactive step. `noop` is only for a numbered pause that is **not** a click/type instruction (for example "Wait for the query to finish").
 - All links in content.json must be absolute URLs (`https://grafana.com/docs/...`), not relative
 - Never leave a screenshot, video, or markdown image ungated in `content.json` — wrap it in a `conditional` with `conditions: ["renderer:website"]` (see Step 4)
 - Never scaffold a generic "case for observability" / "business-value" milestone — go straight into product-specific value or advantages content instead (see Critical rule 10)
