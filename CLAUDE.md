@@ -71,10 +71,12 @@ This repo's content is rendered by the Grafana Pathfinder app. Authoritative sch
 - `src/interactive-engine/action-handlers/` — action handlers (button, formfill, navigate, hover, popout, guided)
 - `src/cli/utils/block-registry.ts` — `CLI_EXCLUDED_BLOCK_TYPES` (e.g., `grot-guide` is hand-authored in the block editor)
 
-If a doc here disagrees with the schema, the schema wins. Validate locally from **this repository's root**, pointing at a built `grafana-pathfinder-app` checkout — `.` must resolve to this repo:
+If a doc here disagrees with the schema, the schema wins. For one learning path or guide, run the same check CI runs:
 
 ```bash
-node {pathfinder-app}/dist/cli/cli/index.js validate --packages .
+scripts/validate-path.sh {path_dir}
 ```
 
-This form is depth-1 only: it reaches the 128 immediate children that hold a `content.json`, not the 665 packages in the tree, so a nested milestone package is skipped in silence. Run it from the wrong root and it fails loudly (`No package directories found`) rather than false-passing; it is `build-stats` and `build-repository` that discover recursively and would quietly operate on Pathfinder's own manifests. The repo-wide enumeration loop and the working directory rules for those two commands live in [docs/manifest-reference.md](docs/manifest-reference.md#validation).
+That is `validate --strict` on every `content.json` under the path. Retry with `--fetch` if the CLI is missing. Do not use `validate --packages` as a substitute: it is depth-1 and is not `--strict`, so unknown fields pass locally and fail on push.
+
+Repo-wide `validate --packages .` (depth-1 only), the nested-package enumeration loop, and the working directory rules for `build-stats` / `build-repository` live in [docs/manifest-reference.md](docs/manifest-reference.md#validation). `validate --packages .` must run from this repository's root. Run `build-stats .` or `build-repository .` from a `grafana-pathfinder-app` checkout and they walk that repo's own tree instead, silently.

@@ -33,7 +33,7 @@ Tag every finding when writing the workbook. **Author-facing change requests alw
 | Outdated `data-testid` when live fails | | |
 | `:contains()` when stable `data-testid` in DOM and live fails | | |
 | Path root / manifest `id` mismatch | | |
-| Pathfinder CLI validate failure | | |
+| Pathfinder CLI `validate --strict` failure, or CLI not run (schema not checked) | | |
 | `index.json` modified, invalid `testEnvironment.tier` | | |
 | Secrets auto-filled (`doIt: true`) | | |
 | Confirmed 404 in `website.yaml` supplementary fields | | |
@@ -181,11 +181,13 @@ Missing or broken **required** identity fields (`menuTitle`, `description`, `jou
 
 ## Valid manifests
 
+Run from the **interactive-tutorials** repo root. Same check CI runs (`validate --strict` per `content.json`, then `validate --package`). Do **not** use `validate --packages` (depth-1, not `--strict`).
+
 ```bash
-node {pathfinder-app}/dist/cli/cli/index.js validate --packages {path_dir}
+scripts/validate-path.sh {path_dir}
 ```
 
-CLI failure → **post inline**. Dependency chain: first hands-on `depends: []`.
+If the CLI is missing, retry with `--fetch`, or set `PATHFINDER_APP` / `PATHFINDER_CLI`. CLI failure **or** a skipped run → **post inline**. Dependency chain: first hands-on `depends: []`.
 
 ---
 
