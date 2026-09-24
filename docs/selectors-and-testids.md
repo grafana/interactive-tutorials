@@ -48,7 +48,7 @@ Follow this priority order when choosing selectors:
 
 | Component                   | Selector                                                                |
 |-----------------------------|-------------------------------------------------------------------------|
-| Query mode toggle (Code)    | `div[data-testid="QueryEditorModeToggle"] label[for^="option-code-radiogroup"]` |
+| Query mode toggle (Code)    | `div[data-testid="QueryEditorModeToggle"] label[title="Code"]` |
 | Visualization picker toggle | `button[data-testid="data-testid toggle-viz-picker"]`                           |
 | Panel title input           | `input[data-testid="data-testid Panel editor option pane field input Title"]`   |
 
