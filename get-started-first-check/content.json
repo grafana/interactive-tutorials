@@ -1,10 +1,10 @@
 {
   "id": "get-started-first-check",
-  "title": "Create your first uptime check",
+  "title": "Create your first ping check",
   "blocks": [
     {
       "type": "markdown",
-      "content": "Is your site up right now? Synthetic Monitoring answers that continuously. Probes around the world test your target on a schedule, from outside your network, whether or not your browser is open. You'll create the simplest kind: a ping check."
+      "content": "Create a ping check to learn whether a host responds from different locations. For website availability or page content, use an HTTP or browser check instead."
     },
     {
       "type": "markdown",
@@ -20,28 +20,43 @@
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
           "content": "Click **Testing & synthetics** in the main menu.",
-          "requirements": ["navmenu-open", "exists-reftarget"]
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "tooltip": "Open the area containing availability and performance testing tools."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-synthetic-monitoring-app/home']",
           "content": "Click **Synthetics**.",
-          "requirements": ["navmenu-open", "exists-reftarget"]
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "tooltip": "Open the checks and results for this stack."
         }
       ]
     },
     {
       "type": "conditional",
-      "conditions": ["exists-reftarget"],
+      "conditions": [
+        "exists-reftarget"
+      ],
       "reftarget": "button[data-testid='app-init init-button']",
       "whenTrue": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='app-init init-button']",
-          "content": "Click **Get started** to set up Synthetic Monitoring in your stack. First-time setup needs the **Admin** role.",
-          "requirements": ["exists-reftarget"]
+          "content": "Click **Get started** if this stack has not used Synthetic Monitoring before. Ask an administrator to complete this one-time setup.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app",
+            "exists-reftarget",
+            "is-admin"
+          ],
+          "tooltip": "An administrator only needs to initialize this service once per stack."
         }
       ],
       "whenFalse": []
@@ -52,70 +67,107 @@
     },
     {
       "type": "markdown",
-      "content": "You need the **Editor** or **Admin** role."
+      "content": "Choose a target and probe locations for your first check. You need the Editor or Admin role."
     },
     {
       "type": "section",
       "id": "create-a-ping-check",
       "title": "Create a ping check",
-      "requirements": ["section-completed:open-synthetic-monitoring", "is-editor", "on-page:/a/grafana-synthetic-monitoring-app"],
+      "requirements": [
+        "section-completed:open-synthetic-monitoring",
+        "is-editor",
+        "on-page:/a/grafana-synthetic-monitoring-app"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='action create check']",
           "content": "Click **Create new check**.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Choose a check type based on what you need to test."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
           "content": "Click **API Endpoint**. Ping lives here, alongside HTTP, DNS, and TCP checks.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "This editor supports HTTP, ping, DNS, TCP, and traceroute checks."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "doIt": false,
           "reftarget": "input[data-testid='checkEditor form job']",
-          "targetvalue": "my-first-uptime-check",
-          "content": "Name the check so you can find it again later, for example `my-first-uptime-check`.",
-          "requirements": ["exists-reftarget"]
+          "targetvalue": "^\\S(?:.*\\S)?$",
+          "content": "Enter a descriptive **Job name**, such as `my-website-uptime`.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "validateInput": true,
+          "formHint": "Enter a descriptive name for your application or check.",
+          "tooltip": "This name becomes the job label used to find the check in metrics and logs."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='checkEditor form chooseAPICheckType'] label:contains('Ping')",
+          "reftarget": "input[data-testid='data-testid radio-button-option ping']",
           "content": "Under **Request type**, click **Ping** to send a network packet and wait for a response.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Ping tests whether a host responds to network packets; it does not check page content or HTTP responses."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "doIt": false,
-          "reftarget": "input[name='target'][placeholder='grafana.com']",
-          "targetvalue": "grafana.com",
-          "content": "Enter the hostname to check: your own site, or `grafana.com` to try it out.",
-          "requirements": ["exists-reftarget"]
+          "reftarget": "input[name='target']",
+          "targetvalue": "^\\S+$",
+          "content": "Enter your hostname or IP address, such as `grafana.com`.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "validateInput": true,
+          "formHint": "Enter a hostname or IP address, without a URL scheme or path.",
+          "tooltip": "Use only the host, without https:// or a path; some hosts block ping even when their website is healthy."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor navigation execution']",
-          "content": "In the numbered bar at the top, click **Execution** (step 4) to choose where the check runs from.",
-          "requirements": ["exists-reftarget"]
+          "content": "Click **Execution** to choose probe locations and a schedule.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Each selected location runs the check independently at the frequency you choose."
         },
         {
           "type": "markdown",
-          "content": "Select one or more probe locations. Pick places near your users, plus one far away to see the difference distance makes."
+          "content": "Select at least one online probe near your users. Review **Frequency** and the estimated usage before saving; more probes and more frequent checks generate more usage."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor form submit']",
-          "content": "Click **Save**. The check starts running on its schedule (every minute by default) and its dashboard opens.",
-          "requirements": ["exists-reftarget"]
+          "content": "Click **Save** to start the check and open its dashboard.",
+          "requirements": [
+            "exists-reftarget",
+            "form-valid",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Review the target, selected probes, and estimated usage before saving."
         }
       ]
     },
@@ -131,31 +183,46 @@
       "type": "section",
       "id": "read-the-results",
       "title": "Read the results",
-      "requirements": ["section-completed:create-a-ping-check", "on-page:/a/grafana-synthetic-monitoring-app"],
+      "requirements": [
+        "section-completed:create-a-ping-check",
+        "on-page:/a/grafana-synthetic-monitoring-app"
+      ],
       "blocks": [
         {
           "type": "interactive",
-          "action": "hover",
+          "action": "highlight",
           "doIt": false,
           "reftarget": "section[data-testid='data-testid Panel header Uptime']",
           "content": "**Uptime** is the percentage of checks that succeeded. Give it a few minutes to populate, and refresh if it's empty.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "A low value means one or more probe locations could not reach the target."
         },
         {
           "type": "interactive",
-          "action": "hover",
+          "action": "highlight",
           "doIt": false,
           "reftarget": "section[data-testid='data-testid Panel header Reachability']",
           "content": "**Reachability** shows how often the target responds, per probe location.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Compare locations to distinguish a widespread outage from a regional network problem."
         },
         {
           "type": "interactive",
-          "action": "hover",
+          "action": "highlight",
           "doIt": false,
           "reftarget": "section[data-testid='data-testid Panel header Average latency']",
           "content": "**Average latency** shows how long the response takes from each location. Distance shows up here.",
-          "requirements": ["exists-reftarget"]
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Compare locations over the same time range; longer network paths usually take more time."
         }
       ]
     },
