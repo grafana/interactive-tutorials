@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "ihub-install-alloy-k8s",
+  "title": "Install Alloy on Kubernetes for Instrumentation Hub",
+  "blocks": [
+    {
+      "type": "markdown",
+      "id": "md-guide-intro",
+      "content": "Install a Grafana Alloy collector on a Kubernetes cluster from Instrumentation Hub onboarding, so service discovery can begin. First, open Instrumentation Hub."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Open Instrumentation Hub",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "step-open-instrumentation-hub",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/instrumentation-hub",
+          "content": "Open **Instrumentation Hub**.",
+          "tooltip": "Takes you to the starting page where you install a collector and watch discovery.",
+          "doIt": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "md-section-1-summary",
+      "content": "Instrumentation Hub is open \u2014 this is where you start the collector installation and later watch discovery."
+    },
+    {
+      "type": "markdown",
+      "id": "md-section-2-intro",
+      "content": "Next, launch the installer, select Kubernetes as the platform, create an access token, and deploy Alloy to your cluster with helm."
+    },
+    {
+      "type": "section",
+      "id": "install-alloy-wizard",
+      "title": "Install Alloy on your Kubernetes cluster",
+      "requirements": [
+        "has-plugin:grafana-collector-app"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "step-onboarding-install-alloy",
+          "action": "button",
+          "reftarget": "[data-testid='ihub-onboarding-install-alloy-button']",
+          "content": "On a stack with no clusters yet, the onboarding screen appears: click **Install Alloy**. Skip this step if you see the landing page with clusters instead.",
+          "tooltip": "Starts the collector installation when your stack has no clusters yet.",
+          "doIt": true,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/instrumentation-hub",
+            "has-plugin:grafana-collector-app"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "step-add-more-clusters",
+          "action": "button",
+          "reftarget": "[data-testid='ihub-add-more-clusters-button']",
+          "content": "On a stack that already has clusters, click **Add more clusters** on the landing page. Skip this step if you used **Install Alloy** above.",
+          "tooltip": "Starts a new collector installation when your stack already reports clusters.",
+          "doIt": true,
+          "skippable": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/instrumentation-hub",
+            "has-plugin:grafana-collector-app"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "step-open-installation-page",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/alloy/installation?from=ihub",
+          "content": "Continue to the Alloy installation page.",
+          "tooltip": "Takes you to the installation flow where you pick a platform and deploy the collector.",
+          "doIt": true,
+          "requirements": [
+            "has-plugin:grafana-collector-app"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "step-select-kubernetes-platform",
+          "action": "button",
+          "reftarget": "[data-testid='platform-card-kubernetes']",
+          "content": "Select **Kubernetes** as the platform for this installation.",
+          "tooltip": "Chooses the platform your collector will be deployed to.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy",
+            "has-plugin:grafana-collector-app"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "step-config-next",
+          "action": "button",
+          "reftarget": "[data-testid='config-next-button']",
+          "content": "Click **Next** to continue to the token step.",
+          "tooltip": "Advances the wizard to the access token step.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy",
+            "has-plugin:grafana-collector-app"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "step-create-access-token",
+          "action": "button",
+          "reftarget": "[data-testid='config-step-nav-2']",
+          "content": "Open **Create an access token** and generate a token for this installation. The token is a secret, so create and copy it yourself.",
+          "tooltip": "Opens the wizard step where you generate and copy the secret token yourself.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy",
+            "has-plugin:grafana-collector-app"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "step-copy-helm-command",
+          "action": "highlight",
+          "reftarget": "[data-testid='install-alloy-unified-helm-copy-command']",
+          "content": "Copy the helm command bound to your new token, then run it in a terminal with helm and kubectl access to your target cluster.",
+          "tooltip": "Copy this command and run it in a terminal that can reach your Kubernetes cluster.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy",
+            "has-plugin:grafana-collector-app"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "md-section-2-summary",
+      "content": "Alloy is deploying to your cluster through a helm command bound to your generated access token."
+    },
+    {
+      "type": "markdown",
+      "id": "md-section-3-intro",
+      "content": "Finally, return to Instrumentation Hub and watch service discovery begin."
+    },
+    {
+      "type": "section",
+      "id": "watch-discovery-begin",
+      "title": "Return to Instrumentation Hub and watch discovery",
+      "requirements": [
+        "has-plugin:grafana-collector-app"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "step-return-to-instrumentation-hub",
+          "action": "button",
+          "reftarget": "[data-testid='alloy-installation-navigation-button']",
+          "content": "Back in Grafana, click **Return to Instrumentation Hub**.",
+          "tooltip": "Takes you back to the landing page where discovery results appear.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy",
+            "has-plugin:grafana-collector-app"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "step-watch-discovery",
+          "action": "highlight",
+          "reftarget": "[data-testid='ihub-cards-container']",
+          "content": "Watch the overview cards: discovery is pending at first, then discovered clusters and services appear as Alloy reports in.",
+          "tooltip": "Discovered clusters and services appear here once Alloy starts reporting.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/instrumentation-hub",
+            "has-plugin:grafana-collector-app"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "md-guide-summary",
+      "content": "You installed an Alloy collector on your Kubernetes cluster from Instrumentation Hub onboarding. Success looks like the landing page showing a discovery-pending banner while your new collector connects, and then your cluster and its discovered services appearing in the overview cards. Once services are discovered, continue with the guide on instrumenting application services."
+    }
+  ]
+}
