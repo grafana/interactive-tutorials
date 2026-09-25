@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "After calibration, the watcher is **Ready** but inactive until you start it. **Run now** triggers one immediate run outside the schedule, so you can inspect the first result before you turn on scheduled runs. **Start scanning** is on the **Calibration** tab. It turns on scheduled runs. **Active** in **Standing state** shows that scheduled runs are on. Turn **Active** off to pause without deleting the watcher.\n\nScheduled runs don't overlap. If a run is already in progress, the next one waits or is skipped."
+      "content": "After calibration, the watcher is **Ready** but inactive until you start it. **Run now** triggers one immediate run outside the schedule, so you can inspect the first result before you turn on scheduled runs. **Resume scanning** on the **Calibration** tab turns on scheduled runs. It reads **Start scanning** until a run has completed. **Active** in **Standing state** shows that scheduled runs are on. Turn **Active** off to pause without deleting the watcher.\n\nScheduled runs don't overlap. If a run is already in progress, the next one waits or is skipped."
     },
     {
       "type": "conditional",
@@ -27,7 +27,7 @@
     {
       "type": "section",
       "id": "start-and-run-watcher",
-      "title": "Start, run, and pause",
+      "title": "Run, start, and pause",
       "requirements": ["plugin-enabled:grafana-assistant-app"],
       "autoCollapse": true,
       "blocks": [
@@ -50,8 +50,7 @@
           "reftarget": "[data-testid='data-testid Tab Calibration']",
           "content": "Click the **Calibration** tab.",
           "requirements": ["exists-reftarget"],
-          "skippable": true,
-          "hint": "Skip if you are already on **Calibration**. On Overview, **Review calibration** also opens this tab."
+          "hint": "Click it even if you're already on **Calibration**. The scanning button is on this tab."
         },
         {
           "type": "interactive",
@@ -60,16 +59,16 @@
           "content": "Click **Run now**.\n\nThis triggers one immediate run outside the schedule, so you can inspect the first result before you turn on scheduled runs.",
           "requirements": ["exists-reftarget"],
           "skippable": true,
-          "hint": "Skip if you didn't finish calibration. **Run now** works while the watcher is **Ready**, before you start scanning. Don't click **Delete**."
+          "hint": "Skip if you didn't finish calibration. **Run now** works while the watcher is **Ready**, before you start scanning. Don't click **Delete watcher**."
         },
         {
           "type": "interactive",
           "action": "button",
-          "reftarget": "Start scanning",
-          "content": "Click **Start scanning**.\n\nThis turns on scheduled runs.",
+          "reftarget": "scanning",
+          "content": "Click **Resume scanning**.\n\nThis turns on scheduled runs. The button appears after the **Run now** run finishes. If you skipped **Run now**, it reads **Start scanning**.",
           "requirements": ["exists-reftarget"],
           "skippable": true,
-          "hint": "Skip if the watcher isn't **Ready**, or if you don't want scheduled runs. **Start scanning** is on the calibration complete banner, not **Start a new conversation** in Assistant chat."
+          "hint": "The button is hidden while a **Run now** check is in progress, so wait for that run to finish. Skip if you don't want scheduled runs. It's on the calibration banner of the **Calibration** tab, not **Start a new conversation** in Assistant chat."
         },
         {
           "type": "markdown",
