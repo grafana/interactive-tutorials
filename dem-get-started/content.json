@@ -4,27 +4,29 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Digital Experience Monitoring watches your app from two sides. **Synthetic Monitoring** tests it from the outside in, so you know it's up and fast from anywhere. **Frontend Observability** reports from the inside out, with real sessions and real errors. You'll set up both for one app."
+      "content": "Set up two views of your website: Synthetic Monitoring checks availability from outside your network, and Frontend Observability collects real user performance and errors from the browser."
     },
     {
       "type": "input",
-      "prompt": "Enter the URL of your app, for example `https://yourcompany.com`. Both setups use it.",
+      "prompt": "Enter your website origin, such as https://yourcompany.com. Both setups use it.",
       "inputType": "text",
       "variableName": "appUrl",
       "placeholder": "https://yourcompany.com",
       "required": true,
-      "pattern": "^https?://[^/\\s]+$",
-      "validationMessage": "Enter the scheme and host only, such as https://yourcompany.com, with no path or trailing slash."
+      "format": "http-origin"
     },
     {
       "type": "markdown",
-      "content": "First, point an uptime check at **{{appUrl}}**. You need the **Editor** or **Admin** role."
+      "content": "First, point an uptime check at {{appUrl}}. You need the Editor or Admin role."
     },
     {
       "type": "section",
       "id": "start-uptime-check",
       "title": "Start an uptime check",
-      "requirements": ["is-editor"],
+      "requirements": [
+        "is-editor",
+        "var-appUrl:*"
+      ],
       "blocks": [
         {
           "type": "interactive",
@@ -32,19 +34,27 @@
           "reftarget": "/a/grafana-synthetic-monitoring-app/home",
           "content": "Open **Synthetic Monitoring**.",
           "showMe": false,
-          "verify": "on-page:/a/grafana-synthetic-monitoring-app"
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app",
+          "tooltip": "Open the setup page in this Grafana instance."
         },
         {
           "type": "conditional",
-          "conditions": ["exists-reftarget"],
+          "conditions": [
+            "exists-reftarget"
+          ],
           "reftarget": "button[data-testid='app-init init-button']",
           "whenTrue": [
             {
               "type": "interactive",
               "action": "highlight",
               "reftarget": "button[data-testid='app-init init-button']",
-              "content": "Click **Get started** to set up Synthetic Monitoring in your stack. First-time setup needs the **Admin** role.",
-              "requirements": ["exists-reftarget"]
+              "content": "Click **Get started** if this stack has not used Synthetic Monitoring before. Ask an administrator to complete this one-time setup.",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app",
+                "exists-reftarget",
+                "is-admin"
+              ],
+              "tooltip": "An administrator only needs to initialize this service once per stack."
             }
           ],
           "whenFalse": []
@@ -54,49 +64,72 @@
           "action": "navigate",
           "reftarget": "/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
           "content": "Open a new **API Endpoint** check. It starts as an HTTP check, which requests your page the way a browser would.",
-          "requirements": ["on-page:/a/grafana-synthetic-monitoring-app"],
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
           "showMe": false,
-          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+          "tooltip": "Open the setup page in this Grafana instance."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='checkEditor form job']",
-          "targetvalue": "dem-uptime",
-          "content": "Name the check so you can find it later. **dem-uptime** is filled in for you.",
-          "requirements": ["on-page:/a/grafana-synthetic-monitoring-app/checks/new", "exists-reftarget"]
+          "targetvalue": "^\\S(?:.*\\S)?$",
+          "content": "Enter a descriptive **Job name**, such as `my-website-uptime`.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget"
+          ],
+          "validateInput": true,
+          "doIt": false,
+          "formHint": "Enter a descriptive name for your application or check.",
+          "tooltip": "This name becomes the job label used to find the check in metrics and logs."
         },
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[name='target']",
+          "reftarget": "input[data-testid='checkEditor form instance']",
           "targetvalue": "{{appUrl}}",
-          "content": "In **Request target**, enter your app's URL. **{{appUrl}}** is filled in for you.",
-          "requirements": ["on-page:/a/grafana-synthetic-monitoring-app/checks/new", "exists-reftarget"]
+          "content": "Set **Request target** to {{appUrl}}.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget"
+          ],
+          "tooltip": "An HTTP check requests this URL; it does not execute JavaScript or simulate a complete browser session."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor navigation execution']",
-          "content": "In the numbered bar at the top, click **Execution** to choose where the check runs from.",
-          "requirements": ["on-page:/a/grafana-synthetic-monitoring-app/checks/new", "exists-reftarget"]
+          "content": "Click **Execution** to choose probe locations and a schedule.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget"
+          ],
+          "tooltip": "Each selected location runs the check independently at the frequency you choose."
         },
         {
           "type": "markdown",
-          "content": "Select one or more probe locations near your users."
+          "content": "Select at least one online probe near your users. Review **Frequency** and the estimated usage before saving; more probes and more frequent checks generate more usage."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor form submit']",
-          "content": "Click **Save**. The check runs every minute from each probe and its dashboard opens.",
-          "requirements": ["on-page:/a/grafana-synthetic-monitoring-app/checks/new", "exists-reftarget"]
+          "content": "Click **Save** to start the check and open its dashboard.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget",
+            "form-valid"
+          ],
+          "tooltip": "Review the target, selected probes, and estimated usage before saving."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Probes are now testing **{{appUrl}}** from outside your network, around the clock."
+      "content": "Probes are now testing {{appUrl}} from outside your network, around the clock."
     },
     {
       "type": "markdown",
@@ -106,7 +139,10 @@
       "type": "section",
       "id": "create-frontend-app",
       "title": "Create a Frontend Observability application",
-      "requirements": ["section-completed:start-uptime-check"],
+      "requirements": [
+        "section-completed:start-uptime-check",
+        "var-appUrl:*"
+      ],
       "blocks": [
         {
           "type": "interactive",
@@ -114,31 +150,47 @@
           "reftarget": "/a/grafana-kowalski-app/apps/new",
           "content": "Open **Connect your web application** in **Frontend Observability**.",
           "showMe": false,
-          "verify": "on-page:/a/grafana-kowalski-app/apps/new"
+          "verify": "on-page:/a/grafana-kowalski-app/apps/new",
+          "tooltip": "Open the setup page in this Grafana instance."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "form[data-testid='web-app-form'] input[data-testid='app-name']",
-          "targetvalue": "dem-frontend",
-          "content": "In **Application name**, enter a name for this frontend. Faro stamps it on every signal it sends. **dem-frontend** is filled in for you.",
-          "requirements": ["on-page:/a/grafana-kowalski-app/apps/new", "exists-reftarget"]
+          "targetvalue": "^\\S(?:.*\\S)?$",
+          "content": "Enter your own **Application name**, such as `my-web-app`.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "validateInput": true,
+          "doIt": false,
+          "formHint": "Enter a descriptive name for your application or check.",
+          "tooltip": "Use a name that distinguishes this frontend from other applications and environments."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "form[data-testid='web-app-form'] input[data-testid='cors-0']",
           "targetvalue": "{{appUrl}}",
-          "content": "In **Allowed origins**, enter your app's URL. Frontend Observability rejects data from any other origin. **{{appUrl}}** is filled in for you.",
-          "tooltip": "Add more origins later, such as staging, from the application settings.",
-          "requirements": ["on-page:/a/grafana-kowalski-app/apps/new", "exists-reftarget"]
+          "content": "Set **Allowed origins** to {{appUrl}}.",
+          "tooltip": "Use the scheme, hostname, and port your visitors use; add other environments separately.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "form[data-testid='web-app-form'] button[data-testid='new-app-submit']",
           "content": "Click **Next** to create the application and its collector endpoint.",
-          "requirements": ["on-page:/a/grafana-kowalski-app/apps/new", "exists-reftarget"]
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget",
+            "form-valid"
+          ],
+          "tooltip": "Creating the application does not send browser data; you must still install and deploy Faro."
         }
       ]
     },
@@ -148,27 +200,38 @@
     },
     {
       "type": "markdown",
-      "content": "Finally, copy the Faro snippet that sends real user data from **{{appUrl}}**:"
+      "content": "Finally, copy the Faro snippet that sends real user data from {{appUrl}}:"
     },
     {
       "type": "section",
       "id": "get-faro-snippet",
       "title": "Get the Faro snippet",
-      "requirements": ["section-completed:create-frontend-app"],
+      "requirements": [
+        "section-completed:create-frontend-app",
+        "var-appUrl:*"
+      ],
       "blocks": [
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div[data-testid='apps-sdk-instructions-instrumentation-mode-manual-card'] button",
-          "content": "Choose **Manual instrumentation** to see the snippet itself. The **Grafana Assistant**, **Claude Code**, and **Cursor** options add it to your codebase for you instead.",
-          "requirements": ["on-page:/a/grafana-kowalski-app/apps/new", "exists-reftarget"]
+          "content": "Choose **Manual instrumentation** to view the SDK installation instructions.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "tooltip": "The other options can help modify your codebase; manual setup lets you choose how to install the SDK."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='copy-agent-install']",
-          "content": "Click **Copy**, then paste the snippet into your app's entry point so it runs before the rest of your code. Your collector URL and application name are already filled in.",
-          "requirements": ["on-page:/a/grafana-kowalski-app/apps/new", "exists-reftarget"]
+          "content": "Click **Copy** and follow the instructions for your chosen installation method in your application.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "tooltip": "Initialize Faro early so it can capture errors during page startup; deploy the change before checking for data."
         }
       ]
     },
@@ -178,7 +241,7 @@
     },
     {
       "type": "markdown",
-      "content": "You now see **{{appUrl}}** from both sides: whether it's up and fast from anywhere, and what real users hit when they use it. The remaining wizard steps, source maps and alert rules, are optional and you can set them up later from the application settings."
+      "content": "After deploying Faro, you can compare availability checks with real user sessions and errors for {{appUrl}}. Source maps and alert rules are optional and can be configured later."
     }
   ]
 }
