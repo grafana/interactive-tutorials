@@ -47,7 +47,7 @@ Input (guide directory + change request)
   └─ Phase 5: Validate ──────────── orchestrator
        Byte-level diff vs snapshot for unchanged paths
        JSON validity, ID uniqueness, IDREF resolution
-       Pathfinder CLI: validate --package {guide_dir}
+       Pathfinder CLI: scripts/validate-path.sh {guide_dir}
        On failure: restore from snapshot, mark run failed
 ```
 
@@ -389,13 +389,13 @@ After Phase 4:
 2. **JSON validity**. Parse `content.json` with strict JSON. On parse error, restore from snapshot and stop.
 3. **ID uniqueness**. Walk the updated tree and confirm every block id is unique. On collision, restore and stop.
 4. **IDREF resolution**. For every `section-completed:<id>` requirement and every `var-<name>` requirement, confirm the target still exists. For every `{{<name>}}` in markdown content, confirm an `input` block with that variable name exists earlier in the guide. On unresolved reference, restore and stop.
-5. **Pathfinder CLI validate**. Run:
+5. **Pathfinder CLI validate**. Run from the interactive-tutorials repo root:
 
    ```bash
-   node {pathfinder-app}/dist/cli/cli/index.js validate --package {guide_dir}
+   scripts/validate-path.sh {guide_dir}
    ```
 
-   If the CLI is not available, surface this as an incomplete-validation warning rather than a failure (skills cannot assume the user has the CLI built). If the CLI returns non-zero, restore from snapshot and stop.
+   If the CLI is missing, retry with `--fetch`. A skipped CLI run is an incomplete-validation **failure**, not a warning: unknown fields (for example `hint` on a `multistep`) pass this skill and fail in CI. If the command returns non-zero, restore from snapshot and stop.
 
 6. If all checks pass: write/update `{guide_dir}/assets/manifest.yaml` with the schema documented above. Surface a one-paragraph summary to the user with: paths added/edited/removed, validation results, and the path to `audit-report.md` if the user wants a deeper review afterwards.
 

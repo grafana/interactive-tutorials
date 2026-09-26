@@ -16,7 +16,7 @@ Confirm during identify (quietly unless blocked). Remind in the slash-command fi
 | **Playwright MCP** enabled (`user-playwright`) | Live path (default for new/conversion interactive) | Agent DOM checks | Identify: list or call Playwright MCP tools. If missing or broken: follow [If Playwright MCP is missing or broken](#if-playwright-mcp-is-missing-or-broken) |
 | Okta login in the **Playwright** browser to `{learn_host}` (default `learn.grafana.net`) | Before Playwright DOM loop | MCP cannot complete SAML alone | Login pause: author logs in, replies `ready` |
 | Pathfinder Block Editor on learn | Only if author chooses `walk-me` | Optional smoke coaching | `{learn_host}/plugins/grafana-pathfinder-app?dev=true` → **?** → Debug → Block Editor → import local JSON |
-| Pathfinder CLI (`grafana-pathfinder-app` built locally) | Nice-to-have | `validate --packages` | Note if missing; do not abort preflight |
+| Pathfinder CLI (`scripts/validate-path.sh`) | Always (static pass) | Same `validate --strict` check as CI | Run `scripts/validate-path.sh {path_dir}`. If the CLI is missing, retry with `--fetch`. Do not skip. Schema failure or a skipped run is Fix before PR |
 | `gh` auth + write access to the UI repo | Frontend walkthrough only | Frontend testid PR | Check when entering frontend steps |
 | `website` repo in workspace | Optional (conversion) | Read-only legacy compare | Never write |
 

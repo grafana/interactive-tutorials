@@ -457,7 +457,15 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ## Validation
 
-Validate individual packages:
+To validate one learning path (or a single `content.json`) the same way CI does, from this repository's root:
+
+```bash
+scripts/validate-path.sh <path_dir>
+```
+
+That runs `validate --strict` on every `content.json` under the path, then `validate --package` on each package directory. `--strict` rejects unknown fields (for example `hint` on a `multistep`). `validate --packages` does not. If the Pathfinder CLI is missing, pass `--fetch` to clone the SHA pinned in `.github/workflows/validate-json.yml` into gitignored `.pathfinder-cli/`, or set `PATHFINDER_APP` / `PATHFINDER_CLI`.
+
+Validate individual packages against a CLI that is already built:
 
 ```bash
 # cwd: the interactive-tutorials repository root, with grafana-pathfinder-app

@@ -56,11 +56,11 @@ If any reference is unresolved after Phase 3, the run is failed — restore from
 
 ## 5. Pathfinder CLI validate is a hard gate
 
-**`node {pathfinder-app}/dist/cli/cli/index.js validate --package {guide_dir}` MUST return exit code 0 before the run is marked successful.**
+**`scripts/validate-path.sh {guide_dir}` MUST return exit code 0 before the run is marked successful.**
 
-If the CLI is unavailable (build not present, binary not found, path not configured), the run is marked **incomplete** — `manifest.yaml.validation.cli_validate_passed: false` with a `validation.cli_status: "unavailable"` note. The user can complete validation by building the CLI and re-running the skill (Phase 0 will warm-start).
+That is the same `validate --strict` check CI runs. If the CLI is missing, retry with `--fetch` (or set `PATHFINDER_APP` / `PATHFINDER_CLI`). A skipped CLI run is **failed**, not incomplete: unknown fields pass this skill and fail on push.
 
-If the CLI returns non-zero, the run is marked **failed** — `manifest.yaml.validation.cli_validate_passed: false` with the CLI's stderr captured in `review-report.md`. The orchestrator restores `content.json` from snapshot and stops.
+If the command returns non-zero, the run is marked **failed** — `manifest.yaml.validation.cli_validate_passed: false` with stderr captured in `review-report.md`. The orchestrator restores `content.json` from snapshot and stops.
 
 This is non-negotiable: a guide that fails CLI validation does not get persisted. Schemas evolve and the CLI is the authoritative check.
 

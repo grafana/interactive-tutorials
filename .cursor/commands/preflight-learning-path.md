@@ -10,6 +10,7 @@ LP packages are **single-repo** (`interactive-tutorials` only). Metadata lives i
 
 - This repo checked out with your `{slug}-lj/` package
 - **Playwright MCP** enabled in Cursor (for DOM checks)
+- Pathfinder CLI via `scripts/validate-path.sh` (the static pass fetches it if needed)
 - Access to `https://learn.grafana.net/` (Okta login in the Playwright browser when asked)
 - Block Editor only if you choose a guided smoke walk later
 

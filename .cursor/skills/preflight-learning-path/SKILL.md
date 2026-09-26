@@ -223,7 +223,7 @@ If MCP is blocked, stop with the blocked shape in author-testing.md (`checkpoint
 1. Snapshot `pre_review_assets`; dispatch [audit-guide](../audit-guide/SKILL.md) per milestone (parallel OK).
 2. Walk shared [review reference-checks](../review-learning-path/reference-checks.md) + [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md).
 3. **Always scan** for framing-in-milestones ([Pathfinder-only omission](../review-learning-path/reference-checks.md#framing-milestones): keep packages for the website), [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-a-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
-4. Run Pathfinder CLI `validate --packages {path_dir}` if available.
+4. Run `scripts/validate-path.sh {path_dir}` from the repo root ([Pathfinder CLI validate](reference-checks.md#pathfinder-cli-validate)). This is the same `validate --strict` check CI runs. If the CLI is missing, retry with `--fetch`. Schema failure or a skipped CLI run is Fix before PR. Do not treat “CLI unavailable” as a pass.
 5. Run the shared [claim-check](../review-learning-path/claim-check.md) pass (preflight pointer: [claim-check.md](claim-check.md)). Write `{slug}-claim-check.md`. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
 6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing). Keep only review-level items for later author chat.
 7. Write `{slug}-findings.md` (findings + verify-live notes).
@@ -367,7 +367,7 @@ When every open item needs-frontend, omit **fix all** / **fix N**. Lead with **f
 > Working on {fix all | item N | items …}. I will edit `content.json` / `manifest.json` / `website.yaml` only, same discipline as [update-guide](../update-guide/SKILL.md).
 
 1. Apply only requested package-fixable findings.
-2. Re-run Pathfinder CLI validate if content/manifests changed.
+2. Re-run `scripts/validate-path.sh {path_dir}` if content/manifests changed.
 3. Suggest re-running Playwright for touched interactive milestones when relevant.
 4. Do not commit unless the author explicitly asks.
 
@@ -402,6 +402,7 @@ When a stable selector is missing upstream, follow [frontend-selector-pr.md](fro
 - Force a full Block Editor loop when they already dogfooded
 - Offer **fix N** as the main path for a needs-frontend finding
 - Recommend **Ready for PR** with open review-level items
+- Recommend **Ready for PR** when `scripts/validate-path.sh` did not pass (including CLI missing)
 - Recommend **Ready for PR** on **new** / **conversion** interactive paths when Playwright was skipped
 - Request website-repo changes as package blockers
 - Use the PR review tool instead of local import (no PR yet)
@@ -413,7 +414,7 @@ When a stable selector is missing upstream, follow [frontend-selector-pr.md](fro
 - Persist named `checkpoint` after each gate
 - Keep chat short, clear, and friendly
 - Dedupe findings by root cause
-- Run CLI validate when available
+- Run `scripts/validate-path.sh {path_dir}` (use `--fetch` if the CLI is missing). Do not skip schema validation.
 - Offer package vs frontend actions correctly after the results menu
 - Run the shared claim-check (same policy as review)
 
