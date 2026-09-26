@@ -21,8 +21,8 @@ Follow these phases in order:
 3. **Scaffold content files.** Create `content.json` for every milestone in the interactive-tutorials repo — interactive blocks for UI steps, markdown blocks for conceptual content. Because the website markdown is no longer used to render this learning path, capture all conceptual prose from each milestone's `index.md` body as markdown blocks so no content is lost. If that prose contains `![alt](url)` image markdown, or the source page has a screenshot/video, gate it for website-only rendering rather than dropping it — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks. **Exception: the `business-value` milestone gets markdown blocks only — no interactive blocks, sections, or guided blocks (see Critical Rule 5 for the `conditional` carve-out).**
 4. **Create website metadata files.** Create a `website.yaml` for the path and each milestone, derived from the front matter of the corresponding website markdown files. Map the path `_index.md` front matter into the path-level `website.yaml` and each milestone `index.md` front matter into that milestone's `website.yaml` (for example, `title` → `menuTitle`, plus `description`, `weight`, step ordering, `cta`, `related_journeys` at the path level, and `side_journeys` at the step level). These files take the place of the markdown front matter as the package's source of website metadata; the website markdown itself stays unchanged. Refer to `docs/website-yaml-reference.md`.
 5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. **Exception: exclude `business-value` from the path-level `milestones` array.** The `business-value` milestone still gets its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a registered stop on the path.
-6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
-7. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
+6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML). If an element has no stable selector after 3 tries, write the instruction as `markdown` (or fold it into the next real interactive step). Do **not** use `action: "noop"` as a selector fallback.
+7. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports. If Show me cannot target the control, convert that learner action to `markdown` rather than `noop`.
 8. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
 
 For background on how this command relates to `/create-learning-path`, refer to `.cursor/learning-path-workflows/workflows.md`.
@@ -42,7 +42,7 @@ For background on how this command relates to `/create-learning-path`, refer to 
 9. **Use Playwright for selectors.** Never guess. Always inspect the actual DOM at `learn.grafana.net`.
 10. **User handles all Pathfinder testing.** Tell the user which `content.json` to import into the Block Editor. Wait for their feedback. Never import JSON or click interactive buttons yourself.
 11. **Ask before fixing.** When the user reports a broken selector, explain the problem and proposed fix, then wait for approval.
-12. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
+12. **3-attempt limit per selector.** If a selector fails after 3 tries, stop targeting it. Put the learner action in `markdown`, or fold it into the next interactive step's `content`. Never use `action: "noop"` for click, open, type, fill, or select copy. Never leave `TODO:manual-review` as a silent skip.
 13. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
 
 ---
@@ -56,6 +56,7 @@ For background on how this command relates to `/create-learning-path`, refer to 
 - Never use non-standard CSS (`:contains()`, `:has-text()`)
 - Never use data-dependent selectors — use `^=` starts-with patterns
 - Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
+- Never use `action: "noop"` for a learner action (click, open, type, fill, select, turn off) when Pathfinder cannot target the control. Use `markdown`, or fold the instruction into the next real interactive step. `noop` is only for a numbered pause that is **not** a click/type instruction (for example "Wait for the query to finish").
 - Never leave a screenshot, video, or markdown image ungated in `content.json` — wrap it in a `conditional` with `conditions: ["renderer:website"]` (see Step 3)
 
 ---
