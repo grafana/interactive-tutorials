@@ -11,11 +11,15 @@ Create a complete interactive learning path from scratch. Produces `content.json
 Before anything else, ask: **"Are you starting a learning path from scratch or picking up a proposed learning path from a learning journey in docs-ai?"**
 
 - **From scratch:** the user provides a **feature or product goal** and **target audience** — proceed with the phases below as written.
-- **From a learning journey:** the user provides the **docs-ai PR** (URL or number) for the signed-off journey. `gh pr checkout` it into a local `docs-ai` checkout (same pattern as `review-learning-path`'s PR checkout), then read directly from that branch:
-  - `journeys/<slug>/outline/outline.md` — the `## Learning Paths` section's "Needed (to create)" table, for the specific path being built (its scope and planned milestones)
-  - `journeys/<slug>/outline/reference/jargon-inventory.md` — canonical UI-label terms to use verbatim in the generated content
+- **From a learning journey:** the user provides the **docs-ai PR** (URL or number) for the signed-off journey.
+  - `gh pr checkout` it into a local `docs-ai` checkout (same pattern as `review-learning-path`'s PR checkout). If checkout fails because the PR already merged and its branch is gone, fall back to reading the target branch (usually `main`) directly — the content is still there, it's just not on a live PR branch anymore.
+  - The slug comes from whichever `journeys/<slug>/` directory the checkout touches — there's no separate ID to ask for.
+  - Read `journeys/<slug>/outline/outline.md`. It has a section describing learning paths — heading text and casing vary ("Learning Paths" or "Learning paths"), and the split into what already exists versus what's still needed isn't standardized either: some journeys have no split at all, some need nothing, and entries can describe work already built on another branch, already merged, or explicitly dropped. Read the section for meaning, not for an exact heading or table match.
+  - Before treating anything as "the plan," confirm with the author which specific entry you're building, and that it's genuinely new, multi-milestone work — not a single interactive guide (a different, lighter artifact this command doesn't produce), not something already built elsewhere, and not cancelled.
+  - The confirmed entry is usually one line describing scope, not a milestone list — derive the milestone breakdown yourself from that line and any accompanying notes (which sometimes point at reusing an existing interactive section from another package verbatim), the same judgment call you'd make with any other input.
+  - Also read `journeys/<slug>/outline/reference/jargon-inventory.md`'s "UI elements (canonical labels)" table for terms to use verbatim in the generated content.
 
-  The slug comes from whichever `journeys/<slug>/` directory the checked-out branch touches — there's no separate ID to ask for. This mode skips phase 3 below; see that phase for what happens instead.
+  This mode skips phase 3 below; see that phase for what happens instead.
 
 ---
 
@@ -27,7 +31,7 @@ Follow these phases in order:
 2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch.
 3. **Propose path options — or use the imported plan.**
    - **From scratch:** review existing paths in `interactive-tutorials/[slug]-lj` for structural patterns — but do not copy a generic "case for observability" / "value of observability" milestone from an older path; see Critical rule 10. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
-   - **From a learning journey:** skip the proposal and the approval wait. The outline's "Needed (to create)" row for this path already gives the scope and milestones — use them as-is as the approved plan. Use `jargon-inventory.md`'s terms verbatim wherever the generated content names a UI element. Proceed straight to phase 4.
+   - **From a learning journey:** skip the proposal and the approval wait — the outline entry confirmed in the Input phase already tells you what to cover. Derive milestones from that scope yourself (same targets: 2-5 minutes per milestone, 6-8 per path). Use `jargon-inventory.md`'s terms verbatim wherever the generated content names a UI element. Proceed straight to phase 4 with that plan.
 4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Gate any screenshot, embedded video, or markdown image behind a `renderer:website` conditional — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`.
 5. **Create website metadata files.** Create `website.yaml` for the path and each milestone. Refer to `docs/website-yaml-reference.md`.
 6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. Where fields can't be derived, ask the user to provide values before generating.

@@ -46,9 +46,9 @@ Every session follows five phases. The AI handles most of the work — your main
 The AI validates that both repos are accessible (the website repo is a read-only source — it's read from but never written to), then asks which of two entry modes you're in:
 
 - **From scratch:** reads the canonical Grafana docs for the feature and proposes milestones for your approval, same as before.
-- **From a learning journey in docs-ai:** you give it the docs-ai PR for a signed-off journey. It checks that PR out and reads the journey's approved outline and jargon list directly — no proposal, no approval wait, the outline's plan for this path *is* the plan.
+- **From a learning journey in docs-ai:** you give it the docs-ai PR for a signed-off journey. It checks that PR out (or falls back to the target branch if the PR already merged and its branch is gone) and reads the journey's outline and jargon list directly. The outline's structure varies by journey — headings, table shape, and whether an entry is even new work all differ — so the AI confirms with you which entry it's building before treating anything as the plan, then derives the milestone breakdown from that entry's scope itself. No proposal, no approval wait, but also no assumption that the outline hands over a ready-made milestone list.
 
-**Your role:** From scratch, review and approve the proposed milestones before the AI writes anything. From a learning journey, just hand over the docs-ai PR.
+**Your role:** From scratch, review and approve the proposed milestones before the AI writes anything. From a learning journey, hand over the docs-ai PR and confirm which outline entry it should build.
 
 ### Phase 2: Content, manifest, and website metadata generation
 
