@@ -21,25 +21,51 @@
         },
         {
           "type": "interactive",
-          "action": "popout",
-          "targetvalue": "floating",
-          "content": "Pop this guide out into a floating window so it stays visible when the **Create usage alert** drawer opens."
-        },
-        {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/a/grafana-cmab-app/usage-alerts",
-          "content": "Go to the **Usage Alerts** tab of the Cost Management and Billing app.",
+          "action": "button",
+          "reftarget": "button[data-testid='tab-usage-alerts']",
+          "content": "Click **Usage Alerts** in the Cost Management and Billing app.",
+          "requirements": [
+            "exists-reftarget"
+          ],
           "verify": "on-page:/a/grafana-cmab-app/usage-alerts"
         },
         {
           "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out into a floating window so it stays visible while you open the alert builder."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "a, button:contains('Create usage alert')",
-          "content": "Click **Create usage alert** to open the alert builder. If you already have alerts, the same control is labeled **+ Create usage alert**.",
+          "reftarget": "button[data-testid='tab-usage-alerts'][aria-selected='true']",
+          "content": "Confirm **Usage Alerts** is selected before opening the alert builder.",
+          "doIt": false,
           "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-cmab-app/usage-alerts"
+            "on-page:/a/grafana-cmab-app/usage-alerts",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Click **+ Create alert**, then select **All Products** to open the alert builder.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Create alert",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-cmab-app/usage-alerts"
+              ]
+            },
+            {
+              "action": "button",
+              "reftarget": "All Products",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-cmab-app/usage-alerts"
+              ]
+            }
           ],
           "skippable": true
         },
@@ -83,20 +109,18 @@
           "content": "Alert levels decide how close to the budget you get notified. Select one or more preset levels, such as 50%, 70%, 85%, and 95% of the threshold, or add a custom level to fine-tune when Grafana warns you."
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "#contact-point-selector",
-          "content": "Choose a **Contact point** for the notification. If you don't have one yet, click **View or create contact points** to set one up.",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-cmab-app/usage-alerts"
-          ],
-          "doIt": false,
-          "skippable": true
+          "type": "markdown",
+          "content": "Choose a **Contact point** for the notification. If you don't have one yet, click **View or create contact points** to set one up."
         },
         {
           "type": "markdown",
           "content": "Review your settings, then click **Create alerts** to save. The alert becomes active immediately and begins monitoring."
+        },
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Return this guide to the sidebar before continuing to the final milestone."
         }
       ]
     },
