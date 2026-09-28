@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "When your alert fires, Grafana sends a notification to a contact point. The message includes a **Summary** and a **Description**.\n\nThis alert reports a **percentage**, so the Summary uses `printf \"%.1f\"` to format `$value` as a one-decimal number, and the Description names the ratio so the on-call reader knows what 5% means.\n\nIn this milestone, you choose the contact point, write the message, and save the rule."
+      "content": "A contact point with a destination receives notifications when your alert fires. The message includes a **Summary** and a **Description**.\n\nThis alert reports a **percentage**, so the Summary formats the query value to one decimal place. The Description explains what 5% means.\n\nIn this milestone, choose a contact point, write the message, and save the rule."
     },
     {
       "type": "section",
@@ -15,15 +15,21 @@
       ],
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid alert-rule contact-point-picker']",
-          "content": "In the **Configure notifications** section, open the **Contact point** picker and choose a contact point available on your stack.",
+          "type": "multistep",
+          "content": "Select an available **Contact point**. You can use **empty** to save a practice rule, but it cannot deliver notifications. For real alerts, choose a contact point with a destination you control.",
           "requirements": [
-            "on-page:/alerting/new/alerting",
-            "exists-reftarget"
+            "on-page:/alerting/new/alerting"
           ],
-          "doIt": false
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "input[data-testid='data-testid alert-rule contact-point-input']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='listbox'] [role='option']"
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -49,20 +55,20 @@
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='save-rule']",
-          "content": "Click **Save** in the action bar at the bottom of the page to save and activate your alert rule.",
+          "action": "button",
+          "reftarget": "[data-testid='data-testid alert-rule save-rule-button']",
+          "content": "Confirm the rule has a name, query, folder, and contact point. Fix validation errors, then click **Save**.",
           "requirements": [
             "on-page:/alerting/new/alerting",
             "exists-reftarget"
           ],
-          "doIt": false
+          "verify": "on-page:/alerting/grafana/"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Your alert rule is saved and running. When the error rate holds above 5% past the pending period, the alert fires and notifications go to your contact point."
+      "content": "Your rule is saved. It can fire when the error rate stays above 5% past the pending period. Notifications require a contact point with a working destination."
     }
   ]
 }

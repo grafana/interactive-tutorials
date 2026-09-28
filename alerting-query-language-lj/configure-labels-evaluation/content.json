@@ -13,19 +13,26 @@
       "title": "Create a folder",
       "blocks": [
         {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "New folder",
-          "content": "In the **Add folder and labels** section, click **New folder** to open the create dialog.",
-          "doIt": false,
+          "type": "multistep",
+          "content": "Click **New folder**, name it **QuickPizza alerts**, then click **Create**.",
           "requirements": [
-            "on-page:/alerting/new/alerting",
-            "exists-reftarget"
+            "on-page:/alerting/new/alerting"
+          ],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "New folder"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid alert-rule name-folder-name-field']",
+              "targetvalue": "QuickPizza alerts"
+            },
+            {
+              "action": "button",
+              "reftarget": "Create"
+            }
           ]
-        },
-        {
-          "type": "markdown",
-          "content": "Enter a folder name (for example, **Alerts**), then click **Create**. The folder is saved and selected for your rule."
         }
       ]
     },
@@ -42,19 +49,41 @@
       ],
       "blocks": [
         {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "Add labels",
-          "content": "Click **Add labels** to open the labels editor. Labels are key-value tags that help you find and filter this alert. A sustained 5% error rate deserves the key **severity** and the value **critical**.",
-          "doIt": false,
+          "type": "multistep",
+          "content": "Click **Add labels**, set **severity** to **critical**, then click **Save**.",
           "requirements": [
-            "on-page:/alerting/new/alerting",
-            "exists-reftarget"
+            "on-page:/alerting/new/alerting"
+          ],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Add labels"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='alertlabel-key-combobox']",
+              "targetvalue": "severity"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='alertlabel-value-combobox']",
+              "targetvalue": "critical"
+            },
+            {
+              "action": "button",
+              "reftarget": "Save"
+            }
           ]
         },
         {
-          "type": "markdown",
-          "content": "Add a label with the key **severity** and the value **critical**, then click **Save**."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule step-3']:contains('severity'):contains('critical')",
+          "content": "Confirm that **severity=critical** appears on the alert rule.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
         }
       ]
     },

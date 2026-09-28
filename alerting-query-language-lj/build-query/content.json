@@ -17,6 +17,24 @@
       "blocks": [
         {
           "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/new/alerting",
+          "content": "Reopen **New alert rule** if installing QuickPizza redirected you away from the form.",
+          "verify": "on-page:/alerting/new/alerting"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Give your alert rule a name']",
+          "targetvalue": "QuickPizza high error rate",
+          "content": "Confirm **Name** is **QuickPizza high error rate** after reopening the form.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='data-testid Select a data source']",
           "targetvalue": "grafanacloud-play-prom",
@@ -29,23 +47,25 @@
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid QueryEditorModeToggle']",
-          "content": "Click **Code** on the mode toggle.",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid radio-button-option code']",
+          "targetvalue": "true",
+          "content": "Select **Code** on the mode toggle.",
           "tooltip": "Switches the query editor from Builder to Code.",
-          "doIt": false,
           "requirements": [
-            "on-page:/alerting/new/alerting"
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
           ]
         },
         {
-          "type": "code-block",
-          "reftarget": "div[data-testid='data-testid Query field']",
-          "language": "promql",
-          "code": "100 * sum(rate(quickpizza_server_http_requests_total{status=~\"5..\"}[5m])) / sum(rate(quickpizza_server_http_requests_total[5m]))",
-          "content": "Click **Insert** to add this query to the editor.",
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[data-testid='data-testid Query field'] textarea.inputarea.monaco-mouse-cursor-text",
+          "targetvalue": "100 * sum(rate(quickpizza_server_http_requests_total{status=~\"5..\"}[5m])) / sum(rate(quickpizza_server_http_requests_total[5m]))",
+          "content": "Enter the error-rate query in **Code**:\n\n```promql\n100 * sum(rate(quickpizza_server_http_requests_total{status=~\"5..\"}[5m])) / sum(rate(quickpizza_server_http_requests_total[5m]))\n```",
           "requirements": [
-            "on-page:/alerting/new/alerting"
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
           ]
         },
         {
