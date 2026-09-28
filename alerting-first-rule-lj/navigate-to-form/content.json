@@ -23,22 +23,27 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/alerting/new/alerting",
-          "content": "On the **Alert rules** page, click **+ New alert rule**.",
-          "requirements": [
-            "on-page:/alerting/list"
-          ],
+          "content": "Open **New alert rule**. If QuickPizza installation redirects you to the dashboards folder, reopen the alert rule form.",
           "verify": "on-page:/alerting/new/alerting"
         },
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "input[placeholder='Give your alert rule a name']",
-          "targetvalue": "QuickPizza server errors",
-          "content": "On the **New alert rule** page, in the **Name** field, enter a clear name that helps responders triage alerts quickly.\n\n**QuickPizza server errors** is filled in for you.",
-          "tooltip": "Responders see this name first when the alert fires.",
-          "requirements": [
-            "on-page:/alerting/new/alerting",
-            "exists-reftarget"
+          "type": "multistep",
+          "content": "Open **New alert rule** and name the rule **QuickPizza server errors**.",
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/alerting/new/alerting",
+              "verify": "on-page:/alerting/new/alerting"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[placeholder='Give your alert rule a name']",
+              "targetvalue": "QuickPizza server errors",
+              "requirements": [
+                "on-page:/alerting/new/alerting",
+                "exists-reftarget"
+              ]
+            }
           ]
         }
       ]
