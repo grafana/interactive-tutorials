@@ -98,36 +98,35 @@
           ]
         },
         {
-          "type": "guided",
-          "id": "enter-prometheus-url",
-          "content": "Enter your Prometheus base URL, then choose the authentication method your endpoint requires. Complete any credential fields directly in Grafana before continuing to the connection test.",
-          "steps": [
-            {
-              "id": "connect-prometheus-direct-cloud-step-5",
-              "action": "formfill",
-              "reftarget": ":is({grafana:components.DataSource.Prometheus.configPage.connectionSettings})",
-              "targetvalue": "^https?://\\S+$",
-              "requirements": [
-                "exists-reftarget",
-                "min-version:13.2.0",
-                "on-page:/connections/datasources/edit"
-              ],
-              "tooltip": "Enter the base address reachable from Grafana Cloud, including its protocol.",
-              "description": "Enter your Prometheus server’s base URL, including `https://` or `http://` and any required port or path prefix. Use an address reachable from Grafana Cloud; do not append `/metrics` or `/api/v1/query`. Enter your own address in the highlighted field; the guide checks its URL format.",
-              "validateInput": true
-            },
-            {
-              "id": "connect-prometheus-direct-cloud-step-6",
-              "action": "highlight",
-              "reftarget": "#auth-method-select",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources/edit"
-              ],
-              "tooltip": "Choose the method your endpoint requires and enter credentials directly in Grafana.",
-              "description": "Choose the authentication method required by your endpoint and complete its credential fields directly in Grafana before continuing. Select No authentication only when your endpoint requires no credentials; highlighting this field does not verify authentication."
-            }
-          ]
+          "id": "connect-prometheus-direct-cloud-step-5",
+          "action": "formfill",
+          "reftarget": ":is({grafana:components.DataSource.Prometheus.configPage.connectionSettings})",
+          "targetvalue": "^https?://\\S+$",
+          "requirements": [
+            "exists-reftarget",
+            "min-version:13.2.0",
+            "on-page:/connections/datasources/edit"
+          ],
+          "tooltip": "Enter the base address reachable from Grafana Cloud, including its protocol.",
+          "validateInput": true,
+          "type": "interactive",
+          "content": "Enter your Prometheus server’s base URL, including `https://` or `http://` and any required port or path prefix. Use an address reachable from Grafana Cloud; do not append `/metrics` or `/api/v1/query`. Enter your own address in the highlighted field; the guide checks its URL format.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "id": "connect-prometheus-direct-cloud-step-6",
+          "action": "highlight",
+          "reftarget": "#auth-method-select",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources/edit"
+          ],
+          "tooltip": "Choose the method your endpoint requires and enter credentials directly in Grafana.",
+          "type": "interactive",
+          "content": "Choose the authentication method your endpoint requires and enter any credentials directly in Grafana. Select **No Authentication** only if your endpoint requires no credentials.",
+          "doIt": false,
+          "showMe": true
         },
         {
           "type": "interactive",

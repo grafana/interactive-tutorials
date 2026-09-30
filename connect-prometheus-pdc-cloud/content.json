@@ -237,36 +237,35 @@
           ]
         },
         {
-          "type": "guided",
-          "id": "connect-prometheus-pdc-cloud-step-14-guided",
-          "content": "Enter your private endpoint and configure its authentication in Grafana.",
-          "steps": [
-            {
-              "action": "formfill",
-              "reftarget": ":is({grafana:components.DataSource.Prometheus.configPage.connectionSettings})",
-              "targetvalue": "^https?://\\S+$",
-              "requirements": [
-                "exists-reftarget",
-                "min-version:13.2.0",
-                "on-page:/connections/datasources/edit"
-              ],
-              "id": "connect-prometheus-pdc-cloud-step-14",
-              "tooltip": "Enter the HTTP or HTTPS address reachable from your agent.",
-              "description": "Enter your private Prometheus server URL under **Connection**, beginning with `http://` or `https://`. Use the address reachable from the PDC agent, including its port when needed.",
-              "validateInput": true
-            },
-            {
-              "action": "highlight",
-              "reftarget": "#auth-method-select",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/connections/datasources/edit"
-              ],
-              "id": "connect-prometheus-pdc-cloud-step-15",
-              "tooltip": "Configure the method your endpoint requires and enter credentials directly in Grafana.",
-              "description": "Choose the authentication method required by your Prometheus endpoint and enter any credentials directly in Grafana. PDC provides network access; it does not replace endpoint authentication. If the endpoint needs none, select **No authentication**. Finish these settings before continuing; highlighting the control does not configure authentication."
-            }
-          ]
+          "action": "formfill",
+          "reftarget": ":is({grafana:components.DataSource.Prometheus.configPage.connectionSettings})",
+          "targetvalue": "^https?://\\S+$",
+          "requirements": [
+            "exists-reftarget",
+            "min-version:13.2.0",
+            "on-page:/connections/datasources/edit"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-14",
+          "tooltip": "Enter the HTTP or HTTPS address reachable from your agent.",
+          "validateInput": true,
+          "type": "interactive",
+          "content": "Enter your private Prometheus server URL under **Connection**, beginning with `http://` or `https://`. Use the address reachable from the PDC agent, including its port when needed.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "#auth-method-select",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources/edit"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-15",
+          "tooltip": "Configure the method your endpoint requires and enter credentials directly in Grafana.",
+          "type": "interactive",
+          "content": "Choose the authentication method your endpoint requires and enter any credentials directly in Grafana. Select **No Authentication** only if your endpoint requires no credentials. PDC provides network access; your endpoint may still require authentication.",
+          "doIt": false,
+          "showMe": true
         },
         {
           "type": "interactive",
