@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-prometheus-direct-cloud",
+  "title": "Connect Prometheus to Grafana Cloud",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Connect an existing Prometheus server so Grafana Cloud can query its metrics. You’ll name the connection, enter its address and authentication, and check that the Prometheus API responds."
+    },
+    {
+      "type": "callout",
+      "title": "Before you begin",
+      "content": "Have your Prometheus base URL and any required credentials ready, and sign in with permission to add data sources. The server must be reachable from Grafana Cloud: an address that works only on your laptop or VPN needs Private Data Source Connect (PDC). If you already started a configuration, check for it under **Connections** → **Data sources** before creating another."
+    },
+    {
+      "type": "markdown",
+      "content": "Open the data source catalog to begin adding your connection."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Find the data source catalog",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "connect-prometheus-direct-cloud-step-1",
+          "content": "Open **Add data source** to start connecting your Prometheus server.",
+          "action": "navigate",
+          "doIt": true,
+          "showMe": true,
+          "requirements": [],
+          "reftarget": "/connections/datasources/new",
+          "tooltip": "Open the catalog to add your connection."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The catalog is where you choose the service Grafana will query."
+    },
+    {
+      "type": "markdown",
+      "content": "Create the Prometheus data source, enter its connection details, and check access to its API."
+    },
+    {
+      "type": "section",
+      "id": "connect-prometheus-to-grafana-cloud",
+      "title": "Configure and test your connection",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "connect-prometheus-direct-cloud-step-2",
+          "content": "Select **Prometheus** to create a data source configuration.",
+          "action": "button",
+          "doIt": true,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "min-version:13.2.0",
+            "on-page:/connections/datasources/new"
+          ],
+          "reftarget": ":is({grafana:components.Card.heading}) button:contains(\"Prometheus\")",
+          "tooltip": "Create a connection for querying your metrics."
+        },
+        {
+          "type": "multistep",
+          "id": "name-prometheus-connection",
+          "content": "Name this connection `my-prometheus` so you can find it later.",
+          "steps": [
+            {
+              "id": "connect-prometheus-direct-cloud-step-3",
+              "action": "button",
+              "requirements": [
+                "exists-reftarget",
+                "min-version:13.2.0",
+                "on-page:/connections/datasources/edit"
+              ],
+              "reftarget": ":is({grafana:components.EditableTitle.editButton})",
+              "tooltip": "Choose a recognizable connection name.",
+              "description": "Click **Edit title** to give this connection a recognizable name."
+            },
+            {
+              "id": "connect-prometheus-direct-cloud-step-4",
+              "action": "formfill",
+              "requirements": [
+                "exists-reftarget",
+                "min-version:13.2.0",
+                "on-page:/connections/datasources/edit"
+              ],
+              "reftarget": ":is({grafana:components.EditableTitle.titleInput})",
+              "targetvalue": "my-prometheus",
+              "validateInput": true,
+              "tooltip": "Use my-prometheus so the guide can check this connection.",
+              "description": "Enter `my-prometheus` as the name so you can find this connection later."
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "id": "enter-prometheus-url",
+          "content": "Enter your Prometheus base URL, then choose the authentication method your endpoint requires. Complete any credential fields directly in Grafana before continuing to the connection test.",
+          "steps": [
+            {
+              "id": "connect-prometheus-direct-cloud-step-5",
+              "action": "formfill",
+              "reftarget": ":is({grafana:components.DataSource.Prometheus.configPage.connectionSettings})",
+              "targetvalue": "^https?://\\S+$",
+              "requirements": [
+                "exists-reftarget",
+                "min-version:13.2.0",
+                "on-page:/connections/datasources/edit"
+              ],
+              "tooltip": "Enter the base address reachable from Grafana Cloud, including its protocol.",
+              "description": "Enter your Prometheus server’s base URL, including `https://` or `http://` and any required port or path prefix. Use an address reachable from Grafana Cloud; do not append `/metrics` or `/api/v1/query`. Enter your own address in the highlighted field; the guide checks its URL format.",
+              "validateInput": true
+            },
+            {
+              "id": "connect-prometheus-direct-cloud-step-6",
+              "action": "highlight",
+              "reftarget": "#auth-method-select",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/datasources/edit"
+              ],
+              "tooltip": "Choose the method your endpoint requires and enter credentials directly in Grafana.",
+              "description": "Choose the authentication method required by your endpoint and complete its credential fields directly in Grafana before continuing. Select No authentication only when your endpoint requires no credentials; highlighting this field does not verify authentication."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "connect-prometheus-direct-cloud-step-7",
+          "content": "Click **Save & test**. Look for **Successfully queried the Prometheus API.** If the test fails, use the troubleshooting tips below, update the settings, and try again.",
+          "action": "button",
+          "doIt": true,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "min-version:13.2.0",
+            "on-page:/connections/datasources/edit"
+          ],
+          "reftarget": ":is({grafana:pages.DataSource.saveAndTest})",
+          "verify": "datasource-configured:my-prometheus",
+          "tooltip": "Check that the saved connection can query the API."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A successful API check confirms that Grafana can reach your Prometheus server using the saved connection settings."
+    },
+    {
+      "type": "callout",
+      "title": "If the connection test fails",
+      "content": "- Timeout or connection refused: check the hostname, port, and firewall rules; Grafana Cloud must be able to reach the server. For a private endpoint, use the PDC setup guide.\n- Unauthorized or forbidden: check the authentication method and credentials expected by this endpoint.\n- Not found: check the base URL and any path prefix; remove query or metrics paths.\n- Certificate error: check the server certificate and any required CA certificate settings.\n\nAfter correcting the settings, click **Save & test** again. A successful API check confirms connectivity; it does not guarantee that every metric you expect is available."
+    }
+  ]
+}
