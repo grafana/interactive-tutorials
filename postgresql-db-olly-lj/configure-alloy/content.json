@@ -5,7 +5,118 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this milestone, you'll install Grafana Alloy and add the Database Observability configuration blocks for PostgreSQL. Alloy collects both metrics and structured logs from your database and forwards them to Grafana Cloud."
+      "content": "In this milestone, you'll use the **Add a database** wizard in Database Observability to generate the Grafana Alloy configuration for your PostgreSQL database, then deploy it on the machine where Alloy runs. Alloy collects both metrics and structured logs from your database and forwards them to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "Before you begin, install Grafana Alloy 1.17.0 or later on a host that can reach both your PostgreSQL server and Grafana Cloud. Refer to [Install Grafana Alloy](https://grafana.com/docs/alloy/latest/set-up/install/) for your platform. Database Observability is generally available, so you don't need a `--stability.level` flag. Alloy should connect directly to the database host, not through a load balancer or PgBouncer.\n\nThe wizard offers two deployment methods. This path uses **Manual configuration**, which works with any Alloy you run yourself. If your collector is enrolled in Fleet Management, you can choose **Fleet Management** instead and Grafana Cloud pushes the configuration to it for you."
+    },
+    {
+      "type": "markdown",
+      "content": "To start the wizard and choose how to deploy, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-dbo11y-app/configuration",
+          "verify": "on-page:/a/grafana-dbo11y-app/configuration",
+          "content": "Open **Observability** > **Database** > **Configuration**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add a database",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/configuration", "exists-reftarget"],
+          "content": "On the **Setup** tab, click **Add a database**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id='database-engine-postgres']",
+          "requirements": ["exists-reftarget"],
+          "content": "Select **PostgreSQL**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Next",
+          "requirements": ["exists-reftarget"],
+          "content": "Click **Next**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id='config-method-manual']",
+          "requirements": ["exists-reftarget"],
+          "content": "Select **Manual configuration**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Next",
+          "requirements": ["exists-reftarget"],
+          "content": "Click **Next**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've chosen PostgreSQL and manual deployment. The wizard now asks for the details it needs to generate your configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "To generate the configuration, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='prod_mysql_primary']",
+          "targetvalue": "postgres_primary",
+          "requirements": ["exists-reftarget"],
+          "content": "Enter a **Database name**. It becomes the Alloy component identifier, so use only letters, numbers, and underscores."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Auto-fill from pipeline name",
+          "requirements": ["exists-reftarget"],
+          "content": "Leave **DSN storage method** set to environment variable, then click **Auto-fill from pipeline name** to set the **Environment variable name** Alloy reads the connection string from. Note the name — you'll set this variable on the Alloy host."
+        },
+        {
+          "type": "markdown",
+          "content": "Optionally set an **Instance label** to identify this database in Grafana Cloud. If you leave it empty, the instance is identified by the `host:port` from your connection string."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Next",
+          "requirements": ["exists-reftarget"],
+          "content": "Click **Next**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Copy to clipboard",
+          "requirements": ["exists-reftarget"],
+          "content": "Review the generated configuration on **Deploy configuration**, then click **Copy to clipboard** (or **Download as .alloy file**)."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've generated a complete Alloy configuration: the PostgreSQL exporter with `stat_statements` and autodiscovery of logical databases, the `database_observability.postgres` component with query details, samples, schema details, and explain plans enabled, relabeling, and the Grafana Cloud metrics and logs writers, all wired together."
+    },
+    {
+      "type": "markdown",
+      "content": "To deploy the configuration on the host where Alloy runs, complete the following steps:"
     },
     {
       "type": "section",
@@ -13,41 +124,21 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "To configure Grafana Alloy to connect your PostgreSQL database to Grafana Cloud, complete the following steps:"
+          "content": "Paste the copied configuration into your Alloy configuration file, for example `config.alloy`. If the file already contains Database Observability blocks for this database, replace them so the database isn't collected twice."
         },
         {
           "type": "markdown",
-          "content": "Install Grafana Alloy 1.15.0 or later. Refer to the [Alloy installation documentation](https://grafana.com/docs/alloy/latest/get-started/install/) for your platform."
+          "content": "Set the environment variables the configuration reads. The DSN variable name is the one the wizard generated (`DB_POSTGRES_<DATABASE_NAME>_DSN`):\n\n```bash\nexport DB_POSTGRES_POSTGRES_PRIMARY_DSN='postgresql://db-o11y:<DB_O11Y_PASSWORD>@<DB_HOST>:<DB_PORT>/postgres?sslmode=require'\nexport GCLOUD_HOSTED_METRICS_URL='<PROMETHEUS_REMOTE_WRITE_URL>'\nexport GCLOUD_HOSTED_METRICS_ID='<PROMETHEUS_INSTANCE_ID>'\nexport GCLOUD_HOSTED_LOGS_URL='<LOKI_WRITE_URL>'\nexport GCLOUD_HOSTED_LOGS_ID='<LOKI_INSTANCE_ID>'\nexport GCLOUD_RW_API_KEY='<GRAFANA_CLOUD_TOKEN>'\n```\n\nReplace:\n- **DB_O11Y_PASSWORD**, **DB_HOST**, **DB_PORT** — the `db-o11y` password and your PostgreSQL host and port (default `5432`). Keep `postgres` as the logical database in the DSN; autodiscovery finds the others.\n- **PROMETHEUS_REMOTE_WRITE_URL** / **PROMETHEUS_INSTANCE_ID** — from your stack's Prometheus details in Grafana Cloud\n- **LOKI_WRITE_URL** / **LOKI_INSTANCE_ID** — from your stack's Loki details in Grafana Cloud\n- **GRAFANA_CLOUD_TOKEN** — a Grafana Cloud access policy token with write permissions\n\nHow you set variables depends on how you run Alloy. For the Linux service, add them to its environment file (`/etc/default/alloy` on Debian-based systems, `/etc/sysconfig/alloy` on RedHat or SUSE-based systems); for containers, pass them in the container environment."
         },
         {
           "type": "markdown",
-          "content": "Create the Data Source Name secret file. Replace the placeholders with your values:\n\n```bash\necho 'postgresql://db-o11y:<DB_PASSWORD>@<DB_HOST>:<DB_PORT>/postgres?sslmode=require' > /var/lib/alloy/postgres_secret\n```\n\nReplace:\n- **DB_PASSWORD** — Password for the `db-o11y` user you created\n- **DB_HOST** — Hostname or IP of your PostgreSQL server\n- **DB_PORT** — PostgreSQL port (default: 5432)"
-        },
-        {
-          "type": "markdown",
-          "content": "Add the core Database Observability blocks to your Alloy configuration file. These configure the PostgreSQL exporter for metrics and the Database Observability component for query-level logs:\n\n```alloy\nlocal.file \"postgres_secret\" {\n  filename  = \"/var/lib/alloy/postgres_secret\"\n  is_secret = true\n}\n\nprometheus.exporter.postgres \"postgres\" {\n  data_source_names  = [local.file.postgres_secret.content]\n  enabled_collectors = [\"stat_statements\"]\n}\n\ndatabase_observability.postgres \"postgres\" {\n  data_source_name  = local.file.postgres_secret.content\n  forward_to        = [loki.relabel.database_observability_postgres.receiver]\n  targets           = prometheus.exporter.postgres.postgres.targets\n  enable_collectors = [\"query_details\", \"query_samples\", \"schema_details\", \"explain_plans\"]\n  exclude_users     = [\"db-o11y\"]\n}\n```"
-        },
-        {
-          "type": "markdown",
-          "content": "Add the relabeling rules and Prometheus scrape configuration:\n\n```alloy\nloki.relabel \"database_observability_postgres\" {\n  forward_to = [loki.write.logs_service.receiver]\n\n  rule {\n    target_label = \"instance\"\n    replacement  = \"<DB_HOST>:<DB_PORT>\"\n  }\n}\n\ndiscovery.relabel \"database_observability_postgres\" {\n  targets = database_observability.postgres.postgres.targets\n\n  rule {\n    target_label = \"job\"\n    replacement  = \"integrations/db-o11y\"\n  }\n  rule {\n    target_label = \"instance\"\n    replacement  = \"<DB_HOST>:<DB_PORT>\"\n  }\n}\n\nprometheus.scrape \"database_observability_postgres\" {\n  targets    = discovery.relabel.database_observability_postgres.output\n  forward_to = [prometheus.remote_write.metrics_service.receiver]\n}\n```"
-        },
-        {
-          "type": "markdown",
-          "content": "In the relabeling blocks you just added, replace the `DB_HOST` and `DB_PORT` placeholder values with your PostgreSQL host and port."
-        },
-        {
-          "type": "markdown",
-          "content": "Add the Prometheus remote write and Loki write blocks. Find your Grafana Cloud credentials in your stack's configuration page:\n\n```alloy\nprometheus.remote_write \"metrics_service\" {\n  endpoint {\n    url = \"https://prometheus-<region>.grafana.net/api/prom/push\"\n    basic_auth {\n      username = \"<METRICS_USER>\"\n      password = \"<METRICS_API_KEY>\"\n    }\n  }\n}\n\nloki.write \"logs_service\" {\n  endpoint {\n    url = \"https://logs-<region>.grafana.net/loki/api/v1/push\"\n    basic_auth {\n      username = \"<LOGS_USER>\"\n      password = \"<LOGS_API_KEY>\"\n    }\n  }\n}\n```"
-        },
-        {
-          "type": "markdown",
-          "content": "Replace the region, usernames, and API keys with your Grafana Cloud stack values."
-        },
-        {
-          "type": "markdown",
-          "content": "You've configured Grafana Alloy with all the Database Observability components for PostgreSQL."
+          "content": "Restart Alloy so it loads the new configuration. On Linux with systemd:\n\n```bash\nsudo systemctl restart alloy\n```\n\nCheck the Alloy logs for errors connecting to PostgreSQL or to Grafana Cloud."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've deployed the Database Observability configuration to Alloy. Alloy now connects to PostgreSQL as `db-o11y`, scrapes `pg_stat_statements` metrics, and streams query telemetry to Grafana Cloud."
     },
     {
       "type": "markdown",
