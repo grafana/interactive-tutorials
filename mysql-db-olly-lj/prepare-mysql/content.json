@@ -25,11 +25,11 @@
         },
         {
           "type": "markdown",
-          "content": "Create the `db-o11y` monitoring user and grant its base privileges. Replace `<DB_O11Y_PASSWORD>` with a strong password:\n\n```sql\nCREATE USER 'db-o11y'@'%' IDENTIFIED BY '<DB_O11Y_PASSWORD>';\nGRANT PROCESS, REPLICATION CLIENT ON *.* TO 'db-o11y'@'%';\nGRANT SELECT ON performance_schema.* TO 'db-o11y'@'%';\n```\n\nAlloy connects as this user. If you choose a different user name, use it in every later step."
+          "content": "Create the `db-o11y` monitoring user and grant its base privileges. Replace `YOUR_DB_O11Y_PASSWORD` with a strong password:\n\n```sql\nCREATE USER 'db-o11y'@'%' IDENTIFIED BY 'YOUR_DB_O11Y_PASSWORD';\nGRANT PROCESS, REPLICATION CLIENT ON *.* TO 'db-o11y'@'%';\nGRANT SELECT ON performance_schema.* TO 'db-o11y'@'%';\n```\n\nAlloy connects as this user. If you choose a different user name, use it in every later step."
         },
         {
           "type": "markdown",
-          "content": "Grant read access to the schemas you want to monitor, so Alloy can collect table and index details and run `EXPLAIN` on sampled queries:\n\n```sql\nGRANT SELECT, SHOW VIEW ON <SCHEMA_NAME>.* TO 'db-o11y'@'%';\n```\n\nRepeat for each schema, or grant read access to all schemas if you're unsure which ones you need:\n\n```sql\nGRANT SELECT, SHOW VIEW ON *.* TO 'db-o11y'@'%';\n```"
+          "content": "Grant read access to the schemas you want to monitor, so Alloy can collect table and index details and run `EXPLAIN` on sampled queries:\n\n```sql\nGRANT SELECT, SHOW VIEW ON YOUR_SCHEMA_NAME.* TO 'db-o11y'@'%';\n```\n\nRepeat for each schema, or grant read access to all schemas if you're unsure which ones you need:\n\n```sql\nGRANT SELECT, SHOW VIEW ON *.* TO 'db-o11y'@'%';\n```"
         },
         {
           "type": "markdown",
