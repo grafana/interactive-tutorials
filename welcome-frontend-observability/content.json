@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Use Grafana Cloud Frontend Observability to investigate real user performance, errors, and sessions. You will create an application, install the Faro Web SDK in your own frontend, and check that data arrives. You need permission to create applications and access to your frontend code."
+      "content": "Create a Frontend Observability application and get its Faro Web SDK instructions. You need permission to create applications and access to your frontend code; deployment happens after this guide."
     },
     {
       "type": "conditional",
@@ -48,34 +48,39 @@
           "content": "Open **Frontend Observability**. Every application you create is listed here, grouped into **Active**, **Stale**, and **No data**.",
           "showMe": false,
           "verify": "on-page:/a/grafana-kowalski-app",
-          "tooltip": "Open the setup page in this Grafana instance."
+          "tooltip": "Open the setup page in this Grafana instance.",
+          "doIt": true
         },
         {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/a/grafana-kowalski-app/apps/new",
           "content": "Open the application setup wizard.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app"
-          ],
           "showMe": false,
           "verify": "on-page:/a/grafana-kowalski-app/apps/new",
-          "tooltip": "Open the setup page in this Grafana instance."
+          "tooltip": "Open the setup page in this Grafana instance.",
+          "doIt": true
         },
         {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "form[data-testid='web-app-form'] input[data-testid='app-name']",
-          "targetvalue": "^\\S(?:.*\\S)?$",
+          "type": "guided",
+          "id": "welcome-frontend-observability-reader-block-4-block-2",
           "content": "Enter your own **Application name**, such as `my-web-app`.",
-          "tooltip": "Use a name that distinguishes this frontend from other applications and environments.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ],
-          "validateInput": true,
-          "doIt": false,
-          "formHint": "Enter a descriptive name for your application or check."
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "form[data-testid='web-app-form'] input[data-testid='app-name']",
+              "targetvalue": "^\\S(?:.*\\S)?$",
+              "validateInput": true,
+              "formHint": "Enter a descriptive name for your application or check.",
+              "requirements": [
+                "on-page:/a/grafana-kowalski-app/apps/new",
+                "exists-reftarget"
+              ],
+              "tooltip": "Use a name that distinguishes this frontend from other applications and environments.",
+              "description": "Enter your own **Application name**, such as `my-web-app`."
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -87,7 +92,8 @@
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": true
         },
         {
           "type": "interactive",
@@ -106,17 +112,29 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "form[data-testid='web-app-form'] button[data-testid='new-app-submit']",
-          "content": "Click **Next** to create the application and its collector endpoint.",
+          "content": "Click **Next**. If creation fails, correct the error and try again.",
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget",
             "form-valid"
           ],
-          "tooltip": "Creating the application does not send browser data; you must still install and deploy Faro."
+          "tooltip": "Creating the application does not send browser data; you must still install and deploy Faro.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='apps-sdk-instructions-instrumentation-mode-manual-card'] button",
+          "content": "After the application is created, choose **Manual instrumentation**.",
+          "tooltip": "These instructions appear only after the application has been created successfully.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new",
+            "exists-reftarget"
+          ],
+          "doIt": true
         }
       ],
       "requirements": [
-        "is-editor",
         "var-appUrl:*"
       ]
     },
@@ -126,7 +144,7 @@
     },
     {
       "type": "markdown",
-      "content": "To send Frontend Observability its first data, complete the following steps:"
+      "content": "Get your application’s Faro SDK instructions for deployment after this guide:"
     },
     {
       "type": "section",
@@ -139,20 +157,9 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='apps-sdk-instructions-instrumentation-mode-manual-card'] button",
-          "content": "Choose **Manual instrumentation** to view the SDK installation instructions.",
-          "tooltip": "The other options can help modify your codebase; manual setup lets you choose how to install the SDK.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
           "reftarget": "div[data-testid='app-form-new-app-manual-instrumentation-package-manager-selector']",
-          "content": "Choose the installation method that fits your project: **NPM**, **Yarn**, or **CDN**.",
-          "tooltip": "Choose CDN when you cannot change the build, for example on a static site or inside a template.",
+          "content": "Choose **NPM** or **Yarn** for this guide and review the installation command for your frontend project.",
+          "tooltip": "Use the package manager already used by your project.",
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
@@ -162,13 +169,14 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='copy-agent-install']",
-          "content": "Click **Copy** and follow the instructions for your chosen installation method in your application.",
-          "tooltip": "Initialize Faro early so it can capture errors during page startup; deploy the change before checking for data.",
+          "reftarget": "div:contains(\"url: 'https://\") > button[data-testid='copy-agent-install']:not(:disabled)",
+          "content": "Keep **NPM** or **Yarn** selected, then click **Copy** once the application’s Faro initialization snippet loads. Install the SDK and add the snippet to your frontend before deploying.",
+          "tooltip": "Wait for your application’s collector URL to load; if configuration loading fails, reopen its SDK instructions and retry.",
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
-          ]
+          ],
+          "doIt": true
         },
         {
           "type": "interactive",
@@ -179,7 +187,8 @@
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
           ],
-          "tooltip": "You can finish the wizard now and deploy the SDK afterward."
+          "tooltip": "You can finish the wizard now and deploy the SDK afterward.",
+          "doIt": true
         }
       ]
     },
@@ -189,7 +198,7 @@
     },
     {
       "type": "markdown",
-      "content": "The next two steps are optional, so this section only shows you what they do. To look at source maps, complete the following steps:"
+      "content": "Source maps are optional; continue past them to finish the initial setup."
     },
     {
       "type": "section",
@@ -202,54 +211,29 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab 1. Install source map bundler plugin']",
-          "content": "Review the bundler plugin instructions if you want readable production stack traces.",
-          "tooltip": "There are plugins for Webpack and for Rollup or Vite.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab 2. Configure source map uploads']",
-          "content": "Click **2. Configure source map uploads** to review the upload configuration.",
-          "tooltip": "Keep upload credentials in your build environment, never in browser-delivered code.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ],
-          "doIt": true,
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
           "reftarget": "button[data-testid='app-form-new-app-web-source-map-continue-button']",
           "content": "Click **Continue**. You can set source maps up later from the application settings.",
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
           ],
-          "tooltip": "This advances the wizard without requiring a source-map upload."
+          "tooltip": "This advances the wizard without requiring a source-map upload.",
+          "doIt": true
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Source maps are what turn an unreadable production stack trace back into a line in your own code."
+      "content": "You can add source maps later to make production stack traces readable."
     },
     {
       "type": "markdown",
-      "content": "The last step offers a set of ready-made alert rules. To finish connecting your application, complete the following steps:"
+      "content": "Leave alerts off for now and return to your applications."
     },
     {
       "type": "section",
       "id": "enable-alerting",
-      "title": "Enable alerting",
+      "title": "Finish setup",
       "requirements": [
         "section-completed:upload-source-maps"
       ],
@@ -257,40 +241,26 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='shared-select-alerts-checkbox-error_count']",
-          "content": "Review the error alert and its threshold. Enable it only if it suits your application.",
-          "tooltip": "Check the rule description and notification routing before enabling alerts.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "input[data-testid='shared-select-alerts-checkbox-lcp_p75']",
-          "content": "Review the **Web Vitals** alerts to decide which performance signals you want to monitor.",
-          "tooltip": "Choose thresholds that suit your users and review them as traffic changes.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "skippable": true
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
           "reftarget": "a[data-testid='app-form-new-app-web-alerting-complete-button']",
-          "content": "Click **Complete** to return to your applications. You can leave the optional alerts off.",
+          "content": "Click **Complete** to return to your applications. Leave the optional alerts off for now.",
           "requirements": [
             "on-page:/a/grafana-kowalski-app/apps/new",
             "exists-reftarget"
           ],
-          "verify": "on-page:/a/grafana-kowalski-app/apps",
-          "tooltip": "An application with no events remains under No data until an instrumented page sends telemetry."
+          "tooltip": "You can finish setup before telemetry arrives; deploy Faro and visit your website to send events.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='btn-create-app'], [data-testid='btn-create-app-dropdown']",
+          "doIt": false,
+          "content": "Confirm that you are back on the applications page. Your new application may show **No data** until you deploy Faro.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app",
+            "exists-reftarget"
+          ],
+          "tooltip": "Setup is complete; deployment and a visit to your website are still needed to send data."
         }
       ]
     },
