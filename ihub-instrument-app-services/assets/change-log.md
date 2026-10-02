@@ -47,14 +47,16 @@ prefix-matched, so it cannot exclude `/onboarding`.
   `OnboardingPage.tsx`). Pathfinder re-evaluates it on navigation and DOM changes, so
   it resolves after **Go there** lands.
   - `whenTrue` (no clusters): intro markdown, one-step section
-    `install-a-collector-first` with a `navigate` step carrying
-    `openGuide: "bundled:ihub-install-alloy-k8s"`, summary markdown telling the user
-    to come back once services are discovered.
+    `install-a-collector-first` with a `button` step on
+    `ihub-onboarding-install-alloy-button` (Show me / Do it opens the Collector setup
+    wizard; prose names the install guide to follow), summary markdown telling the
+    user to come back once services are discovered.
   - `whenFalse` (clusters present): the previous sections 2 and 3 and their bookends,
     moved verbatim.
-- `openGuide` resolves against Pathfinder's bundled index, so it only opens the
-  install guide once both guides are merged and bundled; until then the step still
-  navigates and logs a console warning.
+- A first attempt used a `navigate` step with `openGuide: "bundled:ihub-install-alloy-k8s"`.
+  Rejected after live testing: navigating to the page the user is already on is a
+  no-op that still marks the step complete, and `openGuide` only resolves once the
+  target guide is merged and bundled.
 
 ## Live-verified selectors
 
