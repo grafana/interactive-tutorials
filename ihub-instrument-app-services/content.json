@@ -25,143 +25,186 @@
       ]
     },
     {
-      "type": "markdown",
-      "id": "section-1-summary",
-      "content": "You're on the Instrumentation Hub landing page, which shows what has been discovered and how much of it is instrumented."
-    },
-    {
-      "type": "markdown",
-      "id": "section-2-intro",
-      "content": "Next, open the application services view and choose the services you want to instrument."
-    },
-    {
-      "type": "section",
-      "id": "select-services",
-      "title": "Select services to instrument",
-      "requirements": [
-        "has-plugin:grafana-collector-app"
+      "type": "conditional",
+      "id": "stack-state-branch",
+      "description": "A stack with no clusters redirects to the onboarding page, where there is nothing to instrument; a stack with clusters shows the landing page with the Application instrumentation card.",
+      "conditions": [
+        "exists-reftarget"
       ],
-      "blocks": [
+      "reftarget": "[data-testid='ihub-onboarding-page']",
+      "whenTrue": [
         {
-          "type": "interactive",
-          "id": "step-view-instrument-services",
-          "action": "button",
-          "reftarget": "[data-testid='ihub-app-view-instrument-button']",
-          "content": "On the **Application instrumentation** card, click **View & instrument services**.",
-          "tooltip": "Opens the list of services discovered on your clusters.",
-          "doIt": true,
+          "type": "markdown",
+          "id": "no-clusters-intro",
+          "content": "This stack hasn't reported any Kubernetes clusters yet, so there are no discovered services to instrument. Install a collector first — the install guide opens in this sidebar."
+        },
+        {
+          "type": "section",
+          "id": "install-a-collector-first",
+          "title": "Install a collector first",
           "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-collector-app/instrumentation-hub"
+            "has-plugin:grafana-collector-app"
+          ],
+          "blocks": [
+            {
+              "type": "interactive",
+              "id": "step-open-install-guide",
+              "action": "navigate",
+              "reftarget": "/a/grafana-collector-app/instrumentation-hub",
+              "openGuide": "bundled:ihub-install-alloy-k8s",
+              "content": "Open the **Install Alloy on Kubernetes for Instrumentation Hub** guide and follow it to install Alloy on a cluster.",
+              "tooltip": "Opens the collector installation guide for this stack.",
+              "doIt": true
+            }
           ]
         },
         {
-          "type": "interactive",
-          "id": "step-select-services",
-          "action": "highlight",
-          "reftarget": "[data-testid='app-unified-cluster-master-checkbox']",
-          "content": "Select a cluster from the list on the left, then choose what to instrument: click **Select all** for every service in the cluster, select the checkbox next to a namespace, or click a namespace name and select individual services. Choose these yourself — instrumentation changes what is monitored on your stack.\n\nSDK injection covers .NET, Java, Node.js, and Python services. You can select services written in other languages, but they're instrumented with eBPF only.",
-          "tooltip": "Pick the clusters, namespaces, or individual services you want to instrument.",
-          "doIt": false,
-          "showMe": true,
+          "type": "markdown",
+          "id": "no-clusters-summary",
+          "content": "Once Alloy is installed and the Instrumentation Hub landing page shows discovered services, reopen this guide to continue."
+        }
+      ],
+      "whenFalse": [
+        {
+          "type": "markdown",
+          "id": "section-1-summary",
+          "content": "You're on the Instrumentation Hub landing page, which shows what has been discovered and how much of it is instrumented."
+        },
+        {
+          "type": "markdown",
+          "id": "section-2-intro",
+          "content": "Next, open the application services view and choose the services you want to instrument."
+        },
+        {
+          "type": "section",
+          "id": "select-services",
+          "title": "Select services to instrument",
           "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring"
+            "has-plugin:grafana-collector-app"
+          ],
+          "blocks": [
+            {
+              "type": "interactive",
+              "id": "step-view-instrument-services",
+              "action": "button",
+              "reftarget": "[data-testid='ihub-app-view-instrument-button']",
+              "content": "On the **Application instrumentation** card, click **View & instrument services**.",
+              "tooltip": "Opens the list of services discovered on your clusters.",
+              "doIt": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/instrumentation-hub"
+              ]
+            },
+            {
+              "type": "interactive",
+              "id": "step-select-services",
+              "action": "highlight",
+              "reftarget": "[data-testid='app-unified-cluster-master-checkbox']",
+              "content": "Select a cluster from the list on the left, then choose what to instrument: click **Select all** for every service in the cluster, select the checkbox next to a namespace, or click a namespace name and select individual services. Choose these yourself — instrumentation changes what is monitored on your stack.\n\nSDK injection covers .NET, Java, Node.js, and Python services. You can select services written in other languages, but they're instrumented with eBPF only.",
+              "tooltip": "Pick the clusters, namespaces, or individual services you want to instrument.",
+              "doIt": false,
+              "showMe": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring"
+              ]
+            },
+            {
+              "type": "interactive",
+              "id": "step-instrument-services",
+              "action": "button",
+              "reftarget": "[data-testid='app-unified-instrument-button']",
+              "content": "Click **Instrument services**. It's only available when your selection includes at least one service that isn't already instrumented.",
+              "tooltip": "Continues to a review of your selection before anything changes.",
+              "doIt": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring"
+              ]
+            }
           ]
         },
         {
-          "type": "interactive",
-          "id": "step-instrument-services",
-          "action": "button",
-          "reftarget": "[data-testid='app-unified-instrument-button']",
-          "content": "Click **Instrument services**. It's only available when your selection includes at least one service that isn't already instrumented.",
-          "tooltip": "Continues to a review of your selection before anything changes.",
-          "doIt": true,
+          "type": "markdown",
+          "id": "section-2-summary",
+          "content": "You chose the services to instrument and opened the review flow — nothing has changed on your cluster yet."
+        },
+        {
+          "type": "markdown",
+          "id": "section-3-intro",
+          "content": "Now review your selection, check the pipeline settings, and start instrumentation. If you haven't activated Application Observability on this stack, you're prompted to activate it before you can continue; activation allows use of the product and begins host-hours billing."
+        },
+        {
+          "type": "section",
+          "id": "review-and-instrument",
+          "title": "Review and instrument",
           "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring"
+            "has-plugin:grafana-collector-app"
+          ],
+          "blocks": [
+            {
+              "type": "interactive",
+              "id": "step-review-continue",
+              "action": "button",
+              "reftarget": "Continue",
+              "content": "Confirm your selection on the **Review Selection** page, then click **Continue**.",
+              "tooltip": "Moves on to the pipeline settings for the affected namespaces.",
+              "doIt": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring/instrument-selection"
+              ]
+            },
+            {
+              "type": "interactive",
+              "id": "step-review-pipeline-settings",
+              "action": "highlight",
+              "reftarget": "[data-testid='pipeline-configuration-impact-summary']",
+              "content": "Review the settings on the **Pipeline Configuration** page. R.E.D metrics and service-to-service links are included. Switch on any optional settings you want, such as **Ongoing instrumentation**, **Traces**, **Application logs**, or **Profiling**.\n\nThese settings apply to the whole namespace: every instrumented service in the selected namespaces is updated to match, not only the services you add in this run.",
+              "tooltip": "These settings apply to every instrumented service in the selected namespaces.",
+              "doIt": false,
+              "showMe": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring/instrument-selection"
+              ]
+            },
+            {
+              "type": "interactive",
+              "id": "step-instrument-now",
+              "action": "button",
+              "reftarget": "Instrument now",
+              "content": "Click **Instrument now**. The services you instrument restart, because the OpenTelemetry SDK can only load into a process as it starts. For replicated workloads this is a rolling replacement rather than downtime.",
+              "tooltip": "Starts instrumentation; the affected services restart to load the SDK.",
+              "doIt": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring/instrument-selection"
+              ]
+            },
+            {
+              "type": "interactive",
+              "id": "step-watch-status",
+              "action": "highlight",
+              "reftarget": "[data-testid='app-unified-page']",
+              "content": "Watch the services list: the services you selected show a pending instrumentation status, then change to instrumented as the change rolls out. Instrumentation can take a few minutes, depending on how much you chose to instrument.",
+              "tooltip": "Your selected services move from pending to instrumented as the change rolls out.",
+              "doIt": false,
+              "showMe": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring"
+              ]
+            }
           ]
+        },
+        {
+          "type": "markdown",
+          "id": "section-3-summary",
+          "content": "You instrumented your selected application services. Success looks like each service you selected showing a pending status in the services table, then switching to instrumented as the rollout completes."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "id": "section-2-summary",
-      "content": "You chose the services to instrument and opened the review flow — nothing has changed on your cluster yet."
-    },
-    {
-      "type": "markdown",
-      "id": "section-3-intro",
-      "content": "Now review your selection, check the pipeline settings, and start instrumentation. If you haven't activated Application Observability on this stack, you're prompted to activate it before you can continue; activation allows use of the product and begins host-hours billing."
-    },
-    {
-      "type": "section",
-      "id": "review-and-instrument",
-      "title": "Review and instrument",
-      "requirements": [
-        "has-plugin:grafana-collector-app"
-      ],
-      "blocks": [
-        {
-          "type": "interactive",
-          "id": "step-review-continue",
-          "action": "button",
-          "reftarget": "Continue",
-          "content": "Confirm your selection on the **Review Selection** page, then click **Continue**.",
-          "tooltip": "Moves on to the pipeline settings for the affected namespaces.",
-          "doIt": true,
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring/instrument-selection"
-          ]
-        },
-        {
-          "type": "interactive",
-          "id": "step-review-pipeline-settings",
-          "action": "highlight",
-          "reftarget": "[data-testid='pipeline-configuration-impact-summary']",
-          "content": "Review the settings on the **Pipeline Configuration** page. R.E.D metrics and service-to-service links are included. Switch on any optional settings you want, such as **Ongoing instrumentation**, **Traces**, **Application logs**, or **Profiling**.\n\nThese settings apply to the whole namespace: every instrumented service in the selected namespaces is updated to match, not only the services you add in this run.",
-          "tooltip": "These settings apply to every instrumented service in the selected namespaces.",
-          "doIt": false,
-          "showMe": true,
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring/instrument-selection"
-          ]
-        },
-        {
-          "type": "interactive",
-          "id": "step-instrument-now",
-          "action": "button",
-          "reftarget": "Instrument now",
-          "content": "Click **Instrument now**. The services you instrument restart, because the OpenTelemetry SDK can only load into a process as it starts. For replicated workloads this is a rolling replacement rather than downtime.",
-          "tooltip": "Starts instrumentation; the affected services restart to load the SDK.",
-          "doIt": true,
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring/instrument-selection"
-          ]
-        },
-        {
-          "type": "interactive",
-          "id": "step-watch-status",
-          "action": "highlight",
-          "reftarget": "[data-testid='app-unified-page']",
-          "content": "Watch the services list: the services you selected show a pending instrumentation status, then change to instrumented as the change rolls out. Instrumentation can take a few minutes, depending on how much you chose to instrument.",
-          "tooltip": "Your selected services move from pending to instrumented as the change rolls out.",
-          "doIt": false,
-          "showMe": true,
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "id": "section-3-summary",
-      "content": "You instrumented your selected application services. Success looks like each service you selected showing a pending status in the services table, then switching to instrumented as the rollout completes."
     }
   ]
 }

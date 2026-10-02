@@ -33,6 +33,29 @@ uninstrument → reinstrument cycle of 12 test services. Docs source:
   The Instrument now step carries the SDK-injection restart warning.
 - **manifest.json**: real description replacing title-restatement.
 
+## 2026-10-02 — branch on stack state
+
+Tested on a zero-cluster stack via the PR tester: `/instrumentation-hub` redirects to
+`/instrumentation-hub/onboarding`, section 1 still completes, and the first step of
+`select-services` blocks on a missing `ihub-app-view-instrument-button` with no skip —
+the user is stuck at 14% and the section-1 summary ("You're on the landing page…") is
+wrong for that state. `on-page:/a/grafana-collector-app/instrumentation-hub` is
+prefix-matched, so it cannot exclude `/onboarding`.
+
+- **New `conditional` `stack-state-branch`** after section 1, keyed on
+  `exists-reftarget` for `[data-testid='ihub-onboarding-page']` (rendered only by
+  `OnboardingPage.tsx`). Pathfinder re-evaluates it on navigation and DOM changes, so
+  it resolves after **Go there** lands.
+  - `whenTrue` (no clusters): intro markdown, one-step section
+    `install-a-collector-first` with a `navigate` step carrying
+    `openGuide: "bundled:ihub-install-alloy-k8s"`, summary markdown telling the user
+    to come back once services are discovered.
+  - `whenFalse` (clusters present): the previous sections 2 and 3 and their bookends,
+    moved verbatim.
+- `openGuide` resolves against Pathfinder's bundled index, so it only opens the
+  install guide once both guides are merged and bundled; until then the step still
+  navigates and logs a console warning.
+
 ## Live-verified selectors
 
 `app-instrument-selection-page`, `pipeline-configuration-impact-summary`,
