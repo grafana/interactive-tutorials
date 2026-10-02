@@ -173,8 +173,33 @@ Screenshots for opening **dev mode** and the Block Editor are in the [repo READM
 - Reviewers: run [`/review-learning-path-pr`](../.cursor/commands/review-learning-path-pr.md) after the PR exists.
 - Add the `lh-learning-path` label to learning path PRs, and set **Status** on the [Learning Hub board](https://github.com/orgs/grafana/projects/1108/views/2), so the PR appears on the board with the right workflow state.
 - If this path came from a learning journey in docs-ai and carries an embed shortcode back to it: merge **this** PR before merging the `website` PR that adds the shortcode. Never the other order — a published slide whose shortcode points at a path not yet on `interactive-tutorials`'s default branch renders as a broken, empty embed.
+- After the path is published, [link to it from the docs](#link-to-it-from-the-docs).
 
 Preflight reports under `.cursor/lp-preflight-state/` are local and gitignored. Do not force-add them to your PR.
+
+### Link to it from the docs
+
+Once a learning path or journey is published, add a link to it from one or two docs pages, so readers find it where they need it. This is a judgment call, not a checklist to max out:
+
+- Pick the page a reader is on just before they'd want this, usually a page the path or journey is based on.
+- Link a path from the task page with the `docs/learning-paths` callout. Link a journey from the product landing page, as k6 does with a hero card, or with the `docs/learning-journeys` callout.
+- Skip pages that already have a learning callout, generated pages marked "do not edit", and reference, API, or release-note pages.
+- Many docs pages are synced from product repositories. Make the edit in the page's source repository, not in `website`.
+
+To get suggestions, paste this prompt into your AI assistant, then decide for yourself:
+
+```text
+I've just published the learning path (or journey) "<TITLE>" at <URL>.
+Read it and the doc pages it links to, then suggest the one or two docs
+pages where a reader would most benefit from a link to it.
+
+For each suggestion, give me: the page, why a reader there would want this,
+the repo and file to edit, and the exact callout line to insert.
+
+Don't suggest pages that already link to it or already have a learning
+callout, generated pages marked "do not edit", or reference, API, or
+release-note pages. Don't make any edits. I'll decide.
+```
 
 ## Go deeper
 
