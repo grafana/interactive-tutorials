@@ -58,6 +58,23 @@ prefix-matched, so it cannot exclude `/onboarding`.
   no-op that still marks the step complete, and `openGuide` only resolves once the
   target guide is merged and bundled.
 
+## 2026-10-02 — full walkthrough of the clusters-present branch (PR #624 @ 4fb888f0)
+
+All 12 services on the dev stack were uninstrumented via the UI, then re-instrumented
+by driving only the guide's controls in the Pathfinder sidebar: Go there → Do it
+(**View & instrument services**) → Show me (selection; **Select all** clicked manually
+as the step instructs) → Do it (**Instrument services (12)**) → Do it (**Continue**) →
+Show me (pipeline impact summary) → Do it (**Instrument now**) → Show me (services
+list). Every step enabled in order with no requirement errors; Alloy reloaded the
+Beyla/appo11y pipelines ~20 s after **Instrument now**; the table went pending →
+12/12 instrumented in under a minute. Guide reached 100%. Final stack state:
+1/1 cluster, 12/12 services instrumented.
+
+Pathfinder quirk observed (not a guide bug): the progress bar read 66% after only
+section 1 completed — it appears to count top-level blocks (intro markdown, section 1,
+the conditional) rather than steps, so a conditional-heavy guide reports progress
+coarsely until the branch's sections finish.
+
 ## Live-verified selectors
 
 `app-instrument-selection-page`, `pipeline-configuration-impact-summary`,

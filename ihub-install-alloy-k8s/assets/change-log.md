@@ -44,3 +44,68 @@ All `data-testid` values verified in `grafana-collector-app`
 The ihub wizard (`from=ihub`) hides the collector-type selector and offers only
 Kubernetes distributions, but shares all five step surfaces and testids with the
 Kubernetes Monitoring wizard.
+
+## 2026-10-02 — dry walk of the full guide (PR #624 @ 4fb888f0)
+
+Walked every section on the `eveihub` dev stack (clusters present, so the `whenFalse`
+**Add more clusters** branch) using only the guide's Show me / Do it controls, with
+Show me only on **Test connection**. A disposable access-policy token
+(`pathfinder-dry-walk-2026-10-02`, 30-day expiry) was created to unlock wizard steps
+3–5; the wizard session was abandoned without running Helm, so nothing was installed.
+Collector app frontend `2.41.0+c71501f`.
+
+What worked: the conditional picked the clusters-present branch; Distribution,
+Access token (formfill, scopes, create, Next), Choose setup Next, all three Monitoring
+steps, all four Deployment targets, and both **Watch discovery begin** steps resolved
+and completed. The return button's completion survived the client-side navigation
+back to the landing page (94% → section ✓).
+
+Findings, by severity:
+
+1. **BUG — `step-choose-setup-standard` does not select Standard.** The `data-testid`
+   is on a wrapper `div`; the real control is a `button[role='radio']` inside it.
+   Pathfinder's Do it dispatches the click on the wrapper, React's handler on the
+   button never fires, **Scalable** (the default) stays selected, and the step is still
+   marked Completed. Verified live: `aria-checked` on Standard stayed `false` after
+   Do it; clicking `[data-testid='install-alloy-unified-helm-choose-setup-deployment-standard'] button[role='radio']`
+   flipped it to `true`. Fix: change the `reftarget` to the inner radio.
+2. **Stale text — Monitoring cards no longer have a toggle.** Both cards now show only a
+   **Recommended** badge and a kebab whose sole item is **Advanced settings**; there is
+   no way to deselect **Auto-discover services on my cluster** in this wizard version.
+   `step-review-auto-discover`'s "keep it selected. Without it…" has nothing to refer
+   to. Reword to a plain review ("This creates the managed discovery pipeline that
+   Instrumentation Hub depends on"), and consider mentioning the card's billing note
+   ("Once activated, billing will begin based on your host and container hours").
+3. **Completion reset on `step-add-more-clusters`.** **Add more clusters** is a full
+   page load, so the step's completed state is lost and the guide shows a requirement
+   error on arrival at the wizard; the user has to click Skip. Fix candidate: add
+   `objectives: ["on-page:/a/grafana-collector-app/alloy"]` to both
+   `step-onboarding-install-alloy` and `step-add-more-clusters` so they auto-complete
+   once the wizard URL is reached. (The same hard-nav happens for the onboarding
+   button on a clean stack.)
+4. **Access token step omissions.** The wizard now offers a third option,
+   **Use a stored Kubernetes Secret**, and an **Expiration date** select (No expiry /
+   30 / 60 / 90 days or custom days — the custom entry did not take a typed `1`).
+   `step-token-name` mentions neither. At minimum add the expiration date to the
+   content so users don't ship a never-expiring token by default.
+5. **Minor — cluster name is prefilled `my-cluster`.** `step-cluster-name` is
+   `doIt: false` and tells the user to enter a unique name; fine as is, but the content
+   could say "replace `my-cluster`" so it matches what the user sees.
+6. **Minor — Show me never completes a `doIt: true` highlight.** Expected Pathfinder
+   behaviour, but it means a user who reads the Helm step and copies by hand is still
+   gated out of **Test connection** until they press Do it (or Skip would help — the
+   step is not `skippable`). Consider `skippable: true` on `step-copy-helm-command`.
+
+**All six applied the same day** (CLI validate PASS): `step-choose-setup-standard`
+reftarget now ends in `button[role='radio']`; both installer-branch buttons gained
+`objectives: ["on-page:/a/grafana-collector-app/alloy"]`; the two Monitoring review
+steps were reworded (card label, billing note, Advanced settings menu, discovery
+pipeline description); `step-token-name` mentions **Expiration date** and **Use a stored
+Kubernetes Secret**; `step-cluster-name` says to replace the prefilled `my-cluster`;
+`step-copy-helm-command` is `skippable`. Still to re-verify live via the PR tester
+after push: that Do it on the new Standard reftarget flips `aria-checked`, and that the
+`objectives` auto-complete the branch step on arrival at the wizard.
+
+Clipboard was overwritten after the copy step so the token did not remain on it.
+Tokens to revoke in the Cloud Portal: `pathfinder-dry-walk-2026-10-02` and the earlier
+`pathfinder-guide-test`.
