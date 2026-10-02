@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "intro-to-assistant-watchers-start-and-run",
+  "title": "Start and run the watcher",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "After calibration, the watcher is **Ready** but inactive until you start it. **Run now** triggers one immediate run outside the schedule, so you can inspect the first result before you turn on scheduled runs. **Resume scanning** on the **Calibration** tab turns on scheduled runs. It reads **Start scanning** until a run has completed. **Active** in **Standing state** shows that scheduled runs are on. Turn **Active** off to pause without deleting the watcher.\n\nScheduled runs don't overlap. If a run is already in progress, the next one waits or is skipped."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out into a floating window.\n\nIf it's docked in the sidebar, this keeps **Standing state**, **Run now**, and **Active** visible on the right."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "To start and run the watcher, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "start-and-run-watcher",
+      "title": "Run, start, and pause",
+      "requirements": ["plugin-enabled:grafana-assistant-app"],
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-assistant-app/watchers",
+          "content": "Open **Watchers**.",
+          "verify": "on-page:/a/grafana-assistant-app/watchers",
+          "skippable": true,
+          "hint": "Skip if you are already on the Watchers list or a watcher detail page."
+        },
+        {
+          "type": "markdown",
+          "content": "Open the watcher you just created."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Calibration']",
+          "content": "Click the **Calibration** tab.",
+          "requirements": ["exists-reftarget"],
+          "hint": "Click it even if you're already on **Calibration**. The scanning button is on this tab."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run now",
+          "content": "Click **Run now**.\n\nThis triggers one immediate run outside the schedule, so you can inspect the first result before you turn on scheduled runs.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if you didn't finish calibration. **Run now** works while the watcher is **Ready**, before you start scanning. Don't click **Delete watcher**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "scanning",
+          "content": "Click **Resume scanning**.\n\nThis turns on scheduled runs. The button appears after the **Run now** run finishes. If you skipped **Run now**, it reads **Start scanning**.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "hint": "The button is hidden while a **Run now** check is in progress, so wait for that run to finish. Skip if you don't want scheduled runs. It's on the calibration banner of the **Calibration** tab, not **Start a new conversation** in Assistant chat."
+        },
+        {
+          "type": "markdown",
+          "content": "To pause scheduled runs, turn off **Active** in **Standing state**, next to **Run now**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You triggered **Run now**, started scheduled runs, or skipped these controls. In the next milestone, you'll review the run report."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar.\n\nDo this when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Start, pause, and run a watcher](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/watchers/#start-pause-and-run-a-watcher)\n- [Resume scheduled runs](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/watchers/#resume-scheduled-runs)"
+    }
+  ]
+}
