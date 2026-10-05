@@ -4,94 +4,162 @@
   "title": "Configure Prometheus remote write to send metrics to Grafana Cloud",
   "blocks": [
     {
-      "type": "conditional",
-      "conditions": [
-        "renderer:website"
-      ],
-      "whenTrue": [
-        {
-          "type": "video",
-          "src": "https://www.youtube.com/embed/BDJO-vC-gEw",
-          "provider": "youtube",
-          "title": "Configure Prometheus remote write",
-          "start": 194,
-          "end": 349
-        }
-      ],
-      "whenFalse": []
+      "type": "markdown",
+      "content": "In this milestone, you add a `remote_write` block to your Prometheus configuration file, usually `prometheus.yml`. Grafana Cloud generates the block for you on the **Hosted Prometheus metrics** setup page. It contains the `/api/prom/push` URL of your Grafana Cloud Metrics instance, your instance ID as the username, and an access policy token as the password.\n\nYou don't need to leave your Grafana Cloud stack for any of this. The same values are also available from the **Prometheus** card in the Cloud Portal."
     },
     {
       "type": "markdown",
-      "content": "In this milestone, you add a `remote_write` block to your Prometheus configuration file, usually `prometheus.yml`. The Cloud Portal generates the block for you. It contains the `/api/prom/push` URL of your Grafana Cloud Metrics instance, your instance ID as the username, and an access policy token as the password."
-    },
-    {
-      "type": "markdown",
-      "content": "To configure Prometheus to remote write to Grafana Cloud, complete the following steps:"
+      "content": "First, open the setup page for hosted Prometheus metrics."
     },
     {
       "type": "section",
+      "id": "open-the-setup-page",
+      "title": "Open the setup page",
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "markdown",
-          "content": "Log in to the Cloud Portal at [grafana.com](https://grafana.com/auth/sign-in)."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "In the navigation menu, click **Connections**.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "Under **Grafana Cloud** in the left navigation, click the name of your stack."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Click **Add new connection**.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "conditional",
-          "conditions": [
-            "renderer:website"
-          ],
-          "whenTrue": [
-            {
-              "type": "image",
-              "src": "https://grafana.com/media/docs/learning-journey/remote-write/select-stack.png",
-              "alt": "Image of stack selected in the Grafana Cloud Portal"
-            }
-          ],
-          "whenFalse": []
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='search-input-input']",
+          "targetvalue": "Hosted Prometheus",
+          "content": "In the search field, enter **Hosted Prometheus** to filter the catalog.",
+          "requirements": [
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "On the **Prometheus** card, click **Send Metrics**."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/add-new-connection/hmInstancePromId']",
+          "content": "Click the **Hosted Prometheus metrics** tile.",
+          "requirements": [
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The setup page is open. It walks you through choosing a method, creating a token, and copying the configuration."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, choose the remote write method and create a token. Creating a token needs the **Admin** role in your stack."
+    },
+    {
+      "type": "section",
+      "id": "create-a-token-and-copy-the-config",
+      "title": "Create a token and copy the configuration",
+      "autoCollapse": false,
+      "requirements": [
+        "section-completed:open-the-setup-page",
+        "has-role:admin",
+        "on-page:/connections/add-new-connection/hmInstancePromId"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(img[alt='icon of remote'])",
+          "content": "Under **Choose a method for forwarding metrics**, select **From my local Prometheus server**.\n\nThe page preselects **Via Grafana Alloy**, which installs a separate collector. This path uses the remote write built into Prometheus instead.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "Scroll down the page until you locate the **Sending metrics with Prometheus** section.\n\nThis section contains the `remote_write` block that you'll add to your Prometheus configuration."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(p:contains('single Prometheus instance'))",
+          "content": "Under **Choose your use case for forwarding metrics**, select **Send metrics from a single Prometheus instance**.\n\nThe other cards cover multiple or high-availability Prometheus servers. The page adjusts its instructions if you pick one of those.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "Just below the code sample, click **Generate now** to create an access policy token.\n\nPrometheus uses this token as the `remote_write` password."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(p:contains('Directly'))",
+          "content": "Under **Select how to send the metrics from Prometheus to Grafana Cloud**, keep **Directly** selected.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "conditional",
-          "conditions": [
-            "renderer:website"
-          ],
-          "whenTrue": [
-            {
-              "type": "image",
-              "src": "https://grafana.com/media/docs/learning-journey/remote-write/api-token.png",
-              "alt": "Picture of Generate now link to create an access policy token"
-            }
-          ],
-          "whenFalse": []
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='generate-token-name-input']",
+          "doIt": false,
+          "content": "Under **Update Prometheus configuration**, keep **Create a new token** selected and enter a **Token name** you'll recognize, for example `prometheus-remote-write`.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "On the **Create an API token** screen, enter a name for the token and click **Create token**.\n\nThe code sample now includes the token you just created. This is the only time the portal shows the token, so keep this page open until you've copied the block."
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create token",
+          "doIt": false,
+          "content": "Click **Create token**.\n\nGrafana Cloud creates an access policy token and inserts it as the password in the `remote_write` configuration that appears below. The token is only shown once, so keep this page open until you've copied the configuration.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "On the **Create an API token** screen, click **Close**."
-        },
-        {
-          "type": "markdown",
-          "content": "Just below the code sample, click **Copy to clipboard**.\n\nIn the following steps, you add this block to the `prometheus.yml` file."
-        },
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Copy to clipboard",
+          "content": "Below the configuration, click **Copy to clipboard**.\n\nThe block contains the URL of your Grafana Cloud Metrics instance, your instance ID as the username, and the token as the password.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a `remote_write` block with your stack's endpoint and credentials."
+    },
+    {
+      "type": "markdown",
+      "content": "Now add it to Prometheus. These steps happen on the machine that runs Prometheus, so this path can't detect them. When Prometheus restarts cleanly, mark the section as complete to continue."
+    },
+    {
+      "type": "section",
+      "id": "update-prometheus",
+      "title": "Update Prometheus",
+      "autoCollapse": false,
+      "requirements": [
+        "section-completed:create-a-token-and-copy-the-config"
+      ],
+      "blocks": [
         {
           "type": "markdown",
           "content": "Log in to the machine on which Prometheus is installed, and open a terminal."
@@ -106,7 +174,7 @@
         },
         {
           "type": "markdown",
-          "content": "Scroll to the end of the file and paste the `remote_write` block you copied from the Cloud Portal.\n\nIn Vim, press `i` to start editing before you paste. The result looks like this, with your own values in place of the placeholders:\n\n```yaml\nremote_write:\n  - url: <Your Metrics instance remote_write endpoint>\n    basic_auth:\n      username: <Your Metrics instance ID>\n      password: <Your Cloud Access Policy token>\n```\n\nIf the file already has a `remote_write` section, add the new entry to that list instead of adding a second `remote_write` key."
+          "content": "Scroll to the end of the file and paste the `remote_write` block you copied.\n\nIn Vim, press `i` to start editing before you paste. The result looks like this, with your own values in place of the placeholders:\n\n```yaml\nremote_write:\n  - url: <Your Metrics instance remote_write endpoint>\n    basic_auth:\n      username: <Your Metrics instance ID>\n      password: <Your Cloud Access Policy token>\n```\n\nIf the file already has a `remote_write` section, add the new entry to that list instead of adding a second `remote_write` key."
         },
         {
           "type": "markdown",
@@ -121,6 +189,10 @@
           "content": "Check that Prometheus restarted without errors:\n\n```\nsystemctl status prometheus\n```\n\nIf the service failed to start, the most common cause is a YAML indentation error in the block you pasted. Check the service logs with `journalctl -u prometheus` or in `/var/log/syslog`."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Prometheus now has a second destination for the samples it scrapes. Your scrape configuration, recording rules, and alerts don't change."
     },
     {
       "type": "markdown",
