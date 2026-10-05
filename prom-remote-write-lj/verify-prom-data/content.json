@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "id": "prom-remote-write-verify-prom-data",
-  "title": "Verify Prometheus metrics are written to an endpoint",
+  "title": "Verify Prometheus is running and serving metrics",
   "blocks": [
     {
       "type": "conditional",
@@ -22,11 +22,11 @@
     },
     {
       "type": "markdown",
-      "content": "While installing and configuring Prometheus in your local environment is out of scope for this journey, a good first step in this journey is to verify that your system is writing metrics to the Prometheus endpoint."
+      "content": "Installing and configuring Prometheus is out of scope for this path. Before you change its configuration, confirm that Prometheus is running and that it serves metrics. If it isn't, nothing reaches Grafana Cloud after you add `remote_write`, and you'd be troubleshooting the wrong thing."
     },
     {
       "type": "markdown",
-      "content": "To verify Prometheus metrics are written to an endpoint:"
+      "content": "To verify that Prometheus is running and serving metrics:"
     },
     {
       "type": "section",
@@ -34,7 +34,7 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "Log into the machine on which Prometheus is installed."
+          "content": "Log in to the machine on which Prometheus is installed."
         },
         {
           "type": "markdown",
@@ -42,7 +42,7 @@
         },
         {
           "type": "markdown",
-          "content": "To check the Prometheus service status, run one of the following commands:\n\nFor Linux:\n\n```\nsystemctl status prometheus.service\n```\n\nFor Windows:\n\n```\nsc query prometheus\n```\n\nYou should see something similar to the following:"
+          "content": "Check the Prometheus service status.\n\nFor Linux with systemd:\n\n```\nsystemctl status prometheus\n```\n\nFor Windows:\n\n```\nsc query prometheus\n```\n\nThe service should report that it's active or running:"
         },
         {
           "type": "conditional",
@@ -60,7 +60,7 @@
         },
         {
           "type": "markdown",
-          "content": "To ensure that Prometheus is capturing the metrics, open a browser tab and navigate to the metrics endpoint URL.\n\nFor example, navigate to `http://localhost:9090/metrics`\n\nYou should see something similar to the following:"
+          "content": "In a browser, open the metrics endpoint of your Prometheus server. By default Prometheus listens on port `9090`.\n\nFor example, navigate to `http://localhost:9090/metrics`\n\nThis page lists the metrics Prometheus exposes about itself. If it loads, Prometheus is running and reachable:"
         },
         {
           "type": "conditional",
@@ -75,12 +75,16 @@
             }
           ],
           "whenFalse": []
+        },
+        {
+          "type": "markdown",
+          "content": "To confirm that Prometheus is also scraping your own targets, navigate to `http://localhost:9090/targets`.\n\nEach target you configured under `scrape_configs` should show the state **UP**. These are the metrics that `remote_write` sends to Grafana Cloud."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "**Tip:** Consult the Prometheus documentation if you are unable to run the Prometheus service or can't verify that Prometheus is capturing metrics."
+      "content": "**Tip:** If the service isn't running or a target isn't **UP**, fix that first. Refer to the [Prometheus documentation](https://prometheus.io/docs/prometheus/latest/getting_started/) for installation and scrape configuration."
     }
   ]
 }

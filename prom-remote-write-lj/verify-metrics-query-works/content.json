@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "id": "prom-remote-write-verify-metrics",
-  "title": "Verify metrics query successful",
+  "title": "Verify metrics arrive in Grafana Cloud",
   "blocks": [
     {
       "type": "conditional",
@@ -21,7 +21,7 @@
     },
     {
       "type": "markdown",
-      "content": "As the final step in your journey, complete the following steps to confirm that you've successfully sent Prometheus metrics to Grafana Cloud:"
+      "content": "As the final step in your path, confirm that the samples Prometheus pushes are stored in Grafana Cloud Metrics. Metrics Drilldown lists every metric in a data source, so it's a quick way to check without writing a query.\n\nTo verify that your metrics arrive, complete the following steps:"
     },
     {
       "type": "section",
@@ -30,30 +30,45 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[href=\"/a/grafana-metricsdrilldown-app/drilldown\"]",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']",
           "requirements": [
             "navmenu-open",
             "exists-reftarget"
           ],
-          "content": "In the Grafana side menu, click **Drilldown > Metrics**."
+          "content": "In your Grafana Cloud stack, open the navigation menu and click **Drilldown > Metrics**."
         },
         {
           "type": "markdown",
-          "content": "If you see a **Let's start!** button, click it."
+          "content": "If you see a **Let's start** button, click it."
+        },
+        {
+          "type": "markdown",
+          "content": "Check the **Data source** picker at the top of the page. Your stack's Grafana Cloud Metrics data source is named `grafanacloud-<STACK_NAME>-prom`. If a different data source is selected, choose that one.\n\nMetrics Drilldown shows a visualization for each metric in the selected data source."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[aria-label='Quick search metrics']",
+          "targetvalue": "up",
+          "requirements": [
+            "on-page:/a/grafana-metricsdrilldown-app",
+            "exists-reftarget"
+          ],
+          "content": "In the search field above the metrics list, enter the name of a metric that Prometheus scrapes, for example `up`."
+        },
+        {
+          "type": "markdown",
+          "content": "When the metric appears with recent data, Prometheus is sending samples to Grafana Cloud. If it doesn't appear yet, wait a moment and search again."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You should see Prometheus metrics displayed in the Grafana Drilldown Metrics app."
+      "content": "**Congratulations!** Your Prometheus server is sending metrics to Grafana Cloud."
     },
     {
       "type": "markdown",
-      "content": "**Congratulations!** You've successfully connected to your Prometheus data source."
-    },
-    {
-      "type": "markdown",
-      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topic if you need help:\n\n- [Data doesn't appear in Explore metrics](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/data-sources/prometheus/configure-prometheus-data-source/#troubleshooting)"
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Troubleshoot Cloud Metrics write issues](https://grafana.com/docs/grafana-cloud/send-data/metrics/troubleshoot/)\n- [Prometheus ingestion errors](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/ingestion-errors/)"
     }
   ]
 }
