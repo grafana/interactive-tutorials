@@ -1,0 +1,60 @@
+name: Optional PR E2E
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  submit:
+    # Unset or false disables all submissions. Admission also stays off server-side.
+    if: >-
+      vars.PR_E2E_ENABLED == 'true' &&
+      github.repository_id == '1040149225' &&
+      github.event.issue.pull_request &&
+      github.event.comment.user.type == 'User' &&
+      (vars.PR_E2E_ALLOWED_ACTORS == '' ||
+       contains(fromJSON(vars.PR_E2E_ALLOWED_ACTORS), github.event.comment.user.login))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      id-token: write
+    steps:
+      - name: Load helper from trusted main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Parse command and capture current PR head
+        id: command
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node .github/scripts/e2e-test.mjs prepare
+
+      - name: Obtain submitter identity token
+        id: google-auth
+        if: steps.command.outputs.submit == 'true'
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          workload_identity_provider: projects/304398677251/locations/global/workloadIdentityPools/github/providers/github-provider
+          service_account: pfe2e-pr-submitter@dev-advocacy-380120.iam.gserviceaccount.com
+          token_format: id_token
+          id_token_audience: https://pathfinder-pr-test-coordinator
+          id_token_include_email: true
+          create_credentials_file: false
+          export_environment_variables: false
+
+      - name: Submit request and report bounded response
+        if: steps.command.outputs.submit == 'true'
+        env:
+          GOOGLE_ID_TOKEN: ${{ steps.google-auth.outputs.id_token }}
+        run: node .github/scripts/e2e-test.mjs submit
