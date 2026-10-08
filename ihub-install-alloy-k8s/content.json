@@ -1,0 +1,447 @@
+{
+    "schemaVersion": "1.1.0",
+    "id": "ihub-install-alloy-k8s",
+    "title": "Install Alloy on Kubernetes for Instrumentation Hub",
+    "blocks": [{
+            "type": "markdown",
+            "id": "md-guide-intro",
+            "content": "Install a Grafana Alloy collector on a Kubernetes cluster from Instrumentation Hub, so service discovery can begin. You configure the collector in a five step wizard, run the generated Helm command in your terminal, and watch discovered services appear.\n\nBefore you start, you need permission to install collectors on this stack, a Kubernetes cluster you can deploy to, and Helm and kubectl configured for that cluster."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-1-intro",
+            "content": "First, open Instrumentation Hub."
+        },
+        {
+            "type": "section",
+            "id": "open-the-starting-page",
+            "title": "Open Instrumentation Hub",
+            "blocks": [{
+                "type": "interactive",
+                "id": "step-open-instrumentation-hub",
+                "action": "navigate",
+                "reftarget": "/a/grafana-collector-app/instrumentation-hub",
+                "content": "Open **Instrumentation Hub**.",
+                "tooltip": "Takes you to the starting page where you install a collector and watch discovery.",
+                "doIt": true
+            }]
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-1-summary",
+            "content": "Instrumentation Hub is open — this is where you start the collector installation and later watch discovery."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-2-intro",
+            "content": "Next, launch the collector installer."
+        },
+        {
+            "type": "section",
+            "id": "open-the-installer",
+            "title": "Open the installer",
+            "requirements": [
+                "has-plugin:grafana-collector-app"
+            ],
+            "blocks": [{
+                "type": "conditional",
+                "id": "open-installer-branch",
+                "description": "A stack with no clusters shows the onboarding screen; a stack with clusters shows the landing page.",
+                "conditions": [
+                    "exists-reftarget"
+                ],
+                "reftarget": "[data-testid='ihub-onboarding-install-alloy-button']",
+                "whenTrue": [{
+                    "type": "interactive",
+                    "id": "step-onboarding-install-alloy",
+                    "action": "button",
+                    "reftarget": "[data-testid='ihub-onboarding-install-alloy-button']",
+                    "content": "Click **Install Alloy** to open the Collector setup wizard.",
+                    "tooltip": "Starts the collector installation for your first cluster.",
+                    "doIt": true,
+                    "skippable": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/instrumentation-hub"
+                    ],
+                    "objectives": [
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                }],
+                "whenFalse": [{
+                    "type": "interactive",
+                    "id": "step-add-more-clusters",
+                    "action": "button",
+                    "reftarget": "[data-testid='ihub-add-more-clusters-button']",
+                    "content": "Your stack already reports clusters, so click **Add more clusters** to open the Collector setup wizard.",
+                    "tooltip": "Starts a collector installation for an additional cluster.",
+                    "doIt": true,
+                    "skippable": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/instrumentation-hub"
+                    ],
+                    "objectives": [
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                }]
+            }]
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-2-summary",
+            "content": "The Collector setup wizard is open. It walks you through five steps: distribution, access token, setup size, monitoring, and deployment."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-3-intro",
+            "content": "Select the Kubernetes platform your cluster runs on."
+        },
+        {
+            "type": "section",
+            "id": "select-distribution",
+            "title": "Distribution",
+            "requirements": [
+                "has-plugin:grafana-collector-app",
+                "on-page:/a/grafana-collector-app/alloy"
+            ],
+            "blocks": [{
+                    "type": "interactive",
+                    "id": "step-select-kubernetes-platform",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='platform-card-kubernetes']",
+                    "content": "Select the platform your cluster runs on. **Do it** selects **Kubernetes** for EKS on EC2, standard GKE, or a self-managed cluster. For AKS, GKE Autopilot, EKS on Fargate, IBM Cloud, or OpenShift, select the matching card yourself.",
+                    "tooltip": "Choose the platform that matches your cluster.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-distribution-next",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='config-next-button']",
+                    "content": "Select **Next** to configure the access token.",
+                    "tooltip": "Continue to authentication.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-3-summary",
+            "content": "The platform selection determines the deployment instructions the wizard generates."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-4-intro",
+            "content": "Configure the credential that Alloy uses to send telemetry to Grafana Cloud."
+        },
+        {
+            "type": "section",
+            "id": "access-token",
+            "title": "Access token",
+            "requirements": [
+                "has-plugin:grafana-collector-app",
+                "on-page:/a/grafana-collector-app/alloy"
+            ],
+            "blocks": [{
+                    "type": "interactive",
+                    "id": "step-token-name",
+                    "action": "formfill",
+                    "reftarget": "[data-testid='generate-token-name-input']",
+                    "content": "Name the token so you can identify its cluster or purpose later. **Do it** enters `instrumentation-hub-alloy`; replace it if needed. Then set **Expiration date** — the default is **No expiry**, so choose a duration that matches your credential rotation policy.\n\nIf you already have a suitable token, select **Use an existing token** or **Use a stored Kubernetes Secret**, provide it yourself, and skip the token creation steps.",
+                    "tooltip": "Use a descriptive name for this credential.",
+                    "targetvalue": "instrumentation-hub-alloy",
+                    "formHint": "A name you'll recognise later",
+                    "doIt": true,
+                    "skippable": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-token-scopes",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='generate-token-scopes-field']",
+                    "content": "Review the predefined scopes. They allow Alloy to send telemetry and the wizard to read metrics for its connection check.",
+                    "tooltip": "Review the access this credential will grant.",
+                    "doIt": false,
+                    "skippable": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-token-create",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='generate-token-submit-button']",
+                    "content": "Select **Create token** yourself, then store the generated token securely because it isn't shown again. The wizard includes it in the generated deployment configuration.",
+                    "tooltip": "Create and securely save your credential.",
+                    "doIt": false,
+                    "skippable": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-token-next",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='config-next-button']",
+                    "content": "Once the token is available, select **Next** to choose a deployment size.",
+                    "tooltip": "Continue when authentication is ready.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-4-summary",
+            "content": "The wizard uses this credential when generating the deployment configuration."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-5-intro",
+            "content": "Choose the Alloy deployment size for your cluster."
+        },
+        {
+            "type": "section",
+            "id": "choose-setup",
+            "title": "Choose setup",
+            "requirements": [
+                "has-plugin:grafana-collector-app",
+                "on-page:/a/grafana-collector-app/alloy"
+            ],
+            "blocks": [{
+                    "type": "interactive",
+                    "id": "step-choose-setup-standard",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='install-alloy-unified-helm-choose-setup-deployment-standard'] button[role='radio']",
+                    "content": "Select **Standard** for a balanced deployment. **Do it** selects this option. **Lightweight** reduces resource use for smaller clusters; **Scalable** separates collection across Alloy deployments. Expand **Learn what this deployment includes** on any option to compare them, and select an alternative yourself if it better fits your cluster.",
+                    "tooltip": "Select a deployment size for your cluster.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-choose-setup-next",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='config-next-button']",
+                    "content": "Select **Next** to choose which telemetry to collect.",
+                    "tooltip": "Continue to collection settings.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-5-summary",
+            "content": "The deployment size determines how collection workloads run in your cluster."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-6-intro",
+            "content": "Review the monitoring and service discovery settings."
+        },
+        {
+            "type": "section",
+            "id": "monitoring",
+            "title": "Monitoring",
+            "requirements": [
+                "has-plugin:grafana-collector-app",
+                "on-page:/a/grafana-collector-app/alloy"
+            ],
+            "blocks": [{
+                    "type": "interactive",
+                    "id": "step-review-k8s-monitoring",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='enable-k8s-monitoring-card']",
+                    "content": "Review **Enable Kubernetes monitoring**, which collects the cluster metrics, events, and logs used by Kubernetes Monitoring. The recommended defaults collect the signals Instrumentation Hub needs; once activated, billing is based on host and container hours. You can use the card's menu to open **Advanced settings** if you need to adjust the signals, though this is not recommended.",
+                    "tooltip": "Review the cluster telemetry to be collected.",
+                    "doIt": false,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-review-auto-discover",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='auto-discover-services-card']",
+                    "content": "Review **Auto-discover services on my cluster**. It creates the managed discovery pipeline in Fleet Management that Instrumentation Hub depends on to find services and offer one click instrumentation. No application telemetry is collected until you instrument a service.",
+                    "tooltip": "This discovery pipeline is what makes your services appear in Instrumentation Hub.",
+                    "doIt": false,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-monitoring-next",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='config-next-button']",
+                    "content": "Select **Next** after reviewing your collection settings.",
+                    "tooltip": "Generate the deployment configuration.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-6-summary",
+            "content": "Your collection settings determine which telemetry Alloy sends to Grafana Cloud."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-7-intro",
+            "content": "Name the cluster, deploy the generated configuration, and test the connection."
+        },
+        {
+            "type": "section",
+            "id": "deployment",
+            "title": "Deployment",
+            "requirements": [
+                "has-plugin:grafana-collector-app",
+                "on-page:/a/grafana-collector-app/alloy"
+            ],
+            "blocks": [{
+                    "type": "interactive",
+                    "id": "step-cluster-name",
+                    "action": "formfill",
+                    "reftarget": "[data-testid='install-alloy-unified-helm-cluster-name-input']",
+                    "content": "Replace the prefilled `my-cluster` with a unique cluster name that your team recognizes. This name identifies the cluster in Grafana; `production-eu-west` is an example, not a value to copy unchanged.",
+                    "tooltip": "Replace the placeholder with your own cluster name.",
+                    "targetvalue": "production-eu-west",
+                    "formHint": "An example — replace it with your own",
+                    "doIt": false,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-namespace",
+                    "action": "formfill",
+                    "reftarget": "[data-testid='install-alloy-unified-helm-namespace-input']",
+                    "content": "Choose the Kubernetes namespace for the Alloy deployment. **Do it** enters `monitoring`; use your team's namespace if different. This does not limit monitoring to that namespace.",
+                    "tooltip": "Choose where Alloy will run.",
+                    "targetvalue": "monitoring",
+                    "formHint": "Lowercase, alphanumeric, dashes inside",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-copy-helm-command",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='install-alloy-unified-helm-copy-command']",
+                    "content": "Copy the generated Helm command. In your terminal, check `kubectl config current-context`, then run the command against the intended cluster. The command contains your access token, so keep it private.",
+                    "tooltip": "Copy this command and run it in a terminal that can reach your Kubernetes cluster.",
+                    "doIt": true,
+                    "skippable": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-test-connection",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='install-alloy-unified-helm-test-connection']",
+                    "content": "After the Helm command finishes and the collector pods start, select **Do it** to apply your monitoring configuration and test the connection. Wait for the result; if it fails, check the deployment and credentials before retrying.",
+                    "tooltip": "Apply the monitoring configuration and check the connection.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-7-summary",
+            "content": "Alloy is deployed to your cluster and its connection to Grafana Cloud is verified. Alongside Alloy, the Helm chart installs Beyla and the SDK injector, which discover and instrument your services."
+        },
+        {
+            "type": "markdown",
+            "id": "md-section-8-intro",
+            "content": "Finally, return to Instrumentation Hub and watch service discovery begin."
+        },
+        {
+            "type": "section",
+            "id": "watch-discovery-begin",
+            "title": "Watch discovery begin",
+            "requirements": [
+                "has-plugin:grafana-collector-app"
+            ],
+            "blocks": [{
+                    "type": "interactive",
+                    "id": "step-return-to-instrumentation-hub",
+                    "action": "button",
+                    "reftarget": "[data-testid='alloy-installation-navigation-button']",
+                    "content": "Back in Grafana, click **Instrumentation Hub** to return to the landing page.",
+                    "tooltip": "Takes you back to the landing page where discovery results appear.",
+                    "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-watch-discovery",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='ihub-cards-container']",
+                    "content": "Watch the overview cards: discovery is pending at first, then discovered clusters and services appear as Alloy reports in. The cluster and its workloads can take a minute or two to appear.",
+                    "tooltip": "Discovered clusters and services appear here once Alloy starts reporting.",
+                    "doIt": false,
+                    "showMe": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/instrumentation-hub"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "markdown",
+            "id": "md-guide-summary",
+            "content": "You installed an Alloy collector on your Kubernetes cluster from Instrumentation Hub. Success looks like the landing page showing your cluster and its discovered services in the overview cards. Once services are discovered, continue with the **Discover and instrument your application services** guide."
+        }
+    ]
+}
