@@ -7,6 +7,15 @@
       "content": "Check your website’s availability and response time with an HTTP GET request. Use a public website that you are allowed to monitor; this check does not run JavaScript."
     },
     {
+      "type": "input",
+      "inputType": "text",
+      "format": "http-url",
+      "variableName": "appUrl",
+      "prompt": "What website or endpoint would you like to check?",
+      "placeholder": "https://yourcompany.com/health",
+      "required": true
+    },
+    {
       "type": "markdown",
       "content": "First, open Synthetic Monitoring:"
     },
@@ -54,7 +63,8 @@
       "title": "Create an HTTP uptime check",
       "requirements": [
         "section-completed:open-synthetic-monitoring",
-        "on-page:/a/grafana-synthetic-monitoring-app"
+        "on-page:/a/grafana-synthetic-monitoring-app",
+        "var-appUrl:*"
       ],
       "blocks": [
         {
@@ -103,25 +113,17 @@
           ]
         },
         {
-          "type": "guided",
-          "id": "get-started-first-check-reader-block-5-block-3",
-          "content": "Enter your website URL, including `https://` or `http://`.",
-          "stepTimeout": 120000,
-          "steps": [
-            {
-              "action": "formfill",
-              "reftarget": "input[data-testid='checkEditor form instance']",
-              "targetvalue": "^https?://[^\\s/?#]+(?:[^\\s]*)?$",
-              "validateInput": true,
-              "formHint": "Enter a complete public HTTP or HTTPS URL, such as https://yourcompany.com.",
-              "requirements": [
-                "exists-reftarget",
-                "on-page:/a/grafana-synthetic-monitoring-app"
-              ],
-              "tooltip": "Use an endpoint reachable by public probes; this request does not execute browser JavaScript.",
-              "description": "Enter your website URL, including `https://` or `http://`."
-            }
-          ]
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='checkEditor form instance']",
+          "targetvalue": "{{appUrl}}",
+          "content": "Set **Request target** to {{appUrl}}.",
+          "tooltip": "Use an endpoint reachable by the selected probe; this request does not execute browser JavaScript.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget"
+          ],
+          "doIt": true
         },
         {
           "type": "interactive",
