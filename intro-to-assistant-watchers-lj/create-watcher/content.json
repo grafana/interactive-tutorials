@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "The Watchers page is under **AI** in the main menu. Create a watcher by describing the service, system, or failure mode to monitor. Keep the scope narrow: one service, namespace, cluster, or failure mode. Include context Assistant can't infer from telemetry, for example whether short error spikes during deploys are expected.\n\nThis path uses **Set up manually** so you fill the form yourself. **Create with Assistant** is another way to start a watcher. It collects the details in a conversation, then returns you to this form prefilled."
+      "content": "The Watchers page is under **AI** in the main menu. Create a watcher by describing the service, system, or failure mode to monitor. Keep the scope narrow: one service, namespace, cluster, or failure mode. Include context Assistant can't infer from telemetry, for example whether short error spikes during deploys are expected.\n\nYou don't need to define what a problem looks like. Calibration works out what normal looks like from your telemetry."
     },
     {
       "type": "markdown",
@@ -27,71 +27,62 @@
           "hint": "If the page isn't available, confirm Assistant is enabled and that you have Watchers read permission. Watchers isn't available in self-managed Grafana. In the main menu, **Watchers** is under **AI**."
         },
         {
-          "type": "multistep",
-          "content": "Click **New watcher**, then click **Set up manually**.\n\nYou need `grafana-assistant-app.watcher-agents:create` to create a watcher. **Create with Assistant** collects the details in a conversation, then returns you to this form prefilled.",
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "New watcher",
+          "content": "Click **New watcher**.\n\nYou need `grafana-assistant-app.watcher-agents:create` to create a watcher.",
           "requirements": ["on-page:/a/grafana-assistant-app/watchers", "exists-reftarget"],
-          "objectives": ["on-page:/a/grafana-assistant-app/watchers/new"],
-          "steps": [
-            {
-              "action": "button",
-              "reftarget": "New watcher"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='popover-menu'] button[role='menuitem']:last-of-type"
-            }
-          ]
+          "verify": "on-page:/a/grafana-assistant-app/watchers/new"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You're on the **New watcher** form. Fill it in next. Don't click **Calibrate** yet."
+      "content": "You're on the **New watcher** form."
     },
     {
       "type": "markdown",
-      "content": "To fill the form, complete the following steps:"
+      "content": "To fill in the form and create the watcher, complete the following steps:"
     },
     {
       "type": "section",
       "id": "fill-watcher-form",
-      "title": "Set intent, data sources, and cadence",
+      "title": "Fill in and create the watcher",
       "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "has-datasources"],
       "autoCollapse": true,
       "blocks": [
         {
           "type": "interactive",
-          "action": "formfill",
+          "action": "highlight",
           "reftarget": "input[placeholder='Checkout service']",
-          "targetvalue": "Checkout health",
-          "content": "In **Name**, enter a name that's easy to recognize later.\n\n**Checkout health** is filled in for you. If your data doesn't cover a checkout service, replace it with a service your data source does cover.",
-          "tooltip": "You'll look this name up later in the Watchers list.",
+          "doIt": false,
+          "content": "In **Name**, enter the service or check you want to watch.\n\nPick something your data sources have telemetry for. You'll look this name up later in the Watchers list.",
           "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"]
         },
         {
           "type": "interactive",
-          "action": "formfill",
+          "action": "highlight",
           "reftarget": "textarea[placeholder^='Watch my checkout service']",
-          "targetvalue": "Watch my checkout service. During rollout some errors are expected and this is acceptable, but it should always recover fairly quickly.",
-          "content": "In **Give the watcher context**, describe what to monitor.\n\nInclude expected rollout behavior, known noise, and acceptable tolerances. Replace \"checkout\" with the service you named.",
-          "tooltip": "Tell the watcher what it can't infer from telemetry alone.",
-          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"]
+          "doIt": false,
+          "content": "In **Give the watcher context**, describe what to watch and anything it can't learn from telemetry, such as expected rollout behavior, known noise, or acceptable tolerances.\n\nFor example: \"Watch the payments API in production. Short error spikes during deploys are expected, but errors should recover within a few minutes.\"",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
+          "hint": "Name the same service here as in **Name**. Calibration fails if your data sources have no telemetry for what you describe."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "input[placeholder='Select datasources']",
           "doIt": false,
-          "content": "In **Datasources**, pick at least one Prometheus, Loki, or BigQuery data source with telemetry for the service you're watching.",
+          "content": "In **Datasources**, pick at least one data source, for example Prometheus or Loki, that has telemetry for the service you're watching.",
           "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
-          "hint": "**Calibrate** stays disabled until you select a data source."
+          "hint": "Only pick data sources that return data. A data source with no data can make calibration fail."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[role='combobox'][value='Every 15 minutes']",
+          "reftarget": "input[role='combobox'][value='Every 10 minutes']",
           "doIt": false,
-          "content": "Leave **Repeats** at **Every 15 minutes** unless you need a longer interval.\n\nThe interval must be between 15 minutes and 3 hours.",
+          "content": "Leave **Repeats** at **Every 10 minutes**.\n\nYou can choose any interval from every 5 minutes to every 3 hours.",
           "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
           "skippable": true,
           "hint": "Skip if you already changed the interval."
@@ -105,12 +96,21 @@
           "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
           "skippable": true,
           "hint": "Skip if you already changed sensitivity."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create watcher",
+          "content": "Leave the rest of the form as it is, then click **Create watcher**.\n\nFor this intro, you don't need **Labels**, **Stop automatically**, the **Notifications** settings, or **Launch on a critical assessment**. You can configure notifications later from the watcher's page.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
+          "verify": "on-page:/calibration",
+          "hint": "**Create watcher** stays disabled until **Name**, **Give the watcher context**, and **Datasources** are filled."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Your watcher has a name, context, data sources, cadence, and sensitivity. Leave **Post to Slack**, **Send to a webhook**, and **Launch on a critical assessment** off for this intro.\n\nDon't click **Calibrate** yet. You'll do that in the next milestone."
+      "content": "You created a watcher with a name, context, data sources, cadence, and sensitivity. Grafana opened its **Calibration** tab, and calibration is now running in the background. In the next milestone, you'll follow calibration and review the checks it saves."
     },
     {
       "type": "markdown",
