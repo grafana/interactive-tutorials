@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "intro-to-assistant-watchers-calibrate-watcher",
+  "title": "Calibrate the watcher",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Calibration turns your monitoring intent into durable checks that later unattended runs can evaluate. Assistant inspects relevant infrastructure, dashboards, alert rules, and live telemetry, then saves validated queries and a calibration baseline.\n\nCalibration runs in the background and shows each step on the **Calibration** tab. It derives queries and thresholds from your telemetry, so it doesn't ask you for them. It can create PromQL, LogQL, BigQuery SQL, and Grafana-managed alert checks. Calibration must save at least one enabled, validated query before the watcher can start."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out into a floating window.\n\nIf it's docked in the sidebar, this keeps it visible while calibration runs."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "Calibration can take a few minutes. Early on, it can stop to ask a few questions about scope or intent, for example which clusters or environments to cover. Only the person who started calibration can answer them.\n\nWhen calibration succeeds, the switch at the top of the page reads **Active** and the **Calibration** card shows the number of saved checks. The watcher then scans on its schedule."
+    },
+    {
+      "type": "markdown",
+      "content": "To follow calibration, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "run-calibration",
+      "title": "Follow calibration and review checks",
+      "requirements": ["plugin-enabled:grafana-assistant-app"],
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Calibration']",
+          "content": "Open the **Calibration** tab.\n\nThe context you entered appears here as the watcher goal.",
+          "requirements": ["exists-reftarget"],
+          "verify": "on-page:/calibration",
+          "skippable": true,
+          "hint": "Skip if you're already on the **Calibration** tab. If you left the watcher's page, open **Watchers** and click your watcher's name."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Continue calibration",
+          "content": "If calibration asks questions, answer them on the **Calibration** tab, then click **Continue calibration**.",
+          "requirements": ["on-page:/calibration", "exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if calibration finished without asking questions."
+        },
+        {
+          "type": "markdown",
+          "content": "When calibration finishes, review the saved checks and baseline on the **Calibration** tab."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Calibration saved checks and a baseline, and the watcher is now scanning on its schedule. In the next milestone, you'll trigger **Run now** and learn how to pause the automatic runs."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar.\n\nDo this when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Calibrate a watcher](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/watchers/#calibrate-a-watcher)\n- [Finish calibration](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/watchers/#finish-calibration)"
+    }
+  ]
+}

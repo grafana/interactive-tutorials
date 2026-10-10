@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "intro-to-assistant-watchers-create-watcher",
+  "title": "Create a watcher",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The Watchers page is under **AI** in the main menu. Create a watcher by describing the service, system, or failure mode to monitor. Keep the scope narrow: one service, namespace, cluster, or failure mode. Include context Assistant can't infer from telemetry, for example whether short error spikes during deploys are expected.\n\nYou don't need to define what a problem looks like. Calibration works out what normal looks like from your telemetry."
+    },
+    {
+      "type": "markdown",
+      "content": "To open the create form, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-new-watcher",
+      "title": "Open the create form",
+      "requirements": ["plugin-enabled:grafana-assistant-app"],
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-assistant-app/watchers",
+          "content": "Open **Watchers**.",
+          "verify": "on-page:/a/grafana-assistant-app/watchers",
+          "hint": "If the page isn't available, confirm Assistant is enabled and that you have Watchers read permission. Watchers isn't available in self-managed Grafana. In the main menu, **Watchers** is under **AI**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "New watcher",
+          "content": "Click **New watcher**.\n\nYou need `grafana-assistant-app.watcher-agents:create` to create a watcher.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers", "exists-reftarget"],
+          "verify": "on-page:/a/grafana-assistant-app/watchers/new"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You're on the **New watcher** form.\n\nBefore you fill it in, pick one thing to watch that has live data. If you're not sure what has data, open **Explore** in a new browser tab, choose a Prometheus data source, switch the query editor to **Code**, and run `count by (job) (up == 1)`. Each job in the results has at least one target that's up and sending metrics, and you can watch any of them."
+    },
+    {
+      "type": "markdown",
+      "content": "To fill in the form and create the watcher, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "fill-watcher-form",
+      "title": "Fill in and create the watcher",
+      "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "has-datasources"],
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Checkout service']",
+          "doIt": false,
+          "content": "In **Name**, enter the service or check you want to watch.\n\nPick something your data sources have telemetry for. You'll look this name up later in the Watchers list.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "textarea[placeholder^='Watch my checkout service']",
+          "doIt": false,
+          "content": "In **Give the watcher context**, describe what to watch and anything it can't learn from telemetry, such as expected rollout behavior, known noise, or acceptable tolerances.\n\nFor example: \"Watch the payments API in production. Short error spikes during deploys are expected, but errors should recover within a few minutes.\"\n\nIf you picked a job in **Explore**, you can write: \"Watch the Prometheus job integrations/node_exporter. Raise concern if any host goes down or stops reporting.\" Replace the job name with yours.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
+          "hint": "Name the same service here as in **Name**. Calibration fails if your data sources have no telemetry for what you describe."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select datasources']",
+          "doIt": false,
+          "content": "In **Datasources**, pick at least one data source, for example Prometheus or Loki, that has telemetry for the service you're watching.\n\nIf you used **Explore**, pick only the data source you queried there.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
+          "hint": "Only pick data sources that return data. A data source with no data can make calibration fail."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[role='combobox'][value='Every 10 minutes']",
+          "doIt": false,
+          "content": "Leave **Repeats** at **Every 10 minutes**.\n\nYou can choose any interval from every 5 minutes to every 3 hours.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if you already changed the interval."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[role='combobox'][value='Balanced: escalate on clear deviations']",
+          "doIt": false,
+          "content": "Leave **Sensitivity** at **Balanced**.\n\nChange it only if you know the watcher should be more or less sensitive.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if you already changed sensitivity."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create watcher",
+          "content": "Leave the rest of the form as it is, then click **Create watcher**.\n\nFor this intro, you don't need **Labels**, **Stop automatically**, the **Notifications** settings, or **Launch on a critical assessment**. You can configure notifications later from the watcher's page.",
+          "requirements": ["on-page:/a/grafana-assistant-app/watchers/new", "exists-reftarget"],
+          "verify": "on-page:/calibration",
+          "hint": "**Create watcher** stays disabled until **Name**, **Give the watcher context**, and **Datasources** are filled."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You created a watcher with a name, context, data sources, cadence, and sensitivity. Grafana opened its **Calibration** tab, and calibration is now running in the background. In the next milestone, you'll follow calibration and review the checks it saves."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Create a watcher](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/watchers/#create-a-watcher)"
+    }
+  ]
+}
