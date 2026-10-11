@@ -27,16 +27,42 @@
           "hint": "Skip if you already know what to watch."
         },
         {
-          "type": "markdown",
-          "content": "Choose a Prometheus data source."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.DataSourcePicker.inputV2",
+          "doIt": false,
+          "content": "In the data source picker, choose a Prometheus data source.\n\nIf you have more than one, choose the one with your service's metrics.",
+          "requirements": ["on-page:/explore", "has-datasource:prometheus", "exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if a Prometheus data source is already selected."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='QueryEditorModeToggle'] label:contains('Code')",
+          "content": "Select **Code**.",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if **Code** is already selected."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "count by (job) (up == 1)",
+          "content": "In the query editor, next to **Metrics browser**, enter `count by (job) (up == 1)`.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Run query**.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
         },
         {
           "type": "markdown",
-          "content": "Switch the query editor to **Code**."
-        },
-        {
-          "type": "markdown",
-          "content": "Run `count by (job) (up == 1)`, then note one job name from the results."
+          "content": "Note one job name from the results, for example `integrations/node_exporter`. The job name is the value in quotes after `job=`, and any job in the list works."
         }
       ]
     },
