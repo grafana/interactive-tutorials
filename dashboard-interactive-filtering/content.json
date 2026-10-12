@@ -1,0 +1,265 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "dashboard-interactive-filtering",
+  "title": "Filter a dashboard from a graph",
+  "blocks": [
+    {
+      "type": "markdown",
+      "id": "intro",
+      "content": "You can filter a whole dashboard straight from a graph: click a series and choose **Filter on this value** or **Filter out this value**. In this guide you check what makes a panel filterable, group the dashboard by `job`, and then filter in and out from the graph."
+    },
+    {
+      "type": "markdown",
+      "id": "filterable-intro",
+      "content": "Filter buttons only appear for fields that are marked filterable. To see how this panel is set up, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "make-filterable",
+      "title": "Check that the panel is filterable",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-dashboard",
+          "action": "navigate",
+          "reftarget": "/d/canvvlh",
+          "content": "Open the **Filter variables** dashboard.",
+          "tooltip": "This demo dashboard has a filter variable with group by turned on.",
+          "doIt": true
+        },
+        {
+          "type": "multistep",
+          "id": "open-panel-editor",
+          "content": "Open the **HTTP requests** panel menu and select **Edit**. Select **Run 2 steps** to have Pathfinder do them in order.",
+          "requirements": [
+            "on-page:/d/canvvlh"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "id": "open-panel-menu",
+              "reftarget": "{grafana:components.Panels.Panel.menu:HTTP requests}",
+              "description": "Open the **HTTP requests** panel menu.",
+              "tooltip": "The menu button appears when you hover the panel title.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "id": "choose-edit",
+              "reftarget": "{grafana:components.Panels.Panel.menuItems:Edit}",
+              "description": "Select **Edit**.",
+              "tooltip": "The panel editor opens with the panel options on the right.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "show-filterable-override",
+          "action": "highlight",
+          "reftarget": "{grafana:components.OptionsGroup.group:panel-options-override-0}",
+          "content": "This override matches every field with the regex `/.*/` and turns on **Filterable**. To set this up on your own panel, select **Add field override** > **Fields with name matching regex**, enter `.*`, then select **Add override property** > **Filterable** and turn it on.",
+          "tooltip": "Filterable is only available as an override, not as a panel default.",
+          "requirements": [
+            "on-page:/d/canvvlh",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "id": "back-to-dashboard",
+          "action": "button",
+          "reftarget": "grafana:components.NavToolbar.editDashboard.backToDashboardButton",
+          "content": "Go back to the dashboard.",
+          "tooltip": "The override stays in place until you discard or save the dashboard.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "filterable-summary",
+      "content": "Every field on the **HTTP requests** panel is filterable."
+    },
+    {
+      "type": "markdown",
+      "id": "group-by-intro",
+      "content": "The filter buttons use the labels you group by, so group the dashboard by `job` first:"
+    },
+    {
+      "type": "section",
+      "id": "group-by-job",
+      "title": "Group by job",
+      "requirements": [
+        "section-completed:make-filterable",
+        "on-page:/d/canvvlh"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "add-group-by-job",
+          "action": "formfill",
+          "reftarget": "{grafana:pages.Dashboard.SubMenu.submenuItem} input[placeholder='+ key']",
+          "targetvalue": "job",
+          "content": "In the **Group by** box, type `job` and select the **job** label.",
+          "tooltip": "Group by sits next to the filters in the same control.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "group-by-summary",
+      "content": "The graph now shows one line per job, and each line carries its `job` label."
+    },
+    {
+      "type": "markdown",
+      "id": "filter-on-intro",
+      "content": "To keep only one job, filter on it from the graph:"
+    },
+    {
+      "type": "section",
+      "id": "filter-on",
+      "title": "Filter on a series",
+      "requirements": [
+        "section-completed:group-by-job",
+        "on-page:/d/canvvlh"
+      ],
+      "blocks": [
+        {
+          "type": "guided",
+          "id": "filter-on-guided",
+          "content": "Click a line on the **HTTP requests** graph to pin its tooltip, then select **Filter on this value**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "id": "pin-tooltip-for",
+              "reftarget": "{grafana:components.Panels.Panel.title:HTTP requests} .u-over",
+              "description": "Click a line on the graph to pin its tooltip.",
+              "tooltip": "Clicking pins the tooltip so you can use its buttons.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "button",
+              "id": "filter-for-value",
+              "reftarget": "grafana:components.VizTooltipFooter.buttons.apply",
+              "description": "Select **Filter on this value**.",
+              "tooltip": "This adds a job = filter for the line you clicked.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "filter-on-result",
+          "action": "highlight",
+          "reftarget": "[aria-label='Edit filter with key job']",
+          "content": "A `job =` filter for the line you clicked is now in the filter bar, and every panel shows only that job.",
+          "tooltip": "Filter buttons add a filter for each grouped label of the series.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "filter-on-summary",
+      "content": "You filtered the dashboard to a single job from the graph."
+    },
+    {
+      "type": "markdown",
+      "id": "filter-out-intro",
+      "content": "To hide one job instead, remove the filter and filter it out:"
+    },
+    {
+      "type": "section",
+      "id": "filter-out",
+      "title": "Filter out a series",
+      "requirements": [
+        "section-completed:filter-on",
+        "on-page:/d/canvvlh"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "remove-filter-on",
+          "action": "button",
+          "reftarget": "[aria-label='Remove filter with key job']",
+          "content": "Remove the `job =` filter to bring back every job.",
+          "tooltip": "The grouping stays in place.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "guided",
+          "id": "filter-out-guided",
+          "content": "Click a line on the **HTTP requests** graph to pin its tooltip, then select **Filter out this value**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "id": "pin-tooltip-out",
+              "reftarget": "{grafana:components.Panels.Panel.title:HTTP requests} .u-over",
+              "description": "Click a line on the graph to pin its tooltip.",
+              "tooltip": "Pick the job you want to hide.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "button",
+              "id": "filter-out-value",
+              "reftarget": "grafana:components.VizTooltipFooter.buttons.applyInverse",
+              "description": "Select **Filter out this value**.",
+              "tooltip": "This adds a job != filter for the line you clicked.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "filter-out-result",
+          "action": "highlight",
+          "reftarget": "[aria-label='Edit filter with key job']",
+          "content": "A `job !=` filter is now in the filter bar, and the job you clicked is gone from every panel.",
+          "tooltip": "Click the pill to switch the operator or change the value.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "outro",
+      "content": "You filtered in and out from a graph. These filters live in the URL, so you can share the filtered view by sharing the link."
+    }
+  ]
+}
