@@ -62,6 +62,26 @@ jobs:
         persist-credentials: false
         submodules: false
 
+    - name: Validate top-level path metadata files
+      run: |
+        FAILED=0
+
+        while IFS= read -r dir; do
+          for required in content.json website.yaml; do
+            if [ ! -f "$dir/$required" ]; then
+              echo "::error file=${dir#./}::${dir#./}/$required is required for top-level -lj/-lp directories"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+        done < <(find . -mindepth 1 -maxdepth 1 -type d \( -name '*-lj' -o -name '*-lp' \) | sort)
+
+        if [ "$FAILED" -gt 0 ]; then
+          echo "❌ Found $FAILED missing required metadata file(s) for top-level -lj/-lp directories"
+          exit 1
+        fi
+
+        echo "✅ All top-level -lj/-lp directories include content.json and website.yaml"
+
     - name: Checkout pathfinder-app CLI
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
