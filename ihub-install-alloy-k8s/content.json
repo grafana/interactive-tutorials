@@ -323,7 +323,7 @@
         {
             "type": "markdown",
             "id": "md-section-7-intro",
-            "content": "Name the cluster, deploy the generated configuration, and test the connection."
+            "content": "Name the cluster, optionally tag its collectors, deploy the generated configuration, and test the connection."
         },
         {
             "type": "section",
@@ -358,6 +358,21 @@
                     "targetvalue": "monitoring",
                     "formHint": "Lowercase, alphanumeric, dashes inside",
                     "doIt": true,
+                    "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-collector-app/alloy"
+                    ]
+                },
+                {
+                    "type": "interactive",
+                    "id": "step-local-attributes",
+                    "action": "highlight",
+                    "reftarget": "input[aria-label='Attribute key']",
+                    "content": "Optionally, add **Local attributes** as key-value pairs, such as `environment` and `production`. They're attached to the collectors in this cluster so you can find them in Fleet Management and target them when deploying pipelines. Click **Add more** for additional pairs, or leave this empty.",
+                    "tooltip": "Optional key-value pairs that identify this cluster's collectors in Fleet Management.",
+                    "doIt": false,
+                    "showMe": true,
+                    "skippable": true,
                     "requirements": [
                         "exists-reftarget",
                         "on-page:/a/grafana-collector-app/alloy"

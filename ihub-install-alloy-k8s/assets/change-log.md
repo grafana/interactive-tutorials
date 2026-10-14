@@ -106,6 +106,23 @@ Kubernetes Secret**; `step-cluster-name` says to replace the prefilled `my-clust
 after push: that Do it on the new Standard reftarget flips `aria-checked`, and that the
 `objectives` auto-complete the branch step on arrival at the wizard.
 
+## 2026-10-14 — Local attributes (PR #624 review feedback)
+
+Reviewer noticed the Deployment step has a **Local attributes** section the guide
+skipped. Source: `grafana-k8s-plugin`
+`InstallAlloyUnifiedHelm/DeploymentPanel.tsx` renders `CustomLabels.tsx`
+unconditionally (added in #2972, July 2026); the collector app mounts that panel via
+the `grafana-k8s-app/install-alloy-helm/v1` extension slot. Verified live on the dev
+stack at wizard step 5, between **Namespace** and the Helm repo block.
+
+- New `step-local-attributes` after `step-namespace`: `highlight`, `doIt: false`,
+  `showMe`, `skippable` (the field is optional, and older plugin versions don't render
+  it). The section has no `data-testid`; the inputs carry stable
+  `aria-label="Attribute key"` / `"Attribute value"`, so the step targets
+  `input[aria-label='Attribute key']`. The **Add more** button has no testid either
+  and is referenced by name in the prose only.
+- Section 7 intro reworded to mention tagging the collectors.
+
 Clipboard was overwritten after the copy step so the token did not remain on it.
 Tokens to revoke in the Cloud Portal: `pathfinder-dry-walk-2026-10-02` and the earlier
 `pathfinder-guide-test`.

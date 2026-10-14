@@ -75,6 +75,29 @@ section 1 completed — it appears to count top-level blocks (intro markdown, se
 the conditional) rather than steps, so a conditional-heavy guide reports progress
 coarsely until the branch's sections finish.
 
+## 2026-10-14 — hand off to the install guide (PR #624 review feedback)
+
+Reviewer finding on a zero-cluster stack: the `whenTrue` branch's **Install Alloy**
+`button` step navigated to the wizard, where `[data-testid='ihub-onboarding-page']` no
+longer exists, so the conditional re-evaluated to `whenFalse` and the clusters-present
+sections reappeared mid-guide with unmet requirements.
+
+- `step-onboarding-install-alloy` (`button`) replaced by
+  `step-onboarding-open-install-guide`: a `navigate` to
+  `/a/grafana-collector-app/alloy/installation?from=ihub` (the same URL the button
+  targets) with `openGuide` set to the hosted install guide
+  (`https://interactive-learning.grafana.net/guides/ihub-install-alloy-k8s/content.json`)
+  and `verify: on-page:/a/grafana-collector-app/alloy`. Pathfinder's navigate handler
+  uses `locationService.push`, so the sidebar survives the navigation and the install
+  guide opens as the active tab — the branch flip on the app-services tab is no longer
+  what the user sees.
+- `bundled:<id>` was not an option: it only resolves the handful of guides compiled
+  into Pathfinder itself, not this repository's hosted guides.
+- The `openGuide` URL returns 404 until the install guide is merged and published, so
+  the PR tester can verify the navigation but not the guide hand-off; verify on a
+  zero-cluster stack after merge.
+- `no-clusters-intro` / `no-clusters-summary` reworded to match.
+
 ## Live-verified selectors
 
 `app-instrument-selection-page`, `pipeline-configuration-impact-summary`,
