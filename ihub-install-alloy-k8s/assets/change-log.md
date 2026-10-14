@@ -123,6 +123,13 @@ stack at wizard step 5, between **Namespace** and the Helm repo block.
   and is referenced by name in the prose only.
 - Section 7 intro reworded to mention tagging the collectors.
 
+Re-verified the same day via the PR tester at `93834d2d` on the dev stack (clusters
+present): **Add more clusters** auto-completes on arrival at the wizard with no
+requirement error (the `objectives` fix); Do it on **Standard** flips `aria-checked`
+from Scalable to Standard; the new Local attributes step gates on the two prior steps,
+then Show me completes it and unlocks the Helm step. Stopped before Helm / Test
+connection; nothing installed.
+
 Clipboard was overwritten after the copy step so the token did not remain on it.
 Tokens to revoke in the Cloud Portal: `pathfinder-dry-walk-2026-10-02` and the earlier
 `pathfinder-guide-test`.

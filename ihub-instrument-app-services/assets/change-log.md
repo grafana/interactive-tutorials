@@ -97,6 +97,11 @@ sections reappeared mid-guide with unmet requirements.
   the PR tester can verify the navigation but not the guide hand-off; verify on a
   zero-cluster stack after merge.
 - `no-clusters-intro` / `no-clusters-summary` reworded to match.
+- Verified the same day via the PR tester at `93834d2d` on a zero-cluster stack: the
+  conditional picks `whenTrue`, Do it navigates client-side to the wizard, the sidebar
+  survives, and `openGuide` opens a new tab for the install guide — which reads
+  "Document not found" pre-merge, as expected. The app-services tab itself still
+  re-evaluates to `whenFalse` once on the wizard, but it is no longer the active tab.
 
 ## Live-verified selectors
 
