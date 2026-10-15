@@ -143,28 +143,9 @@ The examples below show existing website markdown as it appears in the `website`
 
 ### Path cover page
 
-The content example below shows the legacy checklist, not the current authoring pattern. During conversion, declare mandatory requirements in the path manifest:
+The example below shows existing website checklist content. The manifest [prerequisite field](../../../../docs/manifest-reference.md#prerequisites) is separate from this prose and is not inherited by milestones.
 
-```json
-{
-  "prerequisites": [
-    {
-      "id": "linux-server",
-      "label": "A Linux server with a supported distribution."
-    },
-    {
-      "id": "outbound-https",
-      "label": "A firewall that permits outbound HTTPS on port 443 to *.grafana.net."
-    }
-  ]
-}
-```
-
-Keep the original website checklist behind `renderer:website`. Remove its plugin-visible duplicate, including the redundant Grafana Cloud account requirement. Keep optional preparation and detailed setup instructions in content.
-
-Use the [prerequisite contract](../../../../docs/manifest-reference.md#prerequisites) for IDs, labels, Markdown links, and migration rules. Milestones do not inherit path declarations.
-
-**Legacy linux-server-integration-lj/content.json:**
+**linux-server-integration-lj/content.json:**
 ```json
 {
   "schemaVersion": "1.0.0",

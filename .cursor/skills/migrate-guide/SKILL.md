@@ -295,7 +295,7 @@ Read `_index.md` from the website path. Extract from frontmatter:
 - `related_journeys.items` — for `suggests` (default) or `depends` (only if unambiguously prerequisite). **Relationship strength heuristic:** when the `related_journeys.heading` text says "before" or "prerequisite" but the body content qualifies the relationship (e.g., "while not required"), use `suggests`. The body-level qualification takes precedence over the heading-level framing. Only use `depends` when both the heading *and* the body unambiguously describe a hard prerequisite with no "optional" or "recommended" qualifier. Example: heading says "Before you begin" but body says "while not required" → use `suggests`.
 
 Extract from body content:
-- Prose and learning objectives — for path-level `content.json` blocks. Review prerequisite prose for mandatory requirements in `manifest.json`; see [prerequisites](../../../docs/manifest-reference.md#prerequisites).
+- All prose, learning objectives, prerequisites — for path-level content.json blocks
 
 #### 3. Read step metadata
 
@@ -451,13 +451,9 @@ Content transformation rules:
 - For wrapping shortcodes (e.g., `{{< admonition >}}...{{< /admonition >}}`), strip tags but preserve inner content
 - For non-wrapping shortcodes with a `heading` attribute (e.g., `{{< docs/icon-heading heading="## Here's what to expect" >}}`), extract and preserve the heading value as a markdown header in the output
 - Convert remaining markdown into one or more `markdown` blocks
-- Preserve learning objectives and descriptive prose.
-- Review each prerequisite before migration. Declare mandatory requirements in the owning `manifest.json`; do not infer requirements or copy path declarations into milestones.
-- Remove duplicate plugin-visible checklists in the same change. Preserve website checklists behind `renderer:website` until the website supports manifest prerequisites.
-- Keep optional advice and detailed preparation instructions in `content.json`. Short HTTPS setup links can appear in Markdown prerequisite labels.
-- Use [the prerequisite contract](../../../docs/manifest-reference.md#prerequisites) for IDs, labels, format restrictions, and conditional requirements.
+- Preserve learning objectives, prerequisites, and descriptive prose
 - **Gate screenshots and videos for website-only rendering** — do not leave ungated `image` / `video` blocks or markdown `![...](...)` embeds in Pathfinder. Wrap typed media in a `conditional` with `conditions: ["renderer:website"]` and empty `whenFalse`. For markdown that mixes prose with images, use a dual-branch conditional: `whenTrue` keeps the original markdown (with images); `whenFalse` keeps prose with image markdown removed. Prefer absolute `https://grafana.com/media/...` URLs when available. Relative `/media/...` paths still work on the website branch; Pathfinder never shows that branch. See [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder).
-- **Remove "Grafana Cloud account" prerequisites** — any prerequisite or requirement bullet point that says the user needs a Grafana Cloud account (e.g., "A Grafana Cloud account. To create an account, refer to...") is redundant for Pathfinder users, who are already in Grafana. Exclude these bullet points from plugin-visible content and manifest prerequisites. Preserve them in the website-only checklist.
+- **Remove "Grafana Cloud account" prerequisites** — any prerequisite or requirement bullet point that says the user needs a Grafana Cloud account (e.g., "A Grafana Cloud account. To create an account, refer to...") is redundant for Pathfinder users, who are already in Grafana. Remove these bullet points entirely.
 - **Record gated media and removed prerequisites in migration notes** — for every screenshot/video wrapped in a `renderer:website` conditional, and for every prerequisite removed by the above rules, record the change under `## Content Removed During Migration` (or a `## Website-only media` subsection). This provides a clear audit trail.
 - Do NOT add a markdown title (`## Title`) — the `title` field handles that
 

@@ -145,31 +145,6 @@ This field informs the learner. It does not check system state, block a learner,
 
 Use this field only for mandatory requirements. For a mandatory conditional requirement, state the condition in its label, such as "For local smoke tests, k6 installed." Short setup links can appear in Markdown labels. Keep optional preparation, recommended knowledge, detailed conditional guidance, and context in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
 
-#### Migrate existing prerequisite prose
-
-Migrate one guide or path at a time. Review each item before you add it to a manifest.
-
-1. Add only mandatory requirements to `prerequisites`.
-2. Remove the duplicate checklist from plugin-visible `content.json` in the same change.
-3. Keep detailed setup instructions, explanations, conditional guidance, and optional recommendations in `content.json`.
-4. If the website still needs the checklist, retain it in a website-only conditional block.
-
-```json
-{
-  "type": "conditional",
-  "conditions": ["renderer:website"],
-  "whenTrue": [
-    {
-      "type": "markdown",
-      "content": "## Before you begin\n\n- A running MySQL server that you can access."
-    }
-  ],
-  "whenFalse": []
-}
-```
-
-Keep this website block until the website renders manifest prerequisites. Do not suppress content from a heading or compare prose with labels automatically. Existing headings often also contain links, optional advice, or lesson context.
-
 ### targeting
 
 The `targeting` object contains a `match` expression that determines when the guide is contextually recommended. The `match` value uses the same expression syntax as `index.json` rules.
@@ -352,7 +327,6 @@ These rules define where each manifest field's data comes from during migration.
 | `recommends` | — | Leave empty unless explicitly known. |
 | `suggests` | — | Leave empty unless explicitly known. |
 | `provides` | — | Leave empty during migration. Populate manually in a future pass when semantic outcomes are defined. |
-| `prerequisites` | Existing prerequisite prose | Add author-reviewed mandatory requirements. State conditions in labels for mandatory conditional requirements. Do not infer requirements from guide content. See [prerequisites](#prerequisites). |
 
 ### For learning path steps
 
@@ -384,7 +358,6 @@ These rules define where each manifest field's data comes from during migration.
 | `recommends` | Website `_index.md` | From `journey.links.to`. |
 | `suggests` | Website `_index.md` | Default all `related_journeys` items to `suggests` unless the relationship is unambiguously prerequisite (e.g., the markdown body explicitly states the path must be completed first). |
 | `depends` | Website `_index.md` | Only from `related_journeys` items explicitly marked as prerequisites. In practice, most `related_journeys` are suggestions; leave `depends` empty if unsure and flag for manual review. |
-| `prerequisites` | Existing prerequisite prose | Add author-reviewed mandatory requirements for any milestone. State conditions in labels for mandatory conditional requirements. Keep optional advice and detailed conditional guidance in content. See [prerequisites](#prerequisites). |
 
 ### When website markdown is unavailable
 
@@ -486,13 +459,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "testEnvironment": {
     "tier": "<local|cloud>",
     "instance": "<hostname, e.g. play.grafana.org — omit if not a specific instance>"
-  },
-  "prerequisites": [
-    {
-      "id": "<stable-requirement-id>",
-      "label": "<mandatory user requirement>"
-    }
-  ]
+  }
 }
 ```
 
@@ -514,12 +481,6 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
     "tier": "<local|cloud>",
     "instance": "<hostname — omit if not a specific instance>"
   },
-  "prerequisites": [
-    {
-      "id": "<stable-requirement-id>",
-      "label": "<mandatory requirement for any milestone>"
-    }
-  ],
   "milestones": [
     "<step-1-id>",
     "<step-2-id>",

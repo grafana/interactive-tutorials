@@ -87,25 +87,20 @@ Markdown that mixes prose with `![alt](url)` needs a **dual-branch** conditional
 
 ## Before you begin (prerequisites)
 
-Review mandatory learner requirements in the path root `manifest.json` `prerequisites` array. Pathfinder shows these before the path starts.
-
-For the website, retain the `## Before you begin` checklist in a `renderer:website` conditional. Do not require a duplicate plugin-visible checklist. See [prerequisites](../../../docs/manifest-reference.md#prerequisites).
+Path root `content.json` `## Before you begin` must set users up for success. The path manifest can also declare mandatory learner requirements for Pathfinder; see [prerequisites](../../../docs/manifest-reference.md#prerequisites).
 
 | Prerequisite | Notes |
 |---|---|
-| Grafana Cloud account | Website checklist only — first, with a signup link |
+| Grafana Cloud account | Always first — link to signup |
 | Data requirements | Metrics, logs, traces, profiles — be specific ("data flowing" not "some data") |
 | Integrations / agents | Name the integration or collector required |
 | Permissions | Editor, Admin, or named RBAC roles |
 | Network / ports | Firewall, outbound connectivity when install steps need it |
-| Familiarity | Keep recommended knowledge in content, separate from mandatory requirements |
+| Familiarity | Concepts user should know beforehand |
 
 **Review checklist:**
 
-- Grafana Cloud account listed first in the website checklist, not in plugin prerequisites
-- Mandatory requirements appear in the path manifest, without a duplicate plugin-visible checklist
-- Milestones show only their own declarations, without inherited path requirements
-- Prerequisite IDs, labels, and Markdown links meet the [manifest contract](../../../docs/manifest-reference.md#prerequisites)
+- Grafana Cloud account listed first
 - All data requirements explicit and match first hands-on milestone
 - Required permissions stated
 - Network/port requirements when path installs agents or collectors

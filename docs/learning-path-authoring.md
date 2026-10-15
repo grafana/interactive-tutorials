@@ -90,9 +90,7 @@ Do not infer prerequisites from guide content. Do not copy path prerequisites in
 
 Add only mandatory requirements. For a mandatory conditional requirement, state the condition in its label, such as "For local smoke tests, k6 installed." Short setup links can appear in Markdown labels. Keep detailed setup instructions, context, conditional guidance, and recommended knowledge in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
 
-When you migrate an existing checklist, review each item. Add mandatory items to the manifest and remove the duplicate plugin-visible checklist in the same change. Keep a website-visible checklist in a `conditional` block with `conditions: ["renderer:website"]` until the website renders manifest prerequisites. Do not suppress content from headings automatically.
-
-For the field format and the conditional-block example, see [prerequisites](manifest-reference.md#prerequisites).
+For the field format, see [prerequisites](manifest-reference.md#prerequisites).
 
 ## Screenshots and videos (website-only in Pathfinder)
 
