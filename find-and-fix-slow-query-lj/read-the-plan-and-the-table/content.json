@@ -17,7 +17,7 @@
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Tab Explain plan']",
           "skippable": true,
-          "content": "Open the **Explain plan** tab. If the query is not a SELECT, or the tab is empty, skip the next step.",
+          "content": "Open the **Explain plan** tab.\n\nIf the query is not a SELECT, or the tab is empty, skip the next steps.",
           "requirements": ["exists-reftarget"]
         },
         {
@@ -26,8 +26,16 @@
           "reftarget": "[data-testid='explain-plan-graph']",
           "doIt": false,
           "skippable": true,
-          "content": "Record the highlighted operation's name and its **Rows** estimate. The plan highlights an operation that takes 30% or more of the total query cost.\n\nRecord the access method: through an index, or by reading every row. A table scan on a small table, or on a query that returns most of the rows, can be acceptable. A table scan with no suitable index, or with an index that is not used, is the one to act on.",
-          "tooltip": "Record the operation that takes the largest share of the query's cost.",
+          "content": "Record the highlighted operation's name and its **Rows** estimate.\n\nThe plan highlights an operation that takes 30% or more of the total query cost.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='explain-plan-graph']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record the access method.\n\nIt is either through an index, or by reading every row. For example, a table scan can be acceptable on a small table, or when the query returns most of the rows. A table scan with no suitable index, or with an index that is not used, is the one to act on.",
           "requirements": ["exists-reftarget"]
         },
         {
@@ -35,8 +43,34 @@
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Tab Table schema details']",
           "skippable": true,
-          "content": "Open the **Table schema details** tab. If the tab is empty, skip it.\n\nWhen the query uses several tables, each table has its own columns. Record whether the column the query filters on has an **Indexed** badge.\n\nIf an index exists, record whether its columns are in the same order as the query's filter and sort. Record whether the columns the query joins on are indexed too.",
-          "tooltip": "The badge answers whether any index covers that column.",
+          "content": "Open the **Table schema details** tab.\n\nIf the tab is empty, skip the next steps. When the query uses several tables, use the table that holds the filtered column.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the filtered column has an **Indexed** badge.\n\nThe badge answers whether any index covers that column.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the index column order matches the query's filter and sort.\n\nFor example, a composite index matches when its columns are in that same order.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the columns the query joins on are indexed.",
           "requirements": ["exists-reftarget"]
         }
       ]

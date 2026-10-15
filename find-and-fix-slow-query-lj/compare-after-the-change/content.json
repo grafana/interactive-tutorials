@@ -19,12 +19,12 @@
           "verify": "on-page:/a/grafana-dbo11y-app/overview",
           "objectives": ["on-page:/a/grafana-dbo11y-app/overview"],
           "skippable": true,
-          "content": "Open **Queries overview** and find the same query.",
+          "content": "Open **Queries overview**.\n\nFind the same query you recorded before the change.",
           "requirements": ["navmenu-open", "exists-reftarget"]
         },
         {
           "type": "markdown",
-          "content": "Compare three numbers with what you recorded before the change.\n\n- **Duration (avg)** should decrease.\n- **Errors** should not increase.\n- **Calls** should remain stable.\n\nWatched over time, the same three numbers confirm the improvement holds under varying load."
+          "content": "Compare the query with what you recorded.\n\n- **Duration (avg)** should decrease.\n- **Errors** should not increase.\n- **Calls** should remain stable.\n\nFor example, watch the same three numbers over time to see whether the improvement holds under varying load."
         },
         {
           "type": "interactive",
@@ -49,8 +49,7 @@
           "reftarget": "[data-testid='explain-plan-graph']",
           "doIt": false,
           "skippable": true,
-          "content": "The check is that the index is being used and that the row estimates decreased.\n\nIf the plan has not changed after an index was added, the PostgreSQL command **ANALYZE**, and the MySQL command **ANALYZE TABLE**, refresh the counts the database keeps about a table's data. Those commands are on [Improve slow queries](https://grafana.com/docs/grafana-cloud/monitor-applications/database-observability/optimize/improve-slow-queries/) with the other SQL. Check the plan again afterward.",
-          "tooltip": "Compare the operation and its row estimate with what you recorded before the change.",
+          "content": "Record whether the index is being used.\n\nFor example, the highlighted operation should read through an index rather than scan the whole table, and the row estimates should have decreased.\n\nIf the plan has not changed after an index was added, refresh the table's statistics and check the plan again. For example, PostgreSQL uses **ANALYZE** and MySQL uses **ANALYZE TABLE**. Those commands are on [Improve slow queries](https://grafana.com/docs/grafana-cloud/monitor-applications/database-observability/optimize/improve-slow-queries/).",
           "requirements": ["exists-reftarget"]
         },
         {
