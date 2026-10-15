@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-and-fix-slow-query-read-the-plan",
+  "title": "Read the plan and the table",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "To read how the database runs the query, complete the following steps. If a tab is empty, skip it and go on."
+    },
+    {
+      "type": "section",
+      "id": "read-the-plan",
+      "title": "Read the plan and the table",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Open the **Explain plan** tab. Explain plans exist for SELECT queries. If your query is not a SELECT, or the tab is empty, skip this tab.\n\nWrite down the highlighted operation's name and its **Rows** estimate. The plan highlights an operation that takes 30% or more of the total query cost.\n\nWrite down the access method: through an index, or by reading every row. A table scan on a small table, or on a query that returns most of the rows, can be acceptable. A table scan with no suitable index, or with an index that is not used, is the one to act on."
+        },
+        {
+          "type": "markdown",
+          "content": "Open the **Table schema details** tab. If the tab is empty, skip it.\n\nWhen the query uses several tables, each table has its own columns. Write down whether the column the query filters on has an **Indexed** badge.\n\nIf an index exists, write down whether its columns are in the same order as the query's filter and sort. Write down whether the columns the query joins on are indexed too."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a record of the highlighted operation and of whether the filtered column is indexed."
+    }
+  ]
+}
