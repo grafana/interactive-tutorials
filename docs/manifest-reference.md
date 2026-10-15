@@ -131,9 +131,9 @@ Set `format` to `"markdown"` only when the label needs a setup link or supported
 
 Use only absolute HTTPS URLs without embedded credentials for links. Enabled links open in a new browser tab with `noopener` and `noreferrer`. They do not replace the guide or change completion or progress. HTTP, relative, root-relative, fragment, and unsafe-protocol destinations do not become clickable. Do not use raw HTML, headings, lists, images, embeds, interactive elements, or constructs that load resources. Unsupported syntax falls back to safe text; it must not create forbidden elements or network requests.
 
-Authoring and CLI validation reject blank IDs or labels, duplicate IDs, and unsupported `format` values. Runtime readers omit the entire prerequisite field for invalid entries or an invalid array structure. They preserve the underlying guide or path. Unknown or malformed runtime formats keep otherwise valid labels as literal text.
+Authoring and CLI validation reject blank IDs or labels, duplicate IDs, and unsupported `format` values. Runtime handling is tolerant. The runtime manifest parser omits an invalid prerequisite field. Online recommendations filter invalid or duplicate entries and retain valid entries. Both preserve the underlying guide or path. Unknown or malformed runtime formats keep otherwise valid labels as literal text.
 
-The validation and deployment workflows build the CLI from a pinned Pathfinder source commit. Both workflows must use a commit that supports `prerequisites`. An npm release is not required for these source-based workflows.
+The validation and deployment workflows build the CLI from Pathfinder's `main` branch, which supports `prerequisites`. An npm release is not required for these source-based workflows.
 
 Declare only prerequisites that are necessary to start: access, permissions, tools, or external resources the tutorial assumes are already available. Do not list resources the tutorial creates, skills it teaches, optional preparation, or conditions checked at runtime by guide steps. Do not infer prerequisites from `content.json` or from a parent manifest.
 
@@ -509,7 +509,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ## Validation
 
-Use the Pathfinder source commit pinned in `.github/workflows/validate-json.yml` to build the CLI. Deployment uses the same pin in `.github/workflows/deploy.yml`.
+Build the CLI from Pathfinder's `main` branch, as specified in `.github/workflows/validate-json.yml` and `.github/workflows/deploy.yml`.
 
 Validate individual packages with this CLI. It rejects missing prerequisite IDs or labels, whitespace-only values, duplicate IDs, and unsupported `format` values.
 

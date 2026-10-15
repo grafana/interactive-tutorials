@@ -47,7 +47,7 @@ jobs:
           # login-to-gcs accepts only 'dev' or 'prod'; map 'ops' to 'prod'
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
 
-      # NOTE: build-snippets runs the pinned Pathfinder CLI inside this trusted
+      # NOTE: build-snippets runs the pathfinder-app@main CLI inside this trusted
       # job so the generated guides/shared/snippets/index.json can be pushed
       # alongside the rest of guides/. This is a remaining un-sandboxed CLI
       # invocation in a credentialed job; sandboxing it would require routing
@@ -56,8 +56,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: grafana/grafana-pathfinder-app
-          # Supports manifest prerequisites (grafana-pathfinder-app#2122).
-          ref: 76568c1c8fce813c4ed0bec8e65240db793d1492
+          ref: main
           path: pathfinder-app
           persist-credentials: false
 
@@ -120,7 +119,7 @@ jobs:
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
 
-  # Sandboxed: executes the pinned Pathfinder CLI. Deliberately
+  # Sandboxed: executes the pathfinder-app CLI from ref: main. Deliberately
   # holds no id-token so a compromised ref cannot mint a GCS OIDC token.
   # Artifacts produced here are integrity-checked by publish-packages before push.
   build-packages:
@@ -139,8 +138,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: grafana/grafana-pathfinder-app
-          # Supports manifest prerequisites (grafana-pathfinder-app#2122).
-          ref: 76568c1c8fce813c4ed0bec8e65240db793d1492
+          ref: main
           path: pathfinder-app
           persist-credentials: false
 
