@@ -72,6 +72,8 @@ Every path package keeps `{slug}-lj/assets/facts.md`, written by the create comm
 
 A product source or live UI row is a fact the docs don't back yet, so it's the first thing to recheck if the product changes.
 
+When the docs are being rewritten in an unmerged pull request (common before GA), cite both the published page and the docs PR with its commit, and say in the row when the PR drops the fact. List the PR's merge status at the top of the file. A docs PR row counts as **Docs** for the verdict, but recheck it in changed-since mode until the PR merges.
+
 Packages created before this rule may have no `assets/facts.md`. For those, check claims against the docs as in the procedure below, and treat a missing facts file as a note, not a finding.
 
 ## Procedure
