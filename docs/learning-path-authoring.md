@@ -75,6 +75,7 @@ website/                        # read-only; needed for create/convert, not for 
 - `content.json` holds what the learner sees and does. The path-level file is the journey overview. Each milestone folder has its own file for that stop’s steps ([json-guide-reference.md](json-guide-reference.md)).
 - `manifest.json` controls packaging and recommendations. The path-level file lists milestones. Milestone-level files set depends/recommends ([manifest-reference.md](manifest-reference.md)).
 - `website.yaml` holds Learning Hub / website metadata for the path and each milestone ([website-yaml-reference.md](website-yaml-reference.md)).
+- `assets/facts.md` lists every product fact the path states and its source, so reviewers can check the same source you used. It isn't rendered or shipped. Add a row whenever you add a fact, including in later edits ([claim-check policy](../.cursor/skills/review-learning-path/claim-check.md#facts-file)).
 
 When converting, the agent maps existing website front matter (including legacy `pathfinder_data` if present) into `website.yaml`. Do not edit the website repo for these workflows. See [frontmatter-schema](../.cursor/commands/create-learning-path/reference/frontmatter-schema.md) if you need the field mapping.
 

@@ -17,13 +17,13 @@ Ask the user for the **learning path slug** (the folder name from `website/conte
 Follow these phases in order:
 
 1. **Validate environment.** Confirm the `interactive-tutorials` repo is writable and the `website` repo is readable in the workspace (website is a read-only source), and that Playwright MCP is available.
-2. **Read existing milestones and feature docs.** Locate the learning path in `website/content/docs/learning-paths/[slug]/`. List every milestone directory. Then read the canonical Grafana docs for every product/feature referenced in the milestones — these are the authoritative source for all factual claims.
-3. **Scaffold content files.** Create `content.json` for every milestone in the interactive-tutorials repo — interactive blocks for UI steps, markdown blocks for conceptual content. Because the website markdown is no longer used to render this learning path, capture all conceptual prose from each milestone's `index.md` body as markdown blocks so no content is lost. If that prose contains `![alt](url)` image markdown, or the source page has a screenshot/video, gate it for website-only rendering rather than dropping it — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks. **Exception: the `business-value` milestone gets markdown blocks only — no interactive blocks, sections, or guided blocks (see Critical Rule 5 for the `conditional` carve-out).**
+2. **Read existing milestones and feature docs.** Locate the learning path in `website/content/docs/learning-paths/[slug]/`. List every milestone directory. Then read the canonical Grafana docs for every product/feature referenced in the milestones — these are the authoritative source for all factual claims. Create `[slug]-lj/assets/facts.md` and copy in every product fact the converted path will state, each with its source, source type, and date verified, in the format from the shared [claim-check policy](../skills/review-learning-path/claim-check.md#facts-file). Prose carried over from the existing markdown still needs a row. If the docs no longer support a carried-over fact, flag it to the author instead of carrying it over.
+3. **Scaffold content files.** Create `content.json` for every milestone in the interactive-tutorials repo — interactive blocks for UI steps, markdown blocks for conceptual content. Because the website markdown is no longer used to render this learning path, capture all conceptual prose from each milestone's `index.md` body as markdown blocks so no content is lost. Write product facts only from rows in `assets/facts.md`, and fill in each row's **Used in** column as you go. If that prose contains `![alt](url)` image markdown, or the source page has a screenshot/video, gate it for website-only rendering rather than dropping it — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`. Extract `side_journeys`, `related_journeys`, and `cta.troubleshooting` from each existing `index.md` and include them as markdown blocks. **Exception: the `business-value` milestone gets markdown blocks only — no interactive blocks, sections, or guided blocks (see Critical Rule 5 for the `conditional` carve-out).**
 4. **Create website metadata files.** Create a `website.yaml` for the path and each milestone, derived from the front matter of the corresponding website markdown files. Map the path `_index.md` front matter into the path-level `website.yaml` and each milestone `index.md` front matter into that milestone's `website.yaml` (for example, `title` → `menuTitle`, plus `description`, `weight`, step ordering, `cta`, `related_journeys` at the path level, and `side_journeys` at the step level). These files take the place of the markdown front matter as the package's source of website metadata; the website markdown itself stays unchanged. Refer to `docs/website-yaml-reference.md`.
 5. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. **Exception: exclude `business-value` from the path-level `milestones` array.** The `business-value` milestone still gets its own `manifest.json` with `depends: []` and `recommends: ["[slug]-[first-interactive-milestone]"]`, but it is not a registered stop on the path.
 6. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
 7. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
-8. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`. Provide a summary of all files created.
+8. **Verify and wrap up.** Run the shared [claim check](../skills/review-learning-path/claim-check.md) in full (create caller), preferably in a fresh agent pass that didn't write the prose. It writes `.cursor/lp-preflight-state/[slug]-claim-check.md` with the commit it ran against, which `/preflight-learning-path` uses as its starting point. Fix MUST FIX items with the author's agreement, then re-check the fixed sentences. Update `.github/CODEOWNERS`. Provide a summary of all files created.
 
 For background on how this command relates to `/create-learning-path`, refer to `.cursor/learning-path-workflows/workflows.md`.
 
@@ -44,6 +44,7 @@ For background on how this command relates to `/create-learning-path`, refer to 
 11. **Ask before fixing.** When the user reports a broken selector, explain the problem and proposed fix, then wait for approval.
 12. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
 13. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
+14. **Every product fact has a source in `assets/facts.md`.** Build the facts file before writing `content.json`, and write facts only from it. This applies to every later edit too: a sentence added after the first draft, for example after Block Editor testing, needs its row before it goes in.
 
 ---
 
@@ -57,6 +58,7 @@ For background on how this command relates to `/create-learning-path`, refer to 
 - Never use data-dependent selectors — use `^=` starts-with patterns
 - Never leave placeholder selectors (`"[selector]"`, `"TODO"`)
 - Never leave a screenshot, video, or markdown image ungated in `content.json` — wrap it in a `conditional` with `conditions: ["renderer:website"]` (see Step 3)
+- Never add a product fact to `content.json` or `website.yaml` without a row in `assets/facts.md` (see Critical rule 14)
 
 ---
 
@@ -66,6 +68,7 @@ Consult these during the workflow:
 
 | Document | When |
 | --- | --- |
+| `.cursor/skills/review-learning-path/claim-check.md` | Building `assets/facts.md` (phase 2) and running the claim check (phase 8) |
 | `build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
 | `build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |
 | `create-learning-path/reference/frontmatter-schema.md` | Reading website front matter fields and CTA types (source only) |

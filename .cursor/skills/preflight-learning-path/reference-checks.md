@@ -95,7 +95,7 @@ Apply every section from [../review-learning-path/reference-checks.md](../review
 - noop and non-interactive steps
 - CODEOWNERS (discard for author chat)
 
-Then run shared [claim-check.md](../review-learning-path/claim-check.md) across path root + milestone prose. Route Contradicted / Unsupported / Overstated as Fix before PR. Hide Supported from chat. Author-decides items may appear in readiness as open questions.
+Then run shared [claim-check.md](../review-learning-path/claim-check.md) in [changed-since mode](../review-learning-path/claim-check.md#changed-since-mode): prose changed since the last recorded check, plus the product-source and live-UI rows in `assets/facts.md`. Route Contradicted / Unsupported / Overstated as Fix before PR. Hide Supported from chat. Author-decides items may appear in readiness as open questions.
 
 Tag each finding; keep only post-inline for author-facing output.
 

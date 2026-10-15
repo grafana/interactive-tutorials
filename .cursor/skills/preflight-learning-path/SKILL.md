@@ -224,7 +224,7 @@ If MCP is blocked, stop with the blocked shape in author-testing.md (`checkpoint
 2. Walk shared [review reference-checks](../review-learning-path/reference-checks.md) + [learning-hub-standards.md](../review-learning-path/learning-hub-standards.md).
 3. **Always scan** for framing-in-milestones ([Pathfinder-only omission](../review-learning-path/reference-checks.md#framing-milestones): keep packages for the website), [section intro markdown that may number as a step](../review-learning-path/reference-checks.md#section-intro-markdown-numbered-as-a-step), and [false noops](../review-learning-path/reference-checks.md#noop-and-non-interactive-steps).
 4. Run Pathfinder CLI `validate --packages {path_dir}` if available.
-5. Run the shared [claim-check](../review-learning-path/claim-check.md) pass (preflight pointer: [claim-check.md](claim-check.md)). Write `{slug}-claim-check.md`. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
+5. Run the shared [claim-check](../review-learning-path/claim-check.md) pass in [changed-since mode](../review-learning-path/claim-check.md#changed-since-mode) (preflight pointer: [claim-check.md](claim-check.md)): re-check prose changed since the commit in the last `{slug}-claim-check.md`, plus every product-source and live-UI row in `assets/facts.md`. Run in full if there's no earlier report. Write `{slug}-claim-check.md` with the new head commit. Route Contradicted / Unsupported / Overstated as Fix before PR. Do not edit package JSON here.
 6. Tag findings with review [finding routing](../review-learning-path/reference-checks.md#finding-routing). Keep only review-level items for later author chat.
 7. Write `{slug}-findings.md` (findings + verify-live notes).
 8. Mandatory audit cleanup; verify `git status`.
@@ -415,7 +415,7 @@ When a stable selector is missing upstream, follow [frontend-selector-pr.md](fro
 - Dedupe findings by root cause
 - Run CLI validate when available
 - Offer package vs frontend actions correctly after the results menu
-- Run the shared claim-check (same policy as review)
+- Run the shared claim-check (same policy as review), on everything changed since the last recorded check
 
 ---
 

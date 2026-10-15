@@ -31,16 +31,16 @@ Before anything else, ask: **"Are you starting a learning path from scratch or p
 Follow these phases in order:
 
 1. **Validate environment.** Confirm the `interactive-tutorials` repo is writable and the `website` repo is readable in the workspace, and that Playwright MCP is available. The `website` repo is a read-only source — it's used only to read canonical docs and any existing source markdown. All generated files are written to interactive-tutorials.
-2. **Read feature docs.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch.
+2. **Read feature docs and build the facts file.** Identify the canonical Grafana docs pages for the feature. Read every doc page in full from the local `website` repo first, then WebFetch. Then create `[slug]-lj/assets/facts.md` and copy in every product fact the path will state, each with its source, source type, and date verified. Use the format and source-type order in the shared [claim-check policy](../skills/review-learning-path/claim-check.md#facts-file). Docs come first. Use a product source file or a live UI check only when the docs don't state the fact, and record the file and commit or the stack and date. From a learning journey, start from the journey's `outline/reference/doc-facts.md` and carry over the rows this path uses.
 3. **Propose path options — or use the imported plan.**
    - **From scratch:** review existing paths in `interactive-tutorials/[slug]-lj` for structural patterns — but do not copy a generic "case for observability" / "value of observability" milestone from an older path; see Critical rule 10. Propose 2-4 path options with milestones. Target 2-5 minutes per milestone, 6-8 milestones per path (max 10). Wait for user approval before proceeding.
    - **From a learning journey:** skip the proposal and the approval wait — the outline entry confirmed in the Input phase already tells you what to cover. Derive milestones from that scope yourself (same targets: 2-5 minutes per milestone, 6-8 per path). Use `jargon-inventory.md`'s terms verbatim wherever the generated content names a UI element. Proceed straight to phase 4 with that plan.
-4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Gate any screenshot, embedded video, or markdown image behind a `renderer:website` conditional — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`.
+4. **Scaffold content files.** Create `content.json` for every milestone — interactive blocks for UI steps, markdown blocks for conceptual content. Write product facts only from rows in `assets/facts.md`, and fill in each row's **Used in** column as you go. If you need a fact that isn't in the file, add the row with its source first. Gate any screenshot, embedded video, or markdown image behind a `renderer:website` conditional — see [Screenshots and videos](../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) for the wrap / dual-branch mechanics. Don't gate plain YouTube text links or `website.yaml` `cta.image`.
 5. **Create website metadata files.** Create `website.yaml` for the path and each milestone. Refer to `docs/website-yaml-reference.md`.
 6. **Generate manifests.** Create `manifest.json` for the path (`type: "path"`, milestones array, targeting) and each milestone (`type: "guide"`, depends/recommends chain). Refer to `docs/manifest-reference.md`. Where fields can't be derived, ask the user to provide values before generating.
 7. **Discover selectors.** Use Playwright at `learn.grafana.net` to find stable CSS selectors for each interactive element. The user must log in through the Playwright browser window (Okta SAML).
 8. **Test in Pathfinder.** Tell the user which `content.json` to import into the Block Editor at `learn.grafana.net/?pathfinder-dev=true`. Wait for their feedback on each "Show me" / "Do it" button. Fix broken selectors based on their reports.
-9. **Verify and wrap up.** Cross-check all factual claims against live docs. Update `.github/CODEOWNERS`.
+9. **Verify and wrap up.** Run the shared [claim check](../skills/review-learning-path/claim-check.md) in full (create caller), preferably in a fresh agent pass that didn't write the prose. It writes `.cursor/lp-preflight-state/[slug]-claim-check.md` with the commit it ran against, which `/preflight-learning-path` uses as its starting point. Fix MUST FIX items with the author's agreement, then re-check the fixed sentences. Update `.github/CODEOWNERS`.
    - **Cross-link (packages with a `website.yaml` only).** Add this path to `related_journeys` in `website.yaml` and to `suggests`/`recommends` in `manifest.json` (see `docs/website-yaml-reference.md` and `docs/manifest-reference.md` — existing fields, nothing new to add) for *every* learning journey that surfaces this path, not only the one that triggered its creation. A bare guide with no `website.yaml` has nothing to add this to — the embed-shortcode handoff below is its only link back to the journey.
    - **Label reminder.** Before opening the PR, add the `lh-learning-path` label so it appears on the Learning Hub project board.
    - **Handoff back to docs-ai (mode 2 only).** Using the docs-ai checkout from the Input phase, run `check-journey.py --embed-url <package-dir>` yourself — don't just tell the author to go run it. It prints two candidate shortcodes: a `learning-path` embed (for a published path with a `website.yaml`) and an `interactive-guide` embed (for a bare in-product guide with no `website.yaml`). Use the one matching what you actually built or linked to, discard the other, and hand the author just that one shortcode with explicit instructions: paste it into the journey's slide in the `website` repo and open a PR there.
@@ -61,7 +61,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 6. **Ask before fixing.** When the user reports a broken selector, explain and propose a fix, then wait for approval.
 7. **3-attempt limit per selector.** If a selector fails after 3 tries, mark it `TODO:manual-review` and move on.
 8. **Update CODEOWNERS.** Add the new `[slug]-lj/` directory to `.github/CODEOWNERS`.
-9. **Verify docs accuracy.** After testing, cross-check all factual claims against live Grafana documentation.
+9. **Every product fact has a source in `assets/facts.md`.** Build the facts file before writing prose, and write facts only from it. This applies to every later edit too: a sentence added after the first draft, for example after Block Editor testing, needs its row before it goes in. After testing, run the shared claim check (phase 9).
 10. **No generic "case for observability" milestone.** Do not scaffold a generic "case for observability" / "value of observability" / "business-value" milestone that just explains what observability is in the abstract. It's redundant boilerplate that duplicates content across every path and teaches nothing specific to this one (see [issue #597](https://github.com/grafana/interactive-tutorials/issues/597)). If the path genuinely needs a value-proposition milestone, make it product-specific from the start (for example "The advantages of Grafana Kubernetes Monitoring"), not a generic observability primer.
 
 ---
@@ -78,6 +78,7 @@ For background on how this command relates to `/build-interactive-lj`, refer to 
 - All links in content.json must be absolute URLs (`https://grafana.com/docs/...`), not relative
 - Never leave a screenshot, video, or markdown image ungated in `content.json` — wrap it in a `conditional` with `conditions: ["renderer:website"]` (see Step 4)
 - Never scaffold a generic "case for observability" / "business-value" milestone — go straight into product-specific value or advantages content instead (see Critical rule 10)
+- Never add a product fact to `content.json` or `website.yaml` without a row in `assets/facts.md` (see Critical rule 9)
 
 ---
 
@@ -87,6 +88,7 @@ Consult these during the workflow:
 
 | Document | When |
 | --- | --- |
+| `.cursor/skills/review-learning-path/claim-check.md` | Building `assets/facts.md` (phase 2) and running the claim check (phase 9) |
 | `docs/website-yaml-reference.md` | Creating website.yaml (field reference, CTA types, examples) |
 | `build-interactive-lj/reference/json-schema.md` | Writing content.json (block types, action types, field reference) |
 | `build-interactive-lj/reference/selector-patterns.md` | Discovering selectors (priority, stability, anti-patterns) |

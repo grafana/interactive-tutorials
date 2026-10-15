@@ -52,7 +52,7 @@ The AI validates that both repos are accessible (the website repo is a read-only
 
 ### Phase 2: Content, manifest, and website metadata generation
 
-The AI creates `content.json` files for every milestone (interactive blocks for UI steps, markdown blocks for conceptual content), generates `manifest.json` files with the correct dependency chains, and creates `website.yaml` files with metadata required to publish to the website.
+Before writing any prose, the AI builds `assets/facts.md`: every product fact the path will state, with its source. It then creates `content.json` files for every milestone (interactive blocks for UI steps, markdown blocks for conceptual content) using only facts from that file, generates `manifest.json` files with the correct dependency chains, and creates `website.yaml` files with metadata required to publish to the website.
 
 **Your role:** This phase is mostly automated. The agent might ask you to supply some of the `website.yaml` values if it can't derive them on its own.
 
@@ -73,7 +73,7 @@ Use the Block Builder **PR review tool** (dev tools, pathfinder-app 1.4.5+) to l
 
 ### Phase 5: Wrap-up
 
-The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, cross-links the path to every learning journey that surfaces it, and reminds you to add the `lh-learning-path` label so the PR appears on the Learning Hub project board. If this path came from a learning journey, it also runs `check-journey.py --embed-url` for you and hands you the embed shortcode for the journey's slide in `website`.
+The AI runs the shared [claim check](../skills/review-learning-path/claim-check.md) against `assets/facts.md` and the docs, records the commit it checked so `/preflight-learning-path` only re-checks what changes afterward, updates `.github/CODEOWNERS`, cross-links the path to every learning journey that surfaces it, and reminds you to add the `lh-learning-path` label so the PR appears on the Learning Hub project board. If this path came from a learning journey, it also runs `check-journey.py --embed-url` for you and hands you the embed shortcode for the journey's slide in `website`.
 
 **Your role:** Review the generated files, then open a PR in the `interactive-tutorials` repo. If you have an embed shortcode to add back to a journey, open that PR in `website` too, but only *after* this path's PR has merged — never before, or the published slide's embed points at nothing.
 
