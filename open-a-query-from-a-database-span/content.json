@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "This guide runs on your own stack. Every step can be skipped if your traces have no suitable span or the link is not available on your stack."
+      "content": "This guide runs on your own stack. The steps that depend on your traces or on the link can be skipped if your traces have no suitable span or the link is not available on your stack."
     },
     {
       "type": "markdown",
@@ -38,14 +38,13 @@
           "reftarget": "[data-testid='data-testid TimePicker Open Button']",
           "doIt": false,
           "content": "Set the time range to a period when your application ran database calls.",
-          "tooltip": "Traces outside this range are not listed.",
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='grafana-exploretraces-app primary signal option all spans']",
-          "content": "Select **All spans**.\n\nThe next filter looks for a database span, and a database span is rarely the root span of a request.",
+          "content": "Select **All spans**.\n\nThe next filter looks for a database span.",
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
         {
@@ -61,7 +60,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid ad hoc filter option value span.db.system']",
-          "content": "Select **span.db.system**.\n\nFor example, if your spans use the newer attribute name, select **span.db.system.name** instead. If neither is listed, the time range has no database spans; skip to the **Traces** tab and continue.",
+          "content": "Select **span.db.system**.\n\nIf your spans carry `db.system.name` instead, select **span.db.system.name**. If neither is listed, skip to the **Traces** tab and continue.",
           "skippable": true,
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
@@ -102,7 +101,7 @@
     },
     {
       "type": "markdown",
-      "content": "The trace opens with its spans listed under **Service & Operation**."
+      "content": "You opened a trace that contains a database span."
     },
     {
       "type": "markdown",
@@ -118,7 +117,7 @@
           "action": "highlight",
           "reftarget": "[data-testid='span-view']",
           "doIt": false,
-          "content": "Click a database span.\n\nFor example, the span is often named `db.Query` or after the SQL statement, and it sits under the service that called the database. Its details show a **Database** group with `db.system` and the query text.",
+          "content": "Click a database span.\n\nIts details show a **Database** group with `db.system` and the query text.",
           "skippable": true,
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
@@ -128,7 +127,7 @@
           "reftarget": "a[href^='/a/grafana-dbo11y-app/trace-link-resolve/']",
           "verify": "on-page:/a/grafana-dbo11y-app",
           "objectives": ["on-page:/a/grafana-dbo11y-app"],
-          "content": "Select the query text in the **Database** group.\n\nThe query text is the Database Observability link; it carries the Database Observability icon. If the query text is plain text with no icon, the link is not available on your stack; skip this step and the next one.",
+          "content": "Select the query text in the **Database** group.\n\nThe query text is the Database Observability link; it carries the Database Observability icon. If you do not see the link, skip this step and the next one.",
           "tooltip": "This opens the query in Database Observability.",
           "skippable": true,
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
@@ -138,7 +137,7 @@
           "action": "highlight",
           "reftarget": "[data-testid='Interactive table'] a[href^='/a/grafana-dbo11y-app/overview/']",
           "doIt": false,
-          "content": "Select an instance.\n\nThis step appears only when more than one database instance contains the query. For example, the same query can run on a production and a staging server.",
+          "content": "Select an instance.\n\nThis step appears when more than one database instance contains the query. For example, the same query can run on a production and a staging server.",
           "skippable": true,
           "requirements": ["on-page:/a/grafana-dbo11y-app/query-matches", "exists-reftarget"]
         }
@@ -146,7 +145,7 @@
     },
     {
       "type": "markdown",
-      "content": "You land on one of two screens:\n\n- **Query samples** tab: the match found the query. Record the query text at the top of the page.\n- **Queries overview**: the match did not find the query. Record that no match was found.\n\nThe next slide reads each landing screen."
+      "content": "Where the link opens tells you whether the match found the query:\n\n- **Query samples** tab: the match found the query. Record the query text.\n- **Queries overview**: the match did not find the query. Record that no match was found."
     }
   ]
 }
