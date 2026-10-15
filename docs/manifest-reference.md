@@ -66,7 +66,8 @@ prometheus-lj/
 | `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
 | `targeting` | `object` | No | — | Contextual recommendation rules. See [targeting](#targeting). |
 | `testEnvironment` | `object` | No | `{ "tier": "cloud" }` | Where to test this guide. See [testEnvironment](#testenvironment). |
-| `depends` | `DependencyList` | No | `[]` | Hard prerequisites. See [dependency syntax](#dependency-syntax). |
+| `prerequisites` | `Prerequisite[]` | No | `[]` | User requirements that appear before the guide or path starts. See [prerequisites](#prerequisites). |
+| `depends` | `DependencyList` | No | `[]` | Hard package dependencies. See [dependency syntax](#dependency-syntax). |
 | `recommends` | `DependencyList` | No | `[]` | Soft prerequisites (recommended, not blocking). |
 | `suggests` | `DependencyList` | No | `[]` | Loosely related package IDs. |
 | `provides` | `string[]` | No | `[]` | Capability tokens this package provides (e.g., `"datasource-configured"`). |
@@ -92,6 +93,82 @@ comma separate authors
 * If you're working on a learning path or learning journey, the default team is
 "Grafana Documentation"
 * If unsure, leave name blank, and use "interactive-learning" for the team field.
+
+### prerequisites
+
+`prerequisites` is an optional array of user requirements. Omit the field, or use an empty array, when no requirement exists. In either case, Pathfinder shows no prerequisite block.
+
+```json
+{
+  "prerequisites": [
+    {
+      "id": "mysql-server",
+      "label": "A running MySQL server that you can access."
+    }
+  ]
+}
+```
+
+Each item has two required fields and one optional field:
+
+| Field | Rules |
+|-------|-------|
+| `id` | A stable string with at least one non-whitespace character. Each ID is exact-string unique within its manifest. Do not change an ID when you revise its label. |
+| `label` | A string with at least one non-whitespace character. Pathfinder preserves the declared string; it does not trim or normalize it. |
+| `format` | Optional. The only supported explicit value is `"markdown"`. Omit it for plain text. |
+
+Plain text is the default. Without `format`, Pathfinder displays the exact label literally, including strings that look like Markdown or HTML. For example, `**text**`, `[text](https://example.com)`, and `<b>text</b>` remain unchanged text. Older clients that do not support `format` also show the label literally.
+
+Set `format` to `"markdown"` only when the label needs a setup link or supported inline styling. This format supports inline links, strong text, emphasis, and inline code. For example:
+
+```json
+{
+  "id": "mysql-server",
+  "label": "A running MySQL server. [Install MySQL](https://dev.mysql.com/doc/mysql-installation-excerpt/).",
+  "format": "markdown"
+}
+```
+
+Use only absolute HTTPS URLs without embedded credentials for links. Enabled links open in a new browser tab with `noopener` and `noreferrer`. They do not replace the guide or change completion or progress. HTTP, relative, root-relative, fragment, and unsafe-protocol destinations do not become clickable. Do not use raw HTML, headings, lists, images, embeds, interactive elements, or constructs that load resources. Unsupported syntax falls back to safe text; it must not create forbidden elements or network requests.
+
+Authoring and CLI validation reject blank IDs or labels, duplicate IDs, and unsupported `format` values. Runtime readers omit the entire prerequisite field for invalid entries or an invalid array structure. They preserve the underlying guide or path. Unknown or malformed runtime formats keep otherwise valid labels as literal text.
+
+The validation and deployment workflows build the CLI from a pinned Pathfinder source commit. Both workflows must use a commit that supports `prerequisites`. An npm release is not required for these source-based workflows.
+
+Declare requirements explicitly. Do not infer them from `content.json`, discover them from a parent path, or copy them from a parent manifest.
+
+For a path, add every mandatory requirement that a learner needs for later milestones to the path manifest. Pathfinder shows these requirements in the expanded recommendation summary before milestone links and on the path cover before **Start** or **Resume**. Do not repeat path requirements in milestone manifests.
+
+For a guide, add only requirements for that guide to its own manifest. Pathfinder shows them above the guide content and before its first action, including for a directly opened milestone. A milestone does not inherit path requirements.
+
+This field informs the learner. It does not check system state, block a learner, select recommendations, or change completion counts.
+
+Use this field only for mandatory requirements. For a mandatory conditional requirement, state the condition in its label, such as "For local smoke tests, k6 installed." Short setup links can appear in Markdown labels. Keep optional preparation, recommended knowledge, detailed conditional guidance, and context in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
+
+#### Migrate existing prerequisite prose
+
+Migrate one guide or path at a time. Review each item before you add it to a manifest.
+
+1. Add only mandatory requirements to `prerequisites`.
+2. Remove the duplicate checklist from plugin-visible `content.json` in the same change.
+3. Keep detailed setup instructions, explanations, conditional guidance, and optional recommendations in `content.json`.
+4. If the website still needs the checklist, retain it in a website-only conditional block.
+
+```json
+{
+  "type": "conditional",
+  "conditions": ["renderer:website"],
+  "whenTrue": [
+    {
+      "type": "markdown",
+      "content": "## Before you begin\n\n- A running MySQL server that you can access."
+    }
+  ],
+  "whenFalse": []
+}
+```
+
+Keep this website block until the website renders manifest prerequisites. Do not suppress content from a heading or compare prose with labels automatically. Existing headings often also contain links, optional advice, or lesson context.
 
 ### targeting
 
@@ -275,6 +352,7 @@ These rules define where each manifest field's data comes from during migration.
 | `recommends` | — | Leave empty unless explicitly known. |
 | `suggests` | — | Leave empty unless explicitly known. |
 | `provides` | — | Leave empty during migration. Populate manually in a future pass when semantic outcomes are defined. |
+| `prerequisites` | Existing prerequisite prose | Add author-reviewed mandatory requirements. State conditions in labels for mandatory conditional requirements. Do not infer requirements from guide content. See [prerequisites](#prerequisites). |
 
 ### For learning path steps
 
@@ -306,6 +384,7 @@ These rules define where each manifest field's data comes from during migration.
 | `recommends` | Website `_index.md` | From `journey.links.to`. |
 | `suggests` | Website `_index.md` | Default all `related_journeys` items to `suggests` unless the relationship is unambiguously prerequisite (e.g., the markdown body explicitly states the path must be completed first). |
 | `depends` | Website `_index.md` | Only from `related_journeys` items explicitly marked as prerequisites. In practice, most `related_journeys` are suggestions; leave `depends` empty if unsure and flag for manual review. |
+| `prerequisites` | Existing prerequisite prose | Add author-reviewed mandatory requirements for any milestone. State conditions in labels for mandatory conditional requirements. Keep optional advice and detailed conditional guidance in content. See [prerequisites](#prerequisites). |
 
 ### When website markdown is unavailable
 
@@ -407,7 +486,13 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "testEnvironment": {
     "tier": "<local|cloud>",
     "instance": "<hostname, e.g. play.grafana.org — omit if not a specific instance>"
-  }
+  },
+  "prerequisites": [
+    {
+      "id": "<stable-requirement-id>",
+      "label": "<mandatory user requirement>"
+    }
+  ]
 }
 ```
 
@@ -429,6 +514,12 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
     "tier": "<local|cloud>",
     "instance": "<hostname — omit if not a specific instance>"
   },
+  "prerequisites": [
+    {
+      "id": "<stable-requirement-id>",
+      "label": "<mandatory requirement for any milestone>"
+    }
+  ],
   "milestones": [
     "<step-1-id>",
     "<step-2-id>",
@@ -457,7 +548,9 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ## Validation
 
-Validate individual packages:
+Use the Pathfinder source commit pinned in `.github/workflows/validate-json.yml` to build the CLI. Deployment uses the same pin in `.github/workflows/deploy.yml`.
+
+Validate individual packages with this CLI. It rejects missing prerequisite IDs or labels, whitespace-only values, duplicate IDs, and unsupported `format` values.
 
 ```bash
 # cwd: the interactive-tutorials repository root, with grafana-pathfinder-app

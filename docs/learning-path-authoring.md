@@ -78,6 +78,22 @@ website/                        # read-only; needed for create/convert, not for 
 
 When converting, the agent maps existing website front matter (including legacy `pathfinder_data` if present) into `website.yaml`. Do not edit the website repo for these workflows. See [frontmatter-schema](../.cursor/commands/create-learning-path/reference/frontmatter-schema.md) if you need the field mapping.
 
+## Declare learner prerequisites
+
+Use the path `manifest.json` for mandatory user requirements. Add requirements that a learner needs for any later milestone. Pathfinder shows them before **Start** or **Resume** and in the expanded recommendation summary.
+
+Use a milestone manifest only for a requirement unique to that guide. Milestones do not inherit path requirements, including when a learner opens a milestone directly.
+
+Each `id` and `label` needs at least one non-whitespace character. IDs must be stable and exact-string unique within that manifest. Pathfinder preserves the order and exact strings; it does not trim or normalize them. Labels are plain text by default. Omit `format` unless a label needs supported inline Markdown or a setup link. See [prerequisites](manifest-reference.md#prerequisites) for the allowed syntax and safety rules.
+
+Do not infer prerequisites from guide content. Do not copy path prerequisites into milestone manifests. The field informs learners. It does not check state or block progress.
+
+Add only mandatory requirements. For a mandatory conditional requirement, state the condition in its label, such as "For local smoke tests, k6 installed." Short setup links can appear in Markdown labels. Keep detailed setup instructions, context, conditional guidance, and recommended knowledge in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
+
+When you migrate an existing checklist, review each item. Add mandatory items to the manifest and remove the duplicate plugin-visible checklist in the same change. Keep a website-visible checklist in a `conditional` block with `conditions: ["renderer:website"]` until the website renders manifest prerequisites. Do not suppress content from headings automatically.
+
+For the field format and the conditional-block example, see [prerequisites](manifest-reference.md#prerequisites).
+
 ## Screenshots and videos (website-only in Pathfinder)
 
 Pathfinder already highlights the live Grafana UI, so screenshots and embedded videos belong on the website render, not in the in-product sidebar. Keep the media in `content.json`; gate it with a `conditional` so Pathfinder hides it and the website still shows it.
