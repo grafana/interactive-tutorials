@@ -17,7 +17,7 @@ Input schema (all fields in package-metadata.json):
   contentJsonPath   str        -- path to content.json (relative to guide dir or absolute)
   type              str        -- "guide" | "path"
   description       str        -- short description
-  category          str        -- content category (default "general")
+  category          str        -- content category (standalone guides: an allowed value from docs/manifest-reference.md)
   author            object     -- { "team": "...", "name": "..." (optional) }
   startingLocation  str        -- URL path (e.g. "/connections/datasources/edit")
   targeting         object     -- { "match": { ... } }

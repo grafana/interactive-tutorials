@@ -60,7 +60,7 @@ prometheus-lj/
 | `type` | `"guide"` \| `"path"` \| `"journey"` | **Yes** | — | `"guide"` for standalone guides and LJ steps; `"path"` (or `"journey"`) for `*-lj` root directories. |
 | `repository` | `string` | No | `"interactive-tutorials"` | Repository identifier. Can be omitted (schema default applies). |
 | `description` | `string` | **Yes** | — | Short description of the guide or path. |
-| `category` | `string` | **Yes** | — | Content category for grouping and filtering. |
+| `category` | `string` | **Yes** | — | Content category for grouping and filtering. Standalone guides must use one of the [allowed categories](#category-standalone-guides). |
 | `author` | `object` | **Yes** | — | Attribution. See [author](#author). |
 | `language` | `string` | No | `"en"` | BCP 47 language tag. Can be omitted (schema default applies). |
 | `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
@@ -74,6 +74,30 @@ prometheus-lj/
 | `replaces` | `string[]` | No | `[]` | Packages this one supersedes entirely. Schema-only in MVP. |
 | `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"` or `"journey"`. |
 | `stats` | `object` | **No — never hand-author** | — | Completion block counts, computed by CI. See [stats](#stats). |
+
+### category (standalone guides)
+
+Standalone guides (`type: "guide"` that are not steps inside a `*-lj` or `*-lp` directory) must set `category` to exactly one of the values below. The website guides catalog filters on this field. Pick the topic the guide is mainly about, not every product it touches.
+
+| `category` | Use for |
+|------------|---------|
+| `onboarding` | Getting-started guides for new users (the `get-started-*` series and similar first-run guides) |
+| `dashboards` | Building, filtering, sharing and styling dashboards; visualization types and panel techniques |
+| `explore-and-queries` | Explore, Drilldown, saved queries, query languages, transformations and the semantic layer |
+| `data-sources` | Connecting and configuring data sources |
+| `alerting` | Alert rules and activity, IRM and on-call, SLOs |
+| `application-observability` | Application and frontend observability, Knowledge Graph, root cause analysis, observability concepts |
+| `infrastructure-and-data-collection` | Kubernetes and infrastructure monitoring, Alloy and Fleet Management, collecting and sending telemetry |
+| `synthetic-monitoring-and-testing` | Synthetic Monitoring checks and secrets, k6 and load testing |
+| `cost-and-usage` | Adaptive Telemetry, cardinality, usage alerts and cost management |
+| `administration-and-platform` | Git Sync, Grafana Assistant setup, Pathfinder and other platform configuration |
+| `play-demos` | Tours of demo dashboards on Grafana Play |
+
+Rules:
+
+- Do not use `general`, and do not use `testing`: the Pathfinder catalog hides any package whose category is `testing`.
+- To add a category, update this table in the same PR and tell the website team, because the catalog filter is built from these values.
+- Path roots and path steps are unaffected; they keep the `category` derived from `journey.group` (see [field derivation rules](#field-derivation-rules)).
 
 ### author
 
@@ -264,7 +288,7 @@ These rules define where each manifest field's data comes from during migration.
 | `type` | — | Always `"guide"`. |
 | `repository` | — | Omit (schema default `"interactive-tutorials"` applies). |
 | `description` | `index.json` rule | First priority: copy the `description` from the matching `index.json` rule (already catalog-style). If no rule exists, summarize available sources (content.json title, website markdown) into a compact one-line catalog summary. |
-| `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise `"general"`. |
+| `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise (standalone guide) choose one of the [allowed categories](#category-standalone-guides). |
 | `author` | — | `{ "team": "interactive-learning" }` for standalone guides; `{ "team": "Grafana Documentation" }` for steps inside a `*-lj` directory. |
 | `language` | — | Omit (schema default `"en"` applies). |
 | `startingLocation` | `index.json` rule | Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). Omit if no URL can be derived (do not fall back to `"/"`). |
@@ -314,7 +338,7 @@ If the website repository is not cloned locally or a guide has no corresponding 
 | Field | Fallback |
 |-------|----------|
 | `description` | Use the `index.json` rule description. If no rule exists, flag for manual entry. |
-| `category` | Default to `"general"` and flag for manual review. |
+| `category` | Steps inside a `*-lj` directory: flag for manual review. Standalone guides: choose from the [allowed categories](#category-standalone-guides). |
 | `milestones` (paths only) | Derive ordering from subdirectory names and `content.json` titles. Flag for manual verification. |
 | `recommends`, `suggests`, `depends` | Leave empty. These fields require website metadata to derive. |
 
@@ -398,7 +422,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "id": "<guide-id>",
   "type": "guide",
   "description": "<from index.json rule description>",
-  "category": "<from journey.group or 'general'>",
+  "category": "<one of the allowed standalone categories>",
   "author": { "team": "interactive-learning" },
   "startingLocation": "<first URL from match expression>",
   "targeting": {
