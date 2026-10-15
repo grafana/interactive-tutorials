@@ -87,7 +87,7 @@ Markdown that mixes prose with `![alt](url)` needs a **dual-branch** conditional
 
 ## Before you begin (prerequisites)
 
-Path root `content.json` `## Before you begin` must set users up for success. The path manifest can also declare mandatory learner requirements for Pathfinder; see [prerequisites](../../../docs/manifest-reference.md#prerequisites).
+Path root `content.json` `## Before you begin` must set users up for success. The path manifest can also declare requirements learners must satisfy before starting, not resources created or skills taught by the path; see [prerequisites](../../../docs/manifest-reference.md#prerequisites).
 
 | Prerequisite | Notes |
 |---|---|

@@ -143,8 +143,6 @@ The examples below show existing website markdown as it appears in the `website`
 
 ### Path cover page
 
-The example below shows existing website checklist content. The manifest [prerequisite field](../../../../docs/manifest-reference.md#prerequisites) is separate from this prose and is not inherited by milestones.
-
 **linux-server-integration-lj/content.json:**
 ```json
 {

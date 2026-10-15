@@ -66,7 +66,7 @@ prometheus-lj/
 | `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
 | `targeting` | `object` | No | — | Contextual recommendation rules. See [targeting](#targeting). |
 | `testEnvironment` | `object` | No | `{ "tier": "cloud" }` | Where to test this guide. See [testEnvironment](#testenvironment). |
-| `prerequisites` | `Prerequisite[]` | No | `[]` | User requirements that appear before the guide or path starts. See [prerequisites](#prerequisites). |
+| `prerequisites` | `Prerequisite[]` | No | `[]` | Requirements learners must already satisfy before starting the guide or path. See [prerequisites](#prerequisites). |
 | `depends` | `DependencyList` | No | `[]` | Hard package dependencies. See [dependency syntax](#dependency-syntax). |
 | `recommends` | `DependencyList` | No | `[]` | Soft prerequisites (recommended, not blocking). |
 | `suggests` | `DependencyList` | No | `[]` | Loosely related package IDs. |
@@ -96,7 +96,7 @@ comma separate authors
 
 ### prerequisites
 
-`prerequisites` is an optional array of user requirements. Omit the field, or use an empty array, when no requirement exists. In either case, Pathfinder shows no prerequisite block.
+`prerequisites` is an optional array of requirements learners must already satisfy before starting the owning guide or path. Omit the field, or use an empty array, when no such requirement exists. In either case, Pathfinder shows no prerequisite block.
 
 ```json
 {
@@ -135,15 +135,15 @@ Authoring and CLI validation reject blank IDs or labels, duplicate IDs, and unsu
 
 The validation and deployment workflows build the CLI from a pinned Pathfinder source commit. Both workflows must use a commit that supports `prerequisites`. An npm release is not required for these source-based workflows.
 
-Declare requirements explicitly. Do not infer them from `content.json`, discover them from a parent path, or copy them from a parent manifest.
+Declare only prerequisites that are necessary to start: access, permissions, tools, or external resources the tutorial assumes are already available. Do not list resources the tutorial creates, skills it teaches, optional preparation, or conditions checked at runtime by guide steps. Do not infer prerequisites from `content.json` or from a parent manifest.
 
-For a path, add every mandatory requirement that a learner needs for later milestones to the path manifest. Pathfinder shows these requirements in the expanded recommendation summary before milestone links and on the path cover before **Start** or **Resume**. Do not repeat path requirements in milestone manifests.
+For a path, list requirements learners must satisfy before starting the path to complete its milestones. Pathfinder shows these in the expanded recommendation summary before milestone links and on the path cover before **Start** or **Resume**. Do not repeat path requirements in milestone manifests.
 
-For a guide, add only requirements for that guide to its own manifest. Pathfinder shows them above the guide content and before its first action, including for a directly opened milestone. A milestone does not inherit path requirements.
+For a guide, list only its own pre-start requirements. Pathfinder shows them above the guide content and before its first action, including for a directly opened milestone. A milestone does not inherit path requirements.
 
-This field informs the learner. It does not check system state, block a learner, select recommendations, or change completion counts.
+This field informs the learner. It does not check system state, block a learner, select recommendations, or change completion counts. Use guide requirements and objectives for runtime conditions.
 
-Use this field only for mandatory requirements. For a mandatory conditional requirement, state the condition in its label, such as "For local smoke tests, k6 installed." Short setup links can appear in Markdown labels. Keep optional preparation, recommended knowledge, detailed conditional guidance, and context in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
+If a pre-start requirement applies only to a specific setup, state that condition in its label, such as "If using a self-hosted instance, permission to add a data source." Short setup links can appear in Markdown labels. Keep optional preparation, recommended knowledge, detailed setup guidance, and context in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
 
 ### targeting
 
