@@ -5,15 +5,15 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Calibration turns your monitoring intent into durable checks that later unattended runs can evaluate. Assistant inspects relevant infrastructure, dashboards, alert rules, and live telemetry, then saves validated queries and a calibration baseline.\n\nCalibration runs in the background and shows each step on the **Calibration** tab. It derives queries and thresholds from your telemetry, so it doesn't ask you for them. Depending on your data sources, it can create checks such as PromQL, LogQL, BigQuery SQL, and Grafana-managed alert checks. Calibration must save at least one enabled, validated query before the watcher can start."
+      "content": "Calibration builds checks and a baseline from your watcher's context and data sources, so you don't write queries or set thresholds. It runs in the background on the **Calibration** tab and keeps running if you leave the page."
     },
     {
       "type": "markdown",
-      "content": "Calibration keeps running if you leave the page. Early on, it can stop to ask a few questions about scope or intent, for example which clusters or environments to cover. Only the person who started calibration can answer them.\n\nIf calibration can't build a baseline, for example because your data sources don't have the telemetry you described, it stops and explains what's missing. Correct the watcher goal or data sources on the **Calibration** tab and click **Retry calibration**.\n\nWhen calibration succeeds, the switch at the top of the page reads **Active**. To see the number of saved checks, open the **Overview** tab and look at **Checks** in the **Configuration** card. The watcher then scans on its schedule."
+      "content": "If calibration can't build a baseline, for example because your data sources don't have the telemetry you described, it stops and explains what's missing. Correct the watcher goal or data sources on the **Calibration** tab and click **Retry calibration**.\n\nWhen calibration succeeds, the switch at the top of the page reads **Active**, and the watcher scans on its schedule."
     },
     {
       "type": "markdown",
-      "content": "To follow calibration, complete the following steps:"
+      "content": "**Create watcher** opened your watcher's **Calibration** tab. If you left it, the first steps take you back.\n\nTo follow calibration, complete the following steps:"
     },
     {
       "type": "section",
@@ -28,30 +28,35 @@
           "reftarget": "/a/grafana-assistant-app/watchers",
           "content": "Open **Watchers**.",
           "verify": "on-page:/a/grafana-assistant-app/watchers",
-          "skippable": true,
-          "hint": "Skip if you're already on your watcher's page."
+          "objectives": ["on-page:/calibration"],
+          "skippable": true
         },
         {
           "type": "markdown",
-          "content": "If you're not already on your watcher's page, click its name in the Watchers list."
+          "content": "In the Watchers list, click your watcher's name."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid Tab Calibration']",
-          "content": "Open the **Calibration** tab.\n\nThe context you entered appears here as the watcher goal.",
+          "content": "Open the **Calibration** tab, in the row of tabs below **Status**.\n\nDon't use the button at the top of the page that reads **Calibrate** or **Recalibrate**. That's for changing the watcher later.\n\nThe context you entered appears here as the watcher goal.",
           "requirements": ["on-page:/a/grafana-assistant-app/watchers/", "exists-reftarget"],
           "verify": "on-page:/calibration",
+          "objectives": ["on-page:/calibration"],
           "skippable": true,
-          "hint": "Skip if you're already on the **Calibration** tab."
+          "hint": "Open your watcher from the Watchers list first."
         },
         {
           "type": "markdown",
-          "content": "If the **Calibration** tab shows **Calibration needs your input**, answer the questions, then click **Continue calibration**. The answer Assistant recommends is already selected and marked **(Recommended)**."
+          "content": "If the **Calibration** tab shows **Calibration needs your input**, answer the questions, then click **Continue calibration**.\n\nOnly the person who started calibration can answer them. The answer Assistant recommends is already selected and marked **(Recommended)**."
         },
         {
           "type": "markdown",
-          "content": "When calibration finishes, read the **Calibration summary** at the top of the **Calibration** tab. Then scroll down to **Calibration results** to review the **Calibration baseline** and the saved checks."
+          "content": "When calibration finishes, read the **Calibration summary** at the top of the **Calibration** tab."
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll down to **Calibration results** and review the **Calibration baseline** and the saved checks."
         }
       ]
     },
