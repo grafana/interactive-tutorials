@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-and-fix-slow-query-read-the-plan",
+  "title": "Read the plan and the table",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "To read how the database runs the query, complete the following steps. If a tab is empty, skip it and go on."
+    },
+    {
+      "type": "section",
+      "id": "read-the-plan",
+      "title": "Read the plan and the table",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Explain plan']",
+          "skippable": true,
+          "content": "Open the **Explain plan** tab.\n\nIf the query is not a SELECT, or the tab is empty, skip the next steps.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='explain-plan-graph']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record the highlighted operation's name and its **Rows** estimate.\n\nThe plan highlights an operation that takes 30% or more of the total query cost.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='explain-plan-graph']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record the access method.\n\nIt is either through an index, or by reading every row. For example, a table scan can be acceptable on a small table, or when the query returns most of the rows. A table scan with no suitable index, or with an index that is not used, is the one to act on.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "skippable": true,
+          "content": "Open the **Table schema details** tab.\n\nIf the tab is empty, skip the next steps. When the query uses several tables, use the table that holds the filtered column.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the filtered column has an **Indexed** badge.\n\nThe badge answers whether any index covers that column.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the index column order matches the query's filter and sort.\n\nFor example, a composite index matches when its columns are in that same order.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the columns the query joins on are indexed.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a record of the highlighted operation and of whether the filtered column is indexed."
+    }
+  ]
+}
