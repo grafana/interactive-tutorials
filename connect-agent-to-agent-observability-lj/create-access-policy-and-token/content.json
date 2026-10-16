@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-agent-to-agent-observability-create-access-policy-and-token",
+  "title": "Create the access policy and token",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The third value is a Grafana Cloud Access Policy Token. Create an access policy with the `sigil:write` scope, add the `metrics:write`, `logs:write`, and `traces:write` scopes so the same token also serves traces and metrics in Milestone 7, then add a token to the policy."
+    },
+    {
+      "type": "markdown",
+      "content": "Create the access policy with its four scopes."
+    },
+    {
+      "type": "section",
+      "id": "create-access-policy",
+      "title": "Create the access policy",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-auth-app",
+          "content": "Go to the access policy page at **Administration** > **Users and access** > **Cloud access policies**.",
+          "verify": "on-page:/a/grafana-auth-app"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create access policy",
+          "content": "Click **Create access policy**.",
+          "requirements": ["on-page:/a/grafana-auth-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[role='dialog'] input[name='displayName']",
+          "targetvalue": "agento11y",
+          "content": "Enter a **Display name**, for example `agento11y`.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[role='dialog'] input[name='name']",
+          "targetvalue": "agento11y",
+          "content": "Enter a **Name**, for example `agento11y`.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "div[role='dialog'] input[data-testid='data-testid Select container-input']",
+          "targetvalue": "sigil:write",
+          "content": "Open **Add scope**, type `sigil:write`, and select it.",
+          "requirements": ["exists-reftarget"],
+          "doIt": false,
+          "hint": "`sigil:write` is only listed after Agent Observability is enabled on the stack (Milestone 1)."
+        },
+        {
+          "type": "multistep",
+          "content": "In the scopes grid, select **Write** for **metrics**, **logs**, and **traces**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[role='dialog'] input[name='scopes.write.metrics']",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role='dialog'] input[name='scopes.write.logs']",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[role='dialog'] input[name='scopes.write.traces']",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='dialog'] button[type='submit']",
+          "content": "Click **Create**.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The new policy appears in the list with its four scopes."
+    },
+    {
+      "type": "markdown",
+      "content": "On the new policy, click **Add token**, give the token a name, and click **Create**. Copy the token now and paste it into your notes file as the third value. Tokens start with `glc_`."
+    },
+    {
+      "type": "markdown",
+      "content": "> **Warning:** The token is shown only once. Store it securely, for example in an environment variable or secret manager. If you lose it, add a new token to the policy."
+    },
+    {
+      "type": "markdown",
+      "content": "Return to the journey and continue [Section 4, Authenticate the SDK](https://grafana.com/docs/learning-hub/intro-to-agent-observability/04-authenticate-the-sdk/), before you start Milestone 4. Keep this Grafana Cloud tab open."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Grafana Cloud access policy](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/get-started/grafana-cloud/#cloud-access-policy)\n- [Grafana Cloud access policies](https://grafana.com/docs/grafana-cloud/security-and-account-management/authentication-and-permissions/access-policies/)"
+    }
+  ]
+}
