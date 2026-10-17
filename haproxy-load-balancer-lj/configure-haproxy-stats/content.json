@@ -9,15 +9,15 @@
     },
     {
       "type": "markdown",
-      "content": "## Enable the stats endpoint\n\nOpen your HAProxy configuration file (typically `/etc/haproxy/haproxy.cfg`) and add a `listen stats` section:\n\n```\nlisten stats\n    bind *:8404\n    stats enable\n    stats uri /stats\n    stats refresh 10s\n```\n\nThis configuration:\n- Binds the stats endpoint to port 8404\n- Enables the stats page at `/stats`\n- Refreshes stats every 10 seconds"
+      "content": "Open your HAProxy configuration file (typically `/etc/haproxy/haproxy.cfg`) and add this frontend. It serves the stats page at `/stats` and Prometheus metrics at `/metrics` on port 8404, which is the address the Grafana Cloud snippet scrapes:\n\n```\nfrontend stats\n   bind *:8404\n   http-request use-service prometheus-exporter if { path /metrics }\n   stats enable\n   stats uri /stats\n   stats refresh 10s\n```"
     },
     {
       "type": "markdown",
-      "content": "## Enable the Prometheus endpoint\n\nThe HAProxy integration uses the Prometheus-compatible metrics endpoint. Add the following to the same `listen stats` section or as a separate frontend:\n\n```\nfrontend prometheus\n    bind *:8405\n    http-request use-service prometheus-exporter if { path /metrics }\n    no log\n```\n\n**Note:** The built-in Prometheus exporter requires HAProxy 2.0 or later. If you are running an older version, you need to use an external exporter."
+      "content": "The built-in Prometheus exporter requires HAProxy 2.0 or later. If you are running an older version, you need to use an external exporter."
     },
     {
       "type": "markdown",
-      "content": "## Reload HAProxy\n\nAfter saving the configuration changes, reload HAProxy to apply them:\n\n```\nsudo systemctl reload haproxy\n```\n\nVerify the endpoint is accessible by running:\n\n```\ncurl http://localhost:8405/metrics\n```\n\nYou should see Prometheus-formatted metrics. If the endpoint is not reachable, check that the port is open in your firewall and that HAProxy reloaded without errors (`sudo systemctl status haproxy`)."
+      "content": "After saving the configuration changes, reload HAProxy to apply them:\n\n```\nsudo systemctl reload haproxy\n```\n\nVerify the metrics endpoint is accessible by running:\n\n```\ncurl http://localhost:8404/metrics\n```\n\nYou should see Prometheus-formatted metrics. If the endpoint is not reachable, check that the port is open in your firewall and that HAProxy reloaded without errors (`sudo systemctl status haproxy`)."
     }
   ]
 }
