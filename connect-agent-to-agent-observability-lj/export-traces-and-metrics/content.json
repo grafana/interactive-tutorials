@@ -13,6 +13,7 @@
     },
     {
       "type": "markdown",
+      "authorNote": "TODO (open question 12, also on journey slide 32): Is `%20` in `Authorization=Basic%20<BASE64_CREDENTIALS>` required for every language's OTLP exporter, or only for Python? The Set up Agent Observability page shows `Basic%20` and says it is for the Python exporter; the SDK configuration page shows a literal space for every language. If Python only, this block should show the generic form and say Python needs `%20`; if it differs by language, this block needs a per-language line. Who answers: the Agent Observability docs owner, with the SDK owners. Remove this note once answered.",
       "content": "## Set the two OTLP variables\n\nIn the shell from Milestone 4, build the basic-auth header value and export the two variables:\n\n```bash\nprintf '%s' '<OTLP_INSTANCE_ID>:<ACCESS_POLICY_TOKEN>' | base64 | tr -d '\\n'\n```\n\nThe `tr -d '\\n'` is not optional. `base64` adds a trailing newline that invalidates the header.\n\n```bash\nexport OTEL_EXPORTER_OTLP_ENDPOINT=\"<OTLP_ENDPOINT>\"\nexport OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Basic%20<BASE64_CREDENTIALS>\"\n```\n\nReplace `<BASE64_CREDENTIALS>` with the output of the `printf` command. Keep `%20` for the space after `Basic`."
     },
     {
