@@ -16,7 +16,7 @@
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Open the Grafana Cloud portal at `https://grafana.com/orgs/{org}/stacks/{stack-id}` and copy the two values from the **OpenTelemetry** card.\n\n- **OTLP endpoint URL**, including `/otlp` but excluding signal paths such as `/v1/traces`. This is the value for `OTEL_EXPORTER_OTLP_ENDPOINT`.\n- **Instance ID** on the OpenTelemetry card. This is the basic-auth username for OTLP and can differ from the Agent Observability **Instance ID** from Milestone 2.\n\nDon't click **Generate now**. The access policy token from Milestone 3 already covers `metrics:write`, `logs:write`, and `traces:write`."
+          "content": "Open the Grafana Cloud portal at `https://grafana.com/orgs/{org}/stacks/{stack-id}` and copy the two values from the **OpenTelemetry** card.\n\n- **OTLP endpoint URL**, including `/otlp` but excluding signal paths such as `/v1/traces`. This is the value for `OTEL_EXPORTER_OTLP_ENDPOINT`.\n- **Instance ID** on the OpenTelemetry card. This is the basic-auth username for OTLP and can differ from the Agent Observability **Instance ID** from Milestone 2.\n\n> **Note:** Don't click **Generate now**. The access policy token from Milestone 3 already covers `metrics:write`, `logs:write`, and `traces:write`."
         },
         {
           "type": "interactive",
@@ -36,7 +36,7 @@
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Run the command.\n\nCopy the output. It is one line, with no newline at the end. You paste it into the export commands below."
+          "content": "Run the command."
         },
         {
           "type": "interactive",
@@ -47,7 +47,17 @@
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Replace the placeholders in those commands.\n\nReplace `{OTLP_ENDPOINT}` with the OTLP endpoint URL. Replace `{BASE64_CREDENTIALS}` with the output of the `printf` command. Keep `%20` for the space after `Basic`."
+          "content": "Copy the output of the `printf` command.\n\nIt is the one line still on screen above these commands, with no newline at the end."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Paste that output into `{BASE64_CREDENTIALS}` in the commands you just copied."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Replace `{OTLP_ENDPOINT}` with the OTLP endpoint URL.\n\nKeep `%20` for the space after `Basic`."
         },
         {
           "type": "interactive",
@@ -153,10 +163,6 @@
     {
       "type": "markdown",
       "content": "No spans or metrics? Check these in order:\n\n1. The providers are configured before the client is created, and shut down after `client.shutdown()`.\n2. `OTEL_EXPORTER_OTLP_HEADERS` was built with the OTLP **Instance ID** from the OpenTelemetry card, not the Agent Observability **Instance ID**, and with `tr -d '\\n'`.\n3. `OTEL_EXPORTER_OTLP_ENDPOINT` ends in `/otlp` with no `/v1/traces` or `/v1/metrics` suffix.\n4. The access policy from Milestone 3 has `metrics:write` and `traces:write` selected."
-    },
-    {
-      "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\n- [Set up metrics and traces](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/get-started/grafana-cloud/#set-up-traces-and-metrics)\n- [OpenTelemetry metrics](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/sdk/#opentelemetry-metrics)\n- [Send via Alloy or OTel Collector](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/get-started/grafana-cloud/#send-via-alloy-or-otel-collector)"
     }
   ]
 }
