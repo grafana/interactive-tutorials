@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "coda-claude-loki-services",
+  "title": "Explore Loki services with Claude Code in Coda",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Install Claude Code in a disposable Coda sandbox, authorize gcx for this stack, and ask Claude to discover services from Loki labels."
+    },
+    {
+      "type": "callout",
+      "title": "Before you start",
+      "content": "Sign in to fecd53.grafana.net with Coda available and use a Claude account with a subscription or access that supports Claude Code. You complete Claude login yourself. The sandbox is ephemeral; do not rely on it to retain your installation or login. No Kubernetes deployment or Instrumentation Hub setup is required. Start with no active sandbox so Coda provisions a basic Linux VM for this guide; an existing session may be reused."
+    },
+    {
+      "type": "markdown",
+      "content": "Start a basic Linux sandbox for this standalone demo, then install Claude Code."
+    },
+    {
+      "type": "section",
+      "id": "prepare-sandbox",
+      "title": "Start a sandbox and explore Loki with Claude",
+      "blocks": [
+        {
+          "type": "terminal-connect",
+          "vmTemplate": "vm-microvm",
+          "buttonText": "Start Coda sandbox",
+          "content": "Start a basic Linux sandbox for this Claude demo and wait for the shell. gcx is preinstalled; you will authorize it for this Grafana stack."
+        },
+        {
+          "type": "terminal",
+          "id": "install-claude",
+          "content": "Install Claude Code from Anthropic and check its version. Wait for the installer to finish.",
+          "command": "curl -fsSL https://claude.ai/install.sh | bash\nexport PATH=\"$HOME/.local/bin:$PATH\"\nclaude --version",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "coda-claude-loki-services-step-2",
+          "action": "button",
+          "content": "Open **gcx** in the terminal toolbar to authorize access to this stack.",
+          "reftarget": "[data-testid='coda-terminal-gcx']",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "tooltip": "Continue to the next part of the setup."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-claude-loki-services-step-3",
+          "action": "highlight",
+          "content": "Review the access you are granting and select **Set up gcx** yourself to authorize this sandbox for the current Grafana stack. Wait until setup is ready, then close the dialog.",
+          "reftarget": "[data-testid='coda-terminal-gcx-mint']",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "tooltip": "Review this setting and follow the guide instructions."
+        },
+        {
+          "type": "terminal",
+          "id": "verify-gcx",
+          "content": "Confirm gcx can read the Loki datasources in this stack. If setup failed or this command reports an invalid configuration, stop here and resolve gcx access before continuing to the Loki prompt.",
+          "command": "gcx datasources list --type loki",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "terminal",
+          "id": "claude-login",
+          "content": "Start Claude login, open the URL shown in your terminal, and finish authentication yourself. Return here once the shell prompt reappears.",
+          "command": "export PATH=\"$HOME/.local/bin:$PATH\"\nclaude auth login",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Complete login in your browser",
+          "content": "Open the login URL printed in the terminal and complete the OAuth flow using your own Claude account. Follow any return instructions and wait for the shell prompt to reappear before continuing. Do not paste credentials into this guide."
+        },
+        {
+          "type": "terminal",
+          "id": "ask-claude",
+          "content": "Launch Claude with a read-only prompt to enumerate services from Loki labels. Review the command permissions Claude requests.",
+          "command": "claude 'Use the preinstalled gcx CLI and its configured coda context to list all distinct services represented in Loki logs in this Grafana stack during the last 24 hours. Start with gcx --help and gcx datasources list --type loki; inspect subcommand help rather than guessing flags. Query service_name label values for every accessible Loki datasource. If absent, inspect labels and explain any fallback such as app or job. Follow pagination or limits, deduplicate by datasource and service, and return a table with datasource, service, label used, time window, and query. State access errors, empty datasets, and truncation explicitly; do not claim historical or inaccessible services are covered. Use read-only commands only. Never read or print credential files, tokens, environment secrets, or raw log messages.'",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You connected gcx and learned how to ask Claude for a service inventory grounded in Loki labels."
+    },
+    {
+      "type": "callout",
+      "title": "Check the result",
+      "content": "Confirm Claude Code printed a version, gcx listed the available Loki datasources, and Claude accepted your prompt after login. Review any command permissions before approving them. Empty labels, access errors, or truncation mean the result is incomplete; it is not an inventory of all historical services."
+    },
+    {
+      "type": "markdown",
+      "content": "For installation and account details, see the [Claude Code quickstart](https://code.claude.com/docs/en/quickstart) and [CLI reference](https://code.claude.com/docs/en/cli-reference)."
+    }
+  ]
+}
