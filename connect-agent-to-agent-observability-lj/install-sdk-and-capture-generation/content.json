@@ -5,19 +5,38 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "This milestone happens on your machine. Install the SDK package for your language, create the client with no arguments so it reads the five variables from Milestone 4, and run the manual-capture sample from your language page."
+      "content": "This milestone happens on your machine. The SDK client reads the five variables from Milestone 4, so create it with no arguments and run the sample from that same shell."
     },
     {
       "type": "markdown",
-      "content": "## Install the SDK\n\nRun the install command for your language in the shell from Milestone 4:\n\n| Language | Install command | Language page |\n| --- | --- | --- |\n| Python | `pip install agento11y` | [Instrument Python agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/python/#install-the-sdk) |\n| TypeScript and JavaScript | `npm install @grafana/agento11y` | [Instrument TypeScript and JavaScript agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/javascript/#install-the-sdk) |\n| Go | `go get github.com/grafana/agento11y/go` | [Instrument Go agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/go/#install-the-sdk) |\n| Java | Add the `com.grafana.agento11y:agento11y-core` Maven dependency | [Instrument Java agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/java/#install-the-sdk) |\n| .NET | `dotnet add package Grafana.Agento11y` and `dotnet add package Grafana.Agento11y.OpenAI` | [Instrument .NET agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/dotnet/#install-the-sdk) |\n\nThe Maven snippet on the Java page does not state a version; check Maven Central for the current `agento11y-core` version before you add it."
+      "content": "Install the SDK for your language, create the client, and run the sample."
+    },
+    {
+      "type": "section",
+      "id": "install-and-capture",
+      "title": "Install the SDK and capture a generation",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run the install command for your language in the shell from Milestone 4.\n\n| Language | Install command | Language page |\n| --- | --- | --- |\n| Python | `pip install agento11y` | [Instrument Python agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/python/#install-the-sdk) |\n| TypeScript and JavaScript | `npm install @grafana/agento11y` | [Instrument TypeScript and JavaScript agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/javascript/#install-the-sdk) |\n| Go | `go get github.com/grafana/agento11y/go` | [Instrument Go agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/go/#install-the-sdk) |\n| Java | Add the `com.grafana.agento11y:agento11y-core` Maven dependency. The Maven snippet on the Java page does not state a version, so check Maven Central for the current `agento11y-core` version before you add it. | [Instrument Java agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/java/#install-the-sdk) |\n| .NET | `dotnet add package Grafana.Agento11y` and `dotnet add package Grafana.Agento11y.OpenAI` | [Instrument .NET agents](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/reference/sdks/dotnet/#install-the-sdk) |"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Create the client with no arguments.\n\nCopy the sample under **Capture a generation manually** (Python, TypeScript and JavaScript) or **Capture a generation** (Go, Java, .NET) from your language page. Replace its client construction, which hard-codes an endpoint and a `tenant` auth block, with the no-argument form from **Use environment variables instead** on the same page.\n\n| Language | Client |\n| --- | --- |\n| Python | `client = Client()` |\n| TypeScript and JavaScript | `const client = new Agento11yClient();` |\n| Go | `client := agento11y.NewClient(agento11y.Config{})` |\n| Java | `Agento11yClient client = new Agento11yClient();` |\n| .NET | `var client = new Agento11yClient();` |\n\nThe SDK reads `AGENTO11Y_ENDPOINT`, `AGENTO11Y_PROTOCOL`, `AGENTO11Y_AUTH_MODE`, `AGENTO11Y_AUTH_TENANT_ID`, and `AGENTO11Y_AUTH_TOKEN` when the client is created, so create it after the variables are set."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run the sample from the shell where you set the variables.\n\nThe sample captures one generation with `conversation_id` set to `conv-1`, a model reference of `openai/gpt-4o`, and a fixed assistant message `Hello` as the result. On the Python, JavaScript, Go, and Java pages it does not call an LLM provider, so no provider key is needed for this run.\n\nThe .NET page has no manual-capture sample. Its sample uses the OpenAI provider helper (`OpenAIRecorder.CreateResponseAsync`) with your own OpenAI client and input items, and sets `ConversationId` and `AgentName` in the options. Run that sample with your provider key.\n\nKeep the shutdown call last. The SDK exports generations in batches from a queue, and every sample ends by shutting down the client."
+        }
+      ]
     },
     {
       "type": "markdown",
-      "content": "## Create the client with no arguments\n\nCopy the sample under **Capture a generation manually** (Python, TypeScript and JavaScript) or **Capture a generation** (Go, Java, .NET) from your language page. Replace its client construction, which hard-codes an endpoint and a `tenant` auth block, with the no-argument form from **Use environment variables instead** on the same page:\n\n| Language | Client |\n| --- | --- |\n| Python | `client = Client()` |\n| TypeScript and JavaScript | `const client = new Agento11yClient();` |\n| Go | `client := agento11y.NewClient(agento11y.Config{})` |\n| Java | `Agento11yClient client = new Agento11yClient();` |\n| .NET | `var client = new Agento11yClient();` |\n\nThe SDK reads `AGENTO11Y_ENDPOINT`, `AGENTO11Y_PROTOCOL`, `AGENTO11Y_AUTH_MODE`, `AGENTO11Y_AUTH_TENANT_ID`, and `AGENTO11Y_AUTH_TOKEN` when the client is created, so create it after the variables are set."
-    },
-    {
-      "type": "markdown",
-      "content": "## Run the sample\n\nThe sample captures one generation with `conversation_id` set to `conv-1`, a model reference of `openai/gpt-4o`, and a fixed assistant message `Hello` as the result. On the Python, JavaScript, Go, and Java pages it does not call an LLM provider, so no provider key is needed for this run.\n\nThe .NET page has no manual-capture sample. Its sample uses the OpenAI provider helper (`OpenAIRecorder.CreateResponseAsync`) with your own OpenAI client and input items, and sets `ConversationId` and `AgentName` in the options. Run that sample with your provider key.\n\nRun the sample from the shell where you set the variables. Keep the shutdown call last: the SDK exports generations in batches from a queue, and every sample ends by shutting down the client."
+      "content": "The SDK for your language is installed, and you have captured a generation."
     },
     {
       "type": "markdown",
