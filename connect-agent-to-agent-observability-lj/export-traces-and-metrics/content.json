@@ -8,10 +8,6 @@
       "content": "Generation data now reaches Agent Observability. The SDK also emits OpenTelemetry spans and four `gen_ai.client.*` metrics, but it does not create OpenTelemetry providers. Without a `TracerProvider` and `MeterProvider` in your application they are dropped."
     },
     {
-      "type": "markdown",
-      "content": "Collect the OTLP values, set the two variables, add the providers, and rerun the sample."
-    },
-    {
       "type": "section",
       "id": "export-otlp",
       "title": "Export traces and metrics",
@@ -20,23 +16,43 @@
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Open the Grafana Cloud portal at `https://grafana.com/orgs/<org>/stacks/<stack-id>` and copy the two values from the **OpenTelemetry** card.\n\nSave them somewhere you can find them later, such as a notes file.\n\n- **OTLP endpoint URL**, including `/otlp` but excluding signal paths such as `/v1/traces`. This is the value for `OTEL_EXPORTER_OTLP_ENDPOINT`.\n- **Instance ID** on the OpenTelemetry card. This is the basic-auth username for OTLP and can differ from the Agent Observability **Instance ID** from Milestone 2.\n\nDon't click **Generate now**. The access policy token from Milestone 3 already covers `metrics:write`, `logs:write`, and `traces:write`."
+          "content": "Open the Grafana Cloud portal at `https://grafana.com/orgs/{org}/stacks/{stack-id}` and copy the two values from the **OpenTelemetry** card.\n\n- **OTLP endpoint URL**, including `/otlp` but excluding signal paths such as `/v1/traces`. This is the value for `OTEL_EXPORTER_OTLP_ENDPOINT`.\n- **Instance ID** on the OpenTelemetry card. This is the basic-auth username for OTLP and can differ from the Agent Observability **Instance ID** from Milestone 2.\n\nDon't click **Generate now**. The access policy token from Milestone 3 already covers `metrics:write`, `logs:write`, and `traces:write`."
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Build the basic-auth header value in the shell from Milestone 4.\n\n```bash\nprintf '%s' '<OTLP_INSTANCE_ID>:<ACCESS_POLICY_TOKEN>' | base64 | tr -d '\\n'\n```\n\nThe `tr -d '\\n'` is not optional. `base64` adds a trailing newline that invalidates the header."
+          "content": "Save them somewhere you can find them later, such as a notes file."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Copy the following command into the shell from Milestone 4. Do not run it yet.\n\n```bash\nprintf '%s' '{OTLP_INSTANCE_ID}:{ACCESS_POLICY_TOKEN}' | base64 | tr -d '\\n'\n```\n\nThe `tr -d '\\n'` is not optional. `base64` adds a trailing newline that invalidates the header."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Replace the placeholders in that command.\n\nReplace `{OTLP_INSTANCE_ID}` with the OpenTelemetry **Instance ID**. Replace `{ACCESS_POLICY_TOKEN}` with the access policy token from Milestone 3."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run the command.\n\nCopy the output. It is one line, with no newline at the end. You paste it into the export commands below."
         },
         {
           "type": "interactive",
           "action": "noop",
           "authorNote": "TODO (open question 12, also on journey slide 32): Is `%20` in `Authorization=Basic%20<BASE64_CREDENTIALS>` required for every language's OTLP exporter, or only for Python? The Set up Agent Observability page shows `Basic%20` and says it is for the Python exporter; the SDK configuration page shows a literal space for every language. If Python only, this block should show the generic form and say Python needs `%20`; if it differs by language, this block needs a per-language line. Who answers: the Agent Observability docs owner, with the SDK owners. Remove this note once answered.",
-          "content": "Run these commands in that same shell.\n\n`export` sets each variable in that shell so the exporters can read it.\n\n```bash\nexport OTEL_EXPORTER_OTLP_ENDPOINT=\"<OTLP_ENDPOINT>\"\nexport OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Basic%20<BASE64_CREDENTIALS>\"\n```"
+          "content": "Copy the following commands into that same shell. Do not run them yet.\n\n`export` sets each variable in that shell so the exporters can read it.\n\n```bash\nexport OTEL_EXPORTER_OTLP_ENDPOINT=\"{OTLP_ENDPOINT}\"\nexport OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Basic%20{BASE64_CREDENTIALS}\"\n```"
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Replace the placeholders with your values.\n\nReplace `<OTLP_ENDPOINT>` with the OTLP endpoint URL. Replace `<BASE64_CREDENTIALS>` with the output of the `printf` command. Keep `%20` for the space after `Basic`."
+          "content": "Replace the placeholders in those commands.\n\nReplace `{OTLP_ENDPOINT}` with the OTLP endpoint URL. Replace `{BASE64_CREDENTIALS}` with the output of the `printf` command. Keep `%20` for the space after `Basic`."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run the commands."
         },
         {
           "type": "interactive",
