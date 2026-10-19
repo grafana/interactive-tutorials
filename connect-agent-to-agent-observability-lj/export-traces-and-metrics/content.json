@@ -41,18 +41,18 @@
         {
           "type": "interactive",
           "action": "noop",
+          "content": "Copy the output of the `printf` command and paste it into your notes file.\n\nIt is one line, with no newline at the end. You paste it into `{BASE64_CREDENTIALS}` after the next step."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
           "authorNote": "TODO (open question 12, also on journey slide 32): Is `%20` in `Authorization=Basic%20<BASE64_CREDENTIALS>` required for every language's OTLP exporter, or only for Python? The Set up Agent Observability page shows `Basic%20` and says it is for the Python exporter; the SDK configuration page shows a literal space for every language. If Python only, this block should show the generic form and say Python needs `%20`; if it differs by language, this block needs a per-language line. Who answers: the Agent Observability docs owner, with the SDK owners. Remove this note once answered.",
-          "content": "Copy the following commands into that same shell. Do not run them yet.\n\n`export` sets each variable in that shell so the exporters can read it.\n\n```bash\nexport OTEL_EXPORTER_OTLP_ENDPOINT=\"{OTLP_ENDPOINT}\"\nexport OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Basic%20{BASE64_CREDENTIALS}\"\n```"
+          "content": "Copy the following commands and paste them into that same shell. Do not run them yet.\n\n`export` sets each variable in that shell so the exporters can read it.\n\n```bash\nexport OTEL_EXPORTER_OTLP_ENDPOINT=\"{OTLP_ENDPOINT}\"\nexport OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Basic%20{BASE64_CREDENTIALS}\"\n```"
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Copy the output of the `printf` command.\n\nIt is the one line still on screen above these commands, with no newline at the end."
-        },
-        {
-          "type": "interactive",
-          "action": "noop",
-          "content": "Paste that output into `{BASE64_CREDENTIALS}` in the commands you just copied."
+          "content": "Paste the output from your notes file into `{BASE64_CREDENTIALS}` in the commands you just pasted."
         },
         {
           "type": "interactive",
@@ -67,18 +67,24 @@
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Add a `TracerProvider` and a `MeterProvider` to your sample before you create the client, and shut them down after the client's shutdown call.\n\nCopy the snippet for your language from [OpenTelemetry setup](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/sdk/#opentelemetry-setup). The Python version is also shown under [Configure providers in your application](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/get-started/grafana-cloud/#configure-providers-in-your-application). The snippets set `service.name` to `my-agent`."
+          "content": "Open the file you created in Milestone 5.\n\nThat file is the capture sample you copied from your language page. You changed it so the client is created in one line, then you ran it. In Python, that line is `client = Client()`."
         },
         {
           "type": "interactive",
           "action": "noop",
-          "content": "Run the sample again from the same shell."
+          "content": "Copy the provider snippet for your language and paste it into that file before the line that creates the client.\n\nUse [OpenTelemetry setup](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/sdk/#opentelemetry-setup). The Python snippet is also under [Configure providers in your application](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/get-started/grafana-cloud/#configure-providers-in-your-application). The snippets set `service.name` to `my-agent`.\n\nIn Python, install the two packages that page names, then paste the snippet above `client = Client()`:\n\n```bash\npip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Shut the providers down after the client's shutdown call.\n\nUse the shutdown lines from that same snippet. In Python, the file ends like this:\n\n```python\nclient.shutdown()\ntp.shutdown()\nmp.shutdown()\n```\n\nLeave the rest of the sample as it is."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Run that same file again in the shell from Milestone 4, using the same command you used in Milestone 5.\n\nThe variables you set in this milestone are in that shell, so the providers can read them."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "content": "The sample has been rerun with the providers in place."
     },
     {
       "type": "markdown",
