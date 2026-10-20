@@ -10,27 +10,35 @@
   "startingLocation": "/connections/datasources/elasticsearch",
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "targetPlatform": "cloud"
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:elasticsearch"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
+              ]
+            }
+          ]
         },
         {
-          "or": [
-            {
-              "and": [
-                {
-                  "urlPrefix": "/connections/datasources"
-                },
-                {
-                  "tag": "selected-datasource:elasticsearch"
-                }
-              ]
-            },
+          "and": [
             {
               "urlPrefix": "/connections/datasources/elasticsearch"
             },
             {
-              "urlPrefix": "/connections/add-new-connection"
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
             }
           ]
         }
