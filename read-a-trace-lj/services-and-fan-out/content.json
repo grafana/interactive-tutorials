@@ -1,0 +1,22 @@
+{
+  "id": "read-a-trace-services-and-fan-out",
+  "title": "Services, operations, and the database fan-out",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Keep the trace you opened earlier open for this step. Each row names two things: the **service** that did the work and the **operation** it ran. Together, they tell you what happened and where, so you can read the trace without opening every span."
+    },
+    {
+      "type": "markdown",
+      "content": "Read the start of any row. The service name comes first, then the operation, for example the catalog service running its lookup for the order. Together, they tell you what ran and where."
+    },
+    {
+      "type": "markdown",
+      "content": "Now, expand a span that has a caret to reveal its child spans. In a typical pizza-order trace, opening the catalog span reveals several SELECT spans nested one level in, lined up at the same indentation just below it: database queries running close together. On the waterfall this looks like a cluster of short bars stacked under a single parent. That's a fan-out: one operation triggering several database calls. Live data varies, so if your trace looks different, expand any span with a caret to see its children."
+    },
+    {
+      "type": "markdown",
+      "content": "Those SELECT names are the database's own operations, surfaced right in the trace. The public-api → recommendations → catalog → SELECT fan-out is the typical shape for a completed pizza order, so you'll usually see it when you open one of these traces."
+    }
+  ]
+}

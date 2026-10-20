@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "get-started-grafana-assistant-use-mentions",
+  "title": "Use @ mentions for better results",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "At-mentions specify which data source, dashboard, or panel the request should use. Without a mention, the reply might use a different data source or request more detail. With a mention, you point the request at the right place so answers are more accurate.\n\nUse this rule when you choose:\n\n- **Mention** when you already know which data source (or dashboard/panel) should answer the question.\n- **Omit** when you are exploring what is available and don't have a target yet.\n- **Retry with a mention** when the reply doesn't use the source you meant, or stays too generic.\n\nHere you send a vague prompt first, then the same kind of request with an at-mention so you can compare focus."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "If this guide is docked in the sidebar, pop it out into a floating window so it stays visible beside **Assistant**."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "To compare a vague prompt with an at-mention, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "send-mention-prompt",
+      "title": "Compare vague vs at-mention",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Nav toolbar'] button[data-testid='extension-toolbar-button-open']",
+          "content": "Open **Assistant** from the top toolbar (sparkle icon) if the panel is closed.",
+          "requirements": ["exists-reftarget"],
+          "skippable": true,
+          "hint": "Skip if Assistant is already open from the previous milestone."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "In the chat input, paste or type a vague prompt (no at-mention):\n\n> Show me something useful from my stack\n\nOr try:\n\n> What can you tell me about my data sources?",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] button[aria-label='Send message']",
+          "content": "Click **Send**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "In a new message, type the at symbol (@) in the chat input.\n\nPick a data source from the mention list (or type the name after the at symbol). Prefer one you already know from this path, for example a Prometheus or Loki source.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] [data-testid='prompt-input-body'] [role='textbox'][contenteditable='true']",
+          "doIt": false,
+          "content": "Finish the prompt so it uses that mention.\n\nExample shapes (replace the mention with yours):\n\n> Summarize what I can query from @prometheus-ds\n\n> Show recent activity from @loki-logs\n\n> List metrics available in @grafanacloud-usage",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-assistant-chat'] button[aria-label='Send message']",
+          "content": "Click **Send**.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Compare the two replies for focus, not perfection:\n\n- The **mentioned** reply should stay scoped to the data source you picked (name it, include a query for it, or otherwise stay clearly limited to it).\n- The **vague** reply might cover several sources, use a different source, or request more detail.\n\nIf the mentioned reply is clearer, keep using `@` when you know the target. If you only needed a tour of what exists, omitting `@` is fine."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You practiced turning a vague request into a targeted one with an at-mention, and when to mention versus explore without one.\n\nFor more examples, refer to [Use mentions for better results](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/get-started/grafana-cloud/#use-mentions-for-better-results)."
+    },
+    {
+      "type": "conditional",
+      "conditions": ["renderer:pathfinder"],
+      "whenTrue": [
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "sidebar",
+          "content": "Dock this guide back to the sidebar when you are ready for the next milestone."
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll choose Learn mode in the Assistant panel."
+    }
+  ]
+}

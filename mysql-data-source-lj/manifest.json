@@ -10,29 +10,37 @@
   "startingLocation": "/connections/datasources",
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "or": [
+          "and": [
             {
-              "and": [
-                {
-                  "urlPrefix": "/connections/datasources"
-                },
-                {
-                  "tag": "selected-datasource:mysql"
-                }
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:mysql"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
               ]
-            },
-            {
-              "urlPrefix": "/connections/datasources/mysql"
-            },
-            {
-              "urlRegex": "/connections/add-new-connection/?$"
             }
           ]
         },
         {
-          "targetPlatform": "cloud"
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/mysql"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
         }
       ]
     }

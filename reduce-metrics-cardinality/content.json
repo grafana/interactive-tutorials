@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "reduce-metrics-cardinality",
+  "title": "Reduce your metrics cardinality",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "If you already see high-cardinality or unused metrics, you don't have to reinstrument anything to fix it. Adaptive Metrics reduces cardinality from inside Grafana Cloud by aggregating away the labels nobody uses, while keeping the metric itself."
+    },
+    {
+      "type": "markdown",
+      "content": "Adaptive Metrics analyzes how your organization uses metrics across dashboards, alerts, recording rules, and queries, then recommends aggregating underutilized metrics into lower-cardinality versions. Applying a recommendation does not delete the metric; unused label dimensions are aggregated away, and existing dashboards, rules, and queries keep working. You can reverse an aggregation later if usage changes."
+    },
+    {
+      "type": "markdown",
+      "content": "You need Adaptive Metrics read access for recommendations. Refer to [Manage access to Grafana Adaptive Metrics](https://grafana.com/docs/grafana-cloud/adaptive-telemetry/adaptive-metrics/additional-configuration/adaptive-metrics-rbac/). A stack that is already receiving metrics shows richer data."
+    },
+    {
+      "type": "markdown",
+      "content": "In this section, you'll open Adaptive Metrics and review recommendations for your stack."
+    },
+    {
+      "type": "section",
+      "id": "review-adaptive-metrics",
+      "title": "Review Adaptive Metrics recommendations",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-label=\"Expand section: Adaptive Telemetry\"]",
+          "content": "In the navigation menu, expand **Adaptive Telemetry**. If the section is already expanded, skip this step.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "skippable": true
+        },
+        {
+          "type": "multistep",
+          "content": "Navigate to **Adaptive Metrics** and open the **Metrics** tab.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[href=\"/a/grafana-adaptive-metrics-app/overview\"]",
+              "tooltip": "Open the Adaptive Metrics app from the navigation.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[href=\"/a/grafana-adaptive-metrics-app/rule-management\"]",
+              "tooltip": "Open the Metrics view to see recommendations for your stack.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Review the recommendations table. Each row shows which metric it affects and which labels it proposes to aggregate away, based on how the metric is actually used."
+        },
+        {
+          "type": "markdown",
+          "content": "Open a recommendation to review its details before applying it, including the recommended rule information and the metric's usage stats."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've reviewed Adaptive Metrics recommendations and how each one proposes to reduce cardinality without changing your ingestion pipeline."
+    },
+    {
+      "type": "markdown",
+      "content": "Recommended remediation order:\n\n1. **Address unused metrics.** Metrics with the **Unused** badge in the Cardinality tab add cost with no value.\n2. **Assess high-cardinality labels on used metrics.** Aggregate away label dimensions nobody queries, and keep the ones they do.\n3. **Protect what matters.** Define exemptions for metrics that must never be aggregated."
+    },
+    {
+      "type": "markdown",
+      "content": "To find those cost drivers first, take the **Explore your cardinality** guide. For the complete Adaptive Metrics workflow (rules, exemptions, segmentation, auto-apply), see [Optimize metrics with Adaptive Metrics](https://grafana.com/docs/learning-paths/adaptive-metrics/).\n\nDocs: [Introduction to Adaptive Metrics](https://grafana.com/docs/grafana-cloud/adaptive-telemetry/adaptive-metrics/introduction/), [Manage recommendations](https://grafana.com/docs/grafana-cloud/adaptive-telemetry/adaptive-metrics/manage-recommendations/)."
+    }
+  ]
+}

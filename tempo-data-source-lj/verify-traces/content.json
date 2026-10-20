@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "tempo-data-source-verify",
+  "title": "Verify traces in Explore",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Passing the Save & test check confirms connectivity, but it doesn't confirm that traces are flowing. In this milestone, you run a TraceQL query against your new data source in Explore and see real trace data.\n\nTo verify traces in Explore, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/explore']",
+          "requirements": ["navmenu-open"],
+          "content": "In the Grafana Cloud navigation menu, click **Explore**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "From the data source picker at the top-left, select your Tempo data source.\n\nFor example, select **Production Tempo**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-editor-rows']",
+          "doIt": false,
+          "requirements": ["on-page:/explore"],
+          "content": "The Tempo query editor defaults to the **TraceQL** query type. In the query editor, enter a TraceQL query to list some traces.\n\nTry one of the following examples:\n\n- **List recent traces** — enter `{}` to return every trace in the current time range.\n- **Filter by service name** — enter `{resource.service.name=\"your-service\"}`, replacing `your-service` with a service that's emitting traces.\n\n**Tip:** If your application isn't producing traces yet, you can upload a sample trace JSON file using the **Search** or **Import trace** option in the query editor."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "requirements": ["on-page:/explore"],
+          "content": "Click **Run query** to execute the TraceQL query.\n\nYou should see a **Table** view of matching traces at the top of the results pane. Select any trace ID to open the full trace view with its spans, durations, and attributes."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "## Verify successful trace access\n\nAfter running your query, you should see:\n\n- A table of traces in the Explore results panel\n- No authentication or connection errors\n- Trace IDs that you can click to drill into the full trace timeline\n- Spans, services, and durations that match what you expect from your application"
+    },
+    {
+      "type": "markdown",
+      "content": "**Congratulations!** You've successfully connected a Tempo data source to Grafana Cloud and verified trace data."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Query tracing data](https://grafana.com/docs/grafana/latest/datasources/tempo/query-editor/)\n- [TraceQL query examples](https://grafana.com/docs/grafana/latest/datasources/tempo/query-editor/traceql-query-examples/)\n- [TraceQL query language reference](https://grafana.com/docs/tempo/latest/traceql/)\n- [Grafana Traces Drilldown](https://grafana.com/docs/grafana/latest/explore/simplified-exploration/traces/)"
+    }
+  ]
+}

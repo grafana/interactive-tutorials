@@ -1,0 +1,702 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "grafana-stat-signal-snapshot",
+  "title": "Signal snapshot: advanced stat techniques",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Start this standalone lab from **Dashboards** to build and save a synthetic signal snapshot."
+    },
+    {
+      "type": "markdown",
+      "content": "Open **Dashboards** as the starting point for this lab."
+    },
+    {
+      "type": "section",
+      "id": "open-your-visualization-workspace",
+      "title": "Open your visualization workspace",
+      "blocks": [
+        {
+          "id": "step-1",
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "requirements": [],
+          "tooltip": "Move to the workspace for the next part of this lab.",
+          "type": "interactive",
+          "content": "Open **Dashboards** to begin.",
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have opened the workspace where you will create your practice dashboard."
+    },
+    {
+      "type": "markdown",
+      "content": "Prepare **TestData** if it is missing; an existing source completes this section automatically, while creating one requires admin access on Cloud or OSS."
+    },
+    {
+      "type": "section",
+      "id": "prepare-testdata-once",
+      "title": "Prepare TestData once",
+      "blocks": [
+        {
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "requirements": [],
+          "id": "step-2",
+          "tooltip": "Prepare a synthetic source only when one is missing.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Open **Add data source**."
+        },
+        {
+          "action": "formfill",
+          "reftarget": "{grafana:pages.AddDataSource.searchInput}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
+          ],
+          "targetvalue": "TestData",
+          "id": "step-3",
+          "tooltip": "No external credentials are needed for this practice data.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Search for **TestData**."
+        },
+        {
+          "action": "highlight",
+          "reftarget": "body:has({grafana:pages.AddDataSource.searchInput}) button:text('TestData')",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources"
+          ],
+          "id": "step-4",
+          "tooltip": "Create a local source of synthetic samples.",
+          "skippable": true,
+          "type": "interactive",
+          "content": "Click **TestData** to create the data source.",
+          "verify": "on-page:/connections/datasources/edit"
+        }
+      ],
+      "requirements": [
+        "is-admin"
+      ],
+      "objectives": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a reusable synthetic data source that needs no external service or credentials."
+    },
+    {
+      "type": "conditional",
+      "id": "practice-source-ready",
+      "conditions": [
+        "has-datasource:grafana-testdata-datasource"
+      ],
+      "whenTrue": [
+        {
+          "type": "input",
+          "id": "choose-practice-source",
+          "inputType": "datasource",
+          "variableName": "practiceSource",
+          "datasourceFilter": "grafana-testdata-datasource",
+          "prompt": "Select your TestData source; its name may differ in your organization.",
+          "required": true,
+          "requirements": [
+            "has-datasource:grafana-testdata-datasource"
+          ]
+        }
+      ],
+      "whenFalse": []
+    },
+    {
+      "type": "markdown",
+      "content": "Create a fresh dashboard and configure a **Stat** panel using your chosen practice source."
+    },
+    {
+      "type": "section",
+      "id": "build-the-stat-panel",
+      "title": "Build the Stat panel",
+      "blocks": [
+        {
+          "id": "step-6",
+          "action": "navigate",
+          "reftarget": "/dashboard/new",
+          "requirements": [],
+          "tooltip": "Move to the workspace for the next part of this lab.",
+          "type": "interactive",
+          "content": "Create a fresh dashboard for this lab.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "id": "prepare-panel-add-pane",
+          "action": "highlight",
+          "reftarget": "{grafana:pages.Dashboard.Sidebar.addButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new",
+            "min-version:13.3.0"
+          ],
+          "targetstate": "aria-expanded:true",
+          "content": "Open **Add** to show the controls for creating a panel.",
+          "tooltip": "Show the controls for adding dashboard elements."
+        },
+        {
+          "id": "step-7",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.newPanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Make space for a synthetic signal.",
+          "type": "interactive",
+          "content": "Click **Panel** to add a panel.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-8",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Sidebar.configurePanelButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Configure how the data will be presented.",
+          "type": "interactive",
+          "content": "Click **Edit visualization** to open the panel editor.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-9",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSourcePicker.inputV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Use the source chosen earlier even if its name differs.",
+          "targetvalue": "{{practiceSource}}",
+          "type": "interactive",
+          "content": "In the data source picker, select {{practiceSource}}.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "multistep",
+          "id": "build-the-stat-panel-viz",
+          "content": "Choose **Stat** as the visualization.",
+          "steps": [
+            {
+              "id": "step-10",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Tab.title:Visualizations}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Choose how to represent the signal.",
+              "description": "Open **All visualizations**."
+            },
+            {
+              "id": "step-11",
+              "action": "highlight",
+              "reftarget": "{grafana:components.PluginVisualization.item:Stat}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Summarize the signal as a prominent number.",
+              "description": "Select **Stat**."
+            }
+          ]
+        },
+        {
+          "id": "step-12",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldInput:Title}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Make this result easy to recognize later.",
+          "targetvalue": "Signal snapshot",
+          "type": "interactive",
+          "content": "Under **Panel options**, set **Title** to `Signal snapshot`.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a named panel connected to your practice source."
+    },
+    {
+      "type": "markdown",
+      "content": "Bound one random walk between 0 and 100, starting at 50, to make visual changes easier to interpret."
+    },
+    {
+      "type": "section",
+      "id": "create-bounded-practice-signals",
+      "title": "Create bounded practice signals",
+      "blocks": [
+        {
+          "id": "step-13",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.min}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Prevent generated values from falling below zero.",
+          "targetvalue": "0",
+          "type": "interactive",
+          "content": "In query **A**, set **Min** to `0`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-14",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.max}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Keep generated values within the practice range.",
+          "targetvalue": "100",
+          "type": "interactive",
+          "content": "In query **A**, set **Max** to `100`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-15",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.TestData.QueryTab.startValue}:is(input)",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Begin the synthetic walk halfway through its bounds.",
+          "targetvalue": "50",
+          "type": "interactive",
+          "content": "In query **A**, set **Start value** to `50`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-17",
+          "action": "highlight",
+          "reftarget": "{grafana:components.RefreshPicker.runButtonV2}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Generate practice readings with the configured bounds.",
+          "type": "interactive",
+          "content": "Run the query to display the practice signal.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have generated one bounded synthetic signal for the visualization exercises."
+    },
+    {
+      "type": "markdown",
+      "content": "Compare individual samples with a summary: **All values** displays separate readings, while **Calculate** combines them into one value per signal; you will use **Mean** to average the readings."
+    },
+    {
+      "type": "section",
+      "id": "choose-what-one-number-means",
+      "title": "Choose what one number means",
+      "blocks": [
+        {
+          "id": "step-18",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Value options Show} input[title='All values']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Inspect individual samples before selecting a summary.",
+          "targetstate": "true",
+          "type": "interactive",
+          "content": "Under **Value options**, set **Show** to **All values** to display individual samples.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-19",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Value options Limit} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Keep the individual sample preview manageable.",
+          "targetvalue": "5",
+          "type": "interactive",
+          "content": "Under **Value options**, set **Limit** to `5` to display up to five samples.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-20",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Value options Show} input[title='Calculate']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Reduce each signal to one summary.",
+          "targetstate": "true",
+          "type": "interactive",
+          "content": "Under **Value options**, set **Show** to **Calculate** to display one summary per signal.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-21",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Value options Calculation} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Average the values in the displayed time range.",
+          "targetvalue": "Mean",
+          "type": "interactive",
+          "content": "Under **Value options**, set **Calculation** to **Mean** to average the samples returned for the displayed time range.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-22",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Standard options Decimals} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Use consistent precision for an easy-to-read result.",
+          "targetvalue": "1",
+          "type": "interactive",
+          "content": "Under **Standard options**, set **Decimals** to `1`.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-23",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Standard options Display name} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Make the synthetic nature of the number explicit.",
+          "targetvalue": "Practice signal",
+          "type": "interactive",
+          "content": "Under **Standard options**, set **Display name** to `Practice signal`.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your main number is now the average of the returned samples across the displayed time range, rather than just the last sample; the five-value preview limit does not limit this calculation."
+    },
+    {
+      "type": "quiz",
+      "id": "mean-check",
+      "question": "What does the configured mean summarize?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Values across the displayed time range.",
+          "correct": true,
+          "hint": "The mean is an average across the displayed time range, not the last reading."
+        },
+        {
+          "id": "b",
+          "text": "Only the final sample in the time range.",
+          "correct": false,
+          "hint": "The mean is an average across the displayed time range, not the last reading."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Add a label, sparkline, and background color so the average has context: samples of 10, 50, and 90 average 50, but the sparkline reveals their rise."
+    },
+    {
+      "type": "section",
+      "id": "put-context-around-the-number",
+      "title": "Put context around the number",
+      "blocks": [
+        {
+          "id": "step-24",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Text mode} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Keep identifying context beside the summary.",
+          "targetvalue": "Value and name",
+          "type": "interactive",
+          "content": "Under **Stat styles**, set **Text mode** to **Value and name** to label the summary.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-28",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Graph mode} input[title='Area']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Expose variation that an average alone can hide.",
+          "targetstate": "true",
+          "type": "interactive",
+          "content": "Under **Stat styles**, set **Graph mode** to **Area** to see how samples vary over time.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-29",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Color mode} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Carry the level-based color through the card background.",
+          "targetvalue": "Background Gradient",
+          "type": "interactive",
+          "content": "Under **Stat styles**, set **Color mode** to **Background Gradient** to color the background using the calculated mean.",
+          "doIt": true,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The sparkline shows variation hidden by the average, while the background color represents the calculated mean."
+    },
+    {
+      "type": "markdown",
+      "content": "Set a threshold for the mean and compare it with percent change: a first sample of 50 and last sample of 60 gives (60 − 50) / 50 × 100 = 20%, regardless of the samples between them."
+    },
+    {
+      "type": "section",
+      "id": "distinguish-level-from-change",
+      "title": "Distinguish level from change",
+      "blocks": [
+        {
+          "id": "step-30",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Thresholds Thresholds} input[aria-label='Threshold 1']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Use 70 as an illustrative color boundary without creating an alert.",
+          "targetvalue": "70",
+          "type": "interactive",
+          "content": "Under **Thresholds**, set the existing threshold value to `70`; the mean now determines which threshold color fills the background, without creating an alert.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-31",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Show percent change} input[type='checkbox']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Add first-to-last movement as context for the average.",
+          "targetstate": "true",
+          "type": "interactive",
+          "content": "Under **Stat styles**, enable **Show percent change** to compare the first and last samples rather than the mean.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-32",
+          "action": "formfill",
+          "reftarget": "{grafana:components.PanelEditor.OptionsPane.fieldLabel:Stat styles Percent change color mode} input",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Treat a decrease as favorable in this practice scenario.",
+          "targetvalue": "Inverted",
+          "type": "interactive",
+          "content": "Under **Stat styles**, set **Percent change color mode** to **Inverted**: decreases appear green and increases red for this lower-is-better example.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "id": "step-33",
+          "action": "highlight",
+          "reftarget": "{grafana:components.PanelEditor.General.content}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Interpret level, variation, and change together without inferring real service health.",
+          "type": "interactive",
+          "content": "Compare the mean, sparkline, and percent change: the mean summarizes all samples, the sparkline shows their path, and percent change compares the endpoints. A low mean can coexist with a rising last sample.",
+          "doIt": false,
+          "showMe": true
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Inverted coloring changes only the interpretation of the percent-change indicator: a decrease is green and an increase red, while the data, calculation, and mean-based threshold color stay unchanged."
+    },
+    {
+      "type": "quiz",
+      "id": "change-check",
+      "question": "Why use inverted percent-change coloring in this exercise?",
+      "completionMode": "correct-only",
+      "choices": [
+        {
+          "id": "a",
+          "text": "A decrease is favorable in the lower-is-better scenario.",
+          "correct": true,
+          "hint": "Coloring expresses desirability; it does not change the data."
+        },
+        {
+          "id": "b",
+          "text": "It changes the underlying synthetic readings.",
+          "correct": false,
+          "hint": "Coloring expresses desirability; it does not change the data."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Save your dashboard and inspect the finished signal snapshot."
+    },
+    {
+      "type": "section",
+      "id": "keep-your-finished-dashboard",
+      "title": "Keep your finished dashboard",
+      "blocks": [
+        {
+          "id": "step-34",
+          "action": "highlight",
+          "reftarget": "{grafana:components.NavToolbar.editDashboard.backToDashboardButton}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "tooltip": "Keep the panel settings while returning to the larger workspace.",
+          "type": "interactive",
+          "content": "Click **Back** to return to the dashboard.",
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "multistep",
+          "id": "keep-your-finished-dashboard-save",
+          "content": "Save the dashboard as Stat lab - Signal snapshot.",
+          "steps": [
+            {
+              "id": "step-35",
+              "action": "highlight",
+              "reftarget": "{grafana:components.NavToolbar.editDashboard.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Persist the work through one uninterrupted drawer sequence.",
+              "description": "Click **Save** to open the save drawer."
+            },
+            {
+              "id": "step-36",
+              "action": "formfill",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveAsTitleInput}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Give the saved result a recognizable name.",
+              "targetvalue": "Stat lab - Signal snapshot",
+              "description": "Enter Stat lab - Signal snapshot as the dashboard title."
+            },
+            {
+              "id": "step-37",
+              "action": "highlight",
+              "reftarget": "{grafana:components.Drawer.DashboardSaveDrawer.saveButton}",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ],
+              "tooltip": "Persist the finished configuration.",
+              "description": "Click **Save** to save the dashboard."
+            }
+          ]
+        },
+        {
+          "id": "step-38",
+          "action": "highlight",
+          "reftarget": "{grafana:components.DashboardSidebarSplitter.bodyContainer}",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/",
+            "has-dashboard-named:Stat lab - Signal snapshot"
+          ],
+          "tooltip": "Check the visible result after persistence without changing its configuration.",
+          "type": "interactive",
+          "content": "Confirm that Stat lab - Signal snapshot is saved and that Signal snapshot displays Practice signal with a one-decimal mean, an area sparkline, a gradient background, and percent change; the configuration uses a threshold at 70 and inverted change coloring, while the generated readings can vary.",
+          "doIt": false,
+          "showMe": true,
+          "verify": "has-dashboard-named:Stat lab - Signal snapshot"
+        }
+      ],
+      "requirements": [
+        "has-datasource:grafana-testdata-datasource"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have learned to save the finished configuration and confirm its visible result on the dashboard."
+    }
+  ]
+}

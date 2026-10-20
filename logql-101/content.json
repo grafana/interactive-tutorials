@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "# Welcome to LogQL 101! 📝\n\nWelcome to your hands-on introduction to LogQL - Grafana Loki's powerful query language for logs! This interactive guide will teach you how to search, filter, and analyze logs like a pro.\n\nLogQL is inspired by PromQL (Prometheus Query Language) and provides a simple yet powerful way to query and aggregate log data. Let's get started!"
+      "content": "Welcome to your hands-on introduction to LogQL - Grafana Loki's powerful query language for logs! This interactive guide will teach you how to search, filter, and analyze logs like a pro.\n\nLogQL is inspired by PromQL (Prometheus Query Language) and provides a simple yet powerful way to query and aggregate log data. Let's get started!"
     },
     {
       "type": "markdown",
@@ -15,8 +15,17 @@
       "content": "## 🚀 Let's Get Started\n\nIn this tutorial, you'll learn how to craft powerful LogQL queries to extract insights from your log data. We'll start with simple queries and progressively build up to more advanced use cases."
     },
     {
+      "type": "input",
+      "id": "loki-source-choice",
+      "prompt": "Choose the Loki data source containing the Nginx sample logs used in this guide.",
+      "inputType": "datasource",
+      "variableName": "lokiSource",
+      "datasourceFilter": "loki",
+      "required": true
+    },
+    {
       "type": "markdown",
-      "content": "## 📚 Select Your Data Source\n\nBefore we can query logs, we need to select a Loki data source. The data source picker allows you to choose which Loki instance to query against."
+      "content": "Before we can query logs, we need to select a Loki data source. The data source picker allows you to choose which Loki instance to query against."
     },
     {
       "type": "section",
@@ -24,25 +33,23 @@
       "title": "Select Your Data Source",
       "blocks": [
         {
-          "type": "multistep",
-          "requirements": ["exists-reftarget"],
-          "content": "Click on the **data source picker**, then select the **Loki Demo Kit (loki_nginx)** data source.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "input[data-testid=\"data-testid Select a data source\"]"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "button:has(span:contains(\"loki_nginx\"))"
-            }
-          ]
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "#pageContent {grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "{{lokiSource}}",
+          "requirements": [
+            "on-page:/explore",
+            "var-lokiSource:*",
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "content": "Select **{{lokiSource}}** in the **Data source** picker."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## ✍️ Write Your First LogQL Query\n\nNow that we have our data source selected and Code mode enabled, let's write our first LogQL query! Every LogQL query starts with a label selector enclosed in curly braces."
+      "content": "Now that we have our data source selected and Code mode enabled, let's write our first LogQL query! Every LogQL query starts with a label selector enclosed in curly braces."
     },
     {
       "type": "section",

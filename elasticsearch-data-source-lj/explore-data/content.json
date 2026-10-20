@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "elasticsearch-data-source-explore-data",
+  "title": "Explore Elasticsearch data in Grafana",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you verify that your Elasticsearch data source is working by running a query in Grafana's Explore."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "content": "In the navigation menu, click **Explore**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select a data source']",
+          "doIt": false,
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "content": "From the data source dropdown at the top-left, select your Elasticsearch data source."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='query-editor-rows'] textarea",
+          "targetvalue": "*",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "content": "In the **Lucene Query** field, enter a query. Use `*` to match all documents, or a term such as `error` to search log content.\n\nElasticsearch uses Lucene query syntax. Boolean operators must be uppercase: `AND`, `OR`, `NOT`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "content": "Click **Run query** (or press `Shift + Enter`) to execute the query.\n\nYou should see results in the panel below the query editor. If you see data, your Elasticsearch data source is working correctly."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "### Verify successful data access\n\nAfter running your query, you should see:\n\n- Log lines or time series data displayed in the results panel\n- No connection errors or timeouts\n- Data that matches what you expect from your Elasticsearch index\n- The ability to modify the query and run different searches"
+    },
+    {
+      "type": "markdown",
+      "content": "**Congratulations!** You've successfully connected your Elasticsearch instance to Grafana Cloud and verified that data is accessible."
+    }
+  ]
+}

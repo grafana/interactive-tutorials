@@ -16,6 +16,8 @@ Checklists for [review-learning-path/SKILL.md](SKILL.md) Phase 1 (static pass). 
 
 Tag every finding when writing the workbook. **Author-facing change requests always go on the GitHub diff as short inline comments** (path-wide OK) after Phase 3 approval. The workbook is reviewer-private scratch — never the channel for telling the author what to fix.
 
+**One finding per cell.** Never bundle findings of differing severity into the same routing-table cell — a soft "not an issue" note and a hard "author must fix" finding sharing a cell means the whole cell inherits the softer routing, and the hard finding gets silently swallowed. (This exact bug — "Landing screenshot notes" conflating "no screenshot yet" with "screenshot present but ungated" — is why the [#562](https://github.com/grafana/interactive-tutorials/issues/562) fix split the row below into two.) When adding or editing a cell, ask whether it actually names one severity.
+
 | Post inline (author must change) | Internal (workbook only) | Discard |
 |---|---|---|
 | Block Editor / Playwright runtime fail (reviewer-reported) | Selector polish when live passed | Audit noise with no runtime impact |
@@ -25,7 +27,8 @@ Tag every finding when writing the workbook. **Author-facing change requests alw
 | False `noop` (learner action, no `reftarget`) | Framing ambiguity (“is this framing?”) until confirmed | Fresh-stack retest notes (unless live failed) |
 | Missing required section bookends (rule 14) | Pure LH wording polish (boilerplate synonym) when structure is fine | |
 | Missing / broken required `website.yaml` identity fields (`menuTitle`, `description`, `journey.*`) | Overly broad `targeting.match` without impact | |
-| Learning Hub structure the author must change (missing path intro, wrong group/skill, hard cross-path deps, conversion prose gap) | Landing screenshot / milestone-count notes | |
+| Learning Hub structure the author must change (missing path intro, wrong group/skill, hard cross-path deps, conversion prose gap) | Missing landing screenshot / milestone-count notes | |
+| Ungated `image` / `video` / markdown `![]()` visible in Pathfinder | | |
 | Missing `exists-reftarget`, `navmenu-open` **when live fails** | | |
 | Outdated `data-testid` when live fails | | |
 | `:contains()` when stable `data-testid` in DOM and live fails | | |
@@ -69,13 +72,14 @@ Run via [audit-guide](../audit-guide/SKILL.md) plus confirm every row:
 | `schemaVersion` not `"1.1.0"` when present | post inline |
 | Markdown `##` / `###` for grouping | internal |
 | Section bookends missing (rule 14) — no intro/summary **around** the section | **post inline** |
-| In-section intro markdown that may number as a step | **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-step)). Prefer bookends **outside** the section per rule 14. |
+| In-section intro markdown that may number as a step | **post inline** (see [section intro markdown](#section-intro-markdown-numbered-as-a-step)). Prefer bookends **outside** the section per rule 14. |
 | Missing `exists-reftarget`, `navmenu-open` | internal until live fails |
 | Missing `on-page` | internal until live fails |
 | `lazyRender` missing on virtualized targets | internal until live fails |
 | Multistep singleton, focus-before-formfill, `noop` misuse | post inline if compliance; else internal |
 | Secrets `doIt: true` | post inline |
 | Missing `verify` on save | internal until live fails |
+| Ungated `image`/`video`/markdown `![]()` (no `renderer:website` conditional) | **post inline** — wrap in `conditional` (`renderer:website`, `whenFalse: []`; dual-branch for mixed prose+images). Do not flag plain YouTube text links or `website.yaml` `cta.image` — those are out of scope for this gate. See [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder) |
 
 LH prose checks: [learning-hub-standards.md](learning-hub-standards.md) — **post inline** when the author must change structure or required fields; **internal** for wording polish only.
 
@@ -124,9 +128,13 @@ Same scan applies to [false noops](#noop-and-non-interactive-steps) even when st
 
 ## Framing milestones
 
-Framing packages may live in the path directory for the website Learning Path, but must **not** appear in path `manifest.json` `milestones`. First hands-on `depends` must not reference framing IDs.
+Framing packages (value / why intros) stay in the path directory for the **website** Learning Path. Omit them only from Pathfinder path `manifest.json` `milestones` so the in-app Pathfinder UI stays action-oriented. Do **not** delete the framing package, its `content.json`, or its `website.yaml` when fixing this.
 
-Framing in path `milestones` or broken depends → **post inline**.
+- Keep the framing directory + `website.yaml` when the website needs that intro.
+- Remove framing IDs from path `milestones` (Pathfinder only).
+- First hands-on `depends` must be `[]` (must not reference framing IDs).
+
+Framing in path `milestones` or broken depends → **post inline**. When commenting or surfacing the finding, say explicitly that this is a **Pathfinder-only** omission and the website Learning Path still uses the framing package.
 
 ### Framing vs not framing
 
@@ -134,9 +142,9 @@ Framing is about **role**, not “markdown-only.”
 
 | Kind | Examples | In path `milestones`? |
 |---|---|---|
-| **Framing** (value / why intro) | `business-value`, `value-*`, `advantages-*`, `welcome` | No — keep the package + `website.yaml` if the website needs it; omit from Pathfinder `milestones` |
+| **Framing** (value / why intro) | `business-value`, `value-*`, `advantages-*`, `welcome` | No — Pathfinder drops these from `milestones` only; keep the package + `website.yaml` for the website Learning Path |
 | **Not framing** (path destination) | `end-journey`, `end-<topic>` | Yes |
-| **Case-by-case** | Prose conceptual packages such as `understanding-*` | Only if they are a Pathfinder path step learners must complete. If they are website-only conceptual framing, treat as framing (omit from `milestones`, first hands-on `depends: []`) |
+| **Case-by-case** | Prose conceptual packages such as `understanding-*` | Only if they are a Pathfinder path step learners must complete. If they are website-only conceptual framing, treat as framing (omit from Pathfinder `milestones`, keep the package for the website, first hands-on `depends: []`) |
 
 Do **not** auto-flag every markdown-only `milestones` entry. `end-journey` is normally prose-only and correctly listed.
 
@@ -209,13 +217,22 @@ Prose not captured in package on conversion → **post inline**. Front matter ma
 
 `static-only: <reason>` at end of Phase 1 skips Phase 2.
 
+**Precedence (evaluate in order; first match wins):**
+
+1. **Bare `static-only` (no reason)** → always **reject**.
+2. **`pr_type` is `new` or `conversion` and the path has interactive milestones** → always **reject**, even if the reviewer cites "practice" or "no stack." Playwright is mandatory here.
+3. **`pr_type` is `update` with only markdown / `website.yaml` changes** → **allow** with a non-empty reason.
+4. **Practice / archaeology on a merged PR** → **allow** with a non-empty reason (never suggest APPROVE when waived).
+5. Anything else → **reject**.
+
 | Situation | Allowed? |
 |---|---|
-| **new** / **conversion** with interactive milestones | **No** |
+| Bare `static-only` | **No** |
+| **new** / **conversion** with interactive milestones (any reason) | **No** |
 | **update** with only markdown / `website.yaml` | Yes, with reason |
 | Practice / archaeology on merged PR | Yes, with reason |
 
-Record `waive_live_testing: true` and `static_only_reason`. Never suggest APPROVE when waived.
+Record `waive_live_testing: true` and `static_only_reason` only when allowed. Never suggest APPROVE when waived.
 
 ### Not live-tested disclosure (required)
 

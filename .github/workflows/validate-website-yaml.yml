@@ -1,0 +1,72 @@
+name: Validate website.yaml files
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/website.yaml'
+      - '.github/workflows/validate-website-yaml.yml'
+  pull_request:
+    paths:
+      - '**/website.yaml'
+      - '.github/workflows/validate-website-yaml.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-website-yaml:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          submodules: false
+
+      - name: Validate website.yaml syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+
+          try:
+              import yaml
+          except ModuleNotFoundError:
+              print('::error::PyYAML is not available on this runner image.')
+              print('::error::This workflow is configured to avoid downloading parser dependencies at runtime.')
+              sys.exit(1)
+
+          files = sorted(Path('.').rglob('website.yaml'))
+
+          if not files:
+              print('No website.yaml files found.')
+              sys.exit(0)
+
+          invalid = []
+
+          for path in files:
+              try:
+                  with path.open('r', encoding='utf-8') as f:
+                      yaml.safe_load(f)
+              except yaml.YAMLError as err:
+                  invalid.append((path, err))
+
+          print(f'Checked {len(files)} website.yaml file(s).')
+
+          if invalid:
+              print(f'Found {len(invalid)} invalid file(s):')
+              for path, err in invalid:
+                  mark = err.problem_mark
+                  line = mark.line + 1 if mark else 1
+                  problem = err.problem or str(err)
+                  print(f'::error file={path},line={line}::{problem}')
+                  print(f'- {path}: line {line}: {problem}')
+              sys.exit(1)
+
+          print('All website.yaml files are valid YAML.')
+          PY

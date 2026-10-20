@@ -1,5 +1,7 @@
 # Learning path workflows
 
+Docs writers: start with [docs/learning-path-authoring.md](../../docs/learning-path-authoring.md) for the one-page overview (commands, file map, testing). This file is the detailed session playbook.
+
 Use the `/create-learning-path` command to build a new interactive learning path from scratch. If you have an existing non-interactive learning path that you need to convert, refer to the [appendix](#appendix-convert-an-existing-learning-path).
 
 ## Before you start
@@ -41,9 +43,12 @@ Every session follows five phases. The AI handles most of the work — your main
 
 ### Phase 1: Setup and planning
 
-The AI validates that both repos are accessible (the website repo is a read-only source — it's read from but never written to), reads the canonical Grafana docs for the feature, and proposes milestones for your approval.
+The AI validates that both repos are accessible (the website repo is a read-only source — it's read from but never written to), then asks which of two entry modes you're in:
 
-**Your role:** Review and approve the proposed milestones before the AI writes anything.
+- **From scratch:** reads the canonical Grafana docs for the feature and proposes milestones for your approval, same as before.
+- **From a learning journey in docs-ai:** you give it the docs-ai PR for a signed-off journey. It checks that PR out (or falls back to the target branch if the PR already merged and its branch is gone) and reads the journey's outline and jargon list directly. The outline's structure varies by journey — headings, table shape, and whether an entry is even new work all differ — so the AI confirms with you which entry it's building before treating anything as the plan (one path per run — if the journey suggests several, run the command again for each of the others). It also checks whether a package already covering that content exists in interactive-tutorials under any slug — if you confirm one already satisfies the outline's ask, it skips straight to linking that existing package to the journey instead of building a duplicate. Otherwise it derives the milestone breakdown from the entry's scope itself. No proposal, no approval wait, but also no assumption that the outline hands over a ready-made milestone list.
+
+**Your role:** From scratch, review and approve the proposed milestones before the AI writes anything. From a learning journey, hand over the docs-ai PR, confirm which outline entry it should build, and say whether an existing package it finds already covers it.
 
 ### Phase 2: Content, manifest, and website metadata generation
 
@@ -68,9 +73,9 @@ Use the Block Builder **PR review tool** (dev tools, pathfinder-app 1.4.5+) to l
 
 ### Phase 5: Wrap-up
 
-The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, and provides a summary of all files created.
+The AI verifies factual claims against the docs, updates `.github/CODEOWNERS`, cross-links the path to every learning journey that surfaces it, and reminds you to add the `lh-learning-path` label so the PR appears on the Learning Hub project board. If this path came from a learning journey, it also runs `check-journey.py --embed-url` for you and hands you the embed shortcode for the journey's slide in `website`.
 
-**Your role:** Review the generated files, then open a PR in the `interactive-tutorials` repo.
+**Your role:** Review the generated files, then open a PR in the `interactive-tutorials` repo. If you have an embed shortcode to add back to a journey, open that PR in `website` too, but only *after* this path's PR has merged — never before, or the published slide's embed points at nothing.
 
 ## Tips
 
@@ -102,4 +107,5 @@ The learning path slug is mysql-data-source.
 | --- | --- | --- |
 | `/build-interactive-lj` | Existing milestone markdown in website repo (read-only source) | `content.json` + `manifest.json` + `website.yaml` files in interactive-tutorials |
 | `/create-learning-path` | Feature description (no existing markdown) | `content.json` + `manifest.json` + `website.yaml` files |
+| `/preflight-learning-path` | Local `{slug}-lj/` package before opening a PR | Author self-review with few pauses (login, smoke choice, results): mirrors review static + Playwright checks and shared claim-check, readiness report, optional fixes / frontend testid PR |
 | `/review-learning-path-pr` | Existing LP PR in `interactive-tutorials` (share PR URL/number) | Human-guided review: static workbook, Block Editor smoke test, chat-approved inline comments, submit |

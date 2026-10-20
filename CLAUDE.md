@@ -4,7 +4,7 @@
 
 This repository's authoring intelligence lives in [`.cursor/`](.cursor/) and [`docs/`](docs/). Both Claude Code and Cursor read these files; references use standard markdown links so both tools resolve them natively.
 
-The canonical critical rules list (21 rules; all blocking) lives in [`AGENTS.md`](AGENTS.md#critical-rules). Cursor reads `AGENTS.md` as its entry point; Claude reads this file. **Read those rules before authoring or reviewing any guide — every rule there is blocking.**
+The canonical critical rules list (21 rules; all blocking) lives in [`AGENTS.md`](AGENTS.md#critical-rules). Cursor reads `AGENTS.md` as its entry point; Claude reads this file. **Read those rules before authoring or reviewing any guide — every rule there is blocking.** Before committing or pushing, read [AGENTS.md — Committing and pushing](AGENTS.md#committing-and-pushing).
 
 When a doc here disagrees with the upstream schema, the schema wins. Authoritative schemas come from [`grafana-pathfinder-app`](https://github.com/grafana/grafana-pathfinder-app) (`src/types/json-guide.types.ts` and `src/types/json-guide.schema.ts`).
 
@@ -17,6 +17,8 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 | Update / modify an existing guide | [update-guide](.cursor/skills/update-guide/SKILL.md) skill | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Review a guide PR | [.cursor/review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc) |
 | Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md) |
+| Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
+| Author a learning path (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | [learning-path workflows](.cursor/learning-path-workflows/workflows.md), [/create-learning-path](.cursor/commands/create-learning-path.md), [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) |
 | Decision trees & code smells | [.cursor/best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/](docs/) |
 | Create a new guide | [/new](.cursor/commands/new.md) command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate a guide | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
@@ -29,12 +31,14 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 
 | Document | Purpose |
 |----------|---------|
+| [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | Docs-team entry point for interactive learning paths |
 | [docs/json-guide-reference.md](docs/json-guide-reference.md) | All 16 block types and their properties |
 | [docs/interactive-actions.md](docs/interactive-actions.md) | Action type behavior: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
 | [docs/requirements-reference.md](docs/requirements-reference.md) | All requirement types (fixed + parameterized) |
 | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns and pseudo-selectors |
 | [docs/guided-interactions.md](docs/guided-interactions.md) | Guided block deep dive |
 | [docs/manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and derivation rules |
+| [docs/website-yaml-reference.md](docs/website-yaml-reference.md) | Learning Hub metadata in `website.yaml` |
 
 ## Skills
 
@@ -45,6 +49,8 @@ Multi-phase workflow skills with their own `SKILL.md` files. Skills write interm
 - [.cursor/skills/audit-guide/](.cursor/skills/audit-guide/SKILL.md) — comprehensive read-only audit (structural + semantic + adversarial) producing one prioritised report
 - [.cursor/skills/update-guide/](.cursor/skills/update-guide/SKILL.md) — modify an existing guide with a planning checkpoint, review pass, and CLI-validated rollback
 - [.cursor/skills/migrate-guide/](.cursor/skills/migrate-guide/SKILL.md) — migrate a guide or learning path to the Pathfinder package format
+- [.cursor/skills/review-learning-path/](.cursor/skills/review-learning-path/SKILL.md) — human-guided learning path PR review (five-phase coach)
+- [.cursor/skills/preflight-learning-path/](.cursor/skills/preflight-learning-path/SKILL.md) — author pre-PR self-review for a learning path
 
 ## Shared Content
 
@@ -65,8 +71,10 @@ This repo's content is rendered by the Grafana Pathfinder app. Authoritative sch
 - `src/interactive-engine/action-handlers/` — action handlers (button, formfill, navigate, hover, popout, guided)
 - `src/cli/utils/block-registry.ts` — `CLI_EXCLUDED_BLOCK_TYPES` (e.g., `grot-guide` is hand-authored in the block editor)
 
-If a doc here disagrees with the schema, the schema wins. Validate locally from a Pathfinder CLI checkout:
+If a doc here disagrees with the schema, the schema wins. Validate locally from **this repository's root**, pointing at a built `grafana-pathfinder-app` checkout — `.` must resolve to this repo:
 
 ```bash
 node {pathfinder-app}/dist/cli/cli/index.js validate --packages .
 ```
+
+This form is depth-1 only: it reaches the 128 immediate children that hold a `content.json`, not the 665 packages in the tree, so a nested milestone package is skipped in silence. Run it from the wrong root and it fails loudly (`No package directories found`) rather than false-passing; it is `build-stats` and `build-repository` that discover recursively and would quietly operate on Pathfinder's own manifests. The repo-wide enumeration loop and the working directory rules for those two commands live in [docs/manifest-reference.md](docs/manifest-reference.md#validation).

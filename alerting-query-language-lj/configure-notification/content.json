@@ -1,0 +1,74 @@
+{
+  "id": "alerting-query-language-configure-notification",
+  "title": "Configure the notification and save",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A contact point with a destination receives notifications when your alert fires. The message includes a **Summary** and a **Description**.\n\nThis alert reports a **percentage**, so the Summary formats the query value to one decimal place. The Description explains what 5% means.\n\nIn this milestone, choose a contact point, write the message, and save the rule."
+    },
+    {
+      "type": "section",
+      "id": "notify-and-save",
+      "title": "Choose contact point, write the message, and save",
+      "requirements": [
+        "on-page:/alerting/new/alerting"
+      ],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Select an available **Contact point**. You can use **empty** to save a practice rule, but it cannot deliver notifications. For real alerts, choose a contact point with a destination you control.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "input[data-testid='data-testid alert-rule contact-point-input']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='listbox'] [role='option']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='annotation-value-0']",
+          "targetvalue": "QuickPizza error rate at {{ $value | printf \"%.1f\" }}% over the last 5 minutes",
+          "content": "In the **Summary** field (under **Configure notification message**), add:\n\n`QuickPizza error rate at {{ $value | printf \"%.1f\" }}% over the last 5 minutes`\n\nWhen the alert fires, `{{ $value }}` is replaced with the live percentage.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='annotation-value-1']",
+          "targetvalue": "Fires when the ratio of QuickPizza 5xx responses to total requests exceeds 5% over 5 minutes. Check recent deploys and the app dashboard first.",
+          "content": "In the **Description** field, add:\n\n`Fires when the ratio of QuickPizza 5xx responses to total requests exceeds 5% over 5 minutes. Check recent deploys and the app dashboard first.`",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='data-testid alert-rule save-rule-button']",
+          "content": "Confirm the rule has a name, query, folder, and contact point. Fix validation errors, then click **Save**.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/alerting/grafana/"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your rule is saved. It can fire when the error rate stays above 5% past the pending period. Notifications require a contact point with a working destination."
+    }
+  ]
+}

@@ -14,7 +14,7 @@ Run this from a [grafana-pathfinder-app](https://github.com/grafana/grafana-path
 
 - [PATHFINDER-PACKAGE-DESIGN.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/design/PATHFINDER-PACKAGE-DESIGN.md) — package format spec
 - [package-authoring.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/package-authoring.md) — manifest field reference and templates
-- [CLI_TOOLS.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) — `validate --package`, `build-repository`, `build-graph`, `schema manifest`
+- [CLI_TOOLS.md](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) — `validate --package`, `build-repository`, `build-stats`, `build-graph`, `schema manifest`
 
 ---
 
@@ -60,19 +60,45 @@ prometheus-lj/
 | `type` | `"guide"` \| `"path"` \| `"journey"` | **Yes** | — | `"guide"` for standalone guides and LJ steps; `"path"` (or `"journey"`) for `*-lj` root directories. |
 | `repository` | `string` | No | `"interactive-tutorials"` | Repository identifier. Can be omitted (schema default applies). |
 | `description` | `string` | **Yes** | — | Short description of the guide or path. |
-| `category` | `string` | **Yes** | — | Content category for grouping and filtering. |
+| `category` | `string` | **Yes** | — | Content category for grouping and filtering. Standalone guides must use one of the [allowed categories](#category-standalone-guides). |
 | `author` | `object` | **Yes** | — | Attribution. See [author](#author). |
 | `language` | `string` | No | `"en"` | BCP 47 language tag. Can be omitted (schema default applies). |
 | `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
 | `targeting` | `object` | No | — | Contextual recommendation rules. See [targeting](#targeting). |
 | `testEnvironment` | `object` | No | `{ "tier": "cloud" }` | Where to test this guide. See [testEnvironment](#testenvironment). |
-| `depends` | `DependencyList` | No | `[]` | Hard prerequisites. See [dependency syntax](#dependency-syntax). |
+| `prerequisites` | `Prerequisite[]` | No | `[]` | Requirements learners must already satisfy before starting the guide or path. See [prerequisites](#prerequisites). |
+| `depends` | `DependencyList` | No | `[]` | Hard package dependencies. See [dependency syntax](#dependency-syntax). |
 | `recommends` | `DependencyList` | No | `[]` | Soft prerequisites (recommended, not blocking). |
 | `suggests` | `DependencyList` | No | `[]` | Loosely related package IDs. |
 | `provides` | `string[]` | No | `[]` | Capability tokens this package provides (e.g., `"datasource-configured"`). |
 | `conflicts` | `string[]` | No | `[]` | Packages that conflict (mutually exclusive). Schema-only in MVP. |
 | `replaces` | `string[]` | No | `[]` | Packages this one supersedes entirely. Schema-only in MVP. |
 | `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"` or `"journey"`. |
+| `stats` | `object` | **No — never hand-author** | — | Completion block counts, computed by CI. See [stats](#stats). |
+
+### category (standalone guides)
+
+Standalone guides (`type: "guide"` that are not steps inside a `*-lj` or `*-lp` directory) must set `category` to exactly one of the values below. The website guides catalog filters on this field. Pick the topic the guide is mainly about, not every product it touches.
+
+| `category` | Use for |
+|------------|---------|
+| `onboarding` | Getting-started guides for new users (the `get-started-*` series and similar first-run guides) |
+| `dashboards` | Building, filtering, sharing and styling dashboards; visualization types and panel techniques |
+| `explore-and-queries` | Explore, Drilldown, saved queries, query languages, transformations and the semantic layer |
+| `data-sources` | Connecting and configuring data sources |
+| `alerting` | Alert rules and activity, IRM and on-call, SLOs |
+| `application-observability` | Application and frontend observability, Knowledge Graph, root cause analysis, observability concepts |
+| `infrastructure-and-data-collection` | Kubernetes and infrastructure monitoring, Alloy and Fleet Management, collecting and sending telemetry |
+| `synthetic-monitoring-and-testing` | Synthetic Monitoring checks and secrets, k6 and load testing |
+| `cost-and-usage` | Adaptive Telemetry, cardinality, usage alerts and cost management |
+| `administration-and-platform` | Git Sync, Grafana Assistant setup, Pathfinder and other platform configuration |
+| `play-demos` | Tours of demo dashboards on Grafana Play |
+
+Rules:
+
+- Do not use `general`, and do not use `testing`: the Pathfinder catalog hides any package whose category is `testing`.
+- To add a category, update this table in the same PR and tell the website team, because the catalog filter is built from these values.
+- Path roots and path steps are unaffected; they keep the `category` derived from `journey.group` (see [field derivation rules](#field-derivation-rules)).
 
 ### author
 
@@ -91,6 +117,57 @@ comma separate authors
 * If you're working on a learning path or learning journey, the default team is
 "Grafana Documentation"
 * If unsure, leave name blank, and use "interactive-learning" for the team field.
+
+### prerequisites
+
+`prerequisites` is an optional array of requirements learners must already satisfy before starting the owning guide or path. Omit the field, or use an empty array, when no such requirement exists. In either case, Pathfinder shows no prerequisite block.
+
+```json
+{
+  "prerequisites": [
+    {
+      "id": "mysql-server",
+      "label": "A running MySQL server that you can access."
+    }
+  ]
+}
+```
+
+Each item has two required fields and one optional field:
+
+| Field | Rules |
+|-------|-------|
+| `id` | A stable string with at least one non-whitespace character. Each ID is exact-string unique within its manifest. Do not change an ID when you revise its label. |
+| `label` | A string with at least one non-whitespace character. Pathfinder preserves the declared string; it does not trim or normalize it. |
+| `format` | Optional. The only supported explicit value is `"markdown"`. Omit it for plain text. |
+
+Plain text is the default. Without `format`, Pathfinder displays the exact label literally, including strings that look like Markdown or HTML. For example, `**text**`, `[text](https://example.com)`, and `<b>text</b>` remain unchanged text. Older clients that do not support `format` also show the label literally.
+
+Set `format` to `"markdown"` only when the label needs a setup link or supported inline styling. This format supports inline links, strong text, emphasis, and inline code. For example:
+
+```json
+{
+  "id": "mysql-server",
+  "label": "A running MySQL server. [Install MySQL](https://dev.mysql.com/doc/mysql-installation-excerpt/).",
+  "format": "markdown"
+}
+```
+
+Use only absolute HTTPS URLs without embedded credentials for links. Enabled links open in a new browser tab with `noopener` and `noreferrer`. They do not replace the guide or change completion or progress. HTTP, relative, root-relative, fragment, and unsafe-protocol destinations do not become clickable. Do not use raw HTML, headings, lists, images, embeds, interactive elements, or constructs that load resources. Unsupported syntax falls back to safe text; it must not create forbidden elements or network requests.
+
+Authoring and CLI validation reject blank IDs or labels, duplicate IDs, and unsupported `format` values. Runtime handling is tolerant. The runtime manifest parser omits an invalid prerequisite field. Online recommendations filter invalid or duplicate entries and retain valid entries. Both preserve the underlying guide or path. Unknown or malformed runtime formats keep otherwise valid labels as literal text.
+
+The validation and deployment workflows build the CLI from Pathfinder's `main` branch, which supports `prerequisites`. An npm release is not required for these source-based workflows.
+
+Declare only prerequisites that are necessary to start: access, permissions, tools, or external resources the tutorial assumes are already available. Do not list resources the tutorial creates, skills it teaches, optional preparation, or conditions checked at runtime by guide steps. Do not infer prerequisites from `content.json` or from a parent manifest.
+
+For a path, list requirements learners must satisfy before starting the path to complete its milestones. Pathfinder shows these in the expanded recommendation summary before milestone links and on the path cover before **Start** or **Resume**. Do not repeat path requirements in milestone manifests.
+
+For a guide, list only its own pre-start requirements. Pathfinder shows them above the guide content and before its first action, including for a directly opened milestone. A milestone does not inherit path requirements.
+
+This field informs the learner. It does not check system state, block a learner, select recommendations, or change completion counts. Use guide requirements and objectives for runtime conditions.
+
+If a pre-start requirement applies only to a specific setup, state that condition in its label, such as "If using a self-hosted instance, permission to add a data source." Short setup links can appear in Markdown labels. Keep optional preparation, recommended knowledge, detailed setup guidance, and context in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
 
 ### targeting
 
@@ -113,12 +190,42 @@ The `targeting` object contains a `match` expression that determines when the gu
 
 | Predicate | Example | Meaning |
 |-----------|---------|---------|
-| `urlPrefix` | `"/alerting"` | Current URL path starts with value |
+| `urlPrefix` | `"/alerting"` | Current URL path starts with value (literal `startsWith`) |
 | `urlPrefixIn` | `["/alerting", "/alerts"]` | Current URL path starts with any value |
+| `urlRegex` | `"/connections/add-new-connection/?$"` | Current URL path matches (auto-anchored with `^`, case-insensitive) |
 | `source` | `"play.grafana.org"` | Request origin matches (regex) |
-| `targetPlatform` | `"cloud"` | Grafana deployment type |
+| `targetPlatform` | `"cloud"` | Grafana deployment type (`"oss"`, `"cloud"`, or `"any"`) |
+| `tag` | `"selected-datasource:prometheus"` | Context tag is present |
+| `userRole` | `"Admin"` | Org role equals value |
+
+The engine also accepts `datasource`, `datasourceIn`, `allDatasources`, `noDatasources`,
+`userRoleIn`, `tagIn`, `allTags`, `cohort`, `cohortIn`, `targetPlatformIn` and `sourceIn`, none
+of which are currently used in this repository. Any name outside that vocabulary is silently
+dropped, which leaves an always-true child — so a typo widens a match instead of narrowing it.
+
+`tag` values come from the plugin's context engine. The ones in use here are
+`selected-datasource:<type>` (a Grafana datasource *type* id, e.g. `prometheus`,
+`yesoreyeram-infinity-datasource`) and `panel-type:<viz>` (e.g. `timeseries`, `logs`, `traces`).
 
 **Combinators:** `and` (all must match), `or` (any must match). Can be nested.
+
+**Scoring matters as much as correctness.** A match expression is scored, not just tested, and
+the recommender returns everything above zero: `and` yields the *fraction* of children that
+matched, while `or` yields 1 or 0. An `and` holding a child that is true regardless of the page
+(`targetPlatform`, `tag`, `userRole`, `datasource`) therefore scores above zero on every page and
+surfaces the guide everywhere. Keep the root of `match` an `or` so scoring stays binary, and make
+sure every `or` branch constrains the URL. Results are sorted on score alone with no tie-break
+and capped at 10, so specificity earns nothing — reducing how many guides match a page is the
+only lever. See
+[.cursor/how-to-write-recommendations.mdc](../.cursor/how-to-write-recommendations.mdc#how-matching-scores)
+for the full rules and `scripts/lint-targeting.py` to check a change.
+
+**Two matchers, different vocabularies.** The recommender service understands every predicate
+above. The plugin's built-in matcher — used when the online recommender is disabled, the OSS
+default — understands only `urlPrefix`, `urlPrefixIn`, `targetPlatform`, `and` and `or`, and
+discards an entry entirely if any other predicate appears anywhere in its tree. `urlRegex`,
+`tag`, `source` and `userRole` are safe for guides that are Cloud-gated regardless; avoid them
+when a guide must also surface on OSS.
 
 ### testEnvironment
 
@@ -149,6 +256,42 @@ Rules are evaluated most-specific-first:
 > **Note:** `"play"` is not a valid `tier` value. Play.grafana.org is a specific cloud instance — model it as `tier: "cloud"` + `instance: "play.grafana.org"`, not as a distinct tier.
 >
 > **Note:** Never copy a regex pattern into `instance`. The `instance` field is a concrete hostname used to target a specific test environment. A regex `source` predicate in the match expression is a routing rule, not an instance identifier. `.*\\.grafana\\.net` specifically means "all Grafana Cloud instances" → `tier: "cloud"` with no `instance`.
+
+---
+
+### stats
+
+`stats` holds the block counts that completion tracking measures a reader against. **Do not write this field by hand, and do not commit it.** It is computed from the guide's own content by `pathfinder-cli build-stats` during CI, so the denominator is guaranteed to match the content it describes and no author can assert a wrong one.
+
+```json
+"stats": {
+  "version": 1,
+  "blockCount": 22,
+  "sectionCount": 2,
+  "completableBlockCount": 18,
+  "finalCompletablePosition": 21
+}
+```
+
+| Key | Meaning |
+|-----|---------|
+| `version` | Rule version of the stamp, bumped when the counting rule changes. Says nothing about whether the guide changed. |
+| `blockCount` | The completion denominator. |
+| `sectionCount` | Section containers. Authoring insight only; not part of the denominator. |
+| `completableBlockCount` | Counted blocks that can emit completion evidence. |
+| `finalCompletablePosition` | Position of the last completable block, `0` when there is none. |
+
+**What counts.** Every block counts once, except containers (`section`, `assistant`, `collapsible`), which contribute their contents and nothing of their own. `multistep` and `guided` each count as one; their inner steps are outside the denominator. `conditional` counts as one and neither branch is descended into. `snippet-ref` counts as one, and its resolved contents inherit that single position — the stamped number is the pre-inlining count. A `path` rolls up as its own cover page followed by its milestones in declared order.
+
+**Reaching 100%.** Completion is `n / blockCount` with no special case, so a guide reaches 100% only when `finalCompletablePosition === blockCount`. Anything less means the guide needs a "Mark as complete" affordance at its foot; that field is the signal for it. Most packages in this repo are currently in that state.
+
+**Where it comes from.** Both CI workflows run `build-stats` over the package tree immediately before `build-repository` — `.github/workflows/deploy.yml` stamps the staged `packages/` tree that ships to the CDN, and `.github/workflows/validate-json.yml` stamps a throwaway copy at PR time as a fail-fast gate. Neither commits the result: like `repository.json`, `graph.json`, and the snippet and course indexes, `stats` is a build artifact, and the committed `manifest.json` files in this repo stay free of it.
+
+The ordering of the two commands matters. `build-stats` writes the manifests and `build-repository` denormalizes them into `repository.json`. As of this writing `build-repository` does not forward the `stats` key, so `repository.json` carries no stats either way; the ordering becomes load-bearing once [grafana-pathfinder-app#1662](https://github.com/grafana/grafana-pathfinder-app/pull/1662) lands and unknown manifest keys start flowing through.
+
+**`build-stats` is deliberately stricter than its siblings.** A milestone missing from the scanned tree, a duplicated milestone, a milestone reachable through two parents, or a manifest that fails schema validation each abort the whole run and leave the tree completely unstamped rather than half-stamped. `build-graph` warns in the same situations and `build-repository` degrades a bad manifest to a warning. The practical consequence for CI: if an `--exclude`d subtree contains a package that a path lists as a milestone, `build-stats` fails where `build-repository` would have quietly omitted the entry. Before adding an `--exclude` to either workflow, check that the excluded tree holds no milestone any path references.
+
+**`stats.blockCount` is not `inspect`'s `blockCount`.** `pathfinder-cli inspect --format json` counts the whole tree, containers included and conditional branches descended; `stats.blockCount` counts neither. The two disagree by design on the same guide — `inspect` answers "how many blocks are in this file", `stats` answers "what is the reader measured against". On `explore-drilldowns-101`, `inspect` reports 24 and `stats` reports 22; the difference is its two `section` containers.
 
 ---
 
@@ -197,7 +340,7 @@ These rules define where each manifest field's data comes from during migration.
 | `type` | — | Always `"guide"`. |
 | `repository` | — | Omit (schema default `"interactive-tutorials"` applies). |
 | `description` | `index.json` rule | First priority: copy the `description` from the matching `index.json` rule (already catalog-style). If no rule exists, summarize available sources (content.json title, website markdown) into a compact one-line catalog summary. |
-| `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise `"general"`. |
+| `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise (standalone guide) choose one of the [allowed categories](#category-standalone-guides). |
 | `author` | — | `{ "team": "interactive-learning" }` for standalone guides; `{ "team": "Grafana Documentation" }` for steps inside a `*-lj` directory. |
 | `language` | — | Omit (schema default `"en"` applies). |
 | `startingLocation` | `index.json` rule | Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). Omit if no URL can be derived (do not fall back to `"/"`). |
@@ -247,7 +390,7 @@ If the website repository is not cloned locally or a guide has no corresponding 
 | Field | Fallback |
 |-------|----------|
 | `description` | Use the `index.json` rule description. If no rule exists, flag for manual entry. |
-| `category` | Default to `"general"` and flag for manual review. |
+| `category` | Steps inside a `*-lj` directory: flag for manual review. Standalone guides: choose from the [allowed categories](#category-standalone-guides). |
 | `milestones` (paths only) | Derive ordering from subdirectory names and `content.json` titles. Flag for manual verification. |
 | `recommends`, `suggests`, `depends` | Leave empty. These fields require website metadata to derive. |
 
@@ -331,7 +474,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "id": "<guide-id>",
   "type": "guide",
   "description": "<from index.json rule description>",
-  "category": "<from journey.group or 'general'>",
+  "category": "<one of the allowed standalone categories>",
   "author": { "team": "interactive-learning" },
   "startingLocation": "<first URL from match expression>",
   "targeting": {
@@ -390,22 +533,59 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ## Validation
 
-Validate individual packages:
+Build the CLI from Pathfinder's `main` branch, as specified in `.github/workflows/validate-json.yml` and `.github/workflows/deploy.yml`.
+
+Validate individual packages with this CLI. It rejects missing prerequisite IDs or labels, whitespace-only values, duplicate IDs, and unsupported `format` values.
 
 ```bash
-node dist/cli/cli/index.js validate --package <directory>
+# cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
+# checked out (and built) at ./pathfinder-app.
+node pathfinder-app/dist/cli/cli/index.js validate --package <directory>
 ```
 
-Validate all packages in the repo:
+Validate every package in the repo, nested milestones included — enumerate `manifest.json` recursively and validate each directory. This is the repo-wide check, and the form CI runs (`.github/workflows/validate-json.yml`):
 
 ```bash
-node dist/cli/cli/index.js validate --packages .
+# cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
+# checked out (and built) at ./pathfinder-app.
+PASSED=0
+FAILED=0
+while IFS= read -r manifest_file; do
+  dir="$(dirname "$manifest_file")"
+  if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir"; then
+    PASSED=$((PASSED + 1))
+  else
+    echo "❌ package validation failed: $dir"
+    FAILED=$((FAILED + 1))
+  fi
+done < <(find . -name manifest.json -type f \
+           -not -path "./pathfinder-app/*" \
+           -not -path "./shared/*" \
+           -not -path "./.git/*")
+
+echo "passed: $PASSED  failed: $FAILED"
+[ "$FAILED" -eq 0 ]
 ```
 
-Build `repository.json` from all packages:
+Two details in that snippet are load-bearing. The counters must be fed by process substitution (`done < <(find ...)`), not by piping `find` into `while`: a pipe runs the loop body in a subshell, so the counters are discarded when it exits and the pipeline reports only the last iteration's status — a failure on package 200 of 665 would scroll away under 400-odd later `✅ PASS` trailers and still leave `$?` at 0. And the closing `[ "$FAILED" -eq 0 ]` is what makes the run's exit status reflect the whole tree; it is spelled as a test rather than `exit 1` so that pasting the block into an interactive shell does not close it.
+
+The `--packages` form — the one [CLAUDE.md](../CLAUDE.md) documents — is depth-1 only: `validatePackageTree` reads the root once and validates only immediate children containing `content.json`, which from this repository's root is 128 of the 665 packages. Nested milestone packages (`automate-k6-cicd-lj/<milestone>/`, for example) are skipped without a word, so do not rely on it after editing one:
 
 ```bash
-node dist/cli/cli/index.js build-repository . -o repository.json
+# cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
+# checked out (and built) at ./pathfinder-app.
+node pathfinder-app/dist/cli/cli/index.js validate --packages .
 ```
 
-These commands are run from a [grafana-pathfinder-app](https://github.com/grafana/grafana-pathfinder-app) checkout. CI runs them automatically; see `.github/workflows/validate-json.yml`.
+Stamp computed completion stats into every manifest, then build `repository.json` from all packages. Run them in this order — see [stats](#stats). Same working directory as the command above, which is how CI invokes them:
+
+```bash
+# cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
+# checked out (and built) at ./pathfinder-app.
+node pathfinder-app/dist/cli/cli/index.js build-stats . --exclude pathfinder-app --exclude shared
+node pathfinder-app/dist/cli/cli/index.js build-repository . --exclude pathfinder-app --exclude shared -o repository.json
+```
+
+`build-stats` rewrites every `manifest.json` in place, so the working directory matters: run it from a `grafana-pathfinder-app` checkout instead and `.` resolves to that repo, rewriting its own bundled package manifests. Do not commit the result; the stamped stats belong to CI, not to the repo. To check for drift without writing anything, add `--check`.
+
+Working directory differs by command, so check it before running one. `validate --package <directory>` takes an explicit path and is cwd-agnostic — point the CLI path at wherever your `grafana-pathfinder-app` checkout is. `validate --packages .`, `build-stats .`, and `build-repository .` all resolve `.` against the current directory and must run from this repository's root, with the CLI reached at `pathfinder-app/dist/cli/cli/index.js`; run `build-stats .` or `build-repository .` from a `grafana-pathfinder-app` checkout and they walk that repo's own tree instead, silently, because both discover packages recursively — and for `build-stats` that is a destructive in-place rewrite. `validate --packages .` fails loudly there rather than false-passing (`No package directories found under ...`, exit 1), since that checkout has no immediate child directory containing `content.json`. CI runs them automatically; see `.github/workflows/validate-json.yml` for the PR-time run and `.github/workflows/deploy.yml` for the run that produces the published tree.

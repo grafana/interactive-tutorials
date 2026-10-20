@@ -2,6 +2,7 @@
 alwaysApply: true
 description: Overview of this repository and task routing for AI agents.
 ---
+- Security issues should be reported via [Grafana's security issue reporting page](https://grafana.com/legal/report-a-security-issue/) and not directly in this repository.
 
 # Interactive Guides Repository
 
@@ -31,7 +32,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 18. **`schemaVersion` is optional** -- if included, use `"schemaVersion": "1.1.0"`; the schema defaults to `"1.1.0"` when omitted
 19. **`popout` requires `targetvalue`** -- `popout` actions MUST set `targetvalue` to exactly `"sidebar"` or `"floating"`; the schema rejects any other value, and `popout` is not allowed inside `guided` blocks
 20. **Use `openGuide`, not `?doc=`** -- to chain a follow-up guide after a `navigate` step, set `openGuide: "bundled:<guide-id>"` on the interactive block; the legacy `?doc=` query param is back-compat only
-21. **`lazyRender` for virtualised targets** -- any step targeting a virtualised container (long tables, paginated lists, dashboard rows below the fold) MUST be inside a `guided` block with `lazyRender: true` on the step; plain `interactive` will fail because `exists-reftarget` cannot scroll
+21. **Use supported lazy discovery** -- for targets absent until scrolling, use a standalone `interactive` block with `lazyRender: true`, `exists-reftarget`, and a verified `scrollContainer` (often `#pageContent` with the Grafana sidebar open). Its individual **Show me** / **Do it** handles discovery. Current `guided` steps and **Do section** do not run that discovery; see [guided-interactions.md](docs/guided-interactions.md#lazy-targets-and-current-runtime-support).
 
 ## Task Routing
 
@@ -42,6 +43,8 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Update/modify an existing guide | [update-guide](.cursor/skills/update-guide/SKILL.md) skill | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
 | Review a guide PR | [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc), [edge-cases-and-troubleshooting.mdc](.cursor/edge-cases-and-troubleshooting.mdc), `docs/` |
 | Review a learning path PR | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | [review-learning-path](.cursor/skills/review-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-guide-pr.mdc](.cursor/review-guide-pr.mdc) |
+| Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
+| Author a learning path (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | [learning-path workflows](.cursor/learning-path-workflows/workflows.md), [/create-learning-path](.cursor/commands/create-learning-path.md), [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) |
 | Decision trees & code smells | [best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), `docs/` |
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
@@ -53,12 +56,14 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 
 | Document | Purpose |
 |----------|---------|
+| [learning-path-authoring.md](docs/learning-path-authoring.md) | Docs-team entry point for interactive learning paths |
 | [json-guide-reference.md](docs/json-guide-reference.md) | Block types, properties, and guide structure |
 | [interactive-actions.md](docs/interactive-actions.md) | Action type behavior and button controls |
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
 | [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |
 | [manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and derivation rules |
+| [website-yaml-reference.md](docs/website-yaml-reference.md) | Learning Hub metadata in `website.yaml` |
 
 ## Historical Context
 
@@ -81,5 +86,20 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/lint](.cursor/commands/lint.md) | Validate guide JSON structure |
 | [/check](.cursor/commands/check.md) | Check guide quality against best practices |
 | [/attack](.cursor/commands/attack.md) | Find issues by simulating confused users |
+| [/create-learning-path](.cursor/commands/create-learning-path.md) | Create a new interactive learning path from scratch |
+| [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) | Convert an existing website learning path to an interactive package |
+| [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | Author pre-PR self-review for a learning path (mirrors review checks + shared claim-check, then optional fixes) |
 | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
-| [/build-interactive-lj](.cursor/commands/build-interactive-lj/README.md) | Multi-phase learning journey builder |
+
+## Committing and pushing
+
+Branch protection on this repository enforces **verified commit signatures** as a push rule. An unsigned commit is not rejected when you make it — it is rejected by the remote at push time, with `GH013: Repository rule violations found` naming each offending SHA. Fixing it after the fact means rewriting the commit, which changes its SHA and can leave local tooling holding a diverged ref.
+
+So: leave `commit.gpgsign` enabled and never disable it for a commit here (no `-c commit.gpgsign=false`, no `--no-gpg-sign`). Check before pushing with `git log --pretty='%h %G? %s' main..HEAD` — every commit must show `G`.
+
+## Maintaining this file
+
+Keep this file for knowledge useful to almost every future agent session in this project.
+Do not repeat what the codebase already shows; point to the authoritative file or command instead.
+Prefer rewriting or pruning existing entries over appending new ones.
+When updating this file, preserve this bar for all agents and keep entries concise.

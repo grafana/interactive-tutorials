@@ -15,7 +15,32 @@ repo are good examples of valid `targeting.match` blocks.
 The `targeting.match` value uses the same expression syntax the old `index.json` rules used, so the decisions are
 the same -- they just live in the manifest now.
 
-- ALWAYS set `targeting.match` in the guide's `manifest.json` (never edit `index.json`).
+Before writing a match block, read [How matching scores](#how-matching-scores) below.
+Eligibility and ranking are separate. Use actual route and task evidence; never add
+broad alternatives just to increase exposure. See [the catalog audit](../docs/targeting-audit/README.md)
+for pinned matcher/ranker evidence and known context gaps.
+
+- Set `targeting.match` only for independently recommendable paths and standalone guides.
+  Omit it for every path module, including foundations (`milestones`), `tracks[].guides`,
+  shared modules, and supporting lessons nested under a path. Direct navigation is unaffected.
+  Never edit `index.json`.
+- NEVER use `{ "urlPrefix": "/" }`. It matches every page in the product. A guide that is
+  relevant everywhere is relevant nowhere.
+- Target the page and observed task where the lesson is useful. `startingLocation` is
+  its launch location, not a recommendation rule; they may differ. Prefer an integration
+  setup page such as `/connections/add-new-connection/kafka` over the whole catalog.
+- Keep the root of `match` an `or`, so scoring stays binary. See
+  [How matching scores](#how-matching-scores).
+- Catalog and listing pages (`/dashboards`, `/connections/infrastructure`,
+  `/connections/add-new-connection`) are shared by every guide in their area. Put one or two
+  overview guides there, and let specific guides live on the page that signals intent.
+- It is fine to target an adjacent page where the guide would prompt a user to try something
+  they have not discovered yet -- a playlists guide belongs on `/dashboards`, because nobody
+  visits `/playlists` before they know playlists exist. Budget those nudges: aim for a handful
+  of guides per page, not a dozen.
+- Verify every URL against a real stack before committing it. `urlPrefix` is a literal
+  `startsWith` with no route awareness, so a typo silently never matches -- and a prefix that
+  is one segment too short silently matches far more than intended.
 - The guide's `description` and `category` also live in `manifest.json`. Read the guide and base the
   description on what's in it.
 - ASK THE USER whether the guide pertains to things that are cloud, or both cloud & OSS.
@@ -43,11 +68,77 @@ and that means that they cannot be run on environments like Play, where users do
 {
   "targeting": {
     "match": {
-      "and": [
-        { "targetPlatform": "cloud" },
-        { "urlPrefixIn": ["/a/grafana-cmab-app/usage-alerts", "/a/grafana-cmab-app"] }
+      "or": [
+        {
+          "and": [
+            { "targetPlatform": "cloud" },
+            { "urlPrefixIn": ["/a/grafana-cmab-app/usage-alerts", "/a/grafana-cmab-app"] }
+          ]
+        }
       ]
     }
   }
 }
 ```
+
+## How matching scores
+
+Authoritative source: `internal/recommender/rules.go` and `cmd/recommender/v1recommend.go` in
+[`grafana-recommender`](https://github.com/grafana/grafana-recommender).
+
+Three behaviours decide whether a guide is seen:
+
+1. **A guide is returned when its score is above zero, not when it matches.** The recommender
+   discards the `matched` boolean and keeps only the accuracy.
+2. **`and` scores the fraction of children that matched; `or` scores 1 or 0.** So
+   `{"and": [{"urlPrefix": "/explore"}, {"targetPlatform": "cloud"}]}` scores 0.5 on *every*
+   page of a Cloud stack, because the platform child is true regardless of the page -- and 0.5
+   is above zero, so the guide is returned everywhere. Wrapping that same `and` in an `or` makes
+   the expression score 1.0 on `/explore` and 0 elsewhere.
+3. **Ranking is versioned separately from accuracy.** The context-ranking v1 implementation
+   tested in the [audit](../docs/targeting-audit/README.md) ranks fully satisfied evidence:
+   product route plus observed task, route, installed environment, then general eligibility.
+   OR uses its strongest fully satisfied branch; AND combines only fully satisfied children.
+   Repeated tags in a category do not multiply strength. Platform, role, cohort and source
+   constrain eligibility, not relevance. The server ranks before its cap; the client demotes
+   completed peers within a tier. Older deployments may still sort by accuracy alone.
+   Do not assume the audited ranking revision is deployed.
+
+Practical rules that follow:
+
+- **Keep the root of `match` an `or`.** Every branch then scores 1.0 or 0, and the guide is
+  either fully relevant or absent. Put platform and tag criteria inside the branch's `and`.
+- **Every branch of an `or` must constrain the URL.** A branch with no URL criterion matches
+  every page and drags the whole expression with it.
+- **Test required gates inside a complete OR alternative.** Source predicates are hard
+  pre-filters. Platform, tag and role predicates reject a complete AND branch wrapped in
+  OR, but a partially satisfied top-level AND can still admit content. Test negative cases
+  against the server, including the wrong platform, role, selected backend and route.
+- **One criterion per object.** Evaluation is a `switch`, so only the first key in precedence
+  order is read: `{"urlPrefix": "/d/", "datasource": "prometheus"}` ignores the datasource.
+  Split criteria into `and`/`or` children.
+- **Only these criterion names exist**: `and`, `or`, `urlRegex`, `urlPrefix`, `urlPrefixIn`,
+  `datasource`, `datasourceIn`, `allDatasources`, `noDatasources`, `userRole`, `userRoleIn`,
+  `tag`, `tagIn`, `allTags`, `cohort`, `cohortIn`, `targetPlatform`, `targetPlatformIn`,
+  `source`, `sourceIn`. An unrecognised name is dropped, which leaves an always-true child --
+  a typo makes a guide *more* broad, not less.
+
+`urlRegex`, `tag`, `source`, `userRole` and `cohort` work in the recommender but are dropped by
+the plugin's own matcher, which handles only `urlPrefix`, `urlPrefixIn`, `targetPlatform`, `and`
+and `or`. That matcher runs when the online recommender is disabled (the OSS default), and it
+discards the whole entry if any other predicate appears anywhere in the tree. Use the richer
+predicates when a guide is Cloud-gated anyway; avoid them if it must also surface on OSS.
+
+## Checking your work
+
+```bash
+python3 scripts/lint-targeting.py
+```
+
+Flags `urlPrefix: "/"`, root-level `and` blocks that score partially, `or` branches with no URL
+constraint, unknown criterion names, and multiple criteria in one object. Add `--report` for a
+per-page count of how many guides compete on each representative page.
+
+For a complete eligibility and ranking audit, use `scripts/targeting-audit/run.py` and
+`run-client.py` as documented in the audit report. The linter's `--report` is an approximate
+contention diagnostic, not proof of server eligibility or ranking.

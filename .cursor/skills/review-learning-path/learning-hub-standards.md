@@ -69,20 +69,25 @@ Do **not** put milestone-specific troubleshooting or side-path links on the path
 
 ### Landing screenshot
 
-Every path should show a compelling end-result screenshot when possible (dashboard, alert, data flowing). Conversion PRs sometimes drop website-relative images — note in review body rather than blocking merge when prose and steps are otherwise sound.
+Every path should show a compelling end-result screenshot when possible (dashboard, alert, data flowing) on the **website** render. Screenshots and embedded videos in `content.json` must be wrapped in a `conditional` with `conditions: ["renderer:website"]` so Pathfinder does not show them (live UI is already highlighted). Absence of screenshots/videos in the Pathfinder sidebar is expected and is not a review issue when the website branch still has them.
+
+Markdown that mixes prose with `![alt](url)` needs a **dual-branch** conditional, not a single wrap-and-hide: `whenTrue` keeps the markdown with images (website), `whenFalse` keeps the same prose with the image syntax stripped (Pathfinder) — dropping the whole block would lose the prose too.
+
+**Two different findings, don't conflate them:** no screenshot/video at all is expected and not an issue (**internal**, see [finding routing](reference-checks.md#finding-routing)); a screenshot, video, or markdown image that IS present but not wrapped in `renderer:website` is a **Fix** the author must make before merge (**post inline**).
 
 | Check | Notes |
 |---|---|
-| No motivating visual at all | Note in review body |
+| No motivating visual at all on website | Note in review body |
 | Image shows outcome the path does not deliver | Misleading — route via [finding routing](reference-checks.md#finding-routing) |
 | Outdated UI in screenshot | Note in review body |
-| Valid `cta.image` on path `website.yaml` or markdown image with working URL | OK |
+| Valid `cta.image` on path `website.yaml` or website-gated image/video in `content.json` | OK |
+| Ungated `image` / `video` / markdown `![]()` visible in Pathfinder | Fix — wrap with `renderer:website` (see [learning-path-authoring.md](../../../docs/learning-path-authoring.md#screenshots-and-videos-website-only-in-pathfinder)) |
 
 ---
 
 ## Before you begin (prerequisites)
 
-Path root `content.json` `## Before you begin` must set users up for success.
+Path root `content.json` `## Before you begin` must set users up for success. The path manifest can also declare requirements learners must satisfy before starting, not resources created or skills taught by the path; see [prerequisites](../../../docs/manifest-reference.md#prerequisites).
 
 | Prerequisite | Notes |
 |---|---|
@@ -120,12 +125,12 @@ Count path `manifest.json` `milestones` entries (hands-on only; exclude framing 
 
 ### Value milestone (framing)
 
-Every path should open with **why** before **how**. In packages this is usually a framing directory (`business-value`, `value-*`, `advantages-*`, `welcome`) with markdown-only `content.json` — **not** listed in path `milestones`. See [framing vs not framing](reference-checks.md#framing-vs-not-framing): `end-journey` stays in `milestones`; markdown-only alone does not mean framing.
+Every path should open with **why** before **how**. In packages this is usually a framing directory (`business-value`, `value-*`, `advantages-*`, `welcome`) with markdown-only `content.json`. The website Learning Path still shows that framing; Pathfinder omits it from path `milestones` so the in-app UI stays action-oriented. See [framing vs not framing](reference-checks.md#framing-vs-not-framing): `end-journey` stays in `milestones`; markdown-only alone does not mean framing.
 
 | Check | Notes |
 |---|---|
 | No framing milestone and first hands-on jumps straight to steps without intro context | Editorial |
-| Framing ID incorrectly listed in path `milestones` | See [framing milestones](reference-checks.md#framing-milestones) |
+| Framing ID incorrectly listed in path `milestones` | Pathfinder-only fix — see [framing milestones](reference-checks.md#framing-milestones); keep the package for the website |
 | Value milestone is generic / no clear problem statement | Editorial |
 | Ambiguous prose package (e.g. `understanding-*`) in `milestones` | Internal until reviewer confirms framing vs path step |
 
@@ -287,10 +292,11 @@ During Phase 1, spot-check high-risk links on **conversion** PRs and any milesto
 
 Missing milestone videos is **not** a review issue — the video library is still growing.
 
-If `content.json` or markdown embeds video:
+If `content.json` embeds video (typed `video` block or markdown):
 
+- Gate with `renderer:website` so Pathfinder does not show the embed
 - Relevant to milestone content
-- Embed works
+- Embed works on the website render
 - Reflects current UI
 - Supplements — does not replace — written steps
 
@@ -302,7 +308,8 @@ Quick scan during Phase 1 (route via [finding routing](reference-checks.md#findi
 
 | Pitfall | Where to look |
 |---|---|
-| Missing landing screenshot | Path `content.json` / `website.yaml` |
+| Missing landing screenshot | Path `content.json` / `website.yaml` (website branch or `cta.image`; Pathfinder absence OK when gated) |
+| Ungated media visible in Pathfinder | Any `image`/`video`/markdown `![]()` in `content.json` without a `renderer:website` conditional — see [Landing screenshot](#landing-screenshot) |
 | Vague instructions | Milestone interactive copy |
 | Missing sign-in / first UI step | First hands-on milestone |
 | Broken or outdated references | Links, menu labels, feature names |

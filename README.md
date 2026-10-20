@@ -110,6 +110,7 @@ Primary documentation files in this repo:
 
 | Topic | File |
 |-------|------|
+| Learning path authoring (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) |
 | Guide Reference | [docs/json-guide-reference.md](docs/json-guide-reference.md) |
 | Action Types | [docs/interactive-actions.md](docs/interactive-actions.md) |
 | Requirements | [docs/requirements-reference.md](docs/requirements-reference.md) |

@@ -3,33 +3,45 @@
   "type": "path",
   "description": "Hands-on guide: Configure a Prometheus data source in Grafana Cloud using best practices.",
   "category": "data-availability",
-  "author": { "team": "Grafana Documentation" },
-  "testEnvironment": { "tier": "cloud" },
+  "author": {
+    "team": "Grafana Documentation"
+  },
+  "testEnvironment": {
+    "tier": "cloud"
+  },
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "or": [
+          "and": [
             {
-              "and": [
-                {
-                  "urlPrefix": "/connections/datasources"
-                },
-                {
-                  "tag": "selected-datasource:prometheus"
-                }
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:prometheus"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
               ]
-            },
-            {
-              "urlPrefix": "/connections/datasources/prometheus"
-            },
-            {
-              "urlRegex": "/connections/add-new-connection/?$"
             }
           ]
         },
         {
-          "targetPlatform": "cloud"
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/prometheus"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
         }
       ]
     }
@@ -44,7 +56,9 @@
     "prometheus-end-journey"
   ],
   "depends": [],
-  "recommends": ["drilldown-metrics-lj"],
-  "suggests": ["private-data-source-connect-lj"],
+  "suggests": [
+    "private-data-source-connect-lj",
+    "drilldown-metrics-lj"
+  ],
   "provides": []
 }

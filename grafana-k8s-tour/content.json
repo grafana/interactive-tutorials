@@ -1,0 +1,529 @@
+{
+  "id": "grafana-k8s-tour",
+  "title": "Tour the Kubernetes Monitoring app",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This tour walks the Kubernetes Monitoring app in five independent stops \u2014 Overview, Alerts, the Clusters list, the other object lists, and Cost \u2014 take them in any order, or stop after just one, since your cluster is already sending data."
+    },
+    {
+      "type": "markdown",
+      "content": "Here's what the home page's Overview and Efficiency views tell you about a cluster that's already reporting in."
+    },
+    {
+      "type": "section",
+      "id": "tour-overview",
+      "title": "The Kubernetes Overview",
+      "requirements": [
+        "has-permission:grafana-k8s-app.home:read"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "overview-open",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/home/overview",
+          "content": "Open the Kubernetes Monitoring home page for a cluster that's already sending data.",
+          "doIt": true,
+          "requirements": [],
+          "tooltip": "The app's front door. Everything else in the tour is a narrower view of what this page summarises."
+        },
+        {
+          "type": "interactive",
+          "id": "overview-datasource",
+          "action": "highlight",
+          "reftarget": "[data-testid='prometheus-picker']",
+          "content": "This picker sets which Prometheus instance the app queries \u2014 everything you see on every page follows from what's selected here.",
+          "tooltip": "Every query on this page and the ones that follow runs through whatever's selected here, so changing it changes what you see everywhere in the app.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/home/overview"
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "overview-count-and-risk",
+          "content": "Read the two numbers that matter most on a working cluster: how many you have, and how many pods are at risk.",
+          "steps": [
+            {
+              "id": "overview-cluster-count",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Panel header Clusters']",
+              "tooltip": "This is the running total of clusters this app is tracking \u2014 the first number to sanity-check when something feels off.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/home/overview"
+              ]
+            },
+            {
+              "id": "overview-pods-not-ready",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Panel header Pods not ready']",
+              "tooltip": "Anything above zero here means pods are stuck instead of running, and it's usually the fastest signal that something's wrong.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/home/overview"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "overview-open-efficiency",
+          "action": "button",
+          "reftarget": "[data-testid='data-testid Tab Efficiency']",
+          "content": "Move to the **Efficiency** view to see how well requested CPU matches what's actually used.",
+          "tooltip": "This switches from a health check to a spend check \u2014 same cluster, different question.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/home/overview"
+          ],
+          "verify": "on-page:/a/grafana-k8s-app/home/efficiency"
+        },
+        {
+          "type": "interactive",
+          "id": "overview-cpu-overrequested",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Panel header CPU Over-requested']",
+          "content": "Over-requested CPU is capacity you've reserved but aren't using \u2014 it sits idle on every node until you right-size it.",
+          "tooltip": "This is capacity you've reserved but aren't using, and it's the number the Savings view later turns into a dollar figure.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/home/efficiency"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've identified what scopes the page, checked cluster health and pod risk, and seen where requested CPU is going to waste."
+    },
+    {
+      "type": "markdown",
+      "content": "Two places show firing alerts \u2014 the roll-up on the home page and the dedicated Alerts page that breaks them down by cluster and severity."
+    },
+    {
+      "type": "section",
+      "id": "tour-alerts",
+      "title": "Where alerts surface",
+      "requirements": [
+        "has-permission:grafana-k8s-app.alerts:read",
+        "navmenu-open"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "alerts-open-home",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/home/alerts",
+          "content": "Open the home page's **Alerts** view.",
+          "doIt": true,
+          "requirements": [],
+          "tooltip": "Still the home page, third view. This is the alert summary that sits next to the health and efficiency ones."
+        },
+        {
+          "type": "interactive",
+          "id": "alerts-home-rollup",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Panel header Firing alerts']",
+          "content": "This roll-up is the fast check for whether anything's firing, without leaving the home page.",
+          "tooltip": "This is the fast answer to whether anything's on fire, before you go looking for the details.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/home/alerts"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "alerts-open-dedicated",
+          "action": "button",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app/alerts']",
+          "content": "Open the dedicated **Alerts** page from the app nav for the full breakdown.",
+          "tooltip": "The home roll-up tells you something's firing; this page tells you where and how bad.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/home/alerts"
+          ],
+          "verify": "on-page:/a/grafana-k8s-app/alerts"
+        },
+        {
+          "type": "multistep",
+          "id": "alerts-breakdown",
+          "content": "See exactly which clusters are affected and how serious it is.",
+          "steps": [
+            {
+              "id": "alerts-by-cluster",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Panel header Firing alerts by cluster']",
+              "tooltip": "This tells you whether the problem is spread across your fleet or stuck on one cluster.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/alerts"
+              ]
+            },
+            {
+              "id": "alerts-severity",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Panel header Alert severity']",
+              "tooltip": "This is what separates a page-worthy incident from something that can wait until morning.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/alerts"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can now tell the quick home-page check apart from the dedicated page that shows exactly which clusters and severities are firing."
+    },
+    {
+      "type": "markdown",
+      "content": "The Clusters table uses the same filter row, time range, column picker and usage/cost switch you'll meet on every other list in this app."
+    },
+    {
+      "type": "section",
+      "id": "tour-list-controls",
+      "title": "The Clusters list and the controls every list shares",
+      "requirements": [
+        "has-permission:grafana-k8s-app.cluster:read"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "clusters-open",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/navigation/cluster",
+          "content": "Open the Clusters list.",
+          "doIt": true,
+          "requirements": [],
+          "tooltip": "The first of the four object lists. The controls you meet here are on all of them."
+        },
+        {
+          "type": "multistep",
+          "id": "clusters-scope-controls",
+          "content": "Check what's narrowing this table before you read a single row.",
+          "steps": [
+            {
+              "id": "clusters-filter",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Dashboard template variables submenu Label cluster']",
+              "tooltip": "Every row in this table is limited to whatever's picked here, so an empty-looking table is often just a narrow filter.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/cluster"
+              ]
+            },
+            {
+              "id": "clusters-time-range",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+              "tooltip": "Usage and cost figures in this table are only ever averaged or summed over whatever window is set here.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/cluster"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "id": "clusters-column-picker",
+          "content": "Open the column picker to change what this table shows.",
+          "steps": [
+            {
+              "id": "clusters-column-picker-open",
+              "action": "button",
+              "reftarget": "[data-testid='column-picker-button']",
+              "tooltip": "This is where you add or remove columns without leaving the table.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/cluster"
+              ]
+            },
+            {
+              "id": "clusters-column-picker-menu",
+              "action": "highlight",
+              "reftarget": "[data-testid='column-picker-menu']",
+              "tooltip": "Turn on whatever columns answer the question you're actually asking right now \u2014 they don't have to stay for good.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/cluster"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "clusters-usage-cost-switch",
+          "action": "highlight",
+          "reftarget": "[data-testid='TableViewSwitch']",
+          "content": "This switch flips the whole table between usage numbers and their dollar cost.",
+          "tooltip": "Flipping this turns every usage column in the table into its dollar cost, and back again.",
+          "doIt": false,
+          "showMe": false,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/navigation/cluster"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've found what scopes this table, opened its column picker, and located the switch that turns it into a cost view \u2014 the same controls show up on every list in this app."
+    },
+    {
+      "type": "markdown",
+      "content": "Namespaces, Workloads, Nodes and All jobs are the same kind of list, each scoped by the object it's named for."
+    },
+    {
+      "type": "section",
+      "id": "tour-lists",
+      "title": "Namespaces, workloads, nodes and jobs",
+      "requirements": [
+        "has-permission:grafana-k8s-app.all-jobs:read",
+        "has-permission:grafana-k8s-app.namespace:read",
+        "has-permission:grafana-k8s-app.nodes:read",
+        "has-permission:grafana-k8s-app.workload:read",
+        "navmenu-open"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "lists-open-namespaces",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/navigation/namespace",
+          "content": "Open the Namespaces list.",
+          "doIt": true,
+          "requirements": [],
+          "tooltip": "Namespaces sit between clusters and workloads, so this is usually where a hunt for a noisy team or environment starts."
+        },
+        {
+          "type": "interactive",
+          "id": "lists-namespace-filter",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Dashboard template variables submenu Label namespace']",
+          "content": "This list adds its own namespace filter on top of the cluster filter, so you can narrow all the way down to one namespace.",
+          "tooltip": "This narrows the list to one namespace at a time, on top of whatever cluster filter is already set.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/navigation/namespace"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "lists-open-workloads",
+          "action": "button",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app/navigation/workload']",
+          "content": "Move to the **Workloads** list from the app nav.",
+          "tooltip": "Same table shape, this time scoped to deployments, statefulsets and the rest.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/navigation/namespace"
+          ],
+          "verify": "on-page:/a/grafana-k8s-app/navigation/workload"
+        },
+        {
+          "type": "interactive",
+          "id": "lists-workload-filter",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Dashboard template variables submenu Label workload']",
+          "content": "The filter row picks up a workload filter here, the same pattern as before.",
+          "tooltip": "This is the same filter pattern again, just scoped to workloads this time.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/navigation/workload"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "lists-open-nodes",
+          "action": "button",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app/navigation/nodes']",
+          "content": "Move to the **Nodes** list from the app nav.",
+          "tooltip": "This is where you check the underlying machines rather than what's running on them.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/navigation/workload"
+          ],
+          "verify": "on-page:/a/grafana-k8s-app/navigation/nodes"
+        },
+        {
+          "type": "interactive",
+          "id": "lists-node-filter",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Dashboard template variables submenu Label node']",
+          "content": "Narrow down to a single node here, the same way as the lists before it.",
+          "tooltip": "Same pattern once more, this time scoped down to a single node.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/navigation/nodes"
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "lists-open-jobs",
+          "content": "All jobs opens straight onto the scheduled Cronjobs list \u2014 switch tabs to see the one-off Jobs runs instead.",
+          "steps": [
+            {
+              "id": "lists-open-all-jobs",
+              "action": "button",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-k8s-app/navigation/all-jobs']",
+              "tooltip": "This is where every scheduled and one-off job across your clusters lives, and it opens straight onto the scheduled ones.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/nodes"
+              ]
+            },
+            {
+              "id": "lists-open-jobs-tab",
+              "action": "button",
+              "reftarget": "[data-testid='data-testid Tab Jobs']",
+              "tooltip": "This switches from jobs that run on a schedule to the ones kicked off one-off, outside of one.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-k8s-app/navigation/all-jobs/cronjobs"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Namespaces, Workloads, Nodes, and All jobs are all the same list with a different object filtered in, reached the same way from the nav, with Cronjobs and Jobs as its two tabs."
+    },
+    {
+      "type": "markdown",
+      "content": "This section starts on cost overview to find where spend concentrates and what's recoverable, then jumps to the Metrics status page \u2014 a grid of per-integration status tiles with nothing individually worth clicking \u2014 to open its Cardinality tab and see what those metrics cost in series."
+    },
+    {
+      "type": "section",
+      "id": "tour-cost-and-cardinality",
+      "title": "Cost, and what your metrics cost",
+      "requirements": [
+        "has-permission:grafana-k8s-app.configuration:read",
+        "has-permission:grafana-k8s-app.cost:read"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "cost-open-overview",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/cost/overview",
+          "content": "Open the cost overview.",
+          "doIt": true,
+          "requirements": [],
+          "tooltip": "From here on the question changes from what's running to what it costs."
+        },
+        {
+          "type": "interactive",
+          "id": "cost-top-spending",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Panel header Top spending']",
+          "content": "This ranks clusters and namespaces by what they're actually costing you.",
+          "tooltip": "This is the ranked list of what's costing you the most right now, across clusters and namespaces.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/cost/overview"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "cost-open-savings",
+          "action": "button",
+          "reftarget": "[data-testid='data-testid Tab Savings']",
+          "content": "Move to the **Savings** view to see how much of that spend is recoverable.",
+          "tooltip": "This is where the app turns idle, over-requested capacity into an actual dollar figure.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/cost/overview"
+          ],
+          "verify": "on-page:/a/grafana-k8s-app/cost/savings"
+        },
+        {
+          "type": "interactive",
+          "id": "cost-cpu-vs-savings",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Panel header CPU cost vs savings']",
+          "content": "This lines up what you're paying for CPU against what you'd pay if requests matched real usage.",
+          "tooltip": "The gap between these two lines is what right-sizing your requests would get back.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/cost/savings"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "cost-open-metrics-status",
+          "action": "navigate",
+          "reftarget": "/a/grafana-k8s-app/configuration/metrics-status",
+          "content": "Open the Metrics status page.",
+          "doIt": true,
+          "requirements": [],
+          "tooltip": "Every number in this tour came from these metrics. This page says which of them are actually arriving, per cluster."
+        },
+        {
+          "type": "interactive",
+          "id": "cost-open-cardinality",
+          "action": "button",
+          "reftarget": "[data-testid='data-testid Tab Cardinality']",
+          "content": "Move to the **Cardinality** tab to see what this monitoring costs in metric series rather than dollars.",
+          "tooltip": "Series count drives your monitoring bill just as directly as the infrastructure it's watching.",
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration/metrics-status"
+          ],
+          "verify": "on-page:/a/grafana-k8s-app/configuration/cardinality"
+        },
+        {
+          "type": "interactive",
+          "id": "cost-metrics-per-cluster",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Panel header Metrics per cluster']",
+          "content": "This breaks series count down by cluster, so the biggest contributor is your first place to trim scrape targets or labels.",
+          "tooltip": "A cluster generating far more series than the rest is usually the one worth trimming first.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-k8s-app/configuration/cardinality"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've traced spend to its top sources, seen what's recoverable, and checked what the underlying metrics themselves are costing in series."
+    },
+    {
+      "type": "markdown",
+      "content": "For the CPU and memory drilldowns behind any of these lists, continue with the k8s-cpu and k8s-mem guides."
+    }
+  ]
+}

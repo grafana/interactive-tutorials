@@ -1,0 +1,42 @@
+{
+  "id": "read-a-trace-open-a-trace",
+  "title": "Open a real trace",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "To save you hunting for a good example, we've filled in a ready-made query that lands you on a set of traces worth reading. That query is written in [TraceQL](https://grafana.com/docs/tempo/latest/traceql/), Tempo's trace query language. You don't need to read or write it here; the step below opens Explore and runs it for you. You'll see where TraceQL fits at the end of this path.\n\nRun the ready-made query below to load a set of example traces."
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22trc%22%3A%7B%22datasource%22%3A%22grafanacloud-play-traces%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20rootServiceName%20%3D%20%5C%22quickpizza-public-api%5C%22%20%26%26%20rootName%20%3D%20%5C%22POST%20%2Fapi%2Fpizza%5C%22%20%26%26%20duration%20%3E%20100ms%20%7D%22%2C%22limit%22%3A20%2C%22tableType%22%3A%22traces%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1",
+          "content": "Run the ready-made query to load a set of example traces. Wait for the results table to appear.",
+          "verify": "on-page:/explore"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"data-testid Panel header Table - Traces\"]",
+          "content": "Your candidate traces land here in the results table. They're all the same kind of request, so any row is a good one to read.",
+          "doIt": false,
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "If the results list is empty, that's not a problem. Widen the time range at the top of Explore and run the query again, and a matching trace will appear. If you change the query by mistake, run the query step again to reload it."
+    },
+    {
+      "type": "markdown",
+      "content": "When results appear, open any trace by clicking its **trace ID** (the hex string in the left column), not the row label. They're all the same kind of request, so any one is a good one to read."
+    },
+    {
+      "type": "markdown",
+      "content": "You're now looking at the **trace view**: one request laid out as a **span waterfall**, with each row a span stacked by when it started. Read it top-down. The top row is the request itself, and everything nested below is the work it set off.\n\nDon't worry that the durations or trace look different from any screenshot. The demo streams live data, so every trace is a little different. What stays the same is the shape, and that's what you're here to read."
+    }
+  ]
+}

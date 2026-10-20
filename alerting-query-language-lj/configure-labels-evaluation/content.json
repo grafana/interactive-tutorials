@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "alerting-query-language-configure-labels-evaluation",
+  "title": "Create a folder and add labels",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You'll organize your alert into a folder and add labels so the rule is easy to find and filter later. Labels can also feed notification policies when you set those up.\n\nFolders organize alerts by team, service, or purpose, and control who can manage them.\n\nIn this milestone, you create a folder, then add a rule-level label."
+    },
+    {
+      "type": "section",
+      "id": "select-folder",
+      "title": "Create a folder",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **New folder**, name it **QuickPizza alerts**, then click **Create**.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "New folder"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid alert-rule name-folder-name-field']",
+              "targetvalue": "QuickPizza alerts"
+            },
+            {
+              "action": "button",
+              "reftarget": "Create"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've created a folder for the rule. Next, add labels."
+    },
+    {
+      "type": "section",
+      "id": "add-labels",
+      "title": "Add labels",
+      "requirements": [
+        "section-completed:select-folder"
+      ],
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **Add labels**, set **severity** to **critical**, then click **Save**.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Add labels"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='alertlabel-key-combobox']",
+              "targetvalue": "severity"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='alertlabel-value-combobox']",
+              "targetvalue": "critical"
+            },
+            {
+              "action": "button",
+              "reftarget": "Save"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule step-3']:contains('severity'):contains('critical')",
+          "content": "Confirm that **severity=critical** appears on the alert rule.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your alert now has a folder and a label. Next, you set how often the rule evaluates and how long the condition must last before the alert fires."
+    }
+  ]
+}

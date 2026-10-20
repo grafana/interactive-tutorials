@@ -16,6 +16,15 @@
       "content": "The instructions in this milestone are based on the publicly available [Traffic density](https://thingspeak.com/channels/38629/feed.csv) CSV file, which has the following structure.\n\n```csv\ncreated_at,entry_id,field1,field2\n2025-04-07 12:19:26 UTC,18706390,6.000000,20.000000\n2025-04-07 12:19:41 UTC,18706391,4.000000,19.000000\n2025-04-07 12:19:56 UTC,18706392,8.000000,25.000000\n```"
     },
     {
+      "type": "input",
+      "id": "infinity-source-choice",
+      "prompt": "Choose the Infinity data source you configured earlier, using the name you gave it.",
+      "inputType": "datasource",
+      "variableName": "infinitySource",
+      "datasourceFilter": "yesoreyeram-infinity-datasource",
+      "required": true
+    },
+    {
       "type": "markdown",
       "content": "To build a dashboard with the Infinity data source, complete the following steps:"
     },
@@ -41,13 +50,19 @@
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "[data-testid='data-testid Select a data source']",
-          "targetvalue": "Infinity",
-          "content": "In the query section at the bottom of the screen, click the **Data source** dropdown and search for your Infinity data source."
+          "reftarget": "#pageContent {grafana:components.DataSourcePicker.inputV2}",
+          "targetvalue": "{{infinitySource}}",
+          "requirements": [
+            "on-page:/d",
+            "var-infinitySource:*",
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "content": "Select **{{infinitySource}}** in the **Data source** picker."
         },
         {
           "type": "markdown",
-          "content": "Select your Infinity data source from the list."
+          "content": "The panel now uses the Infinity data source you configured earlier."
         },
         {
           "type": "interactive",

@@ -1,0 +1,748 @@
+{
+  "id": "explore-getting-started",
+  "title": "Getting started with Explore",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Explore is Grafana's ad-hoc query and investigation workspace — no dashboard required. This guide walks through:\n\n- Installing a set of demo data sources to use for the rest of the guide\n- The shared interface: toolbar, query row, and results controls that work the same everywhere\n- Querying **metrics** with PromQL\n- Querying **logs** with LogQL\n- Querying **traces** with TraceQL\n\nEach section ends with links to go deeper."
+    },
+    {
+      "type": "markdown",
+      "content": "Install a small set of free, Grafana-hosted demo data sources first — real metrics, logs, and traces from the same sample app."
+    },
+    {
+      "type": "section",
+      "id": "install-demo-datasources",
+      "title": "Install the shared demo data sources",
+      "objectives": ["has-datasource:grafanacloud-play-prom"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-demodashboards-app']",
+          "requirements": ["navmenu-open", "exists-reftarget"],
+          "content": "Click **Demo Data Dashboards** in the main menu."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='install-quickpizza']",
+          "requirements": ["exists-reftarget"],
+          "completeEarly": true,
+          "tooltip": "QuickPizza is a small, fully-instrumented demo app hosted by Grafana — querying it never counts toward your usage.",
+          "content": "Click **Install the Quick Pizza SRE demo**. This adds matching Prometheus, Loki, and Tempo data sources and refreshes the page."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now have **grafanacloud-play-prom**, **grafanacloud-play-logs**, and **grafanacloud-play-traces** — real demo data you'll use throughout this guide."
+    },
+    {
+      "type": "markdown",
+      "content": "Start by touring the controls that stay the same no matter which data source you query."
+    },
+    {
+      "type": "section",
+      "id": "explore-tour",
+      "title": "Tour the Explore interface",
+      "requirements": ["on-page:/explore"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.DataSourcePicker.container",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Every query starts here — Prometheus, Loki, Tempo, or anything else you've connected.",
+          "content": "Find the data source picker at the top left of the toolbar."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:pages.Explore.toolbar.goQueryless",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "This shortcut only appears for data sources with a matching drilldown app installed.",
+          "tooltip": "It opens a purpose-built drilldown view for the same data source without writing a query.",
+          "content": "Notice the **Go queryless** shortcut next to the data source picker."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:pages.Explore.toolbar.split",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "tooltip": "Split view is ideal for comparing two queries, two data sources, or two time ranges side by side.",
+          "content": "Click **Split** to open a second, independent query pane."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Close split pane']:nth-match(2)",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "skippable": true,
+          "content": "Click the close icon on the new pane to return to a single pane."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:pages.Explore.toolbar.addTo",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Use it to open another data source in a new tab without losing your current query.",
+          "content": "Notice **Add**, for opening additional Explore tabs."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.TimePicker.openButton",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "The arrows on either side step that same range backward or forward, and the magnifying glass zooms out.",
+          "content": "The time range picker controls the window every query runs against."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.RefreshPicker.runButtonV2",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "content": "Click **Run query** to execute whatever is in the query editor."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.RefreshPicker.intervalButtonV2",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Handy for watching something unfold in near-real time without clicking Run query yourself.",
+          "content": "Next to it, the refresh-interval control turns on auto-refresh."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:pages.Explore.toolbar.share",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Anyone who opens it lands on the same data source, query, and time range you're looking at.",
+          "content": "**Share** copies a link that reproduces this exact query and time range."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:pages.Explore.toolbar.contentOutline",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "content": "Click **Outline** to toggle the section-jump sidebar."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.QueryEditorRows.rows",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Later queries can reference an earlier one's results by that letter — useful for math across queries.",
+          "content": "Each query lives in its own row, labeled **A**, **B**, and so on."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.QueryEditorRow.actionButton:Duplicate query",
+          "requirements": ["on-page:/explore", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Its neighbors let you view data source help, save the query, hide its results, remove it, or drag it to reorder.",
+          "content": "Icons on the query row include a duplicate-query shortcut, shown here."
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore"],
+          "content": "**Query history** lists every query you've run recently — browse by day, star favorites, or filter by data source. Open it, take a look, then close it again.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.QueryTab.queryHistoryButton",
+              "requirements": ["exists-reftarget"],
+              "skippable": true,
+              "description": "Click Query history to open the panel"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:pages.Explore.QueryHistory.container} button:has(svg[data-testid='icon-times'])",
+              "requirements": ["exists-reftarget"],
+              "description": "Close the panel with the X at its top right"
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore"],
+          "content": "**Query inspector** exposes the raw request and response. Its Stats, Query, JSON, and Data tabs show timing, the exact request sent, and the payload returned — invaluable when a query doesn't behave as expected. Open it, look around, then close it.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.QueryTab.queryInspectorButton",
+              "requirements": ["exists-reftarget"],
+              "skippable": true,
+              "description": "Click Query inspector to open it"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "{grafana:pages.Explore.General.container} [role='tablist'] button:has(svg[data-testid='icon-times'])",
+              "requirements": ["exists-reftarget"],
+              "description": "Close the inspector with the X at its top right"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know every shared control in Explore — from picking a data source to comparing two queries side by side."
+    },
+    {
+      "type": "markdown",
+      "content": "Prometheus and other metrics data sources speak PromQL. Select one to build your first metrics query."
+    },
+    {
+      "type": "section",
+      "id": "explore-metrics",
+      "title": "Query metrics",
+      "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+      "blocks": [
+        {
+          "type": "multistep",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "content": "Open the data source picker and select **grafanacloud-play-prom**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "targetvalue": "grafanacloud-play-prom",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "skippable": true,
+          "content": "Make sure the query editor is in **Builder** mode — the rest of this section uses the visual query builder.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:has(input[title='Builder'])",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "Already in Builder mode? Skip this step — nothing needs to change.",
+              "description": "Select Builder mode"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.QueryBuilder.queryPatterns",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "A quick way to insert a common query shape — rate, histogram, or similar — instead of starting from a blank editor.",
+          "content": "**Kick start your query** offers ready-made PromQL patterns."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.DataSource.Prometheus.queryEditor.builder.metricSelect",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Type a few letters and it fuzzy-searches every metric name your Prometheus data source knows about.",
+          "content": "In **Builder** mode, the Metric field searches available metric names as you type."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Open metrics explorer']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Browse by name or type, and read each metric's description before you commit to it.",
+          "content": "The book icon opens a full, searchable catalog of every available metric."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='prometheus-dimensions-filter-item']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Label filters narrow a metric down to a specific service, instance, or any other dimension it's tagged with.",
+          "content": "**Label filters** let you scope a metric to exactly the series you care about."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row prometheus A'] button[title='Add operation']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "This is the same function library PromQL uses — rate, sum, histogram_quantile, and dozens more — applied visually.",
+          "content": "**Operations** adds functions to your query without typing PromQL by hand."
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "content": "Turn on **Explain** to see your query broken down in plain English. Every clause then gets its own numbered, plain-language explanation above the editor — useful while you're still learning PromQL.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
+              "requirements": ["exists-reftarget"],
+              "description": "Turn on Explain"
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "skippable": true,
+          "content": "Turn **Explain** back off — or leave it on if you find the annotations useful.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.explain} div{grafana:components.Switch.container}",
+              "requirements": ["exists-reftarget"],
+              "description": "Turn Explain back off"
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom"],
+          "content": "Switch to **Code** mode to write raw PromQL directly.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.editorToggle} div{grafana:components.RadioButton.container}:has(input[title='Code'])",
+              "requirements": ["exists-reftarget"],
+              "description": "Select Code mode"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.DataSource.Prometheus.queryEditor.code.metricsBrowser.openButton",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "It walks you through picking a metric, then narrowing it down by label, without memorizing PromQL syntax.",
+          "content": "**Metrics browser** builds a query for you from labels, step by step."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.Prometheus.queryEditor.code.queryField} textarea.inputarea",
+          "targetvalue": "quickpizza_server_http_request_duration_seconds_count",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "tooltip": "It's a counter from the shared demo app — one of the same metrics every Grafana Cloud user just installed.",
+          "content": "Type `quickpizza_server_http_request_duration_seconds_count`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.RefreshPicker.runButtonV2",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "content": "Click **Run query**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "{grafana:components.DataSource.Prometheus.queryEditor.code.queryField} textarea.inputarea",
+          "targetvalue": "rate(quickpizza_server_http_request_duration_seconds_count[5m])",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "tooltip": "A counter like this only ever goes up, so it's more useful as a rate.",
+          "content": "Wrap the counter in `rate(...)` to see requests per second instead — replace the query with `rate(quickpizza_server_http_request_duration_seconds_count[5m])`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.RefreshPicker.runButtonV2",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "content": "Click **Run query** again."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.Panels.Panel.title:Graph",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Lines suit trends over time; bars and points can make sparse or discrete values easier to read.",
+          "content": "Results render as a **Graph**, with Lines, Bars, Points, and stacked variants in the top-right corner."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.VizLegend.legend",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Click one to isolate it, or shift-click to build up a custom comparison of just the series you want.",
+          "content": "The legend below the graph lists every series, with its full label set."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Raw} {grafana:components.Panels.Panel.headerContainer}",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "The Raw results panel only appears when the query type includes Instant — continue if it isn't there.",
+          "tooltip": "Toggle to Table for a spreadsheet-style view of the exact same data.",
+          "content": "**Raw** shows the underlying data frame — every returned series and its labels."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div{grafana:components.DataSource.Prometheus.queryEditor.options} button",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "content": "Expand **Options** to see legend, format, and query-type settings."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.DataSource.Prometheus.queryEditor.type",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-prom", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "This lives inside the Options row — expand it first if the highlight can't find it.",
+          "tooltip": "Instant returns one value per series for the end of the time range — useful for current-state checks like this one.",
+          "content": "**Type** switches between a full time series (**Range**), a single point (**Instant**), or **Both**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You wrote, explained, and visualized a PromQL query, and know where its display and query-type options live."
+    },
+    {
+      "type": "markdown",
+      "content": "Loki and other log data sources speak LogQL. Select one to search and filter real log lines."
+    },
+    {
+      "type": "section",
+      "id": "explore-logs",
+      "title": "Query logs",
+      "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+      "blocks": [
+        {
+          "type": "multistep",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "content": "Open the data source picker and select **grafanacloud-play-logs**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "targetvalue": "grafanacloud-play-logs",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "skippable": true,
+          "content": "Make sure the query editor is in **Builder** mode — the next few steps describe the visual builder.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row loki A'] div{grafana:components.RadioButton.container}:has(input[title='Builder'])",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "The metrics section left the editor in Code mode, so this usually needs one click. If Builder is already selected, skip the step.",
+              "description": "Select Builder mode"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.QueryBuilder.queryPatterns",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "It inserts a ready-made LogQL pattern instead of starting from a blank query.",
+          "content": "**Kick start your query** offers common LogQL patterns here too."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='label-browser-button']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "It lists every label Loki knows about, with autocomplete for values, so you can build a selector without memorizing names.",
+          "content": "**Label browser** is Loki's dedicated tool for discovering labels and values."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.QueryBuilder.labelSelect",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Pick a label, an operator, and a value — the builder writes the selector for you.",
+          "content": "**Label filters** scope the query to a set of streams. Every Loki query starts with a label selector like this, in curly braces."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='operations.0.wrapper']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "It's the LogQL equivalent of grep — keep only lines that contain (or don't contain) a given string.",
+          "content": "Every new query starts with a **Line contains** filter, ready to narrow results further."
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "content": "Switch to **Code** mode so you can write the whole LogQL query at once.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row loki A'] div{grafana:components.RadioButton.container}:has(input[title='Code'])",
+              "requirements": ["exists-reftarget"],
+              "description": "Select Code mode"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "{grafana:components.QueryField.container} textarea.inputarea",
+          "targetvalue": "{service_name=\"quickpizza-catalog\"} |= \"doughs\"",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "tooltip": "The label selector picks the stream; `|=` keeps only lines containing `doughs`, one of QuickPizza's real API paths.",
+          "content": "Type `{service_name=\"quickpizza-catalog\"} |= \"doughs\"`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.RefreshPicker.runButtonV2",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "tooltip": "Above the results, Loki reports how much it scanned and often suggests hints like **add json parser** — QuickPizza's logs are JSON, and carry the `traceID` you'll follow in the next section.",
+          "content": "Click **Run query**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.Panels.Panel.title:Logs volume",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Some Loki versions label this panel slightly differently — continue if it isn't found.",
+          "tooltip": "Spikes and quiet periods here often point straight at when an incident started.",
+          "content": "**Logs volume** charts how many lines matched per time bucket, broken down by level."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Search fields by name']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Checking one adds it as its own column, and the percentage shows how many of the returned lines actually have it.",
+          "content": "The left-hand fields panel lists every field detected in your log lines."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Log menu']:nth-match(1)",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs", "exists-reftarget"],
+          "tooltip": "From here you can show full log details, view surrounding context lines, pin the line, copy it as text or JSON, or ask Grafana Assistant to explain it.",
+          "content": "Click the menu icon on a log line to see what you can do with it."
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-logs"],
+          "content": "**Live** tails new log lines as they arrive. Start it, watch a few lines land, then stop it.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:pages.Explore.toolbar.live",
+              "requirements": ["exists-reftarget"],
+              "description": "Click Live to start tailing"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "grafana:pages.Explore.toolbar.live",
+              "requirements": ["exists-reftarget"],
+              "description": "Click it again to stop"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You built a label selector, filtered lines by content, inspected fields, and tailed logs live."
+    },
+    {
+      "type": "markdown",
+      "content": "One control worth knowing about before moving on: below the query editor, the collapsed **Options** row holds the line limit and read direction — expand it if you want to cap how many lines come back, or read oldest-first instead of newest-first."
+    },
+    {
+      "type": "markdown",
+      "content": "Tempo and other tracing data sources speak TraceQL. Select one to search traces and drill into individual spans."
+    },
+    {
+      "type": "section",
+      "id": "explore-traces",
+      "title": "Query traces",
+      "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces"],
+      "blocks": [
+        {
+          "type": "multistep",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces"],
+          "content": "Open the data source picker and select **grafanacloud-play-traces**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "grafana:components.DataSourcePicker.inputV2",
+              "targetvalue": "grafanacloud-play-traces",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Query editor row tempo A'] {grafana:components.RadioGroup.container}",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Search is form-based, TraceQL is a query language for precise filters, and Service Graph shows dependencies between services.",
+          "content": "Tempo offers three query types: **Search**, **TraceQL**, and **Service Graph**."
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces"],
+          "skippable": true,
+          "content": "Select **Search** for a form-based way to find traces.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:has(input[title='Search'])",
+              "requirements": ["exists-reftarget"],
+              "tooltip": "Search is Tempo's default query type, so this is usually already selected — skip the step if it is.",
+              "description": "Select the Search query type"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input#service-name-value",
+          "targetvalue": "quickpizza-public-api",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "tooltip": "**Span Name**, **Status**, **Duration**, and **Tags** filter further the same way, and **Edit in TraceQL** turns whatever you set in the form into the equivalent raw TraceQL expression.",
+          "content": "Set **Service Name** to `quickpizza-public-api`, a real traced service in the shared demo dataset."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.RefreshPicker.runButtonV2",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "content": "Click **Run query** to search for matching traces."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Table - Traces} {grafana:components.Panels.Panel.headerContainer}",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "Each row is one trace: a single end-to-end request across every service it touched.",
+          "content": "Matching traces list as a table, with trace ID, start time, service, name, and duration."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.DataLinksContextMenu.singleLink}:nth-match(1)",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "skippable": true,
+          "hint": "No traces matched — widen the time range or clear the Service Name filter, then try again.",
+          "content": "Click the first **Trace ID** to open its full waterfall view."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.Panels.Panel.title:Trace",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "The route is the entry span's name, and just below it **Overview** draws a mini waterfall of the whole trace — collapse that once you've found the section you want to zoom into.",
+          "content": "The trace header shows total duration, how many services were involved, and the route."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Filter by attribute or text']",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "tooltip": "Critical path highlights the spans that actually determined total trace duration; the others surface likely problem spots.",
+          "content": "Filter spans by attribute or text, or use the **Critical path**, **Errors**, and **High latency** shortcuts."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div{grafana:components.TraceViewer.spanBar}:nth-match(1)",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "skippable": true,
+          "tooltip": "A span's details include its own attributes, resource attributes (service, cluster, region, and more), and a **Related logs** button that jumps straight to log lines from the same request.",
+          "content": "Click the first span to expand its details."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Close split pane']:nth-match(2)",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "skippable": true,
+          "tooltip": "Opening a trace puts it in a second pane, which halves the width of the query form — on a narrow screen that pushes it out of view.",
+          "content": "Close the trace pane to give the query editor the full width back."
+        },
+        {
+          "type": "guided",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces"],
+          "content": "Switch to **Service Graph** to see how services depend on each other.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid Query editor row tempo A'] div{grafana:components.RadioGroup.container} div{grafana:components.RadioButton.container}:has(input[title='Service Graph'])",
+              "requirements": ["exists-reftarget"],
+              "description": "Select the Service Graph query type"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.RefreshPicker.runButtonV2",
+          "requirements": ["on-page:/explore", "has-datasource:grafanacloud-play-traces", "exists-reftarget"],
+          "tooltip": "Each node shows request rate and error rate for one service and each edge is a dependency — a fast way to spot where errors or latency concentrate across a whole system.",
+          "content": "Click **Run query** to build the graph."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You searched for traces, opened a trace's waterfall, inspected a span's attributes, and viewed the service dependency graph."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore\n\n- [Explore documentation](https://grafana.com/docs/grafana/latest/explore/)\n- [PromQL basics](https://grafana.com/docs/grafana/latest/datasources/prometheus/query-editor/)\n- [LogQL basics](https://grafana.com/docs/loki/latest/query/)\n- [TraceQL basics](https://grafana.com/docs/tempo/latest/traceql/)"
+    }
+  ]
+}

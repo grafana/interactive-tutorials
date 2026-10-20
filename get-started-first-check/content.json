@@ -1,0 +1,255 @@
+{
+  "id": "get-started-first-check",
+  "title": "Create your first HTTP uptime check",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Check your website’s availability and response time with an HTTP GET request. Use a public website that you are allowed to monitor; this check does not run JavaScript."
+    },
+    {
+      "type": "markdown",
+      "content": "First, open Synthetic Monitoring:"
+    },
+    {
+      "type": "section",
+      "id": "open-synthetic-monitoring",
+      "title": "Open Synthetic Monitoring",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-synthetic-monitoring-app/home",
+          "content": "Open **Synthetic Monitoring**.",
+          "showMe": false,
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/home",
+          "doIt": true,
+          "tooltip": "Open the setup page in this Grafana instance."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='app-init init-button']",
+          "content": "If prompted, click **Get started**. If you cannot initialize the service, ask an administrator, then return here; skip this step only when setup is already complete.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "tooltip": "This one-time setup must finish before you can create a check.",
+          "doIt": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Once Synthetic Monitoring is open, you're ready to create a check."
+    },
+    {
+      "type": "markdown",
+      "content": "Choose a target and probe locations for your first check. You need permission to create checks."
+    },
+    {
+      "type": "section",
+      "id": "create-a-ping-check",
+      "title": "Create an HTTP uptime check",
+      "requirements": [
+        "section-completed:open-synthetic-monitoring",
+        "on-page:/a/grafana-synthetic-monitoring-app"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='action create check']:not([aria-disabled='true']):not([disabled])",
+          "content": "Click **Create new check**.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Choose a check type based on what you need to test.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
+          "content": "Click **API Endpoint** and keep the default **HTTP** request type and **GET** method.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "This editor supports HTTP, ping, DNS, TCP, and traceroute checks.",
+          "doIt": true
+        },
+        {
+          "type": "guided",
+          "id": "get-started-first-check-reader-block-5-block-2",
+          "content": "Enter a descriptive **Job name**, such as `my-website-uptime`.",
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='checkEditor form job']",
+              "targetvalue": "^\\S(?:.*\\S)?$",
+              "validateInput": true,
+              "formHint": "Enter a descriptive name for your application or check.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-synthetic-monitoring-app"
+              ],
+              "tooltip": "This name becomes the job label used to find the check in metrics and logs.",
+              "description": "Enter a descriptive **Job name**, such as `my-website-uptime`."
+            }
+          ]
+        },
+        {
+          "type": "guided",
+          "id": "get-started-first-check-reader-block-5-block-3",
+          "content": "Enter your website URL, including `https://` or `http://`.",
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='checkEditor form instance']",
+              "targetvalue": "^https?://[^\\s/?#]+(?:[^\\s]*)?$",
+              "validateInput": true,
+              "formHint": "Enter a complete public HTTP or HTTPS URL, such as https://yourcompany.com.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-synthetic-monitoring-app"
+              ],
+              "tooltip": "Use an endpoint reachable by public probes; this request does not execute browser JavaScript.",
+              "description": "Enter your website URL, including `https://` or `http://`."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation execution']",
+          "content": "Click **Execution** to choose probe locations and a schedule.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app"
+          ],
+          "tooltip": "Each selected location runs the check independently at the frequency you choose.",
+          "doIt": true
+        },
+        {
+          "type": "guided",
+          "content": "Select the highlighted online probe, or keep it selected. Leave **Frequency** at its default and review the estimated usage before saving.",
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "label:has(+ :is(label, div) [data-testid='probes cards status'][aria-label$=' is online']) input[data-testid='checkEditor form probeCheckbox']:not(:disabled):nth-match(1)",
+              "targetstate": "true",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+                "exists-reftarget"
+              ],
+              "lazyRender": true,
+              "description": "Select an online probe.",
+              "tooltip": "Start with one online location; each additional probe increases usage."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "label:has(+ :is(label, div) [data-testid='probes cards status'][aria-label$=' is online']) input[data-testid='checkEditor form probeCheckbox']:not(:disabled):checked:nth-match(1)",
+              "targetstate": "true",
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+                "exists-reftarget"
+              ],
+              "lazyRender": true,
+              "description": "Confirm an online probe is selected.",
+              "tooltip": "Continue once an online location is selected."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "form[data-testid='checkEditor form']:has(label:has(input[data-testid='checkEditor form probeCheckbox']:checked) + :is(label, div):has([data-testid='probes cards status'][aria-label$=' is online'])) button[data-testid='checkEditor form submit']:not(:disabled)",
+          "content": "Click **Save**. If an error appears, correct it and try again before continuing.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new",
+            "exists-reftarget",
+            "form-valid"
+          ],
+          "tooltip": "Review the target, selected probes, and estimated usage before saving.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "{grafana:components.Panels.Panel.title:Uptime}",
+          "doIt": false,
+          "content": "Confirm that the saved check’s dashboard opens. **Uptime** shows when at least one probe succeeds; the first results can take a few minutes.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks",
+            "exists-reftarget",
+            "min-version:11.0.0"
+          ],
+          "tooltip": "An empty chart immediately after saving does not mean the check failed."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The saved check’s dashboard shows availability and response time for your website."
+    },
+    {
+      "type": "markdown",
+      "content": "Finally, read the results on the dashboard that just opened:"
+    },
+    {
+      "type": "section",
+      "id": "read-the-results",
+      "title": "Read the results",
+      "requirements": [
+        "section-completed:create-a-ping-check",
+        "on-page:/a/grafana-synthetic-monitoring-app"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "{grafana:components.Panels.Panel.title:Reachability}",
+          "content": "**Reachability** shows the success rate across all selected probe locations.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks",
+            "exists-reftarget",
+            "min-version:11.0.0"
+          ],
+          "tooltip": "Compare locations to distinguish a widespread outage from a regional network problem."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "{grafana:components.Panels.Panel.title:Average latency}",
+          "content": "**Average latency** shows how long HTTP requests take. Allow a few minutes for the first measurements.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks",
+            "exists-reftarget",
+            "min-version:11.0.0"
+          ],
+          "tooltip": "Compare locations over the same time range; longer network paths usually take more time."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can now use HTTP results to monitor your website’s availability and response time."
+    },
+    {
+      "type": "markdown",
+      "content": "Each probe runs independently. More locations or a shorter interval increase usage; adjust them later as needed."
+    },
+    {
+      "type": "markdown",
+      "content": "[Return to the Digital Experience Monitoring landing page](/?pathfinderKiosk=1&kioskRulesUrl=https%3A%2F%2Finteractive-learning.grafana.net%2Fguides%2Fkiosk%2Fdem%2Frules.json)"
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "drilldown-profiles-investigate-with-assistant",
+  "title": "Analyze with AI (Optional)",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You can ask AI to explain flame graphs.\n\nThis milestone needs [Grafana Assistant](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/get-started/) enabled, or otherwise the [LLM plugin](https://grafana.com/grafana/plugins/grafana-llm-app/) (`grafana-llm-app`) installed and enabled. If neither is available, you can finish the journey without this step.\n\nOn a regular **Flame graph**, look for **Analyze with Assistant** or **Explain Flame Graph**. Here on Diff, use **Analyze with Assistant** or **Explain Diff Flame Graph**.\n\nTo analyze with AI, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "conditional",
+          "conditions": [
+            "plugin-enabled:grafana-assistant-app"
+          ],
+          "description": "Use Analyze with Assistant when Assistant is enabled; otherwise fall back to the LLM plugin.",
+          "display": "section",
+          "whenTrueSectionConfig": {
+            "title": "Grafana Assistant"
+          },
+          "whenTrue": [
+            {
+              "type": "interactive",
+              "action": "popout",
+              "targetvalue": "floating",
+              "content": "Click **Pop out** at the top right of this guide. Assistant opens in the same sidebar space, so popping the guide out lets you see both at once.\n\nIf you skip this and leave the guide docked, click the question mark icon after Assistant opens to return to this page.",
+              "skippable": true
+            },
+            {
+              "type": "interactive",
+              "action": "button",
+              "reftarget": "Analyze with Assistant",
+              "content": "Click **Analyze with Assistant**.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-pyroscope-app/explore"
+              ],
+              "skippable": true
+            }
+          ],
+          "whenFalseSectionConfig": {
+            "title": "LLM plugin"
+          },
+          "whenFalse": [
+            {
+              "type": "conditional",
+              "conditions": [
+                "plugin-enabled:grafana-llm-app"
+              ],
+              "description": "Use Explain Diff Flame Graph when the LLM plugin is enabled on the Diff flame graph view.",
+              "whenTrue": [
+                {
+                  "type": "interactive",
+                  "action": "button",
+                  "reftarget": "Explain Diff Flame Graph",
+                  "content": "Click **Explain Diff Flame Graph**.",
+                  "requirements": [
+                    "exists-reftarget",
+                    "on-page:/a/grafana-pyroscope-app/explore"
+                  ],
+                  "skippable": true
+                }
+              ],
+              "whenFalse": [
+                {
+                  "type": "markdown",
+                  "content": "Neither Grafana Assistant nor the LLM plugin (`grafana-llm-app`) is enabled on this stack, so you can finish without this step. To use flame graph AI later, [get started with Grafana Assistant](https://grafana.com/docs/grafana-cloud/machine-learning/assistant/get-started/) or install and enable the [LLM plugin](https://grafana.com/grafana/plugins/grafana-llm-app/)."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "If the analysis runs, it summarizes bottlenecks and likely root causes."
+    },
+    {
+      "type": "markdown",
+      "content": "You've completed this optional AI step."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore\n\n- [Grafana Assistant](/docs/grafana-cloud/machine-learning/assistant/)\n- [Use Flame graph AI](/docs/plugins/grafana-pyroscope-app/latest/investigate/flame-graph-ai/)"
+    }
+  ]
+}

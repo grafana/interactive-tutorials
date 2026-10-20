@@ -14,13 +14,13 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         persist-credentials: false
         submodules: false
 
     - name: Checkout validation scripts from main
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         ref: main
         sparse-checkout: |
@@ -57,23 +57,41 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         persist-credentials: false
         submodules: false
 
+    - name: Validate top-level path metadata files
+      run: |
+        FAILED=0
+
+        while IFS= read -r dir; do
+          for required in content.json website.yaml; do
+            if [ ! -f "$dir/$required" ]; then
+              echo "::error file=${dir#./}::${dir#./}/$required is required for top-level -lj/-lp directories"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+        done < <(find . -mindepth 1 -maxdepth 1 -type d \( -name '*-lj' -o -name '*-lp' \) | sort)
+
+        if [ "$FAILED" -gt 0 ]; then
+          echo "❌ Found $FAILED missing required metadata file(s) for top-level -lj/-lp directories"
+          exit 1
+        fi
+
+        echo "✅ All top-level -lj/-lp directories include content.json and website.yaml"
+
     - name: Checkout pathfinder-app CLI
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         repository: grafana/grafana-pathfinder-app
-        # Pin: pathfinder main after e6dde89 (TypeScript 6.0.3) has package.json/lock out of
-        # sync (npm ci: Missing typescript@5.9.3). Revisit when upstream lockfile is fixed.
-        ref: 342121e6ef884afeddcc680f2a8f6ca60b687488
+        ref: main
         path: pathfinder-app
         persist-credentials: false
 
     - name: Setup Node.js
-      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         # Track pathfinder-app's engines.node so `npm ci` runs on a compatible version.
         node-version-file: pathfinder-app/package.json
@@ -112,12 +130,20 @@ jobs:
         PASSED=0
         FAILED=0
 
+        SNIPPET_CATALOG_ARGS=()
+        if [ -f /tmp/snippets-index.json ]; then
+          SNIPPET_CATALOG_ARGS=(--snippets-catalog /tmp/snippets-index.json)
+          echo "Snippet-reference validation enabled with /tmp/snippets-index.json."
+        else
+          echo "::warning::Snippet catalog not found; snippet-reference validation is skipped."
+        fi
+
         # Find and iterate through each content.json file
         while IFS= read -r file; do
           if [ -n "$file" ]; then
             echo "📄 Validating: $file"
 
-            if node pathfinder-app/dist/cli/cli/index.js validate --strict "$file"; then
+            if node pathfinder-app/dist/cli/cli/index.js validate --strict "${SNIPPET_CATALOG_ARGS[@]}" "$file"; then
               PASSED=$((PASSED + 1))
             else
               echo "❌ Validation failed for: $file"
@@ -218,12 +244,20 @@ jobs:
         PASSED=0
         FAILED=0
 
+        SNIPPET_CATALOG_ARGS=()
+        if [ -f /tmp/snippets-index.json ]; then
+          SNIPPET_CATALOG_ARGS=(--snippets-catalog /tmp/snippets-index.json)
+          echo "Snippet-reference validation enabled with /tmp/snippets-index.json."
+        else
+          echo "::warning::Snippet catalog not found; snippet-reference validation is skipped."
+        fi
+
         while IFS= read -r manifest_file; do
           if [ -n "$manifest_file" ]; then
             dir="$(dirname "$manifest_file")"
             echo "📦 Validating package: $dir"
 
-            if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir"; then
+            if node pathfinder-app/dist/cli/cli/index.js validate --package "$dir" "${SNIPPET_CATALOG_ARGS[@]}"; then
               PASSED=$((PASSED + 1))
             else
               echo "❌ Package validation failed: $dir"
@@ -246,6 +280,34 @@ jobs:
           exit 1
         fi
 
+    # Stamps every manifest.json with its computed completion stats. This step MUST
+    # stay immediately before "Build repository.json": build-stats writes the manifests,
+    # build-repository denormalizes them into repository.json. Today the ordering is
+    # inert because build-repository never assigns `stats`; it becomes load-bearing the
+    # moment grafana-pathfinder-app#1662 (manifest-extension passthrough) lands, after
+    # which an index built before the manifests are stamped omits stats for every package.
+    #
+    # This writes into the checkout and nothing commits it, so the stamped manifests
+    # live only for the duration of the job. The value here is fail-fast: build-stats is
+    # the strictest command in the pipeline, so running it at PR time catches a tree
+    # shape that would abort the deploy — an unresolvable, duplicated, or double-parented
+    # milestone — while the change is still reviewable.
+    #
+    # Same root and same excludes as build-repository below, deliberately. build-stats is
+    # stricter than its sibling: a package that a path lists as a milestone but that sits
+    # inside an excluded subtree aborts the whole run and leaves the tree unstamped, where
+    # build-repository would merely omit the entry and succeed. Verified against the real
+    # tree at the time of writing — 665 packages stamped, exit 0, no warnings — so neither
+    # `pathfinder-app` nor `shared` holds a milestone any path references. Adding an
+    # --exclude for a subtree that does hold one would turn this step into a hard stop.
+    - name: Stamp manifest stats
+      run: |
+        echo "🔢 Computing completion block stats into every manifest.json..."
+        echo ""
+        node pathfinder-app/dist/cli/cli/index.js build-stats . --exclude pathfinder-app --exclude shared
+        echo ""
+        echo "🔢 manifest stats stamped"
+
     - name: Build repository.json
       run: |
         echo "🔨 Generating repository.json from all packages..."
@@ -264,7 +326,7 @@ jobs:
         node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:repository.json
 
     - name: Upload repository.json and graph.json artifacts
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
       with:
         name: repository-and-graph-json
         path: |

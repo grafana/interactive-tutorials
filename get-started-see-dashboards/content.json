@@ -1,0 +1,100 @@
+{
+  "id": "get-started-see-dashboards",
+  "title": "Use dashboards to investigate a problem",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Picture this. You look after a wind farm, and an alert just told you its power output dropped. Is a turbine broken, or did the wind simply die down? A dashboard is where you go to find out. It's a saved page of visualizations that someone builds once, and from then on anyone can open it and read it without writing a query.\n\nIn this guide you'll investigate on a dashboard of a demo wind farm that tracks power produced, turbine speed, and wind, all on the same page, updating as you watch."
+    },
+    {
+      "type": "markdown",
+      "content": "First, find the dashboard that watches the wind farm."
+    },
+    {
+      "type": "section",
+      "id": "open-a-dashboard",
+      "title": "Open a dashboard",
+      "objectives": ["on-page:/d/avzwehmz"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click **Dashboards** in the main menu.\n\nThis page lists every saved dashboard, grouped in folders. When an alert points at a system, this is where you find the page that watches it.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/avzwehmz/demo-wind-farm",
+          "verify": "on-page:/d/avzwehmz",
+          "objectives": ["on-page:/d/avzwehmz"],
+          "content": "Open **Demo Wind Farm**, one of the dashboards in the **Examples** folder.\n\nIt watches the wind farm you're investigating and shows power produced, turbine speed, and wind."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You found the page that watches the system in trouble. No setup, no query, just a click."
+    },
+    {
+      "type": "markdown",
+      "content": "Next, read the dashboard the way an investigator would."
+    },
+    {
+      "type": "section",
+      "id": "read-the-dashboard",
+      "title": "Read the dashboard",
+      "requirements": ["on-page:/d/avzwehmz"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid='data-testid Panel header Wind Farm - Total Average Power (Watts)']",
+          "content": "Check the chart tracking the farm's power output over time.\n\nIf power dropped, the wind panels on the same page tell you whether the wind dropped too. That side-by-side view is why dashboards work for investigations. Each visualization on the page is called a panel. Some are charts like this one, and others show single numbers, like **Current Power**.",
+          "tooltip": "One visualization of the data. A dashboard is a saved page of these.",
+          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"]
+        },
+        {
+          "type": "multistep",
+          "content": "Watch the **Current Power** panel as its menu opens.\n\nEvery panel has a menu, hidden in its top-right corner until your mouse is over the panel. When one number looks wrong, the menu lets you view, share, or inspect just that panel.",
+          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"],
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "[data-testid='data-testid Panel header Current Power']",
+              "tooltip": "The menu hides in this corner."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Panel menu Current Power']",
+              "tooltip": "**View**, **Share**, and **Inspect** live here."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Open the **time range** picker at the top right and choose **Last 3 hours**.\n\nA drop only makes sense with context. Widening the window shows whether it just started or has been going on all morning, and every panel on the page redraws to the new time window at once.",
+          "requirements": ["on-page:/d/avzwehmz", "exists-reftarget"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid TimePicker Open Button']",
+              "tooltip": "The window of time the whole page is showing. Every panel follows it."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid TimePicker time range option now-3h to now'] label",
+              "tooltip": "One change here redraws every panel on the page for the new window of time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "That's a real investigation. Over the wider window, compare the power chart with **Latest Wind Speed** and **Turbine RPM** further down the page. If power and wind fell together, the wind died down and the farm is fine. If the wind held steady while power fell, a turbine needs attention. To see the other half of the story, where alerts come from and what makes them fire, take the [guide on alerting](https://interactive-learning.grafana.net/guides/get-started-see-alerting) next."
+    }
+  ]
+}

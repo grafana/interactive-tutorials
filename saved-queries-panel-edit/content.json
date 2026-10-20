@@ -7,82 +7,287 @@
       "content": "Saved queries lets you save a query for later and pull those queries back into the editor. This guide helps you both save and reintroduce saved queries while editing a dashboard panel. These can also be used in other features, like Explore!"
     },
     {
-      "type": "multistep",
-      "content": "#### 1. Before you begin\n\nFirst, open a panel and select **Edit** to open the query editor.\n\n\n\nThe **Save** and **Replace** options live in the query header, next to your query. The **Add saved query** action lives in the **+** menu next to **Queries &amp; Expressions** on the left in the query editor sidebar.",
-      "steps": [
+      "type": "markdown",
+      "content": "Open a dashboard panel in **Edit**, use the **New query editor**, and select the query you want to save in **Queries & Expressions**. Saved queries require the feature and the appropriate account permissions."
+    },
+    {
+      "type": "interactive",
+      "id": "saved-query-editor-ready",
+      "action": "highlight",
+      "reftarget": "div[data-testid='data-testid Panel editor content']:has(button[aria-label='Add query or expression'])",
+      "content": "Confirm that your chosen query is open in the panel editor.",
+      "doIt": false,
+      "requirements": [
+        "exists-reftarget",
+        "is-editor"
+      ]
+    },
+    {
+      "type": "input",
+      "id": "saved-query-name",
+      "inputType": "text",
+      "variableName": "savedQueryName",
+      "prompt": "Choose an unused name for the query you will save and reuse.",
+      "placeholder": "Pathfinder practice query",
+      "required": true,
+      "pattern": "^[A-Za-z][A-Za-z0-9 -]{0,63}$",
+      "validationMessage": "Use 1\u201364 letters, numbers, spaces, or hyphens; start with a letter."
+    },
+    {
+      "type": "markdown",
+      "content": "Save your selected query with its name and description."
+    },
+    {
+      "type": "section",
+      "id": "save-selected-query",
+      "title": "Save your query",
+      "requirements": [
+        "is-editor",
+        "var-savedQueryName:*"
+      ],
+      "blocks": [
         {
-          "action": "hover",
+          "type": "interactive",
+          "action": "highlight",
           "reftarget": "div[data-testid='data-testid Panel editor content'] button[data-testid='data-testid save to query library button']",
-          "tooltip": "Save query"
+          "content": "Click **Save** in the selected query header.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
         },
         {
-          "action": "hover",
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] [data-testid='data-testid saved queries modal title input']",
+          "content": "Name the query **{{savedQueryName}}**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ],
+          "targetvalue": "{{savedQueryName}}"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] [data-testid='data-testid saved queries modal description input']",
+          "content": "Add a description for this saved query.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ],
+          "targetvalue": "Saved while learning to reuse queries in Grafana."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] [data-testid='data-testid saved queries modal save button']",
+          "content": "Click **Save** and wait for the saved details.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] form[aria-label='Query details: {{savedQueryName}}']:has([data-testid='data-testid saved queries modal edit button']) h5",
+          "content": "Confirm that **{{savedQueryName}}** appears in the saved, read-only details.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ],
+          "verify": "exists-reftarget",
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] button[aria-label='Close']",
+          "content": "Close **Saved queries**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your named query is saved and ready to reuse."
+    },
+    {
+      "type": "markdown",
+      "content": "Replace the selected query with the saved query you just created."
+    },
+    {
+      "type": "section",
+      "id": "replace-selected-query",
+      "title": "Replace your query",
+      "requirements": [
+        "is-editor",
+        "var-savedQueryName:*",
+        "section-completed:save-selected-query"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
           "reftarget": "div[data-testid='data-testid Panel editor content'] button[data-testid='data-testid replace query from library button']",
-          "tooltip": "Replace query"
+          "content": "Click **Replace** in the selected query header.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
         },
         {
-          "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add query or expression']"
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] [data-testid='data-testid saved queries modal search input']",
+          "content": "Find **{{savedQueryName}}** in **Saved queries**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ],
+          "targetvalue": "{{savedQueryName}}"
         },
         {
-          "action": "hover",
-          "reftarget": "div[data-testid='data-testid portal-container'] [role='menuitem']:text('Add saved query')"
-        }
-      ],
-      "skippable": true
-    },
-    {
-      "type": "guided",
-      "content": "#### 2. Save a query\n\nTo save the query you're working on, complete these steps:\n- Click the **Save** button (or icon) in the query header to open the **Saved queries** dialog box. \n- Name your query, and add a description and tags. \n- Click **Save** and then **x** to close the dialog box.",
-      "steps": [
-        {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid save to query library button']",
-          "requirements": ["exists-reftarget"]
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] label[data-testid='data-testid saved queries modal item {{savedQueryName}}']",
+          "content": "Select the saved query named **{{savedQueryName}}**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] [data-testid='data-testid saved queries modal select button']",
+          "content": "Click **Select query** to replace the selected query.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "body:not(:has([role='dialog'][aria-label='Saved queries'])) div[data-testid='data-testid Panel editor content']",
+          "content": "Check that the editor shows the saved query in the selected row.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget"
         }
-      ],
-      "stepTimeout": 30000,
-      "skippable": true
+      ]
     },
     {
       "type": "markdown",
-      "content": "Your query is now saved to the library and ready to reuse in any panel."
-    },
-    {
-      "type": "guided",
-      "content": "#### 3. Replace a query\n\nPrefer to pull in a query you saved earlier? Replace the query in the current row with a saved one.\n\nTo replace a query:\n- Click the **Replace** button (or icon) in the query header. \n- Inside the **Saved queries** dialog box, search and filter for the query you want.\n- Click **Select query**.",
-      "steps": [
-        {
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid replace query from library button']"
-        }
-      ],
-      "stepTimeout": 30000,
-      "skippable": true
+      "content": "You replaced the selected query with its saved version."
     },
     {
       "type": "markdown",
-      "content": "The current row now runs your chosen saved query."
+      "content": "Add the same saved query as another row, keeping the existing query."
     },
     {
-      "type": "guided",
-      "content": "#### 4. Add from saved query\n\nYou can also bring a saved query into the panel as a brand-new query\n\nTo add from a saved query:\n- Click the **+** button in the query editor sidebar to open the menu.\n- Select the **Add saved query** option to open the **Saved queries** dialog box. \n- Filter and search for the query want and select it. \n- Click **Select query** to add it to the editor.",
-      "steps": [
+      "type": "section",
+      "id": "add-saved-query",
+      "title": "Add another query",
+      "requirements": [
+        "is-editor",
+        "var-savedQueryName:*",
+        "section-completed:replace-selected-query"
+      ],
+      "blocks": [
         {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add query or expression']"
+          "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add query or expression']",
+          "content": "Click **+** next to **Queries & Expressions**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
         },
         {
+          "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid portal-container'] [role='menuitem']:text('Add saved query')"
+          "reftarget": "div[data-testid='data-testid portal-container'] [role='menuitem']:text('Add saved query')",
+          "content": "Click **Add saved query**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] [data-testid='data-testid saved queries modal search input']",
+          "content": "Find **{{savedQueryName}}** in **Saved queries**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ],
+          "targetvalue": "{{savedQueryName}}"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] label[data-testid='data-testid saved queries modal item {{savedQueryName}}']",
+          "content": "Select the saved query named **{{savedQueryName}}**.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'][aria-label='Saved queries'] [data-testid='data-testid saved queries modal select button']",
+          "content": "Click **Select query** to add another query.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "body:not(:has([role='dialog'][aria-label='Saved queries'])) div[data-testid='data-testid Panel editor content']",
+          "content": "Check that the editor shows the added query alongside your existing query.",
+          "requirements": [
+            "exists-reftarget",
+            "is-editor",
+            "var-savedQueryName:*"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget"
         }
-      ],
-      "stepTimeout": 30000,
-      "skippable": true
+      ]
     },
     {
       "type": "markdown",
-      "content": "The saved query is now added to the panel. You've saved and reused queries in the panel editor!"
+      "content": "You saved, replaced, and added a query using the same named entry."
     }
   ]
 }

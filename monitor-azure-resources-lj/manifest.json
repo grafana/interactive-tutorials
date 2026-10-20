@@ -10,16 +10,20 @@
   "startingLocation": "/a/grafana-csp-app/azure",
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "urlPrefixIn": [
-            "/a/grafana-csp-app/azure",
-            "/a/grafana-csp-app/azure/overview",
-            "/a/grafana-csp-app/azure/configuration"
+          "and": [
+            {
+              "urlPrefixIn": [
+                "/a/grafana-csp-app/azure",
+                "/a/grafana-csp-app/azure/overview",
+                "/a/grafana-csp-app/azure/configuration"
+              ]
+            },
+            {
+              "targetPlatform": "cloud"
+            }
           ]
-        },
-        {
-          "targetPlatform": "cloud"
         }
       ]
     }
@@ -38,7 +42,9 @@
     "monitor-azure-resources-end-journey"
   ],
   "depends": [],
-  "recommends": ["drilldown-metrics-lj", "drilldown-logs-lj"],
-  "suggests": [],
+  "suggests": [
+    "drilldown-metrics-lj",
+    "drilldown-logs-lj"
+  ],
   "provides": []
 }
