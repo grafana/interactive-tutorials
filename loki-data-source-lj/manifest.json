@@ -10,29 +10,37 @@
   "startingLocation": "/connections/datasources",
   "targeting": {
     "match": {
-      "and": [
+      "or": [
         {
-          "or": [
+          "and": [
             {
-              "and": [
-                {
-                  "urlPrefix": "/connections/datasources"
-                },
-                {
-                  "tag": "selected-datasource:loki"
-                }
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:loki"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
               ]
-            },
-            {
-              "urlPrefix": "/connections/datasources/loki"
-            },
-            {
-              "urlRegex": "/connections/add-new-connection/?$"
             }
           ]
         },
         {
-          "targetPlatform": "cloud"
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/loki"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
         }
       ]
     }

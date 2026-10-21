@@ -9,7 +9,6 @@
     "team": "interactive-learning"
   },
   "startingLocation": "/a/grafana-k8s-app/home/overview",
-  "recommends": ["k8s-cpu", "k8s-mem"],
   "testEnvironment": {
     "tier": "cloud",
     "minVersion": "12.3.0"
@@ -17,8 +16,25 @@
   "targeting": {
     "match": {
       "or": [
-        { "urlPrefix": "/a/grafana-k8s-app" }
+        {
+          "and": [
+            {
+              "or": [
+                {
+                  "urlPrefix": "/a/grafana-k8s-app"
+                }
+              ]
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
       ]
     }
-  }
+  },
+  "suggests": [
+    "k8s-cpu",
+    "k8s-mem"
+  ]
 }
