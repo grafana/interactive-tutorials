@@ -13,7 +13,8 @@ on:
 jobs:
   deploy-pr-preview:
     # Do not pin by SHA the WIF binding for github-docs-deploy-previews matches job_workflow_ref by branch ref. Pinning by SHA breaks getAccessToken.
-    uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@main
+    # Testing: pin to jdb/deploy-preview to validate the learning-path rendering fix. Revert to @main before merge.
+    uses: grafana/writers-toolkit/.github/workflows/deploy-preview.yml@jdb/deploy-preview
     if: >-
       !github.event.pull_request.head.repo.fork &&
       (
@@ -32,6 +33,8 @@ jobs:
       event_number: ${{ github.event.number }}
       image: grafana/docs-base:latest
       repo: interactive-tutorials
+      # Testing: check out the build helper from the same branch. Revert before merge.
+      toolkit_ref: jdb/deploy-preview
       sha: ${{ github.event.pull_request.head.sha }}
       sources: |
         [{
