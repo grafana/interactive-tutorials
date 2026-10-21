@@ -105,69 +105,42 @@ Rules:
 ```json
 {
   "name": "Person name or github handle",
-  "team": "interactive-learning"
+  "team": "Developer Advocacy"
 }
 ```
 
 How to fill out `author`:
 
-* The `name` field can be filled out by consulting git commit history. Who wrote/
-committed the corresponding `content.json` file?  If more than one person, you can 
-comma separate authors
-* If you're working on a learning path or learning journey, the default team is
-"Grafana Documentation"
-* If unsure, leave name blank, and use "interactive-learning" for the team field.
+* Use a real person's name or GitHub handle. Consult the guide's Git history,
+  including its source before a format migration. Multiple contributors can be
+  comma-separated. Do not credit Pathfinder, a generator, or an organization as
+  the author. For imported packages, distinguish the importer from the original
+  prose author when describing provenance.
+* Set `team` to the responsible team's canonical name below. Check existing
+  attribution, CODEOWNERS, and the contributor's team; do not infer Documentation
+  ownership solely from the package being a learning path.
+* For cross-team contributions, choose one responsible team rather than creating
+  a comma-separated team label. Resolve uncertain ownership before publishing;
+  do not use an empty author or `interactive-learning` as a fallback.
 
-### prerequisites
+Canonical team names used by top-level learning paths and standalone guides:
 
-`prerequisites` is an optional array of requirements learners must already satisfy before starting the owning guide or path. Omit the field, or use an empty array, when no such requirement exists. In either case, Pathfinder shows no prerequisite block.
+| Team | Scope |
+|------|-------|
+| `Documentation` | Technical writing and documentation |
+| `Developer Advocacy` | Developer advocates |
+| `Field Engineering` | Solutions architecture and field engineering |
+| `Alerting` | Alerting guides owned by the Alerting team |
+| `Dashboards` | Dashboards team |
+| `Dashboards Edit` | Dashboard editing team |
+| `Sharing` | Grafana Sharing squad |
+| `Digital Experience` | Digital experience and frontend observability team |
+| `SLO` | Service-level objectives team |
 
-```json
-{
-  "prerequisites": [
-    {
-      "id": "mysql-server",
-      "label": "A running MySQL server that you can access."
-    }
-  ]
-}
-```
-
-Each item has two required fields and one optional field:
-
-| Field | Rules |
-|-------|-------|
-| `id` | A stable string with at least one non-whitespace character. Each ID is exact-string unique within its manifest. Do not change an ID when you revise its label. |
-| `label` | A string with at least one non-whitespace character. Pathfinder preserves the declared string; it does not trim or normalize it. |
-| `format` | Optional. The only supported explicit value is `"markdown"`. Omit it for plain text. |
-
-Plain text is the default. Without `format`, Pathfinder displays the exact label literally, including strings that look like Markdown or HTML. For example, `**text**`, `[text](https://example.com)`, and `<b>text</b>` remain unchanged text. Older clients that do not support `format` also show the label literally.
-
-Set `format` to `"markdown"` only when the label needs a setup link or supported inline styling. This format supports inline links, strong text, emphasis, and inline code. For example:
-
-```json
-{
-  "id": "mysql-server",
-  "label": "A running MySQL server. [Install MySQL](https://dev.mysql.com/doc/mysql-installation-excerpt/).",
-  "format": "markdown"
-}
-```
-
-Use only absolute HTTPS URLs without embedded credentials for links. Enabled links open in a new browser tab with `noopener` and `noreferrer`. They do not replace the guide or change completion or progress. HTTP, relative, root-relative, fragment, and unsafe-protocol destinations do not become clickable. Do not use raw HTML, headings, lists, images, embeds, interactive elements, or constructs that load resources. Unsupported syntax falls back to safe text; it must not create forbidden elements or network requests.
-
-Authoring and CLI validation reject blank IDs or labels, duplicate IDs, and unsupported `format` values. Runtime handling is tolerant. The runtime manifest parser omits an invalid prerequisite field. Online recommendations filter invalid or duplicate entries and retain valid entries. Both preserve the underlying guide or path. Unknown or malformed runtime formats keep otherwise valid labels as literal text.
-
-The validation and deployment workflows build the CLI from Pathfinder's `main` branch, which supports `prerequisites`. An npm release is not required for these source-based workflows.
-
-Declare only prerequisites that are necessary to start: access, permissions, tools, or external resources the tutorial assumes are already available. Do not list resources the tutorial creates, skills it teaches, optional preparation, or conditions checked at runtime by guide steps. Do not infer prerequisites from `content.json` or from a parent manifest.
-
-For a path, list requirements learners must satisfy before starting the path to complete its milestones. Pathfinder shows these in the expanded recommendation summary before milestone links and on the path cover before **Start** or **Resume**. Do not repeat path requirements in milestone manifests.
-
-For a guide, list only its own pre-start requirements. Pathfinder shows them above the guide content and before its first action, including for a directly opened milestone. A milestone does not inherit path requirements.
-
-This field informs the learner. It does not check system state, block a learner, select recommendations, or change completion counts. Use guide requirements and objectives for runtime conditions.
-
-If a pre-start requirement applies only to a specific setup, state that condition in its label, such as "If using a self-hosted instance, permission to add a data source." Short setup links can appear in Markdown labels. Keep optional preparation, recommended knowledge, detailed setup guidance, and context in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
+Use these exact spellings, without a `Grafana` prefix. Add a new team here when
+confirmed ownership requires it; do not invent aliases for an existing team.
+This normalization applies to top-level manifests; nested milestone attribution
+is maintained separately.
 
 ### targeting
 
@@ -341,7 +314,7 @@ These rules define where each manifest field's data comes from during migration.
 | `repository` | — | Omit (schema default `"interactive-tutorials"` applies). |
 | `description` | `index.json` rule | First priority: copy the `description` from the matching `index.json` rule (already catalog-style). If no rule exists, summarize available sources (content.json title, website markdown) into a compact one-line catalog summary. |
 | `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise (standalone guide) choose one of the [allowed categories](#category-standalone-guides). |
-| `author` | — | `{ "team": "interactive-learning" }` for standalone guides; `{ "team": "Grafana Documentation" }` for steps inside a `*-lj` directory. |
+| `author` | — | Named contributor and responsible team; see [author](#author). |
 | `language` | — | Omit (schema default `"en"` applies). |
 | `startingLocation` | `index.json` rule | Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). Omit if no URL can be derived (do not fall back to `"/"`). |
 | `targeting.match` | `index.json` rule | Copy the `match` object verbatim. |
@@ -360,7 +333,7 @@ These rules define where each manifest field's data comes from during migration.
 | `type` | — | Always `"guide"`. |
 | `description` | `index.json` rule, then website step `index.md` | First priority: matching `index.json` rule description. Second: step markdown `description` frontmatter (condense to one line if verbose). Third: summarize from available context. |
 | `category` | Website path `_index.md` | Use `journey.group` from the parent path's `_index.md`. |
-| `author` | — | `{ "team": "Grafana Documentation" }` (all learning path content uses this team). |
+| `author` | — | Named contributor and responsible team; see [author](#author). |
 | `targeting` | — | Omit unless the step has its own `index.json` entry (targeting lives at the path level). |
 | `depends` | Step ordering | Step N+1 depends on step N. First step has no `depends`. |
 | `recommends` | Step ordering | Step N recommends step N+1. Last step has no next-step recommendation. |
@@ -374,7 +347,7 @@ These rules define where each manifest field's data comes from during migration.
 | `type` | — | Always `"path"`. |
 | `description` | `index.json` rule, then website `_index.md` | First priority: matching `index.json` rule description. Second: condense `_index.md` frontmatter `description` to a compact one-line catalog summary. |
 | `category` | Website `_index.md` | From `journey.group` (e.g., `"data-availability"`). |
-| `author` | — | `{ "team": "Grafana Documentation" }` (all learning path content uses this team). |
+| `author` | — | Named contributor and responsible team; see [author](#author). |
 | `startingLocation` | `index.json` rule | Same derivation as standalone guides. Omit if no URL can be derived (do not fall back to `"/"`). |
 | `targeting.match` | `index.json` rule | Copy the `match` object from the matching rule, if one exists. |
 | `testEnvironment` | `index.json` rule | Apply [tier inference rules](#testenvironment). |
@@ -475,7 +448,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "type": "guide",
   "description": "<from index.json rule description>",
   "category": "<one of the allowed standalone categories>",
-  "author": { "team": "interactive-learning" },
+  "author": { "name": "Jayclifford345", "team": "Developer Advocacy" },
   "startingLocation": "<first URL from match expression>",
   "targeting": {
     "match": { "<copied from index.json rule match>" : [] }
@@ -496,7 +469,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "type": "path",
   "description": "<from _index.md description>",
   "category": "<from journey.group>",
-  "author": { "team": "interactive-learning" },
+  "author": { "name": "Jayclifford345", "team": "Developer Advocacy" },
   "startingLocation": "<first URL from match expression or '/'>",
   "targeting": {
     "match": { "<copied from index.json rule match>" : [] }
@@ -523,7 +496,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "type": "guide",
   "description": "<from step index.md description>",
   "category": "<from parent path journey.group>",
-  "author": { "team": "interactive-learning" },
+  "author": { "name": "Jayclifford345", "team": "Developer Advocacy" },
   "depends": ["<previous-step-id>"],
   "recommends": ["<next-step-id>"]
 }
