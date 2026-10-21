@@ -9,6 +9,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -57,7 +58,8 @@ func TestTutorialCatalogAudit(t *testing.T) {
 					t.Fatal(err)
 				}
 				output[phase][scenario.Name][strconv.Itoa(cap)] = response.Recommendations
-				if phase == "after" && cap == 10000 {
+				// Discovery must survive the normal ten-result cap, not just be eligible.
+				if phase == "after" && (cap == 10000 || (cap == 10 && strings.HasPrefix(scenario.Name, "discovery:"))) {
 					ids := map[string]bool{}
 					for _, r := range response.Recommendations {
 						if r.Manifest != nil {

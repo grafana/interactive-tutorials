@@ -1,6 +1,6 @@
 # Catalog targeting audit — 20 October 2026
 
-This change recommends learning paths as single units and matches lessons to the current Grafana task. It contains no guide-ID boosts, curated defaults, ordering list, telemetry changes or Pathfinder UI changes. It is independent of Pathfinder PR #2184.
+This change recommends learning paths as single units and matches lessons to product discovery pages and the current Grafana task. It contains no guide-ID boosts, curated defaults, ordering list, telemetry changes or Pathfinder UI changes. It is independent of Pathfinder PR #2184.
 
 ## Scope and evidence
 
@@ -30,7 +30,7 @@ The 554 includes 483 declared milestone members and 71 additional lessons physic
 
 **Explore:** DPM requires an observed Prometheus selection, Elasticsearch querying requires Elasticsearch, and the demo trace path requires Tempo and its original demo-host restriction. Generic Explore tours remain available without a selection. Installed Prometheus/Loki alone never establishes the active query task.
 
-**Product pages:** narrow cardinality, usage alerts, Git Sync, IRM, Alloy installation and conceptual onboarding to the product workflow described in their content. Keep broad product-equivalent peers when no trustworthy signal distinguishes them; do not manufacture intent.
+**Product pages:** retain workflow targeting and add deliberate discovery on the relevant product entry pages. Cardinality and usage alerts also appear on billing/Usage; IRM and SLO appear on Alerts & IRM; Home offers platform orientation and administrator onboarding. Keep broad product-equivalent peers when no trustworthy signal distinguishes them; do not manufacture intent.
 
 **Modules:** remove recommendation targeting from all six previously targeted k6 modules/supporting lessons. Their IDs, content, launch locations and path membership are unchanged. Confirmed downstream lessons move from `recommends` to `suggests`, so the ranker does not mistake further learning for prerequisites. Genuine prerequisites remain, and two stale dependency IDs are corrected. No content file or frozen `index.json` changes.
 
@@ -40,16 +40,40 @@ Counts below are package eligibility before the server cap, on Cloud as Admin. I
 
 | Context | Before | After | Outcome |
 |---|---:|---:|---|
-| Home | 3 | 0 | Partial AND leakage removed; server's existing generic docs fallback remains |
-| Dashboards listing | 9 | 3 | UI/SDK/Terraform distinction remains unresolved |
+| Home | 3 | 3 | Explicit orientation/onboarding rules; partial AND leakage remains removed |
+| Dashboards listing | 9 | 4 | Playlist discovery restored; UI/SDK/Terraform distinction remains unresolved |
 | Existing dashboard view | 8 | 1 | Snapshot sharing remains; edit-only lessons excluded |
 | Explore, no observed selection | 9 | 3 | General Explore tours only |
 | Explore, selected Loki | 9 | 3 | Prometheus DPM and backend setup no longer leak in |
-| Connection catalog | 17 | 1 | General connection onboarding remains |
+| Connection catalog | 17 | 3 | Connect existing data, instrument an application, or monitor a host |
 | k6 | 12 | 9 | Partial leakage removed; methodology ties remain |
 | Edit panel, observed Stat + Loki | 9 | 9 | Stat lab and logs visualization outrank route-only candidates |
 
-The full matrix covers Cloud/OSS, Viewer/Editor/Admin, empty contexts, unrelated routes, home, listings, new/existing dashboards, no-selection Explore, selected backends, connection setup/configuration, alerting and every product represented by a recommendable path. Each candidate has a positive case and unrelated-route rejection. Task-, role-, platform- and source-constrained alternatives also have missing/wrong-evidence rejection cases. All 1,107 contexts are evaluated before and after at all three caps.
+The full matrix covers Cloud/OSS, Viewer/Editor/Admin, empty contexts, unrelated routes, home, listings, new/existing dashboards, no-selection Explore, selected backends, connection setup/configuration, alerting and every product represented by a recommendable path. Each candidate has a positive case and unrelated-route rejection. Task-, role-, platform- and source-constrained alternatives also have missing/wrong-evidence rejection cases. All 1,247 contexts are evaluated before and after at all three caps.
+
+## Product discovery follow-up
+
+The initial audit over-weighted the active workflow: users should not have to discover a feature before its introduction can be recommended. Twenty candidate manifests now add exact entry-page alternatives. These alternatives are normal route evidence, without ID boosts, default lists, installed-backend assumptions or fabricated edit signals. Existing deeper workflow matches remain. Home onboarding requires Admin; playlist discovery requires Editor or Admin; Cloud-only discovery keeps its platform gate. Modules and demo-host restrictions remain excluded from this widening.
+
+Signed-in Chrome inspection on 20 October confirmed the current navigation destinations and the content of Home, Connections, Drilldown, Observability, Alerts & IRM, billing/Usage and Adaptive Telemetry. The AI entry link was verified in navigation. Observability specifically presents Knowledge Graph/RCA and Kubernetes/application monitoring. A Learn-only Knowledge Graph tour was retained unchanged; the general RCA path provides discovery instead.
+
+| Entry page | Discovery opportunity | Eligible on Cloud as Admin, without observed task/data |
+|---|---|---:|
+| Home `/` | Concepts, Cloud capabilities, account setup | 3 |
+| Dashboards | Create dashboards; discover playlists | 4 |
+| Connections | Connect data, instrument applications, monitor hosts, existing infrastructure introduction | 4 |
+| Add new connection | Choose between connecting data, application telemetry and host monitoring | 3 |
+| Data sources | Discover private connectivity alongside connection setup | 2 |
+| Drilldown | Overview plus metrics/logs/traces/profiles learning paths | 5 |
+| Observability | Kubernetes tour, application instrumentation, RCA investigation | 3 |
+| Alerts & IRM | Alerting, SLOs and incident response | 3 |
+| Adaptive Telemetry | Logs and metrics optimization | 2 |
+| Cost Management / Usage | Understand billing, investigate cardinality, set usage alerts | 3 |
+| AI | Assistant onboarding | 1 |
+
+The 140 added scenarios cover entry pages, trailing slashes, unrelated routes, arbitrary descendants and similarly named neighbors, plus platform/role rejection where applicable. Each discovery positive is also asserted at cap 10. Exact entry matching avoids exposing these introductions on all nested workflows. The existing catalog task-negative cases still pass. No user tenure, empty-state or available-telemetry signal is inferred; guide prerequisites still apply.
+
+Server caps remain a visibility limit: cap 3 omits playlists behind existing dashboard-authoring candidates, and omits profiles/traces behind the Drilldown overview/logs/metrics peers. All fit at cap 10. The audit records this honestly rather than adding editorial boosts. Testing & synthetics already offers overview, first-check and test-builder discovery, so its rules did not need widening. Existing Admin/Terraform discovery also remains; demo-only guides and backend-specific setup are not promoted to unrelated product hubs. No suitable general guide was established for Bookmarks, Notebooks, Workflows, Pages or Machine learning, so no speculative cross-product rules were added there.
 
 ## Engine contract and reproducibility
 
@@ -77,7 +101,7 @@ Stats, repository index, dependency graph and manifest schema are generated into
 ## Validation result
 
 - Targeting lint: 162 manifests, no findings.
-- Actual server handler: 1,107 before/after scenarios at caps 3, 10 and 10000; all expectations and cap-prefix comparisons passed. Internal engine and server ranking regression tests passed.
+- Actual server handler: 1,247 before/after scenarios at caps 3, 10 and 10000; all expectations and cap-prefix comparisons passed. Internal engine and server ranking regression tests passed.
 - Client: 3 suites / 34 tests passed, including catalog completion/offline checks and the existing ranking/observation tests.
 - CI-pinned CLI: 726 content files and 725 packages passed; shared snippets validated. Two independently generated stats/index/graph/schema trees agree.
 - Dependency graph: zero errors, 76 warnings (mostly orphaned content, plus existing unresolved `suggests` references such as `send-traces-alloy-lj` and the module reference `data-transformation-lj`). These do not create independent recommendation eligibility. They remain explicit catalog cleanup work, not a clean-graph claim.
