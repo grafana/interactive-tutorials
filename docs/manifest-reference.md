@@ -130,6 +130,7 @@ Canonical team names used by top-level learning paths and standalone guides:
 | `Documentation` | Technical writing and documentation |
 | `Developer Advocacy` | Developer advocates |
 | `Field Engineering` | Solutions architecture and field engineering |
+| `Product` | Product management |
 | `Alerting` | Alerting guides owned by the Alerting team |
 | `Dashboards` | Dashboards team |
 | `Dashboards Edit` | Dashboard editing team |
