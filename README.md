@@ -112,6 +112,7 @@ Primary documentation files in this repo:
 |-------|------|
 | Learning path authoring (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) |
 | Guide Reference | [docs/json-guide-reference.md](docs/json-guide-reference.md) |
+| Optional PR E2E testing | [docs/pr-e2e-testing.md](docs/pr-e2e-testing.md) |
 | Action Types | [docs/interactive-actions.md](docs/interactive-actions.md) |
 | Requirements | [docs/requirements-reference.md](docs/requirements-reference.md) |
 | Selectors | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) |
