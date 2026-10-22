@@ -1,16 +1,16 @@
 {
   "schemaVersion": "1.1.0",
   "id": "find-and-fix-slow-query-compare-after",
-  "title": "Compare after the change",
+  "title": "Compare after the fix",
   "blocks": [
     {
       "type": "markdown",
-      "content": "If you have not applied a change on your database yet, skip this step. When you have, complete the following steps:"
+      "content": "If you have not applied the fix on your database yet, skip this step. When you have, complete the following steps:"
     },
     {
       "type": "section",
       "id": "compare-after",
-      "title": "Compare after the change",
+      "title": "Compare after the fix",
       "blocks": [
         {
           "type": "interactive",
@@ -19,7 +19,7 @@
           "verify": "on-page:/a/grafana-dbo11y-app/overview",
           "objectives": ["on-page:/a/grafana-dbo11y-app/overview"],
           "skippable": true,
-          "content": "Open **Queries overview**.\n\nFind the same query you recorded before the change.",
+          "content": "Open **Queries overview**.\n\nFind the same query you recorded before the fix.",
           "requirements": ["navmenu-open", "exists-reftarget"]
         },
         {
@@ -49,7 +49,7 @@
           "reftarget": "[data-testid='explain-plan-graph']",
           "doIt": false,
           "skippable": true,
-          "content": "Record whether the index is being used.\n\nFor example, the highlighted operation should read through an index rather than scan the whole table, and the row estimates should have decreased.\n\nIf the plan has not changed after an index was added, refresh the table's statistics and check the plan again. For example, PostgreSQL uses **ANALYZE** and MySQL uses **ANALYZE TABLE**. Those commands are on [Improve slow queries](https://grafana.com/docs/grafana-cloud/monitor-applications/database-observability/optimize/improve-slow-queries/).",
+          "content": "Record whether the index is being used.\n\nIf the fix was an index, the new index should be on the table. The highlighted operation should read through an index rather than scan the whole table, and the row estimates should have decreased.\n\nIf the plan has not changed after an index was added, table statistics may be outdated. Outdated table statistics can make the estimates inaccurate. PostgreSQL uses **ANALYZE** and MySQL uses **ANALYZE TABLE** to update table statistics. Check the plan again afterward. Those commands are on [Improve slow queries](https://grafana.com/docs/grafana-cloud/monitor-applications/database-observability/optimize/improve-slow-queries/).",
           "requirements": ["exists-reftarget"]
         },
         {
@@ -66,14 +66,14 @@
           "reftarget": "section[data-testid='data-testid Panel header Select a query sample']",
           "doIt": false,
           "skippable": true,
-          "content": "Record whether the improvement is consistent across runs, and whether a specific case got worse.",
+          "content": "Record whether every run got faster, or only some of them, and whether any run got slower.",
           "requirements": ["exists-reftarget"]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You have compared duration, errors, and calls, and you have checked the plan and the samples after the change."
+      "content": "You have compared duration, errors, and calls with what you recorded. You have also checked whether the plan uses an index where the fix was an index, and whether every run got faster or only some of them."
     }
   ]
 }
