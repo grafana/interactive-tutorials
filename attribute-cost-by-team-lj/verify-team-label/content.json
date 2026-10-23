@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "attribute-cost-by-team-verify-team-label",
+  "title": "Confirm the team label appears on your metrics",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Cost attribution uses labels that already exist on your telemetry. In this milestone, you query your metrics in Explore to confirm that the `team` label is present before you configure attribution."
+    },
+    {
+      "type": "markdown",
+      "content": "To query metrics by team, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "query-team-label",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "content": "Click **Explore** in the navigation menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Make sure the Prometheus data source for your stack is selected, for example `grafanacloud-<STACK_SLUG>-prom`."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='QueryEditorModeToggle'] input[data-testid='data-testid radio-button-option code']",
+          "content": "Switch to **Code** mode to write queries directly.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "@@CLEAR@@count by (team) (up{team!=\"\"})",
+          "content": "Enter a query that counts the collectors that report metrics for each `team` value.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Run query** to see the results.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The results show one series for each `team` value, for example `{team=\"payments-platform\"}`. The value is the number of collectors that send metrics for that team.\n\nIf no series appear, wait a few minutes for the collectors to poll Fleet Management and apply the pipeline. If you still see no `team` label, check that:\n\n- The pipeline is active and matches your collectors.\n- The collectors have a `team` attribute.\n- The `GCLOUD_RW_API_KEY` environment variable is set on the collectors.\n\nIn the next milestone, you configure `team` as a cost attribution label."
+    }
+  ]
+}
