@@ -2,7 +2,7 @@
 
 Live DOM checks on `learn.grafana.net` (2026-09-17). Empty fleet had no Watcher detail page. **Start scanning** and **Run now** were confirmed later on a calibrated Watcher.
 
-Updated 2026-10-11 against grafana-assistant-app `origin/main` and docs PR #12594 for the detail page redesign: the page opens on **Ongoing issues**, and the old right-hand rail (**Standing state**, switch, **Run now**, cadence) is replaced by controls beside the watcher name and four summary cards (**Standing verdict**, **Schedule**, **Calibration**, **Token consumption**).
+Updated 2026-10-11 against grafana-assistant-app `origin/main` and docs PR #12594 for the detail page redesign: the page opens on **Ongoing issues**, and the old right-hand rail (**Standing state**, switch, **Run now**, cadence) is replaced by controls beside the watcher name and four summary cards (**Standing verdict**, **Schedule**, **Calibration**, **Token usage**).
 
 Updated 2026-10-15 against grafana-assistant-app `origin/main` after #12920 (Oct 14) and #12923 (Oct 15). The four cards are gone. **Overview** is the default tab, with **Current state** (verdict and how long it has held), **Recent runs**, **Token usage**, and **Configuration** (including **Checks**) cards. The header is a strip of **Status**, **Since**, **Next run**, and **Cadence** (`detail/WatcherDetailSummary.tsx`). #12920 also showed **Last run** in the strip and #12923 removed it, so the path doesn't name **Last run**. The docs PR #12594 was closed and superseded by #12772, whose headings the path's doc links now follow. Calibration questions preselect the recommended option and label it **(Recommended)** (`CalibrationQuestions.tsx`, `initialDraft`).
 
