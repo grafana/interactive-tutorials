@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-and-fix-slow-query-name-the-change",
+  "title": "Name the fix",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "To name the fix that follows the diagnosis, complete the following steps."
+    },
+    {
+      "type": "section",
+      "id": "name-the-change",
+      "title": "Name the fix",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Based on your diagnosis, apply the appropriate fix. Record which of these you will apply.\n\n- No index on the filtered columns: add an index that matches your filters, joins, and sort order. On PostgreSQL, an Index Scan uses an index to find rows, then fetches from the table. An Index Only Scan retrieves all needed data from the index alone.\n- A function on a column, such as `YEAR(created_at) = 2024`: rewrite as a range to use the index.\n- Wait events show lock issues: reduce transaction scope (shorter transactions).\n- Wait events show I/O issues: add indexes to reduce data scanned.\n\nThe overview chart groups individual wait event types into **IO wait**, **Lock wait**, and **Network wait**. Database backup running has the wait pattern High I/O waits. The action is to schedule backups during low-traffic periods. Peak traffic has the wait pattern Multiple wait types elevated. The action is to scale resources or optimize queries.\n\nSee `CREATE INDEX`, the range rewrite of `YEAR(created_at)`, and the lock and I/O sections on [Improve slow queries](https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-infrastructure/database-observability/optimize/improve-slow-queries/).\n\nSelect an AI assistant button (for example, **Explain this query**) on any Query details tab. Validate any recommendation against your explain plan and query samples before applying it."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Based on your diagnosis, apply the appropriate fix. After applying changes, confirm they worked."
+    }
+  ]
+}

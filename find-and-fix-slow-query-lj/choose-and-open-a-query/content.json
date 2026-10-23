@@ -1,0 +1,131 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-and-fix-slow-query-choose-and-open",
+  "title": "Choose and open a query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "To choose one query and open it, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "choose-and-open",
+      "title": "Choose and open a query",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid navigation mega-menu section toggle /observability']",
+          "content": "Expand **Observability** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid navigation mega-menu section toggle /a/grafana-dbo11y-app/']",
+          "content": "Expand **Database** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-dbo11y-app/overview']",
+          "verify": "on-page:/a/grafana-dbo11y-app/overview",
+          "objectives": ["on-page:/a/grafana-dbo11y-app/overview"],
+          "content": "Click **Queries overview**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+          "doIt": false,
+          "content": "Set the time range to the period when the issue occurred.",
+          "tooltip": "The numbers on this page describe only the time range in view.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Sort column Duration']",
+          "content": "Click **Duration**.\n\nSort so the longest queries are at the top. For example, click again if the shortest queries are first. If the table shows no data, change the sort or the time range and continue.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Sort column Errors']",
+          "content": "Click **Errors**.\n\nIf **Errors** is empty for every row, sort by **Duration** only and continue. For example, a high error percentage is a reason to open a query that is not the slowest.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[data-testid='data-testid Dashboard template variables submenu Label Filters'] ~ div input[role='combobox']",
+          "content": "Open **Filters**.",
+          "tooltip": "Use this when more than one database is listed.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid ad hoc filter option value instance']",
+          "content": "Select **instance**.",
+          "tooltip": "This label names one database server.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid ad hoc filter option value =']",
+          "content": "Select **Equals**.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid^='data-testid ad hoc filter option value ']",
+          "doIt": false,
+          "content": "Select one server.",
+          "tooltip": "Choose a server whose database you are allowed to change.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label[data-testid='data-testid Dashboard template variables submenu Label Filters'] ~ div input[role='combobox']",
+          "content": "Open **Filters** again.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid ad hoc filter option value schema']",
+          "skippable": true,
+          "content": "Select **schema**.\n\nOn MySQL, then select **Equals** and the schema. On PostgreSQL, skip this step.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid ad hoc filter option value datname']",
+          "skippable": true,
+          "content": "Select **datname**.\n\nOn PostgreSQL, then select **Equals** and the database. On MySQL, skip this step.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='Interactive table'] a[href^='/a/grafana-dbo11y-app/overview/']",
+          "doIt": false,
+          "content": "Click a query to open its details.\n\nNot all slow queries need optimization. Prioritize based on impact. Impact = Average Duration × Execution Frequency. A query taking 100ms that runs 10,000 times per hour has more impact than a query taking 10 seconds that runs once per day. Focus on queries where high duration and high call frequency overlap, factoring in whether the query is user-facing or on a critical path.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Click the query to open its details."
+    }
+  ]
+}
