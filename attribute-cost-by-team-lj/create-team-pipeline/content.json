@@ -5,11 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this milestone, you create a configuration pipeline that collects Linux host metrics, adds the `team` attribute of each collector to the metrics as a `team` label, and sends the metrics to Grafana Cloud. You then assign the pipeline to every Linux collector that has a `team` attribute."
-    },
-    {
-      "type": "markdown",
-      "content": "The pipeline that you create:\n\n1. Collects Linux host metrics with `prometheus.exporter.unix` and scrapes them.\n1. Adds a `team` label with `prometheus.relabel`. The `argument.attributes.value[\"team\"]` expression reads the `team` attribute of the collector that runs the pipeline.\n1. Sends the labeled metrics to Grafana Cloud with `prometheus.remote_write`.\n\nYou paste the pipeline in a later step, then replace the following placeholders with your own values:\n\n- `PROMETHEUS_REMOTE_WRITE_URL`: The Prometheus remote write URL of your stack.\n- `METRICS_USERNAME`: The Prometheus username of your stack.\n\nTo find both values, sign in to your Grafana Cloud portal, select your stack, and click **Details** in the **Prometheus** section. The **Remote Write Endpoint** section lists the URL and the username.\n\nThe `GCLOUD_RW_API_KEY` environment variable holds your access policy token, so you don't enter the token in the pipeline."
+      "content": "In this milestone, you create a configuration pipeline that does the following:\n\n- Collects Linux host metrics\n\n- Labels those metrics with the `team` attribute of each collector using [pipeline attribute injection](https://grafana.com/docs/grafana-cloud/send-data/fleet-management/set-up/configuration-pipelines/pipeline-attribute-injection/)\n\n- Sends the metrics to Grafana Cloud."
     },
     {
       "type": "markdown",
@@ -61,7 +57,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": ".monaco-editor",
-          "content": "Copy the following pipeline, paste it into the editor, and replace the `PROMETHEUS_REMOTE_WRITE_URL` and `METRICS_USERNAME` placeholders with your own values.\n\n```alloy\nprometheus.exporter.unix \"default\" { }\n\nprometheus.scrape \"default\" {\n  targets    = prometheus.exporter.unix.default.targets\n  forward_to = [prometheus.relabel.team.receiver]\n  job_name   = \"integrations/node_exporter\"\n}\n\nprometheus.relabel \"team\" {\n  forward_to = [prometheus.remote_write.grafana_cloud.receiver]\n\n  rule {\n    action       = \"replace\"\n    target_label = \"team\"\n    replacement  = argument.attributes.value[\"team\"]\n  }\n}\n\nprometheus.remote_write \"grafana_cloud\" {\n  endpoint {\n    url = \"PROMETHEUS_REMOTE_WRITE_URL\"\n\n    basic_auth {\n      username = \"METRICS_USERNAME\"\n      password = sys.env(\"GCLOUD_RW_API_KEY\")\n    }\n  }\n}\n```",
+          "content": "Copy the following pipeline, paste it into the editor, and replace the `PROMETHEUS_REMOTE_WRITE_URL` and `METRICS_USERNAME` placeholders with your own values. To find both values, sign in to your Grafana Cloud portal, select your stack, and click **Details** in the **Prometheus** section. The **Remote Write Endpoint** section lists the URL and the username.\n\n```alloy\nprometheus.exporter.unix \"default\" { }\n\nprometheus.scrape \"default\" {\n  targets    = prometheus.exporter.unix.default.targets\n  forward_to = [prometheus.relabel.team.receiver]\n  job_name   = \"integrations/node_exporter\"\n}\n\nprometheus.relabel \"team\" {\n  forward_to = [prometheus.remote_write.grafana_cloud.receiver]\n\n  rule {\n    action       = \"replace\"\n    target_label = \"team\"\n    replacement  = argument.attributes.value[\"team\"]\n  }\n}\n\nprometheus.remote_write \"grafana_cloud\" {\n  endpoint {\n    url = \"PROMETHEUS_REMOTE_WRITE_URL\"\n\n    basic_auth {\n      username = \"METRICS_USERNAME\"\n      password = sys.env(\"GCLOUD_RW_API_KEY\")\n    }\n  }\n}\n```",
           "doIt": false,
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
         },
