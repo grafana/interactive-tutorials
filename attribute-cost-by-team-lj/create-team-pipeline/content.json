@@ -9,7 +9,7 @@
     },
     {
       "type": "markdown",
-      "content": "Copy the following pipeline. You paste it into the editor in a later step:\n\n```alloy\nprometheus.exporter.unix \"default\" { }\n\nprometheus.scrape \"default\" {\n  targets    = prometheus.exporter.unix.default.targets\n  forward_to = [prometheus.relabel.team.receiver]\n  job_name   = \"integrations/node_exporter\"\n}\n\nprometheus.relabel \"team\" {\n  forward_to = [prometheus.remote_write.grafana_cloud.receiver]\n\n  rule {\n    action       = \"replace\"\n    target_label = \"team\"\n    replacement  = argument.attributes.value[\"team\"]\n  }\n}\n\nprometheus.remote_write \"grafana_cloud\" {\n  endpoint {\n    url = \"<PROMETHEUS_REMOTE_WRITE_URL>\"\n\n    basic_auth {\n      username = \"<METRICS_USERNAME>\"\n      password = sys.env(\"GCLOUD_RW_API_KEY\")\n    }\n  }\n}\n```\n\nThis pipeline:\n\n1. Collects Linux host metrics with `prometheus.exporter.unix` and scrapes them.\n1. Adds a `team` label with `prometheus.relabel`. The `argument.attributes.value[\"team\"]` expression reads the `team` attribute of the collector that runs the pipeline.\n1. Sends the labeled metrics to Grafana Cloud with `prometheus.remote_write`.\n\nBefore you paste the pipeline, replace the following placeholders:\n\n- `<PROMETHEUS_REMOTE_WRITE_URL>`: The Prometheus remote write URL of your stack.\n- `<METRICS_USERNAME>`: The Prometheus username of your stack.\n\nTo find both values, sign in to your Grafana Cloud portal, select your stack, and click **Details** in the **Prometheus** section. The **Remote Write Endpoint** section lists the URL and the username.\n\nThe `GCLOUD_RW_API_KEY` environment variable holds your access policy token, so you don't enter the token in the pipeline."
+      "content": "The pipeline that you create:\n\n1. Collects Linux host metrics with `prometheus.exporter.unix` and scrapes them.\n1. Adds a `team` label with `prometheus.relabel`. The `argument.attributes.value[\"team\"]` expression reads the `team` attribute of the collector that runs the pipeline.\n1. Sends the labeled metrics to Grafana Cloud with `prometheus.remote_write`.\n\nYou insert the pipeline in a later step, then replace the following placeholders with your own values:\n\n- `<PROMETHEUS_REMOTE_WRITE_URL>`: The Prometheus remote write URL of your stack.\n- `<METRICS_USERNAME>`: The Prometheus username of your stack.\n\nTo find both values, sign in to your Grafana Cloud portal, select your stack, and click **Details** in the **Prometheus** section. The **Remote Write Endpoint** section lists the URL and the username.\n\nThe `GCLOUD_RW_API_KEY` environment variable holds your access policy token, so you don't enter the token in the pipeline."
     },
     {
       "type": "markdown",
@@ -58,11 +58,11 @@
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
+          "type": "code-block",
           "reftarget": ".monaco-editor",
-          "content": "Paste the pipeline into the editor and replace the `<PROMETHEUS_REMOTE_WRITE_URL>` and `<METRICS_USERNAME>` placeholders with your own values.",
-          "doIt": false,
+          "language": "alloy",
+          "code": "prometheus.exporter.unix \"default\" { }\n\nprometheus.scrape \"default\" {\n  targets    = prometheus.exporter.unix.default.targets\n  forward_to = [prometheus.relabel.team.receiver]\n  job_name   = \"integrations/node_exporter\"\n}\n\nprometheus.relabel \"team\" {\n  forward_to = [prometheus.remote_write.grafana_cloud.receiver]\n\n  rule {\n    action       = \"replace\"\n    target_label = \"team\"\n    replacement  = argument.attributes.value[\"team\"]\n  }\n}\n\nprometheus.remote_write \"grafana_cloud\" {\n  endpoint {\n    url = \"<PROMETHEUS_REMOTE_WRITE_URL>\"\n\n    basic_auth {\n      username = \"<METRICS_USERNAME>\"\n      password = sys.env(\"GCLOUD_RW_API_KEY\")\n    }\n  }\n}",
+          "content": "Insert the pipeline into the editor, then replace the `<PROMETHEUS_REMOTE_WRITE_URL>` and `<METRICS_USERNAME>` placeholders with your own values.",
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
         },
         {
@@ -122,7 +122,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='remote-config-active-toggle-team_cost_metrics']",
-          "content": "In the **Active** column, turn on the toggle for the `team_cost_metrics` pipeline. A new pipeline is inactive until you activate it.",
+          "content": "In the **Active** column, turn on the toggle for the `team_cost_metrics` pipeline. A new pipeline is inactive until you activate it.\n\n> **Caution:** When you activate the pipeline, every matched collector starts sending metrics to Grafana Cloud. This telemetry can affect your bill.",
           "doIt": false,
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management/remote-configuration", "exists-reftarget"]
         },
