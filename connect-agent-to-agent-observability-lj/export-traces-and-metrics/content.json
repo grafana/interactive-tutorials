@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-agent-to-agent-observability-export-traces-and-metrics",
+  "title": "Export traces and metrics",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Generation data now reaches Agent Observability. The SDK also emits OpenTelemetry spans and four `gen_ai.client.*` metrics, but it does not create OpenTelemetry providers. Without a `TracerProvider` and `MeterProvider` in your application they are dropped."
+    },
+    {
+      "type": "markdown",
+      "content": "Set the OTLP variables in your shell, add providers to the Milestone 5 file, and run it again."
+    },
+    {
+      "type": "section",
+      "id": "export-otlp",
+      "title": "Export traces and metrics",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Open the Grafana Cloud portal at `https://grafana.com/orgs/{org}/stacks/{stack-id}` and copy the two values from the **OpenTelemetry** card into your notes file.\n\n- **OTLP endpoint URL**, including `/otlp` but excluding signal paths such as `/v1/traces`. This is the value for `OTEL_EXPORTER_OTLP_ENDPOINT`.\n- **Instance ID** on the OpenTelemetry card. This is the basic-auth username for OTLP and can differ from the Agent Observability **Instance ID** from Milestone 2.\n\n> **Note:** Don't click **Generate now**. The access policy token from Milestone 3 already covers `metrics:write`, `logs:write`, and `traces:write`."
+        },
+        {
+          "type": "markdown",
+          "content": "Encode the OTLP credentials. Copy the following command into the shell from Milestone 4, replace `{OTLP_INSTANCE_ID}` with the OpenTelemetry **Instance ID** and `{ACCESS_POLICY_TOKEN}` with the access policy token from Milestone 3, then run it.\n\n```bash\nprintf '%s' '{OTLP_INSTANCE_ID}:{ACCESS_POLICY_TOKEN}' | base64 | tr -d '\\n'\n```\n\nThe `tr -d '\\n'` is not optional. `base64` adds a trailing newline that invalidates the header. Copy the output, one line with no newline at the end, into your notes file."
+        },
+        {
+          "type": "markdown",
+          "content": "Set the exporter variables. Copy the following commands into that same shell, replace `{OTLP_ENDPOINT}` with the OTLP endpoint URL and `{BASE64_CREDENTIALS}` with the `printf` output, then run them.\n\n```bash\nexport OTEL_EXPORTER_OTLP_ENDPOINT=\"{OTLP_ENDPOINT}\"\nexport OTEL_EXPORTER_OTLP_HEADERS=\"Authorization=Basic {BASE64_CREDENTIALS}\"\nexport OTEL_SERVICE_NAME=my-agent\n```\n\nThe space after `Basic` is a plain space for every language. Only Python exporters older than `opentelemetry-exporter-otlp-proto-http` 1.27.0 reject it; if you are on one of those, write `Basic%20{BASE64_CREDENTIALS}` instead.\n\n`OTEL_SERVICE_NAME` sets `service.name` on your spans and metrics so you can find them in the next two sections."
+        },
+        {
+          "type": "markdown",
+          "content": "Open the file you created in Milestone 5. That file is the capture sample from your language page, with the client created in one line. In Python, that line is `client = Client()`."
+        },
+        {
+          "type": "markdown",
+          "content": "Copy the provider snippet for your language from [OpenTelemetry setup](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/sdk/#opentelemetry-setup) and paste it into that file before the line that creates the client. The Python snippet is also under [Configure providers in your application](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/get-started/grafana-cloud/#configure-providers-in-your-application).\n\nThe snippets are not complete on their own. For your language:\n\n| Language | What to add |\n| --- | --- |\n| Python | Run `pip install opentelemetry-sdk opentelemetry-exporter-otlp-proto-http`. The snippet sets `service.name` to `my-agent` itself. |\n| TypeScript and JavaScript | The snippet uses a `resource` it doesn't define. Create one with `service.name` set to `my-agent`, for example `resourceFromAttributes({ \"service.name\": \"my-agent\" })` from `@opentelemetry/resources`. |\n| Go | The snippet uses `res` and `ctx` it doesn't define. Add `ctx := context.Background()` and `res := resource.Default()` from `go.opentelemetry.io/otel/sdk/resource`, which reads `OTEL_SERVICE_NAME`. |\n| Java | Add the `io.opentelemetry:opentelemetry-sdk-extension-autoconfigure` and `io.opentelemetry:opentelemetry-exporter-otlp` dependencies. `AutoConfiguredOpenTelemetrySdk.initialize()` reads `OTEL_SERVICE_NAME` and the `OTEL_EXPORTER_` variables. |\n| .NET | Add the `OpenTelemetry` and `OpenTelemetry.Exporter.OpenTelemetryProtocol` packages. The builders read `OTEL_SERVICE_NAME` and the `OTEL_EXPORTER_` variables. |"
+        },
+        {
+          "type": "markdown",
+          "content": "Shut the providers down after the client's shutdown call, so queued spans and metrics are flushed before the process exits.\n\n- Python and TypeScript: use the shutdown lines from the snippet. In Python, the file ends like this:\n\n```python\nclient.shutdown()\ntp.shutdown()\nmp.shutdown()\n```\n\n- Go: the snippet's `defer tp.Shutdown(ctx)` and `defer mp.Shutdown(ctx)` run after the sample's deferred client shutdown, so no change is needed.\n- Java: `AutoConfiguredOpenTelemetrySdk.initialize()` registers a shutdown hook, so no change is needed.\n- .NET: the `using var` providers are disposed, and flushed, when `Main` exits.\n\nLeave the rest of the sample as it is."
+        },
+        {
+          "type": "markdown",
+          "content": "Run that same file again in the shell from Milestone 4, using the same command you used in Milestone 5. The variables you set in this milestone are in that shell, so the providers can read them."
+        },
+        {
+          "type": "input",
+          "inputType": "boolean",
+          "variableName": "providersAdded",
+          "prompt": "Confirm before you continue.",
+          "checkboxLabel": "I set the OTEL_ variables, added the providers, and ran the sample again without errors",
+          "required": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your agent now exports spans and metrics to Grafana Cloud alongside its generation data."
+    },
+    {
+      "type": "markdown",
+      "content": "Check the Traces data source for your agent's spans."
+    },
+    {
+      "type": "section",
+      "id": "check-traces",
+      "title": "Check traces",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-exploretraces-app/explore",
+          "content": "Go to **Drilldown** > **Traces**.",
+          "verify": "on-page:/a/grafana-exploretraces-app"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+          "content": "Select a time range that covers the rerun.\n\nFor example, **Last 15 minutes**.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Traces']",
+          "content": "Open **Traces** and look for spans from `my-agent`.\n\nThat is the `service.name` you set with `OTEL_SERVICE_NAME`, or in the Python provider snippet.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"],
+          "hint": "Open **Breakdown** and group by `resource.service.name` to see `my-agent` as its own value."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Spans from the rerun appear under the `my-agent` service in your Grafana Cloud Traces data source."
+    },
+    {
+      "type": "markdown",
+      "content": "Check the Metrics data source for the SDK's metrics."
+    },
+    {
+      "type": "section",
+      "id": "check-metrics",
+      "title": "Check metrics",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-metricsdrilldown-app/drilldown",
+          "content": "Go to **Drilldown** > **Metrics**.",
+          "verify": "on-page:/a/grafana-metricsdrilldown-app"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[aria-label='Quick search metrics']",
+          "targetvalue": "gen_ai",
+          "content": "In the search box, type `gen_ai`.\n\nThis filters the list to the SDK's metrics: `gen_ai_client_operation_duration_seconds`, `gen_ai_client_token_usage`, `gen_ai_client_time_to_first_token_seconds`, and `gen_ai_client_tool_calls_per_operation_count`. Grafana Cloud stores the OpenTelemetry dot names with underscores and adds unit suffixes. `gen_ai_client_time_to_first_token_seconds` is recorded for streaming calls only, so the sample does not produce it.",
+          "requirements": ["on-page:/a/grafana-metricsdrilldown-app", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The SDK's metrics are in your Grafana Cloud Metrics data source."
+    },
+    {
+      "type": "markdown",
+      "content": "No spans or metrics? Check these in order:\n\n1. The providers are configured before the client is created, and shut down after the client.\n2. `OTEL_EXPORTER_OTLP_HEADERS` was built with the OTLP **Instance ID** from the OpenTelemetry card, not the Agent Observability **Instance ID**, and with `tr -d '\\n'`.\n3. If the Python exporter logs `Header format invalid`, it is older than 1.27.0. Upgrade it, or write `Basic%20` in place of the space.\n4. `OTEL_EXPORTER_OTLP_ENDPOINT` ends in `/otlp` with no `/v1/traces` or `/v1/metrics` suffix.\n5. The access policy from Milestone 3 has `metrics:write` and `traces:write` selected."
+    }
+  ]
+}

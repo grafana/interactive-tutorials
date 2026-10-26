@@ -18,6 +18,17 @@
         {
           "type": "interactive",
           "action": "formfill",
+          "reftarget": "[data-testid='data-testid alert-rule name-field']",
+          "targetvalue": "QuickPizza server errors",
+          "content": "Confirm the rule name is **QuickPizza server errors**. If the QuickPizza install refreshed the form, enter it again.",
+          "requirements": [
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
           "reftarget": "[data-testid='annotation-value-0']",
           "targetvalue": "QuickPizza returned {{ $value }} server errors in the last 5 minutes",
           "content": "In the **Summary** field, add this notification:\n\n`QuickPizza returned {{ $value }} server errors in the last 5 minutes`\n\nWhen the alert fires, {{ $value }} is replaced with the live query result.",
@@ -37,19 +48,20 @@
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='save-rule']",
-          "content": "Click **Save** in the action bar at the bottom of the page to save and activate your alert rule.",
-          "doIt": false,
+          "action": "button",
+          "reftarget": "[data-testid='data-testid alert-rule save-rule-button']",
+          "content": "Confirm the rule has a name, metric query, and contact point. Fix validation errors, then click **Save**.",
           "requirements": [
-            "on-page:/alerting/new/alerting"
-          ]
+            "on-page:/alerting/new/alerting",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/alerting/grafana/"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Your alert rule is saved and running. When the condition holds past your pending period, the alert fires and notifications go to your contact point."
+      "content": "Your alert rule is saved. If its contact point has a working destination, notifications can be delivered when the condition holds past the pending period. The **empty** contact point does not send notifications."
     }
   ]
 }

@@ -44,8 +44,9 @@ How does the user perform the action?
   ├─ Single click / fill / navigate                 → interactive
   ├─ Two+ actions, the SYSTEM performs them auto    → multistep
   ├─ Two+ actions, the USER performs them manually  → guided
-  │   (also required when CSS :hover must trigger,
-  │    or when the target is virtualised — lazyRender)
+  │   (use for deliberate user interaction, including real CSS hover)
+  ├─ Target absent until scrolling                 → interactive + lazyRender
+  │   (individual action; verify the scrollContainer)
   └─ One step that wraps a multistep                → BAD — multistep singleton
 ```
 
@@ -131,12 +132,15 @@ Use `validateInput: false` (default) when you want to accept any non-empty value
 
 ### 3.5 Lazy-rendered targets
 
-`lazyRender` lives on the **step**, not on the block. Always wrap a lazy-rendered target in a `guided` block — user-paced detection avoids racing the scroll.
+Set `lazyRender: true` on a standalone `interactive` block, together with `exists-reftarget` and a verified scrolling container. Its individual **Show me** / **Do it** can discover a target that has not yet mounted.
 
 ```json
-{ "action": "button", "reftarget": "...", "lazyRender": true,
-  "scrollContainer": "div[data-testid='dashboards-table'] .scrollbar-view" }
+{ "type": "interactive", "action": "highlight", "reftarget": "...",
+  "requirements": ["exists-reftarget"], "lazyRender": true,
+  "scrollContainer": "#pageContent", "content": "Open the target." }
 ```
+
+`#pageContent` scrolls Grafana content when the extension sidebar is open; verify the target layout. Existing DOM targets already scroll into view. Current guided steps drop lazy properties, while **Do section** bypasses standalone discovery. Do not convert an automated observation to a manual guided hover for scrolling. See [runtime evidence](../docs/guided-interactions.md#lazy-targets-and-current-runtime-support).
 
 ---
 
@@ -222,7 +226,7 @@ These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rule
 4. **Markdown `##` headers in place of sections** — restructure as `section` blocks with bookend markdown.
 5. **Leading markdown title duplicating the guide title** — remove. The frame renders the title.
 6. **Brittle CSS selectors** — `.css-xyz`, deep nesting, `nth-of-type` without a stable parent. Use `data-testid`, button text, or semantic attributes.
-7. **Plain `interactive` on a below-fold / virtualised target** — convert to `guided` + `lazyRender: true`.
+7. **Missing discovery for an unmounted target** — use standalone `interactive` + `lazyRender: true` with a verified scrolling container; guided steps do not currently implement discovery.
 8. **`popout` without a valid `targetvalue`** — must be exactly `"sidebar"` or `"floating"`.
 9. **Legacy `?doc=` query string** — use the `openGuide` field on the navigate step.
 10. **Admin-only step without `skippable`** — non-admins get stuck. Add `skippable: true` with a helpful hint.
@@ -272,7 +276,7 @@ Run through this before opening the PR.
 - [ ] No auto-generated CSS classes, no `nth-of-type` without a stable parent
 
 **Resilience**
-- [ ] Any step targeting a virtualised container uses a `guided` block + `lazyRender: true`
+- [ ] Targets absent until scrolling use standalone `interactive` + `lazyRender: true`; verify the container and check individual actions separately from **Do section**
 - [ ] Admin / permission-gated steps are `skippable: true` with a hint
 - [ ] No multistep singletons; no focus-before-formfill
 - [ ] Post-transition drawer fields use Show me / skippable, not hard `exists-reftarget` gates

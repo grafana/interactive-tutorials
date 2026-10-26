@@ -74,7 +74,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='data-testid radio-button-option ping']",
+          "reftarget": "input[data-testid='data-testid radio-button-option ping'] + label",
           "content": "Set **Request type** to **Ping**. This switches the form to ICMP and drops the HTTP-only fields such as method and headers.",
           "tooltip": "Ping tests reachability at the network layer, so it answers even when the web server behind it is down.",
           "requirements": [
@@ -160,31 +160,37 @@
         },
         {
           "type": "multistep",
-          "content": "Add a label. Labels are attached to the check's metrics, so they are how you filter a dashboard down to one service or one environment later.",
+          "content": "Add a service label in a new row without changing existing labels. Skip if the label limit is reached.",
+          "skippable": true,
           "requirements": [
             "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
           ],
-          "skippable": true,
           "steps": [
             {
-              "action": "button",
-              "reftarget": "Label",
+              "action": "highlight",
+              "reftarget": "button:not([disabled]):text('Label')",
               "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
                 "exists-reftarget"
-              ],
-              "tooltip": "Add an empty label row."
+              ]
             },
             {
               "action": "formfill",
-              "reftarget": "input[aria-label='Custom labels 1 name']",
+              "reftarget": "div:has(> div > button:not([aria-label])) > div:has(input[name^='labels.'][name$='.name']):not(:has(~ div input[name^='labels.'][name$='.name'])) input[name^='labels.'][name$='.name']",
               "targetvalue": "service",
-              "tooltip": "The label name is the dimension you will group or filter by."
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+                "exists-reftarget"
+              ]
             },
             {
               "action": "formfill",
-              "reftarget": "input[aria-label='Custom labels 1 value']",
+              "reftarget": "div:has(> div > button:not([aria-label])) > div:has(input[name^='labels.'][name$='.name']):not(:has(~ div input[name^='labels.'][name$='.name'])) input[name^='labels.'][name$='.value']",
               "targetvalue": "test",
-              "tooltip": "Keep values to a small, predictable set so the metric stays cheap to query."
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+                "exists-reftarget"
+              ]
             }
           ]
         }
@@ -230,7 +236,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='data-testid radio-button-option 60000']",
+          "reftarget": "input[data-testid='data-testid radio-button-option 60000'] + label",
           "content": "**Frequency** is how often every probe runs the check. One minute is the default and a sensible starting point.",
           "tooltip": "Each probe runs on its own schedule, so more probes at a higher frequency means proportionally more executions.",
           "doIt": false,
@@ -284,18 +290,32 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox']",
+          "reftarget": "label:has(input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox'])",
           "content": "Enable **Probe Failed Executions**. This is the outage alert: it fires when enough probes stop getting a reply.",
           "tooltip": "Requiring more than one failed execution avoids paging someone over a single dropped packet.",
           "requirements": [
             "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
-          ]
+          ],
+          "targetstate": "true"
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='checkEditor alerts PingRequestDurationTooHighAvg selectedCheckbox']",
+          "targetstate": "true",
+          "reftarget": "label:has(input[data-testid='checkEditor alerts ProbeFailedExecutionsTooHigh selectedCheckbox']:checked)",
+          "content": "**Probe Failed Executions** is enabled.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "label:has(input[data-testid='checkEditor alerts PingRequestDurationTooHighAvg selectedCheckbox'])",
           "content": "**Ping Request Duration** is the slow-but-up alert. Reachability alerts stay quiet while latency climbs, so this is the one that catches a host degrading rather than failing.",
           "tooltip": "Worth enabling once you know your normal round-trip time, so the threshold means something.",
           "doIt": false,

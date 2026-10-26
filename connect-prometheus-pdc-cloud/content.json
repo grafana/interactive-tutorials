@@ -1,0 +1,311 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-prometheus-pdc-cloud",
+  "title": "Connect private Prometheus with PDC",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Connect Grafana Cloud to your existing private Prometheus server with Private Data Source Connect (PDC). You will create a network in Grafana, run an agent on your network, and test a Prometheus data source."
+    },
+    {
+      "type": "callout",
+      "title": "Before you start",
+      "content": "You need permission to add data sources and manage PDC networks and signing tokens, your private Prometheus URL and any credentials, and a Docker host on the private network that can reach Prometheus. If you are returning to an unfinished setup, check which network and data source you already created before adding duplicates."
+    },
+    {
+      "type": "markdown",
+      "content": "Start in the Grafana Cloud UI where you manage private networks."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Open Private data source connect",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/private-data-source-connections",
+          "requirements": [],
+          "id": "connect-prometheus-pdc-cloud-step-1",
+          "tooltip": "Open the page where Grafana manages private connections.",
+          "content": "Open **Private data source connect** to set up the route from Grafana Cloud to your private network.",
+          "doIt": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "This page is where you create and manage the private network used by your data source."
+    },
+    {
+      "type": "markdown",
+      "content": "Create a private network and signing token in Grafana, then run the generated Docker command on your network."
+    },
+    {
+      "type": "section",
+      "id": "connect-private-prometheus-with-pdc",
+      "title": "Create a network and connect an agent",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "create-private-network",
+          "content": "Create the private network `my-prometheus-network`.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "Add new network",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/private-data-source-connections"
+              ],
+              "id": "connect-prometheus-pdc-cloud-step-2",
+              "tooltip": "Start configuring a route into your private network.",
+              "description": "Click **Add new network** to create a connection for your Prometheus server."
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[id='connectionName']",
+              "targetvalue": "my-prometheus-network",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/private-data-source-connections"
+              ],
+              "id": "connect-prometheus-pdc-cloud-step-3",
+              "tooltip": "Use a recognizable name for the route you will select later.",
+              "formHint": "Connection name",
+              "description": "Name the private network `my-prometheus-network` so you can recognize it when configuring the data source."
+            },
+            {
+              "action": "button",
+              "reftarget": "Add",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/private-data-source-connections"
+              ],
+              "id": "connect-prometheus-pdc-cloud-step-4",
+              "tooltip": "Create the network and open its setup instructions.",
+              "description": "Click **Add** to create the network and open its configuration."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[role=\"button\"]:contains(\"Running the PDC Agent Docker image\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/private-data-source-connections"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-5",
+          "tooltip": "Display the instructions for deploying on your Docker host.",
+          "content": "Choose **Running the PDC Agent Docker image** to display the Docker setup instructions.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid=\"generate-token-name-input\"]",
+          "targetvalue": "my-prometheus-pdc-token",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/private-data-source-connections"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-6",
+          "tooltip": "Give the credential a name that identifies its purpose.",
+          "content": "Name the signing token `my-prometheus-pdc-token` so you can identify its purpose later.",
+          "doIt": true
+        },
+        {
+          "type": "guided",
+          "id": "connect-prometheus-pdc-cloud-step-7-guided",
+          "content": "Create your signing token, then deploy the agent on your private network.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "[data-testid=\"generate-token-submit-button\"]",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/private-data-source-connections"
+              ],
+              "id": "connect-prometheus-pdc-cloud-step-7",
+              "tooltip": "Review the expiration and create the credential yourself.",
+              "description": "Review the token expiration in Grafana, then click **Create token** yourself. Keep the generated credential in the setup UI; do not paste it into this guide or chat."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "h5:contains(\"Deploy the PDC agent on your private network\")",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/connections/private-data-source-connections"
+              ],
+              "id": "connect-prometheus-pdc-cloud-step-8",
+              "tooltip": "Run the generated command on a host that can reach your private endpoint.",
+              "description": "On your own Docker host inside the private network, run the agent command generated by Grafana. Use a host whose agent can reach your Prometheus endpoint, and leave the agent running. Grafana provides the command; you run it in your own terminal. Highlighting these instructions does not deploy the agent."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Test agent connection",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/private-data-source-connections"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-9",
+          "tooltip": "Confirm that at least one agent is connected before continuing.",
+          "content": "Click **Test agent connection** and wait for at least one connected agent. If none connects, check that the agent is running and follow the setup UI before continuing.",
+          "doIt": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The agent connection checks the route to Grafana Cloud; the next steps check whether Prometheus is reachable through it."
+    },
+    {
+      "type": "callout",
+      "title": "Check the agent before moving on",
+      "content": "Continue only when your new network reports at least one connected agent. This confirms the agent connection, but you still need to configure and test the Prometheus data source."
+    },
+    {
+      "type": "markdown",
+      "content": "Set the private endpoint, authentication, and PDC network, then test the Prometheus API."
+    },
+    {
+      "type": "section",
+      "id": "connect-private-prometheus-with-pdc-2",
+      "title": "Configure and test private Prometheus",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "requirements": [],
+          "id": "connect-prometheus-pdc-cloud-step-10",
+          "tooltip": "Open the catalog to add your private endpoint.",
+          "content": "With an agent connected, open **Add data source** to configure Prometheus.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": ":is({grafana:components.Card.heading}) button:contains(\"Prometheus\")",
+          "requirements": [
+            "exists-reftarget",
+            "min-version:13.2.0",
+            "on-page:/connections/datasources/new"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-11",
+          "tooltip": "Create a data source for querying your existing server.",
+          "content": "Select **Prometheus** to create the data source.",
+          "doIt": true
+        },
+        {
+          "type": "multistep",
+          "id": "name-private-prometheus",
+          "content": "Name the data source `my-private-prometheus`.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": ":is({grafana:components.EditableTitle.editButton})",
+              "requirements": [
+                "exists-reftarget",
+                "min-version:13.2.0",
+                "on-page:/connections/datasources/edit"
+              ],
+              "id": "connect-prometheus-pdc-cloud-step-12",
+              "tooltip": "Enable editing so you can identify this data source later.",
+              "description": "Click **Edit title** to give this data source a recognizable name."
+            },
+            {
+              "action": "formfill",
+              "reftarget": ":is({grafana:components.EditableTitle.titleInput})",
+              "targetvalue": "my-private-prometheus",
+              "requirements": [
+                "exists-reftarget",
+                "min-version:13.2.0",
+                "on-page:/connections/datasources/edit"
+              ],
+              "id": "connect-prometheus-pdc-cloud-step-13",
+              "tooltip": "Use this name for the configuration and its final verification.",
+              "description": "Name the data source `my-private-prometheus`."
+            }
+          ]
+        },
+        {
+          "action": "formfill",
+          "reftarget": ":is({grafana:components.DataSource.Prometheus.configPage.connectionSettings})",
+          "targetvalue": "^https?://\\S+$",
+          "requirements": [
+            "exists-reftarget",
+            "min-version:13.2.0",
+            "on-page:/connections/datasources/edit"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-14",
+          "tooltip": "Enter the HTTP or HTTPS address reachable from your agent.",
+          "validateInput": true,
+          "type": "interactive",
+          "content": "Enter your private Prometheus server URL under **Connection**, beginning with `http://` or `https://`. Use the address reachable from the PDC agent, including its port when needed.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "action": "highlight",
+          "reftarget": "#auth-method-select",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources/edit"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-15",
+          "tooltip": "Configure the method your endpoint requires and enter credentials directly in Grafana.",
+          "type": "interactive",
+          "content": "Choose the authentication method your endpoint requires and enter any credentials directly in Grafana. Select **No Authentication** only if your endpoint requires no credentials. PDC provides network access; your endpoint may still require authentication.",
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[aria-label=\"Private data source connect\"]",
+          "targetvalue": "my-prometheus-network",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/datasources/edit"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-16",
+          "tooltip": "Route queries through the network you created earlier.",
+          "content": "Select `my-prometheus-network` under **Private data source connect** to route this data source through the agent you connected.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": ":is({grafana:pages.DataSource.saveAndTest})",
+          "verify": "datasource-configured:my-private-prometheus",
+          "requirements": [
+            "exists-reftarget",
+            "min-version:13.2.0",
+            "on-page:/connections/datasources/edit"
+          ],
+          "id": "connect-prometheus-pdc-cloud-step-17",
+          "tooltip": "Confirm that Grafana can query the private endpoint through the connected agent.",
+          "content": "Click **Save & test** and wait for **Successfully queried the Prometheus API**. A connected PDC agent alone does not confirm this data source can query Prometheus.",
+          "doIt": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A successful Prometheus API check confirms the configured data source can query your private endpoint through PDC."
+    },
+    {
+      "type": "callout",
+      "title": "If Save & test fails",
+      "content": "Confirm the selected PDC network has a connected agent, then check that the Prometheus URL is reachable from that agent and that endpoint authentication is correct. Run **Save & test** again after correcting the configuration."
+    }
+  ]
+}

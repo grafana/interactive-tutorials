@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-agent-to-agent-observability-copy-api-url-and-instance-id",
+  "title": "Copy the API URL and Instance ID",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The SDK needs three values from Grafana Cloud. The first two, **API URL** and **Instance ID**, come from Agent Observability itself. Save both somewhere you can find them later, such as a notes file. Milestone 4 turns them into environment variables."
+    },
+    {
+      "type": "markdown",
+      "content": "Open the setup screen, copy the two values, and save them for later."
+    },
+    {
+      "type": "section",
+      "id": "copy-two-values",
+      "title": "Copy the two values",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app",
+          "content": "Go to **Agent Observability**.",
+          "verify": "on-page:/a/grafana-agento11y-app"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Start setup",
+          "content": "Click **Start setup**.",
+          "requirements": ["on-page:/a/grafana-agento11y-app", "exists-reftarget"],
+          "objectives": ["on-page:/a/grafana-agento11y-app/setup"],
+          "skippable": true,
+          "hint": "Don't see **Start setup**? Your stack already has data. Open **Configuration** in Agent Observability instead; it lists the same **API URL** and **Instance ID**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Copy API URL']",
+          "content": "Under **Your credentials**, copy **API URL** and save it somewhere, such as a notes file.\n\nThis is the value for `AGENTO11Y_ENDPOINT`. You set that environment variable to this URL later. The SDK reads it when you create the client, and sends generation data to that address.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/setup", "exists-reftarget"],
+          "hint": "If the panel is collapsed, click **Your credentials** to expand it."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Copy Instance ID']",
+          "content": "Copy **Instance ID** and save it in the same place.\n\nIt is the numeric Grafana Cloud stack ID, and the value for `AGENTO11Y_AUTH_TENANT_ID`. You set that environment variable to this ID later. The SDK uses it to say which stack the data belongs to.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/setup", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have saved **API URL** and **Instance ID** for later."
+    }
+  ]
+}

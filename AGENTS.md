@@ -32,7 +32,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 18. **`schemaVersion` is optional** -- if included, use `"schemaVersion": "1.1.0"`; the schema defaults to `"1.1.0"` when omitted
 19. **`popout` requires `targetvalue`** -- `popout` actions MUST set `targetvalue` to exactly `"sidebar"` or `"floating"`; the schema rejects any other value, and `popout` is not allowed inside `guided` blocks
 20. **Use `openGuide`, not `?doc=`** -- to chain a follow-up guide after a `navigate` step, set `openGuide: "bundled:<guide-id>"` on the interactive block; the legacy `?doc=` query param is back-compat only
-21. **`lazyRender` for virtualised targets** -- any step targeting a virtualised container (long tables, paginated lists, dashboard rows below the fold) MUST be inside a `guided` block with `lazyRender: true` on the step; plain `interactive` will fail because `exists-reftarget` cannot scroll
+21. **Use supported lazy discovery** -- for targets absent until scrolling, use a standalone `interactive` block with `lazyRender: true`, `exists-reftarget`, and a verified `scrollContainer` (often `#pageContent` with the Grafana sidebar open). Its individual **Show me** / **Do it** handles discovery. Current `guided` steps and **Do section** do not run that discovery; see [guided-interactions.md](docs/guided-interactions.md#lazy-targets-and-current-runtime-support).
 
 ## Task Routing
 

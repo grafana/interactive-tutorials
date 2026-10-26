@@ -65,11 +65,11 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid metric select']",
-          "content": "In the **Metric** drop-down, paste `quickpizza_server_http_requests_total`, then select it from the list.\n\nThis counter tracks HTTP requests for QuickPizza services and includes a response **status** label.",
-          "tooltip": "Paste the metric name, then pick it from the list.",
-          "doIt": false,
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid metric select'] input[role='combobox']",
+          "targetvalue": "quickpizza_server_http_requests_total",
+          "content": "Select the **quickpizza_server_http_requests_total** metric. This counter records HTTP requests and includes a **status** label.",
+          "tooltip": "Pick the metric from the list.",
           "requirements": [
             "on-page:/alerting/new/alerting",
             "exists-reftarget"
@@ -90,9 +90,8 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Select match operator']",
-          "content": "Open the operator drop-down and change **=** to **=~** so one filter can match every 5xx status code.",
-          "tooltip": "=~ is regex match; = is exact match.",
+          "reftarget": "input[data-testid='data-testid Select match operator-input']",
+          "content": "Open the **status** operator menu and select **=~**. The operator needs to match a regex, not one status code.",
           "doIt": false,
           "requirements": [
             "on-page:/alerting/new/alerting",
@@ -102,9 +101,8 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Select value']",
-          "content": "In the **Select value** box, enter `5..`, then press Enter.\n\nThat regex matches any three-digit status that starts with 5.",
-          "tooltip": "Enter 5.. and press Enter. Don't pick 500 from the list.",
+          "reftarget": "[data-testid='data-testid Select value'] input[role='combobox']",
+          "content": "Type `5..` in **Select value** and press Enter. Do not choose `500` from the suggestions.",
           "doIt": false,
           "requirements": [
             "on-page:/alerting/new/alerting",
@@ -129,7 +127,7 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "Operations",
-          "content": "Click **+ Operations**. In the **Operations** drop-down, select **Range functions / Increase**, then set the **Range** to **5m**.",
+          "content": "Open **Operations**, then select **Range functions** > **Increase** and set **Range** to **5m**.",
           "requirements": [
             "on-page:/alerting/new/alerting"
           ]

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-agent-to-agent-observability-find-generation-in-conversations",
+  "title": "Find your generation in Conversations",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Back in Grafana Cloud, the generation you captured in Milestone 5 should appear in **Conversations**. Open the list, confirm the time range covers your run, and open the conversation to inspect the generation."
+    },
+    {
+      "type": "markdown",
+      "content": "Open Conversations and make the time range cover your run."
+    },
+    {
+      "type": "section",
+      "id": "open-conversations",
+      "title": "Open Conversations",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/conversations",
+          "content": "Go to **Agent Observability** > **Conversations**.",
+          "verify": "on-page:/a/grafana-agento11y-app/conversations"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+          "content": "Check the time picker. Pick a range that covers the moment you ran the sample.\n\nFor example, **Last 15 minutes**.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click the refresh button to reload the list.\n\nThe list shows a row for conversation `conv-1` with the agent, model (`openai/gpt-4o`), token count, cost, and duration from the generation you captured.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "Click the `conv-1` row to open the detail view. **Flow** opens by default and shows the generation's assistant output (`Hello` for the Python, JavaScript, Go, and Java samples), its timing data, and its token usage breakdown."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You found your generation in **Conversations**."
+    },
+    {
+      "type": "markdown",
+      "content": "Nothing in the list? Check these in order:\n\n1. The time range covers when you ran the sample. Widen it and refresh.\n2. The sample completed and called the shutdown method last, so the queued generation was exported.\n3. The five `AGENTO11Y_` variables were set in the same shell that ran the sample, and `AGENTO11Y_AUTH_TENANT_ID` is the **Instance ID** from Milestone 2, not the OTLP instance ID.\n4. The access policy from Milestone 3 has the `sigil:write` scope and the token you exported belongs to that policy."
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "dashboard-filters-basics",
+  "title": "Filter a dashboard by a label",
+  "blocks": [
+    {
+      "type": "markdown",
+      "id": "intro",
+      "content": "Dashboard filters narrow every panel to the series that match a label. In this guide you add a `job` filter, watch the graph update, and then remove it."
+    },
+    {
+      "type": "section",
+      "id": "open-dashboard",
+      "title": "Open the dashboard",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-dashboard-navigate",
+          "action": "navigate",
+          "reftarget": "/d/canvvlh",
+          "content": "Open the **Filter variables** dashboard.",
+          "doIt": true,
+          "tooltip": "This demo dashboard has a filter variable with group by turned on."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "add-filter-intro",
+      "content": "To add a filter, choose a label, an operator, and a value:"
+    },
+    {
+      "type": "section",
+      "id": "add-filter",
+      "title": "Add a filter",
+      "requirements": [
+        "section-completed:open-dashboard",
+        "on-page:/d/canvvlh"
+      ],
+      "blocks": [
+        {
+          "type": "multistep",
+          "id": "add-filter-steps",
+          "content": "Add a **job** filter: in the **Filters** box, type `job`, choose **=**, and then choose the first job value. Select **Run 2 steps** to have Pathfinder do them in order.",
+          "steps": [
+            {
+              "action": "formfill",
+              "id": "add-filter-key-operator",
+              "reftarget": "{grafana:pages.Dashboard.SubMenu.submenuItem} input[placeholder='+ label = value']",
+              "targetvalue": "job=",
+              "description": "Type `job` and choose the **=** operator.",
+              "tooltip": "Every Prometheus target has a job label.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "id": "add-filter-value",
+              "reftarget": "[data-testid^='data-testid ad hoc filter option value ']:nth-match(1)",
+              "description": "Choose a value. This step picks the first job in the list.",
+              "tooltip": "Type to search when the list is long.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "add-filter-result",
+          "action": "highlight",
+          "reftarget": "[aria-label='Edit filter with key job']",
+          "content": "Your filter is now a pill. Every panel that queries this data source now includes the `job` filter, so the graph shows only requests for that job.",
+          "tooltip": "Click the pill to change its operator or value.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "add-filter-summary",
+      "content": "You added a filter that applies to every matching panel on the dashboard."
+    },
+    {
+      "type": "section",
+      "id": "remove-filter",
+      "title": "Remove the filter",
+      "requirements": [
+        "section-completed:add-filter",
+        "on-page:/d/canvvlh"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "remove-filter-button",
+          "action": "button",
+          "reftarget": "[aria-label='Remove filter with key job']",
+          "content": "Remove the **job** filter to bring back every job.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Clear all removes every filter at once."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "outro",
+      "content": "You removed the filter, and the graph shows every job again. Filters are stored in the URL, so you can share a filtered view by sharing the link."
+    }
+  ]
+}

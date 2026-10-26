@@ -36,6 +36,8 @@ Feature: Setting up MongoDB monitoring with the Grafana Cloud integration
 Audience: Grafana beginners who have MongoDB running and want metrics in Grafana Cloud
 ```
 
+If a learning journey in docs-ai already has a signed-off plan for this path, give `/create-learning-path` that journey's docs-ai PR instead of a feature/audience description — it skips the proposal step and builds straight from the approved outline.
+
 For convert, run `/build-interactive-lj` and give the website learning-path slug (for example `mysql-data-source`).
 
 ## Session shape (create or convert)
@@ -75,6 +77,20 @@ website/                        # read-only; needed for create/convert, not for 
 - `website.yaml` holds Learning Hub / website metadata for the path and each milestone ([website-yaml-reference.md](website-yaml-reference.md)).
 
 When converting, the agent maps existing website front matter (including legacy `pathfinder_data` if present) into `website.yaml`. Do not edit the website repo for these workflows. See [frontmatter-schema](../.cursor/commands/create-learning-path/reference/frontmatter-schema.md) if you need the field mapping.
+
+## Declare learner prerequisites
+
+Use the path `manifest.json` for requirements learners must already satisfy before starting the path to complete its milestones. Pathfinder shows them before **Start** or **Resume** and in the expanded recommendation summary.
+
+Use a milestone manifest only for a pre-start requirement unique to that guide. Milestones do not inherit path requirements, including when a learner opens a milestone directly.
+
+Each `id` and `label` needs at least one non-whitespace character. IDs must be stable and exact-string unique within that manifest. Pathfinder preserves the order and exact strings; it does not trim or normalize them. Labels are plain text by default. Omit `format` unless a label needs supported inline Markdown or a setup link. See [prerequisites](manifest-reference.md#prerequisites) for the allowed syntax and safety rules.
+
+Do not infer prerequisites from guide content or copy path prerequisites into milestone manifests. List necessary prior access, permissions, tools, or external resources, not resources created or skills taught by the tutorial. The field informs learners; it does not check state or block progress. Use guide requirements and objectives for runtime conditions.
+
+If a pre-start requirement applies only to a specific setup, state that condition in its label, such as "If using a self-hosted instance, permission to add a data source." Short setup links can appear in Markdown labels. Keep detailed setup instructions, context, optional preparation, and recommended knowledge in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
+
+For the field format, see [prerequisites](manifest-reference.md#prerequisites).
 
 ## Screenshots and videos (website-only in Pathfinder)
 
@@ -170,6 +186,7 @@ Screenshots for opening **dev mode** and the Block Editor are in the [repo READM
 - Authors: run [`/preflight-learning-path`](../.cursor/commands/preflight-learning-path.md) before opening a PR (static checks + live DOM; optional Block Editor walk).
 - Reviewers: run [`/review-learning-path-pr`](../.cursor/commands/review-learning-path-pr.md) after the PR exists.
 - Add the `lh-learning-path` label to learning path PRs, and set **Status** on the [Learning Hub board](https://github.com/orgs/grafana/projects/1108/views/2), so the PR appears on the board with the right workflow state.
+- If this path came from a learning journey in docs-ai and carries an embed shortcode back to it: merge **this** PR before merging the `website` PR that adds the shortcode. Never the other order — a published slide whose shortcode points at a path not yet on `interactive-tutorials`'s default branch renders as a broken, empty embed.
 
 Preflight reports under `.cursor/lp-preflight-state/` are local and gitignored. Do not force-add them to your PR.
 

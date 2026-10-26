@@ -1,0 +1,441 @@
+{
+  "id": "when-everythings-on-fire-lab",
+  "title": "When Everything's On Fire — Hands-On Lab Guide",
+  "blocks": [
+    {
+      "type": "markdown",
+      "id": "intro",
+      "content": "*Hands-On Lab Guide*\n\nYour personal walkthrough for today's workshop.\n\nKeep this open next to your web terminal."
+    },
+    {
+      "type": "section",
+      "id": "before-you-begin",
+      "title": "Before You Begin",
+      "blocks": [
+        {
+          "type": "markdown",
+          "id": "byb-welcome-email",
+          "content": "You will receive a welcome email prior to the start of the session. It has a few things that are critical to begin the labs:\n\n- **Your web terminal URL:** This web address has a long random token built into it; that token is your access, so don't share it.\n- **Your 28-day trial link:** one designated contact at each company present was given a separate 28-day signup link. Use that instead of the standard signup in Step 1. Everyone else signs up the normal way."
+        },
+        {
+          "type": "callout",
+          "id": "byb-note-browser-warning",
+          "title": "Note",
+          "content": "Your browser will warn that the web terminal's connection isn't private the first time you open it. That's expected for this lab. Click “Advanced” then “Proceed” (or “Visit this website”) to continue."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "act-1-orient",
+      "title": "Act 1 - Orient",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "This is your own Grafana Cloud account. Every dashboard, every alert, every investigation you do today runs through it."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "If you're today's designated company contact: use the 28-day signup link you were given, otherwise, navigate to [Grafana.com](http://Grafana.com)\n\n"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S1-I1.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Click **Sign Up** to create a free Grafana Cloud account.\n\n"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S1-I2.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Enter your email, desired password, and *click* **Create my account**. Then, check your email for an activation code. If the email doesn't arrive within a minute, check spam first.\n\n> ***If you're stuck:** A blocked verification link happens occasionally with strict inbox policies. Flag your Technical Expert rather than waiting.*\n\n"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S1-I3.png"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S1-I4.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Enter the activation code. If it doesn’t automatically move to the next page, click **Check activation code**. Accept the default of **US East (OH)** on the next screen and click **Finish Setup**."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S1-I5.png"
+        },
+        {
+          "type": "markdown",
+          "content": "On the subsequent onboarding screen, scroll to the bottom and *click* **Skip this and show all options**."
+        }
+      ],
+      "id": "guide-A1S1",
+      "title": "Act 1 - Step 1 - Create your Grafana Cloud account"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Company X already has an observability agent (Alloy) installed and running in your environment. It's just not pointed at your new account yet. You're about to fix that.\n\n\n\nOn the current screen, click the ☰ in the upper left to expand the main menu. From there, expand the menu option for Connections and *click* on **Add new connection**. Then *scroll* to the **Featured** section and *click* **OpenTelemetry (OTLP)**."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S2-I1.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Click* the **View connection details** button, and enter a **Token name**. *Click* **Create token**.\n\n"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S2-I2.png"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S2-I3.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Copy the ***OTEL\\_EXPORTER\\_OTLP\\_ENDPOINT*** value as well as the ***token value*** into a separate text file.\n\nIn a separate tab, navigate to [https://grafana.com](https://grafana.com) and *click* on the **My Account** link in the upper right.\n\n*Click* the **Details** button inside your cloud stack and then **Details** on the following page’s Grafana card."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S2-I4.png"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S2-I5.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Copy the **Instance ID** value to your text file.\n\nOpen a new tab in your browser and navigate to your web terminal (the URL from your credential email).\n\nUse the below command to open the config file:\n\n```\nnano /opt/workshop/alloy/config.alloy\n```\n\n"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S2-I6.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Find the three placeholder lines and replace each with the real value from the connection-details screen:\n\n**–** REPLACE\\_WITH\\_YOUR\\_INSTANCE\\_ID → The value from **Act 1 Step2.6**\n\n**–** REPLACE\\_WITH\\_YOUR\\_API\\_KEY → the token value from **Act 1 Step 2.3**\n\n**–** REPLACE\\_WITH\\_YOUR\\_OTLP\\_ENDPOINT → the endpoint URL from **Act 1 Step 2.3**\n\nSave and exit:\n\n```\nCtrl+O, then Enter, then Ctrl+X.\n```\n\nStart it up:\n\n```\ncd /opt/workshop && docker compose restart otel-collector\n```\n\nNOTE: You can set a 60-second timer before starting the next step.\n\nGo back to the Grafana UI tab where you were creating the token. *Click* **Next** and wait for the test to complete.\n\n\n\nGo back to your browser tab running the Grafana UI and expand **Observability**, *click* on **Application**, and then *click* the **Applications** button in the main screen. Click the blue **Activate** button in the subsequent popup. Finally, *click* the button to **Build knowledge graph**."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S2-I7.png"
+        }
+      ],
+      "id": "guide-A1S2",
+      "title": "Act 1 - Step 2 - Connect your environment"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "A quick lap through the three signal types to confirm you've actually connected.\n\n\n\n*Expand* the **Drilldown** menu and *click* on **Metrics**. At least one of the graphs should begin populating with data as shown in the left-side screenshot. So long as any graph had telemetry, data is flowing. Given a few minutes; the graphs will begin to appear as it looks in the right-side screenshot."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S3-I1.png"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S3-I2.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Click* the link for **Traces** within the **Drilldown** group. The span rate should have begun populating."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S3-I3.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Click* the **Explore** option in the menu. On the subsequent page click in the data source picker box and *click* on **grafanacloud-\\[your-instance-name\\]-logs**."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S3-I4.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Under **Label filters**, select **cloud\\_region** in the dropdown on the left, **=** on the dropdown in the middle, and the region you configured in the dropdown on the right. Click the blue circle arrows to run the query, and look for evidence of logs in the **Logs volume** section. If you scroll down, you’ll see a list of logs similar to the screenshot on the right.\n\n> ***If anything fails to populate:** Give the environment up to 3 minutes to populate. If nothing shows flag down the technical expert.*\n\n"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S3-I5.png"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S3-I6.png"
+        },
+        {
+          "type": "markdown",
+          "content": "As one final check, *expand* **Observability** and *click* on **Entity Graph**. You should see the above screen. "
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A1-S3-I7.png"
+        }
+      ],
+      "id": "guide-A1S3",
+      "title": "Act 1 - Step 3 - See what you've inherited"
+    },
+    {
+      "type": "section",
+      "id": "act-2-investigate",
+      "title": "Act 2 - Investigate",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "*Your manager just pinged you: customers are saying checkout is broken. Let's find out why the way you actually would, starting broad and narrowing down.*"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Click the stars in the upper right of the window to open the Grafana Assistant Chat.\n\nIn the prompt box type something to the effect of “It looks like my app is having a high error rate. Give me some details on what’s happening and how I may be able to resolve it.”  \n**NOTE:** This is a very general prompt. The more details you have, such as service name, the faster the assistant can deliver a response. In this case, it is fine.\n\nGrafana Assistant may ask a few questions as it processes the response. It’s up to you whether or not to keep the window open or close it using the **x** in the upper right. Either way, let it run the analysis while we continue to the next step."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S1-I1.png"
+        }
+      ],
+      "id": "guide-A2S1",
+      "title": "Act 2 - Step 1 - AI Investigation"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "*Expand* **Observability** and *click* on **Entity Catalog**.\n\n**NOTE:** For the purposes of this lab, some aspects of the Knowledge Graph may not have populated. This is normal, as the environment has just been stood up. For example, typically the Entity Catalog will sort by high error rate."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S2-I1.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Scroll* through the service list until you find the one with an elevated error rate. *Click* on it.\n\n***SPOILER:** This will be the **Payment** service.*"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S2-I2.png"
+        },
+        {
+          "type": "markdown",
+          "content": "***OBSERVE:** In the upper left of this window, you will see a gray bullseye next to the service name. Because all of the knowledge graph relationships are not yet built, this doesn’t provide much information, but in a real environment, this would give a red/yellow/green indication of the services health with specific contributing factors. In the middle of this page, you will see the RED metrics.*\n\n*Click* on the **Traces** tab."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S2-I3.png"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S2-I4.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Click* in the filters box. *Click* on **status** in the dropdown, then *click* on **=**, then *click* on **error**. Then scroll down to see the list of traces and *click* on any that has the trace name **user\\_checkout\\_single** or **user\\_checkout\\_multi**."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S2-I5.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Scroll* the right side down until you see the errored span for the **Payment** service, indicated by the red target. *Click* on this span and read the information. Then, *click* on the **Logs for this span** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S2-I6.png"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S2-I7.png"
+        },
+        {
+          "type": "markdown",
+          "content": "At the bottom of this page, you should see logs. If not, remove the **span\\_id** filter by *clicking* the **x** immediately after it. Then click on the log with the **WARN** status. Read the details of the log."
+        }
+      ],
+      "id": "guide-A2S2",
+      "title": "Act 2 - Step 2 - Using APM to trace the failure"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "If you previously closed it, *click* the stars in the upper right of the window to reopen the Grafana Assistant.\n\nIf the assistant has been waiting for input, continue providing answers to the direction you’d like Grafana Assistant to take.\n\nRead the assessment and consider how it matches up with your own investigation."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A2-S3-I1.png"
+        }
+      ],
+      "id": "guide-A2S3",
+      "title": "Act 2 - Step 3 - AI Investigation Revisited"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "NOTE: Before beginning this act, if Grafana Assistant is still open, *click* the **x** in the upper right corner of the Grafana Assistant window.\n\n*Expand* **Alerts &amp; IRM** in the menu, then *expand* **Alerting**, and then *click* on **Notification configuration** and *click* the **New contact point** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S1-I1.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Enter your name in the **Name** field and your email address in the **Addresses** field. Make sure that the **Integration** dropdown is set to email, and then *click* the **Test** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S1-I2.png"
+        },
+        {
+          "type": "markdown",
+          "content": "In the pop-up window, leave the defaults and *click* on the **Send test notification** button. You should receive a confirmation that the test was successful. When complete, *click* the **Save contact point** button on the original screen.\n\nCheck your email for the test confirmation."
+        }
+      ],
+      "id": "guide-A3S1",
+      "title": "Act 3 - Step 1 - Create a Contact Point for Alerts"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "*Click* on the **Notification policies** link, and then *click* on the **+ Add Route** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S2-I1.png"
+        },
+        {
+          "type": "markdown",
+          "content": "In the **Matching labels** section set the **Label** to “service\\_name”, the **Operator** to “=”, and the **Value** to “payment”. Choose your name from the **Contact point** dropdown. Then *click* the **Add route** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S2-I2.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Once complete, you will see the route show up under the Default policy."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S2-I3.png"
+        }
+      ],
+      "id": "guide-A3S2",
+      "title": "Act 3 - Step 2 - Add a Route to the Default Notification Policy"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Navigate back to the **Entity catalog** and *click* on the **opentelemetry-demo\\\\payment** service."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I1.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Click* on the **SLOs** tab, and then *click* the **+ Create manually** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I2.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Make sure the **Start Querying** section is set to **Ratio**, and copy and paste the below query from your welcome email into the **Success metric** query:\n\n```\ntraces_spanmetrics_calls_total{service=\"payment\", status_code!=\"STATUS_CODE_ERROR\"}\n```\n\nSimilarly, copy and paste the below query from your welcome email into the **Total metric** query:\n\n```\ntraces_spanmetrics_calls_total{service=\"payment\"}\n```\n\n"
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I3.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Click* on the **Run queries** button and verify output. Scroll to the bottom of the page and click the **Set target and error budget** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I4.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Leave the default target rate of 99.5% and *click* the **Add name and description** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I5.png"
+        },
+        {
+          "type": "markdown",
+          "content": "Enter “Payment-SLO” for the **SLO name** field. Note that the **SLO labels** area has a label for **service\\_name** that is set to **payment**, matching the label configured in the route you added to the default notification policy. *Click* the button to **Add SLO alert rules &amp; assistant investigations**."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I6.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Check* the box for **Add SLO alert rules and assistant investigations**. Leave everything else as default. Scroll to the bottom of the page, and *click* the **Review SLO** button."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I7.png"
+        },
+        {
+          "type": "markdown",
+          "content": "*Click* the button to **Save SLO**."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S3-I8.png"
+        }
+      ],
+      "id": "guide-A3S3",
+      "title": "Act 3 - Step 2 - Create SLOs"
+    },
+    {
+      "type": "section",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Wait a minute and refresh the screen. You should no longer see “No Data” or all zeroes and rather see some numbers show.\n\nLet the Technical Expert know that you’ve completed to this point. When all attendees are done, we will trigger an event.\n\nWhen the Technical Expert announces that errors in the payment system are triggered again, check your email."
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/events/workshops/weiof/A3-S4-I1.png"
+        }
+      ],
+      "id": "guide-A3S4",
+      "title": "Act 3 - Step 4 - The Test"
+    }
+  ]
+}

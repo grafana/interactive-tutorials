@@ -9,19 +9,19 @@
     },
     {
       "type": "markdown",
-      "content": "## Grafana Cloud requirements\n\n| Requirement | Details |\n|---|---|\n| Account | Grafana Cloud account with Editor or Admin role |\n| Database Observability | Activated in your Grafana Cloud stack. Go to **Databases** in the navigation menu to activate it. |\n| Stack | Access to Grafana Cloud Mimir (metrics) and Grafana Cloud Loki (logs) data sources |\n| Permissions | Ability to view and create dashboards |"
+      "content": "## Grafana Cloud requirements\n\n| Requirement | Details |\n|---|---|\n| Account | Grafana Cloud account with Editor or Admin role |\n| Database Observability | Activated in your Grafana Cloud stack. Open **Observability** > **Database** in the navigation menu and click **Activate Database Observability** if the app isn't already active. |\n| Stack | Access to Grafana Cloud Mimir (metrics) and Grafana Cloud Loki (logs) data sources |\n| Permissions | Ability to view and create dashboards |"
     },
     {
       "type": "markdown",
-      "content": "## MySQL requirements\n\n| Requirement | Details |\n|---|---|\n| Version | MySQL 8.0 or later (MySQL 5.7 and earlier are not supported) |\n| MariaDB | Not supported — Performance Schema implementation differs from MySQL |\n| Performance Schema | Must be enabled (enabled by default in MySQL 8.0+) |\n| Monitoring user | User with `PROCESS`, `REPLICATION CLIENT`, and `SELECT` privileges on `performance_schema` |"
+      "content": "## MySQL requirements\n\n| Requirement | Details |\n|---|---|\n| Version | MySQL 8.0 or later (MySQL 5.7 and earlier are not supported) |\n| MariaDB | Not supported — Performance Schema implementation differs from MySQL |\n| Performance Schema | `performance_schema` set to `ON` (the default in MySQL 8.0+) |\n| Query capture settings | `max_digest_length`, `performance_schema_max_digest_length`, and `performance_schema_max_sql_text_length` set to `4096`. These are startup variables, so changing them requires a MySQL restart. |\n| Performance Schema consumers | `events_statements_cpu`, `events_waits_current`, and `events_waits_history` enabled, or the monitoring user allowed to enable them so Alloy can manage them |\n| Monitoring user | User with `PROCESS` and `REPLICATION CLIENT` on `*.*`, `SELECT` on `performance_schema.*`, and `SELECT, SHOW VIEW` on the schemas you want to monitor |\n| Connection | Alloy connects directly to the MySQL server, not through a proxy or connection pooler |"
     },
     {
       "type": "markdown",
-      "content": "## Grafana Alloy requirements\n\n| Requirement | Details |\n|---|---|\n| Version | Grafana Alloy 1.14.0 or later |\n| Stability flag | Run with `--stability.level=public-preview` |\n| Network | Outbound access to Grafana Cloud endpoints |\n| Database access | Network connectivity to your MySQL instance |"
+      "content": "## Grafana Alloy requirements\n\n| Requirement | Details |\n|---|---|\n| Version | Grafana Alloy 1.17.0 or later. Database Observability is generally available, so no `--stability.level` flag is required. |\n| Network | Outbound access to Grafana Cloud endpoints |\n| Database access | Network connectivity to your MySQL instance |"
     },
     {
       "type": "markdown",
-      "content": "## Checklist\n\nBefore proceeding, verify:\n\n- Grafana Cloud account is active with appropriate permissions\n- Database Observability is activated in your Grafana Cloud stack\n- MySQL version is 8.0 or later (not MariaDB)\n- Network connectivity exists between the Alloy host and your MySQL database\n- Network connectivity exists between the Alloy host and Grafana Cloud\n- You have administrative access to create a MySQL monitoring user"
+      "content": "## Checklist\n\nBefore proceeding, verify:\n\n- Grafana Cloud account is active with appropriate permissions\n- Database Observability is activated in your Grafana Cloud stack\n- MySQL version is 8.0 or later (not MariaDB)\n- You can change MySQL configuration and restart MySQL if the query capture settings need to change\n- Network connectivity exists between the Alloy host and your MySQL database\n- Network connectivity exists between the Alloy host and Grafana Cloud\n- You have administrative access to create a MySQL monitoring user"
     },
     {
       "type": "markdown",

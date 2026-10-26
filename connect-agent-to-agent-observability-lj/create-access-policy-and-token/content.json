@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-agent-to-agent-observability-create-access-policy-and-token",
+  "title": "Create the access policy and token",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The third value you need, so the SDK can send your agent's data to your Grafana Cloud stack, is a Grafana Cloud Access Policy Token. You set it later as `AGENTO11Y_AUTH_TOKEN`. Create an access policy with the `sigil:write` scope, add the `metrics:write`, `logs:write`, and `traces:write` scopes so the same token also serves traces and metrics in Milestone 7, then add a token to the policy."
+    },
+    {
+      "type": "markdown",
+      "content": "Create the access policy with its four scopes."
+    },
+    {
+      "type": "section",
+      "id": "create-access-policy",
+      "title": "Create the access policy",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-auth-app",
+          "content": "Go to the access policy page at **Administration** > **Users and access** > **Cloud access policies**.",
+          "verify": "on-page:/a/grafana-auth-app"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create access policy",
+          "content": "The dialog that opens closes if you click this guide, so read the fields first. Click **Create access policy** and in the dialog:\n\n- Enter a **Display name**. For example, `agento11y`.\n- Enter a **Name**. For example, `agento11y`.\n- Open **Add scope**, type `sigil:write`, and select it. `sigil:write` is listed after Agent Observability is enabled (Milestone 1).\n- Select **Write** for **metrics**, **logs**, and **traces**.\n- Click **Create**.",
+          "requirements": ["on-page:/a/grafana-auth-app", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The new policy appears in the list with its four scopes."
+    },
+    {
+      "type": "markdown",
+      "content": "Add a token to the new policy and save it."
+    },
+    {
+      "type": "section",
+      "id": "add-token",
+      "title": "Add a token",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add token",
+          "content": "The dialog that opens closes if you click this guide, so read the fields first. On the new policy, click **Add token** and, in the dialog:\n\n- Give the token a name, add an optional expiration date, and click **Create**.\n- Copy the token now and save it somewhere you can find it later, such as a notes file. You'll enter the token value in `AGENTO11Y_AUTH_TOKEN` in the next milestone. Tokens start with `glc_`.\n- The token is shown only once. Store it securely, for example in a secret manager. If you lose it, add a new token to the policy.",
+          "requirements": ["on-page:/a/grafana-auth-app", "exists-reftarget"],
+          "showMe": false,
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The token is saved for later."
+    }
+  ]
+}

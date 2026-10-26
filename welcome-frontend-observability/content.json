@@ -1,31 +1,23 @@
 {
   "id": "welcome-frontend-observability",
-  "title": "Welcome to Grafana Cloud Frontend Observability",
+  "title": "Connect your web application to Frontend Observability",
   "blocks": [
     {
       "type": "markdown",
-      "content": "[Grafana Cloud Frontend Observability](https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-applications/frontend-observability/) shows you how real users experience your web app. It collects telemetry straight from the browser, so you can measure performance, catch errors, and follow interactions across devices, browsers, and network conditions.\n\nIt runs on the [Grafana Faro Web SDK](https://github.com/grafana/faro-web-sdk/), a lightweight library that captures real user metrics, errors, logs, and client-side traces.\n\nIn this guide you'll walk through how to connect your web application, get the Faro snippet that starts sending data, then look at the optional source map and alerting steps. You can follow along with the video below."
+      "content": "Create a Frontend Observability application and get AI-assisted Faro setup instructions. You need permission to create applications and access to your frontend code; deployment happens after this guide."
     },
     {
-      "type": "conditional",
-      "conditions": [
-        "renderer:website"
-      ],
-      "whenTrue": [
-        {
-          "type": "video",
-          "src": "https://youtube.com/embed/AfVDnsriwXQ",
-          "provider": "youtube",
-          "title": "Getting Started With Frontend Observability",
-          "start": 174,
-          "end": 274
-        }
-      ],
-      "whenFalse": []
+      "type": "input",
+      "inputType": "text",
+      "format": "http-origin",
+      "variableName": "appUrl",
+      "prompt": "What origin serves your website? Include http:// or https:// and a port if needed, without a path.",
+      "placeholder": "https://yourcompany.com",
+      "required": true
     },
     {
       "type": "markdown",
-      "content": "An **application** is how Frontend Observability groups everything Faro sends from one frontend. To create yours, complete the following steps:"
+      "content": "An application groups the telemetry from one frontend. To create yours, complete the following steps:"
     },
     {
       "type": "section",
@@ -35,77 +27,83 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/a/grafana-kowalski-app",
-          "content": "Open **Frontend Observability**. Every application you create is listed here, grouped into **Active**, **Stale**, and **No data**.",
+          "reftarget": "/a/grafana-kowalski-app/apps/new/web?path=ai",
+          "content": "Open **AI assisted** setup in **Frontend Observability**.",
           "showMe": false,
-          "verify": "on-page:/a/grafana-kowalski-app"
+          "verify": "on-page:/a/grafana-kowalski-app/apps/new/web",
+          "tooltip": "Start the web application wizard with AI-assisted instrumentation.",
+          "doIt": true
+        },
+        {
+          "type": "guided",
+          "id": "welcome-frontend-observability-reader-block-4-block-2",
+          "content": "Enter your own **Application name**, such as `my-web-app`.",
+          "stepTimeout": 120000,
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "#pageContent input#app-name",
+              "targetvalue": "^\\S(?:.*\\S)?$",
+              "validateInput": true,
+              "formHint": "Enter a descriptive name for your application or check.",
+              "requirements": [
+                "on-page:/a/grafana-kowalski-app/apps/new/web",
+                "exists-reftarget"
+              ],
+              "tooltip": "Use a name that distinguishes this frontend from other applications and environments.",
+              "description": "Enter your own **Application name**, such as `my-web-app`."
+            }
+          ]
         },
         {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/a/grafana-kowalski-app/apps/new",
-          "content": "Open **Create New** to start the process to **Connect your web application**. It has four steps, and the first two are all you need to start receiving data.",
+          "action": "formfill",
+          "reftarget": "#pageContent input[aria-label='Origin 1']",
+          "targetvalue": "{{appUrl}}",
+          "content": "Set **Allowed origins** to {{appUrl}}.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app"
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
+            "exists-reftarget"
           ],
-          "showMe": false,
-          "verify": "on-page:/a/grafana-kowalski-app/apps/new"
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "form[data-testid='web-app-form'] input[data-testid='app-name']",
-          "targetvalue": "quickpizza-frontend",
-          "content": "In the **Application name** field, enter a name that identifies this frontend. Faro stamps it on every signal it sends, so it is how you tell one application apart from another.\n\n**quickpizza-frontend** is filled in for you.",
-          "tooltip": "QuickPizza is the demo app these guides use, so the name matches the frontend you instrument in a moment.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "form[data-testid='web-app-form'] input[data-testid='cors-0']",
-          "targetvalue": "http://localhost:3333",
-          "content": "In **Allowed origins**, enter the origin your app is served from. Frontend Observability rejects data from anywhere else, so another site cannot write into your application.\n\n**http://localhost:3333** is filled in for you.",
-          "tooltip": "QuickPizza serves on port 3333 when you run it locally. Swap in your own origin, or a wildcard such as *.example.com.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ]
+          "tooltip": "Use the exact scheme, hostname, and port your visitors use; add other environments separately.",
+          "doIt": true
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "form[data-testid='web-app-form'] button[data-testid='app-form-edit-app-add-origin-button']",
-          "content": "Use **Add origin** when the same frontend runs on more than one origin, such as staging and production. One origin is enough here.",
-          "tooltip": "Each origin has to match exactly unless you use a wildcard.",
+          "reftarget": "#pageContent:has(h1:contains('Create a Frontend Observability web application')) button:contains('Next')",
+          "content": "Click **Next** to create the application. If an error appears, correct it and try again.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
             "exists-reftarget"
           ],
+          "tooltip": "The next stage appears only after the application is saved.",
+          "doIt": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#pageContent h1:contains('Instrument with AI')",
+          "content": "Confirm that **Instrument with AI** opens for your new application.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
+            "exists-reftarget"
+          ],
+          "tooltip": "The application is saved; instrumentation and deployment still come next.",
           "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "form[data-testid='web-app-form'] button[data-testid='new-app-submit']",
-          "content": "Click **Next** to create the application. Grafana Cloud generates a collector endpoint for it, which is the address Faro posts to.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ]
         }
+      ],
+      "requirements": [
+        "var-appUrl:*"
       ]
     },
     {
       "type": "markdown",
-      "content": "Your application now exists with a collector endpoint waiting for data. Nothing is reporting yet, because your frontend doesn't know about it."
+      "content": "Your application is saved with its allowed origin; it will receive browser telemetry after you instrument and deploy your frontend."
     },
     {
       "type": "markdown",
-      "content": "To send Frontend Observability its first data, complete the following steps:"
+      "content": "Choose an AI agent to prepare the Faro instrumentation for your application."
     },
     {
       "type": "section",
@@ -118,56 +116,36 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='apps-sdk-instructions-instrumentation-mode-manual-card'] button",
-          "content": "Frontend Observability offers four ways to add Faro. Three of them hand the work to an agent, and on a real codebase they save a lot of time: **Grafana Assistant** opens a pull request through your GitHub or GitLab connection, and the **Claude Code** and **Cursor** skills wire it up in your editor.\n\nChoose **Manual instrumentation** here, so you can see exactly what gets added before you let an agent do it for you.",
-          "tooltip": "The agent options are usually the faster route in practice. Manual is the one that shows you what Faro actually needs.",
+          "reftarget": "#pageContent section:has(h1:contains('Instrument with AI')) label",
+          "content": "Choose **Claude Code skill**, **Cursor skill**, or **Grafana Assistant** if available. Use the tool you already work with; choosing Grafana Assistant opens its chat.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='app-form-new-app-manual-instrumentation-package-manager-selector']",
-          "content": "Pick how you install the SDK. **NPM** and **Yarn** add Faro as a dependency, and **CDN** gives you a script tag instead.",
-          "tooltip": "Choose CDN when you cannot change the build, for example on a static site or inside a template.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
             "exists-reftarget"
           ],
+          "tooltip": "Choose your own agent; review and approve any proposed code changes.",
           "doIt": false
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='copy-agent-install']",
-          "content": "Click **Copy**, then paste the snippet into your app's entry point so it runs before the rest of your code. Your collector URL and application name are already filled in.",
-          "tooltip": "Starting Faro early means it captures errors that happen while the page is still loading.",
+          "reftarget": "#pageContent section > div > div > p:contains('pull request')",
+          "content": "Review your selected tool’s instructions and application-specific collector URL, or continue in the Grafana Assistant chat. Add Faro to your code and deploy the changes after this guide.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
             "exists-reftarget"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='app-form-new-app-manual-instrumentation-continue-button']",
-          "content": "Click **Continue** to move on to source maps.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ]
+          ],
+          "tooltip": "These instructions belong to your new application; opening them does not mean it is sending telemetry.",
+          "doIt": false
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Faro now has everything it needs. Once that snippet is deployed and someone loads a page, sessions and errors start appearing against your application."
+      "content": "You have the instructions for your application; review and deploy the generated changes after setup."
     },
     {
       "type": "markdown",
-      "content": "The next two steps are optional, so this section only shows you what they do. To look at source maps, complete the following steps:"
+      "content": "Source maps are optional; continue past them to finish the initial setup."
     },
     {
       "type": "section",
@@ -180,51 +158,41 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab 1. Install source map bundler plugin']",
-          "content": "Production JavaScript is minified, so a stack trace points at something like `t.default.a` rather than your code. A bundler plugin uploads the source maps that undo that.",
-          "tooltip": "There are plugins for Webpack and for Rollup or Vite.",
+          "reftarget": "#pageContent:has(h1:contains('Instrument with AI')) button:contains('Next')",
+          "content": "Click **Next** to continue to the optional source-map setup.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
             "exists-reftarget"
           ],
-          "doIt": false
+          "tooltip": "You can finish setup before deploying the instrumentation.",
+          "doIt": true
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab 2. Configure source map uploads']",
-          "content": "The second tab has the plugin configuration, including the app ID and key it needs to upload on every build.",
-          "tooltip": "Uploads happen at build time, so this belongs in your CI pipeline rather than in local development.",
+          "reftarget": "#pageContent h1:contains('Upload source maps')",
+          "content": "Source maps are optional. Leave them for later to finish the initial setup.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
             "exists-reftarget"
           ],
+          "tooltip": "You can add source maps later to make production stack traces readable.",
           "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='app-form-new-app-web-source-map-continue-button']",
-          "content": "Click **Continue**. You can set source maps up later from the application settings.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Source maps are what turn an unreadable production stack trace back into a line in your own code."
+      "content": "You can add source maps later to make production stack traces readable."
     },
     {
       "type": "markdown",
-      "content": "The last step offers a set of ready-made alert rules. To finish connecting your application, complete the following steps:"
+      "content": "Finish setup and open your application’s overview."
     },
     {
       "type": "section",
       "id": "enable-alerting",
-      "title": "Enable alerting",
+      "title": "Finish setup",
       "requirements": [
         "section-completed:upload-source-maps"
       ],
@@ -232,70 +200,40 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='shared-select-alerts-checkbox-error_count']",
-          "content": "**Errors Count** fires when your error count grows day over day across the last 24 hours. It is the one most teams turn on first, because it catches a bad release without needing a threshold you have to guess.",
-          "tooltip": "Comparing against yesterday means normal traffic growth does not trigger it.",
+          "reftarget": "#pageContent:has(h1:contains('Upload source maps')) button:contains('Complete setup')",
+          "content": "Click **Complete setup** to open your application.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
+            "on-page:/a/grafana-kowalski-app/apps/new/web",
             "exists-reftarget"
           ],
-          "doIt": false
+          "tooltip": "This finishes configuration without requiring a source-map upload or incoming data.",
+          "doIt": true
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='shared-select-alerts-checkbox-lcp_p75']",
-          "content": "The **Web Vitals** rules watch the Core Web Vitals instead. This one fires when Largest Contentful Paint goes above 4000ms, which is the point where a page feels slow to load.",
-          "tooltip": "Every threshold here is editable later in the application settings.",
+          "reftarget": "#pageContent a[href*='/apps/'][href*='/overview']:contains('Overview')",
+          "content": "Confirm that your application’s **Overview** opens. It may have no data until you deploy Faro and visit your website.",
           "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
+            "on-page:/a/grafana-kowalski-app/apps",
             "exists-reftarget"
           ],
+          "tooltip": "Check this application after deployment; data from another application does not confirm it is connected.",
           "doIt": false
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='app-form-new-app-web-alerting-complete-button']",
-          "content": "Click **Complete** to finish. This takes you back to the application list, where your new application is waiting for its first data.",
-          "requirements": [
-            "on-page:/a/grafana-kowalski-app/apps/new",
-            "exists-reftarget"
-          ],
-          "verify": "on-page:/a/grafana-kowalski-app"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Your app is now connected! Your application may appear under **No data** until Faro sends data for the first time, then it will move to **Active**."
+      "content": "The application is configured. Deploy the Faro SDK, then visit your website and use it to generate browser telemetry."
     },
     {
       "type": "markdown",
-      "content": "Up next: reading your Frontend Observability dashboard, so you know what the errors, sessions, and Web Vitals panels are actually telling you."
+      "content": "After deployment, check this application’s recent sessions and errors. If it remains empty, check the collector URL, allowed origin, and browser network errors."
     },
     {
       "type": "markdown",
-      "content": "When you have instrumented your application and started to send data to Grafana Cloud, use this check to see if the right data is coming in. You will want to select your default cloud logs datasource."
-    },
-    {
-      "type": "section",
-      "blocks": [
-        {
-          "type": "input",
-          "id": "check-loki",
-          "prompt": "Finally you can check to see if the right data is coming into Grafana Cloud",
-          "inputType": "datasource",
-          "variableName": "loki",
-          "placeholder": "Select cloud logs datasource",
-          "datasourceFilter": "loki",
-          "dataCheckQuery": "{app_id=~\".+\"}",
-          "dataCheckFailureMessage": "There is currently no app_id being written to Loki at the moment.",
-          "dataCheckBlocking": true
-        }
-      ],
-      "id": "check-for-data",
-      "title": "Check for data"
+      "content": "[Return to the Digital Experience Monitoring landing page](/?pathfinderKiosk=1&kioskRulesUrl=https%3A%2F%2Finteractive-learning.grafana.net%2Fguides%2Fkiosk%2Fdem%2Frules.json)"
     }
   ]
 }
