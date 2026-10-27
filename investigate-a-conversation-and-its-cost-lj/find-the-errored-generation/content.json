@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "investigate-a-conversation-and-its-cost-find-the-errored-generation",
+  "title": "Find the errored generation",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "One of the demo conversations ended in an error. In this milestone you find it in **Conversations** by its status, open it, and use the error badge to jump straight to the generation that failed."
+    },
+    {
+      "type": "markdown",
+      "content": "Open Conversations with a time range that covers the demo data, then find the conversation whose status is errored."
+    },
+    {
+      "type": "section",
+      "id": "find-the-errored-conversation",
+      "title": "Find the errored conversation",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/conversations?from=now-30d&to=now",
+          "content": "Go to **Agent Observability** > **Conversations**.\n\nThis link sets the time range to **Last 30 days**, which covers demo data seeded in the last month.",
+          "verify": "on-page:/a/grafana-agento11y-app/conversations"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+          "content": "Check the time picker. If you seeded the demo more than 30 days ago, pick a wider range. The demo conversations are stamped with the time you seeded them, and the list only shows conversations active in the range.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "Read the **Status** column. Seven demo conversations show **OK**. One, **Q1 Revenue Analysis**, shows **Errored**: one of its three generations failed.\n\nThe **Status** column is where you pick out an errored conversation without opening the others.",
+          "authorNote": "Open question 2 (outline): the conversations doc says you can filter by error status; on the author's stack (2026-10-27) the filter row offered Agent, Model, and Provider only, so the step reads the Status column and no longer claims the filters cannot filter by status (claim check 2026-10-27, Contradicted). If a status filter ships, add a highlight step on it here."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href^='/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis/explore']",
+          "content": "Click **Q1 Revenue Analysis** to open the conversation.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
+          "verify": "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You found the errored conversation by its **Status** and opened it. The header shows its duration, three calls, 1.6k tokens, a cost of about a cent, and a **Status** of **1 error**."
+    },
+    {
+      "type": "markdown",
+      "content": "Use the error badge to jump to the generation that failed."
+    },
+    {
+      "type": "section",
+      "id": "jump-to-the-errored-generation",
+      "title": "Jump to the errored generation",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click the error badge, **1 error**, in the conversation header. A list opens with one entry per errored generation; this conversation has one, at **Step 3**. Click that **Step 3** entry. The right-hand pane switches from the full thread to that one generation, with **Back to full conversation** at the top.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label$='show all']",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label^='Open step 3:']"
+            }
+          ],
+          "authorNote": "Smoke test 2026-10-27 (Pathfinder E2E runner on learn.grafana.net): as two separate steps, the error list had closed again by the time the second step ran, so Open step 3 was not found. The list is a transient popover, so the two clicks are chained in one multistep, the same pattern the repo uses for combobox options."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[aria-label='Recorded step error']",
+          "content": "Read the recorded error: **Model call failed**, `upstream timeout: query execution exceeded 30s deadline`. The model call for this step never returned, which is why the conversation's status is errored.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You jumped from the conversation's error badge to its first errored generation and read why it failed. The generation stays open for the next milestone, which reads what the agent was working with when it made this call."
+    },
+    {
+      "type": "markdown",
+      "content": "No **Q1 Revenue Analysis** row? Check these in order:\n\n1. The time range covers when you seeded the demo. Widen it and click the refresh button.\n2. The demo data is seeded on this stack. Demo items carry a **Demo** badge; if none of the rows has one, complete the Seed the demo data guide first.\n3. The **Agent**, **Model**, and **Provider** filters are empty. A leftover filter hides rows that do not match."
+    }
+  ]
+}

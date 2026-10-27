@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "investigate-a-conversation-and-its-cost-read-the-generation-and-ask-why",
+  "title": "Read the generation and ask why",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A generation's detail view holds what Agent Observability recorded about one model call: what went in, what came out, which tool the agent called and with what arguments, the agent context it had at the time, and what the call cost. In this milestone you read all of that for the errored generation, then ask the agent a question about the step."
+    },
+    {
+      "type": "markdown",
+      "content": "Read what the generation received, produced, called, and had available."
+    },
+    {
+      "type": "section",
+      "id": "read-the-generation",
+      "title": "Read the generation",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis/explore?node=gen%3A%3Asigil.demo.gen.012",
+          "content": "Open the errored generation, **Step 3** of **Q1 Revenue Analysis**. If it is still open from the last milestone, this keeps you there.",
+          "verify": "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"
+        },
+        {
+          "type": "markdown",
+          "content": "Read the generation from the top:\n\n- **Input** (480 tokens): the user's message, *Compare this to last year's Q1. Which products are new in the top 5?*\n- **Output** (72 tokens): the agent's turn, here a tool call rather than text.\n- **Tools · 1**: `run_sql_query`, with its **Input** shown as JSON. The `query` argument is the SQL the agent asked the tool to run, a revenue-by-product query for the first quarter of 2025.\n\nThe recorded error from Milestone 1 sits above these, so you can read the failure and the call that led to it together."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "span[aria-label='Agent context'][role='button']",
+          "content": "Click **Agent context**. A **Generation context** panel opens with what the agent had when it made this call:\n\n- **Agent version**: `1.0.0`\n- **System prompt**: its token count and full text, *You are a data analysis assistant…*\n- **Tools**: the tools the agent could call and the tokens their definitions add, here `run_sql_query` at 20 tokens\n\nIt also carries **Open agent page**, which leads to this agent and version in **Agents**. Click anywhere outside the panel to close it.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "authorNote": "Smoke test 2026-10-27 (Pathfinder E2E runner): the Generation context panel closes on its own when focus moves to the next step, so a separate 'Close the panel' step found no close button. The step was removed and the closing instruction folded in here."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "span[aria-label^='Generation cost']",
+          "content": "Hover over the cost figure, `$0.0025`, next to the token counts. The tooltip splits it into an input cost and an output cost and names the price it was calculated with. Here it reads **Priced at public list rates**, the model card price for `claude-sonnet-4-20250514`. A figure uses list rates when no price of your own is configured for that model, or when your configured rates could not be loaded.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "doIt": false,
+          "authorNote": "Open question 5 (outline), option (a): the price-source reading moves here from Milestone 5 because demo generations carry cost figures and the Analytics charts read No data on demo-only stacks. If the author picks (b), keep this step anyway; it costs nothing and the Milestone 5 tooltip reads the same source."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You read the generation's input, output, tool call and arguments, the agent context it had, and where its cost figure's price came from."
+    },
+    {
+      "type": "markdown",
+      "content": "Ask the generation a question about its step."
+    },
+    {
+      "type": "section",
+      "id": "ask-the-agent-why",
+      "title": "Ask the agent why",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[placeholder='For example: Why did you choose this action?']",
+          "targetvalue": "Why did this query time out, and what would you change about it?",
+          "content": "Scroll to **Debug this agent response** at the bottom of the generation and type a question about this step. The follow-up is a one-off request that uses the system prompt and the conversation history captured up to this step. It goes to the original model when that model is available, or to a configured fallback.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Run follow-up",
+          "content": "Click **Run follow-up**. The answer appears under **Follow-up response**; check **Model** beneath it to confirm which model answered. Treat the answer as a debugging aid, not proof of why the original agent acted.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "The follow-up calls the original model or a configured fallback. If it reports an error on your stack, skip this step; nothing later in the path depends on it.",
+          "authorNote": "Not exercised on the author's stack to avoid making a model call during selector discovery. Confirm the labels Follow-up response and Model, and the behavior on a stack with no model configured, in the Block Editor smoke test."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You asked the errored generation why it did what it did and read a model's answer, built from the context the agent had at that step."
+    }
+  ]
+}

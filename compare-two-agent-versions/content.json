@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "compare-two-agent-versions",
+  "title": "Compare two agent versions",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**Agents** is the catalog Agent Observability builds from the generations it receives: one entry per agent name, and under it one version per `agent_version` the agent declared, or, when it declared none, per system prompt. This guide reads the catalog for one agent and shows where to compare two of its versions on token usage, estimated cost, error rate, latency, and evaluation scores."
+    },
+    {
+      "type": "markdown",
+      "content": "Open Agents and read what the catalog shows for each agent, then open one agent."
+    },
+    {
+      "type": "section",
+      "id": "read-the-agent-catalog",
+      "title": "Read the agent catalog",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/agents?from=now-30d&to=now",
+          "content": "Go to **Agent Observability** > **Agents** with a time range that covers the demo data.",
+          "verify": "on-page:/a/grafana-agento11y-app/agents"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+          "content": "The time range picker governs the activity columns and the stats above the list. An agent appears when its observed lifetime overlaps the range, even if it sent nothing inside it; its activity columns then stay empty.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='toolbar'][aria-label='risk signals']",
+          "content": "Three counters flag agents worth a look: **anonymous buckets**, **stale** (last active more than 7 days before the end of the range), and **high churn** (many versions first seen in the range; the label shows the current threshold). Click a counter to filter the list to the agents it flags.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents", "exists-reftarget"],
+          "doIt": false,
+          "authorNote": "The agent-catalog page names anonymous, stale, and high-churn risk signal filters and defines stale and high churn, but not anonymous. The earlier gloss (generations with no agent name) was the author's inference and was removed by the claim check on 2026-10-27. Add a gloss when the docs define it."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "table[aria-label='agents index table']",
+          "content": "Read the columns: **Agent**, **Last seen**, **Generations**, **Trend**, **Error rate**, **P95 latency**, **Tokens**, and **Estimated cost**. Together they say which agents are active and which ones are spending. The eight demo agents carry a **Demo** badge.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents", "exists-reftarget"],
+          "doIt": false,
+          "authorNote": "Open question 4 (outline): on the author's stack the demo agents' Generations, Trend, Error rate, P95 latency, and Tokens columns read — and Estimated cost reads $0, because the demo seeds no OpenTelemetry metrics. The guide names the columns as approved and does not claim values for them."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder^='Filter agent by name']",
+          "targetvalue": "data-analyst",
+          "content": "In **Filter agent by name…**, type `data-analyst`. The list narrows to `sigil.demo.data-analyst`.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "tr[aria-label='open agent sigil.demo.data-analyst']",
+          "content": "Click the `sigil.demo.data-analyst` row to open the agent's page.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents", "exists-reftarget"],
+          "verify": "on-page:/a/grafana-agento11y-app/agents/name/sigil.demo.data-analyst"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You read the catalog's columns and risk counters and opened one agent."
+    },
+    {
+      "type": "markdown",
+      "content": "Read the agent's versions and the places where two of them are compared."
+    },
+    {
+      "type": "section",
+      "id": "compare-two-versions",
+      "title": "Compare two versions",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-label='Agent metadata']",
+          "content": "The header counts what the catalog keeps for this agent: **Versions**, **Models**, **Tools**, its **Age**, and when it was **First seen** and **Last seen**. The primary model, `claude-sonnet-4-20250514`, is named beside the agent.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents/name/sigil.demo.data-analyst", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "markdown",
+          "content": "On **Overview**, the version timeline lists every version with its label, a short hash, and when it was first seen; the one marked **Selected** is the version the rest of the page describes. Click an earlier version to select it. Below the timeline, the **Version delta** panel compares the selected version with the one before it: lines added and removed in the prompt, tools added and removed. `sigil.demo.data-analyst` has one version, `1.0.0`, so the delta reads **Initial version** against an empty baseline.",
+          "authorNote": "Open question 4 (outline): every demo agent has one version, so the comparison this guide was approved for has nothing to compare on demo data. Written as approved, against the single demo version, with the comparison described for an agent that has two (in the markdown after this section). The version timeline has no stable selector (no data-testid or aria-label), so this is a markdown block; the Block Editor numbers it as a step, which is why it is kept short (preflight audit 2026-10-27). If the author picks option (a), retitle the guide Read an agent's version history and change slide 20; if (b), replace sigil.demo.data-analyst with the learner's own agent from Journey 1 and add the prompt-change steps."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Prompts']",
+          "content": "Click **Prompts**. It shows the selected version's system prompt in full, with its **Prompt tokens** and **Inventory context** counts, and **Analyze agent**, which produces prompt insights that summarize the prompt and point out patterns that may affect quality, latency, or cost.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents/name/sigil.demo.data-analyst", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Tools']",
+          "content": "Click **Tools**. It lists the selected version's tools with the tokens each one's definition adds to every call: here `run_sql_query`, 20 tokens, with its description and input schema. Click a tool to read them.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents/name/sigil.demo.data-analyst", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Quality']",
+          "content": "Click **Quality**. It charts the pass rate by evaluator for the latest scored versions, one bar per version, and the **previous version** and **next version** arrows step through them. This is where an evaluation score change between two versions shows.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/agents/name/sigil.demo.data-analyst", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You read what the catalog keeps for an agent and its versions, and where each figure of a two-version comparison lives: the version delta on **Overview**, the prompt and tool footprint on **Prompts** and **Tools**, the pass rate on **Quality**, and the activity columns in **Agents**."
+    },
+    {
+      "type": "markdown",
+      "content": "A second version appears when the agent declares a new `agent_version`, or changes its system prompt without declaring one; the delta then reads the difference between the two. A tool change alone is recorded in the version's tool snapshot and does not create a version.\n\nTo compare two versions, select each in turn on **Overview** and read the same figures for both:\n\n- **Token usage and estimated cost**: the **Tokens** and **Estimated cost** columns in **Agents**, and the prompt and tool token counts on **Prompts** and **Tools**, which change when the prompt or the tool set changes.\n- **Error rate and latency**: the catalog's per-version performance comparisons, which the catalog draws from the metrics your agent exports and lines up by version only when the agent declares a stable `agent_version`.\n- **Evaluation scores**: the per-version pass rate on **Quality**.\n\nThe question is whether the change improved quality without a matching rise in cost or latency, or the reverse. Those activity figures come from the metrics your agent exports; the demo agents show none.",
+      "authorNote": "Error rate and latency bullet reworded 2026-10-27 (claim check, Unsupported): agent-catalog.md says a stable agent_version lets the catalog, Quality, and Performance views compare declared releases, and that without it per-version performance charts may have no matching label. The product on 2026-10-27 showed Overview, Prompts, Tools, and Quality tabs and no Performance tab (open question 8), so this bullet names no tab. Author to confirm the wording or name the tab once the product and docs agree."
+    },
+    {
+      "type": "markdown",
+      "content": "No `sigil.demo.data-analyst` in **Agents**? Check these in order:\n\n1. The name filter is spelled `data-analyst`. Clear it to see the whole list.\n2. The demo data is seeded on this stack. Demo agents carry a **Demo** badge; if none does, complete the Seed the demo data guide first.\n3. None of the risk counters is active. An active counter filters the list to the agents it flags.\n\nFor the reference on versions and what to compare, refer to [Agent catalog](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/observe-and-troubleshoot/agent-catalog/)."
+    }
+  ]
+}

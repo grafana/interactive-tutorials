@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "investigate-a-conversation-and-its-cost-open-the-two-graphs",
+  "title": "Open the two graphs",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A conversation can carry two graphs. The dependency graph shows which generations fed which; the workflow graph shows the steps the agent's framework ran, including steps that made no LLM call, and how long each took. One demo conversation, **Checkout Incident Response**, has both. In this milestone you open it and read each graph."
+    },
+    {
+      "type": "markdown",
+      "content": "Open the demo conversation that has a workflow and read its dependency graph."
+    },
+    {
+      "type": "section",
+      "id": "read-the-dependency-graph",
+      "title": "Read the dependency graph",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/conversations?from=now-30d&to=now",
+          "content": "Go to **Agent Observability** > **Conversations** with a time range that covers the demo data.",
+          "verify": "on-page:/a/grafana-agento11y-app/conversations"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href^='/a/grafana-agento11y-app/conversations/sigil.demo.conv.incident-response/explore']",
+          "content": "Click **Checkout Incident Response**. Its **Models** column lists two models, a sign that more than one agent took part; the two graphs show how the hand-off went.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
+          "verify": "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.incident-response"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Dependencies",
+          "content": "Above the left-hand pane, click **Dependencies**. The pane changes from the **Flow** tree to a graph with one node per generation.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.incident-response", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='tablist'][aria-label='Dependency graph view']",
+          "content": "The graph has two levels: **Generations**, one node per model call, and **Agents**, one node per agent. Stay on **Generations**.\n\nRead the three nodes left to right. `sigil.demo.incident-classifier` (`gpt-4o`) ran first; `sigil.demo.signal-collector` (`claude-sonnet-4-20250514`) ran on its output; `sigil.demo.incident-commander` (`gpt-4o`) summarized the result. Each node shows the generation's cost and its input and output tokens, so you can see where this conversation's `$0.0052` went.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.incident-response", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Fit to view']",
+          "content": "If the graph is cut off, click **Fit to view** to bring every node into the pane.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.incident-response", "exists-reftarget"],
+          "skippable": true,
+          "hint": "If all three nodes are already visible, skip this step."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You read the dependency graph: three generations from three agents, each feeding the next, with the cost of each."
+    },
+    {
+      "type": "markdown",
+      "content": "Open the workflow graph and find the step with no LLM call and the longest step."
+    },
+    {
+      "type": "section",
+      "id": "read-the-workflow-graph",
+      "title": "Read the workflow graph",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Workflow",
+          "content": "Click **Workflow**. This tab appears only on conversations whose agent reported workflow steps; the errored conversation from Milestone 1 has no **Workflow** tab because its agent reported none.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.incident-response", "exists-reftarget"],
+          "skippable": true,
+          "hint": "No Workflow tab on this conversation? Skip this step and read the checks at the end of this milestone."
+        },
+        {
+          "type": "markdown",
+          "content": "Read the four steps, each labeled `step:` and its name. Every step shows its generation count and its duration:\n\n- The step with no LLM call: `route_alert` shows `0` generations and `250ms`. The conversation thread on the right labels it **Workflow step (no LLM call)**: the framework routed the alert without calling a model, so it has no node in the dependency graph.\n- The longest step: `collect_signals` took `1.80s`, longer than `classify_incident` (`1.30s`) and `summarize_findings` (`1.65s`). That step is the one `claude-sonnet-4-20250514` generation, and it also carries the largest share of the cost.\n\nThe `langgraph` label on each step in the thread names the framework integration that reported the steps."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You read the workflow graph and found the step that made no model call and the step where the agent spent the most time. The dependency graph answers which generation depended on which; the workflow graph answers where the time went, including time outside the model."
+    },
+    {
+      "type": "markdown",
+      "content": "No **Workflow** tab on **Checkout Incident Response**? Check these in order:\n\n1. You opened **Checkout Incident Response**, not another demo conversation. Only this one reports workflow steps in the current demo.\n2. The conversation's agent reported workflow steps. For what a conversation must send to get a **Workflow** tab, refer to [Agent dependencies and workflows](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/agent-dependencies-and-workflows/)."
+    }
+  ]
+}
