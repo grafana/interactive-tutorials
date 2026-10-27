@@ -57,7 +57,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": ".monaco-editor",
-          "content": "Copy the following pipeline, paste it into the editor, and replace the `PROMETHEUS_REMOTE_WRITE_URL` and `METRICS_USERNAME` placeholders with your own values. To find both values, sign in to your Grafana Cloud portal, select your stack, and click **Details** in the **Prometheus** section. The **Remote Write Endpoint** section lists the URL and the username.\n\n```alloy\nprometheus.exporter.unix \"default\" { }\n\nprometheus.scrape \"default\" {\n  targets    = prometheus.exporter.unix.default.targets\n  forward_to = [prometheus.relabel.team.receiver]\n  job_name   = \"integrations/node_exporter\"\n}\n\nprometheus.relabel \"team\" {\n  forward_to = [prometheus.remote_write.grafana_cloud.receiver]\n\n  rule {\n    action       = \"replace\"\n    target_label = \"team\"\n    replacement  = argument.attributes.value[\"team\"]\n  }\n}\n\nprometheus.remote_write \"grafana_cloud\" {\n  endpoint {\n    url = \"PROMETHEUS_REMOTE_WRITE_URL\"\n\n    basic_auth {\n      username = \"METRICS_USERNAME\"\n      password = sys.env(\"GCLOUD_RW_API_KEY\")\n    }\n  }\n}\n```",
+          "content": "Copy the following pipeline, paste it into the editor, and replace the `PROMETHEUS_REMOTE_WRITE_URL` and `METRICS_USERNAME` placeholders with your own values. To find both values, sign in to your [Grafana Cloud Portal](https://grafana.com/docs/grafana-cloud/platform/security-and-account-management/account-management/cloud-portal/), select your stack, and click **Details** in the **Prometheus** section. The **Remote Write Endpoint** section lists the URL and the username.\n\n```alloy\nprometheus.exporter.unix \"default\" { }\n\nprometheus.scrape \"default\" {\n  targets    = prometheus.exporter.unix.default.targets\n  forward_to = [prometheus.relabel.team.receiver]\n  job_name   = \"integrations/node_exporter\"\n}\n\nprometheus.relabel \"team\" {\n  forward_to = [prometheus.remote_write.grafana_cloud.receiver]\n\n  rule {\n    action       = \"replace\"\n    target_label = \"team\"\n    replacement  = argument.attributes.value[\"team\"]\n  }\n}\n\nprometheus.remote_write \"grafana_cloud\" {\n  endpoint {\n    url = \"PROMETHEUS_REMOTE_WRITE_URL\"\n\n    basic_auth {\n      username = \"METRICS_USERNAME\"\n      password = sys.env(\"GCLOUD_RW_API_KEY\")\n    }\n  }\n}\n```",
           "doIt": false,
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
         },
@@ -118,7 +118,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='remote-config-active-toggle-team_cost_metrics']",
-          "content": "In the **Active** column, turn on the toggle for the `team_cost_metrics` pipeline. A new pipeline is inactive until you activate it.\n\n> **Caution:** When you activate the pipeline, every matched collector starts sending metrics to Grafana Cloud. This telemetry can affect your bill.",
+          "content": "In the **Active** column, turn on the toggle for the `team_cost_metrics` pipeline. A new pipeline is inactive until you activate it.\n\n> **Caution:** When you activate the pipeline, every matched collector starts sending metrics to Grafana Cloud at their next poll. This telemetry can affect your bill.",
           "doIt": false,
           "requirements": ["on-page:/a/grafana-collector-app/fleet-management/remote-configuration", "exists-reftarget"]
         },
