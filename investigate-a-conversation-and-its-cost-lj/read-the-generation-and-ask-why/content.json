@@ -21,7 +21,7 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis/explore?node=gen%3A%3Asigil.demo.gen.012",
-          "content": "Open the errored generation, **Step 3** of **Q1 Revenue Analysis**. If it is still open from the last milestone, this keeps you there.",
+          "content": "Open the errored generation, **Step 3** of **Q1 Revenue Analysis**.\n\nIf it is still open from the last milestone, this keeps you there.",
           "verify": "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"
         },
         {
@@ -32,7 +32,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "span[aria-label='Agent context'][role='button']",
-          "content": "Click **Agent context**. A **Generation context** panel opens with what the agent had when it made this call:\n\n- **Agent version**: `1.0.0`\n- **System prompt**: its token count and full text, *You are a data analysis assistant…*\n- **Tools**: the tools the agent could call and the tokens their definitions add, here `run_sql_query` at 20 tokens\n\nIt also carries **Open agent page**, which leads to this agent and version in **Agents**. Click anywhere outside the panel to close it.",
+          "content": "Click **Agent context**.\n\nA **Generation context** panel opens with what the agent had when it made this call:\n\n- **Agent version**: `1.0.0`\n- **System prompt**: its token count and full text, *You are a data analysis assistant…*\n- **Tools**: the tools the agent could call and the tokens their definitions add, here `run_sql_query` at 20 tokens\n\nIt also carries **Open agent page**, which leads to this agent and version in **Agents**. Click anywhere outside the panel to close it.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
           "authorNote": "Smoke test 2026-10-27 (Pathfinder E2E runner): the Generation context panel closes on its own when focus moves to the next step, so a separate 'Close the panel' step found no close button. The step was removed and the closing instruction folded in here."
         },
@@ -40,7 +40,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "span[aria-label^='Generation cost']",
-          "content": "Hover over the cost figure, `$0.0025`, next to the token counts. The tooltip splits it into an input cost and an output cost and names the price it was calculated with. Here it reads **Priced at public list rates**, the model card price for `claude-sonnet-4-20250514`. A figure uses list rates when no price of your own is configured for that model, or when your configured rates could not be loaded.",
+          "content": "Hover over the cost figure, `$0.0025`, next to the token counts.\n\nThe tooltip splits it into an input cost and an output cost and names the price it was calculated with. Here it reads **Priced at public list rates**, the model card price for `claude-sonnet-4-20250514`. A figure uses list rates when no price of your own is configured for that model, or when your configured rates could not be loaded.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
           "doIt": false,
           "authorNote": "Open question 5 (outline), option (a): the price-source reading moves here from Milestone 5 because demo generations carry cost figures and the Analytics charts read No data on demo-only stacks. If the author picks (b), keep this step anyway; it costs nothing and the Milestone 5 tooltip reads the same source."
@@ -66,14 +66,14 @@
           "action": "formfill",
           "reftarget": "textarea[placeholder='For example: Why did you choose this action?']",
           "targetvalue": "Why did this query time out, and what would you change about it?",
-          "content": "Scroll to **Debug this agent response** at the bottom of the generation and type a question about this step. The follow-up is a one-off request that uses the system prompt and the conversation history captured up to this step. It goes to the original model when that model is available, or to a configured fallback.",
+          "content": "Scroll to **Debug this agent response** at the bottom of the generation and type a question about this step.\n\nThe follow-up is a one-off request that uses the system prompt and the conversation history captured up to this step. It goes to the original model when that model is available, or to a configured fallback.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Run follow-up",
-          "content": "Click **Run follow-up**. The answer appears under **Follow-up response**; check **Model** beneath it to confirm which model answered. Treat the answer as a debugging aid, not proof of why the original agent acted.",
+          "content": "Click **Run follow-up**.\n\nThe answer appears under **Follow-up response**; check **Model** beneath it to confirm which model answered. Treat the answer as a debugging aid, not proof of why the original agent acted.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
           "doIt": false,
           "skippable": true,

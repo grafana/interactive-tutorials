@@ -28,20 +28,19 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid TimePicker Open Button']",
-          "content": "Check the time picker. If you seeded the demo more than 30 days ago, pick a wider range. The demo conversations are stamped with the time you seeded them, and the list only shows conversations active in the range.",
+          "content": "Check the time picker, and pick a wider range if you seeded the demo more than 30 days ago.\n\nThe demo conversations are stamped with the time you seeded them, and the list only shows conversations active in the range.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
           "doIt": false
         },
         {
           "type": "markdown",
-          "content": "Read the **Status** column. Seven demo conversations show **OK**. One, **Q1 Revenue Analysis**, shows **Errored**: one of its three generations failed.\n\nThe **Status** column is where you pick out an errored conversation without opening the others.",
-          "authorNote": "Open question 2 (outline): the conversations doc says you can filter by error status; on the author's stack (2026-10-27) the filter row offered Agent, Model, and Provider only, so the step reads the Status column and no longer claims the filters cannot filter by status (claim check 2026-10-27, Contradicted). If a status filter ships, add a highlight step on it here."
+          "content": "Scroll down past the stats and charts to the conversation list, then read its **Status** column. Seven demo conversations show **OK**. One, **Q1 Revenue Analysis**, shows **Errored**: one of its three generations failed."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href^='/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis/explore']",
-          "content": "Click **Q1 Revenue Analysis** to open the conversation.",
+          "content": "Click **Q1 Revenue Analysis** to open the conversation.\n\nThe highlight sits on the row in the list, so scroll down if you do not see it.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
           "verify": "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"
         }
@@ -62,27 +61,27 @@
       "autoCollapse": true,
       "blocks": [
         {
-          "type": "multistep",
-          "content": "Click the error badge, **1 error**, in the conversation header. A list opens with one entry per errored generation; this conversation has one, at **Step 3**. Click that **Step 3** entry. The right-hand pane switches from the full thread to that one generation, with **Back to full conversation** at the top.",
-          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[aria-label$='show all']",
-              "requirements": ["exists-reftarget"]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "button[aria-label^='Open step 3:']"
-            }
-          ],
-          "authorNote": "Smoke test 2026-10-27 (Pathfinder E2E runner on learn.grafana.net): as two separate steps, the error list had closed again by the time the second step ran, so Open step 3 was not found. The list is a transient popover, so the two clicks are chained in one multistep, the same pattern the repo uses for combobox options."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label$='show all']",
+          "content": "Click the error badge, **1 error**, in the conversation header.\n\nA list opens with one entry per errored generation. This conversation has one, at **Step 3**.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label^='Open step 3:']",
+          "content": "Click the **Step 3** entry.\n\nThe right-hand pane switches from the full thread to that one generation, with **Back to full conversation** at the top.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "skippable": true,
+          "hint": "If the list has closed, click the error badge again, then click Step 3 yourself and skip this step.",
+          "authorNote": "Author decision 2026-10-27: kept as its own step rather than a multistep with the badge click. The error list is a transient popover; in the Pathfinder E2E runner it had closed before this step ran, so the step is skippable with a hint. Confirm in the Block Editor that a learner clicking Do it right after the badge step still finds the list open."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[aria-label='Recorded step error']",
-          "content": "Read the recorded error: **Model call failed**, `upstream timeout: query execution exceeded 30s deadline`. The model call for this step never returned, which is why the conversation's status is errored.",
+          "content": "Read the recorded error.\n\nIt says **Model call failed**, `upstream timeout: query execution exceeded 30s deadline`. The model call for this step never returned, which is why the conversation's status is errored.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
           "doIt": false
         }
