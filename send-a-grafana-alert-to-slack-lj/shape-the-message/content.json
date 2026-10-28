@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "send-a-grafana-alert-to-slack-shape-the-message",
+  "title": "Shape the message",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This is the last milestone. You replace the default title and body on the Slack integration with a title and body you paste, make the rule fire again, preview the body against the real alert, and read the message that arrives. It ends when a notification from your rule arrives in Slack with your title and body, and no line in it is missing its value.\n\nThe title counts firing and resolved alerts. The body prints, for each alert, its name and status in bold, then its summary and description."
+    },
+    {
+      "type": "markdown",
+      "content": "For **Title**:\n\n```\n{{ if gt (.Alerts.Firing | len) 0 }}{{ .Alerts.Firing | len }} firing alert(s). {{ end }}{{ if gt (.Alerts.Resolved | len) 0 }}{{ .Alerts.Resolved | len }} resolved alert(s).{{ end }}\n```\n\nFor **Text Body**:\n\n```\n{{ range .Alerts }}\n*{{ .Labels.alertname }}* is {{ .Status }}\nSummary: {{ .Annotations.summary }}\nDescription: {{ .Annotations.description }}\n{{ end }}\n```\n\nTo put them on the contact point, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "put-title-and-body-on-contact-point",
+      "title": "Put the title and body on the contact point",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **Alerts & IRM**, then **Alerting**, then **Notification configuration**.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/notifications']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "On the **Contact points** tab, open your Slack contact point for editing.",
+          "requirements": [
+            "on-page:/alerting/notifications"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Optional Slack settings",
+          "content": "Expand **Optional Slack settings**.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Edit Title",
+          "content": "Beside **Title**, click **Edit Title**. A drawer opens.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Choose **Enter custom title**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[id='custom-template-Title']",
+          "targetvalue": "{{ if gt (.Alerts.Firing | len) 0 }}{{ .Alerts.Firing | len }} firing alert(s). {{ end }}{{ if gt (.Alerts.Resolved | len) 0 }}{{ .Alerts.Resolved | len }} resolved alert(s).{{ end }}",
+          "content": "Paste the title into **Custom template value**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save**. The drawer closes and **Title** now holds your text.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Edit Text Body",
+          "content": "Beside **Text Body**, click **Edit Text Body**.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Choose **Enter custom text body**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea[id='custom-template-Text Body']",
+          "targetvalue": "{{ range .Alerts }}\n*{{ .Labels.alertname }}* is {{ .Status }}\nSummary: {{ .Annotations.summary }}\nDescription: {{ .Annotations.description }}\n{{ end }}",
+          "content": "Paste the body into **Custom template value**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save**.",
+          "requirements": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid contact-point-form save-button']",
+          "content": "Click **Save contact point**.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The next notification from your rule arrives with your title and body. A custom message like this lives in the one field you typed it into; to share it across contact points, save it as a notification template instead.\n\nThe rule is still firing from the previous milestone, so nothing new is sent until it changes state. Resolve it, then fire it again. Complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "resolve-and-fire-again",
+      "title": "Resolve the alert and fire it again",
+      "requirements": [
+        "section-completed:put-title-and-body-on-contact-point"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Click **Alerts & IRM**, then **Alerting**, then **Alert rules**, and open **QuickPizza server errors** for editing."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid alert-rule threshold-input']",
+          "targetvalue": "1000000000",
+          "content": "In the **Alert condition** section, set the **Is above** value to `1000000000` so the condition is false, and click **Save**. Within a few minutes a resolved notification arrives with your new title and body.",
+          "requirements": [
+            "on-page:/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid alert-rule threshold-input']",
+          "targetvalue": "0",
+          "content": "Once the rule shows **Normal**, open it for editing again, set the **Is above** value back to `0`, and click **Save**. The rule fires again within about two minutes.",
+          "requirements": [
+            "on-page:/alerting",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "While the rule is firing, preview the body against the real alert instance. The preview's list of real instances shows only alerts firing at that moment. Complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "preview-against-real-alert",
+      "title": "Preview the body against the real alert",
+      "requirements": [
+        "section-completed:resolve-and-fire-again"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/notifications/templates",
+          "content": "Open the **Templates** tab under **Notification configuration**.",
+          "verify": "on-page:/alerting/notifications/templates"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/alerting/notifications/templates/new']",
+          "content": "Click **+ New notification template**.",
+          "requirements": [
+            "on-page:/alerting/notifications/templates",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input#new-template-name",
+          "targetvalue": "slack-body-preview",
+          "content": "In **Template group name**, enter `slack-body-preview`.",
+          "requirements": [
+            "on-page:/alerting/notifications/templates/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Paste the body into **Template group**. Grafana wraps text without `{{ define }}` in `{{ define \"slack-body-preview\" }}` and `{{ end }}` on save."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Edit payload",
+          "content": "In the **Payload** pane, click **Edit payload**, then **Use existing alert instances**.",
+          "requirements": [
+            "on-page:/alerting/notifications/templates/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "In the **Select alert instances** dialog, pick the **QuickPizza server errors** instance and click **Add alert data to payload**."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Read the **Preview** pane. Every line should have a value after it. Template errors show here too. You can close the form without saving; the preview was the point."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now read the message in the channel when the firing notification arrives: your title, your body, a value on every line. To return the rule to its real condition when you are done, open it for editing, change the **status** value back to `5..`, and keep **Is above** at `0`.\n\n## If a value is missing\n\n- **A gap after a label you wrote.** The alert does not carry that key, or the key is spelled differently. Check the payload in the preview; add the annotation or label on the rule, or correct the key, remembering that names are case-sensitive and labels are under `.Labels`, annotations under `.Annotations`.\n- **`[no value]` inside the summary or description.** The rule's own annotation used `$labels` for a label the query did not return. Print the declared label from the body with `.Labels` instead, or change the query so it returns that label.\n\nAnything you add only in the template is visible only in the Slack message. Put what the responder needs on the alert as an annotation or label, then print it in the template."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Template notifications](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/template-notifications/)\n- [Manage notification templates](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/template-notifications/manage-notification-templates/)\n- [Notification template examples](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/template-notifications/examples/)\n- [Use images in notifications](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/template-notifications/images-in-notifications/)"
+    }
+  ]
+}
