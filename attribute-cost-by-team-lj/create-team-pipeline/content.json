@@ -1,0 +1,169 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "attribute-cost-by-team-create-team-pipeline",
+  "title": "Create a pipeline that adds the team label to metrics",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this milestone, you create a configuration pipeline that does the following:\n\n- Collects Linux host metrics\n\n- Labels those metrics with the `team` attribute of each collector using [pipeline attribute injection](https://grafana.com/docs/grafana-cloud/send-data/fleet-management/set-up/configuration-pipelines/pipeline-attribute-injection/)\n\n- Sends the metrics to Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "To create and assign the pipeline, complete the following steps. If you already know your collectors have a `team` attribute, skip the optional steps at the start."
+    },
+    {
+      "type": "section",
+      "id": "create-team-pipeline",
+      "requirements": ["has-permission:grafana-collector-app:admin"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/fleet-management",
+          "content": "Go to **Fleet Management**.",
+          "verify": "on-page:/a/grafana-collector-app/fleet-management"
+        },
+        {
+          "type": "guided",
+          "content": "Optional: Check whether your collectors have a `team` attribute.\n\nIn the **Select Attribute** dropdown, check that `team` is listed. If it isn't, no collector has a `team` attribute yet. You must assign the `team` attribute to your collectors before continuing.\n\nIf `team` is listed, select it, set the operator to `=~`, and enter `.+` as the value. Check that the collector list includes all the collectors you want to assign. If any are missing, assign the `team` attribute to them before you continue.\n\nFor help assigning attributes, refer to [Categorize a collector fleet](https://grafana.com/docs/learning-paths/categorize-collector-fleet/) and then return to this milestone.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='tab-fleet-inventory']",
+              "description": "Click the **Inventory** tab."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='fleet-inventory-filter-button']",
+              "description": "Click **Filter** to add an attribute filter."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "input[placeholder='Select Attribute']",
+              "description": "Click the **Select Attribute** dropdown."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='fleet-management-page'] button[data-testid='tab-remote-configuration']",
+          "content": "Click the **Remote configuration** tab.",
+          "tooltip": "The Remote configuration tab lists all configuration pipelines and lets you create, edit, activate, and deactivate them.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='remote-configuration-page'] button[data-testid='remote-configuration-create-button']",
+          "content": "Click **Create configuration pipeline**.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid radio-button-option custom']",
+          "content": "Make sure **Alloy** is selected as the collector type, then click **Custom configuration**.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Next')",
+          "content": "Click **Next** to define the pipeline.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[name='name']",
+          "targetvalue": "team_cost_metrics",
+          "content": "In the **Name** field, enter this name for the pipeline: `team_cost_metrics`.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": ".monaco-editor",
+          "content": "Copy the following pipeline, paste it into the editor, and replace the `PROMETHEUS_REMOTE_WRITE_URL` and `METRICS_USERNAME` placeholders with your own values. To find both values, sign in to your [Grafana Cloud Portal](https://grafana.com/docs/grafana-cloud/platform/security-and-account-management/account-management/cloud-stacks/), select your stack, and click **Details** in the **Prometheus** section. The **Remote Write Endpoint** section lists the URL and the username.\n\n```alloy\nprometheus.exporter.unix \"default\" { }\n\nprometheus.scrape \"default\" {\n  targets    = prometheus.exporter.unix.default.targets\n  forward_to = [prometheus.relabel.team.receiver]\n  job_name   = \"integrations/node_exporter\"\n}\n\nprometheus.relabel \"team\" {\n  forward_to = [prometheus.remote_write.grafana_cloud.receiver]\n\n  rule {\n    action       = \"replace\"\n    target_label = \"team\"\n    replacement  = argument.attributes.value[\"team\"]\n  }\n}\n\nprometheus.remote_write \"grafana_cloud\" {\n  endpoint {\n    url = \"PROMETHEUS_REMOTE_WRITE_URL\"\n\n    basic_auth {\n      username = \"METRICS_USERNAME\"\n      password = sys.env(\"GCLOUD_RW_API_KEY\")\n    }\n  }\n}\n```",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Test configuration pipeline",
+          "content": "Click **Test configuration pipeline** and wait for the **Configuration test passed** message.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button:text('Next')",
+          "content": "Click **Next** to assign the pipeline to collectors.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select Attribute']",
+          "content": "In the **Select Attribute** dropdown, select `team`.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Set the operator to `=~` to match with a regular expression."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='Select Value']",
+          "content": "In the **Select Value** field, enter `.+`. The collector list updates in real time and shows every collector that has a `team` value.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='fleet-inventory-filter-button']",
+          "content": "Click **+** to add a second matching attribute. The pipeline collects Linux host metrics, so it must match only Linux collectors.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "In the new row, select the `os` attribute, keep the `=` operator, and enter `linux` as the value."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Save",
+          "content": "Click **Save**, then confirm in the dialog to save the pipeline.",
+          "verify": "on-page:/a/grafana-collector-app/fleet-management/remote-configuration",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='remote-config-active-toggle-team_cost_metrics']",
+          "content": "In the **Active** column, turn on the toggle for the `team_cost_metrics` pipeline. A new pipeline is inactive until you activate it.\n\n> **Caution:** When you activate the pipeline, every matched collector starts sending metrics to Grafana Cloud at their next poll. This telemetry can affect your bill.",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management/remote-configuration", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Activate",
+          "content": "Click **Activate** to confirm.",
+          "requirements": ["on-page:/a/grafana-collector-app/fleet-management/remote-configuration", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your pipeline is active. Each matched collector applies the pipeline on its next poll and starts sending metrics with a `team` label.\n\nIn the next milestone, you confirm that the `team` label appears on your metrics."
+    }
+  ]
+}
