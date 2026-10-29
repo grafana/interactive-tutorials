@@ -1,5 +1,4 @@
 {
-  "schemaVersion": "1.1.0",
   "id": "data-transformation-add-field-from-calculation",
   "title": "Create an Add field from calculation transformation",
   "blocks": [
@@ -9,7 +8,7 @@
     },
     {
       "type": "markdown",
-      "content": "To use this transformation, open an existing panel in edit mode on your dashboard and make sure you're using the Classic query editor."
+      "content": "To use this transformation, open an existing panel in edit mode on your dashboard."
     },
     {
       "type": "section",
@@ -17,23 +16,20 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Transformations']",
-          "content": "Click the **Transformations** tab.",
-          "requirements": ["exists-reftarget", "on-page:/d/"]
+          "reftarget": "grafana:components.Transforms.addTransformationButton",
+          "content": "In the query editor sidebar, click the plus sign next to the **Transformations** section.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/"
+          ]
         },
         {
-          "type": "multistep",
-          "content": "Select **Add field from calculation**. If you don't see **Add field from calculation**, click **Show more** and search for it. If the panel already has a transformation, click **Add another transformation** first.",
-          "requirements": ["exists-reftarget"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid='data-testid add transformation button']"
-            },
-            {
-              "action": "button",
-              "reftarget": "Add field from calculation"
-            }
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid New transform Add field from calculation'] button",
+          "content": "Select **Add field from calculation**.",
+          "requirements": [
+            "exists-reftarget"
           ]
         },
         {
@@ -43,28 +39,34 @@
         {
           "type": "guided",
           "content": "Select a **Mode**, then choose the fields and **Operation** or **Calculation** for your use case. Give the new field a name in **Alias**.",
-          "requirements": ["exists-reftarget"],
           "steps": [
             {
               "action": "highlight",
               "reftarget": "div[data-testid='data-testid Transformation editor Add field from calculation']",
               "description": "Configure the calculation in this editor, then click anywhere here when you're done."
             }
+          ],
+          "requirements": [
+            "exists-reftarget"
           ]
         },
         {
-          "type": "multistep",
+          "type": "guided",
           "content": "Click **Save**, add an optional description of your changes, and click **Save** again.",
-          "requirements": ["exists-reftarget"],
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Save dashboard button']"
+              "reftarget": "grafana:components.NavToolbar.editDashboard.saveButton",
+              "description": "Click Save"
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Save dashboard drawer button']"
+              "reftarget": "grafana:components.Drawer.DashboardSaveDrawer.saveButton",
+              "description": "Enter a description of your changes if you want and then click Save."
             }
+          ],
+          "requirements": [
+            "exists-reftarget"
           ]
         }
       ]
