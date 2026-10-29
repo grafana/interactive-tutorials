@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "investigate-a-conversation-and-its-cost-annotate-your-agent",
+  "title": "Annotate your own agent",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The demo agents carry a name, a version, and labels your charts can break down by. The agent you ran in the Connect an agent to Agent Observability path carries none of these yet. This milestone happens on your machine, in the shell and the sample file from Milestone 5 of that path. You give the sample an agent name and a version and set a client tag, run it, and find the result in **Agents** and in **Analytics**."
+    },
+    {
+      "type": "markdown",
+      "content": "Add a name, a version, and a tag to the sample, then run it."
+    },
+    {
+      "type": "section",
+      "id": "annotate-the-sample",
+      "title": "Annotate the sample",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Open the shell where you set the `AGENTO11Y_` variables for the Connect an agent path, and set one more:\n\n```bash\nexport AGENTO11Y_TAGS=team=learning\n```\n\nA client tag is a key-value pair the SDK attaches to every generation, span, and metric it records. On the metrics, this one becomes the label `agento11y_tag_team`."
+        },
+        {
+          "type": "markdown",
+          "content": "Open the sample file from Milestone 5 and give the generation an agent name and a version. In Python, add two fields to `GenerationStart`:\n\n```python\nwith client.start_generation(\n    GenerationStart(\n        conversation_id=\"conv-2\",\n        model=ModelRef(provider=\"openai\", name=\"gpt-4o\"),\n        agent_name=\"learning-agent\",\n        agent_version=\"1.0.0\",\n    )\n) as rec:\n    rec.set_result(output=[assistant_text_message(\"Hello\")])\n```\n\nIn TypeScript, Go, Java, and .NET, set the matching agent name and agent version fields on the generation start object. The .NET sample already sets `AgentName`, so add the version beside it.\n\nChange the conversation ID too, so the new generation starts a new conversation rather than joining `conv-1`."
+        },
+        {
+          "type": "markdown",
+          "content": "Run the file from that shell, the way you ran it in Milestone 5. The Python, TypeScript and JavaScript, Go, and Java samples don't call an LLM provider, so no provider key is needed."
+        },
+        {
+          "type": "input",
+          "inputType": "boolean",
+          "variableName": "annotatedSampleRan",
+          "prompt": "Confirm before you continue.",
+          "checkboxLabel": "I added the name, version, and tag and ran the sample without errors",
+          "required": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your sample sent one generation with an agent name, a version, and a tag."
+    },
+    {
+      "type": "markdown",
+      "content": "Find the agent in the catalog and the tag on the cost chart."
+    },
+    {
+      "type": "section",
+      "id": "find-the-result",
+      "title": "Find the result",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/agents?from=now-1h&to=now",
+          "content": "Go to **Observability** > **Agent** > **Agents** with a time range that covers the last hour.",
+          "verify": "on-page:/a/grafana-agento11y-app/agents"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder^='Filter agent by name']",
+          "targetvalue": "learning-agent",
+          "content": "In **Filter agent by name…**, type `learning-agent`.\n\nThe list narrows to your agent. It is no longer anonymous, and its version column reads `1.0.0`, the version you declared, rather than a hash of the prompt.",
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/agents",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/analytics?from=now-1h&to=now",
+          "content": "Go to **Analytics** with the same time range and find the estimated cost chart.",
+          "verify": "on-page:/a/grafana-agento11y-app/analytics"
+        },
+        {
+          "type": "markdown",
+          "content": "Turn on the chart's breakdown and look at the dimensions it offers. Alongside **Agent**, **Model**, and **Provider**, the label `agento11y_tag_team` is now offered, because your sample's metrics carry it. Choose it, and the chart draws one line for `learning`.\n\nMetrics can take a few minutes to arrive. If the label isn't offered yet, wait and reload."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You found your agent in the catalog under the version you declared, and broke a chart down by a label you added. Parents and workflow steps follow the same pattern: your code declares them, and the graphs draw what it declared. The Instrument agent dependencies and workflows page shows the fields.\n\nDon't see `learning-agent`? Check these in order:\n\n1. The sample ran from the shell where the `AGENTO11Y_` variables are set, and printed no error.\n2. The time range covers the last hour.\n3. The agent name in the sample is spelled `learning-agent`.\n\nFor the reference on what you added, refer to [Understand agent versions](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/observe-and-troubleshoot/agent-catalog/#understand-agent-versions) and [Client tags](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/sdk/#client-tags)."
+    }
+  ]
+}
