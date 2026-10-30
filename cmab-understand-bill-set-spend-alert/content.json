@@ -20,6 +20,16 @@
           "doIt": true,
           "showMe": false,
           "requirements": []
+        },
+        {
+          "type": "interactive",
+          "action": "popout",
+          "targetvalue": "floating",
+          "content": "Pop this guide out into a floating window. The next steps open panels in Grafana that would otherwise cover it.",
+          "tooltip": "A floating guide stays visible while Grafana opens its own side panels.",
+          "doIt": true,
+          "showMe": false,
+          "requirements": []
         }
       ]
     },
@@ -100,9 +110,24 @@
           "type": "interactive",
           "action": "formfill",
           "reftarget": "[data-testid='cmab-threshold-input']",
-          "content": "Enter the warn amount in **Dollar threshold**. Pick one you'd want a heads-up about.",
-          "tooltip": "Enter the monthly spend you want to be warned about approaching.",
-          "doIt": false,
+          "content": "Set the **Dollar threshold** to **$3,000**. This is an example, so change it later to an amount you'd want a heads-up about.",
+          "tooltip": "The alert watches your spend against this monthly amount.",
+          "doIt": true,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage-alerts"
+          ],
+          "targetvalue": "3000"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='cmab-custom-percentage-input']",
+          "targetvalue": "90",
+          "content": "Under **Select alert levels**, set **90%** of your threshold. You'll be notified when spend reaches $2,700.",
+          "tooltip": "An alert level is required before the alert can be created.",
+          "doIt": true,
           "showMe": true,
           "requirements": [
             "exists-reftarget",
@@ -113,8 +138,8 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[id='contact-point-selector']",
-          "content": "Choose who should hear about it in **Contact point**.",
-          "tooltip": "Pick where the notification should land, such as email or Slack.",
+          "content": "Choose who should hear about it in **Contact point**. **Create alert** stays disabled until you pick one.",
+          "tooltip": "Pick where the notification should land, such as email or Slack. A contact point is required.",
           "doIt": false,
           "showMe": true,
           "requirements": [
@@ -126,8 +151,8 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "[data-testid='cmab-alert-drawer-submit']",
-          "content": "Select **Create alert**. This creates a real alert that sends notifications, so it's left for you to press.",
-          "tooltip": "Creating the alert starts real notifications, so this one is yours to press.",
+          "content": "Select **Create alert** to save it. This creates a real alert that sends notifications.",
+          "tooltip": "Creating the alert starts real notifications to your chosen contact point.",
           "doIt": true,
           "showMe": true,
           "requirements": [
@@ -139,7 +164,7 @@
     },
     {
       "type": "markdown",
-      "content": "Once you've pressed **Create alert**, you're now all set up to be alerted: when your spend approaches the threshold you chose, you'll be notified. If you haven't pressed it yet, that's the one step left."
+      "content": "Once you've created the alert, you're all set: when your spend approaches your threshold ($3,000 in this example), you'll be notified. You can change the amount any time in **Usage Alerts**."
     }
   ]
 }
