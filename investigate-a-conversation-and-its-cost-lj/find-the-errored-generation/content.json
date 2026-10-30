@@ -29,7 +29,10 @@
           "action": "highlight",
           "reftarget": "[data-testid='data-testid TimePicker Open Button']",
           "content": "Check the time picker, and pick a wider range if you seeded the demo more than 30 days ago.\n\nThe demo conversations are stamped with the time you seeded them, and the list only shows conversations active in the range.",
-          "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/conversations",
+            "exists-reftarget"
+          ],
           "doIt": false
         },
         {
@@ -41,7 +44,10 @@
           "action": "highlight",
           "reftarget": "a[href^='/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis/explore']",
           "content": "Click **Q1 Revenue Analysis** to open the conversation.\n\nThe highlight sits on the row in the list, so scroll down if you do not see it.",
-          "requirements": ["on-page:/a/grafana-agento11y-app/conversations", "exists-reftarget"],
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/conversations",
+            "exists-reftarget"
+          ],
           "verify": "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"
         }
       ]
@@ -61,27 +67,36 @@
       "autoCollapse": true,
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label$='show all']",
-          "content": "Click the error badge, **1 error**, in the conversation header.\n\nA list opens with one entry per errored generation. This conversation has one, at **Step 3**.",
-          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label^='Open step 3:']",
-          "content": "Click the **Step 3** entry.\n\nThe right-hand pane switches from the full thread to that one generation, with **Back to full conversation** at the top.",
-          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "type": "multistep",
+          "content": "Click the error badge, **1 error**, in the conversation header, then click the **Step 3** entry in the list that opens.\n\nThe list has one entry per errored generation. This conversation has one, at **Step 3**. The right-hand pane switches from the full thread to that one generation, with **Back to full conversation** at the top.",
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis"
+          ],
           "skippable": true,
-          "hint": "If the list has closed, click the error badge again, then click Step 3 yourself and skip this step."
+          "hint": "If the list closed before Step 3 was clicked, click the error badge again and click Step 3 yourself, then skip this step.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label$='show all']",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label^='Open step 3:']"
+            }
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[aria-label='Recorded step error']",
           "content": "Read the recorded error.\n\nIt says **Model call failed**, `upstream timeout: query execution exceeded 30s deadline`. The model call for this step never returned, which is why the conversation's status is errored.",
-          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis",
+            "exists-reftarget"
+          ],
           "doIt": false
         }
       ]
