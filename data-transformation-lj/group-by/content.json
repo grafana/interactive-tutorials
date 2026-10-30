@@ -9,7 +9,7 @@
     },
     {
       "type": "markdown",
-      "content": "To use this transformation, open an existing panel in edit mode on your dashboard and make sure you're using the Classic query editor."
+      "content": "To use this transformation, open an existing panel in edit mode on your dashboard."
     },
     {
       "type": "section",
@@ -17,23 +17,20 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Transformations']",
-          "content": "Click the **Transformations** tab.",
-          "requirements": ["exists-reftarget", "on-page:/d/"]
+          "reftarget": "grafana:components.Transforms.addTransformationButton",
+          "content": "In the query editor sidebar, click the plus sign next to the **Transformations** section.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/"
+          ]
         },
         {
-          "type": "multistep",
-          "content": "Select **Group by**. If the panel already has a transformation, click **Add another transformation** first.",
-          "requirements": ["exists-reftarget"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid='data-testid add transformation button']"
-            },
-            {
-              "action": "button",
-              "reftarget": "Group by"
-            }
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid New transform Group by'] button",
+          "content": "Select **Group by**.",
+          "requirements": [
+            "exists-reftarget"
           ]
         },
         {
@@ -49,18 +46,22 @@
           ]
         },
         {
-          "type": "multistep",
+          "type": "guided",
           "content": "Click **Save**, add an optional description of your changes, and click **Save** again.",
-          "requirements": ["exists-reftarget"],
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Save dashboard button']"
+              "reftarget": "grafana:components.NavToolbar.editDashboard.saveButton",
+              "description": "Click Save"
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Save dashboard drawer button']"
+              "reftarget": "grafana:components.Drawer.DashboardSaveDrawer.saveButton",
+              "description": "Enter a description of your changes if you want and then click Save."
             }
+          ],
+          "requirements": [
+            "exists-reftarget"
           ]
         }
       ]

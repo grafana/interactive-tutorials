@@ -9,7 +9,7 @@
     },
     {
       "type": "markdown",
-      "content": "This transformation requires a panel with multiple queries. Open an existing panel in edit mode on your dashboard and make sure you're using the Classic query editor."
+      "content": "This transformation requires a panel with multiple queries. Open an existing panel in edit mode on your dashboard."
     },
     {
       "type": "section",
@@ -17,28 +17,25 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Transformations']",
-          "content": "Click the **Transformations** tab.",
-          "requirements": ["exists-reftarget", "on-page:/d/"]
+          "reftarget": "grafana:components.Transforms.addTransformationButton",
+          "content": "In the query editor sidebar, click the plus sign next to the **Transformations** section.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/d/"
+          ]
         },
         {
-          "type": "multistep",
-          "content": "Select **Join by field**. If you don't see **Join by field**, click **Show more** and search for it. If the panel already has a transformation, click **Add another transformation** first.",
-          "requirements": ["exists-reftarget"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[data-testid='data-testid add transformation button']"
-            },
-            {
-              "action": "button",
-              "reftarget": "Join by field"
-            }
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid New transform Join by field'] button",
+          "content": "Select **Join by field**.",
+          "requirements": [
+            "exists-reftarget"
           ]
         },
         {
           "type": "markdown",
-          "content": "Under **Mode**, select how you want your queries joined. Use the following table as a guideline:\n\n| Mode | When to use |\n| --- | --- |\n| INNER | Combine results from multiple queries into one result, dropping rows where a successful join cannot occur. |\n| OUTER (TIME SERIES) | Include all data from an inner join plus rows where values don't match in every input. |\n| OUTER (TABULAR) | Join tables so the result includes matched and unmatched rows from either or both tables. |"
+          "content": "Under **Mode**, select how you want your queries joined. Use the following table as a guideline:\n\n| Mode | When to use |\n| --- | --- |\n| Inner | Combine results from multiple queries into one result, dropping rows where a successful join cannot occur. |\n| Outer (time series) | Include all data from an inner join plus rows where values don't match in every input. |\n| Outer (tabular) | Join tables so the result includes matched and unmatched rows from either or both tables. |"
         },
         {
           "type": "guided",
@@ -53,18 +50,22 @@
           ]
         },
         {
-          "type": "multistep",
+          "type": "guided",
           "content": "Click **Save**, add an optional description of your changes, and click **Save** again.",
-          "requirements": ["exists-reftarget"],
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Save dashboard button']"
+              "reftarget": "grafana:components.NavToolbar.editDashboard.saveButton",
+              "description": "Click Save"
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Save dashboard drawer button']"
+              "reftarget": "grafana:components.Drawer.DashboardSaveDrawer.saveButton",
+              "description": "Enter a description of your changes if you want and then click Save."
             }
+          ],
+          "requirements": [
+            "exists-reftarget"
           ]
         }
       ]
