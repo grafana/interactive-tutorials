@@ -1,0 +1,365 @@
+{
+  "id": "kg-activate-and-edit-dataset",
+  "title": "Activate the knowledge graph and edit a dataset",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Turn on the knowledge graph from **Entity catalog**, then set the Kubernetes Monitoring dataset and check the result in the catalog.\n\nActivation needs the Admin role. If the catalog already lists entities, skip the activation steps. If this stack has no Kubernetes Monitoring, skip the dataset steps."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll open **Entity catalog** and click **Get started**."
+    },
+    {
+      "type": "section",
+      "id": "open-entity-catalog",
+      "title": "Open Entity catalog",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Open **Observability** > **Entity catalog**. Skip this step if you are not an Admin, or if **Entity catalog** is already open.",
+          "requirements": ["navmenu-open", "is-admin"],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/observability']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-asserts-app/catalog']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Get started",
+          "content": "Click **Get started**.\n\nThe catalog shows this while the knowledge graph is off. If the catalog already lists entities, skip this step.",
+          "tooltip": "Opens the page where you choose which metrics the knowledge graph reads.",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog", "exists-reftarget", "is-admin"],
+          "objectives": ["on-page:/a/grafana-asserts-app/get-started"],
+          "verify": "on-page:/a/grafana-asserts-app/get-started",
+          "skippable": true,
+          "hint": "Skip this step if the catalog already lists entities, or if you are not an Admin."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The activation page is open, or the catalog was already listing entities."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll choose what to monitor and click **Build knowledge graph**."
+    },
+    {
+      "type": "section",
+      "id": "choose-what-to-monitor",
+      "title": "Choose what to monitor",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='home-v2-activate-k8s-btn']",
+          "content": "Click **Kubernetes** when Kubernetes Monitoring is sending metrics.\n\nClick **Applications** on the next step when that product is sending metrics. Click both only when both are sending metrics. **Hosts** can appear on this page; this journey doesn't use it. Skip this step when **Kubernetes** is already on, or when this stack doesn't use it.",
+          "tooltip": "Chooses the Kubernetes metrics this stack is already sending.",
+          "requirements": ["on-page:/a/grafana-asserts-app/get-started", "exists-reftarget", "is-admin"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if Kubernetes Monitoring is already on, this stack doesn't use it, or you are not an Admin."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='home-v2-activate-apps-btn']",
+          "content": "Click **Applications** when Application Observability is sending metrics.\n\nSkip this step when that product is already on, or when this stack doesn't use it.",
+          "tooltip": "Chooses the application metrics this stack is already sending.",
+          "requirements": ["on-page:/a/grafana-asserts-app/get-started", "exists-reftarget", "is-admin"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if Application Observability is already on, this stack doesn't use it, or you are not an Admin."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='activate-sku-confirm-btn']",
+          "content": "Read the dialog, then click **Activate**.\n\nSkip this step when no dialog is open.",
+          "tooltip": "Confirms the product you just chose.",
+          "requirements": ["exists-reftarget", "is-admin"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if no dialog is open, or if you are not an Admin."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Build knowledge graph",
+          "content": "Click **Build knowledge graph** if it is enabled.\n\nIf the label says **Building knowledge graph**, continue. The next step opens **Configuration**.",
+          "tooltip": "Continues to the page where the knowledge graph is built.",
+          "requirements": ["on-page:/a/grafana-asserts-app/get-started", "exists-reftarget", "is-admin"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if you are already on **Configuration**, or if you are not an Admin."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-asserts-app/configuration",
+          "content": "Open **Configuration**.",
+          "requirements": ["is-admin"],
+          "objectives": ["on-page:/a/grafana-asserts-app/configuration"],
+          "verify": "on-page:/a/grafana-asserts-app/configuration",
+          "skippable": true,
+          "hint": "Skip this step if you are not an Admin."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Build knowledge graph",
+          "content": "Click **Build knowledge graph**.\n\nWhen more than one product is selected, the build can start on its own. Skip this step if the label already says **Knowledge graph built** or **Building knowledge graph**.",
+          "tooltip": "Starts discovery from the metrics you selected.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration", "exists-reftarget", "is-admin"],
+          "skippable": true,
+          "hint": "Skip this step if the knowledge graph is already built or still building, or if you are not an Admin."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The knowledge graph is built, or it was already on."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll check that entities appear in the catalog."
+    },
+    {
+      "type": "section",
+      "id": "check-entities-appear",
+      "title": "Check that entities appear",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Open **Observability** > **Entity catalog**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/observability']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-asserts-app/catalog']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
+          "content": "Confirm that entities are listed.\n\nEntities typically start to appear within minutes. A full catalog takes longer in a large environment. If the list is still empty, wait and run this step again.",
+          "tooltip": "A name in the list means discovery has started.",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if the list is still empty and you will check again in a few minutes."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The catalog lists entities from the metrics you connected."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll open **Connect knowledge graph** and click **Edit** next to Kubernetes Monitoring."
+    },
+    {
+      "type": "section",
+      "id": "open-connect-knowledge-graph",
+      "title": "Open the Kubernetes Monitoring dataset",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Open **Observability** > **Configuration**. Skip this step if **Configuration** is not in the menu.",
+          "requirements": ["navmenu-open"],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/observability']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-asserts-app/configuration']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-asserts-app/configuration/connect-env",
+          "content": "Open **Connect knowledge graph**.",
+          "objectives": ["on-page:/a/grafana-asserts-app/configuration/connect-env"],
+          "verify": "on-page:/a/grafana-asserts-app/configuration/connect-env"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='dataset-row-edit-link'][href='/a/grafana-asserts-app/configuration/connect-env/kubernetes']",
+          "content": "Click **Edit** next to Kubernetes Monitoring.\n\nSkip this step if that row has no **Edit**.",
+          "tooltip": "Opens the Kubernetes Monitoring dataset form.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env", "exists-reftarget"],
+          "verify": "on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes",
+          "skippable": true,
+          "hint": "Skip this step if this stack has no Kubernetes Monitoring."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The Kubernetes Monitoring dataset form is open, or you skipped it because this stack has no Kubernetes Monitoring."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll set **Environment label**, **Environments**, **Cloud region label**, and **Cloud regions**, then click **Save Kubernetes settings**."
+    },
+    {
+      "type": "section",
+      "id": "edit-kubernetes-dataset",
+      "title": "Edit the Kubernetes Monitoring dataset",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#env-label-combobox-0",
+          "content": "In **Environment label**, choose the metric label that holds the environment before you continue.\n\nFor Kubernetes metrics, that label is most likely `cluster`. If your metrics use a different label for the environment, such as `environment`, choose that label.",
+          "tooltip": "Its values become the environment filter on knowledge graph pages.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if the Kubernetes Monitoring form is not open."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#env-label-values-combobox-0",
+          "content": "In **Environments**, keep **All** unless you want to exclude an environment.\n\nDeselecting a value drops that environment's metrics from the knowledge graph.",
+          "tooltip": "Keeps every value of the environment label.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if the Kubernetes Monitoring form is not open."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Advanced settings",
+          "content": "If **Advanced settings** is closed, click it before you continue.\n\n**Cloud region label** and **Cloud regions** are in this section. Leave it alone if it is already open.",
+          "tooltip": "Shows the region fields and the optional filter.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if the Kubernetes Monitoring form is not open."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#region-label-combobox-0",
+          "content": "In **Cloud region label**, choose the metric label that holds the region before you continue.\n\nThis field is optional. If **Environment label** is not `cluster`, choose `cluster` here.",
+          "tooltip": "Its values become the list of sites on knowledge graph pages.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if **Cloud region label** is not on the page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#site-label-values-combobox-0",
+          "content": "In **Cloud regions**, keep **All** unless you want to exclude a region.",
+          "tooltip": "Keeps every value of the region label.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if **Cloud regions** is not on the page."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add filter",
+          "content": "Click **+ Add filter** only if you need an extra rule to narrow which metrics this dataset reads.\n\nYou can add several filters, and you can leave this out.",
+          "tooltip": "Adds one optional rule made of a value and an operator.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if **+ Add filter** is not on the page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='k8s-config-save-btn']",
+          "content": "Click **Save Kubernetes settings**.",
+          "tooltip": "Stores the environment and region settings for Kubernetes Monitoring.",
+          "requirements": ["on-page:/a/grafana-asserts-app/configuration/connect-env/kubernetes", "exists-reftarget"],
+          "verify": "on-page:/a/grafana-asserts-app/configuration/connect-env",
+          "skippable": true,
+          "hint": "Skip this step if **Save Kubernetes settings** is not on the page."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The Kubernetes Monitoring dataset is saved, or you skipped it because this stack has no Kubernetes Monitoring."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll return to **Entity catalog** and check the environment and region values."
+    },
+    {
+      "type": "section",
+      "id": "check-environment-and-region",
+      "title": "Check the catalog",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Open **Observability** > **Entity catalog**.",
+          "requirements": ["navmenu-open"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/observability']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-asserts-app/catalog']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='catalog-entity-name-btn']:nth-match(1)",
+          "content": "On a row, check that the environment and region match the values you kept.\n\nThe environment comes from **Environment label**. The region comes from **Cloud region label**.",
+          "tooltip": "The row should show the environment and region you kept.",
+          "requirements": ["on-page:/a/grafana-asserts-app/catalog", "exists-reftarget"],
+          "doIt": false,
+          "skippable": true,
+          "hint": "Skip this step if you did not edit the Kubernetes Monitoring dataset."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The catalog shows the environment and region values from the dataset you saved."
+    }
+  ]
+}
