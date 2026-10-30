@@ -5,10 +5,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "A flame graph is a hierarchical view of call stacks. It answers one question: where did this service spend its resources? Here that resource is CPU time, since you're viewing a CPU profile.\n\nHorizontally, the full width is 100% of the current view, not the whole run. That view is the profile type, service, filters, and time range you selected. Each block is a function, and its width is the share of that total it accounts for, including everything it calls. Wider costs more. Left to right isn't a timeline: blocks aren't ordered by when they ran.\n\nVertically, each level is a caller–callee relationship. The root sits at the top, and callees stack beneath their callers. Depth shows how deep the call stack goes, not how expensive it is. A tall, narrow tower is a deep path that costs little. A short, wide block costs a lot.\n\n**Self** time is spent in the function itself. **Total** time is the function plus its callees. One function can appear as several blocks if it's called from several places, so check the table to see its total across the profile.\n\nThis path uses CPU. You'll look at a lower-CPU region's flame graph first, then `eu-west-1`, so the difference is easier to see.\n\nTo explore flame graphs, complete the following steps:"
+      "content": "A flame graph is a hierarchical view of call stacks. It answers one question: where did this service spend its resources? Here that resource is CPU time, since you're viewing a CPU profile.\n\nHorizontally, the full width is 100% of the current view, not the whole run. That view is the profile type, service, filters, and time range you selected. Each block is a function, and its width is the share of that total it accounts for, including everything it calls. Wider costs more. Left to right isn't a timeline: blocks aren't ordered by when they ran.\n\nVertically, each level is a caller–callee relationship. The root sits at the top, and callees stack beneath their callers. Depth shows how deep the call stack goes, not how expensive it is. A tall, narrow tower is a deep path that costs little. A short, wide block costs a lot.\n\n**Self** time is spent in the function itself. **Total** time is the function plus its callees. One function can appear as several blocks if it's called from several places, so check the table to see its total across the profile.\n\nThis path uses CPU. You'll look at a lower-CPU region's flame graph first, then `eu-west-1`, so the difference is easier to see. After that, you'll inspect one individual profile from an exemplar marker.\n\nTo explore flame graphs, complete the following steps:"
     },
     {
       "type": "section",
+      "id": "explore-flame-graphs",
       "autoCollapse": false,
       "blocks": [
         {
@@ -52,7 +53,91 @@
             "exists-reftarget",
             "on-page:/a/grafana-pyroscope-app/explore"
           ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You compared a lower-CPU region's flame graph with `eu-west-1` and saw more regex-related CPU time."
+    },
+    {
+      "type": "markdown",
+      "content": "That flame graph is an aggregate of every profile in the time range. To inspect one individual profile from an exemplar, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "explore-exemplars",
+      "autoCollapse": false,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='uplot-main-div']",
+          "doIt": false,
+          "skippable": true,
+          "hint": "If there are no diamond markers in this time range, skip this step.",
+          "content": "Diamond markers on the timeseries are individual profiles. Click a diamond to open its details.",
+          "tooltip": "Each diamond is one captured profile.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
         },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "View profile",
+          "skippable": true,
+          "hint": "If no popover opened, skip this step.",
+          "content": "Click **View profile** to scope the flame graph to that profile.",
+          "tooltip": "This scopes the flame graph to that single profile.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Filter label']:contains('Profile id')",
+          "doIt": false,
+          "skippable": true,
+          "hint": "If the profile id selector tag did not appear, skip this step.",
+          "content": "Confirm the **profile id selector** tag above the flame graph. The graph now shows only that profile.",
+          "tooltip": "The flame graph now shows only that profile.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Remove profile id selector from query']",
+          "skippable": true,
+          "hint": "If the tag is not visible, skip this step.",
+          "content": "Click **X** on the tag to return to the aggregate flame graph.",
+          "tooltip": "Clearing the tag restores the aggregate view.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-pyroscope-app/explore"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You scoped the flame graph to one profile from an exemplar, then returned to the aggregate."
+    },
+    {
+      "type": "markdown",
+      "content": "To set up the Diff comparison, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "prepare-diff",
+      "autoCollapse": false,
+      "blocks": [
         {
           "type": "interactive",
           "action": "navigate",
@@ -77,7 +162,7 @@
     },
     {
       "type": "markdown",
-      "content": "---\n\n### More to explore\n\n- [Flame graphs](https://grafana.com/docs/pyroscope/latest/introduction/flamegraphs/)\n- [Self vs. total metrics](https://grafana.com/docs/pyroscope/latest/view-and-analyze-profile-data/self-vs-total/)\n- [Flame graph sandwich view](https://grafana.com/blog/flame-graph-sandwich-view-mode-what-it-is-and-how-to-use-it/)"
+      "content": "---\n\n### More to explore\n\n- [Flame graphs](https://grafana.com/docs/pyroscope/latest/introduction/flamegraphs/)\n- [Self vs. total metrics](https://grafana.com/docs/pyroscope/latest/view-and-analyze-profile-data/self-vs-total/)\n- [Flame graph sandwich view](https://grafana.com/blog/flame-graph-sandwich-view-mode-what-it-is-and-how-to-use-it/)\n- [Exemplars](https://grafana.com/docs/plugins/grafana-pyroscope-app/latest/investigate/#drill-down-to-an-individual-profile)"
     }
   ]
 }
