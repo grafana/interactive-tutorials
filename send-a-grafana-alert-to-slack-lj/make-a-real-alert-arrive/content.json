@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "send-a-grafana-alert-to-slack-make-a-real-alert-arrive",
+  "title": "Make a real alert arrive",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Up to now the channel has only seen the test message. In this milestone you connect your rule to the Slack contact point, make the rule fire, and wait for a real notification. It ends when a notification from your own rule, firing or resolved, is visible in the channel.\n\nThis path uses the **QuickPizza server errors** rule from the Create your first alert rule path. Its query counts QuickPizza HTTP responses with a `5..` status over 5 minutes and fires when the count is above 0. If you are using another Grafana-managed rule you can make fire, follow the same steps on that rule.\n\nA rule reaches a contact point one of two ways: the contact point is selected on the rule, or the rule's alerts go through the notification policy tree. The steps below select it on the rule. The policy route follows as a checklist."
+    },
+    {
+      "type": "markdown",
+      "content": "To select the Slack contact point on the rule, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "select-contact-point-on-rule",
+      "title": "Select the contact point on the rule",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **Alerts & IRM**, then **Alerting**, then **Alert rules**.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid alerting search-input']",
+          "targetvalue": "QuickPizza server errors",
+          "content": "Search for **QuickPizza server errors**, or for the name of the rule you are using.",
+          "skippable": true,
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open the rule for editing: click the rule name, then **Edit**. Scroll to the **Configure notifications** step.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid advanced-mode-switch step-5']",
+          "content": "In the heading of **Configure notifications**, make sure the **Advanced options** switch is off. Off means a contact point is selected on the rule; on means the rule's alerts go through the notification policy tree.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid alert-rule contact-point-input']",
+          "content": "In **Contact point**, select your Slack contact point (`slack-grafana-alerts` if you kept the suggested name).",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid alert-rule save-rule-button']",
+          "content": "Click **Save**.",
+          "requirements": [
+            "on-page:/alerting",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "All notifications for this rule now go to the Slack contact point, and the policies you add to the tree are not used for it. Grouping and mute timings set on policies don't apply to this rule; the rule form offers its own under **Muting, grouping and timings (optional)**, which you leave closed.\n\n**Through a policy instead.** Use this when several rules, teams, or channels are involved. Click **Alerts & IRM**, then **Alerting**, then **Notification configuration**, and select the **Notification policies** tab. On the **Default policy**, click **+ Add route**. Under **Matching labels**, fill in the one matcher row with a label your rule carries, for example **Label** `severity`, **Operator** `=`, **Value** `critical`. In **Contact point**, select the Slack contact point, leave everything else inherited, and click **Add route**. Then open your rule, turn **Advanced options** on in the **Configure notifications** step, and click **Save**. The dialog calls a policy a route; this path says policy."
+    },
+    {
+      "type": "markdown",
+      "content": "Nothing from the rule arrives until it fires or resolves. To make the rule fire on demand, widen its query so it counts successful responses, which QuickPizza receives constantly. Complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "make-the-rule-fire",
+      "title": "Make the rule fire",
+      "requirements": [
+        "section-completed:select-contact-point-on-rule"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Open **QuickPizza server errors** for editing again, and scroll to the **Define query and alert condition** step.",
+          "requirements": [
+            "on-page:/alerting"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Select value'] input[role='combobox']",
+          "content": "In the **Label filters** row, change the **status** value from `5..` to `2..` and press Enter. The query now counts successful responses, so the count is above 0.",
+          "doIt": false,
+          "requirements": [
+            "on-page:/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid alert-rule save-rule-button']",
+          "content": "Click **Save**.",
+          "requirements": [
+            "on-page:/alerting",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Wait. The rule evaluates every minute with a one-minute pending period, so it fires within about two minutes. On either route the first notification for a new group then waits for **Group wait**, 30 seconds by default."
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Look in the Slack channel for a notification carrying **QuickPizza server errors**. The **Contact points** tab also shows the status of the latest delivery for the contact point."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Done when a firing notification from your rule is in the channel. Leave the rule's query as it is for now; the next milestone fires it again and restores it at the end.\n\n## If nothing arrived\n\nCheck the route before you touch the contact point; the test already proved the credential and the channel.\n\n- **The rule is not connected the way you think.** Open the rule's **Configure notifications** step. With **Advanced options** off, the Slack contact point has to be the one selected. With it on, the rule's alerts go to the tree, and your child policy only applies if the rule took that route.\n- **A policy above yours claimed the alert first.** On the **Notification policies** tab, read the tree top to bottom for a policy whose matchers match your alert's labels, such as `team` or `severity`. Policies are evaluated top to bottom, and after a match the tree continues into that policy's children, not its siblings, unless **Continue matching subsequent sibling nodes** is on. Or click **Preview routing** on the rule form, with **Advanced options** on, to see which policy handles it."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Notifications](https://grafana.com/docs/grafana/latest/alerting/fundamentals/notifications/)\n- [Configure notifications on the rule form](https://grafana.com/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/#configure-notifications)\n- [Configure notification policies](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/create-notification-policy/)\n- [Notification policies](https://grafana.com/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/)"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "send-a-grafana-alert-to-slack-get-your-slack-credential",
+  "title": "Get your Slack credential",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This milestone happens on Slack's screens, not in Grafana, so there is nothing here to click in Grafana. Follow one of the two checklists. It ends when you have a bot token and a channel ID, or a Slack incoming webhook URL, copied and ready to paste into the contact point.\n\nThe bot token is the default for this path: with it, the app can post to any public channel and Grafana can upload panel images. The Slack incoming webhook is the lighter alternative: one URL for one channel, chosen when the webhook is created."
+    },
+    {
+      "type": "markdown",
+      "content": "## Before you start\n\n- Know which channel the notifications should land in. The bot token path needs its ID; the webhook path has you pick the channel while creating the webhook.\n- Check that you can install an app in the workspace. By default, Slack lets members install apps without approval from a Workspace Owner. If a Workspace Owner has turned on [app approval](https://slack.com/help/articles/222386767-Manage-app-approval-for-your-workspace), you cannot install the app yourself: if they allow app requests, your install becomes a request that a Workspace Owner or an appointed app manager reviews, and if not, a Workspace Owner has to pre-approve it. Find that person now, and tell them the app needs the `chat:write` and `chat:write.public` scopes, because approving an app request means approving its scopes."
+    },
+    {
+      "type": "markdown",
+      "content": "## Checklist: bot token\n\n1. Open the [Slack quickstart](https://docs.slack.dev/app-management/quickstart-app-settings/#creating), click **Create an app**, select **Blank app**, then **Continue**. Enter an **App Name**, select the **Workspace**, then **Create**.\n2. Open **OAuth & Permissions**, scroll to **Scopes**, and under **Bot Token Scopes** click **Add an OAuth Scope**. Add `chat:write` and `chat:write.public`. Slack's [scope page](https://api.slack.com/scopes/chat:write.public) says `chat:write.public` requires `chat:write`.\n3. At the top of **OAuth & Permissions**, click [**Install to Workspace**](https://docs.slack.dev/app-management/quickstart-app-settings/#installing), then **Allow**.\n4. Under **OAuth Tokens for Your Workspace**, copy the **Bot User OAuth Token**. It starts with `xoxb-` and is a secret: don't paste it anywhere but the contact point.\n5. In Slack, right-click the channel, click **View channel details**, scroll down, and copy the **Channel ID**. The ID is not the `#name`.\n\nIf you change the scopes later, Slack asks you to reinstall the app. Accept it."
+    },
+    {
+      "type": "markdown",
+      "content": "## Checklist: Slack incoming webhook\n\n1. Create the app the same way: **Create an app**, **Blank app**, **Continue**, then **App Name**, **Workspace**, **Create**.\n2. Open **Incoming Webhooks** and switch **Activate Incoming Webhooks** on.\n3. Click [**Add New Webhook to Workspace**](https://api.slack.com/messaging/webhooks#create_a_webhook), pick the channel, then **Authorize**.\n4. Under **Webhook URLs for Your Workspace**, copy the URL. It starts with `https://hooks.slack.com/services/` and is a secret: Slack revokes leaked ones.\n\nThe URL posts to the one channel you picked. A second channel means another webhook and another contact point."
+    },
+    {
+      "type": "markdown",
+      "content": "Done when a token and a channel ID, or a webhook URL, are copied and ready to paste. Keep Slack open; if the contact point test in the next milestone fails, the credential is the first thing you come back to.\n\nNext, you create the Slack contact point in Grafana and send a test."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure Slack for Alerting: Before you begin](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-slack/#before-you-begin)\n- [Slack token types](https://api.slack.com/authentication/token-types)\n- [Manage app approval for your workspace](https://slack.com/help/articles/222386767-Manage-app-approval-for-your-workspace)"
+    }
+  ]
+}

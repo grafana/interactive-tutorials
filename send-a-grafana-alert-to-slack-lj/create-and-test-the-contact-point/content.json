@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "send-a-grafana-alert-to-slack-create-and-test-the-contact-point",
+  "title": "Create and test the contact point",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This is the first milestone inside Grafana. You create a contact point with one Slack integration, paste in the credential from the previous milestone, send a test, and save. It ends when the test message is visible in the Slack channel.\n\nHave the bot token and channel ID, or the Slack incoming webhook URL, ready to paste."
+    },
+    {
+      "type": "markdown",
+      "content": "To open the contact points list, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-contact-points",
+      "title": "Open the contact points list",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **Alerts & IRM**, then **Alerting**, then **Notification configuration**.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/notifications']"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "The **Contact points** tab is selected. If a **Choose Alertmanager** dropdown is shown, check that it shows **Grafana**. No dropdown means you are already on the Grafana Alertmanager.",
+          "requirements": [
+            "on-page:/alerting/notifications"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You are on the **Contact points** tab. Next, create the contact point and give it the credential."
+    },
+    {
+      "type": "section",
+      "id": "create-contact-point",
+      "title": "Create the contact point",
+      "requirements": [
+        "section-completed:open-contact-points"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid contact-points add-contact-point-link']",
+          "content": "Click **+ New contact point**.",
+          "requirements": [
+            "on-page:/alerting/notifications",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid contact-point-form name-input']",
+          "targetvalue": "slack-grafana-alerts",
+          "content": "In **Name**, enter a name that says which channel it posts to. `slack-grafana-alerts` is filled in for you; replace `grafana-alerts` with your channel's name.",
+          "tooltip": "One Slack integration posts to one channel, so name the contact point for its channel.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[id='contact-point-type-items.0.']",
+          "targetvalue": "Slack",
+          "content": "From the **Integration** list, select **Slack**.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id='items.0.settings.recipient']",
+          "content": "If you have a bot token: in **Recipient**, paste the channel ID you copied from **View channel details**.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id='items.0.settings.token']",
+          "content": "In **Token**, paste the bot token. It starts with `xoxb-`.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[id='items.0.settings.url']",
+          "content": "If you have a Slack incoming webhook instead: in **Webhook URL**, paste the URL that starts with `https://hooks.slack.com/services/`. Leave **Recipient** and **Token** empty.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The contact point has a name and a Slack integration holding your credential. Before you save it, send a test."
+    },
+    {
+      "type": "section",
+      "id": "test-and-save",
+      "title": "Test and save the contact point",
+      "requirements": [
+        "section-completed:create-contact-point"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Test",
+          "content": "Click **Test**.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Send test notification",
+          "content": "Keep the predefined notification and click **Send test notification**.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "noop",
+          "content": "Look in the Slack channel for the test message. A message in the channel proves the credential and the channel work."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid contact-point-form save-button']",
+          "content": "Click **Save contact point**.",
+          "requirements": [
+            "on-page:/alerting/notifications/receivers/new",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Done when the test message is in the channel and the contact point is saved. The **Contact points** tab shows the status of the latest delivery for each contact point.\n\nIf no message arrived, the credential and the channel are what to check: open Slack and compare what you pasted with the token and channel ID, or with the webhook URL. With a bot token, also check that the app has both scopes and was installed after they were added.\n\nA passed test does not prove that any alert rule reaches this contact point. That is the next milestone."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Configure contact points](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/)\n- [Configure Slack for Alerting: Procedure](https://grafana.com/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-slack/#procedure)\n- [Contact points](https://grafana.com/docs/grafana/latest/alerting/fundamentals/notifications/contact-points/)"
+    }
+  ]
+}
