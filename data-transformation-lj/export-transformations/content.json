@@ -15,49 +15,39 @@
       "type": "section",
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Queries']",
-          "content": "Click the **Queries** tab.",
-          "requirements": ["exists-reftarget", "on-page:/d/"]
-        },
-        {
           "type": "guided",
-          "content": "Click **Query inspector**, select the **Data** tab, expand **Data options**, enable **Apply panel transformations**, and click **Download CSV**.",
-          "requirements": ["exists-reftarget"],
+          "content": "Do the following:\n- Click **Inspect queries** in the editor pane footer.\n- Select the **Data** tab.\n- Expand **Data options**.\n- Enable **Apply panel transformations**.\n- Click **Download CSV**.",
           "steps": [
             {
-              "action": "button",
-              "reftarget": "Query inspector",
-              "description": "Open the inspector drawer."
+              "action": "highlight",
+              "reftarget": "{grafana:components.PanelEditor.General.content} button[aria-label='Query inspector']"
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Tab Data']",
-              "description": "Switch to the tab that shows your query results."
+              "reftarget": "grafana:components.Tab.title:Data"
             },
             {
               "action": "highlight",
-              "reftarget": "div:text('Data options')",
-              "description": "Expand this row to reveal the export settings."
+              "reftarget": "{grafana:components.PanelInspector.Data.content} button[aria-label='Expand query row']"
             },
             {
               "action": "highlight",
-              "reftarget": "label:contains('Apply panel transformations')",
-              "description": "Turn this on to include your transformations in the export."
+              "reftarget": "{grafana:components.PanelInspector.Data.content} [data-testid='data-testid Switch container']:nth-match(1)"
             },
             {
               "action": "button",
-              "reftarget": "Download CSV",
-              "description": "Download the transformed data as a CSV file."
+              "reftarget": "Download CSV"
             }
+          ],
+          "requirements": [
+            "exists-reftarget"
           ]
+        },
+        {
+          "type": "markdown",
+          "content": "A CSV file containing the data set with transformations applied downloads to your machine.\n\nIn the next milestone, you'll wrap up this learning path."
         }
       ]
-    },
-    {
-      "type": "markdown",
-      "content": "A CSV file containing the data set with transformations applied downloads to your machine.\n\nIn the next milestone, you'll wrap up this learning path."
     }
   ]
 }
