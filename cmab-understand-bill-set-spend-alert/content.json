@@ -1,0 +1,145 @@
+{
+  "id": "cmab-understand-bill-set-spend-alert",
+  "title": "Understand your Grafana Cloud bill and get alerted before it grows",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "If you're wondering what your bill is and why, this will help. In this guide you'll look at where your spend comes from, and then set (or adjust) a usage alert so you hear about it before it grows. First, let's open the Usage page."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Open the usage page",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-cmab-app/usage",
+          "content": "Open the **Usage** page in Cost Management and Billing.",
+          "tooltip": "This page shows what you're being charged for this billing period.",
+          "doIt": true,
+          "showMe": false,
+          "requirements": []
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You're on the Usage page, where your spend for the current period lives. Next, take a look at the numbers behind your bill."
+    },
+    {
+      "type": "section",
+      "id": "see-where-your-spend-comes-from",
+      "title": "See where your spend comes from",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='all-products-header']",
+          "content": "Start with **Total spend this period**, the overall amount you've been charged so far.",
+          "tooltip": "This is the headline figure that adds up everything you've used this period.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='product-list']",
+          "content": "Now look at **Spend by product** to see which products add up to that total.",
+          "tooltip": "Each row shows how much of your total comes from one product, so the biggest contributors stand out.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know your total and which products it comes from, which answers most \"why is it this much?\" questions. Now you'll set a Global Spend alert, so you're told when your spend approaches an amount you choose."
+    },
+    {
+      "type": "section",
+      "id": "set-a-global-spend-alert",
+      "title": "Set a spend alert",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='usage-sidebar-first-alert']",
+          "content": "Select **Create your first usage alert** in the sidebar. This opens a Global Spend threshold alert form, so you don't need to navigate anywhere yourself.",
+          "tooltip": "This opens the alert form with your total spend as the thing to watch.",
+          "doIt": true,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage",
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='cmab-alert-type-selector']",
+          "content": "Check the **Alert type** is a threshold alert, which watches your spend against a limit you set.",
+          "tooltip": "This confirms the alert compares your overall spend with a limit.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage-alerts"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='cmab-threshold-input']",
+          "content": "Enter the amount you want to be warned about in **Dollar threshold**. The number is your call, so pick one you'd want a heads-up about.",
+          "tooltip": "Enter the monthly spend you want to be warned about approaching.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage-alerts"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[id='contact-point-selector']",
+          "content": "Choose who should hear about it in **Contact point**.",
+          "tooltip": "Pick where the notification should land, such as email or Slack.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage-alerts"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='cmab-alert-drawer-submit']",
+          "content": "Select **Create alert**. This creates a real alert that sends notifications, so it's left for you to press.",
+          "tooltip": "Creating the alert starts real notifications, so this one is yours to press.",
+          "doIt": false,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage-alerts"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Once you've pressed **Create alert**, you're now all set up to be alerted: when your spend approaches the threshold you chose, you'll be notified. If you haven't pressed it yet, that's the one step left."
+    }
+  ]
+}
