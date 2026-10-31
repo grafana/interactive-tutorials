@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-and-fix-slow-query-read-the-plan",
+  "title": "Read the plan and the table",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "To read how the database runs the query, complete the following steps. If a tab is empty, skip it and go on."
+    },
+    {
+      "type": "section",
+      "id": "read-the-plan",
+      "title": "Read the plan and the table",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Explain plan']",
+          "skippable": true,
+          "content": "Open the **Explain plan** tab.\n\nIf the query is not a SELECT, or the tab is empty, skip the next steps.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='explain-plan-graph']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record the highlighted operation's name and its **Rows** estimate.\n\nThe plan highlights an operation that takes 30% or more of the total query cost.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='explain-plan-graph']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record the access method.\n\nAccess methods are how the database reads data (index scan, table scan). On PostgreSQL, an Index Scan uses an index to find rows, then fetches from the table. An Index Only Scan retrieves all needed data from the index alone. A table scan reads the entire table row by row. A table scan (sequential scan) isn't always bad. A small table may be faster with a table scan, and an index wouldn't help when the query returns most rows. No suitable index is a reason to consider adding an index. If an index exists but is not used, check the query conditions and the statistics.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "skippable": true,
+          "content": "Open the **Table schema details** tab.\n\nIf the tab is empty, skip the next steps. When the query uses several tables, use the table that holds the filtered column.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the filtered column has an **Indexed** badge.\n\nThe badge answers whether any index covers that column.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the index column order matches the query's filter and sort.\n\nFor example, a composite index matches when its columns are in that same order.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Table schema details']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record whether the columns the query joins on are indexed.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a record of the highlighted operation and of whether the filtered column is indexed."
+    }
+  ]
+}
