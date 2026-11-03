@@ -1,0 +1,45 @@
+{
+  "path": "postgresql-integration-lj",
+  "summary": "Teaches how to monitor PostgreSQL with Grafana Alloy using the Cloud PostgreSQL integration, including install, config, testing, and prebuilt dashboards/alerts.",
+  "needs": [
+    {
+      "id": "postgres-instance",
+      "kind": "external-infra",
+      "description": "Running PostgreSQL (>=9.5) with a monitoring user, plus optional log file (/var/log/postgresql/postgres.log).",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"A running PostgreSQL instance (PostgreSQL >= 9.5)\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "alloy-host",
+      "kind": "external-infra",
+      "description": "Machine where Alloy is installed with the generated config; needed for Test connection to find data.",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"Access to the machine where you want to install Grafana Alloy\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "postgres-integration-installed",
+      "kind": "plugin-or-app",
+      "description": "PostgreSQL integration available in Connections (/connections/add-new-connection/postgres); install-dashboards-alerts installs dashboards (overview, logs) and alert rules.",
+      "category": "in-cloud-seedable",
+      "evidence": "install-dashboards-alerts: [data-testid=install-button]",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "postgres-metrics-logs",
+      "kind": "telemetry-data",
+      "description": "PostgreSQL exporter metrics (pg_*) and logs in Cloud Mimir/Loki so test-connection and Explore metric select list metrics.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "test-connection: \"data-testid metric select\" on /explore",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Integration install/dashboard steps work UI-only; test-connection depends on live data from Alloy.",
+  "externalInfraDependent": true
+}

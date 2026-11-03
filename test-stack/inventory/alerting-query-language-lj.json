@@ -1,0 +1,54 @@
+{
+  "path": "alerting-query-language-lj",
+  "summary": "Teaches writing PromQL in Code mode for an alert rule on QuickPizza metrics, configuring notifications and creating a silence.",
+  "needs": [
+    {
+      "id": "quickpizza-datasources",
+      "kind": "datasource",
+      "description": "QuickPizza tutorial data sources incl. Prometheus data source named grafanacloud-play-prom (installed by the path itself via Demo Data Dashboards app; pre-seeding avoids that step).",
+      "category": "in-cloud-seedable",
+      "evidence": "install-datasources: requirement has-datasource:grafanacloud-play-prom; formfill val=grafanacloud-play-prom",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "demo-data-app",
+      "kind": "plugin-or-app",
+      "description": "Demo Data Dashboards app used to install QuickPizza datasources if not pre-seeded.",
+      "category": "in-cloud-seedable",
+      "evidence": "install-datasources milestone",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "metric-quickpizza_server_http_requests_total",
+      "kind": "telemetry-data",
+      "description": "Metric quickpizza_server_http_requests_total with status label on grafanacloud-play-prom (query run must succeed).",
+      "category": "in-cloud-seedable",
+      "evidence": "build-query formfill PromQL using quickpizza_server_http_requests_total",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "editor-role",
+      "kind": "permission-or-role",
+      "description": "User with Editor or Admin role able to create alert rules and silences.",
+      "category": "entitlement",
+      "evidence": "manifest targeting userRoleIn; \"Permission to create alert rules\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "contact-point",
+      "kind": "existing-grafana-config",
+      "description": "A contact point available to select for the rule.",
+      "category": "in-cloud-seedable",
+      "evidence": "configure-notification milestone",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": false,
+  "reviewNotes": "Creates rule 'QuickPizza high error rate', folder and silence itself; repeated runs against a shared stack may collide on names.",
+  "externalInfraDependent": false
+}

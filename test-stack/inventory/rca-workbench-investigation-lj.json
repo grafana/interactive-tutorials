@@ -1,0 +1,45 @@
+{
+  "path": "rca-workbench-investigation-lj",
+  "summary": "Teaches how to investigate an incident with the Knowledge Graph RCA workbench: entities, insights timeline, metrics, logs, traces, and Assistant.",
+  "needs": [
+    {
+      "id": "knowledge-graph-enabled",
+      "kind": "plugin-or-app",
+      "description": "Knowledge graph (grafana-asserts-app) enabled with entity catalog and assertions page.",
+      "category": "entitlement",
+      "evidence": "Before you begin: \"knowledge graph enabled\"; starting /a/grafana-asserts-app/assertions",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "instrumented-services",
+      "kind": "telemetry-data",
+      "description": "Instrumented services (OTel/App O11y/K8s) producing entities in the catalog, ideally with an active incident/insights (amend/failure/saturation) in the time window.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "add-entities: catalog-entity-name-btn first-of-type; \"An active incident or performance issue\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "logs-traces-data",
+      "kind": "telemetry-data",
+      "description": "Logs and traces correlated to entities for review-logs and trace-dependencies steps.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "review-logs, trace-dependencies milestones",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "assistant-enabled",
+      "kind": "plugin-or-app",
+      "description": "Grafana Assistant available (assistant-button).",
+      "category": "entitlement",
+      "evidence": "use-assistant: button[data-testid=assistant-button]",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Requires realistic generated telemetry with insights; steps depend on at least one entity and ideally an incident.",
+  "externalInfraDependent": false
+}

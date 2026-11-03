@@ -1,0 +1,36 @@
+{
+  "path": "run-first-k6-test-lj",
+  "summary": "Teaches how to install k6, write and run a script locally, then send it to Grafana Cloud k6 and analyze results.",
+  "needs": [
+    {
+      "id": "local-cli-env",
+      "kind": "external-infra",
+      "description": "Machine with terminal where k6 is installed; commands (k6 run, k6 cloud login with token) are manual, not UI-automated.",
+      "category": "external-infra",
+      "evidence": "Before you begin: terminal access; install-k6 / run-locally",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "k6-app",
+      "kind": "plugin-or-app",
+      "description": "Grafana Cloud k6 app (/a/k6-app) with Default project.",
+      "category": "entitlement",
+      "evidence": "send-to-grafana-cloud: href /a/k6-app, /a/k6-app/settings; write-test-script: Default project",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "k6-personal-token",
+      "kind": "other",
+      "description": "Personal token from k6 settings used for k6 cloud login.",
+      "category": "none",
+      "evidence": "send-to-grafana-cloud: \"Personal token\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Only the Cloud UI portions are browser-testable; terminal steps cannot be verified in E2E.",
+  "externalInfraDependent": true
+}

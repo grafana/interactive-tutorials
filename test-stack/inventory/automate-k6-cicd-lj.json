@@ -1,0 +1,45 @@
+{
+  "path": "automate-k6-cicd-lj",
+  "summary": "Teaches adding k6 tests with thresholds to GitHub Actions/GitLab CI and streaming results to Grafana Cloud k6.",
+  "needs": [
+    {
+      "id": "k6-app",
+      "kind": "plugin-or-app",
+      "description": "Grafana Cloud k6 app (/a/k6-app) with Settings pages (stack-api-token, api-token, stack-id) and at least one project with a visible Project id.",
+      "category": "entitlement",
+      "evidence": "stream-results-cloud: navigate /a/k6-app/settings, /a/k6-app/projects \"Open a project, copy Project id\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "local-k6-and-script",
+      "kind": "external-infra",
+      "description": "k6 installed locally plus a k6 test script with thresholds (test.js); learner edits and runs it in a terminal.",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"k6 installed on your machine\", \"A k6 test script with thresholds\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "ci-platform",
+      "kind": "external-infra",
+      "description": "GitHub Actions or GitLab CI repository where the learner adds workflow YAML and CI secrets (K6_CLOUD_TOKEN, K6_CLOUD_PROJECT_ID, K6_CLOUD_STACK_ID).",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"Access to a CI/CD platform\"; stream-results-cloud secrets text",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "target-url",
+      "kind": "external-infra",
+      "description": "A reachable HTTP target (BASE_URL, e.g. staging.example.com) for the test script.",
+      "category": "external-infra",
+      "evidence": "parameterize-script: k6 run -e BASE_URL=https://staging.example.com",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Most steps are terminal/CI instructions with no UI selectors; only stream-results-cloud is UI-testable (needs /a/k6-app). Not verifiable by browser E2E.",
+  "externalInfraDependent": true
+}

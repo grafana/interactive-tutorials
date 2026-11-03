@@ -1,0 +1,45 @@
+{
+  "path": "interactive-dashboards-lj",
+  "summary": "Teaches creating query, custom and chained dashboard variables and using them in panel queries.",
+  "needs": [
+    {
+      "id": "prometheus-metrics-datasource",
+      "kind": "datasource",
+      "description": "Grafana Cloud Prometheus data source (grafanacloud-<stack>-prom) selected in the Query Variable editor.",
+      "category": "in-cloud-seedable",
+      "evidence": "create-query-variable: \"select your Grafana Cloud Prometheus data source\"; Before you begin: at least one Prometheus data source",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "up-metric-with-environment-cluster-labels",
+      "kind": "telemetry-data",
+      "description": "Series `up` carrying `environment` and `cluster` labels (variable queries label_values(up, environment) and a cluster query filtered by environment) so previews and dependent variables return values.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "content: \"label_values(up, environment)\", chained variable `cluster`",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "existing-dashboard-with-prometheus-panel",
+      "kind": "dashboard",
+      "description": "A saved, editable dashboard containing at least one panel querying the Prometheus data source (steps say \"Open your dashboard and click Edit\"; use-variables step edits an existing panel query).",
+      "category": "in-cloud-seedable",
+      "evidence": "\"Open your dashboard and click **Edit**\"; \"panel that you want to update... Edit\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "editor-or-admin-role",
+      "kind": "permission-or-role",
+      "description": "Test user with Editor or Admin role able to create/edit dashboards.",
+      "category": "entitlement",
+      "evidence": "Before you begin: permissions to create and edit dashboards; manifest userRoleIn Editor/Admin",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Dashboard the guide expects the learner to already have is not named; a seeded dashboard (or one created by an earlier path) is assumed.",
+  "externalInfraDependent": false
+}

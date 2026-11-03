@@ -1,0 +1,45 @@
+{
+  "path": "kafka-monitoring-lj",
+  "summary": "Shows how to expose Kafka JMX metrics and send them with Grafana Alloy to Grafana Cloud, then use the Kafka integration dashboards and alerts.",
+  "needs": [
+    {
+      "id": "kafka-cluster-jmx",
+      "kind": "external-infra",
+      "description": "Running Kafka cluster with JMX remote access enabled on brokers, root access to configure it.",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"A Kafka cluster up and running\"; configure-jmx-exporter",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "alloy-host",
+      "kind": "external-infra",
+      "description": "Machine with admin privileges to install Grafana Alloy, with network access to broker JMX ports.",
+      "category": "external-infra",
+      "evidence": "Before you begin: Alloy host with network access to JMX ports",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "kafka-integration-installable",
+      "kind": "plugin-or-app",
+      "description": "Kafka integration page /connections/add-new-connection/kafka available on the stack (Alloy token generation, dashboard and alert install).",
+      "category": "in-cloud-seedable",
+      "evidence": "install-grafana-alloy/install-dashboards steps: agent-config-button, install-button",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "kafka-metrics-in-prometheus",
+      "kind": "telemetry-data",
+      "description": "kafka_* metrics in Cloud Prometheus (e.g. kafka_server_*) for the Explore metric picker and dashboards.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "verify-kafka-metrics: type \"kafka_\" in metric select",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": false,
+  "reviewNotes": "",
+  "externalInfraDependent": true
+}

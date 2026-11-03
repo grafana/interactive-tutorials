@@ -1,0 +1,102 @@
+{
+  "path": "influxdb-data-source-lj",
+  "id": "influxdb-data-source-lj",
+  "type": "path",
+  "milestoneCount": 6,
+  "startingLocation": "/connections/datasources/influxdb",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:influxdb"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
+              ]
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/influxdb"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "### Before you begin\n\nBefore you connect to an InfluxDB data source, ensure you have:\n\n- A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account).\n- An InfluxDB instance that is running and accessible.\n- Connection credentials for your InfluxDB instance. The required credentials vary by query language \u2014 refer to [Before you begin](/docs/grafana/latest/datasources/influxdb/configure/#before-you-begin) for details.\n- Network access from Grafana Cloud to your InfluxDB instance (directly or via [Private Data Source Connect](/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/))."
+  ],
+  "milestones": [
+    {
+      "id": "influxdb-data-source-verify-influxdb",
+      "dir": "influxdb-data-source-lj/verify-influxdb",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "### Gather connection details\n\nThe credentials you need depend on which query language you plan to use. Collect the relevant values before proceeding:\n\n| Detail | Flux | InfluxQL | SQL | Example |\n|--------|------|----------|-----|---------|\n| **URL** | \u2713 | \u2713 | \u2713 | `http://influxdb.example.com:8086` |\n| **Organization** | \u2713 | | | `my-org` |\n| **Default bucket** | \u2713 | | | `telegraf` |\n| **Token** | \u2713 | | \u2713 | `your-influxdb-api-token` |\n| **Database** | | \u2713 | \u2713 | `telegraf` |\n| **User** | | \u2713 | | `grafana_reader` |\n| **Password** | | \u2713 | | `\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022` |\n\nThis path demonstrates connecting with Flux. If you're using InfluxQL or SQL, refer to [Configure the InfluxDB data source](/docs/grafana/latest/datasources/influxdb/configure/) for the settings specific to your query language."
+      ]
+    },
+    {
+      "id": "influxdb-data-source-add",
+      "dir": "influxdb-data-source-lj/add-data-source",
+      "requirements": {
+        "navmenu-open": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "influxdb-data-source-configure-connection",
+      "dir": "influxdb-data-source-lj/configure-connection",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "influxdb-data-source-test-connection",
+      "dir": "influxdb-data-source-lj/test-connection",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "influxdb-data-source-explore-data",
+      "dir": "influxdb-data-source-lj/explore-data",
+      "requirements": {
+        "navmenu-open": 1,
+        "on-page:/explore": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "influxdb-data-source-end-journey",
+      "dir": "influxdb-data-source-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

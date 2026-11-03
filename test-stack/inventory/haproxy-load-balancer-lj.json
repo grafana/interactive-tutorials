@@ -1,0 +1,45 @@
+{
+  "path": "haproxy-load-balancer-lj",
+  "summary": "Monitor an HAProxy load balancer by configuring its stats endpoint, installing Grafana Alloy, enabling the integration, and installing dashboards and alerts.",
+  "needs": [
+    {
+      "id": "haproxy-server",
+      "kind": "external-infra",
+      "description": "HAProxy server >=1.6 with admin access to edit config (stats endpoint) and outbound HTTPS to *.grafana.net.",
+      "category": "external-infra",
+      "evidence": "Before you begin: An HAProxy server running version 1.6 or later",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "alloy-on-haproxy-host",
+      "kind": "external-infra",
+      "description": "Grafana Alloy installed on the HAProxy host with a Cloud access token, sending metrics to the stack.",
+      "category": "external-infra",
+      "evidence": "install-alloy milestone",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "haproxy-metrics",
+      "kind": "telemetry-data",
+      "description": "HAProxy metrics (haproxy_* series) present in the stack Prometheus datasource for Explore verification.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "verify-metrics: on-page:/explore",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "haproxy-integration-available",
+      "kind": "plugin-or-app",
+      "description": "HAProxy integration available in Connections catalog (dashboards/alerts installable).",
+      "category": "none",
+      "evidence": "select-platform: /connections/add-new-connection/haproxy",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Could be simulated by synthetic haproxy_* metrics but Alloy install steps assume a real host.",
+  "externalInfraDependent": true
+}

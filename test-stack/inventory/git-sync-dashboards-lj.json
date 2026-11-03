@@ -1,0 +1,45 @@
+{
+  "path": "git-sync-dashboards-lj",
+  "summary": "Create, edit and save Grafana dashboards to a GitHub repo using Git Sync, via direct commit and pull request.",
+  "needs": [
+    {
+      "id": "git-sync-configured",
+      "kind": "existing-grafana-config",
+      "description": "Git Sync configured on the stack (Provisioning) with a connected GitHub repo, branch 'main', and a provisioned folder (path 'dashboards') shown with a Provisioned label in the Save drawer.",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: Git Sync configured with a connected GitHub repository; save-dashboard-git: select your Git Sync provisioned folder",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "github-repo-write-access",
+      "kind": "external-infra",
+      "description": "GitHub repository with write access via Git Sync auth (GitHub App/PAT) allowing commits to main and PR branches; learner needs GitHub account access (view-changes-github step).",
+      "category": "external-infra",
+      "evidence": "Before you begin: GitHub account with access to the connected repository; save-with-pr: Open pull request in GitHub",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "prometheus-datasource",
+      "kind": "datasource",
+      "description": "A Prometheus data source selectable in the new-panel data source picker (code-mode query).",
+      "category": "in-cloud-seedable",
+      "evidence": "create-new-dashboard: 'Prometheus data source is chosen'",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "editor-permission",
+      "kind": "permission-or-role",
+      "description": "User able to create/edit dashboards and save to provisioned folder (Editor/Admin).",
+      "category": "entitlement",
+      "evidence": "Before you begin: appropriate permissions to manage dashboards",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Whether the repo/Git Sync config can be pre-seeded on the shared stack and how PR/commit steps are tested (they push to a real GitHub repo) needs a decision. Stack must have Git Sync feature enabled.",
+  "externalInfraDependent": true
+}

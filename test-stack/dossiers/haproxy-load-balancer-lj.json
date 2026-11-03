@@ -1,0 +1,107 @@
+{
+  "path": "haproxy-load-balancer-lj",
+  "id": "haproxy-load-balancer-lj",
+  "type": "path",
+  "milestoneCount": 8,
+  "startingLocation": "/connections/add-new-connection/haproxy",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/add-new-connection/haproxy"
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you monitor HAProxy load balancers, ensure you have:\n\n- An HAProxy server running version 1.6 or later.\n- Administrative access to the HAProxy server to edit its configuration.\n- Configured your firewall to allow outbound HTTPS (port 443) to `*.grafana.net`."
+  ],
+  "milestones": [
+    {
+      "id": "haproxy-load-balancer-select-platform",
+      "dir": "haproxy-load-balancer-lj/select-platform",
+      "requirements": {
+        "on-page:/connections/add-new-connection": 2,
+        "exists-reftarget": 4,
+        "on-page:/connections/add-new-connection/haproxy": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "haproxy-load-balancer-configure-haproxy-stats",
+      "dir": "haproxy-load-balancer-lj/configure-haproxy-stats",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "Before Grafana Alloy can collect HAProxy metrics, you need to enable the HAProxy stats endpoint. This endpoint exposes real-time metrics about frontends, backends, and individual servers in a format that Alloy can scrape.\n\nThis step happens on your HAProxy server, not in the Grafana Cloud UI.",
+        "The built-in Prometheus exporter requires HAProxy 2.0 or later. If you are running an older version, you need to use an external exporter."
+      ]
+    },
+    {
+      "id": "haproxy-load-balancer-install-alloy",
+      "dir": "haproxy-load-balancer-lj/install-alloy",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "Grafana Alloy is an OpenTelemetry-compatible collector that sends metrics from your HAProxy server to Grafana Cloud. Alloy supports native pipelines for Prometheus, Loki, and many other tools.\n\nTo install Alloy, you need an API token that authorizes the connection to your Grafana Cloud stack."
+      ]
+    },
+    {
+      "id": "haproxy-load-balancer-configure-integration",
+      "dir": "haproxy-load-balancer-lj/configure-integration",
+      "requirements": {
+        "exists-reftarget": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "haproxy-load-balancer-verify-metrics",
+      "dir": "haproxy-load-balancer-lj/verify-metrics",
+      "requirements": {
+        "navmenu-open": 1,
+        "on-page:/explore": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "haproxy-load-balancer-install-dashboards",
+      "dir": "haproxy-load-balancer-lj/install-dashboards",
+      "requirements": {
+        "navmenu-open": 2,
+        "on-page:/connections/add-new-connection/haproxy": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "haproxy-load-balancer-install-alerts",
+      "dir": "haproxy-load-balancer-lj/install-alerts",
+      "requirements": {
+        "navmenu-open": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "haproxy-load-balancer-end-journey",
+      "dir": "haproxy-load-balancer-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

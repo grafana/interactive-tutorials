@@ -1,0 +1,45 @@
+{
+  "path": "clickhouse-data-source-lj",
+  "summary": "Teaches adding and configuring the ClickHouse data source, testing the connection, and running a query in Explore.",
+  "needs": [
+    {
+      "id": "clickhouse-server",
+      "kind": "external-infra",
+      "description": "Running ClickHouse server reachable from Grafana Cloud on native 9000/9440 or HTTP 8123/8443, with read-only user (guide types host clickhouse.example.com, port 9000, user grafana_reader).",
+      "category": "external-infra",
+      "evidence": "Before you begin; configure-datasource formfill values",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "clickhouse-plugin",
+      "kind": "plugin-or-app",
+      "description": "grafana-clickhouse-datasource plugin installed (path navigates /plugins/grafana-clickhouse-datasource).",
+      "category": "in-cloud-seedable",
+      "evidence": "add-data-source requirements on-page:/plugins/grafana-clickhouse-datasource",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Organization Admin to add data sources.",
+      "category": "entitlement",
+      "evidence": "Before you begin; manifest userRoleIn Admin",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "network-access",
+      "kind": "external-infra",
+      "description": "Network path/allowlist/PDC from Grafana Cloud to the ClickHouse server.",
+      "category": "external-infra",
+      "evidence": "Before you begin: firewall allowlist or private data source connection",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Guide uses placeholder host clickhouse.example.com, so the Save & test and Explore SELECT 1 steps will fail unless a real server is substituted or the test is limited to UI navigation. Creates a data source on the shared stack.",
+  "externalInfraDependent": true
+}
