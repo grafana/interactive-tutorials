@@ -1,0 +1,9 @@
+groups:
+  - name: asserts-synthetic
+    interval: 15s
+    rules:
+      # drilldown-metrics-lj milestone 2 selects the colon-named series
+      # asserts:resource:threshold, which only exists on Asserts stacks. A
+      # recording rule stands in for it so the step's selector resolves.
+      - record: asserts:resource:threshold
+        expr: sum by (environment, cluster, region) (rate(node_cpu_seconds_total{mode="idle"}[5m]))

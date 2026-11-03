@@ -1,0 +1,43 @@
+name: interactive-tutorials-test-env
+
+services:
+  grafana:
+    image: grafana/grafana-oss:${GRAFANA_VERSION:-13.0.2}
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: grafana
+      GF_SECURITY_ALLOW_EMBEDDING: "true"
+      GF_FEATURE_TOGGLES_ENABLE: interactiveLearning
+      GF_INSTALL_PLUGINS: grafana-metricsdrilldown-app
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: grafana-pathfinder-app
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      # Local build of grafana-pathfinder-app with the dependent PRs applied.
+      - ${PATHFINDER_PLUGIN_DIST:-../../grafana-pathfinder-app/dist}:/var/lib/grafana/plugins/grafana-pathfinder-app
+      # External package repository served from Grafana's own origin. Generated
+      # by scripts/build-external-repo.bash (gitignored).
+      - ./generated:/usr/share/grafana/public/pathfinder-ext:ro
+      # Backend dev override: point the package repository at the local server.
+      - ./dev-repository-url:/etc/grafana/pathfinder-dev-repository-url:ro
+    depends_on:
+      prometheus:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:${PROMETHEUS_VERSION:-v3.1.0}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-lifecycle
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules.yml:/etc/prometheus/rules.yml:ro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  node-exporter:
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.8.2}
