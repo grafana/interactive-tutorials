@@ -8,45 +8,9 @@
     },
     {
       "type": "section",
-      "id": "add-infinity",
-      "title": "Add a data source",
-      "requirements": ["has-permission:datasources:create"],
-      "objectives": ["has-datasource:Infinity"],
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/connections/datasources/new",
-          "verify": "on-page:/connections/datasources/new",
-          "content": "Open **Add new data source**."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label='Add new data source Infinity']",
-          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
-          "verify": "on-page:/connections/datasources/edit",
-          "content": "Click **Infinity**."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Data source settings page Save and Test button']",
-          "requirements": ["on-page:/connections/datasources/edit", "exists-reftarget"],
-          "verify": "datasource-configured:Infinity",
-          "content": "Click **Save & test**."
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "content": "Infinity is ready. Now put it on a dashboard."
-    },
-    {
-      "type": "section",
       "id": "build-dashboard",
       "title": "Build the dashboard",
-      "requirements": ["has-datasource:Infinity"],
+      "requirements": ["has-datasource:yesoreyeram-infinity-datasource"],
       "blocks": [
         {
           "type": "interactive",
@@ -58,20 +22,32 @@
         {
           "type": "multistep",
           "requirements": ["on-page:/dashboard/new"],
-          "content": "Click **Add visualization** and select **Infinity**.",
+          "content": "Click **+**, then **Panel**, then **Configure visualization**.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Create new panel button']",
+              "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
               "requirements": ["exists-reftarget"]
             },
             {
-              "action": "formfill",
-              "reftarget": "input[data-testid='data-testid Select a data source']",
-              "targetvalue": "Infinity",
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid sidebar add new panel']",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid UnconfiguredPanel action-button configure']",
               "requirements": ["exists-reftarget"]
             }
           ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "targetvalue": "grafanacloud-infinity",
+          "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+          "content": "In the data source picker, select **grafanacloud-infinity**."
         },
         {
           "type": "interactive",
@@ -84,11 +60,11 @@
         {
           "type": "multistep",
           "requirements": ["on-page:/dashboard/new"],
-          "content": "Change the visualization to **Table**.",
+          "content": "Open **All visualizations** and select **Table**.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid toggle-viz-picker']",
+              "reftarget": "button[data-testid='data-testid Tab Visualizations']",
               "requirements": ["exists-reftarget"]
             },
             {
@@ -101,7 +77,7 @@
         {
           "type": "multistep",
           "requirements": ["on-page:/dashboard/new"],
-          "content": "Click **Save dashboard** and name it `My first dashboard`.",
+          "content": "Click **Save** and name the dashboard `My first dashboard`.",
           "steps": [
             {
               "action": "highlight",
