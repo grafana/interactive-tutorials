@@ -4,237 +4,184 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Explore two dashboards on Grafana Play. They use sample data, not measurements from a real service. You don't need an account and won't change or save anything."
+      "content": "Explore two dashboards on Grafana Play. You don't need an account. You'll inspect panels and queries without saving changes."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll see how dashboard panels answer questions about changes over time and values on a scale, and how units help you read those values."
     },
     {
       "type": "section",
       "id": "dashboard-questions",
-      "title": "The questions behind the panels",
+      "title": "Questions answered by dashboard panels",
       "blocks": [
-        {
-          "type": "markdown",
-          "content": "You'll see how panels answer questions about changes over time and values on a scale."
-        },
         {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/d/3SWXxreWk/grafana-dashboard?from=now-1h&to=now&timezone=browser",
           "verify": "on-page:/d/3SWXxreWk",
-          "content": "Open **Grafana Dashboard**. This demo uses sample data to show different panel types. The tour explains what each panel displays."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header Memory / CPU']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "The **Memory / CPU** panel uses a line chart to answer the question \"How is resource use changing over time?\" Time runs along the horizontal axis. In this demo, the line shows generated values, not separate CPU and memory measurements.",
-          "tooltip": "Read changes from left to right along the time axis."
+          "content": "Open **Grafana Dashboard**."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header logins']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
           "doIt": false,
           "lazyRender": true,
-          "content": "The **logins** panel uses a line chart to answer the question \"How does the number of logins change over time?\" The rises and falls show changes across the selected period.",
-          "tooltip": "Rises and falls make changes over time visible."
+          "content": "Find the **logins** panel with its line chart."
+        },
+        {
+          "type": "markdown",
+          "content": "The **logins** panel answers the question \"How does the number of logins change over time?\" The vertical axis uses numeric values, not percentages. The rises and falls show changes across the selected period."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header server requests']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
           "doIt": false,
           "lazyRender": true,
-          "content": "The **server requests** panel uses a line chart to answer the question \"How does request volume change over time?\" Each line shows a server's values across the selected period, so you can compare their changes.",
-          "tooltip": "Separate lines let you compare changes across servers."
+          "content": "Focus on the **server requests** panel with its line chart."
+        },
+        {
+          "type": "markdown",
+          "content": "The **server requests** panel answers the question \"How does request volume change over time?\" Each line shows a server's values across the selected period. On the vertical axis, K means thousands; the values aren't a per-second rate.\n\nClick **Server A** in the legend to show only its values. Click **Server A** again to restore both series. Repeat with **Server B** to view its values separately."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-viz-panel-key='panel-27']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
           "doIt": false,
           "lazyRender": true,
-          "content": "The **Google hits** panel uses percentage bar gauges to answer the question \"Where does each value fall between 0 and 100%?\" Each bar shows one series' average over the selected period.",
-          "tooltip": "Bar length shows an average's position on the percentage scale."
+          "content": "Notice the **Google hits** panel with its percentage bar gauges."
+        },
+        {
+          "type": "markdown",
+          "content": "This panel answers the question \"Where does each value fall between 0 and 100%?\" It uses segmented gauges with percentage labels. Each bar shows one series' average over the selected period."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-viz-panel-key='panel-24']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
           "doIt": false,
           "lazyRender": true,
-          "content": "The **Google hits** panel shown here uses horizontal bar gauges to answer the question \"How do these values compare?\" Each bar has a label and a number. The shared scale makes larger and smaller values easy to compare.",
-          "tooltip": "Compare bar lengths and read the numbers beside their labels."
+          "content": "Find the **Google hits** panel with its solid vertical bar gauges."
+        },
+        {
+          "type": "markdown",
+          "content": "The vertical bar gauges answer the question \"How do these values compare?\" Colors are based on value thresholds. Each gauge shows a series' average, with no unit label. The configured scale runs from 0 to 100, but the displayed value can exceed 100."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-viz-panel-key='panel-26']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
           "doIt": false,
           "lazyRender": true,
-          "content": "The **Google hits** panel shown here uses a gauge to answer the question \"Where does this value fall on its scale?\" The filled arc shows one value's position between the scale's minimum and maximum. It doesn't show a trend over time.",
-          "tooltip": "The filled arc shows one value's position on the scale."
+          "content": "Focus on the **Google hits** panel with its radial gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "The gauge answers the question \"Where does this value fall on its scale?\" The filled arc shows an average on a scale from 0 to 300, with no unit label. It doesn't show a trend over time."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-viz-panel-key='panel-28']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
           "doIt": false,
           "lazyRender": true,
-          "content": "The **Google hits** panel shown here uses named bar gauges to answer the question \"How do the values compare across servers?\" Each server has its own bar. Unlike a line chart, these bars show averages, not changes over time.",
-          "tooltip": "Each named bar shows one server's average."
+          "content": "Notice the **Google hits** panel with horizontal bar gauges."
         },
         {
           "type": "markdown",
-          "content": "You've seen how line charts show changes over time, while gauges and bar gauges show values on a scale."
+          "content": "The bar gauges answer the question \"How do the values compare across servers?\" Each server has its own bar, with no unit label beside the number. Unlike a line chart, these bars show _averages_, not changes over time."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Memory']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Memory** panel with its gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "This panel answers the question \"How much memory is in use on average?\" Its gauge shows the mean over the selected period, not the latest sample. The B suffix means bytes; the scale runs from 0 to 300 bytes."
         }
       ]
     },
     {
-      "type": "section",
-      "id": "values-and-units",
-      "title": "The value and its unit",
-      "requirements": ["section-completed:dashboard-questions"],
-      "blocks": [
-        {
-          "type": "markdown",
-          "content": "You'll see which value a gauge displays and how its unit and scale help you read it."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header Memory']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "The **Memory** panel uses a gauge to answer the question \"How much memory is in use on average, and how close is it to the displayed maximum?\" Its value is the mean, or average, over the selected period, not the latest sample.",
-          "tooltip": "The displayed number is an average over the selected period."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header Memory']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "The **Memory** panel displays its value in bytes, marked with a suffix such as B. Its scale runs from 0 to 300 bytes. These settings show how to read the sample value; they aren't a real server's memory capacity.",
-          "tooltip": "Read the number with its unit and the scale's limits."
-        },
-        {
-          "type": "markdown",
-          "content": "You've seen how the average, byte unit, and scale determine what the gauge shows."
-        }
-      ]
+      "type": "markdown",
+      "content": "You've seen how line charts show changes over time, gauges compare values on a scale, and units tell you how to read the numbers."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll see how Prometheus and Loki queries supply a time series panel's values."
     },
     {
       "type": "section",
       "id": "query-and-source",
       "title": "The data behind a panel",
-      "requirements": ["section-completed:values-and-units"],
+      "requirements": ["section-completed:dashboard-questions"],
       "blocks": [
-        {
-          "type": "markdown",
-          "content": "You'll see which data source and query supply a bar chart's values."
-        },
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/d/ktMs4D6Mk/bar-charts-and-pie-charts?editPanel=15&from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/ktMs4D6Mk",
-          "content": "Open the **Popular JS Frameworks** panel in the editor to view its query and chart. Leave the settings unchanged."
+          "reftarget": "/d/000000100/mixed-datasources?from=now-24h&to=now&timezone=browser",
+          "verify": "on-page:/d/000000100",
+          "content": "Open the **Mixed Datasources** dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-1'] button[data-testid='data-testid Panel menu Prometheus and Loki']",
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Click here to open the panel menu, then select Edit.",
+          "content": "Click the **Prometheus and Loki** panel menu, then select **Edit** to find its queries. Start with query **A** and leave the settings unchanged."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "input[data-testid='data-testid Select a data source']",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
           "doIt": false,
-          "content": "The **Popular JS Frameworks** panel gets its data from TestData, a source of sample data. The query tells TestData which sample to return.",
-          "tooltip": "The selected data source supplies the query's results."
+          "content": "Notice the Prometheus data source for query **A**."
+        },
+        {
+          "type": "markdown",
+          "content": "Query **A** gets metrics from Prometheus. The data source tells you where Grafana sends the query. The query selects and summarizes the data for the panel."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[role='button'][aria-label='Select card C']",
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
+          "doIt": true,
+          "content": "Select query **C** to inspect the panel's second query."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[aria-label='Test Data Query scenario select container']",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
           "doIt": false,
-          "content": "The **Popular JS Frameworks** panel uses the **CSV File** scenario to read `js_libraries.csv`. These settings form its query. Some data sources use query controls like these; others use text such as SQL or PromQL.",
-          "tooltip": "Query controls depend on the selected data source."
+          "content": "Notice the Loki data source for query **C**."
         },
         {
           "type": "markdown",
-          "content": "You've seen how the query tells TestData to return rows from a sample CSV file."
+          "content": "Query **C** gets logs from Grafana Loki and calculates values from them. This panel uses a **Mixed** data source, so each query can use a different data source. The same panel displays results from both queries: metrics from Prometheus and values calculated from logs in Loki."
         }
       ]
     },
     {
-      "type": "section",
-      "id": "rows-to-chart",
-      "title": "From returned rows to a chart",
-      "requirements": ["section-completed:query-and-source"],
-      "blocks": [
-        {
-          "type": "markdown",
-          "content": "You'll see the query results as rows, then find the same values in the chart."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "label[for='table-view']:text('Table view')",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
-          "doIt": false,
-          "content": "The **Popular JS Frameworks** panel can show its query results as rows. Turn on **Table view** to view them. This changes only the preview, not the query or saved dashboard.",
-          "tooltip": "View the query results as rows instead of bars."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[role='grid']:has([role='columnheader'])",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
-          "doIt": false,
-          "hint": "Turn on Table view in the panel editor to show the returned rows.",
-          "content": "The **Popular JS Frameworks** panel receives four columns: **Library**, **Github Stars**, **Forks**, and **Watchers**. Each row names a library and gives its counts. These fixed sample figures aren't current counts from GitHub.",
-          "tooltip": "Each row pairs a library name with three numeric values."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[role='row']:has([role='gridcell']:text('React.js'))",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
-          "doIt": false,
-          "hint": "Keep Table view on to view the React.js row.",
-          "content": "The **Popular JS Frameworks** panel receives 169000 stars, 34000 forks, and 6700 watchers for React.js. The chart uses the library name as a category and draws a bar for each count.",
-          "tooltip": "One category can have several numeric values."
-        },
-        {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/ktMs4D6Mk/bar-charts-and-pie-charts?viewPanel=15&from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/ktMs4D6Mk",
-          "content": "Return to the **Popular JS Frameworks** panel's chart without saving any editor changes."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-15']",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
-          "doIt": false,
-          "content": "The **Popular JS Frameworks** panel answers the question \"How do the counts compare across libraries?\" React.js's star-count bar shows the same 169000 you saw in its row. The bars display the query results; they don't change the values.",
-          "tooltip": "The bars show the same values as the query-result rows."
-        },
-        {
-          "type": "markdown",
-          "content": "You've seen how query-result rows become bars and how a panel's calculation and unit help you read its values."
-        }
-      ]
+      "type": "markdown",
+      "content": "You've seen how queries A and C get data from different sources for the same panel."
     },
     {
       "type": "markdown",
