@@ -175,23 +175,23 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(1)",
-          "content": "This first query reads the raw voting data straight from the Google Sheet.  There's no aggregation here — it just returns every vote that was cast.\n\nNotice the **Hidden** badge on the query row.  Query A exists only to feed the SQL expression below it, which refers to those rows as table `A`.  Hiding a query keeps its results out of the visualization while still making them available to expressions — without it, this panel would try to plot several hundred individual votes on top of the 25 aggregated bars you actually want to see.  You can toggle it yourself with the crossed-out eye button (**Show response**) on the query row.",
+          "reftarget": "[data-query-sidebar-card='A']",
+          "content": "Select query **A** in the sidebar to see its Google Sheets configuration. It returns the raw voting rows without aggregation.\n\nThe **Hidden** badge means that query A feeds the SQL expression without displaying its own results. The expression refers to those rows as table `A`. The eye control on the sidebar item shows or hides the query results.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
-          "content": "This SQL expression sums each country's jury and televote points from those raw rows and sorts them into the final ranking.  Grafana runs the SQL over the query results, so the data source itself stays very simple.",
+          "reftarget": "[data-query-sidebar-card='B']",
+          "content": "Select expression **B** in the sidebar to read its SQL. It sums each country's jury and televote points and sorts the countries into the final ranking. Grafana runs the SQL over the query results, so the data source itself stays simple.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
@@ -283,12 +283,12 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
-          "content": "Study the SQL expression.  Note the `WHERE recipient_country = \"${country}\"` clause — the value of the variable for this repeated row (here, \"Croatia\") is substituted in when the expression is evaluated, so one panel definition serves every country.  The same substitution is why the panel and its tab are titled with the country's actual name rather than `${country}`.",
+          "reftarget": "[data-query-sidebar-card='B']",
+          "content": "Select expression **B** in the sidebar to read its SQL. The `WHERE recipient_country = \"${country}\"` clause uses the variable value for this repeated row: \"Croatia\". One panel definition therefore serves every country. The same substitution gives the panel and its tab the country's name instead of `${country}`.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
@@ -336,23 +336,23 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(1)",
-          "content": "As before, the first query is the plain Google Sheets query that fetches the raw voting rows.  It's hidden, so it feeds the expression below without being drawn on the panel.",
+          "reftarget": "[data-query-sidebar-card='A']",
+          "content": "Select query **A** in the sidebar to see its Google Sheets configuration. As before, it fetches the raw voting rows. It is hidden, so it feeds the expression without displaying its own results.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(2)",
-          "content": "Here's the ranking expression.  Read it from the inside out: the subquery in the `FROM` clause totals up the points for every country, and the subquery in the `WHERE` clause totals up the points for this country.  `COUNT(*) + 1` then counts the countries whose total beat it and adds one, giving the finishing position.\n\nThis is a neat way to rank rows without a window function — and because `${country}` is substituted per repeated row, the same expression produces the right answer for all 25 countries.",
+          "reftarget": "[data-query-sidebar-card='B']",
+          "content": "Select expression **B** in the sidebar to read the ranking SQL. The subquery in the `FROM` clause totals the points for every country. The subquery in the `WHERE` clause totals the points for this country. `COUNT(*) + 1` counts the countries with a higher total and adds one to give the finishing position.\n\nThis ranks rows without a window function. Because `${country}` changes for each repeated row, the same expression gives the correct position for all 25 countries.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
