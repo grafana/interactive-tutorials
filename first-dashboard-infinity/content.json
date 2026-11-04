@@ -1,0 +1,134 @@
+{
+  "id": "first-dashboard-infinity",
+  "title": "Build your first dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Get a working dashboard in a few clicks. No data of your own needed: you'll load a small public JSON file into a table."
+    },
+    {
+      "type": "section",
+      "id": "add-infinity",
+      "title": "Add a data source",
+      "requirements": ["has-permission:datasources:create"],
+      "objectives": ["has-datasource:Infinity"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "verify": "on-page:/connections/datasources/new",
+          "content": "Open **Add new data source**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label='Add new data source Infinity']",
+          "requirements": ["on-page:/connections/datasources/new", "exists-reftarget"],
+          "verify": "on-page:/connections/datasources/edit",
+          "content": "Click **Infinity**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Data source settings page Save and Test button']",
+          "requirements": ["on-page:/connections/datasources/edit", "exists-reftarget"],
+          "verify": "datasource-configured:Infinity",
+          "content": "Click **Save & test**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Infinity is ready. Now put it on a dashboard."
+    },
+    {
+      "type": "section",
+      "id": "build-dashboard",
+      "title": "Build the dashboard",
+      "requirements": ["has-datasource:Infinity"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/dashboard/new",
+          "verify": "on-page:/dashboard/new",
+          "content": "Create a new dashboard."
+        },
+        {
+          "type": "multistep",
+          "requirements": ["on-page:/dashboard/new"],
+          "content": "Click **Add visualization** and select **Infinity**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Create new panel button']",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid Select a data source']",
+              "targetvalue": "Infinity",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='infinity-query-url-input']",
+          "targetvalue": "https://raw.githubusercontent.com/grafana/grafana-infinity-datasource/main/testdata/users.json",
+          "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+          "content": "In **URL**, enter:\n\n`https://raw.githubusercontent.com/grafana/grafana-infinity-datasource/main/testdata/users.json`"
+        },
+        {
+          "type": "multistep",
+          "requirements": ["on-page:/dashboard/new"],
+          "content": "Change the visualization to **Table**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid toggle-viz-picker']",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Plugin visualization item Table']",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "requirements": ["on-page:/dashboard/new"],
+          "content": "Click **Save dashboard** and name it `My first dashboard`.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Save dashboard button']",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[aria-label='Save dashboard title field']",
+              "targetvalue": "My first dashboard",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Save dashboard drawer button']",
+          "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+          "verify": "has-dashboard-named:My first dashboard",
+          "content": "Click **Save**."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Done. You have a saved dashboard with a live table. Swap the URL for any JSON or CSV endpoint to show your own data."
+    }
+  ]
+}
