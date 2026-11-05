@@ -12,11 +12,15 @@
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-metricsdrilldown-app/drilldown']",
-          "requirements": ["navmenu-open", "exists-reftarget"],
-          "content": "On the Grafana Cloud home page, open the navigation menu and click **Drilldown > Metrics**."
+          "type": "conditional",
+          "conditions": ["renderer:website"],
+          "whenTrue": [
+            {
+              "type": "markdown",
+              "content": "On the Grafana Cloud home page, open the navigation menu and click **Drilldown > Metrics**."
+            }
+          ],
+          "whenFalse": []
         },
         {
           "type": "markdown",
@@ -25,7 +29,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='data-testid Dashboard template variables Variable Value DropDown value link text grafanacloud-prom-input']",
+          "reftarget": "input[data-testid*='Variable Value DropDown value link text']:nth-match(1)",
           "content": "Select the **data source** you want to query.\n\nThe Metrics Drilldown interface containing a visualization for each metric appears.",
           "requirements": ["exists-reftarget"],
           "doIt": false
@@ -34,7 +38,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "input[placeholder='+ label = value']",
-          "content": "Use one of the following methods to reduce the number of metrics you see:\n\n- Select a filter in the **+ label = value** field.\n- Enter a search expression in the **Search metrics** field and press **Enter**.\n\nFor example, enter `cpu`. The metrics that match the search or filter expression appear.",
+          "content": "Use one of the following methods to reduce the number of metrics you see:\n\n- Select a filter in the **+ label = value** field.\n- Enter a keyword in the metric search field and press **Enter**.\n\nFor example, enter `cpu`. The metrics that match the search or filter expression appear.",
           "requirements": ["exists-reftarget"],
           "doIt": false
         }
