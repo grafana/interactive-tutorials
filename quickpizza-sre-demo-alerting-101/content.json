@@ -1,0 +1,329 @@
+{
+  "id": "quickpizza-sre-demo-alerting-101",
+  "title": "Interactive Guide: Create your first alert for QuickPizza 🍕",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Nobody wants to wait for slow apps.\n\nIn this interactive guide, you'll create an alert rule that emails you when a website is slow.\n\nFirst, visit the [🍕 QuickPizza website](https://quickpizza.grafana.fun). It's a simple demo app that recommends the best pizzas!"
+    },
+    {
+      "type": "conditional",
+      "conditions": [
+        "has-datasource:grafanacloud-play-prom"
+      ],
+      "whenTrue": [],
+      "whenFalse": [
+        {
+          "type": "multistep",
+          "content": "Before you begin, install dashboards and datasources for this demo in your Grafana instance",
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/a/grafana-demodashboards-app"
+            },
+            {
+              "action": "button",
+              "reftarget": "div[data-testid='data-testid App plugin page grafana-demodashboards-app'] button[data-testid='install-quickpizza']"
+            }
+          ],
+          "objectives": [
+            "has-datasource:grafanacloud-play-prom"
+          ]
+        }
+      ],
+      "description": "Check if the 🍕 QuickPizza SRE demo has been installed"
+    },
+    {
+      "type": "section",
+      "title": "Explore QuickPizza data in Grafana",
+      "requirements": [
+        "has-datasource:grafanacloud-play-prom"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/a581fb5a-df38-45d7-83cb-d10835930fa1/performance-stats",
+          "content": "The demo has installed dedicated dashboards and data sources for QuickPizza in your Grafana instance. First, open the QuickPizza Stats Dashboard to learn about the distinct services running QuickPizza."
+        },
+        {
+          "type": "multistep",
+          "content": "In this dashboard, you'll find the RED metrics for each service running the QuickPizza application.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid*=\"Frontend Response Latency\"]",
+              "tooltip": "Latency of the quickpizza-public-api service"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid*=\"Request Volume\"]",
+              "tooltip": "Traffic per QuickPizza service"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-metricsdrilldown-app/drilldown?from=now-1h&to=now&timezone=browser&var-metrics_filters=service_namespace%7C%3D%7Cquickpizza&var-filters=service_namespace%7C%3D%7Cquickpizza&var-labelsWingman=%28none%29&layout=grid&filters-rule=&filters-prefix=quickpizza&filters-suffix=&search_txt=&filter-firing-alerts=&var-metrics-reducer-sort-by=default&filters-recent=&var-ds=grafanacloud-play-prom&var-other_metric_filters=filters-prefix,prefix%7C%3D%7Cquickpizza",
+          "content": "You can also use Explore or Drilldown to explore QuickPizza metrics."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-metricsdrilldown-app/drilldown?from=now-1h&to=now&timezone=browser&var-metrics_filters=&var-filters=&var-labelsWingman=%28none%29&layout=grid&filters-rule=&filters-prefix=quickpizza&filters-suffix=&search_txt=&filter-firing-alerts=&var-metrics-reducer-sort-by=default&filters-recent=&var-ds=grafanacloud-play-prom&var-other_metric_filters=filters-prefix,prefix%7C%3D%7Cquickpizza&metric=quickpizza_server_http_request_duration_seconds_native&actionView=breakdown&var-groupby=service_name&breakdownLayout=grid",
+          "content": "For example, quickpizza_server_http_request_duration_seconds_native is a native histogram metric that stores the time spent on the server to process HTTP requests."
+        },
+        {
+          "type": "multistep",
+          "content": "At the top, it displays latencies of all HTTP requests. The breakdown section is grouping latencies by QuickPizza services.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "section[data-testid=\"data-testid Panel header quickpizza_server_http_request_duration_seconds_native\"]",
+              "requirements": [
+                "exists-reftarget"
+              ],
+              "tooltip": "quickpizza_server_http_request_duration_seconds_native is a native histogram metric that stores the time spent on the server for each HTTP request."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid=\"panels-list\"]",
+              "tooltip": "The breakdown section currently displays latency per QuickPizza service."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Create a contact point to receive alert notifications",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Before creating the alert rule, you'll create a contact point in Grafana Alerting.\n\nA contact point defines where alert notifications are sent. Create a contact point under Alerting > Notification configuration.",
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/alerting/notifications"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid*=\"add-contact-point-link\"]",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid*=\"data-testid contact-point-form name-input\"]",
+              "targetvalue": "QuickPizza Test"
+            },
+            {
+              "action": "hover",
+              "reftarget": "[data-testid*=\"data-testid contact-point-form settings-field items.0.settings.addresses\"]",
+              "tooltip": "Enter your email where to receive notifications"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Enter your email address, and then click **Test** to receive a test notification."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "button[data-testid*=\"data-testid contact-point-form save-button\"]",
+          "content": "Finally, click **Save contact point**."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Create the alert rule: Configure the query and threshold",
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "In this section, you'll start creating a new alert rule.\n\nAn alert rule consists of one or more queries and expressions that measure something.\n\nIn this example, you'll monitor the average latency of public HTTP requests. The rule will run every 5 minutes and query the previous 5 minutes of data."
+        },
+        {
+          "type": "multistep",
+          "content": "You can now create the alert rule.",
+          "steps": [
+            {
+              "action": "navigate",
+              "reftarget": "/alerting/list"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid rule-list new-alert-rule-link']",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid*=\"data-testid alert-rule name-field\"]",
+              "targetvalue": "QuickPizza public latency"
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid=\"data-testid Select a data source\"]",
+          "targetvalue": "grafanacloud-play-prom",
+          "content": "In Define query and alert condition, select the Prometheus data source that stores the QuickPizza metrics: `grafanacloud-play-prom`.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "showMe": false
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid=\"data-testid Query editor row\"] textarea",
+          "targetvalue": "histogram_avg(sum(rate(quickpizza_server_http_request_duration_seconds_native{service_name=\"quickpizza-public-api\"}[5m])))",
+          "content": "In Metrics browser, enter the query to return the average latency of the `quickpizza-public-api` service over the last 5 minutes.\n\n```code\nhistogram_avg(sum(rate(quickpizza_server_http_request_duration_seconds_native{service_name=\"quickpizza-public-api\"}[5m])))\n```",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "showMe": false
+        },
+        {
+          "type": "multistep",
+          "content": "The alert condition determines when the alert fires.\n\nIn **Alert condition**, configure the threshold to fire when the latency exceeds 1 second, then click **Preview alert rule condition**.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid=\"data-testid alert-rule threshold-input\"]",
+              "targetvalue": "1"
+            },
+            {
+              "action": "button",
+              "reftarget": "button[data-testid=\"data-testid alert-rule preview-button\"]"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "The alert state is **Normal 🟢** if the alert condition is not breached. Otherwise, it is **Alerting 🔴** and fires an alert notification 🔔."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Configure evaluation behavior",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "First, create a temporary folder to store the alert in.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-testid='data-testid alert-rule folder-picker'] button"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid=\"data-testid alert-rule name-folder-name-field\"]",
+              "targetvalue": "QuickPizza alerts"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid alert-rule name-folder-name-create-button\"]"
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "The evaluation interval determines how frequently the alert rule is evaluated, such as every 1 minute, 5 minutes, or longer.\n\nCreate an evaluation group that evaluates the rule every 5 minutes.",
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "button[data-testid=\"data-testid alert-rule new-evaluation-group-button\"]"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid=\"data-testid alert-rule new-evaluation-group-name\"]",
+              "targetvalue": "5m"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid=\"data-testid alert-rule new-evaluation-group-interval\"]",
+              "targetvalue": "5m"
+            },
+            {
+              "action": "button",
+              "reftarget": "button[data-testid=\"data-testid alert-rule new-evaluation-group-create-button\"]"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "For details about additional configuration options such as the Pending period, refer to the [Alert evaluation documentation](https://grafana.com/docs/grafana-cloud/observe-and-act/alert-and-measure-reliability/alerting/fundamentals/alert-rule-evaluation/)."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Configure alert notification",
+      "blocks": [
+        {
+          "type": "conditional",
+          "conditions": [
+            "exists-reftarget"
+          ],
+          "reftarget": "input[data-testid=\"data-testid alert-rule contact-point-input\"]",
+          "whenTrue": [
+            {
+              "type": "interactive",
+              "action": "formfill",
+              "reftarget": "input[data-testid=\"data-testid alert-rule contact-point-input\"]",
+              "targetvalue": "QuickPizza Test",
+              "content": "The simplest way to choose where alert notifications are sent is to select a contact point directly.",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ],
+          "whenFalse": [
+            {
+              "type": "markdown",
+              "content": "In Configure notifications, Advanced options lets you route notifications using labels and notification policies.\n\nDisable **Advanced options** to select a contact point directly."
+            }
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Create a summary and description to provide responders with alert context in notification messages.",
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "textarea[data-testid=\"annotation-value-0\"]",
+              "targetvalue": "High latency detected for QuickPizza public API"
+            },
+            {
+              "action": "formfill",
+              "reftarget": "textarea[data-testid=\"annotation-value-1\"]",
+              "targetvalue": "Average latency for the QuickPizza public API exceeded 1 second over the last 5 minutes."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid=\"data-testid alert-rule save-rule-button\"]",
+          "content": "Review the alert rule configuration and click **Save** to create the alert rule.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "**🎉 Congratulations!**\n\nYou now have a new alert rule that will notify you via email when QuickPizza is slow. Well done!\n\nYou now know how to:\n\n- ✅ Create a contact point (notification destination)\n- ✅ Send a test alert and confirm delivery\n- ✅ Build and configure an alert rule based on a PromQL query\n\nTo learn more, check out the [Grafana Alerting documentation](https://grafana.com/docs/grafana-cloud/observe-and-act/alert-and-measure-reliability/alerting/fundamentals/)."
+    }
+  ]
+}
