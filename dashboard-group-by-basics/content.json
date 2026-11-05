@@ -6,28 +6,48 @@
     {
       "type": "markdown",
       "id": "intro",
-      "content": "Group by splits each panel into one series per label value, without editing any query. In this guide you group the dashboard by `job`, compare the per-job results, and then remove the grouping."
+      "content": "Use a filter variable with **Enable group by** turned on to group supported aggregations on your current dashboard. Add a label, inspect the results, and remove only the grouping you added."
     },
     {
       "type": "section",
       "id": "open-dashboard",
-      "title": "Open the dashboard",
+      "title": "Find the grouping control",
       "blocks": [
         {
           "type": "interactive",
           "id": "open-dashboard-navigate",
-          "action": "navigate",
-          "reftarget": "/d/canvvlh",
-          "content": "Open the **Filter variables** dashboard.",
-          "doIt": true,
-          "tooltip": "This demo dashboard has a filter variable with group by turned on."
+          "action": "highlight",
+          "reftarget": "{grafana:pages.Dashboard.SubMenu.submenuItem}:has(input[placeholder='+ key']):nth-match(1) input[placeholder='+ key']",
+          "content": "Find the first **Group by** control on this dashboard. Open its label list, note an unused label without selecting it, then close the list. If this control is missing, open a dashboard with a filter variable that has **Enable group by** turned on.",
+          "doIt": false,
+          "tooltip": "Use an available label that is not already applied.",
+          "showMe": true,
+          "requirements": [
+            "on-page:/d/",
+            "exists-reftarget"
+          ],
+          "hint": "Open a dashboard with grouping enabled on a filter variable."
         }
+      ]
+    },
+    {
+      "type": "input",
+      "id": "choose-label",
+      "inputType": "text",
+      "variableName": "groupByLabel",
+      "prompt": "Enter an available label from the highlighted control’s list that is not already applied on this dashboard.",
+      "placeholder": "Label name",
+      "required": true,
+      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+      "validationMessage": "Use a label starting with a letter or underscore, followed by letters, numbers, or underscores.",
+      "requirements": [
+        "section-completed:open-dashboard"
       ]
     },
     {
       "type": "markdown",
       "id": "add-group-by-intro",
-      "content": "To group the dashboard, choose a label in the **Group by** box:"
+      "content": "Add your chosen label in the **Group by** control:"
     },
     {
       "type": "section",
@@ -35,31 +55,35 @@
       "title": "Group by a label",
       "requirements": [
         "section-completed:open-dashboard",
-        "on-page:/d/canvvlh"
+        "on-page:/d/",
+        "var-groupByLabel:*"
       ],
       "blocks": [
         {
           "type": "interactive",
           "id": "add-group-by-job",
           "action": "formfill",
-          "reftarget": "{grafana:pages.Dashboard.SubMenu.submenuItem} input[placeholder='+ key']",
-          "targetvalue": "job",
-          "content": "In the **Group by** box, type `job` and select the **job** label.",
-          "tooltip": "Group by sits next to the filters in the same control.",
+          "reftarget": "body:not(:has([aria-label='Group by {{groupByLabel}}'])) {grafana:pages.Dashboard.SubMenu.submenuItem}:has(input[placeholder='+ key']):nth-match(1) input[placeholder='+ key']",
+          "targetvalue": "{{groupByLabel}}",
+          "content": "In **Group by**, type your chosen label and select that label.",
+          "tooltip": "Choose an available label that is not already applied.",
           "requirements": [
+            "on-page:/d/",
             "exists-reftarget"
           ],
           "doIt": true,
-          "showMe": true
+          "showMe": true,
+          "hint": "Choose an available label that is not already applied on this dashboard."
         },
         {
           "type": "interactive",
           "id": "add-group-by-result",
           "action": "highlight",
-          "reftarget": "[aria-label='Group by job']",
-          "content": "The **job** grouping is now a pill. Aggregating queries now return one series per job, so the **HTTP requests** graph shows a line for each job.",
+          "reftarget": "{grafana:pages.Dashboard.SubMenu.submenuItem}:has(input[placeholder='+ key']):nth-match(1) [aria-label='Group by {{groupByLabel}}']",
+          "content": "Your grouping is now applied. Inspect panels using this variable’s data source to see how supported queries respond.",
           "tooltip": "Grouping applies to aggregations such as sum, avg, and count.",
           "requirements": [
+            "on-page:/d/",
             "exists-reftarget"
           ],
           "doIt": false,
@@ -70,7 +94,7 @@
     {
       "type": "markdown",
       "id": "add-group-by-summary",
-      "content": "You grouped every aggregating panel by job without editing a query."
+      "content": "You grouped supported aggregations by a label without editing queries."
     },
     {
       "type": "section",
@@ -78,28 +102,30 @@
       "title": "Remove the grouping",
       "requirements": [
         "section-completed:add-group-by",
-        "on-page:/d/canvvlh"
+        "on-page:/d/",
+        "var-groupByLabel:*"
       ],
       "blocks": [
         {
           "type": "interactive",
           "id": "remove-group-by-button",
           "action": "button",
-          "reftarget": "[aria-label='Remove group by job']",
-          "content": "Remove the **job** grouping to return to a single total.",
+          "reftarget": "{grafana:pages.Dashboard.SubMenu.submenuItem}:has(input[placeholder='+ key']):nth-match(1) [aria-label='Remove group by {{groupByLabel}}']",
+          "content": "Remove only the grouping you added for your chosen label.",
           "requirements": [
+            "on-page:/d/",
             "exists-reftarget"
           ],
           "doIt": true,
           "showMe": true,
-          "tooltip": "Removing a grouping does not change the saved dashboard."
+          "tooltip": "Other filters and groupings remain in place."
         }
       ]
     },
     {
       "type": "markdown",
       "id": "outro",
-      "content": "You removed the grouping, and the graph shows a single total again. To group by labels on your own dashboards, turn on **Enable group by** in the filter variable's settings."
+      "content": "You restored the previous grouping. To use this control on another dashboard, turn on **Enable group by** in its filter variable settings."
     }
   ]
 }
