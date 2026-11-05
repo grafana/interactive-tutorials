@@ -13,28 +13,28 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
-          "content": "Open **Connections** to set up Prometheus metrics.\n\nThis is where you add and manage data sources in Grafana Cloud.",
-          "requirements": [
-            "navmenu-open"
-          ]
+          "action": "navigate",
+          "reftarget": "/connections",
+          "verify": "on-page:/connections",
+          "content": "Open **Connections** to set up Prometheus metrics.\n\nThis is where you add and manage data sources in Grafana Cloud."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
-          "content": "To connect Prometheus metrics, start by adding a new connection.\n\nThis opens the catalog where you can find **Hosted Prometheus** and other data source types.",
-          "requirements": [
-            "navmenu-open"
-          ]
+          "action": "navigate",
+          "reftarget": "/connections/add-new-connection",
+          "verify": "on-page:/connections/add-new-connection",
+          "content": "To connect Prometheus metrics, start by adding a new connection.\n\nThis opens the catalog where you can find **Hosted Prometheus** and other data source types."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='search-input-input']",
           "content": "Use the search field to quickly find a specific data source.\n\nType **Hosted Prometheus** to filter the catalog and locate the Hosted Prometheus connection.",
-          "targetvalue": "Hosted Prometheus"
+          "targetvalue": "Hosted Prometheus",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/connections/add-new-connection"
+          ]
         },
         {
           "type": "interactive",
@@ -42,8 +42,10 @@
           "reftarget": "a[href='/connections/add-new-connection/hmInstancePromId']",
           "content": "Click the **Hosted Prometheus** tile to open the setup page.\n\nThis connection type is used for sending metrics from your own Prometheus instance to Grafana Cloud's managed Prometheus service.",
           "requirements": [
+            "exists-reftarget",
             "on-page:/connections/add-new-connection"
-          ]
+          ],
+          "verify": "on-page:/connections/add-new-connection/hmInstancePromId"
         }
       ]
     },
