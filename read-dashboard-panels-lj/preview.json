@@ -1,0 +1,190 @@
+{
+  "id": "read-dashboard-panels-lj-preview",
+  "title": "Read a dashboard panel",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Practice reading a finished dashboard on Grafana Play. Identify what a dashboard monitors and whether its panels support a clear goal, find a panel's query and data source, interpret its unit, and identify which panels are resource measurements and which are service measurements."
+    },
+    {
+      "type": "markdown",
+      "content": "Use the finished dashboards on Grafana Play. The examples include demo data; don't treat their values as operational limits. Inspect settings without saving changes.\n\nResources:\n- [Grafana dashboard best practices](https://grafana.com/docs/grafana/latest/visualizations/dashboards/build-dashboards/best-practices/)\n- [Dashboards](https://grafana.com/docs/grafana/latest/visualizations/dashboards/)\n- [Panels and visualizations](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/)\n- [Configure standard options](https://grafana.com/docs/grafana/latest/visualizations/panels-visualizations/configure-standard-options/)"
+    },
+    {
+      "type": "markdown",
+      "content": "Explore a finished dashboard to work out what it monitors and whether its panels support a clear goal."
+    },
+    {
+      "type": "section",
+      "id": "read-memory",
+      "title": "Identify dashboard purpose and focus",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/3SWXxreWk/grafana-dashboard?from=now-1h&to=now&timezone=browser",
+          "verify": "on-page:/d/3SWXxreWk",
+          "content": "Open **Grafana Dashboard** in full-dashboard view."
+        },
+        {
+          "type": "markdown",
+          "content": "Read the panel titles and say in one sentence what the dashboard monitors. Then look for the specific information that would help answer that question."
+        },
+        {
+          "type": "markdown",
+          "content": "Count the panels whose title alone tells you what they measure. Identify which panels support the dashboard's question and which distract from it, and look for a general-to-specific progression."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've identified a dashboard goal and assessed its focus and readability. Next, inspect how a panel gets the data that supports that goal."
+    },
+    {
+      "type": "markdown",
+      "content": "Explore a panel to find the query inside it, the data source it runs against, and the format its result comes back in."
+    },
+    {
+      "type": "section",
+      "id": "inspect-queries",
+      "title": "Find the query and its data source",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?viewPanel=3&from=now-6h&to=now&timezone=browser",
+          "verify": "on-page:/d/mapr4nb",
+          "content": "Open **Base Query (A) - Total CPU Usage** on the **SQL Expressions Showcase** dashboard."
+        },
+        {
+          "type": "markdown",
+          "content": "Open the panel menu and select **Edit**. Leave every setting unchanged."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "requirements": [
+            "on-page:/d/mapr4nb",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Notice the data source for query **A**. It's a Prometheus data source, so Grafana sends this query to Prometheus."
+        },
+        {
+          "type": "markdown",
+          "content": "Read the query: `sum(rate(process_cpu_seconds_total[5m]))`. It selects one metric, `process_cpu_seconds_total`, turns it into a per-second rate, and sums the result across every instance. The data source holds far more data than this. The query reduces it to the one series the panel needs."
+        },
+        {
+          "type": "markdown",
+          "content": "Below the query, find the query options and read **Format**. For this panel it's **Time series**, the shape the result comes back in. The visualization decides how that shape is drawn, so the same time series result could feed a graph, a stat, or a gauge."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?viewPanel=3&from=now-6h&to=now&timezone=browser",
+          "verify": "on-page:/d/mapr4nb",
+          "content": "Return to the panel without saving."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've found a panel's query, the data source it runs against, and its result format. The query chooses the data. The visualization only presents it."
+    },
+    {
+      "type": "markdown",
+      "content": "Explore the Memory gauge to find its unit setting and connect it to the suffix on its value."
+    },
+    {
+      "type": "section",
+      "id": "inspect-unit",
+      "title": "Connect the setting to the label",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/3SWXxreWk/grafana-dashboard?viewPanel=22&from=now-1h&to=now&timezone=browser",
+          "verify": "on-page:/d/3SWXxreWk",
+          "content": "Open the **Memory** gauge and notice the B suffix beside its value."
+        },
+        {
+          "type": "markdown",
+          "content": "Open the **Memory** panel menu and select **Edit**. Expand **Standard options** if it's collapsed. Leave the settings unchanged."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#unit",
+          "requirements": [
+            "on-page:/d/3SWXxreWk",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find **Unit** and read its **bytes(IEC)** setting."
+        },
+        {
+          "type": "markdown",
+          "content": "The **Memory** panel formats its numeric value as bytes. B means bytes; larger values can use units such as KiB or MiB. Unit formatting changes the display, not the query's data, and doesn't change timestamps into byte values."
+        },
+        {
+          "type": "markdown",
+          "content": "Changing bytes to percent wouldn't calculate memory utilization. It would mislabel the existing values. The unit must match what the query measures; a utilization query would need to return a proportion of capacity."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/3SWXxreWk/grafana-dashboard?viewPanel=22&from=now-1h&to=now&timezone=browser",
+          "verify": "on-page:/d/3SWXxreWk",
+          "content": "Return to the **Memory** gauge without saving changes."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've located Unit and distinguished the displayed label from the unchanged data. Match the unit to what the query measures before interpreting a value."
+    },
+    {
+      "type": "markdown",
+      "content": "Explore a dashboard and identify which of its panels are USE measurements and which are RED measurements, naming the measurement each one shows."
+    },
+    {
+      "type": "section",
+      "id": "match-measurements",
+      "title": "Identify the measurements",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/000000003/sample-website-dashboard?from=now-1h&to=now&timezone=browser",
+          "verify": "on-page:/d/000000003",
+          "content": "Open **Sample Website Dashboard** in full-dashboard view."
+        },
+        {
+          "type": "markdown",
+          "content": "Find **Memory / CPU** and the **Memory** gauge. These measure a machine's resources, so they belong to the USE method. Both show how much of the resource is in use, which is utilization."
+        },
+        {
+          "type": "markdown",
+          "content": "Find **server requests** and **client side full page load**. These measure the service as its users experience it, so they belong to the RED method. Requests over time is the rate. Page load time is the duration."
+        },
+        {
+          "type": "markdown",
+          "content": "RED has a third measurement, errors. Look for a panel that counts failing requests. There isn't one, so this dashboard can't tell you whether requests are failing."
+        },
+        {
+          "type": "markdown",
+          "content": "The four golden signals name the same three service measurements as RED, as traffic, errors, and latency, and add saturation: how close a resource is to its capacity. No panel here shows that either."
+        },
+        {
+          "type": "markdown",
+          "content": "The remaining panels, **logins**, **Google hits**, **Support calls**, and **Sign ups**, are business measurements. Neither method covers them. The methods tell you what a health dashboard needs, not what every dashboard must contain."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've identified a dashboard's resource and service measurements and spotted what's missing. The question a dashboard answers tells you which method it needs."
+    }
+  ]
+}

@@ -1,116 +1,48 @@
 {
   "id": "compare-values-limits-and-shares",
-  "title": "Compare values, limits, and shares",
+  "title": "Compare counts and shares",
   "blocks": [
     {
       "type": "markdown",
-      "content": "Compare stats, gauges, bar charts, and pie charts on Grafana Play. These examples use sample data. You don't need an account and won't change or save anything."
+      "content": "Compare the same libraries' star counts as bars and pie slices on Grafana Play. These examples use fixed sample data, not current GitHub counts. You don't need an account and won't change or save anything."
     },
     {
-      "type": "section",
-      "id": "a-summarized-value",
-      "title": "Values and their calculation",
-      "blocks": [
-        {
-          "type": "markdown",
-          "content": "You'll see why a stat that displays an average doesn't answer the question \"What is the current value?\""
-        },
-        {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/Zb3f4veGk/stats?viewPanel=16&from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/Zb3f4veGk",
-          "content": "Open the **Value only** panel on the **Stats** dashboard."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-16']",
-          "requirements": ["on-page:/d/Zb3f4veGk"],
-          "doIt": false,
-          "content": "The **Value only** panel answers the question \"What is the average value over the selected period?\" It shows one mean for each generated series. To answer \"What is the current value?\", a stat would need to show the latest sample instead.",
-          "tooltip": "An average over a period isn't the latest sample."
-        },
-        {
-          "type": "markdown",
-          "content": "You've seen the difference between displaying an average over a period and displaying the latest value."
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "id": "values-against-scales",
-      "title": "Values against scales",
-      "requirements": ["section-completed:a-summarized-value"],
-      "blocks": [
-        {
-          "type": "markdown",
-          "content": "You'll see how gauges and bar gauges answer the question \"How close is the value to a limit?\""
-        },
-        {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/3SWXxreWk/grafana-dashboard?from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/3SWXxreWk",
-          "content": "Open **Grafana Dashboard** to compare a gauge with bar gauges."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header Memory']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "The **Memory** panel answers the question \"How close is the average value to the displayed maximum?\" Its gauge shows the average on a 0-300 byte scale. The scale is part of the demo, not a real server's capacity or a recommended limit.",
-          "tooltip": "The arc shows the value's position between the scale's limits."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-27']",
-          "requirements": ["on-page:/d/3SWXxreWk"],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "The **Google hits** panel answers the question \"Where does each average fall between 0 and 100%?\" It uses five bar gauges with the same scale. These separate percentages aren't shares of one total, so they don't need to add up to 100%.",
-          "tooltip": "Separate percentages don't have to add up to 100%."
-        },
-        {
-          "type": "markdown",
-          "content": "You've seen how scales help you read values and why separate percentage readings aren't shares of a total."
-        }
-      ]
+      "type": "markdown",
+      "content": "You'll compare bar lengths to see how star counts differ across libraries."
     },
     {
       "type": "section",
       "id": "compare-category-counts",
       "title": "Compare category counts",
-      "requirements": ["section-completed:values-against-scales"],
       "blocks": [
-        {
-          "type": "markdown",
-          "content": "You'll see how a bar chart answers the question \"How do the values for different categories compare with each other?\""
-        },
         {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/d/ktMs4D6Mk/bar-charts-and-pie-charts?viewPanel=15&from=now-1h&to=now&timezone=browser",
           "verify": "on-page:/d/ktMs4D6Mk",
-          "content": "Open the **Popular JS Frameworks** panel that uses a bar chart. It reads fixed sample values from `js_libraries.csv`, not current counts from GitHub."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-15']",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
-          "doIt": false,
-          "content": "The **Popular JS Frameworks** panel answers the question \"How do star counts compare across libraries?\" Compare the **Github Stars** bars: Vue has 184000 and React.js has 169000. **Forks** and **Watchers** show different measures, so keep them separate from this comparison.",
-          "tooltip": "Compare bars for the same measure across libraries."
+          "content": "Open the **Popular JS Frameworks** panel that uses a bar chart."
         },
         {
           "type": "markdown",
-          "content": "You've seen how bar lengths let you compare the same measure across categories."
+          "content": "The **Popular JS Frameworks** bar chart groups values by library. Each library has a GitHub repository that holds its source code. The legend names the measures shown for those repositories:\n\n- **Github Stars**: People star a repository to bookmark it or show interest\n- **Forks**: Copies of a repository that people can change independently to develop their own version or propose changes to the original\n- **Watchers**: People who subscribe to notifications about activity in a repository"
+        },
+        {
+          "type": "markdown",
+          "content": "Find Vue and React.js in the **Popular JS Frameworks** bar chart. Compare their green **Github Stars** bars."
+        },
+        {
+          "type": "markdown",
+          "content": "The **Popular JS Frameworks** panel answers \"How do star counts compare across libraries?\" Vue's longer star-count bar shows that it has more stars than React.js. Compare bars for the same measure: a star, a fork, and a watcher represent different actions, not interchangeable measures of use."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've used bar lengths to compare the same measure across libraries."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll find the same libraries in a pie chart to see their shares of the combined star count."
     },
     {
       "type": "section",
@@ -119,43 +51,29 @@
       "requirements": ["section-completed:compare-category-counts"],
       "blocks": [
         {
-          "type": "markdown",
-          "content": "You'll see how a pie chart answers the question \"How much of the total does each part make up?\""
-        },
-        {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/d/ktMs4D6Mk/bar-charts-and-pie-charts?viewPanel=16&from=now-1h&to=now&timezone=browser",
           "verify": "on-page:/d/ktMs4D6Mk",
-          "content": "Open the **Popular JS Frameworks** panel that uses a pie chart. It reads the same CSV but keeps only **Library** and **Github Stars**."
+          "content": "Open the **Popular JS Frameworks** panel that uses a pie chart."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-viz-panel-key='panel-16']",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
+          "requirements": ["on-page:/d/ktMs4D6Mk", "exists-reftarget"],
           "doIt": false,
-          "content": "The **Popular JS Frameworks** panel answers the question \"What share of the sample's total star count belongs to each library?\" Vue's larger count produces a larger slice than React.js's. The bar chart compares counts; the pie chart shows shares of their total.",
-          "tooltip": "Slice size shows each library's share of the total star count."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-16']",
-          "requirements": ["on-page:/d/ktMs4D6Mk"],
-          "doIt": false,
-          "content": "The **Popular JS Frameworks** panel includes only the six libraries in the sample. Its slices show shares of their combined star count, not shares of all libraries or developers. A person can star several libraries, so these percentages don't measure usage or market share.",
-          "tooltip": "Read a share in relation to the values included in its total."
+          "content": "Find Vue and React.js in the **Popular JS Frameworks** pie chart. Compare their slice sizes."
         },
         {
           "type": "markdown",
-          "content": "You've seen how the same counts can answer different questions as bars or slices."
+          "content": "The **Popular JS Frameworks** panel answers \"What share of the combined star count belongs to each library?\" Vue's larger count produces a larger slice than React.js's. The slices divide the combined star count of the six included libraries into shares that add up to 100%. They don't show shares of all libraries or developers."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Stats show calculated values, gauges show values on scales, bars compare categories, and pie slices show shares of a total. Continue with the lessons on change over time, distributions, and state changes."
+      "content": "You've seen the same star counts answer two questions: bars compare counts across libraries, while pie slices show each library's share of their combined total."
     }
   ]
 }
