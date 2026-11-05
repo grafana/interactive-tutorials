@@ -1,0 +1,442 @@
+{
+  "id": "frontend-observability-tour",
+  "title": "Understanding Your Frontend Observability Dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "[Grafana Cloud Frontend Observability](https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-applications/frontend-observability) shows you how real users experience your web app. It collects telemetry straight from the browser, so you can measure performance, catch errors, and follow interactions across devices, browsers, and network conditions.\n\nIt runs on the [Grafana Faro Web SDK](https://github.com/grafana/faro-web-sdk/), a lightweight library that captures real user metrics, errors, logs, and client-side traces.\n\nThis tour walks you through the dashboard of any application that is already sending data to Frontend Observability. You'll learn how to understand key aspects of your dashboard, including Core Web Vitals metrics, sessions, errors, and user actions.\n\n**Before you start:** you need at least one application listed as **Active** in Frontend Observability. If you don't have one yet, follow the [instrumentation guide](https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-applications/frontend-observability/instrument/) first, then come back."
+    },
+    {
+      "type": "section",
+      "id": "open-application",
+      "title": "Open an application",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-kowalski-app",
+          "content": "Open **Frontend Observability**. Every application you create is listed here, grouped into Active, Stale, and No data.",
+          "showMe": false,
+          "verify": "on-page:/a/grafana-kowalski-app"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='app-card']:nth-match(1)",
+          "content": "Each card previews page loads and errors for one application, so you get a sense of its health before opening the dashboard.",
+          "tooltip": "The graph covers the time range set in the picker at the top of the page.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='app-card'] a:nth-match(1)",
+          "content": "Open an application from the **Active** group. This takes you to its dashboard, where the rest of the tour happens.",
+          "tooltip": "An app with recent traffic gives every panel something to show. If a panel says No data later on, widen the time range at the top of the dashboard.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/a/grafana-kowalski-app/apps/"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now have a real application open, with a time range wide enough for every panel to have data in it."
+    },
+    {
+      "type": "markdown",
+      "content": "We'll start with Core Web Vitals. These metrics were [created by Google](https://developers.google.com/search/docs/appearance/core-web-vitals) to measure loading performance, interactivity, and visual stability the way real users experience them. Faro collects them using Google's [web-vitals library](https://github.com/GoogleChrome/web-vitals), and the dashboard scores each one against Google's thresholds: green is good, yellow needs improvement, and red is poor.\n\nTo read all five, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "core-web-vitals",
+      "title": "Read the Core Web Vitals",
+      "requirements": [
+        "section-completed:open-application"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(1)",
+          "content": "**TTFB** (Time to First Byte) is the time between the request and the first byte of the response. It covers redirects, DNS lookup, connection and TLS negotiation, and the request itself.\n\nAim for under **800ms**. A high TTFB points at the backend rather than the browser: slow server processing, thin caching, or no CDN.",
+          "tooltip": "The bar underneath marks the good, needs-improvement, and poor thresholds, with a pointer at the current value.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(2)",
+          "content": "**FCP** (First Contentful Paint) is how long the browser takes to render any DOM content: text, an image, an SVG.\n\nAim for under **1.8s**. Cut render-blocking resources, load visible content first, and drop unused CSS and JavaScript.",
+          "tooltip": "This is the moment the page stops looking blank, which is what makes a site feel fast on a slow connection.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(3)",
+          "content": "**LCP** (Largest Contentful Paint) is when the largest element in the viewport finishes rendering, usually a hero image or headline.\n\nAim for under **2.5s**. Compress large assets, cut server response time, and remove render-blocking JavaScript and CSS.",
+          "tooltip": "This is the clearest signal of when the page becomes useful rather than merely visible.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(4)",
+          "content": "**CLS** (Cumulative Layout Shift) measures unexpected movement of content while the page is live. It is the metric behind clicking the wrong thing because the page jumped.\n\nAim for under **0.1**. Set dimensions on images and videos, preload fonts, reserve space before injecting content, and keep pages eligible for the back/forward cache.",
+          "tooltip": "CLS is a unitless score rather than a duration, so the thresholds are 0.1 and 0.25.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:has(> div > div > h3):nth-match(5)",
+          "content": "**INP** (Interaction to Next Paint) is the time from a user interaction to the next visual update. It looks at every interaction in a session and reports the slowest, outliers aside, so it reflects overall responsiveness rather than one lucky click.\n\nAim for under **200ms**. Break up long JavaScript tasks, defer non-critical work, and render updates sooner.",
+          "tooltip": "Because it takes the slowest interaction, a single blocking handler on one control can sink the whole score.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Now let's move on to **Page Loads &amp; Page Performance**. Page Loads tells you how many pages loaded in your selected timeframe and splits them into successful loads and errors. "
+    },
+    {
+      "type": "section",
+      "id": "page-performance",
+      "title": "Find the page that needs work",
+      "requirements": [
+        "section-completed:core-web-vitals"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Page Loads']",
+          "content": "**Page Loads** counts how many times a full page loaded in this time range. Read it alongside **JS errors** and **User action errors**.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Page Loads & Errors']",
+          "content": "**Page Loads & Errors** plots those same numbers over time with successful loads and errors separated, so a spike is easy to line up against a release.",
+          "tooltip": "Hover a spike to get the timestamp you'll carry into the Errors and Sessions tabs.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='page-performance-table']",
+          "content": "**Page Performance** breaks every metric down by page ID. Page IDs are generated by the Grafana Faro Cloud receiver, and you can override them when you instrument your app.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've gone from an application-wide score to the per-page breakdown behind it. Clicking any row in Page Performance narrows the view to that one route, which is useful when you already know where the problem lives. When you don't, start from the errors themselves. Open the Errors tab, where you can investigate an error and its stack trace to get to a fix faster."
+    },
+    {
+      "type": "section",
+      "id": "errors",
+      "title": "Investigate errors",
+      "requirements": [
+        "section-completed:page-performance"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Errors']",
+          "content": "Click **Errors**.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Errors history']",
+          "content": "**Errors history** distributes errors over time.",
+          "tooltip": "Compare the shape here against your deploy times before you start reading stack traces.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='errors-table']",
+          "content": "Errors are aggregated rather than listed one by one. Each row carries the message, its type, how often it fired, and how many **Sessions** and **Pages** it touched.",
+          "tooltip": "Count tells you how noisy an error is. Sessions tell you how many people it actually reached.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Errors tell you what broke. The **Sessions** tab tells you who it happened to: every visit is recorded as a session, with the pages it touched and the errors it hit along the way."
+    },
+    {
+      "type": "section",
+      "id": "sessions",
+      "title": "Follow a user session",
+      "requirements": [
+        "section-completed:errors"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Sessions']",
+          "content": "Click **Sessions**.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Sessions Overview']",
+          "content": "**Sessions Overview** plots session activity over time, split by the page each session started on.",
+          "tooltip": "A cluster of sessions on one page ID right after a deploy is a strong hint about where to look next.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='sessions-overview-table']",
+          "content": "The **Sessions** table lists each session with its timestamp, **JS Errors**, **HTTP Errors**, the **Page ID** it started on, and its lifecycle state.",
+          "tooltip": "Session IDs are what tie a support ticket back to real telemetry: ask the user for theirs, or search for it here.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Core Web Vitals cover page loads, but most of a user's time is spent after the page has loaded: clicking, submitting, navigating. The **User actions** tab measures those interactions end to end, including the HTTP requests they trigger. "
+    },
+    {
+      "type": "section",
+      "id": "user-actions",
+      "title": "Measure user actions",
+      "requirements": [
+        "section-completed:sessions"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab User actions']",
+          "content": "Click **User actions**.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Total user actions']",
+          "content": "**Total user actions** counts every tracked interaction in this time range. Faro captures clicks automatically, and you can name your own actions in the SDK for the flows that matter most.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Erroneous User Actions']",
+          "content": "**Erroneous User Actions** counts the interactions that produced a JavaScript or HTTP error somewhere in their lifetime.",
+          "tooltip": "An action counts as erroneous even if the user never saw the error, so this often runs ahead of what support hears about.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header User Action Duration (P95)']",
+          "content": "**User Action Duration (avg)** and **(P95)** measure how long an action takes from the interaction until the page settles, including any requests it fired.",
+          "tooltip": "Read P95 rather than the average: it's the experience of your slowest one-in-twenty users, which is where complaints come from.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='user-actions-table']",
+          "content": "The **User actions** table breaks those numbers down by action name, with a health indicator, **Importance**, **Error Rate**, JS and HTTP error counts, and durations for each.",
+          "tooltip": "Set Importance on your critical actions in the SDK so you can filter this table down to checkout, sign-up, or whatever pays the bills.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='user-actions-table-sort-button-Value #userActionErrorRates']",
+          "content": "Click **Error Rate** to sort the table and surface the actions that fail most often.",
+          "tooltip": "A high error rate on a low-volume action is easy to miss in raw counts but is exactly the kind of thing that blocks a small group of users completely.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A slow or failing frontend is often a slow or failing API behind it. The **HTTP** tab (currently in preview) shows every request the browser made, with rate, error, and duration metrics for each, and can connect them to backend traces. "
+    },
+    {
+      "type": "section",
+      "id": "http",
+      "title": "Inspect HTTP requests",
+      "requirements": [
+        "section-completed:user-actions"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab HTTP']",
+          "content": "Click **HTTP**.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Requests (total)']",
+          "content": "The top row summarises all HTTP traffic in this time range: **Requests (total)**, **Errors (total)**, **Errors (rate)**, plus p75 **TTFB**, **Duration**, and **Transfer size**.",
+          "tooltip": "Compare the TTFB here with the TTFB on the Overview tab: this one is per request, that one is for the page document.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header RED Metrics']",
+          "content": "**RED Metrics** plots Rate, Errors, and Duration over time, the same three signals you'd use to judge a backend service, now measured from the browser.",
+          "tooltip": "A step change in duration with no change in rate usually means the backend or the network got slower, not that traffic grew.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Status codes']",
+          "content": "**Status codes** breaks responses down by class so you can tell a wave of 5xx errors from a burst of 4xx errors.",
+          "tooltip": "5xx points at the server; 4xx usually points at the frontend sending something the API didn't expect.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='http-requests-table']",
+          "content": "The **HTTP requests** table lists every domain and endpoint with **Calls**, **Errors**, errors rate, and p75 TTFB, duration, and size.",
+          "tooltip": "Third-party domains show up here too, so this is where you find out that an analytics script is what's holding up your page.",
+          "requirements": [
+            "on-page:/a/grafana-kowalski-app/apps/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now know how to read the core sections of the Frontend Observability dashboard, from Core Web Vitals and page performance to the errors, sessions, user actions, and HTTP requests that explain a poor metrics and scores.\n\nTo learn more:\n\n- [Frontend Observability documentation](https://grafana.com/docs/grafana-cloud/observe-and-act/monitor-applications/frontend-observability/)\n- [Grafana Faro Web SDK on GitHub](https://github.com/grafana/faro-web-sdk/)\n- [An overview of Grafana Cloud Frontend Observability dashboards](https://grafana.com/blog/actionable-insights-into-the-end-user-experience-an-overview-of-grafana-cloud-frontend-observability-dashboards/)\n\n"
+    }
+  ]
+}
