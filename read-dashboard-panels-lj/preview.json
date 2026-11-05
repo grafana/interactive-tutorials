@@ -4,23 +4,22 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Explore finished dashboards on Grafana Play to see what they monitor and how their panels serve that purpose."
-    },
-    {
-      "type": "markdown",
-      "content": "Explore Grafana Dashboard, panel by panel, to see what its titles say it monitors."
+      "content": "Explore dashboards on Grafana Play to understand the intent of each panel and whether it fulfills that intent, where a panel's data comes from, and what its unit tells you."
     },
     {
       "type": "section",
       "id": "read-memory",
-      "title": "What the dashboard monitors",
+      "title": "Focus and readability",
       "blocks": [
         {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/d/3SWXxreWk/grafana-dashboard?from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/3SWXxreWk",
           "content": "Open **Grafana Dashboard**."
+        },
+        {
+          "type": "markdown",
+          "content": "The dashboard's title, Grafana Dashboard, doesn't say what it's about. Its panel titles do: the memory and CPU one server uses, the people logging in, the requests it serves."
         },
         {
           "type": "interactive",
@@ -36,35 +35,7 @@
         },
         {
           "type": "markdown",
-          "content": "This panel answers the question: How much memory and CPU is the server using, and how has that changed over time? The title names the two resources it measures, so you can read it without opening it."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-22']",
-          "requirements": [
-            "on-page:/d/3SWXxreWk",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "Focus on the **Memory** gauge."
-        },
-        {
-          "type": "markdown",
-          "content": "This panel answers the question: How close is memory use to its limit? It's the same resource as the first panel, shown as one value within a range instead of a line over time."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-3']",
-          "requirements": [
-            "on-page:/d/3SWXxreWk",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "Focus on **logins**."
+          "content": "The title says exactly what the graph represents, and the values carry a unit, bytes, so the viewer doesn't have to think about it."
         },
         {
           "type": "interactive",
@@ -76,11 +47,23 @@
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Focus on **server requests**."
+          "content": "Notice the **server requests** panel."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-3']",
+          "requirements": [
+            "on-page:/d/3SWXxreWk",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Now focus on the **logins** panel."
         },
         {
           "type": "markdown",
-          "content": "These two answer the question: How many people are signing in, and how many requests is the server handling, over time? They measure what the service is doing rather than the machine it runs on."
+          "content": "Both the logins and server requests  panels show the server's traffic, and both titles tell you what the graph represents at a glance. Their values are plain counts with no unit suffix, which suits requests and logins."
         },
         {
           "type": "interactive",
@@ -92,7 +75,11 @@
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Focus on the first **Google hits** bar gauge."
+          "content": "View the first **Google hits** bar gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "Here's a vertical bar gauge with five bars labeled A-series to E-series. Nothing says what each bar measures. Its unit is percent on a fixed 0 to 100 range, but hits are a count, not a share of anything. So the label is misleading."
         },
         {
           "type": "interactive",
@@ -104,7 +91,11 @@
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Focus on the second **Google hits** bar gauge."
+          "content": "Now, notice the second **Google hits** bar gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "Here's the same five unnamed bars, this time with no unit, still on a fixed 0 to 100 range. The colors change at 40, 60, 70, and 80. But with no unit, the viewer can't tell what the color changes mean."
         },
         {
           "type": "interactive",
@@ -116,7 +107,11 @@
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Focus on the **Google hits** gauge."
+          "content": "Next, look at the **Google hits** gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "This gauge suggests a value approaching a limit. The limit is 300 with no unit, and the single series is labeled A-series. Nothing on the panel says what 300 hits would mean."
         },
         {
           "type": "interactive",
@@ -132,13 +127,17 @@
         },
         {
           "type": "markdown",
-          "content": "Four panels carry this title. One title, four displays. Nothing on the panels says how they differ, so the viewer can't tell which one to read.\n\nThe titles are what the viewer has to go on. Read together, they describe one server: the resources it uses and the traffic it handles. That is what this dashboard monitors, and it's the question to hold in mind as you read each panel."
+          "content": "Here's a horizontal bar gauge with six bars named for servers, Backend-ops-01 to Frontend-web-02. The names help, but there is still no unit."
+        },
+        {
+          "type": "markdown",
+          "content": "Four panels, one title, no descriptions. A viewer must figure out what each one represents and how they differ. That is cognitive load the dashboard adds instead of reducing.\n\nA focused version would keep **Memory / CPU**, **Memory**, **server requests**, and **logins**, and drop the **Google hits** repeats."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Explore a panel to find the query inside it, the data source it runs against, and the format its result comes back in."
+      "content": "Explore a panel to view the data it visualizes."
     },
     {
       "type": "section",
@@ -148,13 +147,39 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/d/mapr4nb/sql-expressions-showcase?viewPanel=3&from=now-6h&to=now&timezone=browser",
-          "verify": "on-page:/d/mapr4nb",
-          "content": "Open **Base Query (A) - Total CPU Usage** on the **SQL Expressions Showcase** dashboard."
+          "reftarget": "/d/mapr4nb/sql-expressions-showcase?from=now-6h&to=now&timezone=browser",
+          "content": "Open **SQL Expressions Showcase**."
         },
         {
-          "type": "markdown",
-          "content": "Open the panel menu and select **Edit**."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-3']",
+          "requirements": [
+            "on-page:/d/mapr4nb",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Base Query (A) - Total CPU Usage** panel."
+        },
+        {
+          "type": "guided",
+          "content": "Open the panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-viz-panel-key='panel-3'] button[data-testid='data-testid Panel menu Base Query (A) - Total CPU Usage']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
         },
         {
           "type": "interactive",
@@ -168,25 +193,79 @@
           "content": "Notice the data source for query **A**. It's a Prometheus data source, so Grafana sends this query to Prometheus."
         },
         {
-          "type": "markdown",
-          "content": "Read the query: `sum(rate(process_cpu_seconds_total[5m]))`. It selects one metric, `process_cpu_seconds_total`, turns it into a per-second rate, and sums the result across every instance. The data source holds far more data than this. The query reduces it to the one series the panel needs."
-        },
-        {
-          "type": "markdown",
-          "content": "Below the query, find the query options and read **Format**. For this panel it's **Time series**, the default, which returns the data as time-indexed series for graph panels. Format determines how the result is interpreted in the panel, so it has to suit the visualization: the Table format, for example, works only in a table. A stat or gauge can still take a time series result by reducing it to one value."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid ReactMonacoEditor editorLazy']",
+          "requirements": [
+            "on-page:/d/mapr4nb",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "This is the query for the visualization."
         },
         {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/mapr4nb/sql-expressions-showcase?viewPanel=3&from=now-6h&to=now&timezone=browser",
-          "verify": "on-page:/d/mapr4nb",
-          "content": "Return to the panel."
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid prometheus options']",
+          "requirements": [
+            "on-page:/d/mapr4nb",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Below the query, the options row shows **Format: Time series**. Format determines how the result is interpreted in the panel, so it must suit the visualization: the Table format, for example, works only in a table. A stat or gauge can still take a time series result by reducing it to one value."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Options group Standard options toggle']",
+          "requirements": [
+            "on-page:/d/mapr4nb",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Expand **Standard options** if it's collapsed."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Standard options Unit field property editor']",
+          "requirements": [
+            "on-page:/d/mapr4nb",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Under **Standard options**, the panel's **Unit** is set to **core**, the unit its values are measured in."
+        },
+        {
+          "type": "guided",
+          "content": "Leave the editor.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click Back to return to the dashboard."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Exit edit mode button'], button[data-testid='data-testid Edit dashboard button']",
+              "description": "The dashboard is still in edit mode. Click Exit edit."
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "If Grafana asks about unsaved changes, select **Discard**. Nothing needed saving."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Explore the Memory gauge to find its unit setting and connect it to the suffix on its value."
+      "content": "Explore the Memory gauge."
     },
     {
       "type": "section",
@@ -196,35 +275,88 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/d/3SWXxreWk/grafana-dashboard?viewPanel=22&from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/3SWXxreWk",
-          "content": "Open the **Memory** gauge and notice the B suffix beside its value."
-        },
-        {
-          "type": "markdown",
-          "content": "Open the **Memory** panel menu and select **Edit**. Expand **Standard options** if it's collapsed."
+          "reftarget": "/d/3SWXxreWk/grafana-dashboard?from=now-1h&to=now&timezone=browser",
+          "content": "Open **Grafana Dashboard**."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "#unit",
+          "reftarget": "[data-viz-panel-key='panel-22']",
           "requirements": [
             "on-page:/d/3SWXxreWk",
             "exists-reftarget"
           ],
           "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Memory** gauge and notice the B suffix beside its value."
+        },
+        {
+          "type": "guided",
+          "content": "Open the panel for editing.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-viz-panel-key='panel-22'] button[data-testid='data-testid Panel menu Memory']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Options group Standard options toggle']",
+          "requirements": [
+            "on-page:/d/3SWXxreWk",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Expand **Standard options** if it's collapsed."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Standard options Unit field property editor']",
+          "requirements": [
+            "on-page:/d/3SWXxreWk",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
           "content": "Find **Unit** and read its **bytes(IEC)** setting."
         },
         {
           "type": "markdown",
-          "content": "The **Memory** panel formats its numeric value as bytes. B means bytes; larger values can use units such as KiB or MiB. Unit formatting changes the display, not the query's data, and doesn't change timestamps into byte values.\n\nChanging bytes to percent wouldn't calculate memory utilization. It would mislabel the existing values. The unit has to describe what the query returns. A utilization query would need to return a proportion of capacity."
+          "content": "The **Memory** panel formats its numeric value as bytes. B means bytes; larger values can use units such as KiB or MiB. Unit formatting changes the display, not the query's data, and doesn't change timestamps into byte values.\n\nSwitching the unit to percent wouldn't turn these byte values into a percentage of memory. The numbers would stay the same and be labeled incorrectly. The unit has to describe what the query returns."
         },
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/3SWXxreWk/grafana-dashboard?viewPanel=22&from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/3SWXxreWk",
-          "content": "Return to the **Memory** gauge."
+          "type": "guided",
+          "content": "Leave the editor.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click Back to return to the dashboard."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Exit edit mode button'], button[data-testid='data-testid Edit dashboard button']",
+              "description": "The dashboard is still in edit mode. Click Exit edit."
+            }
+          ],
+          "completeEarly": true
+        },
+        {
+          "type": "markdown",
+          "content": "If Grafana asks about unsaved changes, select **Discard**. Nothing needed saving."
         }
       ]
     },
@@ -241,7 +373,6 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/d/000000003/sample-website-dashboard?from=now-1h&to=now&timezone=browser",
-          "verify": "on-page:/d/000000003",
           "content": "Open **Sample Website Dashboard**."
         },
         {
@@ -282,7 +413,7 @@
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Focus on the **server requests** panel."
+          "content": "Find the **server requests** panel."
         },
         {
           "type": "interactive",
@@ -294,11 +425,11 @@
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Focus on the **client side full page load** panel."
+          "content": "View on the **client side full page load** panel."
         },
         {
           "type": "markdown",
-          "content": "Both measure the service as its users experience it, so they belong to the RED method. Requests over time is the rate. Page load time is the duration.\n\nRED has a third measurement, errors. No panel counts failing requests, so this dashboard can't tell you whether requests are failing.\n\nThe four golden signals name the same three service measurements as RED, as traffic, errors, and latency, and add saturation: how close a resource is to its capacity. No panel here shows that either.\n\nThe remaining panels, **logins**, **Google hits**, **Support calls**, and **Sign ups**, are business measurements. Neither method covers them. The methods tell you what a health dashboard needs, not what every dashboard must contain."
+          "content": "Both measure the service as its users experience it, so they belong to the RED method. Requests over time is the rate. Page load time is the duration.\n\nRED has a third measurement, errors. There is no panel that counts failing requests, so this dashboard can't tell you whether requests are failing.\n\nThe four golden signals name the same three service measurements as RED, as traffic, errors, and latency, and add saturation: how close a resource is to its capacity. No panel here shows that either.\n\nThe remaining panels, **logins**, **Google hits**, **Support calls**, and **Sign ups**, are business measurements. Neither method covers them. The methods tell you what a health dashboard needs, not what every dashboard must contain."
         }
       ]
     }
