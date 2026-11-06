@@ -1,0 +1,546 @@
+{
+  "id": null,
+  "panels": [
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "content": "# Account Service (Go)\nManages customer accounts and balances: business metrics track account requests by operation and result, balance reads, and how many accounts are returned per listing.",
+        "mode": "markdown"
+      },
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never"
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 3
+      },
+      "id": 2,
+      "targets": [
+        {
+          "expr": "sum by(operation, result) (rate(app_banking_account_requests_total{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval]))",
+          "legendFormat": "{{operation}} ({{result}})",
+          "refId": "A"
+        }
+      ],
+      "title": "Account Requests by Operation",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never"
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 3
+      },
+      "id": 3,
+      "targets": [
+        {
+          "expr": "sum by(result) (rate(app_banking_account_balance_reads_total{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval]))",
+          "legendFormat": "{{result}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Balance Reads",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never"
+          },
+          "unit": "short"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 3
+      },
+      "id": 4,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by(le) (rate(app_banking_accounts_returned_bucket{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval])))",
+          "legendFormat": "P95 accounts returned",
+          "refId": "A"
+        }
+      ],
+      "title": "Accounts Returned per Listing (P95)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never"
+          },
+          "unit": "reqps"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 11
+      },
+      "id": 5,
+      "targets": [
+        {
+          "expr": "sum by(service_name) (rate(rpc_server_call_duration_seconds_count{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval]))",
+          "legendFormat": "{{service_name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Request Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "axisSoftMax": 0.2,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never",
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "max": 1,
+          "min": 0,
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.05
+              }
+            ]
+          },
+          "unit": "percentunit"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 11
+      },
+      "id": 6,
+      "targets": [
+        {
+          "expr": "(clamp_max(sum by(service_name) (rate(rpc_server_call_duration_seconds_count{service_name=\"account\", service_namespace=\"${namespace}\", rpc_response_status_code!=\"OK\"}[$__rate_interval])) / clamp_min(sum by(service_name) (rate(rpc_server_call_duration_seconds_count{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval])), 0.001), 1)) OR on(service_name) (0 * sum by(service_name) (max_over_time(rpc_server_call_duration_seconds_count{service_name=\"account\", service_namespace=\"${namespace}\"}[30d])))",
+          "legendFormat": "{{service_name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Error Ratio",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never"
+          },
+          "unit": "s"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 11
+      },
+      "id": 7,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.5, sum by(le) (rate(rpc_server_call_duration_seconds_bucket{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval])))",
+          "legendFormat": "P50",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by(le) (rate(rpc_server_call_duration_seconds_bucket{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval])))",
+          "legendFormat": "P95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum by(le) (rate(rpc_server_call_duration_seconds_bucket{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval])))",
+          "legendFormat": "P99",
+          "refId": "C"
+        }
+      ],
+      "title": "Latency P50 / P95 / P99",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "grafanacloud-prom"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 1,
+            "showPoints": "never"
+          },
+          "unit": "ms"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 19
+      },
+      "id": 8,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by(le) (rate(go_sql_query_timing_milliseconds_bucket{service_name=\"account\", service_namespace=\"${namespace}\"}[$__rate_interval])))",
+          "legendFormat": "Query timing P95",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by(service_name) (go_sql_connections_in_use{service_name=\"account\", service_namespace=\"${namespace}\"})",
+          "legendFormat": "Connections in use",
+          "refId": "B"
+        }
+      ],
+      "title": "Database",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mixed",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "mode": "basic",
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "No one scheduled": {
+                  "color": "orange",
+                  "index": 0,
+                  "text": "\u26a0\ufe0f  No one scheduled"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Schedule"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "noDataMessage": "No active on-call schedules for this team.",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "grafana-oncall-api-infinity-datasource"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "jq-backend",
+          "refId": "OnCallScheduleLookUp",
+          "root_selector": ".results | map({id: .id, schedule_name: .name, team_id: .team_id, user_id: (.on_call_now[0] // null)})",
+          "source": "url",
+          "type": "json",
+          "url": "${oncall_api}/api/v1/schedules",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        },
+        {
+          "columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "grafana-oncall-api-infinity-datasource"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "jq-backend",
+          "refId": "TeamLookUp",
+          "root_selector": ".results",
+          "source": "url",
+          "type": "json",
+          "url": "${oncall_api}/api/v1/teams",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        },
+        {
+          "columns": [
+            {
+              "selector": "id",
+              "text": "user_id",
+              "type": "string"
+            },
+            {
+              "selector": "username",
+              "text": "username",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "grafana-oncall-api-infinity-datasource"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "jq-backend",
+          "refId": "UserLookUp",
+          "root_selector": ".results",
+          "source": "url",
+          "type": "json",
+          "url": "${oncall_api}/api/v1/users",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        },
+        {
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "SELECT COALESCE(OnCallScheduleLookUp.schedule_name, TeamLookUp.name || ' (no schedule configured)') as schedule, COALESCE(UserLookUp.username, 'No one scheduled') as oncall_user FROM TeamLookUp LEFT JOIN OnCallScheduleLookUp ON OnCallScheduleLookUp.team_id = TeamLookUp.id LEFT JOIN UserLookUp ON OnCallScheduleLookUp.user_id = UserLookUp.user_id WHERE TeamLookUp.name = 'Retail Banking' ORDER BY schedule",
+          "refId": "A",
+          "type": "sql"
+        }
+      ],
+      "title": "Who is on call (Retail Banking)",
+      "transformations": [
+        {
+          "id": "filterByRefId",
+          "options": {
+            "include": "/^(?:A)$/"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "oncall_user": "On-call now",
+              "schedule": "Schedule"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": [
+    "account"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "appenv-grafana-play-cluster",
+          "value": "appenv-grafana-play-cluster"
+        },
+        "hide": 2,
+        "label": "Cluster",
+        "name": "cluster",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "appenv-grafana-play-cluster",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "text": "banking-prod",
+          "value": "banking-prod"
+        },
+        "hide": 2,
+        "label": "Namespace",
+        "name": "namespace",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "banking-prod",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "current": {
+          "text": "https://oncall-prod-us-central-0.grafana.net/oncall",
+          "value": "https://oncall-prod-us-central-0.grafana.net/oncall"
+        },
+        "hide": 2,
+        "label": "OnCall API URL",
+        "name": "oncall_api",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "https://oncall-prod-us-central-0.grafana.net/oncall",
+        "skipUrlSync": false,
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "Account Service",
+  "uid": "appenv-svc-account",
+  "version": 2
+}
