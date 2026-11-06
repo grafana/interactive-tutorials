@@ -1,0 +1,151 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "open-a-query-from-a-database-span",
+  "title": "Open a query from a database span",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This guide runs on your own stack. The steps that depend on your traces or on the link can be skipped if your traces have no suitable span or the link is not available on your stack."
+    },
+    {
+      "type": "markdown",
+      "content": "To open a trace that contains a database span, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-a-trace-with-a-database-span",
+      "title": "Open a trace with a database span",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid navigation mega-menu section toggle /drilldown']",
+          "content": "Expand **Drilldown** in the main menu.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-exploretraces-app/']",
+          "verify": "on-page:/a/grafana-exploretraces-app",
+          "objectives": ["on-page:/a/grafana-exploretraces-app"],
+          "content": "Click **Traces**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+          "doIt": false,
+          "content": "Set the time range to a period when your application ran database calls.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app primary signal option all spans']",
+          "content": "Select **All spans**.\n\nThe next filter looks for a database span.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[placeholder='+ label = value']",
+          "doIt": false,
+          "content": "Open **Filters**.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid ad hoc filter option value span.db.system']",
+          "content": "Select **span.db.system**.\n\nIf your spans carry `db.system.name` instead, select **span.db.system.name**. If neither is listed, skip to the **Traces** tab and continue.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid ad hoc filter option value =']",
+          "content": "Select **Equals**.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid^='data-testid ad hoc filter option value ']",
+          "doIt": false,
+          "content": "Select **mysql** or **postgresql**.\n\nThese are the two database systems the link supports.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Tab Traces']",
+          "content": "Click the **Traces** tab.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app traces container'] [role='grid']",
+          "doIt": false,
+          "content": "Click the name of a trace.\n\nFor example, pick a request you know touched the database, such as a page that lists records. If the list is empty, widen the time range and continue.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You opened a trace that contains a database span."
+    },
+    {
+      "type": "markdown",
+      "content": "To open the query from its span, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-the-query-from-the-span",
+      "title": "Open the query from the span",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='span-view']",
+          "doIt": false,
+          "content": "Click a database span.\n\nIts details show a **Database** group with the database system and the query text.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href^='/a/grafana-dbo11y-app/trace-link-resolve/']",
+          "verify": "on-page:/a/grafana-dbo11y-app",
+          "objectives": ["on-page:/a/grafana-dbo11y-app"],
+          "content": "Select the query text in the **Database** group.\n\nThe query text is the Database Observability link; it carries the Database Observability icon. If you do not see the link, skip this step and the next one.",
+          "tooltip": "This opens the query in Database Observability.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='Interactive table'] a[href^='/a/grafana-dbo11y-app/overview/']",
+          "doIt": false,
+          "content": "Select an instance.\n\nThis step can appear when more than one database instance contains the query. For example, the same query can run on a production and a staging server.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-dbo11y-app/query-matches", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Where the link opens tells you whether the match found the query:\n\n- **Query samples** tab: the match found the query. Record the query text.\n- **Queries overview**: the match did not find the query. Record that no match was found."
+    }
+  ]
+}
