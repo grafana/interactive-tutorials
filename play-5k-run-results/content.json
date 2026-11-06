@@ -19,7 +19,7 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "section[data-testid='data-testid Panel header Winning Time']",
+          "reftarget": "section[data-testid='data-testid Panel header Tail Walker Time']",
           "content": "The winning time and tail walker time bookend the field. The tail walker is the volunteer who walks the full course at the back to make sure no runner gets left behind — their time is the official close of the event.",
           "doIt": false,
           "lazyRender": true
@@ -95,13 +95,13 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-query-sidebar-card='calculateField-0']",
-          "content": "Select the first **Calculate field** transformation in the sidebar.",
+          "content": "Select the first **Add field from calculation** transformation in the sidebar.",
           "requirements": ["exists-reftarget"],
           "lazyRender": true
         },
         {
           "type": "markdown",
-          "content": "Six transformations run in sequence. The two most important are:\n\n**Calculate field — run_time**: subtracts the race start time (a fixed Unix timestamp representing 9:00am on race day) from each finisher's timestamp. This single step converts an absolute clock time into an elapsed race time in seconds. Every stat panel — winning time, mean, median, tail walker — is built on this derived field.\n\n**Calculate field — finish_bucket**: divides run_time by 300 (the number of seconds in 5 minutes) and then applies a floor function to round it down to a whole number. The result is a bucket index: 0 means the runner finished in the first 5 minutes, 1 in the second 5 minutes, and so on. This is the field that powers the Finishers by 5 Minute Period chart.\n\nThe remaining transforms handle type conversion, column reordering, and generating a sort key — useful plumbing, but the two calculate field steps above are where the real analysis happens."
+          "content": "Six transformations run in sequence. The two most important are:\n\n**Add field from calculation — run_time**: subtracts the race start time (a fixed Unix timestamp representing 9:00am on race day) from each finisher's timestamp. This single step converts an absolute clock time into an elapsed race time in seconds. Every stat panel — winning time, mean, median, tail walker — is built on this derived field.\n\n**Add field from calculation — finish_bucket**: divides run_time by 300 (the number of seconds in 5 minutes) and then applies a floor function to round it down to a whole number. The result is a bucket index: 0 means the runner finished in the first 5 minutes, 1 in the second 5 minutes, and so on. This is the field that powers the Finishers by 5 Minute Period chart.\n\nThe remaining transforms handle type conversion, column reordering, and generating a sort key — useful plumbing, but the two add field from calculation steps above are where the real analysis happens."
         },
         {
           "type": "interactive",
@@ -184,7 +184,7 @@
     },
     {
       "type": "markdown",
-      "content": "## Further Reading\n\nGrafana transformations do the heavy lifting in this dashboard. Here are the docs for the specific features used:\n\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — how to load inline CSV, JSON, and remote APIs as a Grafana data source.\n- [Calculate field transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#calculate-field) — add derived columns using arithmetic, reducers, and unary functions like floor.\n- [Group by transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#group-by) — aggregate rows by a field value, with count, sum, mean and more.\n- [Convert field type transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#convert-field-type) — cast string columns to numbers or timestamps, including Unix epoch parsing.\n- [Reduce options in stat panels](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/stat/) — how first, last, mean, median and sum reducers work in the stat panel."
+      "content": "## Further Reading\n\nGrafana transformations do the heavy lifting in this dashboard. Here are the docs for the specific features used:\n\n- [Grafana Infinity Data Source](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) — how to load inline CSV, JSON, and remote APIs as a Grafana data source.\n- [Add field from calculation transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#calculate-field) — add derived columns using arithmetic, reducers, and unary functions like floor.\n- [Group by transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#group-by) — aggregate rows by a field value, with count, sum, mean and more.\n- [Convert field type transformation](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#convert-field-type) — cast string columns to numbers or timestamps, including Unix epoch parsing.\n- [Reduce options in stat panels](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/stat/) — how first, last, mean, median and sum reducers work in the stat panel."
     }
   ]
 }
