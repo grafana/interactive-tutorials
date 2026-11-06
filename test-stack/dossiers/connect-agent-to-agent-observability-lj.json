@@ -1,0 +1,125 @@
+{
+  "path": "connect-agent-to-agent-observability-lj",
+  "id": "connect-agent-to-agent-observability-lj",
+  "type": "path",
+  "milestoneCount": 8,
+  "startingLocation": "/a/grafana-agento11y-app",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/a/grafana-agento11y-app"
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": [
+    {
+      "id": "grafana-cloud-admin",
+      "label": "A Grafana Cloud account and the Admin role on the stack."
+    },
+    {
+      "id": "running-agent",
+      "label": "A working agent in Go, Python, TypeScript/JavaScript, Java, or .NET that you can run locally."
+    },
+    {
+      "id": "language-runtime",
+      "label": "The runtime your language page requires: Python 3.10 or later, Node.js 22 or later, Go 1.23 or later, Java 17 or later, or .NET 8 or later."
+    },
+    {
+      "id": "llm-provider-key",
+      "label": "If you instrument your own agent or use the .NET provider helper, an LLM provider API key."
+    }
+  ],
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\n- A Grafana Cloud account and the Admin role on the stack. Agent Observability is not yet enabled; Milestone 1 enables it.\n- A working agent in Go, Python, TypeScript/JavaScript, Java, or .NET that you can run locally, with the runtime its language page requires.\n- An LLM provider API key if you instrument your own agent or use the .NET provider helper. The first manual-capture sample on the Python, JavaScript, Go, and Java pages does not call a provider.\n- A place to save the values you copy, such as a notes file. Milestones 2 and 3 each copy values you need again in Milestone 4, and the token is shown only once.\n\nFor the full setup reference, refer to [Set up Agent Observability in Grafana Cloud](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/get-started/grafana-cloud/)."
+  ],
+  "milestones": [
+    {
+      "id": "connect-agent-to-agent-observability-enable-agent-observability",
+      "dir": "connect-agent-to-agent-observability-lj/enable-agent-observability",
+      "requirements": {
+        "navmenu-open": 1,
+        "exists-reftarget": 3,
+        "on-page:/a/grafana-agento11y-app": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "connect-agent-to-agent-observability-copy-api-url-and-instance-id",
+      "dir": "connect-agent-to-agent-observability-lj/copy-api-url-and-instance-id",
+      "requirements": {
+        "on-page:/a/grafana-agento11y-app": 1,
+        "exists-reftarget": 3,
+        "on-page:/a/grafana-agento11y-app/setup": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "connect-agent-to-agent-observability-create-access-policy-and-token",
+      "dir": "connect-agent-to-agent-observability-lj/create-access-policy-and-token",
+      "requirements": {
+        "on-page:/a/grafana-auth-app": 2,
+        "exists-reftarget": 2
+      },
+      "navigate": [],
+      "needsText": [
+        "The third value you need, so the SDK can send your agent's data to your Grafana Cloud stack, is a Grafana Cloud Access Policy Token. You set it later as `AGENTO11Y_AUTH_TOKEN`. Create an access policy with the `sigil:write` scope, add the `metrics:write`, `logs:write`, and `traces:write` scopes so the same token also serves traces and metrics in Milestone 7, then add a token to the policy."
+      ]
+    },
+    {
+      "id": "connect-agent-to-agent-observability-set-environment-variables",
+      "dir": "connect-agent-to-agent-observability-lj/set-environment-variables",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "connect-agent-to-agent-observability-install-sdk-and-capture-generation",
+      "dir": "connect-agent-to-agent-observability-lj/install-sdk-and-capture-generation",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "connect-agent-to-agent-observability-find-generation-in-conversations",
+      "dir": "connect-agent-to-agent-observability-lj/find-generation-in-conversations",
+      "requirements": {
+        "on-page:/a/grafana-agento11y-app/conversations": 2,
+        "exists-reftarget": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "connect-agent-to-agent-observability-export-traces-and-metrics",
+      "dir": "connect-agent-to-agent-observability-lj/export-traces-and-metrics",
+      "requirements": {
+        "on-page:/a/grafana-exploretraces-app": 2,
+        "exists-reftarget": 3,
+        "on-page:/a/grafana-metricsdrilldown-app": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "connect-agent-to-agent-observability-end-journey",
+      "dir": "connect-agent-to-agent-observability-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "path": "k6-soak-testing-lj",
+  "id": "k6-soak-testing-lj",
+  "type": "path",
+  "milestoneCount": 6,
+  "startingLocation": "/a/k6-app",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/a/k6-app"
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "Welcome to the Grafana learning path that builds on [Run your first k6 performance test](/docs/learning-paths/run-first-k6-test/), [Establish a performance baseline with k6](/docs/learning-paths/establish-k6-baseline/), and [Find your system's limits with k6](/docs/learning-paths/find-k6-limits/). [Soak testing](https://grafana.com/docs/k6/latest/testing-guides/test-types/soak-testing/) extends an average-load profile: the load level stays near what you already measured in baseline testing, but the plateau runs much longer. That longer window surfaces time-dependent problems such as memory growth, connection pool limits, disk fill, and gradual latency drift.\n\nThis path builds on [Establish a performance baseline with k6](/docs/learning-paths/establish-k6-baseline/). For the full k6 series sequence, consider [Find your system's limits with k6](/docs/learning-paths/find-k6-limits/) first if you haven't already. You practice on [QuickPizza](https://quickpizza.grafana.com); a 30-minute learning run may show flat metrics, but the same steps (design the profile, stream to Grafana Cloud k6, watch trends, document degradation) apply to your own stack.\n\nThe diagram below shows the soak shape you build in this path: ramp up, a long plateau at moderate load, then ramp down. It follows the [Soak testing](https://grafana.com/docs/k6/latest/testing-guides/test-types/soak-testing/) overview pattern; this path uses a **30-minute** plateau for learning. Production soaks often run 2 to 8 hours or longer.\n\n## Here's what to expect\n\nWhen you complete this path, you'll be able to:\n\n- Explain how soak testing differs from average-load testing (duration, not load shape)\n- Design a soak profile with ramp-up, a sustained plateau, and ramp-down using k6 `stages`\n- Stream k6 results to Grafana Cloud k6 and read trends mid-test\n- Set degradation thresholds with `abortOnFail` and `delayAbortEval` for a learning-duration run\n- Correlate k6 metrics with infrastructure dashboards when degradation appears\n- Document degradation onset, rate, and category for follow-up work\n\n## Before you begin\n\nBefore you test system endurance with k6 soak testing, ensure that you have:\n\n- A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account).\n- k6 installed on your machine. To install k6, refer to [Install k6](/docs/k6/latest/set-up/install-k6/).\n- Basic knowledge of JavaScript (k6 scripts are written in JavaScript).\n- A code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [Cursor](https://www.cursor.com/).\n- Access to a terminal or command line interface.\n\n## Troubleshooting\n\nIf you get stuck, we've got your back! Where appropriate, troubleshooting information is just a click away.\n\n## More to explore\n\nWe understand you might want to explore other capabilities not strictly on this path. We'll provide you opportunities where it makes sense."
+  ],
+  "milestones": [
+    {
+      "id": "k6-soak-testing-design-soak-profile",
+      "dir": "k6-soak-testing-lj/design-soak-profile",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "k6-soak-testing-configure-soak-observability",
+      "dir": "k6-soak-testing-lj/configure-soak-observability",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "k6-soak-testing-run-soak-test",
+      "dir": "k6-soak-testing-lj/run-soak-test",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "k6-soak-testing-document-soak-results",
+      "dir": "k6-soak-testing-lj/document-soak-results",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "k6-soak-testing-act-on-soak-results",
+      "dir": "k6-soak-testing-lj/act-on-soak-results",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "Use the degradation category from the previous milestone to pick the next investigation. Memory-related drift and connection-pool exhaustion need different follow-up.\n\nTo turn your soak results into actions, complete the following steps:\n\n1. Open your documented results and identify which degradation category your test fell into.\n\n   **Memory-related degradation**: Latency rose gradually, correlated with increasing memory usage or GC pressure on the system under test.\n\n   - Review application-level caching and session storage for unbounded growth.\n   - Check for long-lived collections that accumulate per request (logging buffers, metrics registries, listener lists).\n   - Set a memory usage alert in Grafana from the drift rate you measured.\n\n   **Connection-related degradation**: Latency was stable, then jumped as the connection pool reached capacity.\n\n   - Compare pool maximum to sustained request rate.\n   - Look for connections not returned on error paths or timeouts.\n   - Add a dashboard panel for pool utilization over time.\n\n   **Disk-related degradation**: Performance changed when disk space or log volume approached limits.\n\n   - Review log rotation and temp-file cleanup.\n   - Set disk usage alerts from the fill rate you observed.\n\n   **No degradation observed**: Metrics remained stable for the full test duration.\n\n   - Extend duration on the middle `stages` entry (for example from 30 minutes to 4 or 8 hours on a production soak).\n   - Increase load toward your average-load ceiling if you need more pressure.\n   - Keep the clean result as a reference for the next code or infrastructure change.\n\n2. Set duration targets for future soak tests based on what you learned.\n\n   On a production soak, if degradation appeared at 90 minutes, the next run should last at least 3 hours to confirm a fix. If no degradation appeared in 2 hours, extend to 4 or 8 hours.\n\n   A useful rule: run at least twice as long as the time-to-degradation you observed so a fix is less likely to be a short delay rather than a real resolution.\n\n3. Plan when to run soak tests.\n\n   Soak tests cost more time than stress or spike runs, so most teams run them less often:\n\n   - **After changes to resource management**: Caching, connection pooling, session handling, or background jobs.\n   - **Monthly or before major releases**: Catches slow regressions from small cumulative changes.\n   - **After infrastructure changes**: New database instances, memory limits, or disk allocations.\n\nIn the next milestone, you review what you accomplished and explore next steps."
+      ]
+    },
+    {
+      "id": "k6-soak-testing-end-journey",
+      "dir": "k6-soak-testing-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

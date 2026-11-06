@@ -1,0 +1,45 @@
+{
+  "path": "cloudwatch-data-source-lj",
+  "summary": "Teaches creating the Amazon CloudWatch data source using Grafana Assume Role, testing it, and querying metrics in Explore.",
+  "needs": [
+    {
+      "id": "aws-account",
+      "kind": "external-infra",
+      "description": "AWS account with CloudWatch metrics (e.g. AWS/EC2) and an IAM role (with CloudWatch read policy) trusting Grafana Cloud; role ARN pasted into #assumeRoleArn.",
+      "category": "external-infra",
+      "evidence": "Before you begin; grafana-assume-role: #assumeRoleArn",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "aws-iam-permission",
+      "kind": "permission-or-role",
+      "description": "Permission to create IAM roles/policies in AWS.",
+      "category": "external-infra",
+      "evidence": "Before you begin",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Grafana Organization Admin to add data sources.",
+      "category": "entitlement",
+      "evidence": "Before you begin; manifest userRoleIn Admin",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "cloudwatch-data",
+      "kind": "telemetry-data",
+      "description": "CloudWatch metrics for a running service (namespace/metric) returned in Explore.",
+      "category": "external-infra",
+      "evidence": "explore-data: Namespace AWS/EC2",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Test connection and Explore steps require valid AWS role ARN and live AWS resources; creates a data source on the shared stack.",
+  "externalInfraDependent": true
+}

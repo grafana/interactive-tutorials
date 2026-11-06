@@ -1,0 +1,45 @@
+{
+  "path": "prom-remote-write-lj",
+  "summary": "Teaches how to configure a self-hosted Prometheus server to remote_write to Grafana Cloud and verify metrics in Metrics Drilldown.",
+  "needs": [
+    {
+      "id": "prometheus-server",
+      "kind": "external-infra",
+      "description": "Running Prometheus server scraping targets, with editable prometheus.yml and restart permission.",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"A running Prometheus server that's already configured to scrape metrics\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Admin role to create access policy token",
+      "category": "none",
+      "evidence": "requirements has-role:admin",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "hosted-prom-connection",
+      "kind": "plugin-or-app",
+      "description": "\"Hosted Prometheus metrics\" connection tile at /connections/add-new-connection/hmInstancePromId",
+      "category": "none",
+      "evidence": "configure-prom-remote-write: formfill \"Hosted Prometheus\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "metrics-data",
+      "kind": "telemetry-data",
+      "description": "Metrics in Cloud Prometheus incl. series \"up\" for Metrics Drilldown quick search.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "verify-metrics-query-works: formfill \"up\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Token creation steps create resources; \"up\" search needs some data in the Prometheus datasource (seeded data suffices).",
+  "externalInfraDependent": true
+}

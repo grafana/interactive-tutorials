@@ -1,0 +1,54 @@
+{
+  "path": "alerting-first-rule-lj",
+  "summary": "Teaches creating a first Grafana-managed alert rule in Builder mode against the QuickPizza Prometheus demo data.",
+  "needs": [
+    {
+      "id": "quickpizza-datasources",
+      "kind": "datasource",
+      "description": "QuickPizza tutorial data sources incl. Prometheus data source named grafanacloud-play-prom (installed by the path itself via Demo Data Dashboards app; pre-seeding avoids that step).",
+      "category": "in-cloud-seedable",
+      "evidence": "install-datasources: requirement has-datasource:grafanacloud-play-prom; formfill val=grafanacloud-play-prom",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "demo-data-app",
+      "kind": "plugin-or-app",
+      "description": "Demo Data Dashboards app (installs QuickPizza data sources from left nav); only needed if data sources are not pre-seeded.",
+      "category": "in-cloud-seedable",
+      "evidence": "install-datasources milestone text: \"install runs from the Demo Data Dashboards app\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "metric-quickpizza_server_http_requests_total",
+      "kind": "telemetry-data",
+      "description": "Metric quickpizza_server_http_requests_total with a status label queryable on grafanacloud-play-prom.",
+      "category": "in-cloud-seedable",
+      "evidence": "build-query formfill val=quickpizza_server_http_requests_total",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "editor-role",
+      "kind": "permission-or-role",
+      "description": "User with Editor or Admin role able to create alert rules and folders.",
+      "category": "entitlement",
+      "evidence": "manifest targeting userRoleIn Editor/Admin; \"Permission to create and manage alert rules\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "contact-point",
+      "kind": "existing-grafana-config",
+      "description": "A contact point available to select (default grafana-default-email exists in new stacks).",
+      "category": "in-cloud-seedable",
+      "evidence": "select-contact-point milestone",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": false,
+  "reviewNotes": "Path creates folder 'QuickPizza alerts' itself; if a pre-existing folder of that name exists, folder creation may collide.",
+  "externalInfraDependent": false
+}

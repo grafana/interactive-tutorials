@@ -1,0 +1,122 @@
+{
+  "path": "clickhouse-data-source-lj",
+  "id": "clickhouse-data-source-lj",
+  "type": "path",
+  "milestoneCount": 7,
+  "startingLocation": "/connections/datasources",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:grafana-clickhouse-datasource"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
+              ]
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/grafana-clickhouse-datasource"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you connect to a ClickHouse data source, ensure you have:\n\n- A running ClickHouse server that Grafana Cloud can reach on its query port (Native: `9000`, or `9440` with TLS; HTTP: `8123`, or `8443` with TLS).\n- A read-only ClickHouse user, or permission to create one (you'll set this up in this journey).\n- The connection details for your server: host, port, username, and password.\n- Organization administrator access in Grafana, which is required to add a data source.\n- If your ClickHouse server sits behind a firewall, network access from Grafana Cloud (for example, an allowlist entry or a private data source connection)."
+  ],
+  "milestones": [
+    {
+      "id": "clickhouse-data-source-intro",
+      "dir": "clickhouse-data-source-lj/intro-clickhouse",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "**Why connect ClickHouse to Grafana**\n\nPairing ClickHouse with Grafana gives you a single place to explore and visualize that data:\n\n- **Query with the builder or SQL.** Use the visual query builder for common patterns, or write raw ClickHouse SQL when you need full control.\n- **Purpose-built for observability.** The data source understands logs, traces, and time series, and ships prebuilt OpenTelemetry dashboards for data written by the OpenTelemetry Collector.\n- **Dynamic dashboards.** ClickHouse-specific macros and template variables let you build reusable, parameterized dashboards.\n- **Alerting.** Turn ClickHouse queries into Grafana alert rules and recording rules."
+      ]
+    },
+    {
+      "id": "clickhouse-data-source-prepare",
+      "dir": "clickhouse-data-source-lj/prepare-clickhouse",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "**Before you begin**\n\n- Confirm your ClickHouse server is running and reachable from Grafana Cloud on its query port (Native `9000`/`9440`, or HTTP `8123`/`8443`).\n- You'll need an account that can create users and alter settings profiles in ClickHouse.\n\nIf your ClickHouse administrator has already given you a read-only user and connection details, you can skip ahead to the next milestone."
+      ]
+    },
+    {
+      "id": "clickhouse-data-source-add",
+      "dir": "clickhouse-data-source-lj/add-data-source",
+      "requirements": {
+        "on-page:/plugins": 2,
+        "exists-reftarget": 6,
+        "on-page:/plugins/grafana-clickhouse-datasource": 1,
+        "on-page:/connections/datasources": 1,
+        "on-page:/connections/datasources/new": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "clickhouse-data-source-configure",
+      "dir": "clickhouse-data-source-lj/configure-datasource",
+      "requirements": {
+        "exists-reftarget": 5
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "clickhouse-data-source-test",
+      "dir": "clickhouse-data-source-lj/test-connection",
+      "requirements": {
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": [
+        "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Failed to create ClickHouse client](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/troubleshooting/#failed-to-create-clickhouse-client)\n- [Setting is locked (readonly)](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/troubleshooting/#setting-is-locked-readonly)\n- [Full troubleshooting guide](https://grafana.com/docs/plugins/grafana-clickhouse-datasource/latest/troubleshooting/)"
+      ]
+    },
+    {
+      "id": "clickhouse-data-source-verify",
+      "dir": "clickhouse-data-source-lj/verify-data",
+      "requirements": {
+        "navmenu-open": 1,
+        "exists-reftarget": 5,
+        "on-page:/explore": 4
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "clickhouse-data-source-end",
+      "dir": "clickhouse-data-source-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

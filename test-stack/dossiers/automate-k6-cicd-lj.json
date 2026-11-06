@@ -1,0 +1,93 @@
+{
+  "path": "automate-k6-cicd-lj",
+  "id": "automate-k6-cicd-lj",
+  "type": "path",
+  "milestoneCount": 8,
+  "startingLocation": "/a/k6-app",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/a/k6-app"
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "Welcome to the Grafana learning path that shows you how to automate k6 performance tests in your CI/CD pipelines. Running k6 manually gives you performance data when you think to ask for it. Automating k6 in your pipeline gives you performance data on every deploy, with the ability to block releases that don't meet your standards.\n\nThis path guides you from a manually run k6 script to a CI/CD performance gate. You'll verify that thresholds produce the right exit codes, parameterize your script for multiple environments, add k6 to GitHub Actions or GitLab CI, and stream results to Grafana Cloud k6. By the end, performance testing is part of the daily workflow, not a laptop-only habit.\n\n## Here's what to expect\n\nWhen you complete this path, you'll be able to:\n\n- Explain what a CI/CD performance gate is and why exit codes matter\n- Verify that k6 thresholds pass and fail with the correct exit codes\n- Parameterize a script with `__ENV` so one script runs across environments\n- Add k6 to GitHub Actions or GitLab CI\n- Treat threshold breaches as pipeline failures that block merges or deploys\n- Stream automated test results to Grafana Cloud k6\n\n## Before you begin\n\nBefore you automate k6 in your CI/CD pipeline, ensure that you have:\n\n- A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account).\n- k6 installed on your machine. To install k6, refer to [k6 installation](https://grafana.com/docs/k6/latest/get-started/installation/).\n- A k6 test script with thresholds. If you don't have one yet, complete [Run your first k6 performance test](https://grafana.com/docs/learning-paths/run-first-k6-test/) and [Establish a performance baseline with k6](https://grafana.com/docs/learning-paths/establish-k6-baseline/) first.\n- A code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [Cursor](https://www.cursor.com/).\n- Access to a terminal or command line interface.\n- Access to a CI/CD platform such as GitHub Actions or GitLab CI.\n- Basic familiarity with your CI/CD platform's YAML configuration.\n\n## Troubleshooting\n\nIf you get stuck, we've got your back! Where appropriate, troubleshooting information is just a click away.\n\n## More to explore\n\nWe understand you might want to explore other capabilities not strictly on this path. We'll provide you opportunities where it makes sense."
+  ],
+  "milestones": [
+    {
+      "id": "automate-k6-cicd-understand-performance-gates",
+      "dir": "automate-k6-cicd-lj/understand-performance-gates",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "automate-k6-cicd-verify-thresholds",
+      "dir": "automate-k6-cicd-lj/verify-thresholds",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "automate-k6-cicd-parameterize-script",
+      "dir": "automate-k6-cicd-lj/parameterize-script",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "A CI/CD pipeline often runs the same script against different environments: a preview after a pull request, staging before a release, and sometimes production after deployment. If your script has a hardcoded URL, you need a separate script for each environment. Environment variables eliminate this problem. You define the target URL once as a variable and pass the value at runtime.\n\nTo parameterize your script, complete the following steps:\n\n1. Open your k6 test script and replace any hardcoded URLs with `__ENV.BASE_URL`. For example, change:\n\n   ```javascript\n   const res = http.get('https://staging.example.com/api/health');\n   ```\n\n   to:\n\n   ```javascript\n   const res = http.get(`${__ENV.BASE_URL}/api/health`);\n   ```\n\n   `__ENV` is a k6 global object that provides access to environment variables passed with the `-e` / `--env` flag or set in the shell environment. For details, refer to [Environment variables](https://grafana.com/docs/k6/latest/using-k6/environment-variables/).\n\n1. Run the script locally with the `-e` flag to pass the base URL:\n\n   ```bash\n   k6 run -e BASE_URL=https://staging.example.com test.js\n   ```\n\n   Verify that the test runs successfully against the specified environment.\n\n1. Add a default value check at the top of your script to catch missing variables early:\n\n   ```javascript\n   const BASE_URL = __ENV.BASE_URL;\n   if (!BASE_URL) {\n     throw new Error(\n       'BASE_URL environment variable is required. Use: k6 run -e BASE_URL=https://... test.js'\n     );\n   }\n   ```\n\n   Without this check, a missing `BASE_URL` produces confusing HTTP errors instead of a clear message about the missing variable.\n\n1. Test that the error message works by running without the `-e` flag:\n\n   ```bash\n   k6 run test.js\n   ```\n\n   You should see the error message you defined. This confirms that the script fails fast when the required variable is missing.\n\n> **Tip:** You can parameterize more than just the URL. Use `__ENV` for any value that varies between environments, such as authentication tokens (`__ENV.API_TOKEN`). Keep secrets out of the script and inject them from your CI platform's secret store.\n\nIn the next milestone, you add k6 as a step in your CI/CD pipeline."
+      ]
+    },
+    {
+      "id": "automate-k6-cicd-add-pipeline-step",
+      "dir": "automate-k6-cicd-lj/add-pipeline-step",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "automate-k6-cicd-handle-exit-code",
+      "dir": "automate-k6-cicd-lj/handle-exit-code",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "automate-k6-cicd-run-first-automated-test",
+      "dir": "automate-k6-cicd-lj/run-first-automated-test",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "automate-k6-cicd-stream-results-cloud",
+      "dir": "automate-k6-cicd-lj/stream-results-cloud",
+      "requirements": {
+        "exists-reftarget": 3,
+        "on-page:/a/k6-app/settings": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "automate-k6-cicd-end-journey",
+      "dir": "automate-k6-cicd-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}
