@@ -1,0 +1,67 @@
+{
+  "id": "alerting-notifications-create-silence",
+  "title": "Create a silence for scheduled suppression",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Silences provide one-time suppression of notifications using label matching. Unlike mute timings which use recurring time intervals, silences have a fixed start and end time. You'll create a silence for a scheduled maintenance window."
+    },
+    {
+      "type": "multistep",
+      "content": "Navigate to **Alerts & IRM > Alerting > Silences**.",
+      "requirements": ["navmenu-open"],
+      "steps": [
+        { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']" },
+        { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']" },
+        { "action": "highlight", "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/silences']" }
+      ]
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "a[href*='silence/new']",
+      "content": "Click **Create silence** to open the Create silence page.",
+      "requirements": ["on-page:/alerting/silences"]
+    },
+    {
+      "type": "markdown",
+      "content": "In **Silence start and end**, select the start and end date to indicate when the silence should go into effect and expire.\n\nFor example, set the start date to one week from today and the end time to 4 hours later."
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "#duration",
+      "targetvalue": "4h",
+      "content": "Optionally, in **Duration**, enter `4h` for a four-hour maintenance window. This automatically updates the end time."
+    },
+    {
+      "type": "markdown",
+      "content": "In the **Label** and **Value** fields, enter one or more matching labels to determine which alerts the silence applies to.\n\nFor example, add a matcher: Label: `service`, Operator: `=`, Value: `payment-api`."
+    },
+    {
+      "type": "markdown",
+      "content": "Click **Add matcher** if you need additional label matchers to narrow the scope. Multiple matchers use AND logic."
+    },
+    {
+      "type": "markdown",
+      "content": "In the **Affected alert instances** section, review the list of alerts that will be silenced. If no alerts match your matchers, it will show \"No firing alert instances found\"."
+    },
+    {
+      "type": "interactive",
+      "action": "formfill",
+      "reftarget": "textarea[name='comment']",
+      "targetvalue": "Scheduled database maintenance - silencing payment-api alerts",
+      "content": "In the **Comment** field, enter a description explaining why this silence was created."
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Save silence",
+      "content": "Click **Save silence** to create the silence."
+    },
+    {
+      "type": "markdown",
+      "content": "The silence appears in the Silences list. If scheduled for the future, it will show a status of **Pending** until the start time is reached."
+    }
+  ]
+}
