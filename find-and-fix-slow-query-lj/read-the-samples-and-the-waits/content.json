@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-and-fix-slow-query-read-the-samples",
+  "title": "Read the samples and the waits",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "To read how the query behaves over time, complete the following steps. If a tab is empty, skip it and go on."
+    },
+    {
+      "type": "section",
+      "id": "read-the-samples",
+      "title": "Read the samples and the waits",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Query samples']",
+          "skippable": true,
+          "content": "Open the **Query samples** tab.\n\nIf the tab is empty, skip the next step.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Select a query sample']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record what the samples show.\n\nPoints are individual query executions. The vertical axis is query duration. A query might usually take 10ms but occasionally take 10 seconds. Certain parameter values might cause slow execution. Performance might degrade during specific time windows.",
+          "tooltip": "Each point is an individual query execution.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Wait events']",
+          "skippable": true,
+          "content": "Open the **Wait events** tab.\n\nIf the tab is empty, skip the next steps.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='Dropdown-Events-Scene']",
+          "skippable": true,
+          "content": "Open the wait events dropdown.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#combobox-option-durationOfEventsBreakdown",
+          "skippable": true,
+          "content": "Select **Duration of wait events (breakdown)**.",
+          "tooltip": "The breakdown names each wait event.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='uplot-main-div']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Record which specific wait events contribute the most time.\n\nThe overview chart groups individual wait event types into **IO wait**, **Lock wait**, and **Network wait**. The breakdown uses names such as `Lock:relation` and `IO:DataFileRead` as examples. On PostgreSQL, Network wait is `Client`. Apply fixes based on the dominant wait event type.",
+          "tooltip": "Record the named wait event and its category.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have a record of whether a query might usually take 10ms and occasionally take 10 seconds, and of which specific wait events contribute the most time."
+    }
+  ]
+}

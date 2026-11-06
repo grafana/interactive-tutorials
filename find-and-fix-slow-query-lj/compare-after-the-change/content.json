@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-and-fix-slow-query-compare-after",
+  "title": "Compare after the fix",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "If you have not applied the fix on your database yet, skip this step. When you have, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "compare-after",
+      "title": "Compare after the fix",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-dbo11y-app/overview']",
+          "verify": "on-page:/a/grafana-dbo11y-app/overview",
+          "objectives": ["on-page:/a/grafana-dbo11y-app/overview"],
+          "skippable": true,
+          "content": "Open **Queries overview**.\n\nFind the same query you recorded before the fix.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Compare key query metrics before and after the change.\n\n- **Duration (avg)** should decrease.\n- **Duration (p99)**: tail latency should improve.\n- **Errors** should not increase.\n- **Calls** should remain stable. Calls: number of times the query was executed.\n- **Resource utilization**: CPU and I/O should decrease.\n\nContinue tracking these metrics over time to confirm the improvement holds under varying load."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='Interactive table'] a[href^='/a/grafana-dbo11y-app/overview/']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Click the same query.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/overview", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Explain plan']",
+          "skippable": true,
+          "content": "Open the **Explain plan** tab.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='explain-plan-graph']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Verify the index is being used.\n\nReturn to the **Explain plan** tab to confirm the database uses the index. Confirm row estimates decreased.\n\nIf the plan hasn't changed after adding an index, update statistics (`ANALYZE` for PostgreSQL, `ANALYZE TABLE` for MySQL) and check again. The estimates can be inaccurate when table statistics are outdated.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Query samples']",
+          "skippable": true,
+          "content": "Open the **Query samples** tab.",
+          "requirements": ["exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Select a query sample']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Verify consistent improvement. Watch for any regression in specific cases.",
+          "requirements": ["exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You compared key query metrics before and after the change. Verify the index is being used. Verify consistent improvement. Watch for any regression in specific cases."
+    }
+  ]
+}
