@@ -1,0 +1,165 @@
+{
+  "id": "sm-cost-attribution-labels",
+  "title": "Attribute Synthetic Monitoring costs to teams and services",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Attribute Synthetics usage to the teams and services responsible for it by configuring attribution keys, then checking that your checks carry matching values."
+    },
+    {
+      "type": "callout",
+      "title": "Before you begin",
+      "content": "This setup is for a Cost attribution admin with permission to edit the chosen Synthetic Monitoring check. Use an existing check you own and your organization’s approved keys and values. Configuring a key does not backfill historical usage."
+    },
+    {
+      "type": "markdown",
+      "content": "Review the Synthetics attribution settings before changing how usage is grouped."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Review attribution settings",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-cmab-app/settings",
+          "content": "Open **Cost Management and Billing → Settings** to review how Synthetics usage is attributed.",
+          "tooltip": "Start with the keys your organization uses to divide its costs.",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have reached the settings where Synthetics attribution keys are configured."
+    },
+    {
+      "type": "markdown",
+      "content": "Configure a missing attribution key, then review and save its values on an existing check."
+    },
+    {
+      "type": "section",
+      "id": "attribute-synthetic-monitoring-costs-to",
+      "title": "Configure keys and label a check",
+      "requirements": [
+        "has-permission:grafana-cmab-app.costattribution:write",
+        "has-plugin:grafana-cmab-app",
+        "has-plugin:grafana-synthetic-monitoring-app"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='synthetics-attribution-configure']",
+          "content": "Under **Synthetics attribution**, choose **Configure an attribution label** (or **Select another attribution label** if one key already exists). If the intended keys are already configured, keep them and skip this step plus the next two steps.",
+          "tooltip": "Choose a cost dimension that helps your team understand its usage.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/settings"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='synthetics-attribution-label-key']",
+          "content": "Select an existing check label key or enter the approved key your organization uses. You can configure at most two Synthetics attribution keys; retain existing keys.",
+          "tooltip": "Reuse an established key so costs follow the labels your checks already carry.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/settings"
+          ],
+          "doIt": false,
+          "showMe": true,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='synthetics-attribution-label-save']",
+          "content": "Choose **Save Synthetics Label**, then confirm the key appears under **Synthetics attribution** before continuing.",
+          "tooltip": "Confirm the approved key was saved before assigning values to a check.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/settings"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-synthetic-monitoring-app/checks",
+          "content": "Open **Checks** to apply your attribution keys to an existing check.",
+          "tooltip": "Connect the cost dimension to the checks that generate the usage.",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='checks list-item edit-button']",
+          "content": "Choose an existing check you own and select its **Edit** control. Pick the check intentionally; keep its unrelated labels and settings.",
+          "tooltip": "Use a check whose team or service ownership you know.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='checkEditor navigation labels']",
+          "content": "Open **Labels** to review the configured cost attribution keys and the values this check already carries.",
+          "tooltip": "Compare the configured cost dimensions with this check’s existing values.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"costAttribution fields\"]",
+          "content": "In **Cost attribution labels**, enter the correct value for each configured key that needs one. Keep existing correct values: a same-key label may already cover this check. An empty value remains unattributed.",
+          "tooltip": "Fill only missing or incorrect values and preserve labels that already describe ownership.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='checkEditor form submit']",
+          "content": "Save the check, then confirm its saved labels still contain the attribution keys and values you intended. Keep unrelated labels unchanged.",
+          "tooltip": "Confirm the saved check carries the intended cost dimensions and values.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have connected the configured cost dimensions to the labels on your check; confirm the saved keys and values before treating attribution as configured."
+    }
+  ]
+}
