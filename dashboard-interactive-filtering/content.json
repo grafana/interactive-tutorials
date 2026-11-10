@@ -117,7 +117,10 @@
             "exists-reftarget"
           ],
           "doIt": true,
-          "showMe": true
+          "showMe": true,
+          "objectives": [
+            "dashboard-group-by:canvvlh:filter:job"
+          ]
         }
       ]
     },
@@ -137,7 +140,8 @@
       "title": "Filter on a series",
       "requirements": [
         "section-completed:group-by-job",
-        "on-page:/d/canvvlh"
+        "on-page:/d/canvvlh",
+        "dashboard-group-by:canvvlh:filter:job"
       ],
       "blocks": [
         {
@@ -165,6 +169,10 @@
                 "exists-reftarget"
               ]
             }
+          ],
+          "requirements": [
+            "on-page:/d/canvvlh",
+            "dashboard-group-by:canvvlh:filter:job"
           ]
         },
         {
@@ -175,7 +183,9 @@
           "content": "A `job =` filter for the line you clicked is now in the filter bar, and every panel shows only that job.",
           "tooltip": "Filter buttons add a filter for each grouped label of the series.",
           "requirements": [
-            "exists-reftarget"
+            "exists-reftarget",
+            "on-page:/d/canvvlh",
+            "dashboard-group-by:canvvlh:filter:job"
           ],
           "doIt": false,
           "showMe": true
@@ -198,7 +208,8 @@
       "title": "Filter out a series",
       "requirements": [
         "section-completed:filter-on",
-        "on-page:/d/canvvlh"
+        "on-page:/d/canvvlh",
+        "dashboard-group-by:canvvlh:filter:job"
       ],
       "blocks": [
         {
@@ -206,13 +217,20 @@
           "id": "remove-filter-on",
           "action": "button",
           "reftarget": "[aria-label='Remove filter with key job']",
-          "content": "Remove the `job =` filter to bring back every job.",
+          "content": "Remove the `job =` filter to bring back every job. If it is already cleared, this step completes automatically.",
           "tooltip": "The grouping stays in place.",
           "requirements": [
-            "exists-reftarget"
+            "exists-reftarget",
+            "on-page:/d/canvvlh",
+            "dashboard-group-by:canvvlh:filter:job"
           ],
           "doIt": true,
-          "showMe": true
+          "showMe": true,
+          "objectives": [
+            "section-completed:filter-on",
+            "dashboard-group-by:canvvlh:filter:job",
+            "dashboard-filter-absent:canvvlh:filter:job"
+          ]
         },
         {
           "type": "guided",
@@ -239,6 +257,11 @@
                 "exists-reftarget"
               ]
             }
+          ],
+          "requirements": [
+            "on-page:/d/canvvlh",
+            "dashboard-group-by:canvvlh:filter:job",
+            "dashboard-filter-absent:canvvlh:filter:job"
           ]
         },
         {
@@ -249,7 +272,9 @@
           "content": "A `job !=` filter is now in the filter bar, and the job you clicked is gone from every panel.",
           "tooltip": "Click the pill to switch the operator or change the value.",
           "requirements": [
-            "exists-reftarget"
+            "exists-reftarget",
+            "on-page:/d/canvvlh",
+            "dashboard-group-by:canvvlh:filter:job"
           ],
           "doIt": false,
           "showMe": true
