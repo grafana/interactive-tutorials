@@ -1,0 +1,238 @@
+{
+  "id": "first-dashboard-rss",
+  "title": "Make your first dashboard",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "In this tutorial, we'll make your first dashboard, of Grafana news. To do this, we'll learn the following parts of Grafana in sequence:\n\n- Installing plugins to get access to data (in our case, RSS feeds)\n- Creating data sources, so we have something to visualize\n- Creating a dashboard that uses that data source\n- Setting up basic Alerting"
+    },
+    {
+      "type": "markdown",
+      "content": "You will install the Business News plugin to read an RSS feed; ask an administrator for help if you cannot install plugins or create data sources."
+    },
+    {
+      "type": "section",
+      "id": "install-plugin",
+      "title": "Install a plugin",
+      "requirements": [
+        "is-admin"
+      ],
+      "objectives": [
+        "has-plugin:volkovlabs-rss-datasource"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/plugins/volkovlabs-rss-datasource",
+          "verify": "on-page:/plugins/volkovlabs-rss-datasource",
+          "content": "Open the **Business News** plugin."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Install",
+          "requirements": [
+            "on-page:/plugins/volkovlabs-rss-datasource",
+            "is-admin",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "verify": "has-plugin:volkovlabs-rss-datasource",
+          "content": "Click **Install** and wait for installation to finish.",
+          "hint": "If installation is managed externally, ask your administrator to install Business News."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You now have the plugin needed to read RSS feeds; next you will configure a data source for the Grafana community feed."
+    },
+    {
+      "type": "section",
+      "id": "create-datasource",
+      "title": "Create a data source",
+      "requirements": [
+        "has-plugin:volkovlabs-rss-datasource",
+        "has-permission:datasources:create"
+      ],
+      "objectives": [
+        "datasource-configured:Reddit /r/grafana"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/connections/datasources/volkovlabs-rss-datasource",
+          "verify": "on-page:/connections/datasources/volkovlabs-rss-datasource",
+          "content": "Open the **Business News** connection."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Add new data source",
+          "content": "Click **Add new data source** and wait for its settings to open.",
+          "requirements": [
+            "on-page:/connections/datasources/volkovlabs-rss-datasource",
+            "exists-reftarget",
+            "has-permission:datasources:create"
+          ],
+          "skippable": true,
+          "verify": "on-page:/connections/datasources/edit/"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid Data source settings page name input field']",
+          "targetvalue": "Reddit /r/grafana",
+          "content": "Name the data source \"Reddit /r/grafana\"",
+          "requirements": [
+            "on-page:/connections/datasources/edit/",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='data-testid config-editor field-url']",
+          "targetvalue": "https://www.reddit.com/r/grafana/.rss",
+          "content": "Input the feed URL, which is `https://www.reddit.com/r/grafana/.rss`",
+          "requirements": [
+            "on-page:/connections/datasources/edit/",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Data source settings page Save and Test button']",
+          "content": "Click **Save & test** and confirm the connection succeeds.",
+          "requirements": [
+            "on-page:/connections/datasources/edit/",
+            "exists-reftarget"
+          ],
+          "verify": "datasource-configured:Reddit /r/grafana"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You configured the RSS data source; next you will use it to create a dashboard."
+    },
+    {
+      "type": "section",
+      "id": "create-dashboard",
+      "title": "Create a dashboard",
+      "requirements": [
+        "datasource-configured:Reddit /r/grafana"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "content": "Click Dashboards in the left-side menu.",
+          "requirements": [
+            "exists-reftarget",
+            "navmenu-open"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/dashboard/new",
+          "content": "Click the New > Dashboard button",
+          "verify": "on-page:/dashboard/new"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:pages.AddDashboard.itemButton:Create new panel button",
+          "requirements": [
+            "on-page:/dashboard/new",
+            "exists-reftarget"
+          ],
+          "content": "Click **Add visualization**."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "grafana:components.DataSourcePicker.inputV2",
+          "targetvalue": "Reddit /r/grafana",
+          "requirements": [
+            "on-page:/dashboard/new",
+            "exists-reftarget"
+          ],
+          "content": "Select the **Reddit /r/grafana** data source you configured."
+        },
+        {
+          "type": "multistep",
+          "content": "Open the visualization picker and select **Table**.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid=\"data-testid toggle-viz-picker\"]",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.PluginVisualization.item:Table",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
+            }
+          ],
+          "requirements": [
+            "on-page:/dashboard/new"
+          ]
+        },
+        {
+          "type": "multistep",
+          "content": "Click **Save Dashboard** and name the dashboard Grafana News.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "grafana:components.NavToolbar.editDashboard.saveButton",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "grafana:components.Drawer.DashboardSaveDrawer.saveAsTitleInput",
+              "targetvalue": "Grafana News",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
+            }
+          ],
+          "requirements": [
+            "on-page:/dashboard/new"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "grafana:components.Drawer.DashboardSaveDrawer.saveButton",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ],
+          "verify": "has-dashboard-named:Grafana News",
+          "content": "Click **Save** to create the dashboard."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "That's it! You've got a basic dashboard."
+    }
+  ]
+}
+

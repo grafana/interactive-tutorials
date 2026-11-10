@@ -158,9 +158,10 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row']:nth-match(1)",
-          "content": "Now, take a look at the Google Sheets query configuration.  There's no range of cells specified here, so the query will read every cell in the spreadsheet.",
-          "doIt": false,
+          "reftarget": "[data-query-sidebar-card='A']",
+          "content": "Select query **A** in the sidebar to see its Google Sheets configuration. No cell range is specified, so the query reads every cell in the spreadsheet.",
+          "requirements": ["exists-reftarget"],
+          "doIt": true,
           "lazyRender": true
         },
         {
@@ -169,14 +170,21 @@
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Switch container']",
-              "description": "Click the toggle here.",
-              "lazyRender": true
+              "reftarget": "div[data-testid='data-testid Switch container'] label[for='table-view']",
+              "description": "Click to show the panel data as a table.",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "hover",
+              "reftarget": "[data-query-sidebar-card='A']",
+              "description": "Hover over query A to reveal its controls.",
+              "requirements": ["exists-reftarget"]
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Hide response'] svg:nth-match(1)",
-              "description": "Click here to show data returned by the query."
+              "reftarget": "[data-query-sidebar-card='A'] button[aria-label='Show query']",
+              "description": "Show the data returned by query A.",
+              "requirements": ["exists-reftarget"]
             }
           ]
         },
@@ -194,20 +202,31 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row'] div:nth-match(58)",
-          "content": "Study the SQL expression that we're using here to summarize the data.",
+          "reftarget": "[data-query-sidebar-card='B']",
+          "content": "Select expression **B** in the sidebar to read the SQL that summarizes the data.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Hide response']:nth-match(1)",
+          "type": "guided",
           "content": "Hide the results of the original Google Sheets query.",
-          "lazyRender": true
+          "steps": [
+            {
+              "action": "hover",
+              "reftarget": "[data-query-sidebar-card='A']",
+              "description": "Hover over query A to reveal its controls.",
+              "requirements": ["exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-query-sidebar-card='A'] button[aria-label='Hide query']",
+              "description": "Hide the data returned by query A.",
+              "requirements": ["exists-reftarget"]
+            }
+          ]
         },
         {
           "type": "interactive",
@@ -256,8 +275,9 @@
             },
             {
               "action": "highlight",
-              "reftarget": "label[aria-label='Table view']",
-              "description": "Click the toggle to view the data as a table."
+              "reftarget": "div[data-testid='data-testid Switch container'] label[for='table-view']",
+              "description": "Click to show the panel data as a table.",
+              "requirements": ["exists-reftarget"]
             }
           ],
           "completeEarly": true
@@ -265,12 +285,12 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row'] div:nth-match(58)",
-          "content": "Now study the SQL expression that returns this data.",
+          "reftarget": "[data-query-sidebar-card='B']",
+          "content": "Select expression **B** in the sidebar to read the SQL that returns this data.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
@@ -317,12 +337,12 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='data-testid Query editor row'] div:nth-match(58)",
-          "content": "Study the SQL expression used to determine Adam's status in the game.  Note the use of ${player} which is the dashboard variable.  The value of the variable (in this case \"Adam\") will be substituted into the SQL expression when it is evaluated.",
+          "reftarget": "[data-query-sidebar-card='B']",
+          "content": "Select expression **B** in the sidebar to read the SQL for Adam's status. The `${player}` dashboard variable supplies the player name, \"Adam\", when Grafana evaluates the expression.",
           "requirements": [
             "exists-reftarget"
           ],
-          "doIt": false,
+          "doIt": true,
           "lazyRender": true
         },
         {
