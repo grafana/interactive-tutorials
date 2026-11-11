@@ -29,7 +29,8 @@
           "tooltip": "Start with the check whose results you want to connect to service context.",
           "requirements": [],
           "doIt": true,
-          "showMe": true
+          "showMe": true,
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks"
         }
       ]
     },
@@ -45,10 +46,7 @@
       "type": "section",
       "id": "connect-a-synthetic-monitoring-check-to",
       "title": "Connect a Synthetic Monitoring check to its service",
-      "requirements": [
-        "has-plugin:grafana-synthetic-monitoring-app",
-        "has-plugin:grafana-asserts-app"
-      ],
+      "requirements": [],
       "blocks": [
         {
           "type": "interactive",
@@ -77,32 +75,40 @@
           "showMe": true
         },
         {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "[data-testid='knowledgeGraph add-connection']",
-          "content": "Under **Knowledge Graph connections**, select **Add connection**; if the correct service is already connected, skip this step and the next one.",
-          "tooltip": "Start a new association only when the intended service is not already connected.",
+          "type": "multistep",
+          "id": "add-service-connection",
+          "content": "Under **Knowledge Graph connections**, open **Add connection** and choose **Service**. If the intended service and namespace are already saved, inspect them and confirm the saved connection below instead.",
           "requirements": [
-            "exists-reftarget",
             "on-page:/a/grafana-synthetic-monitoring-app/checks"
           ],
-          "doIt": true,
-          "showMe": true,
-          "skippable": true
+          "steps": [
+            {
+              "action": "button",
+              "reftarget": "[data-testid='knowledgeGraph add-connection']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-synthetic-monitoring-app/checks"
+              ],
+              "tooltip": "Open the available connection types."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='knowledgeGraph add-service']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-synthetic-monitoring-app/checks"
+              ],
+              "tooltip": "Add the fields for the monitored service."
+            }
+          ],
+          "objectives": [
+            "var-savedServiceConfirmed:true"
+          ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='knowledgeGraph add-service']",
-          "content": "Choose **Service** to add the service connection fields; skip this step if the service fields are already present.",
-          "tooltip": "Add the fields that identify the monitored service.",
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-synthetic-monitoring-app/checks"
-          ],
-          "doIt": true,
-          "showMe": true,
-          "skippable": true
+          "type": "callout",
+          "title": "If no services are available",
+          "content": "A service must already be discovered by your Knowledge Graph integration. If the service list is empty or the intended service is missing, stop and check the integration before continuing. Do not choose an unrelated service just to complete the guide."
         },
         {
           "type": "interactive",
@@ -134,12 +140,71 @@
           "type": "interactive",
           "action": "button",
           "reftarget": "[data-testid='checkEditor form submit']",
-          "content": "Review the service and namespace, then select **Save** to persist the connection labels.",
+          "content": "Review the service and namespace, then save the check. If the existing connection is already correct and **Save** is disabled, skip this step.",
           "tooltip": "Persist the reviewed values while keeping unrelated labels intact.",
           "requirements": [
             "exists-reftarget",
             "on-page:/a/grafana-synthetic-monitoring-app/checks"
           ],
+          "doIt": true,
+          "showMe": true,
+          "skippable": true,
+          "objectives": [
+            "var-savedServiceConfirmed:true"
+          ]
+        },
+        {
+          "type": "multistep",
+          "id": "reopen-saved-service-connection",
+          "content": "Reopen the saved check and its **Labels** tab to confirm the connection persisted. If you kept an existing correct connection and are still on **Labels**, confirm the saved connection below instead.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "main a[href^='/a/grafana-synthetic-monitoring-app/checks/'][href$='/edit']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-synthetic-monitoring-app/checks"
+              ],
+              "tooltip": "Reopen the saved configuration for this check."
+            },
+            {
+              "action": "button",
+              "reftarget": "[data-testid='checkEditor navigation labels']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-synthetic-monitoring-app/checks"
+              ],
+              "tooltip": "Read back the saved connection values."
+            }
+          ],
+          "objectives": [
+            "var-savedServiceConfirmed:true"
+          ]
+        },
+        {
+          "type": "input",
+          "id": "confirm-saved-service",
+          "inputType": "boolean",
+          "variableName": "savedServiceConfirmed",
+          "prompt": "Confirm the selected service and namespace are still present in **Labels**, with unrelated labels unchanged.",
+          "checkboxLabel": "I reopened the check and confirmed the saved service connection.",
+          "required": true
+        },
+        {
+          "type": "interactive",
+          "id": "return-to-check-dashboard",
+          "action": "highlight",
+          "reftarget": "nav[aria-label='Breadcrumbs'] a[href^='/a/grafana-synthetic-monitoring-app/checks/']",
+          "content": "Return to the check dashboard using the check name in the breadcrumbs.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks",
+            "var-savedServiceConfirmed:true"
+          ],
+          "tooltip": "Open monitoring results for the check you just verified.",
           "doIt": true,
           "showMe": true
         },
@@ -147,20 +212,33 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid=\"connected-services-section\"]",
-          "content": "After saving, allow several minutes for the relationship to appear. On the check dashboard, confirm that **Connected entities** shows the service and namespace you selected.",
+          "content": "Allow several minutes for the relationship to appear. Inspect **Connected entities** for the service and namespace you selected. If it remains empty or shows **No graph data found**, check the Knowledge Graph integration; saved labels alone do not prove that the relationship exists.",
           "tooltip": "Confirm that the displayed relationship matches the service this check monitors.",
           "requirements": [
             "exists-reftarget",
-            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+            "on-page:/a/grafana-synthetic-monitoring-app/checks",
+            "var-savedServiceConfirmed:true"
           ],
           "doIt": false,
           "showMe": true
+        },
+        {
+          "type": "input",
+          "id": "confirm-discovered-service-relationship",
+          "inputType": "boolean",
+          "variableName": "discoveredServiceConfirmed",
+          "prompt": "Confirm **Connected entities** shows the intended service and namespace. Leave this unchecked if the graph is empty or the relationship is missing.",
+          "checkboxLabel": "The graph shows the service and namespace monitored by this check.",
+          "required": true,
+          "requirements": [
+            "var-savedServiceConfirmed:true"
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "The saved service name and namespace connect this check to the service you verified in the graph."
+      "content": "The saved service name and namespace identify the intended connection; **Connected entities** confirms whether Knowledge Graph has discovered the relationship."
     }
   ]
 }
