@@ -34,57 +34,36 @@
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='grafana-exploretraces-app primary signal option all spans']",
-          "content": "Select **All spans**.\n\nThe next filter looks for a database span.",
-          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+          "type": "multistep",
+          "id": "select-database-calls",
+          "content": "Select the **Database calls** primary signal.\n\nOpen the dropdown next to **Root spans** and **All spans**, then select **Database calls**. This keeps only spans that name a database system, so every trace listed contains a database span.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='grafana-exploretraces-app primary signal select']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Select option']:contains('Database calls')"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "If no spans appear, your spans carry the older `db.system` attribute rather than `db.system.name`. Select **All spans**, then add a filter: **span.db.system**, **Equals**, and **mysql** or **postgresql**. These are the two database systems the link supports."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[placeholder='+ label = value']",
-          "doIt": false,
-          "content": "Open **Filters**.",
-          "skippable": true,
-          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid ad hoc filter option value span.db.system']",
-          "content": "Select **span.db.system**.\n\nIf your spans carry `db.system.name` instead, select **span.db.system.name**. If neither is listed, skip to the **Traces** tab and continue.",
-          "skippable": true,
-          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid ad hoc filter option value =']",
-          "content": "Select **Equals**.",
-          "skippable": true,
-          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid^='data-testid ad hoc filter option value ']",
-          "doIt": false,
-          "content": "Select **mysql** or **postgresql**.\n\nThese are the two database systems the link supports.",
-          "skippable": true,
-          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Traces']",
+          "reftarget": "[data-testid='grafana-exploretraces-app tab-trace-list']",
           "content": "Click the **Traces** tab.",
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='grafana-exploretraces-app traces container'] [role='grid']",
+          "reftarget": "[data-testid^='grafana-exploretraces-app open-trace-']:nth-match(1)",
           "doIt": false,
           "content": "Click the name of a trace.\n\nFor example, pick a request you know touched the database, such as a page that lists records. If the list is empty, widen the time range and continue.",
           "skippable": true,
