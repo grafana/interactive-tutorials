@@ -34,40 +34,15 @@
         },
         {
           "type": "markdown",
-          "content": "Check whether the panels show data.\n\n**Database calls** matches the current OpenTelemetry attribute, `db.system.name`. Many applications still send the older `db.system` attribute, which the Database Observability link also accepts. If the panels show no data, complete the next three steps. If they show data, skip them."
+          "content": "Check whether the panels show data.\n\n**Database calls** matches the current OpenTelemetry attribute, `db.system.name`. Many applications still send the older `db.system` attribute, which the Database Observability link also accepts. If the panels show no data, complete the next step. If they show data, skip it."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='grafana-exploretraces-app primary signal option all spans']",
+          "action": "navigate",
+          "reftarget": "/a/grafana-exploretraces-app/explore?var-primarySignal=true&var-filters=span.db.system%7C%3D~%7Cmysql__gfp__postgresql",
           "skippable": true,
-          "content": "Select **All spans**.",
-          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
-        },
-        {
-          "type": "multistep",
-          "id": "filter-span-db-system",
-          "skippable": true,
-          "content": "Add a filter on **span.db.system**.\n\nOpen **Filters**, select **span.db.system**, then select **Equals**.",
-          "requirements": ["on-page:/a/grafana-exploretraces-app"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "input[placeholder='+ label = value']"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='data-testid ad hoc filter option value span.db.system']"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='data-testid ad hoc filter option value =']"
-            }
-          ]
-        },
-        {
-          "type": "markdown",
-          "content": "Select **mysql** or **postgresql** from the list. These are the two database systems the link supports."
+          "content": "Select **All spans** and filter on **span.db.system**.\n\n**Go there** applies both: **All spans** as the primary signal, and a filter where **span.db.system** matches `mysql` or `postgresql`, the two database systems the link supports.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app"]
         },
         {
           "type": "interactive",
