@@ -87,22 +87,18 @@
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[placeholder='Filter by attribute or text']",
-          "targetvalue": "\"Text search\" =~ db.system",
-          "content": "Mark the database spans.\n\nIn **Filters** above the spans, add a **Text search** for `db.system`. Spans whose attributes contain `db.system` are highlighted, and the count next to the filter shows how many match.",
-          "skippable": true,
-          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[aria-label='Next result button']",
-          "content": "Jump to a matching span.\n\nThe down arrow next to the match count scrolls to the next matching span and gives it a blue background.",
+          "targetvalue": "\"Text search\" =~ \"db.statement db.query.text\"",
+          "content": "Mark the spans that record a query.\n\nIn **Filters** above the span list, add a **Text search** for `db.statement db.query.text`. These are the two names of the attribute that holds the query text, which the Database Observability link needs. Spans that have either one are marked, and the count to the right of the **Critical path**, **Errors**, and **High latency** pills shows how many.",
           "skippable": true,
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
         {
           "type": "markdown",
-          "content": "Click the span with the blue background to open its details. They show a **Database** group with the database system and the query text."
+          "content": "Jump to a marked span.\n\nThe match count, for example **1/12 matches**, sits above the span list to the right of the **Critical path**, **Errors**, and **High latency** pills. Click the down arrow immediately to its left. The span list scrolls to the next marked span and gives the row a blue background."
+        },
+        {
+          "type": "markdown",
+          "content": "Click the span with the blue background.\n\nThe row is in the span list below the filters. Its left column shows the service and operation name, and its right column shows the duration bar. Clicking anywhere on the row opens the span details beneath it. Under **Span attributes**, expand **Database** if it is collapsed. The query text is the value of `db.statement` or `db.query.text`. When the link is available, a Database Observability icon sits in front of the query text and the text is a link."
         },
         {
           "type": "interactive",
@@ -110,7 +106,7 @@
           "reftarget": "a[href*='/a/grafana-dbo11y-app/trace-link-resolve/']",
           "verify": "on-page:/a/grafana-dbo11y-app",
           "objectives": ["on-page:/a/grafana-dbo11y-app"],
-          "content": "Select the query text in the **Database** group.\n\nThe query text is the Database Observability link; it carries the Database Observability icon. If you do not see the link, skip this step and the next one.",
+          "content": "Select the query text in the **Database** group.\n\nThe query text is the Database Observability link; it carries the Database Observability icon. If the outline is drawn out of view, scroll the span details up until the query text is visible. If you do not see the link, skip this step and the next one.",
           "tooltip": "This opens the query in Database Observability.",
           "skippable": true,
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
