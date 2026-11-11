@@ -1,0 +1,112 @@
+{
+    "id": "first-dashboard-infinity",
+    "title": "Build your first dashboard",
+    "blocks": [{
+            "type": "conditional",
+            "conditions": ["has-datasource:yesoreyeram-infinity-datasource"],
+            "description": "Pre-flight check. Infinity is pre-provisioned as grafanacloud-infinity for orgs created on/after 2024-10-01; older orgs may not have it. Re-evaluates live, so this notice disappears once a data source is added.",
+            "whenTrue": [],
+            "whenFalse": [{
+                "type": "markdown",
+                "content": "**Before you begin.** This guide uses the **Infinity** data source, which is included with new Grafana Cloud stacks but is missing from yours. To add it, go to **Connections** > **Add new connection**, search for **Infinity**, click **Install**, then **Add new data source** and **Save & test**. This notice disappears once Infinity is available."
+            }]
+        },
+        {
+            "type": "markdown",
+            "content": "Get a working dashboard in a few clicks. No data of your own needed. You'll load a small public JSON file and create a table with the data."
+        },
+        {
+            "type": "section",
+            "id": "build-dashboard",
+            "title": "Build the dashboard",
+            "requirements": ["has-datasource:yesoreyeram-infinity-datasource"],
+            "blocks": [{
+                    "type": "interactive",
+                    "action": "navigate",
+                    "reftarget": "/dashboard/new",
+                    "verify": "on-page:/dashboard/new",
+                    "content": "Create a new dashboard."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
+                    "targetstate": "true",
+                    "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+                    "content": "Click **+**."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='data-testid sidebar add new panel']",
+                    "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+                    "content": "Click **Panel**."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[data-testid='data-testid UnconfiguredPanel action-button configure']",
+                    "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+                    "content": "Click **Configure visualization**."
+                },
+                {
+                    "type": "interactive",
+                    "action": "formfill",
+                    "reftarget": "input[data-testid='data-testid Select a data source']",
+                    "targetvalue": "grafanacloud-infinity",
+                    "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+                    "content": "Use the data source picker to select **grafanacloud-infinity**."
+                },
+                {
+                    "type": "interactive",
+                    "action": "formfill",
+                    "reftarget": "[data-testid='infinity-query-url-input']",
+                    "targetvalue": "https://raw.githubusercontent.com/grafana/grafana-infinity-datasource/main/testdata/users.json",
+                    "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+                    "content": "In the **URL** field, enter \n\n`https://raw.githubusercontent.com/grafana/grafana-infinity-datasource/main/testdata/users.json`"
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "button[data-testid='data-testid Tab Visualizations']",
+                    "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+                    "content": "Click **All visualizations**."
+                },
+                {
+                    "type": "interactive",
+                    "action": "highlight",
+                    "reftarget": "[data-testid='data-testid Plugin visualization item Table']",
+                    "requirements": ["on-page:/dashboard/new", "exists-reftarget"],
+                    "content": "Select **Table**."
+                },
+                {
+                    "type": "multistep",
+                    "requirements": ["on-page:/dashboard/new"],
+                    "objectives": ["has-dashboard-named:My first dashboard"],
+                    "content": "Click **Save**, name the dashboard `My first dashboard`, then click **Save** in the drawer.",
+                    "steps": [{
+                            "action": "highlight",
+                            "reftarget": "button[data-testid='data-testid Save dashboard button']",
+                            "requirements": ["exists-reftarget"]
+                        },
+                        {
+                            "action": "formfill",
+                            "reftarget": "input[aria-label='Save dashboard title field']",
+                            "targetvalue": "My first dashboard",
+                            "requirements": ["exists-reftarget"]
+                        },
+                        {
+                            "action": "highlight",
+                            "reftarget": "button[data-testid='data-testid Save dashboard drawer button']",
+                            "requirements": ["on-page:/dashboard/new", "exists-reftarget"]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "markdown",
+            "content": "You have a saved dashboard with a live table. Swap the URL for any JSON or CSV endpoint to show your own data."
+        }
+    ]
+}
