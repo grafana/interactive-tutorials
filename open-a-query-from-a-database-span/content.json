@@ -27,31 +27,22 @@
         },
         {
           "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-exploretraces-app/explore?var-primarySignal=span.db.system.name!%3D%22%22",
+          "content": "Select the **Database calls** primary signal.\n\nIt sits in the dropdown next to **Root spans** and **All spans**. Do it selects it for you. This keeps only spans that name a database system, so every trace listed contains a database span.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app"]
+        },
+        {
+          "type": "markdown",
+          "content": "If no spans appear, your spans carry the older `db.system` attribute rather than `db.system.name`. Select **All spans**, then add a filter: **span.db.system**, **Equals**, and **mysql** or **postgresql**. These are the two database systems the link supports."
+        },
+        {
+          "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='data-testid TimePicker Open Button']",
           "doIt": false,
           "content": "Set the time range to a period when your application ran database calls.",
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
-        },
-        {
-          "type": "multistep",
-          "id": "select-database-calls",
-          "content": "Select the **Database calls** primary signal.\n\nOpen the dropdown next to **Root spans** and **All spans**, then select **Database calls**. This keeps only spans that name a database system, so every trace listed contains a database span.",
-          "requirements": ["on-page:/a/grafana-exploretraces-app"],
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='grafana-exploretraces-app primary signal select']"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='data-testid Select option']:contains('Database calls')"
-            }
-          ]
-        },
-        {
-          "type": "markdown",
-          "content": "If no spans appear, your spans carry the older `db.system` attribute rather than `db.system.name`. Select **All spans**, then add a filter: **span.db.system**, **Equals**, and **mysql** or **postgresql**. These are the two database systems the link supports."
         },
         {
           "type": "interactive",
