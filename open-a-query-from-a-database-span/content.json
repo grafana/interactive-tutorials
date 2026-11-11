@@ -29,12 +29,45 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/a/grafana-exploretraces-app/explore?var-primarySignal=span.db.system.name!%3D%22%22",
-          "content": "Select the **Database calls** primary signal.\n\nIt sits in the dropdown next to **Root spans** and **All spans**. Do it selects it for you. This keeps only spans that name a database system, so every trace listed contains a database span.",
+          "content": "Select the **Database calls** primary signal.\n\n**Go there** opens Traces Drilldown with **Database calls** selected. The signal sits in the dropdown next to **Root spans** and **All spans**, and it keeps only spans whose `db.system.name` attribute names a database system, so every trace listed contains a database span.",
           "requirements": ["on-page:/a/grafana-exploretraces-app"]
         },
         {
           "type": "markdown",
-          "content": "If no spans appear, your spans carry the older `db.system` attribute rather than `db.system.name`. Select **All spans**, then add a filter: **span.db.system**, **Equals**, and **mysql** or **postgresql**. These are the two database systems the link supports."
+          "content": "**Database calls** matches the current OpenTelemetry attribute, `db.system.name`. Many applications still send the older `db.system` attribute, which the Database Observability link also accepts. If the panels show no data after you select **Database calls**, complete the next three steps. Otherwise, skip them."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app primary signal option all spans']",
+          "skippable": true,
+          "content": "Select **All spans**.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "multistep",
+          "id": "filter-span-db-system",
+          "skippable": true,
+          "content": "Add a filter on **span.db.system**.\n\nOpen **Filters**, select **span.db.system**, then select **Equals**.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app"],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid ad hoc filters combobox filter input']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid ad hoc filter option value span.db.system']"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid ad hoc filter option value =']"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Select **mysql** or **postgresql** from the list. These are the two database systems the link supports."
         },
         {
           "type": "interactive",
