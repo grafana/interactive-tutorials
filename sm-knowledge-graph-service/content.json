@@ -76,18 +76,93 @@
       "blocks": [
         {
           "type": "conditional",
-          "id": "check-results-open",
+          "id": "service-setup-page",
           "conditions": [
             "exists-reftarget"
           ],
-          "reftarget": "[data-testid='connected-services-section']",
+          "reftarget": "[data-testid='checkEditor navigation labels'][aria-selected='true']",
+          "whenTrue": [
+            {
+              "type": "conditional",
+              "id": "service-fields-open",
+              "conditions": [
+                "exists-reftarget"
+              ],
+              "reftarget": "[data-testid='knowledgeGraph service-name']",
+              "whenTrue": [
+                {
+                  "type": "markdown",
+                  "content": "Review the service connection below."
+                }
+              ],
+              "whenFalse": [
+                {
+                  "type": "multistep",
+                  "id": "add-service-connection",
+                  "content": "Add a **Service** connection.",
+                  "requirements": [
+                    "on-page:/a/grafana-synthetic-monitoring-app/checks"
+                  ],
+                  "steps": [
+                    {
+                      "action": "button",
+                      "reftarget": "[data-testid='knowledgeGraph add-connection']",
+                      "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-synthetic-monitoring-app/checks"
+                      ],
+                      "tooltip": "Open the available connection types."
+                    },
+                    {
+                      "action": "highlight",
+                      "reftarget": "[data-testid='knowledgeGraph add-service']",
+                      "requirements": [
+                        "exists-reftarget",
+                        "on-page:/a/grafana-synthetic-monitoring-app/checks"
+                      ],
+                      "tooltip": "Add the fields for the monitored service."
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "whenFalse": [
+            {
+              "type": "markdown",
+              "content": "Open **Labels** to add or review the service connection."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='knowledgeGraph service-name'][value]:not([value=''])",
+          "content": "Choose the service this check monitors in **Service name** to continue.",
+          "tooltip": "Match the service actually monitored by this check and preserve an existing correct value.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": false,
+          "showMe": false,
+          "objectives": [
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "conditional",
+          "id": "service-selected",
+          "conditions": [
+            "exists-reftarget"
+          ],
+          "reftarget": "[data-testid='knowledgeGraph service-name'][value]:not([value=''])",
           "whenTrue": [
             {
               "type": "interactive",
               "action": "highlight",
-              "reftarget": "[data-testid=\"connected-services-section\"]",
-              "content": "Inspect **Connected entities** for the service and namespace you saved. Allow a few minutes, then refresh if needed.",
-              "tooltip": "Confirm that the displayed relationship matches the service this check monitors.",
+              "reftarget": "[data-testid='knowledgeGraph namespace']",
+              "content": "Choose the matching **Namespace**. Keep **Any namespace** only if the connection should span namespaces.",
+              "tooltip": "Match the namespace to distinguish this service from services with the same name elsewhere.",
               "requirements": [
                 "exists-reftarget",
                 "on-page:/a/grafana-synthetic-monitoring-app/checks"
@@ -96,146 +171,59 @@
               "showMe": true
             },
             {
-              "type": "conditional",
-              "id": "graph-is-empty",
-              "conditions": [
-                "exists-reftarget"
+              "type": "interactive",
+              "action": "button",
+              "reftarget": "[data-testid='checkEditor form submit']",
+              "content": "Save the connection. Skip this step if you kept the existing values.",
+              "tooltip": "Persist the reviewed values while keeping unrelated labels intact.",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-synthetic-monitoring-app/checks"
               ],
-              "reftarget": "[data-testid='connected-services-section']:contains('No graph data found')",
-              "whenTrue": [
-                {
-                  "type": "callout",
-                  "title": "Relationship not discovered yet",
-                  "content": "Saving a connection does not confirm discovery. If the graph remains empty after a few minutes, check the Knowledge Graph integration."
-                }
-              ],
-              "whenFalse": [
-                {
-                  "type": "markdown",
-                  "content": "Check that the graph shows the intended service and namespace."
-                }
-              ]
+              "doIt": true,
+              "showMe": true,
+              "skippable": true
             }
           ],
           "whenFalse": [
             {
-              "type": "conditional",
-              "id": "service-labels-open",
-              "conditions": [
-                "exists-reftarget"
-              ],
-              "reftarget": "[data-testid='checkEditor navigation labels'][aria-selected='true']",
-              "whenTrue": [
-                {
-                  "type": "conditional",
-                  "id": "service-fields-open",
-                  "conditions": [
-                    "exists-reftarget"
-                  ],
-                  "reftarget": "[data-testid='knowledgeGraph service-name']",
-                  "whenTrue": [
-                    {
-                      "type": "markdown",
-                      "content": "Review the service connection below."
-                    }
-                  ],
-                  "whenFalse": [
-                    {
-                      "type": "multistep",
-                      "id": "add-service-connection",
-                      "content": "Add a **Service** connection.",
-                      "requirements": [
-                        "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                      ],
-                      "steps": [
-                        {
-                          "action": "button",
-                          "reftarget": "[data-testid='knowledgeGraph add-connection']",
-                          "requirements": [
-                            "exists-reftarget",
-                            "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                          ],
-                          "tooltip": "Open the available connection types."
-                        },
-                        {
-                          "action": "highlight",
-                          "reftarget": "[data-testid='knowledgeGraph add-service']",
-                          "requirements": [
-                            "exists-reftarget",
-                            "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                          ],
-                          "tooltip": "Add the fields for the monitored service."
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "interactive",
-                  "action": "highlight",
-                  "reftarget": "[data-testid='knowledgeGraph service-name'][value]:not([value=''])",
-                  "content": "Choose the service this check monitors in **Service name** to continue.",
-                  "tooltip": "Match the service actually monitored by this check and preserve an existing correct value.",
-                  "requirements": [
-                    "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                  ],
-                  "doIt": false,
-                  "showMe": false,
-                  "objectives": [
-                    "exists-reftarget"
-                  ]
-                },
-                {
-                  "type": "conditional",
-                  "id": "service-selected",
-                  "conditions": [
-                    "exists-reftarget"
-                  ],
-                  "reftarget": "[data-testid='knowledgeGraph service-name'][value]:not([value=''])",
-                  "whenTrue": [
-                    {
-                      "type": "interactive",
-                      "action": "highlight",
-                      "reftarget": "[data-testid='knowledgeGraph namespace']",
-                      "content": "Choose the matching **Namespace**. Keep **Any namespace** only if the connection should span namespaces.",
-                      "tooltip": "Match the namespace to distinguish this service from services with the same name elsewhere.",
-                      "requirements": [
-                        "exists-reftarget",
-                        "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                      ],
-                      "doIt": false,
-                      "showMe": true
-                    },
-                    {
-                      "type": "interactive",
-                      "action": "button",
-                      "reftarget": "[data-testid='checkEditor form submit']",
-                      "content": "Save the connection. Skip this step if you kept the existing values.",
-                      "tooltip": "Persist the reviewed values while keeping unrelated labels intact.",
-                      "requirements": [
-                        "exists-reftarget",
-                        "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                      ],
-                      "doIt": true,
-                      "showMe": true,
-                      "skippable": true
-                    }
-                  ],
-                  "whenFalse": [
-                    {
-                      "type": "callout",
-                      "title": "Select a service to continue",
-                      "content": "If no services are listed, stop here and check your Knowledge Graph integration. Return once the service monitored by this check is discovered."
-                    }
-                  ]
-                }
-              ],
-              "whenFalse": [
-                {
-                  "type": "markdown",
-                  "content": "Open the check’s **Labels** tab to configure its service connection."
-                }
-              ]
+              "type": "callout",
+              "title": "Select a service to continue",
+              "content": "If no services are listed, stop here and check your Knowledge Graph integration. Return once the service monitored by this check is discovered."
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"connected-services-section\"]",
+          "content": "Inspect **Connected entities** for the service and namespace you saved. Allow a few minutes, then refresh if needed.",
+          "tooltip": "Confirm that the displayed relationship matches the service this check monitors.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "conditional",
+          "id": "graph-is-empty",
+          "conditions": [
+            "exists-reftarget"
+          ],
+          "reftarget": "[data-testid='connected-services-section']:contains('No graph data found')",
+          "whenTrue": [
+            {
+              "type": "callout",
+              "title": "Relationship not discovered yet",
+              "content": "Saving a connection does not confirm discovery. If the graph remains empty after a few minutes, check the Knowledge Graph integration."
+            }
+          ],
+          "whenFalse": [
+            {
+              "type": "markdown",
+              "content": "Check that the graph shows the intended service and namespace."
             }
           ]
         }
