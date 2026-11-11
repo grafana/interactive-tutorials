@@ -4,12 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Group Synthetic Monitoring costs by team: configure an attribution key, then give it a value on a check."
-    },
-    {
-      "type": "callout",
-      "title": "Before you begin",
-      "content": "Use an existing check you can edit. Creating an attribution key requires Cost attribution admin permission."
+      "content": "Group Synthetic Monitoring costs by team using an existing check. Creating a key requires Cost attribution admin permission."
     },
     {
       "type": "markdown",
@@ -54,43 +49,19 @@
               ],
               "whenFalse": [
                 {
-                  "type": "multistep",
+                  "type": "interactive",
                   "id": "configure-attribution-key",
-                  "content": "Create a `team` attribution key for Synthetics.",
+                  "content": "Create an attribution key: enter `team` and choose **Save Synthetics Label**.",
                   "requirements": [
+                    "exists-reftarget",
                     "on-page:/a/grafana-cmab-app/settings",
                     "has-permission:grafana-cmab-app.costattribution:write"
                   ],
-                  "steps": [
-                    {
-                      "action": "button",
-                      "reftarget": "[data-testid='synthetics-attribution-configure']",
-                      "requirements": [
-                        "exists-reftarget",
-                        "on-page:/a/grafana-cmab-app/settings"
-                      ],
-                      "tooltip": "Open the dialog to add the approved cost dimension."
-                    },
-                    {
-                      "action": "formfill",
-                      "reftarget": "[data-testid='synthetics-attribution-label-key']",
-                      "targetvalue": "team",
-                      "requirements": [
-                        "exists-reftarget",
-                        "on-page:/a/grafana-cmab-app/settings"
-                      ],
-                      "tooltip": "Enter and select the approved key."
-                    },
-                    {
-                      "action": "button",
-                      "reftarget": "[data-testid='synthetics-attribution-label-save']",
-                      "requirements": [
-                        "exists-reftarget",
-                        "on-page:/a/grafana-cmab-app/settings"
-                      ],
-                      "tooltip": "Save the new cost dimension without changing existing keys."
-                    }
-                  ]
+                  "action": "highlight",
+                  "reftarget": "[data-testid='synthetics-attribution-configure']",
+                  "doIt": false,
+                  "showMe": true,
+                  "tooltip": "Add a key to group costs by team."
                 }
               ]
             }
@@ -202,9 +173,8 @@
               ],
               "whenFalse": [
                 {
-                  "type": "callout",
-                  "title": "Attribution fields not available",
-                  "content": "If **Labels** shows **Set up cost attribution**, wait briefly and reopen the check. If the fields are still missing, ask your administrator to check the attribution setup."
+                  "type": "markdown",
+                  "content": "Attribution fields may take a moment to appear. Reopen the check; if they are still missing, ask your administrator about the setup."
                 }
               ]
             }

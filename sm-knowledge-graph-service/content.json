@@ -4,12 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Connect a check to its service so its monitoring results have service context in Knowledge Graph."
-    },
-    {
-      "type": "callout",
-      "title": "Before you start",
-      "content": "Use an existing check you can edit and a service discovered by Knowledge Graph."
+      "content": "Connect an existing check to a service discovered by Knowledge Graph."
     },
     {
       "type": "markdown",
@@ -97,32 +92,18 @@
               ],
               "whenFalse": [
                 {
-                  "type": "multistep",
+                  "type": "interactive",
                   "id": "add-service-connection",
-                  "content": "Add a **Service** connection.",
+                  "content": "Add a service: choose **Add connection → Service**.",
                   "requirements": [
+                    "exists-reftarget",
                     "on-page:/a/grafana-synthetic-monitoring-app/checks"
                   ],
-                  "steps": [
-                    {
-                      "action": "button",
-                      "reftarget": "[data-testid='knowledgeGraph add-connection']",
-                      "requirements": [
-                        "exists-reftarget",
-                        "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                      ],
-                      "tooltip": "Open the available connection types."
-                    },
-                    {
-                      "action": "highlight",
-                      "reftarget": "[data-testid='knowledgeGraph add-service']",
-                      "requirements": [
-                        "exists-reftarget",
-                        "on-page:/a/grafana-synthetic-monitoring-app/checks"
-                      ],
-                      "tooltip": "Add the fields for the monitored service."
-                    }
-                  ]
+                  "action": "highlight",
+                  "reftarget": "[data-testid='knowledgeGraph add-connection']",
+                  "doIt": false,
+                  "showMe": true,
+                  "tooltip": "Choose the service connection type."
                 }
               ]
             }
@@ -187,9 +168,8 @@
           ],
           "whenFalse": [
             {
-              "type": "callout",
-              "title": "Select a service to continue",
-              "content": "If no services are listed, stop here and check your Knowledge Graph integration. Return once the service monitored by this check is discovered."
+              "type": "markdown",
+              "content": "If no services are listed, check your Knowledge Graph integration before continuing."
             }
           ]
         },
@@ -215,9 +195,8 @@
           "reftarget": "[data-testid='connected-services-section']:contains('No graph data found')",
           "whenTrue": [
             {
-              "type": "callout",
-              "title": "Relationship not discovered yet",
-              "content": "Saving a connection does not confirm discovery. If the graph remains empty after a few minutes, check the Knowledge Graph integration."
+              "type": "markdown",
+              "content": "The relationship may take a few minutes to appear. If it stays empty, check your Knowledge Graph integration."
             }
           ],
           "whenFalse": [
