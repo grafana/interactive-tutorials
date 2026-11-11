@@ -85,17 +85,26 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='span-view']",
-          "doIt": false,
-          "content": "Click a database span.\n\nIts details show a **Database** group with the database system and the query text.",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Filter by attribute or text']",
+          "targetvalue": "\"Text search\" =~ db.system",
+          "content": "Mark the database spans.\n\nIn **Filters** above the spans, add a **Text search** for `db.system`. Spans whose attributes contain `db.system` are highlighted, and the count next to the filter shows how many match.",
           "skippable": true,
           "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[href^='/a/grafana-dbo11y-app/trace-link-resolve/']",
+          "reftarget": "[class*='rowMatchingFilter']:nth-match(1)",
+          "doIt": false,
+          "content": "Click a highlighted span.\n\nIts details show a **Database** group with the database system and the query text.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href*='/a/grafana-dbo11y-app/trace-link-resolve/']",
           "verify": "on-page:/a/grafana-dbo11y-app",
           "objectives": ["on-page:/a/grafana-dbo11y-app"],
           "content": "Select the query text in the **Database** group.\n\nThe query text is the Database Observability link; it carries the Database Observability icon. If you do not see the link, skip this step and the next one.",
