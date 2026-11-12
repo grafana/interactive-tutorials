@@ -134,29 +134,53 @@
           ]
         },
         {
-          "type": "interactive",
-          "action": "highlight",
+          "type": "conditional",
+          "conditions": [
+            "exists-reftarget"
+          ],
           "reftarget": "[id='contact-point-selector']",
-          "content": "Choose who should hear about it in **Contact point**. **Create alert** stays disabled until you pick one.",
-          "tooltip": "Pick where the notification should land, such as email or Slack. A contact point is required.",
-          "doIt": false,
-          "showMe": true,
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-cmab-app/usage-alerts"
-          ]
-        },
-        {
-          "type": "interactive",
-          "action": "button",
-          "reftarget": "[data-testid='cmab-alert-drawer-submit']",
-          "content": "Select **Create alert** to save it. This creates a real alert that sends notifications.",
-          "tooltip": "Creating the alert starts real notifications to your chosen contact point.",
-          "doIt": true,
-          "showMe": true,
-          "requirements": [
-            "exists-reftarget",
-            "on-page:/a/grafana-cmab-app/usage-alerts"
+          "whenTrue": [
+            {
+              "type": "interactive",
+              "action": "highlight",
+              "reftarget": "[id='contact-point-selector']",
+              "content": "Choose who should hear about it in **Contact point**. **Create alert** stays disabled until you pick one.",
+              "tooltip": "Pick where the notification should land, such as email or Slack. A contact point is required.",
+              "doIt": false,
+              "showMe": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-cmab-app/usage-alerts"
+              ]
+            },
+            {
+              "type": "interactive",
+              "action": "button",
+              "reftarget": "[data-testid='cmab-alert-drawer-submit']",
+              "content": "Select **Create alert** to save it. This creates a real alert that sends notifications.",
+              "tooltip": "Creating the alert starts real notifications to your chosen contact point.",
+              "doIt": true,
+              "showMe": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-cmab-app/usage-alerts"
+              ]
+            }
+          ],
+          "whenFalse": [
+            {
+              "type": "interactive",
+              "action": "highlight",
+              "reftarget": "[data-testid='cmab-manage-contact-points-link']",
+              "content": "No contact point is available. Create one in **Manage contact points**, or ask an Alerting administrator to do so, then return here to finish the alert.",
+              "tooltip": "A notification destination is required before an alert can be created.",
+              "doIt": false,
+              "showMe": true,
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/a/grafana-cmab-app/usage-alerts"
+              ]
+            }
           ]
         }
       ]
