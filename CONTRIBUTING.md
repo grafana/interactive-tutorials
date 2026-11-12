@@ -4,7 +4,7 @@ This repository holds interactive Grafana guides (`content.json` and `manifest.j
 
 ## Report a problem or request a guide
 
-Use the [Guide problem or request](https://github.com/grafana/interactive-tutorials/issues/new?template=guide-problem-or-request.yml) issue form. You do not need to wait for permission to file an issue. A good report names the package or URL, the product version, the exact step, what you saw and what you expected, and how to reproduce it. Do not post secrets, tokens, or private data.
+Use the [Guide problem or request](https://github.com/grafana/interactive-tutorials/issues/new?template=guide-problem-or-request.yml) issue form. You do not need to wait for permission to file an issue. A good problem report names the package or URL, the product version, the exact step, what you saw and what you expected, and how to reproduce it. Do not post secrets, tokens, or private data.
 
 Report security issues through [Grafana's security issue reporting page](https://grafana.com/legal/report-a-security-issue/), not here.
 
@@ -54,7 +54,7 @@ The work must be content-only and small enough for one reviewer.
    - e2e-platform infrastructure
 4. Run the exact checks the issue specifies, and paste the results in the PR.
 5. Link the issue in the PR description.
-6. Sign your commits. The repository rejects unsigned commits at push time.
+6. Sign your commits. PRs with unsigned commits cannot be merged.
 
 CI runs strict guide validation (`validate-json.yml`), and a `CODEOWNERS` review is required before merge.
 

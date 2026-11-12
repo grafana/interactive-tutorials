@@ -1,5 +1,5 @@
 name: Guide problem or request
-description: Report a problem in an existing guide, or request a change.
+description: Report a problem in an existing guide, or request a new guide or a change.
 title: "[Guide] "
 body:
   - type: markdown
@@ -8,13 +8,29 @@ body:
         Thanks for helping improve the guides. A maintainer triages every issue. Only issues a maintainer labels `agent/ready` are open for outside implementation. See [CONTRIBUTING.md](https://github.com/grafana/interactive-tutorials/blob/main/CONTRIBUTING.md).
 
         Do not include secrets, tokens, or private data. Report security issues through [Grafana's security issue reporting page](https://grafana.com/legal/report-a-security-issue/).
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Issue type
+      options:
+        - Problem in an existing guide
+        - Request a new guide or change
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is wrong, or what guide or change do you want?
+    validations:
+      required: true
   - type: input
     id: package
     attributes:
       label: Affected package or URL
-      description: The package directory (for example `first-dashboard`) or the URL where you saw the guide.
+      description: Needed for problem reports. The package directory (for example `first-dashboard`) or the URL where you saw the guide.
     validations:
-      required: true
+      required: false
   - type: input
     id: version
     attributes:
@@ -26,28 +42,30 @@ body:
     id: step
     attributes:
       label: Exact step or action
-      description: The section and step text, or the action that failed.
+      description: Needed for problem reports. The section and step text, or the action that failed.
     validations:
-      required: true
+      required: false
   - type: textarea
     id: observed
     attributes:
       label: Observed result
+      description: Needed for problem reports.
     validations:
-      required: true
+      required: false
   - type: textarea
     id: expected
     attributes:
       label: Expected result
+      description: Needed for problem reports.
     validations:
-      required: true
+      required: false
   - type: textarea
     id: reproduction
     attributes:
       label: How to reproduce
-      description: Numbered steps from a clean state.
+      description: Needed for problem reports. Numbered steps from a clean state.
     validations:
-      required: true
+      required: false
   - type: textarea
     id: evidence
     attributes:
