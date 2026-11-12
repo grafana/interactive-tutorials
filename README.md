@@ -95,7 +95,7 @@ an interactive guide like that!
 
 ## Getting Your Tutorial Into The Plugin
 
-1. **Submit**: Open a PR to this repo, ping reviewers
+1. **Submit**: Open a PR to this repo, ping reviewers (outside contributors: see [CONTRIBUTING.md](CONTRIBUTING.md) first)
 2. **Include**: several sentences describing when/where/who should see
 your guide, so we can include it in the recommender.
 
