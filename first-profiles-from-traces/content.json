@@ -1,0 +1,93 @@
+{
+  "id": "first-profiles-from-traces",
+  "title": "Add profiles to your traced Kubernetes services",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Your traces show which request is slow. Profiles show what code made it slow.\n\n**Before you begin.** This guide is only for Kubernetes services that you onboarded with Instrumentation Hub. For anything else, refer to [Configure the client to send profiles](https://grafana.com/docs/pyroscope/latest/configure-client/)."
+    },
+    {
+      "type": "markdown",
+      "content": "First, turn on profiling for the namespace that runs your traced service."
+    },
+    {
+      "type": "section",
+      "id": "turn-on-profiling",
+      "title": "Turn on profiling",
+      "requirements": ["has-plugin:grafana-collector-app"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-collector-app/instrumentation-hub/application-monitoring",
+          "verify": "on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring",
+          "content": "Open **Application instrumentation** in Instrumentation Hub."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[aria-label^='Configure pipeline settings for all instrumented services in namespace']",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring", "exists-reftarget"],
+          "content": "Select your cluster, then click the settings icon next to the namespace that runs your traced service. The icon appears only for namespaces with instrumented services."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='app-pipeline-toggle-captureProfiling']",
+          "targetstate": "true",
+          "requirements": ["on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring", "exists-reftarget"],
+          "content": "Turn on **Profiling**."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Apply",
+          "requirements": ["on-page:/a/grafana-collector-app/instrumentation-hub/application-monitoring", "exists-reftarget"],
+          "content": "Click **Apply**. The setting applies to every instrumented service in the namespace."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Profiling is on for that namespace, with no code changes."
+    },
+    {
+      "type": "markdown",
+      "content": "Now check that profiles arrive. If Profiles Drilldown still shows its welcome page after a few minutes, restart the Alloy daemonset on your cluster, then refresh your browser. Replace `<NAMESPACE>` with the namespace where you installed Alloy:\n\n```bash\nkubectl rollout restart daemonset -l app.kubernetes.io/name=alloy-daemonset -n <NAMESPACE>\n```"
+    },
+    {
+      "type": "section",
+      "id": "see-profiles",
+      "title": "See your profiles",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-pyroscope-app/explore",
+          "verify": "on-page:/a/grafana-pyroscope-app/explore",
+          "content": "Open **Profiles Drilldown**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='sceneBody']",
+          "doIt": false,
+          "requirements": ["on-page:/a/grafana-pyroscope-app/explore", "exists-reftarget"],
+          "content": "Find your service. If you still see the welcome page, restart the Alloy daemonset as described above, then refresh your browser."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Tab Flame graph']",
+          "requirements": ["on-page:/a/grafana-pyroscope-app/explore", "exists-reftarget"],
+          "content": "Click **Flame graph** to see where a service spends its time."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Profiles are flowing next to your traces."
+    }
+  ]
+}
