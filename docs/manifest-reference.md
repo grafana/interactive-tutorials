@@ -60,13 +60,14 @@ prometheus-lj/
 | `type` | `"guide"` \| `"path"` \| `"journey"` | **Yes** | — | `"guide"` for standalone guides and LJ steps; `"path"` (or `"journey"`) for `*-lj` root directories. |
 | `repository` | `string` | No | `"interactive-tutorials"` | Repository identifier. Can be omitted (schema default applies). |
 | `description` | `string` | **Yes** | — | Short description of the guide or path. |
-| `category` | `string` | **Yes** | — | Content category for grouping and filtering. |
+| `category` | `string` | **Yes** | — | Content category for grouping and filtering. Standalone guides must use one of the [allowed categories](#category-standalone-guides). |
 | `author` | `object` | **Yes** | — | Attribution. See [author](#author). |
 | `language` | `string` | No | `"en"` | BCP 47 language tag. Can be omitted (schema default applies). |
 | `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
 | `targeting` | `object` | No | — | Contextual recommendation rules. See [targeting](#targeting). |
 | `testEnvironment` | `object` | No | `{ "tier": "cloud" }` | Where to test this guide. See [testEnvironment](#testenvironment). |
-| `depends` | `DependencyList` | No | `[]` | Hard prerequisites. See [dependency syntax](#dependency-syntax). |
+| `prerequisites` | `Prerequisite[]` | No | `[]` | Requirements learners must already satisfy before starting the guide or path. See [prerequisites](#prerequisites). |
+| `depends` | `DependencyList` | No | `[]` | Hard package dependencies. See [dependency syntax](#dependency-syntax). |
 | `recommends` | `DependencyList` | No | `[]` | Soft prerequisites (recommended, not blocking). |
 | `suggests` | `DependencyList` | No | `[]` | Loosely related package IDs. |
 | `provides` | `string[]` | No | `[]` | Capability tokens this package provides (e.g., `"datasource-configured"`). |
@@ -75,23 +76,72 @@ prometheus-lj/
 | `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"` or `"journey"`. |
 | `stats` | `object` | **No — never hand-author** | — | Completion block counts, computed by CI. See [stats](#stats). |
 
+### category (standalone guides)
+
+Standalone guides (`type: "guide"` that are not steps inside a `*-lj` or `*-lp` directory) must set `category` to exactly one of the values below. The website guides catalog filters on this field. Pick the topic the guide is mainly about, not every product it touches.
+
+| `category` | Use for |
+|------------|---------|
+| `onboarding` | Getting-started guides for new users (the `get-started-*` series and similar first-run guides) |
+| `dashboards` | Building, filtering, sharing and styling dashboards; visualization types and panel techniques |
+| `explore-and-queries` | Explore, Drilldown, saved queries, query languages, transformations and the semantic layer |
+| `data-sources` | Connecting and configuring data sources |
+| `alerting` | Alert rules and activity, IRM and on-call, SLOs |
+| `application-observability` | Application and frontend observability, Knowledge Graph, root cause analysis, observability concepts |
+| `infrastructure-and-data-collection` | Kubernetes and infrastructure monitoring, Alloy and Fleet Management, collecting and sending telemetry |
+| `synthetic-monitoring-and-testing` | Synthetic Monitoring checks and secrets, k6 and load testing |
+| `cost-and-usage` | Adaptive Telemetry, cardinality, usage alerts and cost management |
+| `administration-and-platform` | Git Sync, Grafana Assistant setup, Pathfinder and other platform configuration |
+| `play-demos` | Tours of demo dashboards on Grafana Play |
+
+Rules:
+
+- Do not use `general`, and do not use `testing`: the Pathfinder catalog hides any package whose category is `testing`.
+- To add a category, update this table in the same PR and tell the website team, because the catalog filter is built from these values.
+- Path roots and path steps are unaffected; they keep the `category` derived from `journey.group` (see [field derivation rules](#field-derivation-rules)).
+
 ### author
 
 ```json
 {
   "name": "Person name or github handle",
-  "team": "interactive-learning"
+  "team": "Developer Advocacy"
 }
 ```
 
 How to fill out `author`:
 
-* The `name` field can be filled out by consulting git commit history. Who wrote/
-committed the corresponding `content.json` file?  If more than one person, you can 
-comma separate authors
-* If you're working on a learning path or learning journey, the default team is
-"Grafana Documentation"
-* If unsure, leave name blank, and use "interactive-learning" for the team field.
+* Use a real person's name or GitHub handle. Consult the guide's Git history,
+  including its source before a format migration. Multiple contributors can be
+  comma-separated. Do not credit Pathfinder, a generator, or an organization as
+  the author. For imported packages, distinguish the importer from the original
+  prose author when describing provenance.
+* Set `team` to the responsible team's canonical name below. Check existing
+  attribution, CODEOWNERS, and the contributor's team; do not infer Documentation
+  ownership solely from the package being a learning path.
+* For cross-team contributions, choose one responsible team rather than creating
+  a comma-separated team label. Resolve uncertain ownership before publishing;
+  do not use an empty author or `interactive-learning` as a fallback.
+
+Canonical team names used by top-level learning paths and standalone guides:
+
+| Team | Scope |
+|------|-------|
+| `Documentation` | Technical writing and documentation |
+| `Developer Advocacy` | Developer advocates |
+| `Field Engineering` | Solutions architecture and field engineering |
+| `Product` | Product management |
+| `Alerting` | Alerting guides owned by the Alerting team |
+| `Dashboards` | Dashboards team |
+| `Dashboards Edit` | Dashboard editing team |
+| `Sharing` | Grafana Sharing squad |
+| `Digital Experience` | Digital experience and frontend observability team |
+| `SLO` | Service-level objectives team |
+
+Use these exact spellings, without a `Grafana` prefix. Add a new team here when
+confirmed ownership requires it; do not invent aliases for an existing team.
+This normalization applies to top-level manifests; nested milestone attribution
+is maintained separately.
 
 ### targeting
 
@@ -264,8 +314,8 @@ These rules define where each manifest field's data comes from during migration.
 | `type` | — | Always `"guide"`. |
 | `repository` | — | Omit (schema default `"interactive-tutorials"` applies). |
 | `description` | `index.json` rule | First priority: copy the `description` from the matching `index.json` rule (already catalog-style). If no rule exists, summarize available sources (content.json title, website markdown) into a compact one-line catalog summary. |
-| `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise `"general"`. |
-| `author` | — | `{ "team": "interactive-learning" }` for standalone guides; `{ "team": "Grafana Documentation" }` for steps inside a `*-lj` directory. |
+| `category` | Website markdown | If the guide directory is a direct child of a `*-lj` directory, use `journey.group` from that path's `_index.md`. Otherwise (standalone guide) choose one of the [allowed categories](#category-standalone-guides). |
+| `author` | — | Named contributor and responsible team; see [author](#author). |
 | `language` | — | Omit (schema default `"en"` applies). |
 | `startingLocation` | `index.json` rule | Traverse the `match` expression depth-first, left-to-right and pick the first URL-bearing leaf (`urlPrefix` value or first entry of `urlPrefixIn`). Omit if no URL can be derived (do not fall back to `"/"`). |
 | `targeting.match` | `index.json` rule | Copy the `match` object verbatim. |
@@ -284,7 +334,7 @@ These rules define where each manifest field's data comes from during migration.
 | `type` | — | Always `"guide"`. |
 | `description` | `index.json` rule, then website step `index.md` | First priority: matching `index.json` rule description. Second: step markdown `description` frontmatter (condense to one line if verbose). Third: summarize from available context. |
 | `category` | Website path `_index.md` | Use `journey.group` from the parent path's `_index.md`. |
-| `author` | — | `{ "team": "Grafana Documentation" }` (all learning path content uses this team). |
+| `author` | — | Named contributor and responsible team; see [author](#author). |
 | `targeting` | — | Omit unless the step has its own `index.json` entry (targeting lives at the path level). |
 | `depends` | Step ordering | Step N+1 depends on step N. First step has no `depends`. |
 | `recommends` | Step ordering | Step N recommends step N+1. Last step has no next-step recommendation. |
@@ -298,7 +348,7 @@ These rules define where each manifest field's data comes from during migration.
 | `type` | — | Always `"path"`. |
 | `description` | `index.json` rule, then website `_index.md` | First priority: matching `index.json` rule description. Second: condense `_index.md` frontmatter `description` to a compact one-line catalog summary. |
 | `category` | Website `_index.md` | From `journey.group` (e.g., `"data-availability"`). |
-| `author` | — | `{ "team": "Grafana Documentation" }` (all learning path content uses this team). |
+| `author` | — | Named contributor and responsible team; see [author](#author). |
 | `startingLocation` | `index.json` rule | Same derivation as standalone guides. Omit if no URL can be derived (do not fall back to `"/"`). |
 | `targeting.match` | `index.json` rule | Copy the `match` object from the matching rule, if one exists. |
 | `testEnvironment` | `index.json` rule | Apply [tier inference rules](#testenvironment). |
@@ -314,7 +364,7 @@ If the website repository is not cloned locally or a guide has no corresponding 
 | Field | Fallback |
 |-------|----------|
 | `description` | Use the `index.json` rule description. If no rule exists, flag for manual entry. |
-| `category` | Default to `"general"` and flag for manual review. |
+| `category` | Steps inside a `*-lj` directory: flag for manual review. Standalone guides: choose from the [allowed categories](#category-standalone-guides). |
 | `milestones` (paths only) | Derive ordering from subdirectory names and `content.json` titles. Flag for manual verification. |
 | `recommends`, `suggests`, `depends` | Leave empty. These fields require website metadata to derive. |
 
@@ -398,8 +448,8 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "id": "<guide-id>",
   "type": "guide",
   "description": "<from index.json rule description>",
-  "category": "<from journey.group or 'general'>",
-  "author": { "team": "interactive-learning" },
+  "category": "<one of the allowed standalone categories>",
+  "author": { "name": "Jayclifford345", "team": "Developer Advocacy" },
   "startingLocation": "<first URL from match expression>",
   "targeting": {
     "match": { "<copied from index.json rule match>" : [] }
@@ -420,7 +470,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "type": "path",
   "description": "<from _index.md description>",
   "category": "<from journey.group>",
-  "author": { "team": "interactive-learning" },
+  "author": { "name": "Jayclifford345", "team": "Developer Advocacy" },
   "startingLocation": "<first URL from match expression or '/'>",
   "targeting": {
     "match": { "<copied from index.json rule match>" : [] }
@@ -447,7 +497,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
   "type": "guide",
   "description": "<from step index.md description>",
   "category": "<from parent path journey.group>",
-  "author": { "team": "interactive-learning" },
+  "author": { "name": "Jayclifford345", "team": "Developer Advocacy" },
   "depends": ["<previous-step-id>"],
   "recommends": ["<next-step-id>"]
 }
@@ -457,7 +507,9 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ## Validation
 
-Validate individual packages:
+Build the CLI from Pathfinder's `main` branch, as specified in `.github/workflows/validate-json.yml` and `.github/workflows/deploy.yml`.
+
+Validate individual packages with this CLI. It rejects missing prerequisite IDs or labels, whitespace-only values, duplicate IDs, and unsupported `format` values.
 
 ```bash
 # cwd: the interactive-tutorials repository root, with grafana-pathfinder-app

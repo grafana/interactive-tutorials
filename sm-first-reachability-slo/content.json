@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "sm-first-reachability-slo",
+  "title": "Create or review a reachability SLO",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "A check tells you whether your service is reachable; an SLO helps you decide whether it has been reliable enough over time. Choose a check to create its first SLO or review the one already linked to it."
+    },
+    {
+      "type": "section",
+      "id": "choose-your-check",
+      "title": "1. Open a check dashboard",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "sm-first-reachability-slo-open-checks",
+          "action": "navigate",
+          "reftarget": "/a/grafana-synthetic-monitoring-app/checks",
+          "content": "Go to **Synthetic Monitoring \u2192 Checks**.",
+          "tooltip": "Open the Checks page.",
+          "showMe": false,
+          "doIt": true
+        },
+        {
+          "type": "guided",
+          "id": "sm-slo-search-check-optional",
+          "content": "Search for a check by name, or **Skip** to use the first check in the current list.",
+          "stepTimeout": 600000,
+          "steps": [
+            {
+              "action": "formfill",
+              "reftarget": "input[aria-label=\"Search checks\"]",
+              "description": "Enter the check name, then press Tab to apply your search.",
+              "targetvalue": "^.+$",
+              "validateInput": true
+            }
+          ],
+          "skippable": true
+        },
+        {
+          "type": "interactive",
+          "id": "sm-slo-open-first-check",
+          "action": "highlight",
+          "reftarget": "a[href*=\"/a/grafana-synthetic-monitoring-app/checks/\"]:is([href$=\"/dashboard\"], [aria-label=\"Go to dashboard\"]):nth-match(1)",
+          "content": "Open the first check in the current results.",
+          "tooltip": "Open the dashboard for the first check in the current results.",
+          "showMe": false,
+          "doIt": true,
+          "requirements": [
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "id": "sm-slo-dashboard-finished",
+      "conditions": [
+        "on-page:/d/grafana_slo_app-"
+      ],
+      "whenTrue": [
+        {
+          "type": "markdown",
+          "content": "**Your SLO dashboard is open.** Use it to compare measured reliability with the target and track your error budget."
+        }
+      ],
+      "whenFalse": [
+        {
+          "type": "conditional",
+          "id": "sm-slo-create-or-review",
+          "display": "section",
+          "conditions": [
+            "exists-reftarget"
+          ],
+          "reftarget": "main button:contains(\" SLO\")",
+          "whenTrueSectionConfig": {
+            "title": "2. Review your existing SLO",
+            "requirements": [
+              "has-plugin:grafana-slo-app",
+              "section-completed:choose-your-check"
+            ]
+          },
+          "whenFalseSectionConfig": {
+            "title": "2. Create your first SLO",
+            "requirements": [
+              "has-plugin:grafana-slo-app",
+              "section-completed:choose-your-check"
+            ]
+          },
+          "whenTrue": [
+            {
+              "type": "guided",
+              "id": "sm-slo-existing-guided",
+              "content": "This check already has an SLO. Open it to review its target and window, then view its dashboard. Click each highlighted control to continue. You have **10 minutes per step**.",
+              "stepTimeout": 600000,
+              "steps": [
+                {
+                  "action": "button",
+                  "reftarget": "main button:contains(\" SLO\")",
+                  "description": "Click the highlighted SLO count to open the existing objective. Review its target and time window."
+                },
+                {
+                  "action": "highlight",
+                  "reftarget": "[role=\"dialog\"] a:contains(\"View dashboard\")",
+                  "description": "Click **View dashboard** to open the linked SLO dashboard and inspect its measured performance against the target."
+                }
+              ]
+            }
+          ],
+          "whenFalse": [
+            {
+              "type": "guided",
+              "id": "sm-slo-create-guided",
+              "content": "Start the guided walkthrough. Click each highlighted control when prompted. For an explanation, read it first, then hover over the highlighted area to advance. You have up to **10 minutes per step**.",
+              "stepTimeout": 600000,
+              "requirements": [
+                "on-page:/a/grafana-synthetic-monitoring-app/checks"
+              ],
+              "steps": [
+                {
+                  "action": "button",
+                  "reftarget": "SLOs",
+                  "description": "Click **SLOs** to review a reachability objective for this check."
+                },
+                {
+                  "action": "hover",
+                  "reftarget": "[role=\"dialog\"] [aria-label=\"selector\"]",
+                  "description": "The prefilled query selects this check by job and target. Its service level indicator (SLI) is successful probe observations divided by total observations. Reachability falls when any probe fails; Synthetic Monitoring uptime falls only when all probes fail together. When you are ready, **hover over the highlighted query** to move to the next explanation."
+                },
+                {
+                  "action": "hover",
+                  "reftarget": "[role=\"dialog\"] h4:contains(\"Target and error budget\")",
+                  "description": "An SLO is your reliability target over a time window. For example, 99.5% over 28 days allows 0.5% failed observations. Review the displayed target and window against your service needs; this allowance is different from the measured budget remaining after failures. When you are ready, **hover over the highlighted Target and error budget heading** to continue."
+                },
+                {
+                  "action": "button",
+                  "reftarget": "Create SLO",
+                  "description": "Review the name, target, window and alert settings, then click **Create SLO** when they suit your service. Alert rules are created only if enabled. Wait for the drawer to close and **1 SLO** to appear; if saving fails, resolve the error before continuing."
+                }
+              ],
+              "completeEarly": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You learned how sampled reachability feeds an SLI, how an SLO target and window define the allowed failure budget, and where to inspect the saved objective."
+    }
+  ]
+}

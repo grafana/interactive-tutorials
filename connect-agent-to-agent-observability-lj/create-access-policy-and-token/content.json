@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "connect-agent-to-agent-observability-create-access-policy-and-token",
+  "title": "Create the access policy and token",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "The third value the SDK needs, so it can send your agent's data to your Grafana Cloud stack, is a Grafana Cloud Access Policy Token. You set it later as `AGENTO11Y_AUTH_TOKEN`. You create it on the same **Your credentials** panel of the setup screen where you copied the **API URL** and **Instance ID**, so you don't leave the setup screen or build an access policy by hand. The token carries four scopes: `sigil:write` for generations, plus `metrics:write`, `traces:write`, and `logs:write`, so the same token also serves traces and metrics in Milestone 7."
+    },
+    {
+      "type": "markdown",
+      "content": "Create the token on the setup screen and save it."
+    },
+    {
+      "type": "section",
+      "id": "create-token",
+      "title": "Create the token",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/setup?step=instrument",
+          "content": "Go back to the **Your credentials** panel on the Agent Observability setup screen, the same panel where you copied the **API URL** and **Instance ID**.",
+          "verify": "on-page:/a/grafana-agento11y-app/setup"
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create token",
+          "content": "On the **API token** row of **Your credentials**:\n\n- Optional: before you create the token, click **Customize token** to set a token name or an expiry date. The token is otherwise non-expiring, unless your organization requires one.\n- Click **Create token**. The app creates a Grafana Cloud Access Policy Token already scoped with `sigil:write`, `metrics:write`, `traces:write`, and `logs:write`, so you don't pick the scopes yourself.\n- Copy the token now with the copy button and save it somewhere you can find it later, such as a notes file. You enter it as `AGENTO11Y_AUTH_TOKEN` in the next milestone. Tokens start with `glc_`.\n- The token is shown only once, until you reload the page. Store it securely, for example in a secret manager. If you lose it, create another token.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/setup", "exists-reftarget"],
+          "skippable": true,
+          "doIt": false,
+          "hint": "Don't see **Create token**? On stacks where in-app creation isn't available, the **API token** row shows **Create a token in Cloud Access Policies** instead. Click it, create an access policy with the `sigil:write`, `metrics:write`, `traces:write`, and `logs:write` scopes, add a token, and copy it once it appears."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your token is created with the four scopes and saved for later."
+    }
+  ]
+}

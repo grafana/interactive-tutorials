@@ -319,7 +319,9 @@ Present defaults where possible and ask for confirmation or overrides.
 
 **Requires user input (with auto-suggestions):**
 - `category`: What category does this guide belong to?
-  Suggest based on context (e.g., "data-availability" for datasource guides, "general" as fallback).
+  Suggest one of the allowed standalone categories listed in
+  [docs/manifest-reference.md](../../../docs/manifest-reference.md#category-standalone-guides)
+  based on the guide's topic (usually `dashboards`). Never suggest `general`.
 - `startingLocation`: Where in Grafana does this guide launch?
   Auto-derive from dashboard URL path: `/d/{uid}/{slug}`.
 - `targeting.match`: Where should this guide be recommended?
