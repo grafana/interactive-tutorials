@@ -1,0 +1,200 @@
+{
+  "id": "sm-cost-attribution-labels",
+  "title": "Attribute Synthetic Monitoring costs to teams and services",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Group Synthetic Monitoring costs by team using an existing check. Creating a key requires Cost attribution admin permission."
+    },
+    {
+      "type": "markdown",
+      "content": "Use an existing Synthetics attribution key, or create `team` if none is configured."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Set up cost attribution",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-cmab-app/settings",
+          "content": "Open **Cost Management and Billing → Settings**.",
+          "tooltip": "Start with the keys your organization uses to divide its costs.",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true,
+          "verify": "on-page:/a/grafana-cmab-app/settings"
+        },
+        {
+          "type": "conditional",
+          "id": "attribution-settings-open",
+          "conditions": [
+            "on-page:/a/grafana-cmab-app/settings"
+          ],
+          "whenTrue": [
+            {
+              "type": "conditional",
+              "id": "synthetics-key-configured",
+              "conditions": [
+                "exists-reftarget"
+              ],
+              "reftarget": "main div:has(:scope > div > div > span:contains('Synthetics'))",
+              "whenTrue": [
+                {
+                  "type": "markdown",
+                  "content": "A Synthetics attribution key is already configured. Continue to label your check."
+                }
+              ],
+              "whenFalse": [
+                {
+                  "type": "interactive",
+                  "id": "configure-attribution-key",
+                  "content": "Create an attribution key: enter `team` and choose **Save Synthetics Label**.",
+                  "requirements": [
+                    "exists-reftarget",
+                    "on-page:/a/grafana-cmab-app/settings",
+                    "has-permission:grafana-cmab-app.costattribution:write"
+                  ],
+                  "action": "highlight",
+                  "reftarget": "[data-testid='synthetics-attribution-configure']",
+                  "doIt": false,
+                  "showMe": true,
+                  "tooltip": "Add a key to group costs by team."
+                }
+              ]
+            }
+          ],
+          "whenFalse": [
+            {
+              "type": "markdown",
+              "content": "Return to Settings to review your Synthetics attribution keys."
+            }
+          ]
+        }
+      ],
+      "autoCollapse": false
+    },
+    {
+      "type": "markdown",
+      "content": "The attribution key defines how Synthetics costs are grouped."
+    },
+    {
+      "type": "markdown",
+      "content": "Add a team or service value to an existing check."
+    },
+    {
+      "type": "section",
+      "id": "attribute-synthetic-monitoring-costs-to",
+      "title": "Label your check",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-synthetic-monitoring-app/checks",
+          "content": "Open **Checks**.",
+          "tooltip": "Connect the cost dimension to the checks that generate the usage.",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true,
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main a[href^='/a/grafana-synthetic-monitoring-app/checks/'][href$='/edit']:nth-match(1)",
+          "content": "Open the first check for editing.",
+          "tooltip": "Open the first check in the list.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[data-testid='checkEditor navigation labels']",
+          "content": "Open **Labels**.",
+          "tooltip": "Compare the configured cost dimensions with this check’s existing values.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-synthetic-monitoring-app/checks"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "conditional",
+          "id": "check-labels-open",
+          "conditions": [
+            "exists-reftarget"
+          ],
+          "reftarget": "[data-testid='checkEditor navigation labels'][aria-selected='true']",
+          "whenTrue": [
+            {
+              "type": "conditional",
+              "id": "attribution-fields-available",
+              "conditions": [
+                "exists-reftarget"
+              ],
+              "reftarget": "[data-testid=\"costAttribution fields\"]",
+              "whenTrue": [
+                {
+                  "type": "interactive",
+                  "action": "highlight",
+                  "reftarget": "[data-testid=\"costAttribution fields\"]",
+                  "content": "Under **Cost attribution labels**, enter the team or service responsible for this check, for example `platform`. Keep any existing correct values.",
+                  "tooltip": "Fill only missing or incorrect values and preserve labels that already describe ownership.",
+                  "requirements": [
+                    "exists-reftarget",
+                    "on-page:/a/grafana-synthetic-monitoring-app/checks"
+                  ],
+                  "doIt": false,
+                  "showMe": true
+                },
+                {
+                  "type": "interactive",
+                  "action": "button",
+                  "reftarget": "[data-testid='checkEditor form submit']",
+                  "content": "Save the check. Skip this step if you kept its existing values.",
+                  "tooltip": "Confirm the saved check carries the intended cost dimensions and values.",
+                  "requirements": [
+                    "exists-reftarget",
+                    "on-page:/a/grafana-synthetic-monitoring-app/checks"
+                  ],
+                  "doIt": true,
+                  "showMe": true,
+                  "skippable": true
+                }
+              ],
+              "whenFalse": [
+                {
+                  "type": "markdown",
+                  "content": "Attribution fields may take a moment to appear. Reopen the check; if they are still missing, ask your administrator about the setup."
+                }
+              ]
+            }
+          ],
+          "whenFalse": [
+            {
+              "type": "markdown",
+              "content": "Open the check’s **Labels** tab to enter its attribution value."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "After saving, reopen the check and its **Labels** tab to confirm the attribution value was saved."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "New usage is attributed using the check’s saved value; historical usage is not backfilled."
+    }
+  ]
+}
