@@ -1,0 +1,45 @@
+{
+  "path": "elasticsearch-data-source-lj",
+  "summary": "Teaches adding, configuring, testing and querying an Elasticsearch data source in Grafana.",
+  "needs": [
+    {
+      "id": "elasticsearch-server",
+      "kind": "external-infra",
+      "description": "Running Elasticsearch (v7.17+/8/9) reachable from Grafana Cloud, e.g. via PDC, with an index matching logs-* and @timestamp time field containing documents",
+      "category": "external-infra",
+      "evidence": "Before you begin: Elasticsearch instance running and accessible; typed logs-* and @timestamp",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "elasticsearch-credentials",
+      "kind": "other",
+      "description": "Read credentials (user/password or API key) for that Elasticsearch",
+      "category": "external-infra",
+      "evidence": "Before you begin: authentication credentials with read access",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "network-path-pdc",
+      "kind": "external-infra",
+      "description": "Network path from Cloud to Elasticsearch (public endpoint or Private data source connect agent)",
+      "category": "external-infra",
+      "evidence": "Before you begin: network access via PDC",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Org Admin user (targeting userRole Admin; only admins add data sources)",
+      "category": "entitlement",
+      "evidence": "targeting userRole Admin",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Path creates the data source itself; the external server is required for test-connection and explore-data to pass. Placeholder URL http://elasticsearch.example.com:9200 is typed literally; test will need a real URL substituted or fail at Save & test.",
+  "externalInfraDependent": true
+}

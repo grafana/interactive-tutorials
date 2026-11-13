@@ -1,0 +1,45 @@
+{
+  "path": "prometheus-lj",
+  "summary": "Teaches how to add and configure a Prometheus data source (URL, auth, optional PDC) and verify data in Metrics Drilldown.",
+  "needs": [
+    {
+      "id": "prometheus-server",
+      "kind": "external-infra",
+      "description": "Reachable Prometheus server; steps type http://localhost:9090, which Cloud cannot reach without PDC.",
+      "category": "external-infra",
+      "evidence": "add-data-source-url: \"http://localhost:9090\"; Before you begin: \"Downloaded, installed, and configured Prometheus\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "pdc-agent",
+      "kind": "external-infra",
+      "description": "Running PDC agent and network (recommended, not required); select-private-connection highlights PDC input.",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"PDC agent is running\"; select-private-connection",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "prometheus-credentials",
+      "kind": "other",
+      "description": "Auth method and credentials of the Prometheus server (basic auth etc.).",
+      "category": "none",
+      "evidence": "config-authentication: #auth-method-select",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "metrics-drilldown",
+      "kind": "plugin-or-app",
+      "description": "Metrics Drilldown app (grafana-metricsdrilldown-app) enabled.",
+      "category": "none",
+      "evidence": "verify-ds-connection: href /a/grafana-metricsdrilldown-app/drilldown",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Save & test will fail with localhost URL from Cloud unless a reachable Prometheus or PDC is arranged.",
+  "externalInfraDependent": true
+}

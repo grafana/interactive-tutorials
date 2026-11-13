@@ -1,0 +1,54 @@
+{
+  "path": "postgresql-db-olly-lj",
+  "summary": "Teaches how to set up Grafana Database Observability for PostgreSQL by preparing the DB, configuring Alloy via the wizard, and verifying telemetry.",
+  "needs": [
+    {
+      "id": "postgres-14-instance",
+      "kind": "external-infra",
+      "description": "PostgreSQL 14+ with pg_stat_statements, compute_query_id=on, track_activity_query_size=4096, and a monitoring user with pg_monitor/pg_read_all_stats; reachable directly (no pooler).",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"A running PostgreSQL 14.0 or later instance\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "alloy-host",
+      "kind": "external-infra",
+      "description": "Host running Grafana Alloy 1.17.0+ with network access to the PostgreSQL instance and Grafana Cloud, using the config copied from the wizard (database name postgres_primary).",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"A machine where you can install Grafana Alloy 1.17.0 or later\"; configure-alloy fills \"postgres_primary\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "dbo11y-activated",
+      "kind": "plugin-or-app",
+      "description": "Database Observability app (grafana-dbo11y-app) activated in the stack so /a/grafana-dbo11y-app/configuration works.",
+      "category": "entitlement",
+      "evidence": "Before you begin: \"Database Observability activated in your Grafana Cloud stack\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "dbo11y-telemetry",
+      "kind": "telemetry-data",
+      "description": "Telemetry from a monitored PostgreSQL instance so Telemetry status tab and Overview page show data.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "verify-telemetry: Telemetry status tab; explore-queries: /a/grafana-dbo11y-app/overview",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "editor-admin-role",
+      "kind": "permission-or-role",
+      "description": "User with Editor or Admin role",
+      "category": "none",
+      "evidence": "check-requirements: \"Editor or Admin role\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Wizard steps (Add a database, Telemetry status) may pass UI-only without real data; data-dependent steps need a live Alloy+Postgres.",
+  "externalInfraDependent": true
+}

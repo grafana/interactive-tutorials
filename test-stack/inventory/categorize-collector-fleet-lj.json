@@ -1,0 +1,27 @@
+{
+  "path": "categorize-collector-fleet-lj",
+  "summary": "Teaches adding team, service.name and env remote attributes to collectors in Grafana Fleet Management.",
+  "needs": [
+    {
+      "id": "registered-collectors",
+      "kind": "collector-fleet",
+      "description": "At least two (ideally several) collectors registered and visible in Fleet Management Inventory (/a/grafana-collector-app/fleet-management), checkable and bulk-editable.",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"More than one collector registered in Fleet Management\"; select-collector: select checkboxes",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "fleet-admin",
+      "kind": "permission-or-role",
+      "description": "Admin or Fleet Management RBAC permissions to edit remote attributes.",
+      "category": "entitlement",
+      "evidence": "Before you begin: \"Admin or RBAC permissions\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Collectors are real Alloy instances (or simulated via Fleet Management API pipeline) outside the stack; seeding via collector registration API could be possible but is unconfirmed. Path mutates collector attributes.",
+  "externalInfraDependent": true
+}

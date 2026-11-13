@@ -1,0 +1,36 @@
+{
+  "path": "drilldown-logs-lj",
+  "summary": "Teaches exploring Loki logs without LogQL using Logs Drilldown: services, labels, fields, patterns and adding to a dashboard.",
+  "needs": [
+    {
+      "id": "loki-datasource",
+      "kind": "datasource",
+      "description": "Loki data source (e.g. grafanacloud-logs)",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: Loki connected as a data source",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "loki-log-data",
+      "kind": "telemetry-data",
+      "description": "Recent logs with a service_name label (multiple services), level labels incl. error, a deployment_environment label, an HTTP protocol field (HTTP/2.0), repeating patterns and text such as 'red'",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "Guide examples: deployment_environment label, protocol HTTP/2.0, 'The flag is <_>' pattern",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "logs-drilldown-app",
+      "kind": "plugin-or-app",
+      "description": "grafana-lokiexplore-app enabled",
+      "category": "in-cloud-seedable",
+      "evidence": "targeting urlPrefix /a/grafana-lokiexplore-app/explore",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Examples are illustrative; any logs with varied labels/patterns should pass, but exists-reftarget requires services, labels, fields and patterns present.",
+  "externalInfraDependent": false
+}

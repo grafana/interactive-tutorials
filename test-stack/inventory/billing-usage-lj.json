@@ -1,0 +1,63 @@
+{
+  "path": "billing-usage-lj",
+  "summary": "Teaches navigating the Cost Management and Billing app to identify cost drivers, view attributions and invoices, and create a usage alert.",
+  "needs": [
+    {
+      "id": "cmab-app",
+      "kind": "plugin-or-app",
+      "description": "Cost Management and Billing app (/a/grafana-cmab-app) with usage, attributions, invoices, usage-alerts pages.",
+      "category": "entitlement",
+      "evidence": "startingLocation /a/grafana-cmab-app",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "active-usage",
+      "kind": "telemetry-data",
+      "description": "Stack/org with active billable usage so Product Breakdown and Monthly Usage render.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "Before you begin: \"A Grafana Cloud account with active usage\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "cmab-roles",
+      "kind": "permission-or-role",
+      "description": "Roles: Billing and usage reader, Usage alerts admin, Cost attribution reader, Invoice reader (or org admin).",
+      "category": "entitlement",
+      "evidence": "Before you begin; attributions/invoices/create-billing-alert notes",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "cost-attribution-labels",
+      "kind": "existing-grafana-config",
+      "description": "Cost attribution labels configured to show attribution data (milestone says data appears only after configuration).",
+      "category": "entitlement",
+      "evidence": "attributions: \"Attribution data appears only after someone configures cost attribution labels\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "invoices",
+      "kind": "other",
+      "description": "Billing history/invoices (paid org); highlight of \"Export usage data\" button requires the invoices page to render.",
+      "category": "entitlement",
+      "evidence": "invoices: \"a new or trial account may show few or no invoices\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    },
+    {
+      "id": "contact-point",
+      "kind": "existing-grafana-config",
+      "description": "A contact point selectable in the usage alert builder.",
+      "category": "in-cloud-seedable",
+      "evidence": "create-billing-alert: #contact-point-selector",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Depends on org-level billing, which may not be available on a docsteam stack in same form (enterprise/invoiced account). Creating usage alerts mutates org settings.",
+  "externalInfraDependent": false
+}

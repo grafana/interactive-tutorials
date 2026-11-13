@@ -1,0 +1,45 @@
+{
+  "path": "influxdb-data-source-lj",
+  "summary": "Add and configure an InfluxDB data source (Flux), test the connection, and query it in Explore.",
+  "needs": [
+    {
+      "id": "influxdb-instance",
+      "kind": "external-infra",
+      "description": "Running InfluxDB (v2 for Flux) reachable from Grafana Cloud directly or via PDC, with org, token and default bucket.",
+      "category": "external-infra",
+      "evidence": "Before you begin: An InfluxDB instance that is running and accessible",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "influxdb-credentials",
+      "kind": "external-infra",
+      "description": "InfluxDB URL, org name, API token and default bucket to type into the form.",
+      "category": "external-infra",
+      "evidence": "configure-connection: input#organization, input#token, input#default-bucket",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "influx-sample-data",
+      "kind": "telemetry-data",
+      "description": "Bucket 'telegraf' with measurement 'cpu' data in last 1h for the Explore example query.",
+      "category": "external-infra",
+      "evidence": "explore-data: from(bucket: \"telegraf\") ... r._measurement == \"cpu\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "influxdb-admin-role",
+      "kind": "permission-or-role",
+      "description": "Admin role.",
+      "category": "entitlement",
+      "evidence": "Before you begin: Admin permissions",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Explore step could pass with any non-erroring query; sample data needed only if the test asserts rows.",
+  "externalInfraDependent": true
+}

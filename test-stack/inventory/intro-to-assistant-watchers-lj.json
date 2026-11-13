@@ -1,0 +1,54 @@
+{
+  "path": "intro-to-assistant-watchers-lj",
+  "summary": "Introduces creating, calibrating, running and reviewing Grafana Assistant Watchers.",
+  "needs": [
+    {
+      "id": "grafana-assistant-app-enabled",
+      "kind": "plugin-or-app",
+      "description": "grafana-assistant-app installed and Assistant enabled on the stack, with Watchers feature available.",
+      "category": "entitlement",
+      "evidence": "requirements plugin-enabled:grafana-assistant-app; \"Grafana Assistant enabled on your stack\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "watcher-permissions",
+      "kind": "permission-or-role",
+      "description": "Test user holds grafana-assistant-app.watcher-agents read, create, write, delete plus plugins.app:access.",
+      "category": "entitlement",
+      "evidence": "Before you begin: Watchers permissions list",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "prometheus-datasource",
+      "kind": "datasource",
+      "description": "Prometheus data source (grafanacloud-*-prom) queryable from Explore and selectable in the Datasources picker.",
+      "category": "in-cloud-seedable",
+      "evidence": "has-datasource:prometheus; Explore step selects Prometheus",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "up-metric-telemetry",
+      "kind": "telemetry-data",
+      "description": "Metrics returning results for `count by (job) (up == 1)` representing a real service; calibration needs validated non-empty queries.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "formfill \"count by (job) (up == 1)\"; Before you begin: queries that return no data can stop calibration",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "assistant-service-account-llm-backend",
+      "kind": "other",
+      "description": "Assistant backend (LLM quota/service account) functional so calibration and Run now complete and produce run history.",
+      "category": "entitlement",
+      "evidence": "calibrate/start-and-run/review-results milestones",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Calibration and run results depend on the Assistant LLM backend and may be slow or nondeterministic.",
+  "externalInfraDependent": false
+}

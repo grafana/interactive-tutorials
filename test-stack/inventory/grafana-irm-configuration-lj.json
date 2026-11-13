@@ -1,0 +1,45 @@
+{
+  "path": "grafana-irm-configuration-lj",
+  "summary": "Configure Grafana IRM: on-call schedule, escalation chain, Grafana Alerting integration, attach contact point to an alert rule, and test end to end.",
+  "needs": [
+    {
+      "id": "irm-app-enabled",
+      "kind": "plugin-or-app",
+      "description": "Grafana IRM app (grafana-irm-app) enabled on the stack with schedules, escalations, integrations and alert-groups pages.",
+      "category": "entitlement",
+      "evidence": "urlPrefix /a/grafana-irm-app; navmenu hrefs",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "team-with-members",
+      "kind": "other",
+      "description": "At least one Grafana Cloud team with members assigned (users selectable in rotation 'add user' picker).",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: At least one team defined with members",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "alert-rule",
+      "kind": "alert-rule",
+      "description": "At least one existing Grafana-managed alert rule (searchable in alert rule list) that can be edited to add the IRM contact point and then fire for the E2E test.",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: At least one alert rule defined; connect-alert-rule search-query-input",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "admin-or-editor",
+      "kind": "permission-or-role",
+      "description": "Admin or Editor permissions.",
+      "category": "entitlement",
+      "evidence": "Before you begin",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "The e2e step needs the alert rule to fire (or uses IRM Send demo alert); rule should be one that fires reliably. Paths creates schedule/chain/integration named 'Production SRE' etc., so reruns may collide.",
+  "externalInfraDependent": false
+}

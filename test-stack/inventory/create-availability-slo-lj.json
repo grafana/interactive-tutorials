@@ -1,0 +1,54 @@
+{
+  "path": "create-availability-slo-lj",
+  "summary": "Teaches defining an availability SLI and creating an SLO with the Grafana SLO wizard, then reading the error budget burndown.",
+  "needs": [
+    {
+      "id": "prometheus-ds",
+      "kind": "datasource",
+      "description": "Prometheus-compatible data source (e.g. grafanacloud-prom) selectable in the SLO wizard so Ratio query appears.",
+      "category": "in-cloud-seedable",
+      "evidence": "create-availability-slo: input[aria-label=\"Select a data source\"]; \"Ratio query appears when you select a Prometheus-compatible data source\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "request-metrics",
+      "kind": "telemetry-data",
+      "description": "Counter metrics like http_requests_total with a status label returning data (success=status!~\"5..\", total) for the wizard queries and 90-day predictions; could use grafanacloud-play-prom QuickPizza metrics as substitute.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "Before you begin: \"Metrics flowing into Grafana Cloud\"; wizard example http_requests_total{status!~\"5..\"}",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "slo-app",
+      "kind": "plugin-or-app",
+      "description": "Grafana SLO app (/a/grafana-slo-app) enabled.",
+      "category": "entitlement",
+      "evidence": "startingLocation /a/grafana-slo-app/home/insights",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "slo-folder",
+      "kind": "existing-grafana-config",
+      "description": "Existing folder selectable for the SLO (or learner creates one).",
+      "category": "in-cloud-seedable",
+      "evidence": "configure-targets: select an existing folder or Create folder",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    },
+    {
+      "id": "created-slo",
+      "kind": "existing-grafana-config",
+      "description": "An SLO exists in the list for the monitor-slo milestone; the path itself creates it in earlier milestone.",
+      "category": "none",
+      "evidence": "monitor-slo: Click on your SLO name",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Metric names in guide are generic; seeded data must match whichever metric the test types. SLO creation generates recording rules/dashboards on the shared stack.",
+  "externalInfraDependent": false
+}

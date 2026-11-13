@@ -1,0 +1,110 @@
+{
+  "path": "postgresql-data-source-lj",
+  "id": "postgresql-data-source-lj",
+  "type": "path",
+  "milestoneCount": 6,
+  "startingLocation": "/connections/datasources",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:grafana-postgresql-datasource"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
+              ]
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/grafana-postgresql-datasource"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you connect to a PostgreSQL data source, ensure you have:\n\n- A PostgreSQL server (version 9.0 or newer) that's up and running.\n- Access to a PostgreSQL database with data you want to visualize.\n- Connection details including host, port, database name, username, and password.\n- The `Organization administrator` role in Grafana to configure the data source.\n- Network access for the PostgreSQL server (the default port is `5432`).\n- Your TLS/SSL certificates and client keys ready, if you connect with TLS/SSL.\n- [Created a private connection to a data source](https://grafana.com/docs/learning-paths/private-data-source-connect/) with the PDC agent running, if your database is on a private network."
+  ],
+  "milestones": [
+    {
+      "id": "postgresql-data-source-prepare",
+      "dir": "postgresql-data-source-lj/prepare-configuration",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "In this milestone, you prepare the PostgreSQL configuration required for monitoring. This includes creating a dedicated read-only user for Grafana and gathering the connection details you'll need later.\n\nGrafana doesn't validate the safety of queries, so a user with broad privileges could run harmful SQL such as `DROP TABLE`. Creating a dedicated user with only `SELECT` permissions on the schemas and tables you need follows security best practices and limits risk.\n\n**Prerequisites**:\n\n- Check that your PostgreSQL server is up and running.\n- Make sure your firewall allows connections to the PostgreSQL server (the default port is `5432`).\n\nTo prepare your PostgreSQL database configuration, complete the following steps:"
+      ]
+    },
+    {
+      "id": "postgresql-data-source-add",
+      "dir": "postgresql-data-source-lj/add-data-source",
+      "requirements": {
+        "navmenu-open": 1,
+        "exists-reftarget": 5
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "postgresql-data-source-configure",
+      "dir": "postgresql-data-source-lj/configure-datasource",
+      "requirements": {
+        "exists-reftarget": 4
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "postgresql-data-source-test",
+      "dir": "postgresql-data-source-lj/test-connection",
+      "requirements": {
+        "exists-reftarget": 2
+      },
+      "navigate": [],
+      "needsText": [
+        "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Failed to connect to PostgreSQL](https://grafana.com/docs/grafana/latest/datasources/postgres/troubleshooting/#failed-to-connect-to-postgresql)\n- [Grafana Cloud can't reach a private database](https://grafana.com/docs/grafana/latest/datasources/postgres/troubleshooting/#grafana-cloud-cant-reach-a-private-database)\n- [Password authentication failed](https://grafana.com/docs/grafana/latest/datasources/postgres/troubleshooting/#password-authentication-failed)"
+      ]
+    },
+    {
+      "id": "postgresql-data-source-verify",
+      "dir": "postgresql-data-source-lj/verify-postgres-data",
+      "requirements": {
+        "navmenu-open": 1,
+        "exists-reftarget": 4,
+        "on-page:/explore": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "postgresql-data-source-end",
+      "dir": "postgresql-data-source-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}
