@@ -1,0 +1,247 @@
+{
+  "id": "traces-drilldown-introduction",
+  "title": "Get started with Traces Drilldown",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Open Traces Drilldown to investigate a request from its overall patterns down to individual spans."
+    },
+    {
+      "type": "section",
+      "id": "open-the-starting-page",
+      "title": "Open Traces Drilldown",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-exploretraces-app/explore",
+          "content": "Open Traces Drilldown to start investigating requests without writing a query.",
+          "tooltip": "Start with a populated Tempo investigation.",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You are ready to choose the requests you want to investigate."
+    },
+    {
+      "type": "markdown",
+      "content": "Scope your requests to a Tempo datasource, time range, and service, then compare traffic, failures, and latency."
+    },
+    {
+      "type": "section",
+      "id": "get-started-with-traces-drilldown",
+      "title": "Scope requests and compare RED metrics",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app datasource-region']",
+          "content": "Choose an existing Tempo datasource with trace data; use the datasource name from your own stack.",
+          "tooltip": "Choose a source that contains the requests you want to investigate.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app controls-region']",
+          "content": "Choose a time range containing traces and refresh the data, then wait for populated results before continuing. An error or empty result is not a successful investigation.",
+          "tooltip": "Use a time window with trace data and wait for results to load.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app primary signal option root spans']",
+          "content": "Select **Root spans** to focus on the top-level request of each trace rather than every operation within it.",
+          "tooltip": "Focus on the top-level request of each trace.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "targetstate": "true"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app filters-region']",
+          "content": "Add a **service.name** filter and choose a real service value from your datasource, then wait for matching data. This keeps the comparisons focused on one service.",
+          "tooltip": "Narrow the results to a service with trace data.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app rate-panel']",
+          "content": "Select **Rate** and inspect the matching root spans per second to understand how much request traffic falls within your scope.",
+          "tooltip": "Inspect how much matching request traffic arrives each second.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app errors-panel']",
+          "content": "Select **Errors** to compare failures within the same service and time range.",
+          "tooltip": "Look for failures without changing the scope of your investigation.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app duration-panel']",
+          "content": "Select **Duration** to investigate request latency within the same scope.",
+          "tooltip": "Look at how long the matching requests take.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": true,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have compared request rate, errors, and duration for the same service and time window."
+    },
+    {
+      "type": "markdown",
+      "content": "Follow the latency patterns through attribute comparisons and service structure to a real trace."
+    },
+    {
+      "type": "section",
+      "id": "get-started-with-traces-drilldown-2",
+      "title": "Inspect latency and open a trace",
+      "requirements": [],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app tab-breakdown']",
+          "content": "Select **Breakdown** to compare latency across attributes while keeping your current scope.",
+          "tooltip": "Compare latency across attributes to find differences worth investigating.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app breakdown container']",
+          "content": "Inspect the attribute breakdown and look for differences in latency; this is an observation, so no selection is needed.",
+          "tooltip": "Look for attribute values whose latency differs from the others.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app tab-structure']",
+          "content": "Select **Root cause latency** to inspect the service structure behind the matching traces.",
+          "tooltip": "Move from attribute comparisons to the structure of the requests.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app service structure container']",
+          "content": "Inspect the service structure and where latency accumulates; no state change is needed here.",
+          "tooltip": "Look for where time accumulates across the request structure.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app tab-trace-list']",
+          "content": "Select **Slow traces** to move from the overall patterns to individual matching requests.",
+          "tooltip": "Find an individual request to inspect in detail.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app traces container']",
+          "content": "Choose a visible trace name in the populated list, not its external-link icon, to open the trace drawer. If no traces match, adjust your data scope and repeat the investigation.",
+          "tooltip": "Open a request by its name so you can inspect its spans here.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": false,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app trace-drawer']",
+          "content": "Inspect the opened trace and its spans in the drawer; no further selection is needed to confirm you reached a real request.",
+          "tooltip": "Confirm that the selected request has loaded and its spans are visible.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-exploretraces-app/explore"
+          ],
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You have completed the investigation when your Tempo results cover the chosen time range and root spans, you have compared the RED metrics and inspected breakdown and service structure, and a selected trace displays its spans in the drawer."
+    }
+  ]
+}
