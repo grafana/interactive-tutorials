@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "open-a-query-from-a-database-span",
+  "title": "Open a query from a database span",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This guide runs on your own stack. The steps that depend on your traces or on the link can be skipped if your traces have no suitable span or the link is not available on your stack."
+    },
+    {
+      "type": "markdown",
+      "content": "To open a trace that contains a database span, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-a-trace-with-a-database-span",
+      "title": "Open a trace with a database span",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-exploretraces-app/']",
+          "verify": "on-page:/a/grafana-exploretraces-app",
+          "objectives": ["on-page:/a/grafana-exploretraces-app"],
+          "content": "Click **Traces**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-exploretraces-app/explore?var-primarySignal=span.db.system.name!%3D%22%22",
+          "content": "Select the **Database calls** primary signal.\n\n**Go there** opens Traces Drilldown with **Database calls** selected. The signal sits in the dropdown next to **Root spans** and **All spans**, and it keeps only spans whose `db.system.name` attribute names a database system, so every trace listed contains a database span.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app"]
+        },
+        {
+          "type": "markdown",
+          "content": "Check whether the panels show data.\n\n**Database calls** matches the current OpenTelemetry attribute, `db.system.name`. Many applications still send the older `db.system` attribute, which the Database Observability link also accepts. If the panels show no data, complete the next step. If they show data, skip it."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-exploretraces-app/explore?var-primarySignal=true&var-filters=span.db.system%7C%3D~%7Cmysql__gfp__postgresql",
+          "skippable": true,
+          "content": "Select **All spans** and filter on **span.db.system**.\n\n**Go there** applies both: **All spans** as the primary signal, and a filter where **span.db.system** matches `mysql` or `postgresql`, the two database systems the link supports.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
+          "doIt": false,
+          "content": "Set the time range to a period when your application ran database calls.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app tab-trace-list'], [data-testid='data-testid Tab Traces'], [data-testid='data-testid Tab Errored traces'], [data-testid='data-testid Tab Slow traces']",
+          "content": "Click the **Traces** tab.",
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='grafana-exploretraces-app traces container'] .cell-link:nth-match(1)",
+          "doIt": false,
+          "content": "Click the name of a trace.\n\nFor example, pick a request you know touched the database, such as a page that lists records. If the list is empty, widen the time range and continue.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You opened a trace that contains a database span."
+    },
+    {
+      "type": "markdown",
+      "content": "To open the query from its span, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "open-the-query-from-the-span",
+      "title": "Open the query from the span",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[placeholder='Filter by attribute or text']",
+          "targetvalue": "\"Text search\" =~ \"db.statement db.query.text\"",
+          "content": "Mark the spans that record a query.\n\nIn **Filters** above the span list, add a **Text search** for `db.statement db.query.text`. These are the two names of the attribute that holds the query text, which the Database Observability link needs. Spans that have either one are marked, and the count to the right of the **Critical path**, **Errors**, and **High latency** pills shows how many.",
+          "skippable": true,
+          "requirements": ["on-page:/a/grafana-exploretraces-app", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Jump to a marked span.\n\nThe match count, for example **1/12 matches**, sits above the span list to the right of the **Critical path**, **Errors**, and **High latency** pills. Click the down arrow immediately to its left. The span list scrolls to the next marked span and gives the row a blue background."
+        },
+        {
+          "type": "markdown",
+          "content": "Click the span with the blue background.\n\nThe row is in the span list below the filters. Its left column shows the service and operation name, and its right column shows the duration bar. Clicking anywhere on the row opens the span details beneath it. Under **Span attributes**, expand **Database** if it is collapsed. The query text is the value of `db.statement` or `db.query.text`. When the link is available, a Database Observability icon sits in front of the query text and the text is a link."
+        },
+        {
+          "type": "markdown",
+          "content": "Select the query text in the **Database** group.\n\nIn the span details, under **Span attributes**, the **Database** group lists the database attributes. The query text is the value next to `db.statement` or `db.query.text`. When Database Observability can resolve it, a Database Observability icon sits in front of the text and the text is a link. Click it to open the query in Database Observability. If there is no icon and the text is not a link, the query cannot be resolved."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Where the link opens tells you whether the match found the query:\n\n- **Query samples** tab: the match found the query on one database instance. Record the query text.\n- A list of instances: the match found the query on more than one database instance, for example a production and a staging server. Select the instance you want, and the **Query samples** tab opens. Record the query text.\n- **Queries overview**: the match did not find the query. Record that no match was found."
+    }
+  ]
+}
