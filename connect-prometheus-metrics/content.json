@@ -4,7 +4,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Use this interactive guide to learn how to connect **Prometheus metrics** to Grafana Cloud. You'll explore where connections live in Grafana Cloud, search for and select Hosted Prometheus from the catalog, and review the configuration information needed to set up remote write.\n\nThis guide helps you get oriented and understand the setup process, without requiring existing infrastructure or completing the connection."
+      "content": "Use this interactive guide to learn how to connect **Prometheus metrics** to Grafana Cloud. You'll explore where connections live in Grafana Cloud, search for and select Hosted Prometheus from the catalog, and review the configuration information needed to set up remote write.\n\nThis guide helps you get oriented and understand the setup process, without requiring existing infrastructure or completing the connection.\n\nOpen the connection catalog and find Hosted Prometheus."
     },
     {
       "type": "section",
@@ -13,28 +13,28 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
-          "content": "Open **Connections** to set up Prometheus metrics.\n\nThis is where you add and manage data sources in Grafana Cloud.",
-          "requirements": [
-            "navmenu-open"
-          ]
+          "action": "navigate",
+          "reftarget": "/connections",
+          "verify": "on-page:/connections",
+          "content": "Open **Connections** to find ways to connect your data."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
-          "content": "To connect Prometheus metrics, start by adding a new connection.\n\nThis opens the catalog where you can find **Hosted Prometheus** and other data source types.",
-          "requirements": [
-            "navmenu-open"
-          ]
+          "action": "navigate",
+          "reftarget": "/connections/add-new-connection",
+          "verify": "on-page:/connections/add-new-connection",
+          "content": "Open **Add new connection** to browse the connection catalog."
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[data-testid='search-input-input']",
           "content": "Use the search field to quickly find a specific data source.\n\nType **Hosted Prometheus** to filter the catalog and locate the Hosted Prometheus connection.",
-          "targetvalue": "Hosted Prometheus"
+          "targetvalue": "Hosted Prometheus",
+          "requirements": [
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
@@ -42,14 +42,16 @@
           "reftarget": "a[href='/connections/add-new-connection/hmInstancePromId']",
           "content": "Click the **Hosted Prometheus** tile to open the setup page.\n\nThis connection type is used for sending metrics from your own Prometheus instance to Grafana Cloud's managed Prometheus service.",
           "requirements": [
-            "on-page:/connections/add-new-connection"
-          ]
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/connections/add-new-connection/hmInstancePromId"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "This page explains how to configure Prometheus remote write to send metrics to Grafana Cloud.\n\nChoose a forwarding method (Grafana Alloy or local Prometheus server), install or configure components, generate an access token, and apply the configuration.\n\nYou do not need to complete the setup now. This step shows the information required to connect your Prometheus metrics."
+      "content": "You found the Hosted Prometheus setup page. This page explains how to configure Prometheus remote write to send metrics to Grafana Cloud.\n\nChoose a forwarding method (Grafana Alloy or local Prometheus server), install or configure components, generate an access token, and apply the configuration.\n\nYou do not need to complete the setup now. This step shows the information required to connect your Prometheus metrics."
     },
     {
       "type": "markdown",
