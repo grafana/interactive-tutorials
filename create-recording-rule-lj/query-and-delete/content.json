@@ -1,0 +1,251 @@
+{
+  "id": "create-recording-rule-query-and-delete",
+  "title": "Query the recorded metric and delete the rule",
+  "blocks": [
+    {
+      "type": "section",
+      "id": "create-rule-query-the-metric",
+      "title": "Query the recorded metric in Explore",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/explore",
+          "content": "Click **Explore** in the main menu. Explore is where you query the recorded metric to see the data the rule has written."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid explore-toolbar'] [data-testid='data-testid Data source picker select container']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Select your stack's Prometheus data source, if it isn't already selected. The rule saved the recorded metric there."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid QueryEditorModeToggle']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "doIt": false,
+          "content": "Select **Code** if it isn't already selected."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Query field'] textarea.inputarea",
+          "targetvalue": "test_active_series_total",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "In the query field, enter `test_active_series_total`, the metric name you entered for the rule. If the field already holds a query, replace it."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Click **Run query**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Panel header Graph']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find the **Graph** panel. It shows one data point for each evaluation of the rule."
+        },
+        {
+          "type": "markdown",
+          "content": "Soon after you save the rule, the graph has one point. The rule writes another each minute. If the graph shows **No data**, the rule hasn't been evaluated yet. Wait a minute, then click **Run query** again.\n\nDashboards and alert rules can query `test_active_series_total` the same way."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-rule-delete-the-rule",
+      "title": "Delete the rule",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "In the main menu, click **Alerts & IRM**, then **Alerting**, then **Alert rules**.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid alerting search-input']",
+          "targetvalue": "Total active series",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "In the search box, enter `Total active series`, then press Enter. The list now shows only that rule."
+        },
+        {
+          "type": "multistep",
+          "content": "In the **Total active series** row, click **More**, select **Delete**, and click **Yes, delete**.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "main button[aria-label='More']:nth-match(1)",
+              "requirements": [
+                "on-page:/alerting/list",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitem']:contains('Delete')",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[role='dialog'] button:contains('Yes, delete')",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "If the list still shows a rule named **Total active series**, you created the rule more than once. Delete each one the same way."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "create-rule-delete-the-folder",
+      "title": "Delete the folder",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/dashboards']",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/dashboards",
+          "content": "Click **Dashboards** in the main menu. The folder you created is still there after the rule is deleted, and folders are managed on the **Dashboards** page."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Browse dashboards search input']",
+          "targetvalue": "Recording rule practice",
+          "requirements": [
+            "on-page:/dashboards",
+            "exists-reftarget"
+          ],
+          "content": "In the search box, enter `Recording rule practice`. The list now shows only that folder."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main a[href^='/dashboards/f/']:nth-match(1)",
+          "requirements": [
+            "on-page:/dashboards",
+            "exists-reftarget"
+          ],
+          "content": "Click **Recording rule practice** to open the folder."
+        },
+        {
+          "type": "multistep",
+          "content": "Click **Folder actions**, select **Delete this folder**, type `Delete` to confirm, and click **Delete**.",
+          "requirements": [
+            "on-page:/dashboards/f/"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "main button:contains('Folder actions')",
+              "requirements": [
+                "on-page:/dashboards/f/",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitem']:contains('Delete this folder')",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid='data-testid Confirm Modal Input']",
+              "targetvalue": "Delete",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid Confirm Modal Danger Button']",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "If the search still shows a folder named **Recording rule practice**, you created the folder more than once. Delete each one the same way."
+        }
+      ]
+    }
+  ]
+}

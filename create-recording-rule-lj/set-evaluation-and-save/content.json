@@ -1,0 +1,178 @@
+{
+  "id": "create-recording-rule-set-evaluation-and-save",
+  "title": "Set the evaluation and save the rule",
+  "blocks": [
+    {
+      "type": "section",
+      "id": "create-rule-set-evaluation-and-save",
+      "title": "Set the evaluation and save the rule",
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **New folder**, name it `Recording rule practice`, and click **Create**.",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid alert-rule folder-picker'] button:contains('New folder')",
+              "requirements": [
+                "on-page:/alerting/new/grafana-recording",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "input[data-testid='data-testid alert-rule name-folder-name-field']",
+              "targetvalue": "Recording rule practice",
+              "requirements": [
+                "on-page:/alerting/new/grafana-recording",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid alert-rule name-folder-name-create-button']",
+              "requirements": [
+                "on-page:/alerting/new/grafana-recording",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule folder-picker']",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Focus on **Folder**. It shows **Recording rule practice**, the folder you created. The folder is where the rule is stored."
+        },
+        {
+          "type": "multistep",
+          "content": "Click **New evaluation group**, name it `Practice group`, leave **Evaluation interval** at `1m`, and click **Create**.",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid alert-rule new-evaluation-group-button']",
+              "requirements": [
+                "on-page:/alerting/new/grafana-recording",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid='data-testid alert-rule new-evaluation-group-name']",
+              "targetvalue": "Practice group",
+              "requirements": [
+                "on-page:/alerting/new/grafana-recording",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid alert-rule new-evaluation-group-create-button']",
+              "requirements": [
+                "on-page:/alerting/new/grafana-recording",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule group-picker']",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find **Evaluation group and interval**. It shows **Practice group**, the evaluation group you created."
+        },
+        {
+          "type": "markdown",
+          "content": "An evaluation group evaluates all its rules on the same evaluation interval. The evaluation interval is how often a recording rule is evaluated. With `1m`, this rule is evaluated every minute, and each evaluation writes one new data point to the recorded metric."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule save-rule-button']",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/alerting/grafana/",
+          "content": "Click **Save**."
+        },
+        {
+          "type": "markdown",
+          "content": "Grafana saves the rule and opens a page for **Total active series**, the rule you created."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:text('Metric name')",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Notice **Metric name**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='target-datasource-uid']",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "View **Target data source**."
+        },
+        {
+          "type": "markdown",
+          "content": "This is where the rule writes the recorded metric. It shows your stack's managed Prometheus data source, because you left the field as it was."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='queries-container']",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Focus on query **A** and its graph."
+        },
+        {
+          "type": "markdown",
+          "content": "The graph shows the query, which is the data the rule reads from `grafanacloud-usage`. It isn't the recorded metric. The recorded metric has no data until the rule's first evaluation."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "span:text('Last evaluated')",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find **Last evaluated**."
+        },
+        {
+          "type": "markdown",
+          "content": "**Last evaluated** shows a time after the rule's first evaluation. Until then, it shows a dash."
+        }
+      ]
+    }
+  ]
+}

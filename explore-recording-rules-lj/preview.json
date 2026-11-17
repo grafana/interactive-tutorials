@@ -12,14 +12,41 @@
       "title": "Find recording rules",
       "blocks": [
         {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/alerting/list",
-          "content": "Open the **Alert rules** page."
+          "type": "multistep",
+          "content": "In the main menu, click **Alerts & IRM**, then **Alerting**, then **Alert rules**.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            }
+          ]
         },
         {
           "type": "markdown",
-          "content": "Recording rules and alert rules are listed on the same page, at **Alerts & IRM** > **Alerting** > **Alert rules**."
+          "content": "Recording rules and alert rules are listed on the same page."
         },
         {
           "type": "interactive",
@@ -65,10 +92,48 @@
       "title": "See the two types of recording rule",
       "blocks": [
         {
+          "type": "multistep",
+          "content": "If you aren't on the **Alert rules** page, click **Alerts & IRM**, then **Alerting**, then **Alert rules** in the main menu.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/alerting/list?search=type:recording",
-          "content": "Open the **Alert rules** page with the recording rules listed."
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-type'] button:contains('Recording rule')",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "In the **Type** filter, select **Recording rule**, if it isn't already selected."
         },
         {
           "type": "interactive",
@@ -117,10 +182,59 @@
       "title": "Read one recording rule",
       "blocks": [
         {
+          "type": "multistep",
+          "content": "If you aren't on the **Alert rules** page, click **Alerts & IRM**, then **Alerting**, then **Alert rules** in the main menu.",
+          "requirements": [
+            "navmenu-open"
+          ],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+              "requirements": [
+                "navmenu-open",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/alerting/grafana/afyms4tv2e58gc/view",
-          "content": "Open the Grafana-managed recording rule **asserts:kpi:feo11y_latency:p75 - Frontend/lcp**."
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid alerting search-input']",
+          "targetvalue": "asserts:kpi:feo11y_latency:p75 - Frontend/lcp",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "In the search box, enter `asserts:kpi:feo11y_latency:p75 - Frontend/lcp`, then press Enter. The list now shows only that rule."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/alerting/grafana/afyms4tv2e58gc/view']",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "Click **asserts:kpi:feo11y_latency:p75 - Frontend/lcp** to open this Grafana-managed recording rule."
         },
         {
           "type": "interactive",

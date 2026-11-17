@@ -8,10 +8,42 @@
       "title": "Read one recording rule",
       "blocks": [
         {
+          "type": "multistep",
+          "content": "If you aren't on the **Alert rules** page, click **Alerts & IRM**, then **Alerting**, then **Alert rules** in the main menu.",
+          "requirements": ["navmenu-open"],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            }
+          ]
+        },
+        {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/alerting/grafana/afyms4tv2e58gc/view",
-          "content": "Open the Grafana-managed recording rule **asserts:kpi:feo11y_latency:p75 - Frontend/lcp**."
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid alerting search-input']",
+          "targetvalue": "asserts:kpi:feo11y_latency:p75 - Frontend/lcp",
+          "requirements": ["on-page:/alerting/list", "exists-reftarget"],
+          "content": "In the search box, enter `asserts:kpi:feo11y_latency:p75 - Frontend/lcp`, then press Enter. The list now shows only that rule."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/alerting/grafana/afyms4tv2e58gc/view']",
+          "requirements": ["on-page:/alerting/list", "exists-reftarget"],
+          "content": "Click **asserts:kpi:feo11y_latency:p75 - Frontend/lcp** to open this Grafana-managed recording rule."
         },
         {
           "type": "interactive",

@@ -8,10 +8,37 @@
       "title": "See the two types of recording rule",
       "blocks": [
         {
+          "type": "multistep",
+          "content": "If you aren't on the **Alert rules** page, click **Alerts & IRM**, then **Alerting**, then **Alert rules** in the main menu.",
+          "requirements": ["navmenu-open"],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
+              "requirements": ["navmenu-open", "exists-reftarget"]
+            }
+          ]
+        },
+        {
           "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/alerting/list?search=type:recording",
-          "content": "Open the **Alert rules** page with the recording rules listed."
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-type'] button:contains('Recording rule')",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "In the **Type** filter, select **Recording rule**, if it isn't already selected."
         },
         {
           "type": "interactive",
