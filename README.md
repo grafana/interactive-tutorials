@@ -29,7 +29,7 @@ end of the URL to include `?dev=true`. The full URL should be roughly `{instance
 
 ### Writing Your Guide with the Block Editor
 
-Interactive guides are JSON documents. See [explore-drilldowns-101/content.json](explore-drilldowns-101/content.json) for a complete example.
+Interactive guides are JSON documents. See [logs-drilldown-introduction/content.json](logs-drilldown-introduction/content.json) for a complete example.
 
 The **Block Editor** is the recommended way to create guides:
 
@@ -88,9 +88,8 @@ Cursor knows this repo well. Use Ask mode to query how interactive elements work
 
 <img src="docs/img/icon.png" alt="Interactive Learning Icon" width="40" style="height:auto;" />
 
-3. Make sure you're on the Drilldown page, check the Recommendations tab.
-4. Follow the _Interactive Guide: Explore Drilldowns 101_ by clicking the "View" button by that recommendation. We're going to build
-an interactive guide like that!
+3. Open Logs Drilldown and check the Recommendations tab.
+4. Follow _Get started with Logs Drilldown_. We're going to build an interactive guide like that!
 5. Notice the structure: it's built in sections, of individual steps, with each step having a "Show Me" and "Do It" option.
 
 ## Getting Your Tutorial Into The Plugin

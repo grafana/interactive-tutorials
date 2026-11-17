@@ -265,7 +265,7 @@ The ordering of the two commands matters. `build-stats` writes the manifests and
 
 **`build-stats` is deliberately stricter than its siblings.** A milestone missing from the scanned tree, a duplicated milestone, a milestone reachable through two parents, or a manifest that fails schema validation each abort the whole run and leave the tree completely unstamped rather than half-stamped. `build-graph` warns in the same situations and `build-repository` degrades a bad manifest to a warning. The practical consequence for CI: if an `--exclude`d subtree contains a package that a path lists as a milestone, `build-stats` fails where `build-repository` would have quietly omitted the entry. Before adding an `--exclude` to either workflow, check that the excluded tree holds no milestone any path references.
 
-**`stats.blockCount` is not `inspect`'s `blockCount`.** `pathfinder-cli inspect --format json` counts the whole tree, containers included and conditional branches descended; `stats.blockCount` counts neither. The two disagree by design on the same guide — `inspect` answers "how many blocks are in this file", `stats` answers "what is the reader measured against". On `explore-drilldowns-101`, `inspect` reports 24 and `stats` reports 22; the difference is its two `section` containers.
+**`stats.blockCount` is not `inspect`'s `blockCount`.** `pathfinder-cli inspect --format json` counts the whole tree, containers included and conditional branches descended; `stats.blockCount` counts neither. The two disagree by design on the same guide — `inspect` answers "how many blocks are in this file", `stats` answers "what is the reader measured against". For example, section containers contribute to `inspect`'s total but not to `stats.blockCount`.
 
 ---
 
