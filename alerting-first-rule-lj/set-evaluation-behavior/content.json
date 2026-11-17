@@ -5,7 +5,22 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Evaluation behavior sets how often the query runs, how long a problem must last before the alert fires, and how long the alert keeps firing after the condition resolves.\n\nIn this milestone, set the evaluation interval, pending period, and keep-firing duration."
+      "content": "Create an evaluation group that runs once a minute, then set how long a problem must last before the alert fires and how long it keeps firing after the condition resolves."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "[data-testid=\"data-testid radio-button-option group-based\"] + label",
+      "content": "If evaluation modes are shown, select **Use groups (Legacy)**.",
+      "skippable": true,
+      "requirements": [
+        "on-page:/alerting/new/alerting",
+        "exists-reftarget"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Create the one-minute evaluation group and set the alert timing."
     },
     {
       "type": "section",
@@ -16,11 +31,54 @@
       ],
       "blocks": [
         {
+          "type": "multistep",
+          "content": "Click **New evaluation group**, name it `QuickPizza evaluation`, set **Evaluation interval** to `1m`, and click **Create**.",
+          "requirements": [
+            "on-page:/alerting/new/alerting"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid=\"data-testid alert-rule new-evaluation-group-button\"]",
+              "requirements": [
+                "on-page:/alerting/new/alerting",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid=\"data-testid alert-rule new-evaluation-group-name\"]",
+              "targetvalue": "QuickPizza evaluation",
+              "requirements": [
+                "on-page:/alerting/new/alerting",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid=\"data-testid alert-rule new-evaluation-group-interval\"]",
+              "targetvalue": "1m",
+              "requirements": [
+                "on-page:/alerting/new/alerting",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid=\"data-testid alert-rule new-evaluation-group-create-button\"]",
+              "requirements": [
+                "on-page:/alerting/new/alerting",
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
           "type": "interactive",
-          "action": "formfill",
-          "reftarget": "#evaluate-every-no-group",
-          "targetvalue": "1m",
-          "content": "In **Set evaluation behavior**, set **Evaluation interval** to **1m**.",
+          "action": "highlight",
+          "doIt": false,
+          "reftarget": "[data-testid=\"data-testid alert-rule group-picker\"]:has(input[name=\"group\"][value=\"QuickPizza evaluation\"])",
+          "content": "Confirm **QuickPizza evaluation** is selected.",
           "requirements": [
             "on-page:/alerting/new/alerting",
             "exists-reftarget"

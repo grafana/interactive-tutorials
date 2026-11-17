@@ -7,41 +7,62 @@
       "content": "Transformations are a powerful way to manipulate data returned by a query before the system applies a visualization. Using transformations, you can:\n\n- Rename fields\n- Join time series/SQL-like data\n- Perform mathematical operations across queries\n- Use the output of one transformation as the input to another transformation\n\nIn this interactive guide, you'll set up a basic dashboard using the preinstalled Grafana data source and briefly explore the Transformations tab."
     },
     {
+      "type": "interactive",
+      "action": "navigate",
+      "reftarget": "/dashboard/new",
+      "verify": "on-page:/dashboard/new",
+      "content": "Open a new dashboard for this exercise."
+    },
+    {
+      "type": "interactive",
+      "action": "button",
+      "reftarget": "Skip to dashboard",
+      "requirements": [
+        "on-page:/dashboard/new",
+        "exists-reftarget"
+      ],
+      "skippable": true,
+      "content": "If onboarding appears, click **Skip to dashboard**."
+    },
+    {
+      "type": "markdown",
+      "content": "Create a panel with two sample series from the built-in Grafana data source."
+    },
+    {
       "type": "section",
       "id": "guide-section-34209",
       "title": "Set up a basic dashboard",
       "blocks": [
         {
-          "type": "multistep",
-          "content": "Click **New** in the top-right corner of the screen and select **New dashboard**.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "button[aria-label='New']"
-            },
-            {
-              "action": "highlight",
-              "reftarget": "a[href='/dashboard/new']"
-            }
-          ]
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid Dashboard Sidebar new button']",
+          "requirements": [
+            "on-page:/d",
+            "exists-reftarget"
+          ],
+          "content": "Click **Add** to open the dashboard element sidebar."
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "grafana:components.Sidebar.newPanelButton",
-          "content": "Click or drag a panel onto the dashboard.",
+          "content": "Click **Panel** to add a panel to the dashboard.",
           "requirements": [
+            "on-page:/d",
             "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "Configure visualization",
-          "content": "On the panel, click **Configure visualization**.",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid sidebar configure panel button'], button[data-testid='data-testid edit pane configure panel button']",
+          "content": "Click **Edit visualization** to open the panel editor.",
           "requirements": [
+            "on-page:/d",
             "exists-reftarget"
-          ]
+          ],
+          "verify": "on-page:/d"
         },
         {
           "type": "interactive",
@@ -58,9 +79,10 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[role='button']:nth-match(4)",
-          "content": "Grafana suggests visualizations based on the data source and query you've entered. For this special data source and query type, one of the suggestions is Time series. Select the first time series suggestion.",
+          "reftarget": "[data-testid='data-testid suggestion-Line chart']",
+          "content": "Select **Line chart** to visualize the sample series.",
           "requirements": [
+            "on-page:/d",
             "exists-reftarget"
           ]
         },
@@ -69,15 +91,31 @@
           "action": "formfill",
           "reftarget": "input[name='seriesCount']",
           "targetvalue": "2",
-          "content": "In the **Queries** tab below the panel, change the **Series count** to 2 to add another series to the visualization."
+          "content": "In the **Queries** tab below the panel, change the **Series count** to 2 to add another series to the visualization.",
+          "requirements": [
+            "on-page:/d",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
-          "content": "Click **Refresh**."
+          "content": "Click **Refresh**.",
+          "requirements": [
+            "on-page:/d",
+            "exists-reftarget"
+          ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You created a line chart with two sample series."
+    },
+    {
+      "type": "markdown",
+      "content": "Add a calculation, filter a field, and explore transformation help and removal."
     },
     {
       "type": "section",
@@ -86,49 +124,59 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "Great! You've set up a basic dashboard. Now let's check out transformations.\n\n\n\nNote: In this interactive guide, we're using the **New query editor** experience. This guide will not work with the **Classic query editor**."
+          "content": "Use the **New query editor** experience to add and manage transformations."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add transformation']",
-          "content": "Below the panel, click the Add element icon (blue plus sign) next to the word **Transformations** in the **Data** sidebar.",
+          "content": "Click **Add transformation** in the **Data** sidebar.",
           "requirements": [
+            "on-page:/d",
             "exists-reftarget"
           ]
         },
         {
           "type": "markdown",
-          "content": "Awesome! You've arrived at the Transformations editor. Here, you can choose from several options to improve how your data displays insights for you.\n\n\n\nYou can scroll up and down to see all of the available transformations. Now let's try one."
+          "content": "Choose a transformation to change the query results before displaying them."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Add field from calculation",
-          "content": "Select **Add field by calculation**.",
+          "content": "Select **Add field from calculation**.",
           "requirements": [
+            "on-page:/d",
             "exists-reftarget"
           ]
         },
         {
           "type": "markdown",
-          "content": "The transformation has been added to your panel configuration. It lets you add more fields to your visualization by running calculations on existing fields.\n\nThe default selection is **Total,** which  adds another series to the visualization by summing the existing series values."
+          "content": "The default **Total** calculation adds a series by summing the existing series values."
         },
         {
           "type": "markdown",
-          "content": "Now, let's review what else you can do in the ****Transformations**** tab. You can:"
+          "content": "Next, filter a field and explore the transformation controls."
         },
         {
           "type": "multistep",
-          "content": "Add another transformation. \n\nWe'll add the **Filter fields by name**, which lets you quickly filter data out of the visualization.",
+          "content": "Add the **Filter fields by name** transformation.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add transformation']"
+              "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Add transformation']",
+              "requirements": [
+                "on-page:/d",
+                "exists-reftarget"
+              ]
             },
             {
               "action": "button",
-              "reftarget": "Filter fields by name"
+              "reftarget": "Filter fields by name",
+              "requirements": [
+                "on-page:/d",
+                "exists-reftarget"
+              ]
             }
           ]
         },
@@ -138,42 +186,74 @@
           "reftarget": "div[data-testid='data-testid Transformation editor Filter fields by name'] button:text('A-series')",
           "content": "Click the **A-series** pill to filter out that field.",
           "requirements": [
+            "on-page:/d",
             "exists-reftarget"
           ]
         },
         {
           "type": "multistep",
-          "content": "Click the information icon to view documentation on how to use this transformation in a drawer. Click the \"x\" in the top-right corner of the drawer to close it again when you're done.",
+          "content": "Open the filter transformation help, then click **Close** when you finish reading.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "div[data-testid='data-testid Panel editor content'] button[aria-label='Show transformation help']"
+              "reftarget": "section[data-stacked-editor-item-type='transformation']:has([data-testid='data-testid Transformation editor Filter fields by name']) button[aria-label='Show transformation help']",
+              "requirements": [
+                "on-page:/d",
+                "exists-reftarget"
+              ]
             },
             {
               "action": "highlight",
-              "reftarget": "#floating-boundary button[data-testid='data-testid Drawer close']"
+              "reftarget": "[role='dialog'] button[aria-label='Close']",
+              "requirements": [
+                "on-page:/d",
+                "exists-reftarget"
+              ]
             }
           ]
         },
         {
           "type": "multistep",
-          "content": "If you decide you don't need it, use this icon to delete a transformation.",
+          "content": "Remove **Filter fields by name**, then confirm the deletion.",
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "button[aria-label='Remove transformation']"
+              "reftarget": "section[data-stacked-editor-item-type='transformation']:has([data-testid='data-testid Transformation editor Filter fields by name']) button[aria-label='Remove transformation']",
+              "requirements": [
+                "on-page:/d",
+                "exists-reftarget"
+              ]
             },
             {
               "action": "highlight",
-              "reftarget": "{grafana:components.PanelEditor.General.content} button[aria-label='Confirm']"
+              "reftarget": "section[data-stacked-editor-item-type='transformation']:has([data-testid='data-testid Transformation editor Filter fields by name']) [role='group'][aria-label='Delete confirmation'] button[aria-label='Confirm']",
+              "requirements": [
+                "on-page:/d",
+                "exists-reftarget"
+              ]
             }
           ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid Panel editor content']:has([data-testid='data-testid Transformation editor Add field from calculation']):not(:has([data-testid='data-testid Transformation editor Filter fields by name']))",
+          "doIt": false,
+          "requirements": [
+            "on-page:/d",
+            "exists-reftarget"
+          ],
+          "verify": "exists-reftarget",
+          "content": "Confirm that **Add field from calculation** remains and **Filter fields by name** has been removed."
         }
+      ],
+      "requirements": [
+        "section-completed:guide-section-34209"
       ]
     },
     {
       "type": "markdown",
-      "content": "Congratulations! Now you know where to find several different options for transforming your data."
+      "content": "You added a calculation, filtered a field, viewed help, and removed the filter while keeping the calculation."
     }
   ]
 }

@@ -1,7 +1,8 @@
 {
     "id": "create-usage-alert",
     "title": "Create a usage alert",
-    "blocks": [{
+    "blocks": [
+        {
             "type": "markdown",
             "content": "Use this interactive guide to create a **usage alert** in the **Cost Management and Billing** app. You'll set a budget on your total Grafana Cloud spend and choose where Grafana sends the notification, so you hear about cost changes before they show up on an invoice."
         },
@@ -9,11 +10,12 @@
             "type": "section",
             "id": "open-alert-builder",
             "title": "Open the usage alert builder",
-            "blocks": [{
+            "blocks": [
+                {
                     "type": "interactive",
                     "action": "popout",
                     "targetvalue": "floating",
-                    "content": "Pop this guide out into a floating window so it stays visible when the **Create usage alert** dialog opens."
+                    "content": "Pop this guide out into a floating window so it stays visible when the **Create new usage alerts** dialog opens."
                 },
                 {
                     "type": "interactive",
@@ -30,23 +32,42 @@
                     "verify": "on-page:/a/grafana-cmab-app/usage-alerts"
                 },
                 {
-                    "type": "interactive",
-                    "action": "highlight",
-                    "reftarget": "a, button:contains('Create usage alert')",
-                    "content": "Click **Create usage alert** to open the alert builder. If you already have alerts, the same control is labeled **+ Create usage alert**.",
+                    "type": "multistep",
+                    "content": "Click **Create alert**, then select **All Products** to set a budget for your monthly organization spend.",
                     "requirements": [
-                        "exists-reftarget",
                         "on-page:/a/grafana-cmab-app/usage-alerts"
                     ],
-                    "skippable": true
+                    "steps": [
+                        {
+                            "action": "highlight",
+                            "reftarget": "[data-testid=\"cmab-create-alert-menu-button\"]",
+                            "requirements": [
+                                "exists-reftarget",
+                                "on-page:/a/grafana-cmab-app/usage-alerts"
+                            ]
+                        },
+                        {
+                            "action": "highlight",
+                            "reftarget": "[data-testid=\"cmab-alert-menu-product-global-spend\"]",
+                            "requirements": [
+                                "exists-reftarget",
+                                "on-page:/a/grafana-cmab-app/usage-alerts"
+                            ]
+                        }
+                    ]
                 }
             ]
+        },
+        {
+            "type": "markdown",
+            "content": "The global-spend alert builder is open; set your monthly budget and notification options."
         },
         {
             "type": "section",
             "id": "configure-alert",
             "title": "Configure and create your alert",
-            "blocks": [{
+            "blocks": [
+                {
                     "type": "interactive",
                     "action": "highlight",
                     "reftarget": "label:contains('Global usage')",
@@ -66,8 +87,7 @@
                         "exists-reftarget",
                         "on-page:/a/grafana-cmab-app/usage-alerts"
                     ],
-                    "doIt": false,
-                    "skippable": true
+                    "doIt": false
                 },
                 {
                     "type": "interactive",
@@ -78,8 +98,7 @@
                     "requirements": [
                         "exists-reftarget",
                         "on-page:/a/grafana-cmab-app/usage-alerts"
-                    ],
-                    "skippable": true
+                    ]
                 },
                 {
                     "type": "markdown",
@@ -89,7 +108,7 @@
                     "type": "interactive",
                     "action": "highlight",
                     "reftarget": "#contact-point-selector",
-                    "content": "Choose a **Contact point** for the notification, or create one if you don't have a contact point set up yet.",
+                    "content": "Choose a **Contact point** for the notification. If none are available, create one before saving your alert.",
                     "requirements": [
                         "exists-reftarget",
                         "on-page:/a/grafana-cmab-app/usage-alerts"
@@ -105,7 +124,7 @@
         },
         {
             "type": "markdown",
-            "content": "That's it. You set a budget on your global spend, chose alert levels, and picked a contact point. Grafana now has everything it needs to warn you before your Grafana Cloud spend crosses the budget you set."
+            "content": "Your budget configuration is prepared. Review the alert levels, choose a contact point, and click **Create alerts** when you are ready to enable notifications."
         }
     ]
 }
