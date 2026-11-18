@@ -12,15 +12,19 @@
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-lokiexplore-app/explore']",
-          "requirements": [
-            "navmenu-open",
-            "exists-reftarget"
+          "type": "conditional",
+          "conditions": [
+            "renderer:website"
           ],
-          "content": "On the Grafana Cloud home page, open the navigation menu and click **Drilldown > Logs**.\n\nThe Logs Drilldown Overview page shows log visualizations and log samples for all the services in your selected Loki instance."
+          "whenTrue": [
+            {
+              "type": "markdown",
+              "content": "On the Grafana Cloud home page, open the navigation menu and click **Drilldown > Logs**."
+            }
+          ],
+          "whenFalse": []
         },
+        {"type": "markdown", "content": "The Logs Drilldown Overview page shows log visualizations and log samples for all the services in your selected Loki instance."},
         {
           "type": "interactive",
           "action": "highlight",
@@ -35,8 +39,8 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[data-testid='data-testid search-services-input']",
-          "content": "If you have multiple services, you can view logs per service by using the **service** dropdown field to search for the service by name.",
+          "reftarget": "input[data-testid='data-testid search-services']",
+          "content": "If you have multiple services, type a service name in the **Search values** field.",
           "requirements": [
             "exists-reftarget"
           ],
