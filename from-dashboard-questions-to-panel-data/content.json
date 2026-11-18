@@ -1,0 +1,191 @@
+{
+  "id": "from-dashboard-questions-to-panel-data",
+  "title": "From dashboard questions to panel data",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Explore two dashboards on Grafana Play. You don't need an account. You'll inspect panels and queries without saving changes."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll see how dashboard panels answer questions about changes over time and values on a scale, and how units help you read those values."
+    },
+    {
+      "type": "section",
+      "id": "dashboard-questions",
+      "title": "Questions answered by dashboard panels",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/3SWXxreWk/grafana-dashboard?from=now-1h&to=now&timezone=browser",
+          "verify": "on-page:/d/3SWXxreWk",
+          "content": "Open **Grafana Dashboard**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header logins']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **logins** panel with its line chart."
+        },
+        {
+          "type": "markdown",
+          "content": "The **logins** panel answers the question \"How does the number of logins change over time?\" The vertical axis uses numeric values, not percentages. The rises and falls show changes across the selected period."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header server requests']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Focus on the **server requests** panel with its line chart."
+        },
+        {
+          "type": "markdown",
+          "content": "The **server requests** panel answers the question \"How does request volume change over time?\" Each line shows a server's values across the selected period. On the vertical axis, K means thousands; the values aren't a per-second rate.\n\nClick **Server A** in the legend to show only its values. Click **Server A** again to restore both series. Repeat with **Server B** to view its values separately."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-27']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Notice the **Google hits** panel with its percentage bar gauges."
+        },
+        {
+          "type": "markdown",
+          "content": "This panel answers the question \"Where does each value fall between 0 and 100%?\" It uses segmented gauges with percentage labels. Each bar shows one series' average over the selected period."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-24']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Google hits** panel with its solid vertical bar gauges."
+        },
+        {
+          "type": "markdown",
+          "content": "The vertical bar gauges answer the question \"How do these values compare?\" Colors are based on value thresholds. Each gauge shows a series' average, with no unit label. The configured scale runs from 0 to 100, but the displayed value can exceed 100."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-26']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Focus on the **Google hits** panel with its radial gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "The gauge answers the question \"Where does this value fall on its scale?\" The filled arc shows an average on a scale from 0 to 300, with no unit label. It doesn't show a trend over time."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-28']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Notice the **Google hits** panel with horizontal bar gauges."
+        },
+        {
+          "type": "markdown",
+          "content": "The bar gauges answer the question \"How do the values compare across servers?\" Each server has its own bar, with no unit label beside the number. Unlike a line chart, these bars show _averages_, not changes over time."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Memory']",
+          "requirements": ["on-page:/d/3SWXxreWk", "exists-reftarget"],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Memory** panel with its gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "This panel answers the question \"How much memory is in use on average?\" Its gauge shows the mean over the selected period, not the latest sample. The B suffix means bytes; the scale runs from 0 to 300 bytes."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've seen how line charts show changes over time, gauges compare values on a scale, and units tell you how to read the numbers."
+    },
+    {
+      "type": "markdown",
+      "content": "You'll see how Prometheus and Loki queries supply a time series panel's values."
+    },
+    {
+      "type": "section",
+      "id": "query-and-source",
+      "title": "The data behind a panel",
+      "requirements": ["section-completed:dashboard-questions"],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/000000100/mixed-datasources?from=now-24h&to=now&timezone=browser",
+          "verify": "on-page:/d/000000100",
+          "content": "Open the **Mixed Datasources** dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-1'] button[data-testid='data-testid Panel menu Prometheus and Loki']",
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
+          "doIt": false,
+          "tooltip": "Click here to open the panel menu, then select Edit.",
+          "content": "Click the **Prometheus and Loki** panel menu, then select **Edit** to find its queries. Start with query **A** and leave the settings unchanged."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
+          "doIt": false,
+          "content": "Notice the Prometheus data source for query **A**."
+        },
+        {
+          "type": "markdown",
+          "content": "Query **A** gets metrics from Prometheus. The data source tells you where Grafana sends the query. The query selects and summarizes the data for the panel."
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "[role='button'][aria-label='Select card C']",
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
+          "doIt": true,
+          "content": "Select query **C** to inspect the panel's second query."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid Select a data source']",
+          "requirements": ["on-page:/d/000000100", "exists-reftarget"],
+          "doIt": false,
+          "content": "Notice the Loki data source for query **C**."
+        },
+        {
+          "type": "markdown",
+          "content": "Query **C** gets logs from Grafana Loki and calculates values from them. This panel uses a **Mixed** data source, so each query can use a different data source. The same panel displays results from both queries: metrics from Prometheus and values calculated from logs in Loki."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've seen how queries A and C get data from different sources for the same panel."
+    },
+    {
+      "type": "markdown",
+      "content": "Continue to Choosing a visualization to see which panel types answer different questions."
+    }
+  ]
+}

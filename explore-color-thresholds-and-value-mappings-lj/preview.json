@@ -1,0 +1,261 @@
+{
+  "id": "explore-color-thresholds-and-value-mappings-lj-preview",
+  "title": "Color on a dashboard: thresholds, color schemes, and value mappings (preview)",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Explore dashboards on Grafana Play to see how color tells the viewer something before they read the value: where color changes, where a panel's color comes from, and where a word replaces a number."
+    },
+    {
+      "type": "markdown",
+      "content": "Explore panels on Grafana Play to see where their color changes, which direction is bad, and how Absolute and Percentage thresholds differ."
+    },
+    {
+      "type": "section",
+      "id": "thresholds",
+      "title": "Where color changes",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/000000003/sample-website-dashboard?from=now-1h&to=now&timezone=browser",
+          "content": "Open the **Sample Website Dashboard**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-30']",
+          "requirements": [
+            "on-page:/d/000000003",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Focus on the **Memory** gauge."
+        },
+        {
+          "type": "markdown",
+          "content": "The gauge shows its thresholds as colored sections: green, then orange from 200, then red from 270, so higher is worse. The color tells the viewer that before they read the value."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-33']",
+          "requirements": [
+            "on-page:/d/000000003",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Sign ups** stat."
+        },
+        {
+          "type": "markdown",
+          "content": "The number and the line behind it take the color of the threshold the value falls in. The thresholds are red from the Base value, orange from 100, and green from 270, so higher is better. The value shown is above 270, so green is the only color you see here."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/000000167/threshold-example?from=now-1h&to=now&timezone=browser",
+          "content": "Open the **Threshold example** dashboard."
+        },
+        {
+          "type": "markdown",
+          "content": "The time series on this dashboard has five thresholds: red from the Base value, orange from 10, transparent from 20, orange from 60, and red from 80. The line and shaded areas show where each color applies."
+        },
+        {
+          "type": "guided",
+          "content": "Open the panel for editing.",
+          "completeEarly": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "div[data-viz-panel-key='panel-1'] button[data-testid='data-testid Panel menu Threshold Example']",
+              "description": "Click here to open the panel menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
+              "description": "Click Edit to open the panel editor.",
+              "lazyRender": true
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Options group Thresholds toggle']",
+          "requirements": [
+            "on-page:/d/000000167",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Expand **Thresholds** if it's collapsed."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Thresholds Thresholds field property editor'] [role='radiogroup']",
+          "requirements": [
+            "on-page:/d/000000167",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Absolute** and **Percentage** options under **Thresholds mode**."
+        },
+        {
+          "type": "markdown",
+          "content": "**Absolute** thresholds are defined by a number. For example, 80 on a scale of 1 to 150. **Percentage** thresholds are defined relative to the minimum or maximum. For example, 80 percent. This panel uses **Absolute**."
+        },
+        {
+          "type": "guided",
+          "content": "Leave the editor.",
+          "completeEarly": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click Back to return to the dashboard."
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Exit edit mode button'], button[data-testid='data-testid Edit dashboard button']",
+              "description": "The dashboard is still in edit mode. Click Exit edit."
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "If Grafana asks about unsaved changes, select **Discard**. Nothing needed saving."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Explore the panels on Sample Website Dashboard to see which keep palette colors and which take their color from a threshold."
+    },
+    {
+      "type": "section",
+      "id": "color-scheme",
+      "title": "Where a panel's color comes from",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/000000003/sample-website-dashboard?from=now-1h&to=now&timezone=browser",
+          "content": "Open the **Sample Website Dashboard**."
+        },
+        {
+          "type": "markdown",
+          "content": "Find the panels titled **Memory / CPU**, **logins**, **server requests**, and **client side full page load**. These panels use **Classic palette**, so Grafana assigns each series a color based on its order. If the order of the series changed in the query, the colors would change too."
+        },
+        {
+          "type": "markdown",
+          "content": "Find the gauges titled **Memory** and **Google hits**, the stats titled **Support calls** and **Sign ups**, and the bar gauge titled **Google hits**. These panels use **From thresholds (by value)**, so each takes its color from the matching threshold. Here the color says something about the value, where a palette color only reflects the series' order."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Explore panels on Grafana Play to see where a value mapping shows a word in place of a value, which mapping type each one uses, and where the mapping's color shows."
+    },
+    {
+      "type": "section",
+      "id": "value-mappings",
+      "title": "Words in place of numbers",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/000000016/time-series-graphs?from=now-1h&to=now&timezone=browser",
+          "content": "Open the **Time series graphs** dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-520']",
+          "requirements": [
+            "on-page:/d/000000016",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Focus on the **Value mappings that work on y-axis** panel."
+        },
+        {
+          "type": "markdown",
+          "content": "A **Value** mapping replaces the specific values 0, 1, and 2 on this panel's y-axis with the words NORM, WARN, and CRIT. Replacing a value with text can make the data faster and easier to understand. On a time series, a mapping's colors aren't applied. Only the text shows."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/OhR1ID6Mk/table?from=now-1h&to=now&timezone=browser",
+          "content": "Open the **Table** dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-16']",
+          "requirements": [
+            "on-page:/d/OhR1ID6Mk",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Find the **Value mapped colors** panel."
+        },
+        {
+          "type": "markdown",
+          "content": "A **Value** mapping gives each of these specific values a color: LOW is blue, NORMAL is green, HIGH is orange, and CRITICAL is red. On a table the colors are applied, and color isn't the only thing telling the viewer what the value means: the word does too."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/avzwehmz/demo-wind-farm?from=now-12h&to=now&timezone=browser&var-AssetID=e64c9075-9d89-47cb-8ee5-d3251bd253f4",
+          "content": "Open the **Demo Wind Farm** dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-6']",
+          "requirements": [
+            "on-page:/d/avzwehmz",
+            "exists-reftarget"
+          ],
+          "content": "View the **Current Wind Direction** table.",
+          "doIt": false,
+          "lazyRender": true
+        },
+        {
+          "type": "markdown",
+          "content": "A **Range** mapping replaces each range of degrees with a compass point: 0 to 22.5 is N, 22.5 to 67.5 is NE, and so on around the compass. Range maps multiple, continuous values. This mapping replaces the number with text and sets no color."
+        },
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/d/qD-rVv6Mz/state-timeline-and-status-history?from=now-1h&to=now&timezone=browser",
+          "content": "Open the **State timeline and Status history** dashboard."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-viz-panel-key='panel-69']",
+          "requirements": [
+            "on-page:/d/qD-rVv6Mz",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "lazyRender": true,
+          "content": "Notice the **Status history - boolean values** panel."
+        },
+        {
+          "type": "markdown",
+          "content": "This panel shows the values true and false as words with colors: true appears as the text True in green, and false as the text False in red. This is a **Special** mapping, the type for special values such as true, false, null, and NaN (not a number)."
+        }
+      ]
+    }
+  ]
+}
