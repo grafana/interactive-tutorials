@@ -1,0 +1,84 @@
+{
+  "path": "fleet-mgt-staged-rollout-lj",
+  "id": "fleet-mgt-staged-rollout-lj",
+  "type": "path",
+  "milestoneCount": 5,
+  "startingLocation": "/a/grafana-collector-app/fleet-management",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/a/grafana-collector-app/fleet-management"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you stage a rollout, ensure you have:\n\n- A Grafana Cloud account. To create one, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account).\n- Grafana Cloud administrator privileges.\n- Collectors already registered with Fleet Management.\n- A configuration pipeline ready to roll out."
+  ],
+  "milestones": [
+    {
+      "id": "fleet-mgt-staged-rollout-verify-env-attributes",
+      "dir": "fleet-mgt-staged-rollout-lj/verify-env-attributes",
+      "requirements": {
+        "on-page:/a/grafana-collector-app/fleet-management": 4,
+        "section-completed:check-collector-attributes": 1,
+        "has-permission:grafana-collector-app:admin": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "fleet-mgt-staged-rollout-rollout-to-dev",
+      "dir": "fleet-mgt-staged-rollout-lj/rollout-to-dev",
+      "requirements": {
+        "has-permission:grafana-collector-app:admin": 1,
+        "on-page:/a/grafana-collector-app/fleet-management": 8
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "fleet-mgt-staged-rollout-expand-rollout",
+      "dir": "fleet-mgt-staged-rollout-lj/expand-rollout",
+      "requirements": {
+        "has-permission:grafana-collector-app:admin": 1,
+        "on-page:/a/grafana-collector-app/fleet-management/remote-configuration": 1,
+        "on-page:/a/grafana-collector-app/fleet-management": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "fleet-mgt-staged-rollout-rollback",
+      "dir": "fleet-mgt-staged-rollout-lj/rollback",
+      "requirements": {
+        "has-permission:grafana-collector-app:admin": 1,
+        "on-page:/a/grafana-collector-app/fleet-management/remote-configuration": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "fleet-mgt-staged-rollout-end-journey",
+      "dir": "fleet-mgt-staged-rollout-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

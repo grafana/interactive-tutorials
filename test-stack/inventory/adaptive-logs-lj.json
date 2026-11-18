@@ -1,0 +1,36 @@
+{
+  "path": "adaptive-logs-lj",
+  "summary": "Teaches how to review and apply Adaptive Logs drop-rate recommendations, create exemptions, and segment logs.",
+  "needs": [
+    {
+      "id": "logs-ingested",
+      "kind": "telemetry-data",
+      "description": "Log data ingested into Loki with enough query history and patterns (7-day display delay, 15-day window) for Adaptive Logs to show pattern recommendations; \"Apply all recommendations\" needs at least one pattern row.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "content.json: \"Logs ingested into Grafana Cloud\"; review-apply: 7 day delay before patterns shown",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "adaptive-logs-app",
+      "kind": "plugin-or-app",
+      "description": "Adaptive Logs (grafana-adaptivelogs-app / Adaptive Telemetry) enabled and accessible in the stack.",
+      "category": "entitlement",
+      "evidence": "startingLocation /a/grafana-adaptivelogs-app; nav href adaptive-telemetry",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "logs-namespace-label",
+      "kind": "telemetry-data",
+      "description": "Log streams with a label such as namespace for segment and exemption stream selector examples.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "segmentation: \"for example, namespace\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Pattern table depends on aged ingest/query history; a freshly seeded stack may show empty Patterns tab. Dossier 'Before you begin' was only a heading; content.json lists the real prerequisites.",
+  "externalInfraDependent": false
+}

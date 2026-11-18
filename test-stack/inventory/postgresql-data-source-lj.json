@@ -1,0 +1,36 @@
+{
+  "path": "postgresql-data-source-lj",
+  "summary": "Teaches how to create a read-only user and add/configure/test a PostgreSQL data source in Grafana Cloud, then query it in Explore.",
+  "needs": [
+    {
+      "id": "postgres-server",
+      "kind": "external-infra",
+      "description": "Reachable PostgreSQL server (9.0+) with database \"grafana\", user \"grafanareader\" with SELECT privileges, and sample tables to query. Steps fill host localhost:5432, which is not reachable from Grafana Cloud, so a publicly reachable or PDC-reachable instance is needed for Save & test to pass.",
+      "category": "external-infra",
+      "evidence": "configure-datasource: host=localhost:5432, database=grafana, user=grafanareader; Before you begin: \"A PostgreSQL server (version 9.0 or newer) that's up and running\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "pdc-agent-optional",
+      "kind": "external-infra",
+      "description": "Running PDC agent and a private network entry, only if the PostgreSQL instance is on a private network (test-connection highlights the PDC network select).",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"Created a private connection ... with the PDC agent running, if your database is on a private network\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Test user with Grafana Admin / Organization administrator role on the stack",
+      "category": "none",
+      "evidence": "Before you begin: \"Organization administrator role\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Steps type localhost:5432 / grafanareader; a real E2E pass needs a Cloud-reachable Postgres and the password supplied out-of-band. Save & test will fail against localhost from Cloud.",
+  "externalInfraDependent": true
+}

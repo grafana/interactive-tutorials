@@ -1,0 +1,45 @@
+{
+  "path": "infinity-csv-lj",
+  "summary": "Install and configure the Infinity data source with basic auth and a private connection, then build a dashboard from CSV data.",
+  "needs": [
+    {
+      "id": "infinity-plugin",
+      "kind": "plugin-or-app",
+      "description": "yesoreyeram-infinity-datasource plugin installable/pre-installed.",
+      "category": "in-cloud-seedable",
+      "evidence": "install/add-data-source milestones",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "public-url-csv",
+      "kind": "external-infra",
+      "description": "Publicly reachable CSV endpoint; guide uses https://thingspeak.com/channels/38629/feed.csv.",
+      "category": "external-infra",
+      "evidence": "build-dashboard URL https://thingspeak.com/channels/38629/feed.csv",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "pdc-agent",
+      "kind": "external-infra",
+      "description": "Private Data Source Connect network and a running PDC agent selectable in the 'Private data source connect' field.",
+      "category": "external-infra",
+      "evidence": "Before you begin: Created a private connection and PDC agent is running (recommended, not required)",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Grafana Cloud Admin role.",
+      "category": "entitlement",
+      "evidence": "Before you begin: Admin permissions",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "PDC step selects an existing PDC network; if none exists the step may fail. Guide creates an Infinity datasource (and a dashboard variable infinitySource) itself.",
+  "externalInfraDependent": true
+}

@@ -1,0 +1,93 @@
+{
+  "path": "intro-to-assistant-watchers-lj",
+  "id": "intro-to-assistant-watchers-lj",
+  "type": "path",
+  "milestoneCount": 5,
+  "startingLocation": "/a/grafana-assistant-app/watchers",
+  "testEnvironment": {
+    "tier": "cloud",
+    "plugins": [
+      "grafana-assistant-app"
+    ],
+    "datasources": [
+      "prometheus",
+      "loki"
+    ]
+  },
+  "targeting": {
+    "match": {
+      "and": [
+        {
+          "urlPrefixIn": [
+            "/a/grafana-assistant-app/watchers",
+            "/a/grafana-assistant-app"
+          ]
+        },
+        {
+          "targetPlatform": "cloud"
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\n- A Grafana Cloud account. [Create an account](https://grafana.com/signup/cloud/connect-account) if you need one.\n- Grafana Assistant enabled on your stack. If it isn't enabled yet, [Get started with Grafana Assistant](https://grafana.com/docs/learning-paths/get-started-grafana-assistant/) shows how.\n- At least one Prometheus, Loki, or BigQuery data source with telemetry for a real service. Calibration must save at least one validated query, and queries that return no data can stop it.\n- Watchers permissions: `grafana-assistant-app.watcher-agents:read` to view, `:create` and `:write` together to create a watcher (creating also starts calibration), `:write` to calibrate, start, and pause, `:create` to run once, and `:delete` to delete. You also need `plugins.app:access` for the Assistant plugin.\n\nYou can only add data sources you're allowed to query. Watcher runs then query them as the stack's Assistant service account, so a watcher keeps running if its creator leaves the organization.\n\nFor full setup details, refer to [Use Assistant Watchers](https://grafana.com/docs/grafana-cloud/platform/grafana-assistant/platform/watchers/)."
+  ],
+  "milestones": [
+    {
+      "id": "intro-to-assistant-watchers-create-watcher",
+      "dir": "intro-to-assistant-watchers-lj/create-watcher",
+      "requirements": {
+        "on-page:/explore": 4,
+        "has-datasource:prometheus": 1,
+        "exists-reftarget": 11,
+        "plugin-enabled:grafana-assistant-app": 1,
+        "on-page:/a/grafana-assistant-app/watchers": 1,
+        "on-page:/a/grafana-assistant-app/watchers/new": 7,
+        "has-datasources": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "intro-to-assistant-watchers-calibrate-watcher",
+      "dir": "intro-to-assistant-watchers-lj/calibrate-watcher",
+      "requirements": {
+        "plugin-enabled:grafana-assistant-app": 1,
+        "on-page:/a/grafana-assistant-app/watchers/": 1,
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "intro-to-assistant-watchers-start-and-run",
+      "dir": "intro-to-assistant-watchers-lj/start-and-run",
+      "requirements": {
+        "plugin-enabled:grafana-assistant-app": 1,
+        "on-page:/a/grafana-assistant-app/watchers/": 1,
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "intro-to-assistant-watchers-review-results",
+      "dir": "intro-to-assistant-watchers-lj/review-results",
+      "requirements": {
+        "plugin-enabled:grafana-assistant-app": 1,
+        "on-page:/a/grafana-assistant-app/watchers/": 1,
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "intro-to-assistant-watchers-end-journey",
+      "dir": "intro-to-assistant-watchers-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

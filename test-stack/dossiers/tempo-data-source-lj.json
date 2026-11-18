@@ -1,0 +1,114 @@
+{
+  "path": "tempo-data-source-lj",
+  "id": "tempo-data-source-lj",
+  "type": "path",
+  "milestoneCount": 7,
+  "startingLocation": "/connections/datasources",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:tempo"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
+              ]
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/tempo"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you connect to a Tempo data source, ensure you have:\n\n- A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account).\n- Administrator rights to your Grafana instance.\n- A Tempo backend to connect to. This can be a self-managed Tempo instance, a Grafana Enterprise Traces (GET) cluster, or a Grafana Cloud Traces stack.\n- Network access between Grafana Cloud and your Tempo backend. For self-managed Tempo reachable only on a private network, you need a [private data source connection (PDC)](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/).\n- An application or service emitting traces to Tempo. Refer to [Set up tracing](https://grafana.com/docs/grafana-cloud/send-data/traces/set-up/) for Grafana Cloud, or [Instrument for tracing](https://grafana.com/docs/tempo/latest/getting-started/instrumentation/) for self-managed Tempo.\n\n**Note:** Grafana Cloud includes a pre-configured `grafanacloud-<stack>-traces` data source backed by Tempo. Add a Tempo data source manually when you need to connect to a self-managed Tempo instance, a Grafana Enterprise Traces cluster, or require a custom configuration beyond the pre-configured data source."
+  ],
+  "milestones": [
+    {
+      "id": "tempo-data-source-prepare",
+      "dir": "tempo-data-source-lj/prepare-connection",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "**1. Identify your Tempo environment.** The Tempo data source supports three common environments:\n\n- **Self-managed Tempo** \u2014 Tempo you run yourself, typically at `http://<host>:<port>`.\n- **Grafana Cloud Traces** \u2014 The fully-managed Tempo backend included with Grafana Cloud.\n- **Grafana Enterprise Traces (GET)** \u2014 The self-hosted enterprise tracing backend.\n\n**Note:** Grafana Cloud already includes a pre-configured `grafanacloud-<stack>-traces` data source. Add a Tempo data source manually when you need to connect to a self-managed Tempo instance or require a custom configuration."
+      ]
+    },
+    {
+      "id": "tempo-data-source-add",
+      "dir": "tempo-data-source-lj/add-data-source",
+      "requirements": {
+        "on-page:/connections/datasources": 1,
+        "exists-reftarget": 4,
+        "on-page:/connections/datasources/new": 2,
+        "on-page:/connections/datasources/edit": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "tempo-data-source-configure-url",
+      "dir": "tempo-data-source-lj/configure-url",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "tempo-data-source-configure-auth",
+      "dir": "tempo-data-source-lj/configure-authentication",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "tempo-data-source-test",
+      "dir": "tempo-data-source-lj/save-and-test",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Troubleshoot Tempo data source issues](https://grafana.com/docs/grafana/latest/datasources/tempo/troubleshooting/)\n- [Streaming issues](https://grafana.com/docs/grafana/latest/datasources/tempo/troubleshooting/#streaming-issues)\n- [Private data source connections](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/)"
+      ]
+    },
+    {
+      "id": "tempo-data-source-verify",
+      "dir": "tempo-data-source-lj/verify-traces",
+      "requirements": {
+        "navmenu-open": 1,
+        "on-page:/explore": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "tempo-data-source-end",
+      "dir": "tempo-data-source-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

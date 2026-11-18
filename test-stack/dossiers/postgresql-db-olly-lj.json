@@ -1,0 +1,93 @@
+{
+  "path": "postgresql-db-olly-lj",
+  "id": "postgresql-db-olly-lj",
+  "type": "path",
+  "milestoneCount": 6,
+  "startingLocation": "/a/grafana-dbo11y-app",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefixIn": [
+                "/a/grafana-dbo11y-app",
+                "/a/grafana-dbo11y-app/configuration"
+              ]
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you set up Database Observability, ensure you have:\n\n- A running PostgreSQL 14.0 or later instance.\n- Administrative access to your PostgreSQL server to create a monitoring user, enable extensions, change settings, and restart PostgreSQL if needed.\n- Database Observability activated in your Grafana Cloud stack.\n- A machine where you can install Grafana Alloy 1.17.0 or later with network access to both your PostgreSQL database and Grafana Cloud.\n- Basic familiarity with PostgreSQL database administration."
+  ],
+  "milestones": [
+    {
+      "id": "postgresql-db-olly-check-requirements",
+      "dir": "postgresql-db-olly-lj/check-requirements",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "Before starting the setup, verify that your environment meets the requirements for Database Observability. Getting these right upfront prevents troubleshooting later.",
+        "## Grafana Cloud requirements\n\n| Requirement | Details |\n|---|---|\n| Account | Grafana Cloud account with Editor or Admin role |\n| Database Observability | Activated in your Grafana Cloud stack. Open **Observability** > **Database** in the navigation menu and click **Activate Database Observability** if the app isn't already active. |\n| Stack | Access to Grafana Cloud Mimir (metrics) and Grafana Cloud Loki (logs) data sources |\n| Permissions | Ability to view and create dashboards |",
+        "## PostgreSQL requirements\n\n| Requirement | Details |\n|---|---|\n| Version | PostgreSQL 14.0 or later |\n| pg_stat_statements | Extension loaded through `shared_preload_libraries` and created in each database you monitor |\n| Query tracking settings | `compute_query_id` set to `on`, `pg_stat_statements.track` set to `all`, and `track_activity_query_size` set to `4096`. `track_activity_query_size` (like `shared_preload_libraries`) needs a PostgreSQL restart; the others apply on a config reload. |\n| Connection | Alloy must connect directly to the database host \u2014 avoid load balancers or connection poolers like PgBouncer |\n| Monitoring user | User with the `pg_monitor` and `pg_read_all_stats` roles, plus read access to the schemas you want to monitor |",
+        "## Grafana Alloy requirements\n\n| Requirement | Details |\n|---|---|\n| Version | Grafana Alloy 1.17.0 or later. Database Observability is generally available, so no `--stability.level` flag is required. |\n| Network | Outbound access to Grafana Cloud endpoints |\n| Database access | Network connectivity to your PostgreSQL instance |"
+      ]
+    },
+    {
+      "id": "postgresql-db-olly-prepare-postgresql",
+      "dir": "postgresql-db-olly-lj/prepare-postgresql",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "postgresql-db-olly-configure-alloy",
+      "dir": "postgresql-db-olly-lj/configure-alloy",
+      "requirements": {
+        "on-page:/a/grafana-dbo11y-app/configuration": 1,
+        "exists-reftarget": 9
+      },
+      "navigate": [],
+      "needsText": [
+        "Before you begin, install Grafana Alloy 1.17.0 or later on a host that can reach both your PostgreSQL server and Grafana Cloud. Refer to [Install Grafana Alloy](https://grafana.com/docs/alloy/latest/set-up/install/) for your platform. Database Observability is generally available, so you don't need a `--stability.level` flag. Alloy should connect directly to the database host, not through a load balancer or PgBouncer.\n\nThe wizard offers two deployment methods. This path uses **Manual configuration**, which works with any Alloy you run yourself. If your collector is enrolled in Fleet Management, you can choose **Fleet Management** instead and Grafana Cloud pushes the configuration to it for you."
+      ]
+    },
+    {
+      "id": "postgresql-db-olly-verify-telemetry",
+      "dir": "postgresql-db-olly-lj/verify-telemetry",
+      "requirements": {
+        "on-page:/a/grafana-dbo11y-app/configuration": 1,
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "postgresql-db-olly-explore-queries",
+      "dir": "postgresql-db-olly-lj/explore-queries",
+      "requirements": {
+        "navmenu-open": 3,
+        "exists-reftarget": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "postgresql-db-olly-end-journey",
+      "dir": "postgresql-db-olly-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

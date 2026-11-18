@@ -1,0 +1,63 @@
+{
+  "path": "connect-agent-to-agent-observability-lj",
+  "summary": "Teaches enabling Agent Observability, creating an access policy token, instrumenting an agent with the SDK, and viewing generations, traces and metrics.",
+  "needs": [
+    {
+      "id": "agento11y-app",
+      "kind": "plugin-or-app",
+      "description": "Agent Observability app (/a/grafana-agento11y-app) available; milestone 1 enables it (not yet enabled state is assumed).",
+      "category": "entitlement",
+      "evidence": "Before you begin: \"Agent Observability is not yet enabled; Milestone 1 enables it\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "stack-admin",
+      "kind": "permission-or-role",
+      "description": "Admin role on the stack; ability to create access policies and tokens in Cloud portal (/a/grafana-auth-app).",
+      "category": "entitlement",
+      "evidence": "manifestPrerequisites grafana-cloud-admin; create-access-policy-and-token",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "agent-runtime",
+      "kind": "external-infra",
+      "description": "Local agent in Go/Python/JS/Java/.NET with language runtime (Python 3.10+, Node 22+, Go 1.23+, Java 17+, .NET 8+) running the SDK sample to send a generation.",
+      "category": "external-infra",
+      "evidence": "manifestPrerequisites running-agent, language-runtime",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "llm-key",
+      "kind": "other",
+      "description": "LLM provider API key for own agent/.NET helper (first manual sample does not need one).",
+      "category": "external-infra",
+      "evidence": "manifestPrerequisites llm-provider-key",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "traces-metrics-apps",
+      "kind": "plugin-or-app",
+      "description": "Traces Drilldown (grafana-exploretraces-app) and Metrics Drilldown (grafana-metricsdrilldown-app) plus traces/metrics data from the agent.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "export-traces-and-metrics requirements on-page /a/grafana-exploretraces-app, /a/grafana-metricsdrilldown-app",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "generation-data",
+      "kind": "telemetry-data",
+      "description": "At least one captured generation in Conversations in the time range (produced by running the SDK sample).",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "find-generation-in-conversations",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Path expects a clean state (feature not enabled, token shown once); on a pre-seeded stack the enable step may already be done. Data comes from a learner-run SDK process.",
+  "externalInfraDependent": true
+}

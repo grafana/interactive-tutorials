@@ -1,0 +1,54 @@
+{
+  "path": "fleet-mgt-monitor-health-lj",
+  "summary": "Teaches registering an Alloy collector in Fleet Management and checking its health, dashboards and logs.",
+  "needs": [
+    {
+      "id": "alloy-collector-host",
+      "kind": "external-infra",
+      "description": "Host running Grafana Alloy (>=1.7.2) where learner can set env vars and restart the service, registered to the stack",
+      "category": "external-infra",
+      "evidence": "Before you begin: access to host where Alloy is installed; register-collector step",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "registered-collector",
+      "kind": "collector-fleet",
+      "description": "At least one collector in Fleet Management Inventory reporting health, with self_monitoring_logs_* pipeline",
+      "category": "external-infra",
+      "evidence": "check-health-status: inspect first collector status; view-collector-logs",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "alloy-health-telemetry",
+      "kind": "telemetry-data",
+      "description": "Alloy internal metrics and self-monitoring logs in Cloud Prometheus/Loki so health dashboards and Explore Logs have data",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "view-health-dashboards, view-collector-logs; troubleshooting 'dashboards have no data'",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "access-policy-admin",
+      "kind": "permission-or-role",
+      "description": "Cloud admin able to create access policy token (set:alloy-data-write)",
+      "category": "entitlement",
+      "evidence": "Before you begin; create-token milestone",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "fleet-management-app",
+      "kind": "plugin-or-app",
+      "description": "grafana-collector-app (Fleet Management) enabled",
+      "category": "in-cloud-seedable",
+      "evidence": "targeting urlPrefix /a/grafana-collector-app/fleet-management",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Collector must be actually running outside Cloud; could be seeded by a long-lived Alloy in CI. Create-token step may mint new tokens on shared stack.",
+  "externalInfraDependent": true
+}

@@ -1,0 +1,45 @@
+{
+  "path": "monitor-aws-resources-lj",
+  "summary": "Teaches connecting an AWS account to Grafana Cloud via CloudWatch scrape jobs using the Cloud provider app.",
+  "needs": [
+    {
+      "id": "aws-account-iam",
+      "kind": "external-infra",
+      "description": "AWS account with admin or IAM rights to launch the CloudFormation stack creating the Grafana role, and running tagged resources (EC2, RDS, Lambda).",
+      "category": "external-infra",
+      "evidence": "Before you begin: AWS account, resources with at least one tag",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "grafana-csp-app",
+      "kind": "plugin-or-app",
+      "description": "Cloud Provider app (grafana-csp-app) with AWS section enabled.",
+      "category": "entitlement",
+      "evidence": "startingLocation /a/grafana-csp-app/aws",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "aws-account-connected",
+      "kind": "existing-grafana-config",
+      "description": "Valid role ARN accepted by \"Add account\"; guide types a placeholder ARN (arn:aws:iam::123456789012:...) that real verification would reject.",
+      "category": "external-infra",
+      "evidence": "connect-aws-account formfill #arn",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "cloudwatch-metrics",
+      "kind": "telemetry-data",
+      "description": "CloudWatch metrics flowing so Services tab shows data-sent OK.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "verify-data-collection: service-overview-sending-datata-ok",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Placeholder ARN means real E2E needs either a real AWS account or a pre-created account/scrape job on the stack; later milestones depend on them.",
+  "externalInfraDependent": true
+}

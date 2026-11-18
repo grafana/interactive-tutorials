@@ -1,0 +1,36 @@
+{
+  "path": "elasticsearch-logs-lj",
+  "summary": "Teaches exploring Elasticsearch logs in Explore with Lucene queries, log display fields, time ranges and dashboards.",
+  "needs": [
+    {
+      "id": "elasticsearch-datasource",
+      "kind": "datasource",
+      "description": "Pre-configured Elasticsearch data source (guide says select 'elasticsearch'), with Message field name 'message' and Level field name 'level' available",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: Elasticsearch data source configured; steps select data source named elasticsearch",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "elasticsearch-server",
+      "kind": "external-infra",
+      "description": "Running Elasticsearch reachable from the stack holding the logs",
+      "category": "external-infra",
+      "evidence": "Before you begin: logs ingested into your Elasticsearch cluster",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "elasticsearch-log-docs",
+      "kind": "telemetry-data",
+      "description": "Log documents with fields message, level (values error, info) and service (value api) so queries 'error', 'level:info', 'level:error AND service:api' return rows",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "write-lucene-query and add-logs-to-dashboard typed queries",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Depends on an external ES server like elasticsearch-data-source-lj. Could be satisfied by a hosted/small ES with seeded docs.",
+  "externalInfraDependent": true
+}

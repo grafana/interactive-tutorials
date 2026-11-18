@@ -1,0 +1,96 @@
+{
+  "path": "establish-k6-baseline-lj",
+  "id": "establish-k6-baseline-lj",
+  "type": "path",
+  "milestoneCount": 8,
+  "startingLocation": "/a/k6-app",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/a/k6-app"
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "Welcome to the Grafana learning path that shows you how to establish a performance baseline with k6. A performance baseline is a set of known-good metric values, such as response time and error rate, that represent how your system behaves under a realistic load. Without a baseline, you have no benchmark to compare against when something changes.\n\nThis path guides you through the complete process of creating a baseline: designing a realistic load profile, adding correctness checks, running a test, interpreting the results, encoding your baseline as thresholds, and storing results in k6 Cloud for historical comparison. By the end, you'll have an automated test that passes or fails based on your system's actual performance characteristics.\n\n## Here's what to expect\n\nWhen you complete this path, you'll be able to:\n\n- Understand what p95/p99 latency, throughput, and error rate mean as baseline metrics\n- Design a load profile with the ramping-vus executor that reflects realistic traffic\n- Add checks to validate response correctness alongside performance\n- Interpret k6 summary output including percentiles and averages\n- Define thresholds that make your test pass or fail based on baseline criteria\n- Save and compare results in k6 Cloud\n\n## Before you begin\n\nBefore you establish a performance baseline, ensure that you have:\n\n- k6 installed on your machine. To install k6, refer to [k6 installation](https://grafana.com/docs/k6/latest/get-started/installation/).\n- Basic knowledge of JavaScript (k6 scripts are written in JavaScript).\n- A code editor such as [Visual Studio Code](https://code.visualstudio.com/) or [Cursor](https://www.cursor.com/).\n- Access to a terminal or command line interface.\n\n## Troubleshooting\n\nIf you get stuck, we've got your back! Where appropriate, troubleshooting information is just a click away.\n\n## More to explore\n\nWe understand you might want to explore other capabilities not strictly on this path. We'll provide you opportunities where it makes sense."
+  ],
+  "milestones": [
+    {
+      "id": "establish-k6-baseline-design-load-profile",
+      "dir": "establish-k6-baseline-lj/design-load-profile",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "establish-k6-baseline-add-checks",
+      "dir": "establish-k6-baseline-lj/add-checks",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "A fast response isn't useful if it returns an error. Checks let you validate that responses are correct, not just quick, by asserting conditions on every response. Unlike traditional test assertions, a failed check doesn't stop the test. Instead, k6 tracks the pass rate so you can see how often correctness degrades under load.\n\nThis is a critical step that many new users skip. Without checks, your baseline only measures speed. With checks, it also measures correctness, giving you a complete picture of system health.\n\nTo add checks to your baseline script, complete the following steps:\n\n1. Open `baseline.js` and update the import statement to include `check`:\n\n   ```javascript\n   import http from 'k6/http';\n   import { check, sleep } from 'k6';\n   ```\n\n1. In the default function, assign the HTTP response to a variable and add checks after the request:\n\n   ```javascript\n   export default function () {\n     const res = http.get('https://quickpizza.grafana.com');\n\n     check(res, {\n       'status is 200': (r) => r.status === 200,\n       'response body is not empty': (r) => r.body.length > 0,\n     });\n\n     sleep(1);\n   }\n   ```\n\n   Each check has a descriptive name and a function that returns `true` or `false`. You can add as many checks as you need. Common checks include status codes, response body content, and response headers.\n\n1. Save the file. Your complete `baseline.js` should now look like this:\n\n   ```javascript\n   import http from 'k6/http';\n   import { check, sleep } from 'k6';\n\n   export const options = {\n     stages: [\n       { duration: '30s', target: 20 },\n       { duration: '1m', target: 20 },\n       { duration: '30s', target: 0 },\n     ],\n   };\n\n   export default function () {\n     const res = http.get('https://quickpizza.grafana.com');\n\n     check(res, {\n       'status is 200': (r) => r.status === 200,\n       'response body is not empty': (r) => r.body.length > 0,\n     });\n\n     sleep(1);\n   }\n   ```\n\n   When you run this test, the summary output includes a `checks` line showing the total pass rate across all check assertions.\n\nIn the next milestone, you run this test and learn how to read the results."
+      ]
+    },
+    {
+      "id": "establish-k6-baseline-run-and-read-results",
+      "dir": "establish-k6-baseline-lj/run-and-read-results",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "With your load profile and checks in place, you're ready to run the test and interpret the output. The k6 summary is dense with metrics, but for establishing a baseline you need to focus on a few key lines: `http_req_duration` for latency, `http_req_failed` for error rate, and `checks` for correctness.\n\nTo run your test and read the results, complete the following steps:\n\n1. Open your terminal and run the test:\n\n   ```bash\n   k6 run baseline.js\n   ```\n\n   k6 displays real-time progress as the test executes, showing the current VU count and completed iterations.\n\n1. When the test completes, review the summary output. Focus on the following metrics:\n\n   **`http_req_duration`**: The time it takes for requests to complete. The summary shows several aggregations:\n\n   ```text\n   http_req_duration..: avg=180ms  min=95ms\n                        med=165ms  max=850ms\n                        p(90)=280ms  p(95)=350ms\n   ```\n\n   - `avg` is the mean across all requests, but averages hide outliers.\n   - `p(90)` and `p(95)` are more useful for baselines. The `p(95)` value means 95% of requests completed within that time. The remaining 5% were slower.\n   - If `max` is dramatically higher than `p(95)`, a small number of requests are experiencing significant delays.\n\n   **`http_req_failed`**: The percentage of requests that returned a non-2xx status code:\n\n   ```text\n   http_req_failed................: 0.00%   0 out of 1200\n   ```\n\n   The output shows how many requests failed out of the total. For a healthy baseline, this value should be at or near 0%.\n\n   **`checks`**: The pass rate across all your check assertions. The checks section appears at the top of the summary under **TOTAL RESULTS**:\n\n   ```text\n   checks_total.......: 2400    10.00/s\n   checks_succeeded...: 100.00% 2400 out of 2400\n   checks_failed......: 0.00%   0 out of 2400\n\n   \u2713 status is 200\n   \u2713 response body is not empty\n   ```\n\n   A 100% `checks_succeeded` rate means every response met your correctness criteria. The individual check names are listed below with \u2713 or \u2717 indicators.\n\n   **`iterations`**: The total number of times the default function executed:\n\n   ```text\n   iterations.....................: 1200    10.00/s\n   ```\n\n   The per-second rate represents your throughput (requests per second) during the test.\n\n1. Confirm that your test ran cleanly: checks are passing, the error rate is near zero, and the latency values are stable. If something looks off, such as high error rates, check failures, or erratic latency, investigate before using these numbers as your baseline.\n\n   **Note:** Percentiles are more reliable than averages for baselines. An average of 200 ms could mean most requests took 150 ms but a few took 2 s. The p95 value gives you a much clearer picture of actual user experience.\n\nIn the next milestone, you identify the specific values from these results to record as your baseline."
+      ]
+    },
+    {
+      "id": "establish-k6-baseline-identify-baseline-values",
+      "dir": "establish-k6-baseline-lj/identify-baseline-values",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "You've run the test and you have raw numbers. Now you need to decide which specific values represent your baseline. This step bridges the gap between \"I ran a test\" and \"I have a benchmark I can enforce.\" The values you record here become the criteria you encode as thresholds in the next milestone.\n\nTo identify your baseline values, complete the following steps:\n\n1. Locate the `http_req_duration` line in your test summary and note the `p(95)` value. This is your **p95 latency baseline**.\n\n   For example, if the summary shows:\n\n   ```text\n   http_req_duration..: avg=180ms  min=95ms\n                        med=165ms  max=850ms\n                        p(90)=280ms  p(95)=350ms\n   ```\n\n   Your p95 latency baseline is **350 ms**. This means 95% of requests completed within 350 ms under your test conditions.\n\n   **Tip:** The p95 value is a good starting point for your baseline. It captures the experience of the vast majority of users while filtering out rare outliers. You can also use p90 for a less strict baseline, or add custom percentiles like p99 in your thresholds configuration later.\n\n1. Locate the `http_req_failed` line and note the percentage. This is your **error rate baseline**.\n\n   For example:\n\n   ```text\n   http_req_failed................: 0.00%   0 out of 1200\n   ```\n\n   Your error rate baseline is **0%**. In practice, set a small tolerance, such as less than 1%, to account for transient network issues.\n\n1. Locate the `iterations` line and note the per-second rate. This is your **throughput baseline**.\n\n   For example:\n\n   ```text\n   iterations.....................: 1200    10.00/s\n   ```\n\n   Your throughput baseline is **10 requests per second** at 20 VUs.\n\n1. Record these values. You'll use them directly in the next milestone to define pass/fail thresholds:\n\n   | Metric | Baseline value | Threshold to set |\n   | --- | --- | --- |\n   | p95 latency | 350 ms | `p(95)<500` (add headroom) |\n   | Error rate | 0% | `rate<0.01` (allow <1%) |\n   | Throughput | 10 RPS | Monitor, not threshold |\n\n   Add headroom to your baseline values when setting thresholds. Headroom means setting the threshold higher than your observed value so normal variance doesn't trigger false failures.\n\n   A common approach is to multiply your observed p95 by 1.2 to 1.5 (20-50% above). For example, if your p95 is 53 ms, multiply by 1.3 to get a threshold of `p(95)<70`. Use less headroom (1.2x) for stable, low-latency services and more headroom (1.5x) for services with higher natural variance.\n\nIn the next milestone, you encode these baseline values into your script as thresholds."
+      ]
+    },
+    {
+      "id": "establish-k6-baseline-add-thresholds",
+      "dir": "establish-k6-baseline-lj/add-thresholds",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "establish-k6-baseline-validate-thresholds",
+      "dir": "establish-k6-baseline-lj/validate-thresholds",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "Adding thresholds to your script isn't enough. You need to confirm they actually pass and fail as expected. In this milestone, you run the test twice: once to verify it passes under normal conditions, and once with a deliberately strict threshold to confirm it fails correctly.\n\nTo validate your thresholds, complete the following steps:\n\n1. Run the test:\n\n   ```bash\n   k6 run baseline.js\n   ```\n\n1. At the top of the summary output, look for the **THRESHOLDS** section and verify that all thresholds pass:\n\n   ```text\n   THRESHOLDS\n     checks\n       \u2713 'rate>0.99' rate=100.00%\n\n     http_req_duration\n       \u2713 'p(95)<500' p(95)=54.42ms\n\n     http_req_failed\n       \u2713 'rate<0.01' rate=0.00%\n   ```\n\n   A \u2713 next to each threshold means it passed. The `rate>0.99` on the checks threshold means the check pass rate must be above 99%. This is not related to p99 latency. The exit code should be `0`, which signals success.\n\n1. Verify the exit code in your terminal:\n\n   ```bash\n   echo $?\n   ```\n\n   The output should be `0`.\n\n1. Now test that a threshold failure works correctly. Temporarily set a very strict latency threshold that your system can't meet. Open `baseline.js` and change the `http_req_duration` threshold:\n\n   ```javascript\n   thresholds: {\n     http_req_duration: ['p(95)<1'],\n     http_req_failed: ['rate<0.01'],\n     checks: ['rate>0.99'],\n   },\n   ```\n\n   A p95 under 1 ms is impossible for any real HTTP request, so this threshold should fail.\n\n1. Run the test again:\n\n   ```bash\n   k6 run baseline.js\n   ```\n\n   The **THRESHOLDS** section now shows a \u2717 next to the failed threshold:\n\n   ```text\n   THRESHOLDS\n     checks\n       \u2713 'rate>0.99' rate=100.00%\n\n     http_req_duration\n       \u2717 'p(95)<1' p(95)=54.42ms\n\n     http_req_failed\n       \u2713 'rate<0.01' rate=0.00%\n   ```\n\n1. Verify the exit code is non-zero:\n\n   ```bash\n   echo $?\n   ```\n\n   The output should be `99`, which is k6's exit code for threshold failures. This non-zero exit code is what CI/CD systems use to detect a failed test.\n\n1. Restore your original threshold value before continuing:\n\n   ```javascript\n   http_req_duration: ['p(95)<500'],\n   ```\n\nYou've confirmed that your thresholds work in both directions: passing when metrics are within bounds and failing when they're breached.\n\nIn the next milestone, you save your results to k6 Cloud for historical tracking and team visibility."
+      ]
+    },
+    {
+      "id": "establish-k6-baseline-save-share-results",
+      "dir": "establish-k6-baseline-lj/save-share-results",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "establish-k6-baseline-end-journey",
+      "dir": "establish-k6-baseline-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

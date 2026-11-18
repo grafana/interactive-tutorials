@@ -1,0 +1,98 @@
+{
+  "path": "mysql-db-olly-lj",
+  "id": "mysql-db-olly-lj",
+  "type": "path",
+  "milestoneCount": 6,
+  "startingLocation": "/a/grafana-dbo11y-app",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefixIn": [
+                "/a/grafana-dbo11y-app",
+                "/a/grafana-dbo11y-app/configuration"
+              ]
+            },
+            {
+              "targetPlatform": "cloud"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you set up Database Observability, ensure you have:\n\n- A running MySQL 8.0 or later instance (MariaDB is not supported).\n- Administrative access to your MySQL server to create a monitoring user, change Performance Schema settings, and restart MySQL if needed.\n- Database Observability activated in your Grafana Cloud stack.\n- A machine where you can install Grafana Alloy 1.17.0 or later with network access to both your MySQL database and Grafana Cloud.\n- Basic familiarity with MySQL database administration."
+  ],
+  "milestones": [
+    {
+      "id": "mysql-db-olly-check-requirements",
+      "dir": "mysql-db-olly-lj/check-requirements",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "Before starting the setup, verify that your environment meets the requirements for Database Observability. Getting these right upfront prevents troubleshooting later.",
+        "## Grafana Cloud requirements\n\n| Requirement | Details |\n|---|---|\n| Account | Grafana Cloud account with Editor or Admin role |\n| Database Observability | Activated in your Grafana Cloud stack. Open **Observability** > **Database** in the navigation menu and click **Activate Database Observability** if the app isn't already active. |\n| Stack | Access to Grafana Cloud Mimir (metrics) and Grafana Cloud Loki (logs) data sources |\n| Permissions | Ability to view and create dashboards |",
+        "## MySQL requirements\n\n| Requirement | Details |\n|---|---|\n| Version | MySQL 8.0 or later (MySQL 5.7 and earlier are not supported) |\n| MariaDB | Not supported \u2014 Performance Schema implementation differs from MySQL |\n| Performance Schema | `performance_schema` set to `ON` (the default in MySQL 8.0+) |\n| Query capture settings | `max_digest_length`, `performance_schema_max_digest_length`, and `performance_schema_max_sql_text_length` set to `4096`. These are startup variables, so changing them requires a MySQL restart. |\n| Performance Schema consumers | `events_statements_cpu`, `events_waits_current`, and `events_waits_history` enabled, or the monitoring user allowed to enable them so Alloy can manage them |\n| Monitoring user | User with `PROCESS` and `REPLICATION CLIENT` on `*.*`, `SELECT` on `performance_schema.*`, and `SELECT, SHOW VIEW` on the schemas you want to monitor |\n| Connection | Alloy connects directly to the MySQL server, not through a proxy or connection pooler |",
+        "## Grafana Alloy requirements\n\n| Requirement | Details |\n|---|---|\n| Version | Grafana Alloy 1.17.0 or later. Database Observability is generally available, so no `--stability.level` flag is required. |\n| Network | Outbound access to Grafana Cloud endpoints |\n| Database access | Network connectivity to your MySQL instance |"
+      ]
+    },
+    {
+      "id": "mysql-db-olly-prepare-mysql",
+      "dir": "mysql-db-olly-lj/prepare-mysql",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "Grant read access to the schemas you want to monitor, so Alloy can collect table and index details and run `EXPLAIN` on sampled queries:\n\n```sql\nGRANT SELECT, SHOW VIEW ON YOUR_SCHEMA_NAME.* TO 'db-o11y'@'%';\n```\n\nRepeat for each schema, or grant read access to all schemas if you're unsure which ones you need:\n\n```sql\nGRANT SELECT, SHOW VIEW ON *.* TO 'db-o11y'@'%';\n```"
+      ]
+    },
+    {
+      "id": "mysql-db-olly-configure-alloy",
+      "dir": "mysql-db-olly-lj/configure-alloy",
+      "requirements": {
+        "on-page:/a/grafana-dbo11y-app/configuration": 1,
+        "exists-reftarget": 9
+      },
+      "navigate": [],
+      "needsText": [
+        "Before you begin, install Grafana Alloy 1.17.0 or later on a host that can reach both your MySQL server and Grafana Cloud. Refer to [Install Grafana Alloy](https://grafana.com/docs/alloy/latest/set-up/install/) for your platform. Database Observability is generally available, so you don't need a `--stability.level` flag.\n\nThe wizard offers two deployment methods. This path uses **Manual configuration**, which works with any Alloy you run yourself. If your collector is enrolled in Fleet Management, you can choose **Fleet Management** instead and Grafana Cloud pushes the configuration to it for you."
+      ]
+    },
+    {
+      "id": "mysql-db-olly-verify-telemetry",
+      "dir": "mysql-db-olly-lj/verify-telemetry",
+      "requirements": {
+        "navmenu-open": 3,
+        "exists-reftarget": 4,
+        "on-page:/a/grafana-dbo11y-app/configuration": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "mysql-db-olly-explore-queries",
+      "dir": "mysql-db-olly-lj/explore-queries",
+      "requirements": {
+        "navmenu-open": 3,
+        "exists-reftarget": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "mysql-db-olly-end-journey",
+      "dir": "mysql-db-olly-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "You completed this journey as you:\n\n- Understood the value of deep query monitoring versus basic metric collection\n- Verified your MySQL 8.0+ instance meets the requirements for Database Observability\n- Prepared your MySQL database with Performance Schema and query capture settings, a dedicated monitoring user, and the privileges Alloy needs\n- Generated the Grafana Alloy configuration with the Add a database wizard and deployed it to your collector\n- Verified telemetry is flowing using the Telemetry status checks\n- Explored the Queries overview page to find slow queries and understand execution patterns\n- Learned how to drill into individual queries for explain plans, wait events, and query samples"
+      ]
+    }
+  ]
+}
