@@ -366,14 +366,35 @@
           "lazyRender": true
         },
         {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Back to dashboard button']",
-          "content": "Click the **Back to dashboard** button to finish the tour.",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "lazyRender": true
+          "type": "guided",
+          "content": "Return to the dashboard and exit edit mode to finish the tour.",
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "button[data-testid='data-testid Back to dashboard button']",
+              "description": "Click here to return to the dashboard.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[aria-label='Dashboard mode: Editing']",
+              "description": "Open the dashboard mode menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitemradio']:contains('Viewing')",
+              "description": "Choose **Viewing** to leave edit mode.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Discard')",
+              "description": "If Grafana asks about unsaved changes, click **Discard**; you haven't changed anything. Skip this step if no prompt appears.",
+              "lazyRender": true,
+              "skippable": true
+            }
+          ]
         },
         {
           "type": "interactive",
