@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-why-an-agent-failed-and-what-it-cost-break-down-the-cost-chart",
+  "title": "Break down the cost chart",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "**Analytics** is where the cost of every generation adds up. Its charts answer one question at a time, and a breakdown turns one line into one line per agent, per model, or per agent and model together. In this milestone you open the estimated cost chart, break it down by **Agent** and **Model**, and read how its figures were priced."
+    },
+    {
+      "type": "markdown",
+      "content": "Open Analytics, narrow it to the demo agents, and show the cost chart."
+    },
+    {
+      "type": "section",
+      "id": "show-the-cost-chart",
+      "title": "Show the cost chart",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/analytics?from=now-30d&to=now",
+          "content": "Go to **Observability** > **Agent** > **Analytics** with a time range that covers the demo data.",
+          "verify": "on-page:/a/grafana-agento11y-app/analytics"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid MultiSelect container-input'][aria-label='Agent']",
+          "content": "Open the **Agent** filter and pick the agents whose names start with `sigil.demo.`.\n\nThe **Provider**, **Model**, and **Agent** filters above the stats narrow every chart on the page. On a stack that only has demo data, the list may offer no agents. Leave the filter empty, since the demo agents are then the only agents on the page.",
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/analytics",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "skippable": true,
+          "hint": "If the Agent list offers no agents to pick, skip this step. The breakdown you add next splits the chart by agent anyway."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='data-testid radio-button-option cost'] + label",
+          "content": "In the chart row under **Overview**, click **Cost**.\n\nThe chart's title becomes **Cost over time** and it plots one line, **Estimated cost**, for everything the filters allow.",
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/analytics",
+            "exists-reftarget"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You opened **Analytics** and switched its chart row to the estimated cost chart."
+    },
+    {
+      "type": "markdown",
+      "content": "Break the cost chart down by agent and model, then read how the figures were priced."
+    },
+    {
+      "type": "section",
+      "id": "break-down-and-read-the-price-source",
+      "title": "Break down and read the price source",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "multistep",
+          "content": "Click **Breakdown by**, next to the chart choices, then select **Agent** and **Model** from the list that opens.\n\n**Breakdown by** reads **None** until you pick a dimension, and it accepts more than one. The chart redraws as **Cost by Agent / Model over time**, one line per agent and model pair, and both names appear as chips in **Breakdown by**. If they are already chips there, skip this step. Selecting a chip again removes it.",
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/analytics"
+          ],
+          "skippable": true,
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='breakdown-dimension-picker']:nth-match(1)",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#combobox-option-gen_ai_agent_name"
+            },
+            {
+              "action": "highlight",
+              "reftarget": "#combobox-option-gen_ai_request_model"
+            }
+          ]
+        },
+        {
+          "type": "markdown",
+          "content": "Read the legend under the chart. Each entry pairs an agent with the model it called, for example `sigil.demo.data-analyst / claude-sonnet-4-20250514` and `sigil.demo.incident-classifier / gpt-4o`. An agent that used two models gets two lines. A model two agents share appears twice, once per agent. That is how you see which agent and model pair a cost belongs to, rather than one total.\n\nOn demo data the chart draws one point per pair, at the moment the demo was seeded, and the amounts round to $0, so this step is about the breakdown and the price source rather than the figures. With an agent of your own exporting metrics, the lines carry real amounts over time."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "svg[aria-label='Estimated cost information']",
+          "content": "Hover over the information icon next to **Estimated cost** in the stats row.\n\nThe tooltip explains how that stat is priced. It comes from aggregated token counts and base model rates, without the higher long-context rates, so it can understate costs. Base model rates are the model card's public list prices, the same source you read on a single generation in Milestone 2. Where recorded per-request costs exist they use your configured prices. A chart filtered or broken down by a label other than provider, model, or agent falls back to token-based estimates at list prices, and a notice says the cost is shown at list prices.",
+          "requirements": [
+            "on-page:/a/grafana-agento11y-app/analytics",
+            "exists-reftarget"
+          ],
+          "doIt": false
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You broke the estimated cost chart down by **Agent** and **Model**, with one line per pair, and read how the figures were priced. The same **Breakdown by** control sits on the other chart rows, so the same move splits requests, tokens, error rate, or latency by agent, model, or provider."
+    },
+    {
+      "type": "markdown",
+      "content": "Chart reads **No data**? Check these in order:\n\n1. The time range covers when you seeded the demo. Widen it, since the chart only plots cost inside the range.\n2. You seeded the demo in the last few minutes. Shortly after seeding, the charts can read **No data** while the demo conversations already list their cost. Come back later and try again.\n3. With only the demo data, the stats row reads 0 requests, $0, and 0 tokens, and the **Cost by agent** panel reads **No data**, while the broken-down cost chart still draws its lines. That is what the shared stack showed on 2026-10-30; those figures fill in once an agent of your own exports metrics."
+    }
+  ]
+}

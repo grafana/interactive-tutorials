@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "find-why-an-agent-failed-and-what-it-cost-open-the-trace",
+  "title": "Open the trace",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Each generation an instrumented agent sends links to its OpenTelemetry trace in Tempo, and a trace with generative AI attributes links back to its conversation. In this milestone you make that round trip, from a generation to its span tree and from the trace back to the conversation."
+    },
+    {
+      "type": "markdown",
+      "content": "This milestone needs a conversation from an agent of your own. Demo generations carry no trace link. If your stack only has demo data, read the steps and move on. Nothing later in the path depends on them."
+    },
+    {
+      "type": "markdown",
+      "content": "Open a generation your own agent sent and follow its trace link."
+    },
+    {
+      "type": "section",
+      "id": "open-the-trace-in-tempo",
+      "title": "Open the trace in Tempo",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/a/grafana-agento11y-app/conversations?from=now-7d&to=now",
+          "content": "Go to **Observability** > **Agent** > **Conversations** and set the time range to cover a run of your own agent.\n\nRows without a **Demo** badge came from your agent.",
+          "verify": "on-page:/a/grafana-agento11y-app/conversations"
+        },
+        {
+          "type": "markdown",
+          "content": "Open one of your conversations and click a generation to open its detail view, the same view you read in Milestone 2."
+        },
+        {
+          "type": "markdown",
+          "content": "Select the generation's trace link in its detail view. Demo generations have no trace link, so this needs a generation your own agent sent.\n\nThe trace view opens in Tempo with the full span tree. It shows the LLM call's duration and error status, any tool execution spans beneath it, and nested agent invocations if the agent called other agents."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You opened a generation's trace and read its span tree."
+    },
+    {
+      "type": "markdown",
+      "content": "Come back to the conversation from the trace."
+    },
+    {
+      "type": "section",
+      "id": "come-back-to-the-conversation",
+      "title": "Come back to the conversation",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "In the trace view, click **View in Agent Observability**. Tempo shows it on traces that carry generative AI attributes, and it opens the conversation the trace belongs to."
+        },
+        {
+          "type": "markdown",
+          "content": "To land on one generation instead of the whole conversation, select a span, open its `gen_ai.conversation.id` attribute, choose **Open value in**, and select **View conversation**. The conversation opens at that span's generation."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You went from a generation to its trace and back, which is the route you take when an alert or a dashboard hands you a trace first and you need the conversation behind it."
+    },
+    {
+      "type": "markdown",
+      "content": "No trace link on your generation? Check these in order:\n\n1. The generation came from your agent, not the demo. Demo rows carry a **Demo** badge and have no trace link.\n2. Your agent exports spans. In the Connect an agent to Agent Observability path, Milestone 7 adds the OpenTelemetry trace provider. Without it the SDK records the generation but sends no trace.\n3. The **Traces** data source on your stack receives data from the agent. Open **Explore**, choose the Traces data source, and search for a recent trace from the agent's service name."
+    }
+  ]
+}
