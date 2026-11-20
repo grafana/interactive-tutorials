@@ -12,27 +12,11 @@
       "title": "Read one recording rule",
       "blocks": [
         {
-          "type": "multistep",
-          "content": "If you aren't on the **Alert rules** page, click **Alerts & IRM**, then **Alerting**, then **Alert rules** in the main menu.",
-          "requirements": ["navmenu-open"],
-          "skippable": true,
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerts-and-incidents']",
-              "requirements": ["navmenu-open", "exists-reftarget"]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting']",
-              "requirements": ["navmenu-open", "exists-reftarget"]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Nav menu item'][href='/alerting/list']",
-              "requirements": ["navmenu-open", "exists-reftarget"]
-            }
-          ]
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/list?search=type:recording",
+          "content": "Go to the **Alert rules** page, filtered to recording rules.",
+          "verify": "on-page:/alerting/list"
         },
         {
           "type": "interactive",
@@ -45,15 +29,15 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "a[href='/alerting/grafana/afyms4tv2e58gc/view']",
+          "reftarget": "a[href^='/alerting/grafana/'][href$='/view']:contains('asserts:kpi:feo11y_latency:p75 - Frontend/lcp')",
           "requirements": ["on-page:/alerting/list", "exists-reftarget"],
           "content": "Click **asserts:kpi:feo11y_latency:p75 - Frontend/lcp** to open this Grafana-managed recording rule."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "h1",
-          "requirements": ["on-page:/alerting/grafana/afyms4tv2e58gc/view", "exists-reftarget"],
+          "reftarget": "main h1",
+          "requirements": ["on-page:/alerting/grafana/", "exists-reftarget"],
           "doIt": false,
           "content": "Focus on the rule name at the top of the page."
         },
@@ -65,7 +49,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div:text('Metric name')",
-          "requirements": ["on-page:/alerting/grafana/afyms4tv2e58gc/view", "exists-reftarget"],
+          "requirements": ["on-page:/alerting/grafana/", "exists-reftarget"],
           "doIt": false,
           "content": "Find **Metric name**."
         },
@@ -77,7 +61,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "div:text('Evaluation interval')",
-          "requirements": ["on-page:/alerting/grafana/afyms4tv2e58gc/view", "exists-reftarget"],
+          "requirements": ["on-page:/alerting/grafana/", "exists-reftarget"],
           "doIt": false,
           "content": "Notice **Evaluation interval**."
         },
@@ -89,7 +73,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='queries-container']",
-          "requirements": ["on-page:/alerting/grafana/afyms4tv2e58gc/view", "exists-reftarget"],
+          "requirements": ["on-page:/alerting/grafana/", "exists-reftarget"],
           "doIt": false,
           "content": "View the query. The name above the query is the data source the rule queries."
         },
@@ -101,7 +85,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[aria-labelledby='target-datasource-uid']",
-          "requirements": ["on-page:/alerting/grafana/afyms4tv2e58gc/view", "exists-reftarget"],
+          "requirements": ["on-page:/alerting/grafana/", "exists-reftarget"],
           "doIt": false,
           "content": "Find **Target data source**."
         },
