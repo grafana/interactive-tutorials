@@ -1,0 +1,261 @@
+{
+  "id": "explore-recording-rules-lj-preview",
+  "title": "Explore recording rules on Grafana Play (preview)",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Explore recording rules on Grafana Play to see how to find recording rules, how the two types differ, and which parts make up one recording rule. You don't change anything."
+    },
+    {
+      "type": "markdown",
+      "content": "Explore the **Alert rules** page to see how recording rules are listed."
+    },
+    {
+      "type": "section",
+      "id": "find-rules",
+      "title": "Find recording rules",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/list",
+          "content": "Go to **Alert rules**.",
+          "verify": "on-page:/alerting/list"
+        },
+        {
+          "type": "markdown",
+          "content": "Recording rules and alert rules are listed on the same page."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-type']",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find the **Type** filter. Its options are **All**, **Alert rule**, and **Recording rule**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-type'] button:contains('Recording rule')",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "Select **Recording rule**. The list now shows only recording rules."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alerting search-input']",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Notice the search box. It now holds `type:recording`, the filter you selected."
+        },
+        {
+          "type": "markdown",
+          "content": "Each recording rule in the list computes the result of a query ahead of time, on a schedule, and saves it as a recorded metric."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Recording rules and alert rules share the **Alert rules** page, and the **Type** filter separates them."
+    },
+    {
+      "type": "markdown",
+      "content": "Explore the **Rule source** filter to see how the two types of recording rule differ."
+    },
+    {
+      "type": "section",
+      "id": "two-types",
+      "title": "See the two types of recording rule",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/list",
+          "content": "Go to the **Alert rules** page, if you aren't already on it.",
+          "verify": "on-page:/alerting/list"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-type'] button:contains('Recording rule')",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "In the **Type** filter, select **Recording rule**, if it isn't already selected."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-source']",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find the **Rule source** filter. Its options are **All**, **Grafana managed**, and **Data source managed**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-source'] button:contains('Data source managed')",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "Select **Data source managed**. The list now shows only data source-managed recording rules."
+        },
+        {
+          "type": "markdown",
+          "content": "A data source-managed recording rule can query data sources such as Mimir or Loki."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='filter-label-rule-source'] button:contains('Grafana managed')",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "Select **Grafana managed**. The list now shows only Grafana-managed recording rules."
+        },
+        {
+          "type": "markdown",
+          "content": "A Grafana-managed recording rule can query a wide range of data sources. This type is recommended and is enabled by default in Grafana Cloud."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A recording rule is either Grafana-managed or data source-managed, and the **Rule source** filter shows one type at a time."
+    },
+    {
+      "type": "markdown",
+      "content": "Explore one Grafana-managed recording rule to see the parts that make it up."
+    },
+    {
+      "type": "section",
+      "id": "read-a-rule",
+      "title": "Read one recording rule",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/list?search=type:recording",
+          "content": "Go to the **Alert rules** page, filtered to recording rules.",
+          "verify": "on-page:/alerting/list"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid alerting search-input']",
+          "targetvalue": "asserts:kpi:feo11y_latency:p75 - Frontend/lcp",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "In the search box, enter `asserts:kpi:feo11y_latency:p75 - Frontend/lcp`, then press Enter. The list now shows only that rule."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href^='/alerting/grafana/'][href$='/view']:contains('asserts:kpi:feo11y_latency:p75 - Frontend/lcp')",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "Click **asserts:kpi:feo11y_latency:p75 - Frontend/lcp** to open this Grafana-managed recording rule."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main h1",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Focus on the rule name at the top of the page."
+        },
+        {
+          "type": "markdown",
+          "content": "A recording rule has two names. The rule name identifies the recording rule."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:text('Metric name')",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find **Metric name**."
+        },
+        {
+          "type": "markdown",
+          "content": "The metric name identifies the recorded metric. Dashboards and alert rules query the recorded metric by this name. This rule's metric name is `asserts:kpi:feo11y_latency:p75`, which is different from the rule name."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div:text('Evaluation interval')",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Notice **Evaluation interval**."
+        },
+        {
+          "type": "markdown",
+          "content": "The evaluation interval is how often a recording rule is evaluated. This rule is evaluated every minute. Each evaluation writes one new data point to the recorded metric."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='queries-container']",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "View the query. The name above the query is the data source the rule queries."
+        },
+        {
+          "type": "markdown",
+          "content": "The data source the rule queries is where the rule reads the raw data. This rule reads from `grafanacloud-play-logs`, a logs data source."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[aria-labelledby='target-datasource-uid']",
+          "requirements": [
+            "on-page:/alerting/grafana/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find **Target data source**."
+        },
+        {
+          "type": "markdown",
+          "content": "The target data source is where the rule writes the recorded metric. This rule writes to `grafanacloud-play-prom`, so it reads from one data source and writes to another."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A recording rule has a rule name, a metric name, an evaluation interval, a data source it queries, and a target data source."
+    }
+  ]
+}
