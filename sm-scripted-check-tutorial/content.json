@@ -4,7 +4,11 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "In this interactive guide you'll learn how to set up and run a Scripted check in Grafana Cloud Synthetic Monitoring. You will:\n\n- Know how to create and configure Scripted checks\n- Understand how Synthetic Monitoring helps you track uptime and performance\n- Learn how to set up alerts to stay informed about your service status\n\n"
+      "content": "Create a scripted check that requests Quickpizza and verifies its HTTP status, then choose a probe location and save the check."
+    },
+    {
+      "type": "markdown",
+      "content": "Open the editor for a scripted check."
     },
     {
       "type": "section",
@@ -15,73 +19,75 @@
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/a/grafana-synthetic-monitoring-app/home",
-          "content": "Let's start by navigating to Synthetics. This is where you'll create and manage your synthetic checks.",
+          "content": "Open **Synthetics** to create a check.",
           "verify": "on-page:/a/grafana-synthetic-monitoring-app/home"
         },
         {
-          "type": "conditional",
-          "conditions": [
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='app-init init-button']",
+          "content": "If prompted, click **Get started**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home",
             "exists-reftarget"
           ],
-          "reftarget": "button[data-testid='app-init init-button']",
-          "whenTrue": [
-            {
-              "type": "interactive",
-              "action": "highlight",
-              "reftarget": "button[data-testid='app-init init-button']",
-              "content": "Click **Get started** to initialize Synthetic Monitoring.",
-              "requirements": [
-                "exists-reftarget"
-              ]
-            },
-            {
-              "type": "markdown",
-              "content": "Wait until the Synthetic Monitoring home page shows **Create new check**."
-            }
-          ],
-          "whenFalse": []
+          "skippable": true
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='action create check']",
-          "content": "Click the \"Create new check\" button",
+          "content": "Click **Create new check**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home",
             "exists-reftarget"
-          ]
+          ],
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/choose-type"
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "div[data-testid='check-group-card-scripted'] a:nth-match(1)",
-          "content": "Select the \"Scripted\" check type.\n\nNotice the k6 logo?\n\nThis Check type let's us express the workload using k6 Scripting.",
+          "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/scripted']",
+          "content": "Select **Scripted** to define the check with a k6 script.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/choose-type",
             "exists-reftarget"
-          ]
+          ],
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted"
         }
       ]
     },
     {
+      "type": "markdown",
+      "content": "You opened the scripted check editor."
+    },
+    {
+      "type": "markdown",
+      "content": "Name the check and define its HTTP status assertion."
+    },
+    {
       "type": "section",
-      "title": "Filling out Check details: Script",
+      "title": "Configure the script",
       "blocks": [
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "input[data-testid='checkEditor form job']",
-          "content": "Fill in an appropriate name for your Check",
+          "reftarget": "form[data-testid='checkEditor form']:has([data-testid='data-testid Code editor container'] textarea[role='textbox']) input[data-testid='checkEditor form job']",
+          "content": "Enter `Quickpizza availability` in **Job name**.",
           "targetvalue": "Quickpizza availability",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ]
         },
         {
           "type": "interactive",
           "action": "formfill",
-          "reftarget": "div[data-testid='input-wrapper'] input[data-testid='checkEditor form instance']",
-          "content": "Fill in an appropriate instance value for your Check",
+          "reftarget": "input[data-testid='checkEditor form instance']",
+          "content": "Enter `prod-quickpizza` in **Instance**.",
           "targetvalue": "prod-quickpizza",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ]
         },
@@ -90,19 +96,33 @@
           "reftarget": "div[data-testid='data-testid Code editor container']",
           "language": "javascript",
           "code": "import http from \"k6/http\"\nimport { expect } from \"https://jslib.k6.io/k6-testing/0.6.1/index.js\"\n\nexport const options = {\n  vus: 1,\n  iterations: 1,\n}\n\nexport default function main() {\n  const response = http.get(\"https://quickpizza.grafana.com\")\n\n  expect(response.status).toBe(200)\n}",
-          "content": "Use the following example script",
-          "skippable": true
+          "content": "Insert the script to request Quickpizza and assert an HTTP 200 response.",
+          "skippable": false,
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "[data-testid='checkEditor form'] > div:last-child button[type='button']",
-          "content": "Let's click Uptime and proceed to the next step",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation uptime']",
+          "content": "Click **Uptime**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ]
         }
-      ]
+      ],
+      "id": "configure-script"
+    },
+    {
+      "type": "markdown",
+      "content": "You configured the check identity and script."
+    },
+    {
+      "type": "markdown",
+      "content": "Review the check timeout."
     },
     {
       "type": "section",
@@ -113,9 +133,9 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "form[data-testid='checkEditor form'] div[data-testid='timeout']",
-          "targetvalue": "Quickpizza availability",
-          "content": "Select a the maximum time the check is allowed to run for before considering the check execution failed.",
+          "content": "Optionally review the maximum execution time.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ],
           "skippable": true,
@@ -123,14 +143,23 @@
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "[data-testid='checkEditor form'] > div:last-child > div:last-child  button[type='button']",
-          "content": "Let's click Labels and proceed to the next step",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation labels']",
+          "content": "Click **Labels**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You reviewed how long the check can run."
+    },
+    {
+      "type": "markdown",
+      "content": "Review optional labels for the check."
     },
     {
       "type": "section",
@@ -141,9 +170,9 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='checkEditor genericLabelContent']",
-          "content": "Here you can fill out any additional labels that you want to attach to the metrics that sampled during the check execution.",
-          "targetvalue": "Quickpizza availability",
+          "content": "Optionally add labels to organize your check.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ],
           "skippable": true,
@@ -151,14 +180,23 @@
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "[data-testid='checkEditor form'] > div:last-child > div:last-child  button[type='button']",
-          "content": "Let's click Execution and proceed to the next step",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation execution']",
+          "content": "Click **Execution**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You reviewed how labels organize check data."
+    },
+    {
+      "type": "markdown",
+      "content": "Choose where and how often the check runs."
     },
     {
       "type": "section",
@@ -167,20 +205,21 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "form[data-testid='checkEditor form'] label:nth-match(47)",
-          "content": "Select which Geolocation to run the Check from.\nIn this guide we'll use Stockholm, Sweden.",
-          "targetvalue": "Quickpizza availability",
+          "reftarget": "label[data-testid='checkEditor form probeLabel']:nth-match(1)",
+          "content": "Select an available probe location to run the check.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
-          ]
+          ],
+          "targetstate": "true"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-testid='frequency-component'] [role='radiogroup'] label:contains('1m')",
-          "targetvalue": "Quickpizza availability",
-          "content": "Set the frequency the check should run",
+          "content": "Optionally review how often the check runs.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ],
           "skippable": true,
@@ -188,14 +227,24 @@
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "[data-testid='checkEditor form'] > div:last-child > div:last-child  button[type='button']",
-          "content": "Let's click Alerting and proceed to the next step",
+          "action": "highlight",
+          "reftarget": "button[data-testid='checkEditor navigation alerting']",
+          "content": "Click **Alerting**.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ]
         }
-      ]
+      ],
+      "id": "configure-execution"
+    },
+    {
+      "type": "markdown",
+      "content": "You selected a probe location and reviewed the frequency."
+    },
+    {
+      "type": "markdown",
+      "content": "Review alerting options and save the check."
     },
     {
       "type": "section",
@@ -206,9 +255,9 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[aria-labelledby='form-section-alerting'] [data-testid='checkEditor formTabs content']",
-          "targetvalue": "Quickpizza availability",
-          "content": "Here you can define under which conditions you want to be alerted",
+          "content": "Optionally configure alert rules for failed checks.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ],
           "skippable": true,
@@ -216,30 +265,56 @@
         },
         {
           "type": "interactive",
-          "action": "button",
+          "action": "highlight",
           "reftarget": "form[data-testid='checkEditor form'] button[data-testid='checkEditor form submit']",
-          "content": "Click Save, and now we're all set!",
+          "content": "Click **Save** to create the check.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/scripted",
             "exists-reftarget"
           ]
+        },
+        {
+          "type": "interactive",
+          "id": "scripted-check-created",
+          "action": "highlight",
+          "reftarget": "a[href^='/a/grafana-synthetic-monitoring-app/checks/'][href$='/edit']",
+          "content": "Your scripted check is saved. Use **Edit check** to update it.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "## Congrats, you have now created your first Synthetic Check! 🎉\n\n"
+      "content": "You saved the scripted check and opened its dashboard."
+    },
+    {
+      "type": "markdown",
+      "content": "Your scripted check is ready to monitor Quickpizza from the selected location."
     },
     {
       "type": "multistep",
-      "content": "Let's start polling for updates so we can see it in action!",
+      "content": "Set the dashboard refresh interval to **5 seconds** to watch check results.",
       "steps": [
         {
           "action": "button",
-          "reftarget": "button[data-testid='data-testid RefreshPicker interval button']"
+          "reftarget": "button[data-testid='data-testid RefreshPicker interval button']",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/",
+            "exists-reftarget"
+          ]
         },
         {
           "action": "button",
-          "reftarget": "[role='menuitemradio'][aria-label='5 seconds']"
+          "reftarget": "[role='menuitemradio'][aria-label='5 seconds']",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/",
+            "exists-reftarget"
+          ]
         }
       ]
     }

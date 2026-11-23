@@ -28,30 +28,38 @@
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid data-source-add-button']",
-          "requirements": ["exists-reftarget"],
-          "content": "Click **Add new data source**."
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "content": "Open the data source catalog to choose a connection type.",
+          "verify": "on-page:/connections/datasources/new"
         },
         {
           "type": "interactive",
           "action": "formfill",
           "reftarget": "input[placeholder='Filter by name or type']",
           "targetvalue": "Elasticsearch",
-          "requirements": ["exists-reftarget"],
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ],
           "content": "In the **Search** field, enter `Elasticsearch`."
         },
         {
           "type": "interactive",
           "action": "button",
           "reftarget": "Elasticsearch",
-          "content": "From the search results, click **Elasticsearch**."
+          "content": "From the search results, click **Elasticsearch**.",
+          "requirements": [
+            "on-page:/connections/datasources/new",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/connections/datasources/edit"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "In the next milestone, you'll configure the connection details including the URL, authentication, index name, and time field."
+      "content": "You added the Elasticsearch data source and opened its settings. In the next milestone, you'll configure the connection details including the URL, authentication, index name, and time field."
     }
   ]
 }

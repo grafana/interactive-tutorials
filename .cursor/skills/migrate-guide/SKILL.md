@@ -179,7 +179,7 @@ If no rule matches, record that targeting is absent.
 
 #### 3. Check for website markdown (if step is inside a `*-lj`)
 
-If this guide directory is a direct child of a `*-lj` directory, look up the parent path's website markdown `_index.md` and extract `journey.group` for the `category` field. Otherwise, `category` defaults to `"general"`.
+If this guide directory is a direct child of a `*-lj` directory, look up the parent path's website markdown `_index.md` and extract `journey.group` for the `category` field. Otherwise (standalone guide), choose one of the allowed categories in [docs/manifest-reference.md](../../../docs/manifest-reference.md#category-standalone-guides); do not use `general`.
 
 #### 4. Derive testEnvironment
 
@@ -209,7 +209,7 @@ Write `{dir}/manifest.json` with the derived fields:
   "id": "<from content.json>",
   "type": "guide",
   "description": "<compact one-line summary; see Description Conventions>",
-  "category": "<from journey.group if inside *-lj, else 'general'>",
+  "category": "<from journey.group if inside *-lj, else an allowed standalone category>",
   "author": { "team": "<see Author Conventions>" },
   "startingLocation": "<first URL from match, if derivable>",
   "targeting": {

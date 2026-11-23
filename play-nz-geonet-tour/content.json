@@ -110,8 +110,9 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Queries']",
-          "content": "Switch to the **Queries** tab.",
+          "reftarget": "[data-query-sidebar-card='A']",
+          "content": "Select query **A** in the sidebar.",
+          "requirements": ["exists-reftarget"],
           "lazyRender": true
         },
         {
@@ -183,13 +184,14 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Transformations']",
-          "content": "Switch to the **Transformations** tab.",
+          "reftarget": "[data-query-sidebar-card='calculateField-0']",
+          "content": "Select the first **Add field from calculation** transformation in the sidebar.",
+          "requirements": ["exists-reftarget"],
           "lazyRender": true
         },
         {
           "type": "markdown",
-          "content": "Five transformations run in sequence to produce the chart:\n\n1. **Calculate field** — applies a floor function to the magnitude, rounding each earthquake down to a whole number band (e.g., 2.7 becomes 2).\n2. **Group by** — counts how many earthquakes fall into each band.\n3. **Organize fields** — renames magnitude_scale to magnitude and magnitude_scale (count) to occurrences, dropping the raw columns.\n4. **Sort by** — orders the bands from lowest to highest magnitude.\n5. **Convert field type** — converts the magnitude number to a string so it renders as a categorical x-axis label rather than a numeric axis."
+          "content": "Five transformations run in sequence to produce the chart:\n\n1. **Add field from calculation** — applies a floor function to the magnitude, rounding each earthquake down to a whole number band (e.g., 2.7 becomes 2).\n2. **Group by** — counts how many earthquakes fall into each band.\n3. **Organize fields** — renames magnitude_scale to magnitude and magnitude_scale (count) to occurrences, dropping the raw columns.\n4. **Sort by** — orders the bands from lowest to highest magnitude.\n5. **Convert field type** — converts the magnitude number to a string so it renders as a categorical x-axis label rather than a numeric axis."
         },
         {
           "type": "interactive",
@@ -236,8 +238,9 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "button[data-testid='data-testid Tab Queries']",
-          "content": "Switch to the **Queries** tab.",
+          "reftarget": "[data-query-sidebar-card='A']",
+          "content": "Select query **A** in the sidebar.",
+          "requirements": ["exists-reftarget"],
           "lazyRender": true
         },
         {
@@ -260,12 +263,24 @@
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
-              "description": "Click here to exit edit mode.",
+              "reftarget": "button[aria-label='Dashboard mode: Editing']",
+              "description": "Open the dashboard mode menu.",
               "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitemradio']:contains('Viewing')",
+              "description": "Choose **Viewing** to leave edit mode.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Discard')",
+              "description": "If Grafana asks about unsaved changes, click **Discard**; you haven't changed anything. Skip this step if no prompt appears.",
+              "lazyRender": true,
+              "skippable": true
             }
-          ],
-          "completeEarly": true
+          ]
         },
         {
           "type": "markdown",

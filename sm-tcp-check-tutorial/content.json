@@ -8,7 +8,7 @@
     },
     {
       "type": "markdown",
-      "content": "Let's start by navigating to the Testing & Synthetics section in Grafana Cloud. This is where you create and manage all your synthetic checks."
+      "content": "Open Synthetic Monitoring and choose the check type."
     },
     {
       "type": "section",
@@ -22,45 +22,34 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
-          "content": "In the main menu, navigate to **Testing & Synthetics**.",
+          "content": "Click **Testing & synthetics** in the main menu.",
           "requirements": [
-            "navmenu-open"
-          ]
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "verify": "on-page:/testing-and-synthetics"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[id='pageContent'] a[href='/a/grafana-synthetic-monitoring-app/home']",
-          "content": "Click **Synthetics** to open the Synthetic Monitoring home page.",
+          "content": "Click **Open** on the **Synthetics** card.",
           "requirements": [
+            "on-page:/testing-and-synthetics",
             "exists-reftarget"
           ],
-          "objectives": [
-            "on-page:/a/grafana-synthetic-monitoring-app/home"
-          ]
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/home"
         },
         {
-          "type": "conditional",
-          "conditions": [
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='app-init init-button']",
+          "content": "If prompted, click **Get started**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home",
             "exists-reftarget"
           ],
-          "reftarget": "button[data-testid='app-init init-button']",
-          "whenTrue": [
-            {
-              "type": "interactive",
-              "action": "highlight",
-              "reftarget": "button[data-testid='app-init init-button']",
-              "content": "Click **Get started** to initialize Synthetic Monitoring.",
-              "requirements": [
-                "exists-reftarget"
-              ]
-            },
-            {
-              "type": "markdown",
-              "content": "Wait until the Synthetic Monitoring home page shows **Create new check**."
-            }
-          ],
-          "whenFalse": []
+          "skippable": true
         },
         {
           "type": "interactive",
@@ -68,8 +57,10 @@
           "reftarget": "a[data-testid='action create check']",
           "content": "Click **Create new check** to get started.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home",
             "exists-reftarget"
-          ]
+          ],
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/choose-type"
         },
         {
           "type": "interactive",
@@ -77,14 +68,16 @@
           "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
           "content": "Select **API Endpoint** as the check type. This is where you'll find HTTP, Ping, DNS, TCP, and Traceroute checks.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/choose-type",
             "exists-reftarget"
-          ]
+          ],
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Now let's configure the TCP check. You'll give the check a name, set the request type to TCP, and specify the target host and port you want to monitor."
+      "content": "You opened the editor for an API endpoint check.\n\nNow let's configure the TCP check. You'll give the check a name, set the request type to TCP, and specify the target host and port you want to monitor."
     },
     {
       "type": "section",
@@ -224,13 +217,15 @@
           "reftarget": "label[data-testid='checkEditor form probeLabel']:first-of-type",
           "content": "Select one or more **Probe Locations** to run the TCP check from. Choose locations closest to your users or infrastructure to best reflect their experience.",
           "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
             "exists-reftarget"
-          ]
+          ],
+          "targetstate": "true"
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[id^='option-60000-radiogroup-']",
+          "reftarget": "input[data-testid='data-testid radio-button-option 60000']",
           "content": "Optionally adjust the **Probe Frequency**. The default of 1 minute is suitable for most checks.",
           "skippable": true,
           "doIt": false
@@ -290,7 +285,24 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor form submit']",
-          "content": "Click **Save** to create your TCP check. Grafana Cloud will begin executing it immediately."
+          "content": "Click **Save** to create your TCP check. Grafana Cloud will begin executing it immediately.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "check-created",
+          "action": "highlight",
+          "reftarget": "a[href^='/a/grafana-synthetic-monitoring-app/checks/'][href$='/edit']",
+          "content": "Your check is saved. Use **Edit check** to update its configuration.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget"
         }
       ]
     },

@@ -8,7 +8,7 @@
     },
     {
       "type": "markdown",
-      "content": "Let's start by navigating to the Testing & Synthetics section. This is where you'll create and manage your synthetic checks."
+      "content": "Open Synthetic Monitoring and choose the check type."
     },
     {
       "type": "section",
@@ -20,46 +20,62 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='data-testid Nav menu item'][href='/testing-and-synthetics']",
-          "requirements": ["navmenu-open"],
-          "content": "In the main menu, navigate to **Testing & synthetics**."
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ],
+          "content": "Click **Testing & synthetics** in the main menu.",
+          "verify": "on-page:/testing-and-synthetics"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[id='pageContent'] a[href='/a/grafana-synthetic-monitoring-app/home']",
-          "requirements": ["exists-reftarget"],
-          "objectives": ["on-page:/a/grafana-synthetic-monitoring-app/home"],
-          "content": "Next, click **Synthetics**."
+          "requirements": [
+            "on-page:/testing-and-synthetics",
+            "exists-reftarget"
+          ],
+          "content": "Click **Open** on the **Synthetics** card.",
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/home"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='app-init init-button']",
-          "content": "If this is your first ever test, you will need to select the app initialisation button. You can skip this step otherwise.",
-          "tooltip": "You will only need to do this once.",
-          "skippable": true,
-          "hint": "You only need to do this if its your first ever check",
-          "requirements": ["exists-reftarget"]
+          "content": "If prompted, click **Get started**.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home",
+            "exists-reftarget"
+          ],
+          "skippable": true
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[data-testid='action create check']",
-          "requirements": ["exists-reftarget"],
-          "content": "Click **Create new check**."
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/home",
+            "exists-reftarget"
+          ],
+          "content": "Click **Create new check**.",
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/choose-type"
         },
         {
           "type": "interactive",
           "action": "highlight",
           "reftarget": "a[href='/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint']",
-          "requirements": ["exists-reftarget"],
-          "content": "Choose **API Endpoint** as the check type."
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/choose-type",
+            "exists-reftarget"
+          ],
+          "content": "Choose **API Endpoint** as the check type.",
+          "verify": "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint"
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "In this section you will configure the Synthetic Monitoring check's parameters."
+      "content": "You opened the editor for an API endpoint check.\n\nIn this section you will configure the Synthetic Monitoring check's parameters."
     },
     {
       "type": "section",
@@ -149,12 +165,17 @@
           "action": "highlight",
           "reftarget": "label[data-testid='checkEditor form probeLabel']:first-of-type",
           "tooltip": "There are multiple probe locations to choose from. It is good practice to run checks from multiple locations to ensure the check is reliable.",
-          "content": "Select a **probe location** to run the check from."
+          "content": "Select a **probe location** to run the check from.",
+          "targetstate": "true",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "input[id^='option-60000-radiogroup-']",
+          "reftarget": "input[data-testid='data-testid radio-button-option 60000']",
           "skippable": true,
           "doIt": false,
           "tooltip": "The default probe frequency is 1 minute which is suitable for most checks. Less frequent means fewer executions, but longer lag times before an alert notifying you of an issue.",
@@ -209,7 +230,24 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "button[data-testid='checkEditor form submit']",
-          "content": "Click **Save** to create the check."
+          "content": "Click **Save** to create the check.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/new/api-endpoint",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "check-created",
+          "action": "highlight",
+          "reftarget": "a[href^='/a/grafana-synthetic-monitoring-app/checks/'][href$='/edit']",
+          "content": "Your check is saved. Use **Edit check** to update its configuration.",
+          "requirements": [
+            "on-page:/a/grafana-synthetic-monitoring-app/checks/",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "verify": "exists-reftarget"
         }
       ]
     },

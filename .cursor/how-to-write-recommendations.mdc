@@ -15,17 +15,22 @@ repo are good examples of valid `targeting.match` blocks.
 The `targeting.match` value uses the same expression syntax the old `index.json` rules used, so the decisions are
 the same -- they just live in the manifest now.
 
-Before writing a match block, read [How matching scores](#how-matching-scores) below. The
-engine returns everything scoring above zero and sorts on score alone, so a broad match does
-not lose to a precise one -- it crowds it out. Breadth is the thing to get right.
+Before writing a match block, read [How matching scores](#how-matching-scores) below.
+Eligibility and ranking are separate. Use actual route and task evidence. Product entry
+pages are also useful discovery context: an introduction can help before users know
+the feature exists. Use exact landing-page alternatives for these introductions, retain
+platform/role/demo restrictions, and inspect capped results instead of adding ranking boosts. See [the catalog audit](../docs/targeting-audit/README.md)
+for pinned matcher/ranker evidence and known context gaps.
 
-- ALWAYS set `targeting.match` in the guide's `manifest.json` (never edit `index.json`).
+- Set `targeting.match` only for independently recommendable paths and standalone guides.
+  Omit it for every path module, including foundations (`milestones`), `tracks[].guides`,
+  shared modules, and supporting lessons nested under a path. Direct navigation is unaffected.
+  Never edit `index.json`.
 - NEVER use `{ "urlPrefix": "/" }`. It matches every page in the product. A guide that is
   relevant everywhere is relevant nowhere.
-- Target the page where the guide's first step actually happens; that should be the same value
-  as `startingLocation`. Prefer the deepest prefix that still covers the intended pages -- for
-  an integration, its own tile (`/connections/add-new-connection/kafka`), not the catalog that
-  lists every tile.
+- Target the page and observed task where the lesson is useful. `startingLocation` is
+  its launch location, not a recommendation rule; they may differ. Prefer an integration
+  setup page such as `/connections/add-new-connection/kafka` over the whole catalog.
 - Keep the root of `match` an `or`, so scoring stays binary. See
   [How matching scores](#how-matching-scores).
 - Catalog and listing pages (`/dashboards`, `/connections/infrastructure`,
@@ -92,10 +97,14 @@ Three behaviours decide whether a guide is seen:
    page of a Cloud stack, because the platform child is true regardless of the page -- and 0.5
    is above zero, so the guide is returned everywhere. Wrapping that same `and` in an `or` makes
    the expression score 1.0 on `/explore` and 0 elsewhere.
-3. **There is no reward for specificity and no tie-break.** Every criterion weighs 1 and the
-   maximum is 1.0, so an exact path and `urlPrefix: "/"` score identically. Results are sorted
-   on score alone and capped at 10, and the sort is unstable, so guides tied at 1.0 appear in
-   arbitrary order. The only way to get a guide seen is for fewer guides to match that page.
+3. **Ranking is versioned separately from accuracy.** The context-ranking v1 implementation
+   tested in the [audit](../docs/targeting-audit/README.md) ranks fully satisfied evidence:
+   product route plus observed task, route, installed environment, then general eligibility.
+   OR uses its strongest fully satisfied branch; AND combines only fully satisfied children.
+   Repeated tags in a category do not multiply strength. Platform, role, cohort and source
+   constrain eligibility, not relevance. The server ranks before its cap; the client demotes
+   completed peers within a tier. Older deployments may still sort by accuracy alone.
+   Do not assume the audited ranking revision is deployed.
 
 Practical rules that follow:
 
@@ -103,10 +112,10 @@ Practical rules that follow:
   either fully relevant or absent. Put platform and tag criteria inside the branch's `and`.
 - **Every branch of an `or` must constrain the URL.** A branch with no URL criterion matches
   every page and drags the whole expression with it.
-- **Only `source` and `sourceIn` can exclude.** They are hard pre-filters evaluated before
-  scoring. `targetPlatform`, `tag`, `datasource` and `userRole` cannot keep a guide off a page --
-  they only lower its score, which still leaves it above zero. A Cloud-only guide will surface
-  on OSS unless its URL simply does not exist there.
+- **Test required gates inside a complete OR alternative.** Source predicates are hard
+  pre-filters. Platform, tag and role predicates reject a complete AND branch wrapped in
+  OR, but a partially satisfied top-level AND can still admit content. Test negative cases
+  against the server, including the wrong platform, role, selected backend and route.
 - **One criterion per object.** Evaluation is a `switch`, so only the first key in precedence
   order is read: `{"urlPrefix": "/d/", "datasource": "prometheus"}` ignores the datasource.
   Split criteria into `and`/`or` children.
@@ -131,3 +140,7 @@ python3 scripts/lint-targeting.py
 Flags `urlPrefix: "/"`, root-level `and` blocks that score partially, `or` branches with no URL
 constraint, unknown criterion names, and multiple criteria in one object. Add `--report` for a
 per-page count of how many guides compete on each representative page.
+
+For a complete eligibility and ranking audit, use `scripts/targeting-audit/run.py` and
+`run-client.py` as documented in the audit report. The linter's `--report` is an approximate
+contention diagnostic, not proof of server eligibility or ranking.

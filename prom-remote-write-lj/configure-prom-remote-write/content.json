@@ -1,142 +1,210 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "prom-remote-write-configure",
   "title": "Configure Prometheus remote write to send metrics to Grafana Cloud",
   "blocks": [
     {
-      "type": "conditional",
-      "conditions": [
-        "renderer:website"
-      ],
-      "whenTrue": [
-        {
-          "type": "video",
-          "src": "https://www.youtube.com/embed/BDJO-vC-gEw",
-          "provider": "youtube",
-          "title": "Configure Prometheus remote write",
-          "start": 194,
-          "end": 349
-        }
-      ],
-      "whenFalse": []
+      "type": "markdown",
+      "content": "In this milestone, you add a `remote_write` block to your Prometheus configuration file, usually `prometheus.yml`. Grafana Cloud generates the block for you on the **Hosted Prometheus metrics** setup page. It contains the `/api/prom/push` URL of your Grafana Cloud Metrics instance, your instance ID as the username, and an access policy token as the password.\n\nYou don't need to leave your Grafana Cloud stack for any of this. The same values are also available from the **Prometheus** card in the Cloud Portal."
     },
     {
       "type": "markdown",
-      "content": "In this step of the journey you'll update a YAML file in your Prometheus installation with a snippet of code taken from your Grafana Cloud Portal account. The snippet of code provides Prometheus with the URL of the Grafana Cloud metrics instance and credentials for sending metrics."
-    },
-    {
-      "type": "markdown",
-      "content": "To configure Prometheus to remote write to Grafana Cloud, complete the following steps:"
+      "content": "First, open the setup page for hosted Prometheus metrics."
     },
     {
       "type": "section",
+      "id": "open-the-setup-page",
+      "title": "Open the setup page",
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "markdown",
-          "content": "Log into your Cloud Portal and select your stack."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections']",
+          "content": "In the navigation menu, click **Connections**.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "conditional",
-          "conditions": [
-            "renderer:website"
-          ],
-          "whenTrue": [
-            {
-              "type": "image",
-              "src": "https://grafana.com/media/docs/learning-journey/remote-write/select-stack.png",
-              "alt": "Image of stack selected in the Grafana Cloud Portal"
-            }
-          ],
-          "whenFalse": []
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/connections/add-new-connection']",
+          "content": "Click **Add new connection**.",
+          "requirements": [
+            "navmenu-open",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "Click the name of your stack under **Grafana Cloud** located on the left navigation panel."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input[data-testid='search-input-input']",
+          "targetvalue": "Hosted Prometheus",
+          "content": "In the search field, enter **Hosted Prometheus** to filter the catalog.",
+          "requirements": [
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "On the **Prometheus** tile, click **Send Metrics**."
-        },
-        {
-          "type": "markdown",
-          "content": "Scroll down the page until you locate the **Sending metrics with Prometheus** section.\n\nThis section contains a snippet of code that you'll add to your Prometheus deployment."
-        },
-        {
-          "type": "markdown",
-          "content": "Just below the code sample, click **Generate now** to generate an API token.\n\nThe API token ensures a secure connection to Grafana Cloud."
-        },
-        {
-          "type": "conditional",
-          "conditions": [
-            "renderer:website"
-          ],
-          "whenTrue": [
-            {
-              "type": "image",
-              "src": "https://grafana.com/media/docs/learning-journey/remote-write/api-token.png",
-              "alt": "Picture of Generate now link to create API token"
-            }
-          ],
-          "whenFalse": []
-        },
-        {
-          "type": "markdown",
-          "content": "On the **Create an API token** screen, enter a name for the token and click **Create token**.\n\nThe code snippet populates with the token you just created."
-        },
-        {
-          "type": "markdown",
-          "content": "On the **Create an API token** screen, click **Close**."
-        },
-        {
-          "type": "markdown",
-          "content": "Just below the code snippet, click **Copy to clipboard**.\n\nIn the following steps, you'll add the code snippet to the `prometheus.yml` file."
-        },
-        {
-          "type": "markdown",
-          "content": "Log into the machine on which Prometheus is installed."
-        },
-        {
-          "type": "markdown",
-          "content": "Open a terminal and if required, switch to a user with write privileges.\n\nFor example:\n\n```\nsudo su -\n```"
-        },
-        {
-          "type": "markdown",
-          "content": "Open the `prometheus.yml` file located under `/etc/prometheus`.\n\nFor example, if you are using Vim, run:\n\n```\nvim /etc/prometheus/prometheus.yml\n```"
-        },
-        {
-          "type": "markdown",
-          "content": "Edit the YAML file.\n\nWhen using Vi or Vim as the text editor, press `i` to edit the YAML file.\n\nThe button you use to the edit the YAML file depends on the text editor you are using."
-        },
-        {
-          "type": "markdown",
-          "content": "Scroll to the end of the file and paste the snippet of code you copied from the Grafana Cloud Portal."
-        },
-        {
-          "type": "markdown",
-          "content": "Exit edit mode and save your changes.\n\nFor example, when using Vi or Vim, press the `Esc` key to exit insert mode type `:wq` to save your changes and exit."
-        },
-        {
-          "type": "markdown",
-          "content": "Restart the Prometheus service to apply the changes.\n\nFor example: run the command\n\n```\nsystemctl restart prometheus.yml\n```\n\nAfter restarting the Prometheus service, metrics should be forwarded to Grafana Cloud."
-        },
-        {
-          "type": "markdown",
-          "content": "To check the Prometheus service status, run the following command:\n\n```\nsystemctl status prometheus.service\n```\n\nIf there are errors, refer to the relevant logs in `/var/log/syslog` or `journalctl`."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[href='/connections/add-new-connection/hmInstancePromId']",
+          "content": "Click the **Hosted Prometheus metrics** tile.",
+          "requirements": [
+            "on-page:/connections/add-new-connection",
+            "exists-reftarget"
+          ]
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "In the next stop in your journey, you'll verify that Prometheus is sending metrics to Grafana Cloud."
+      "content": "The setup page is open. It walks you through choosing a method, creating a token, and copying the configuration."
     },
     {
       "type": "markdown",
-      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [/etc/prometheus/prometheus.yml is read-only](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#troubleshooting)\n- [/etc/prometheus/prometheus.yml Can't open file for writing](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#troubleshooting)"
+      "content": "Next, choose the remote write method and create a token. Creating a token needs the **Admin** role in your stack."
+    },
+    {
+      "type": "section",
+      "id": "create-a-token-and-copy-the-config",
+      "title": "Create a token and copy the configuration",
+      "autoCollapse": false,
+      "requirements": [
+        "section-completed:open-the-setup-page",
+        "has-role:admin",
+        "on-page:/connections/add-new-connection/hmInstancePromId"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(img[alt='icon of remote'])",
+          "content": "Under **Choose a method for forwarding metrics**, select **From my local Prometheus server**.\n\nThe page preselects **Via Grafana Alloy**, which installs a separate collector. This path uses the remote write built into Prometheus instead.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(p:contains('single Prometheus instance'))",
+          "content": "Under **Choose your use case for forwarding metrics**, select **Send metrics from a single Prometheus instance**.\n\nThe other cards cover multiple or high-availability Prometheus servers. The page adjusts its instructions if you pick one of those.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[role='button']:has(p:contains('Directly'))",
+          "content": "Under **Select how to send the metrics from Prometheus to Grafana Cloud**, keep **Directly** selected.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "input[data-testid='generate-token-name-input']",
+          "doIt": false,
+          "content": "Under **Update Prometheus configuration**, keep **Create a new token** selected and enter a **Token name** you'll recognize, for example `prometheus-remote-write`.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Create token",
+          "doIt": false,
+          "content": "Click **Create token**.\n\nGrafana Cloud creates an access policy token and inserts it as the password in the `remote_write` configuration that appears below. The token is only shown once, so keep this page open until you've copied the configuration.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "button",
+          "reftarget": "Copy to clipboard",
+          "content": "Below the configuration, click **Copy to clipboard**.\n\nThe block contains the URL of your Grafana Cloud Metrics instance, your instance ID as the username, and the token as the password.",
+          "requirements": [
+            "on-page:/connections/add-new-connection/hmInstancePromId",
+            "exists-reftarget"
+          ]
+        }
+      ]
     },
     {
       "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\n- [Send data from multiple Prometheus instances](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#send-data-from-multiple-prometheus-instances)\n- [Send data from multiple high-availability Prometheus instances](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#send-data-from-multiple-high-availability-prometheus-instances)"
+      "content": "You have a `remote_write` block with your stack's endpoint and credentials."
+    },
+    {
+      "type": "markdown",
+      "content": "Now add it to Prometheus. These steps happen on the machine that runs Prometheus, so this path can't detect them. When Prometheus restarts cleanly, mark the section as complete to continue."
+    },
+    {
+      "type": "section",
+      "id": "update-prometheus",
+      "title": "Update Prometheus",
+      "autoCollapse": false,
+      "requirements": [
+        "section-completed:create-a-token-and-copy-the-config"
+      ],
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "Log in to the machine on which Prometheus is installed, and open a terminal."
+        },
+        {
+          "type": "markdown",
+          "content": "If your user can't write to the Prometheus configuration file, switch to one that can.\n\nFor example:\n\n```\nsudo su -\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Open `prometheus.yml` in a text editor. On many Linux installations the file is in `/etc/prometheus`.\n\nFor example, with Vim, run:\n\n```\nvim /etc/prometheus/prometheus.yml\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Scroll to the end of the file and paste the `remote_write` block you copied.\n\nIn Vim, press `i` to start editing before you paste. The result looks like this, with your own values in place of the placeholders:\n\n```yaml\nremote_write:\n  - url: <Your Metrics instance remote_write endpoint>\n    basic_auth:\n      username: <Your Metrics instance ID>\n      password: <Your Cloud Access Policy token>\n```\n\nIf the file already has a `remote_write` section, add the new entry to that list instead of adding a second `remote_write` key."
+        },
+        {
+          "type": "markdown",
+          "content": "Save the file and exit the editor.\n\nIn Vim, press `Esc`, then type `:wq` and press `Enter`."
+        },
+        {
+          "type": "markdown",
+          "content": "Restart Prometheus so it reads the new configuration.\n\nFor example, if Prometheus runs as a systemd service:\n\n```\nsystemctl restart prometheus\n```\n\nAfter the restart, Prometheus starts pushing the samples it scrapes to Grafana Cloud."
+        },
+        {
+          "type": "markdown",
+          "content": "Check that Prometheus restarted without errors:\n\n```\nsystemctl status prometheus\n```\n\nIf the service failed to start, a common cause is a YAML indentation error in the block you pasted. Check the service logs with `journalctl -u prometheus` or in `/var/log/syslog`."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Prometheus now has a second destination for the samples it scrapes. Your scrape configuration, recording rules, and alerts don't change."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you verify that your metrics are arriving in Grafana Cloud."
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Read-only or can't open file message when editing prometheus.yml](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#receive-read-only-or-cant-open-file-message)\n- [Troubleshoot Cloud Metrics write issues](https://grafana.com/docs/grafana-cloud/send-data/metrics/troubleshoot/)"
+    },
+    {
+      "type": "markdown",
+      "content": "---\n\n### More to explore (optional)\n\n- [Send data from multiple Prometheus instances](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#send-data-from-multiple-prometheus-instances)\n- [Send data from multiple high-availability Prometheus instances](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#send-data-from-multiple-high-availability-prometheus-instances)\n- [Send Prometheus native histograms](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/native-histograms/)"
     }
   ]
 }

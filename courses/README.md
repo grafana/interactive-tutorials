@@ -45,12 +45,12 @@ files / `badges.json`; let CI rebuild the indexes.
   // link guide). Pathfinder distinguishes via `entry.startsWith('http')`.
   "guides": [
     "welcome-to-grafana",
-    "first-dashboard",
+    "first-dashboard-rss",
     "https://grafana.com/docs/learning-paths/getting-started/"
   ],
   "guideMetadata": {
     "welcome-to-grafana": { "title": "Welcome", "estimatedMinutes": 5 },
-    "first-dashboard": { "title": "First dashboard", "estimatedMinutes": 10 }
+    "first-dashboard-rss": { "title": "First dashboard", "estimatedMinutes": 10 }
   },
   "badgeId": "grafana-fundamentals",
   "targetPlatform": "oss",     // "oss" | "cloud" — omit for both

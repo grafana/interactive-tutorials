@@ -5,40 +5,47 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Now that Alloy is running, verify that telemetry is flowing to Grafana Cloud. The Database Observability Configuration page runs automated checks against each database instance and highlights any issues."
+      "content": "Now that Alloy is running, verify that telemetry is flowing to Grafana Cloud. The **Telemetry status** tab on the Database Observability Configuration page runs automated checks against each database instance and highlights anything that needs attention."
+    },
+    {
+      "type": "markdown",
+      "content": "To check your PostgreSQL instance's telemetry status, complete the following steps:"
     },
     {
       "type": "section",
       "autoCollapse": false,
       "blocks": [
         {
-          "type": "markdown",
-          "content": "To verify that your PostgreSQL telemetry is flowing to Grafana Cloud, complete the following steps:"
-        },
-        {
           "type": "interactive",
           "action": "navigate",
           "reftarget": "/a/grafana-dbo11y-app/configuration",
-          "content": "Open **Database > Configuration**.",
-          "verify": "on-page:/a/grafana-dbo11y-app/configuration"
+          "verify": "on-page:/a/grafana-dbo11y-app/configuration",
+          "content": "Open **Observability** > **Database** > **Configuration**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Telemetry status']",
+          "content": "Select the **Telemetry status** tab.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app/configuration", "exists-reftarget"]
         },
         {
           "type": "markdown",
-          "content": "Select your PostgreSQL instance from the **Instance** dropdown at the top of the page."
+          "content": "Select your PostgreSQL instance from the **Instance** dropdown. The instance name is the **Instance label** you set in the wizard, or `host:port` from your connection string if you left it empty.\n\nTelemetry can take a few minutes to appear after Alloy starts. If the instance isn't listed yet, wait and refresh. It appears only once Alloy is sending data."
         },
         {
           "type": "markdown",
-          "content": "Choose the instance label you configured in your Alloy relabeling rules."
-        },
-        {
-          "type": "markdown",
-          "content": "The page displays status check tiles for your instance. Each tile validates a specific configuration requirement:\n\n| Status | Meaning |\n|---|---|\n| Green checkmark | Configuration is correct |\n| Red warning | Action required |\n| Blue \"Checking\" | Query in progress |\n\nVerify that all checks show green checkmarks. If any check fails, click the tile to see troubleshooting guidance."
-        },
-        {
-          "type": "markdown",
-          "content": "You've confirmed that your PostgreSQL instance is sending telemetry to Grafana Cloud."
+          "content": "The page displays status check tiles for your instance. Each tile validates a specific requirement, such as the PostgreSQL and Alloy versions, the `pg_stat_statements` extension, `compute_query_id`, `track_activity_query_size`, privileges, and metric and log labels:\n\n| Status | Meaning |\n|---|---|\n| Green checkmark | Configuration is correct |\n| Red warning | Action required |\n| Blue \"Checking\" | Query in progress |\n\nVerify that all checks show green checkmarks. Use the **Needs attention** filter to show only failing checks, and click a failed tile to open its troubleshooting guidance."
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "You've confirmed that your PostgreSQL instance is sending telemetry to Grafana Cloud and that its configuration passes the Database Observability checks."
+    },
+    {
+      "type": "markdown",
+      "content": "In the next milestone, you'll explore your query performance data."
     }
   ]
 }

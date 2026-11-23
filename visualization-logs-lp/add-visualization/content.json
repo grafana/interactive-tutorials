@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "visualization-logs-add-visualization",
   "title": "Create a dashboard and add a visualization",
   "blocks": [
@@ -42,50 +42,123 @@
           "steps": [
             {
               "action": "button",
-              "reftarget": "New"
+              "reftarget": "New",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboards"
+              ]
             },
             {
               "action": "highlight",
-              "reftarget": "a[href='/dashboard/new']"
+              "reftarget": "a[href='/dashboard/new']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboards"
+              ]
             }
           ]
-        },
+        }
+      ],
+      "id": "create-dashboard",
+      "title": "Create a dashboard"
+    },
+    {
+      "type": "markdown",
+      "content": "Your new dashboard is ready for a panel."
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "button:contains(\"Skip to dashboard\")",
+      "content": "If the connection setup page appears, click **Skip to dashboard**.",
+      "requirements": [
+        "exists-reftarget",
+        "on-page:/dashboard/new"
+      ],
+      "skippable": true
+    },
+    {
+      "type": "interactive",
+      "action": "highlight",
+      "reftarget": "[data-testid=\"data-testid Dashboard Sidebar new button\"]",
+      "content": "If the edit sidebar is shown, click **Add** to display the panel controls.",
+      "requirements": [
+        "exists-reftarget",
+        "on-page:/dashboard/new"
+      ],
+      "skippable": true
+    },
+    {
+      "type": "markdown",
+      "content": "Add a panel, choose your Loki data source, and select the Logs visualization."
+    },
+    {
+      "type": "section",
+      "id": "configure-logs-panel",
+      "title": "Configure a Logs panel",
+      "autoCollapse": false,
+      "blocks": [
         {
-          "type": "markdown",
-          "content": "In the edit pane on the right, under **Add**, click **Panel** or drag it onto the dashboard canvas.\n\nA new panel is added to your dashboard."
-        },
-        {
-          "type": "markdown",
-          "content": "On the new panel, enter a panel title and description, and click **Configure** to open the Edit panel view."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid=\"data-testid Create new panel button\"], [data-testid=\"data-testid sidebar add new panel\"]",
+          "content": "Click **Add visualization** or **Panel** to add a panel.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ]
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Select a data source']",
-          "content": "In the **Queries** tab, click the **Data source** drop-down list and select a logs data source (such as Loki).",
+          "reftarget": "[data-testid=\"data-testid sidebar configure panel button\"], [data-testid=\"data-testid edit pane configure panel button\"]",
+          "content": "Click **Edit visualization** to open the panel editor.",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/dashboard/new"
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "#pageContent [data-testid=\"data-testid Select a data source\"]",
+          "content": "Select your Loki data source in the **Data source** picker before continuing.",
           "doIt": false,
           "requirements": [
-            "exists-reftarget"
+            "exists-reftarget",
+            "on-page:/dashboard/new"
           ]
         },
         {
           "type": "multistep",
-          "content": "From the visualization picker on the right, click **All visualizations** and select **Logs**.",
+          "content": "In the visualization picker, click **Visualizations** and select **Logs**.",
           "requirements": [
-            "exists-reftarget"
+            "on-page:/dashboard/new"
           ],
           "steps": [
             {
               "action": "highlight",
-              "reftarget": "[data-testid='data-testid Tab All visualizations']"
+              "reftarget": "[data-testid=\"data-testid Tab Visualizations\"], [data-testid=\"data-testid Tab All visualizations\"]",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
             },
             {
               "action": "highlight",
-              "reftarget": "[data-testid='data-testid Plugin visualization item Logs']"
+              "reftarget": "[data-testid='data-testid Plugin visualization item Logs']",
+              "requirements": [
+                "exists-reftarget",
+                "on-page:/dashboard/new"
+              ]
             }
           ]
         }
       ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your panel uses the Logs visualization; confirm your Loki data source is selected before writing a LogQL query."
     },
     {
       "type": "markdown",

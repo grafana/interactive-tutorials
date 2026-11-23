@@ -1,0 +1,105 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "dashboard-group-by-basics",
+  "title": "Group a dashboard by a label",
+  "blocks": [
+    {
+      "type": "markdown",
+      "id": "intro",
+      "content": "Group by splits each panel into one series per label value, without editing any query. In this guide you group the dashboard by `job`, compare the per-job results, and then remove the grouping."
+    },
+    {
+      "type": "section",
+      "id": "open-dashboard",
+      "title": "Open the dashboard",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "open-dashboard-navigate",
+          "action": "navigate",
+          "reftarget": "/d/canvvlh",
+          "content": "Open the **Filter variables** dashboard.",
+          "doIt": true,
+          "tooltip": "This demo dashboard has a filter variable with group by turned on."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "add-group-by-intro",
+      "content": "To group the dashboard, choose a label in the **Group by** box:"
+    },
+    {
+      "type": "section",
+      "id": "add-group-by",
+      "title": "Group by a label",
+      "requirements": [
+        "section-completed:open-dashboard",
+        "on-page:/d/canvvlh"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "add-group-by-job",
+          "action": "formfill",
+          "reftarget": "{grafana:pages.Dashboard.SubMenu.submenuItem} input[placeholder='+ key']",
+          "targetvalue": "job",
+          "content": "In the **Group by** box, type `job` and select the **job** label.",
+          "tooltip": "Group by sits next to the filters in the same control.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "showMe": true
+        },
+        {
+          "type": "interactive",
+          "id": "add-group-by-result",
+          "action": "highlight",
+          "reftarget": "[aria-label='Group by job']",
+          "content": "The **job** grouping is now a pill. Aggregating queries now return one series per job, so the **HTTP requests** graph shows a line for each job.",
+          "tooltip": "Grouping applies to aggregations such as sum, avg, and count.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "showMe": true
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "add-group-by-summary",
+      "content": "You grouped every aggregating panel by job without editing a query."
+    },
+    {
+      "type": "section",
+      "id": "remove-group-by",
+      "title": "Remove the grouping",
+      "requirements": [
+        "section-completed:add-group-by",
+        "on-page:/d/canvvlh"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "remove-group-by-button",
+          "action": "button",
+          "reftarget": "[aria-label='Remove group by job']",
+          "content": "Remove the **job** grouping to return to a single total.",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Removing a grouping does not change the saved dashboard."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "id": "outro",
+      "content": "You removed the grouping, and the graph shows a single total again. To group by labels on your own dashboards, turn on **Enable group by** in the filter variable's settings."
+    }
+  ]
+}

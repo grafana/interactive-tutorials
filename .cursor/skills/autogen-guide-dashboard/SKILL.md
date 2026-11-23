@@ -319,7 +319,9 @@ Present defaults where possible and ask for confirmation or overrides.
 
 **Requires user input (with auto-suggestions):**
 - `category`: What category does this guide belong to?
-  Suggest based on context (e.g., "data-availability" for datasource guides, "general" as fallback).
+  Suggest one of the allowed standalone categories listed in
+  [docs/manifest-reference.md](../../../docs/manifest-reference.md#category-standalone-guides)
+  based on the guide's topic (usually `dashboards`). Never suggest `general`.
 - `startingLocation`: Where in Grafana does this guide launch?
   Auto-derive from dashboard URL path: `/d/{uid}/{slug}`.
 - `targeting.match`: Where should this guide be recommended?
@@ -613,7 +615,7 @@ Older dashboards use `rows[].panels[]` instead of flat `panels[]`. Detect via `s
 Generate the guide anyway, but **do not rely on `:nth-match()` for below-fold untitled panels**. Grafana lazy-renders panels, so `nth-match(N)` only works when all N matching elements are in the DOM (i.e., the user has scrolled past them). Instead:
 - Use `markdown` to describe untitled panels (safest; avoid `noop` as a selector fallback)
 - For the first untitled above-fold panel, `nth-match(1)` in an `interactive` block with `doIt: false` is acceptable
-- For below-fold untitled panels, use `guided` blocks with `lazyRender: true` if you must target them
+- For below-fold untitled panels, set `lazyRender: true` and a verified `scrollContainer` (on an `interactive` block or `guided` step) if you must target them
 - Include a prominent note in the extraction report about the fragile selectors
 
 ### Variable-interpolated titles

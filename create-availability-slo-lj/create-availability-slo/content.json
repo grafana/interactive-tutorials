@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "create-availability-slo-create-availability-slo",
   "title": "Create an availability SLO",
   "blocks": [
@@ -49,16 +49,37 @@
           "doIt": false
         },
         {
-          "type": "markdown",
-          "content": "For **Query type**, select **Ratio query**.\n\nThe Ratio query option appears when you select a Prometheus-compatible data source."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='query-type-ratio']",
+          "targetstate": "true",
+          "content": "Select **Ratio** to compare successful requests with all requests.",
+          "requirements": [
+            "on-page:/a/grafana-slo-app/wizard/new",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "In the **Success metric** field, enter a Prometheus counter metric for successful events.\n\nFor example, you might enter `http_requests_total{status!~\"5..\"}` to count successful responses (non-5xx status codes)."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='success-metric-field'] textarea[role='textbox']",
+          "targetvalue": "http_server_request_duration_seconds_count{http_response_status_code=~\"[1-4]..\"}",
+          "content": "Set **Success metric** to this OpenTelemetry HTTP request counter, excluding server errors. This example measures HTTP traffic across the selected data source.",
+          "requirements": [
+            "on-page:/a/grafana-slo-app/wizard/new",
+            "exists-reftarget"
+          ]
         },
         {
-          "type": "markdown",
-          "content": "In the **Total metric** field, enter a Prometheus counter metric for all events (e.g., `http_requests_total`)."
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='total-metric-field'] textarea[role='textbox']",
+          "targetvalue": "http_server_request_duration_seconds_count{http_response_status_code=~\"[1-5]..\"}",
+          "content": "Set **Total metric** to the same counter, including server errors. To monitor one service, add the same service filter to both expressions.",
+          "requirements": [
+            "on-page:/a/grafana-slo-app/wizard/new",
+            "exists-reftarget"
+          ]
         },
         {
           "type": "interactive",
@@ -73,7 +94,7 @@
     },
     {
       "type": "markdown",
-      "content": "**Don't have a metric like `http_requests_total`?** Your application or exporter may use different metric names or labels. See [SLI examples](/docs/slo/latest/sli-examples/) for other patterns (e.g. log-based or custom metrics), or use Explore to find counters that represent success and total in your data source."
+      "content": "If your source uses different HTTP counter names or status labels, replace both expressions with the matching counters for your service. Keep the same service filters in both queries. See [SLI examples](/docs/grafana-cloud/observe-and-act/alert-and-measure-reliability/slo/sli-examples/) for other patterns."
     },
     {
       "type": "interactive",
@@ -90,7 +111,7 @@
     },
     {
       "type": "markdown",
-      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [SLO creation documentation](/docs/grafana-cloud/alerting-and-irm/slo/)\n- [SLO best practices](/docs/slo/latest/best-practices/)"
+      "content": "---\n\n### More to explore (optional)\n\nAt this point in your journey, you can explore the following paths:\n\n- [SLO creation documentation](/docs/grafana-cloud/alerting-and-irm/slo/)\n- [SLO best practices](/docs/grafana-cloud/observe-and-act/alert-and-measure-reliability/slo/best-practices/)"
     }
   ]
 }

@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Now that HAProxy is exposing metrics, configure the Grafana Cloud integration to collect them. The integration tells Alloy where to scrape HAProxy metrics and which metrics to forward.\n\nReturn to the HAProxy integration page in Grafana Cloud to complete the configuration."
+      "content": "Now that HAProxy is exposing metrics on port 8404, copy the Alloy snippet from the HAProxy integration page and add it to the Alloy configuration file.\n\nReturn to the HAProxy integration page in Grafana Cloud to complete the configuration."
     },
     {
       "type": "section",
@@ -17,11 +17,33 @@
         },
         {
           "type": "markdown",
-          "content": "In the **Configure your HAProxy integration** section, enter the address of your HAProxy Prometheus endpoint.\n\nIf you used the configuration from the previous step, enter:\n\n```\nhttp://localhost:8405/metrics\n```\n\nIf your HAProxy server and Alloy are on different machines, replace `localhost` with the HAProxy server's IP address or hostname."
+          "content": "Scroll to the **Set up Grafana Alloy to use the HAProxy integration** section."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='alloy-simple-block']+button",
+          "requirements": ["exists-reftarget"],
+          "content": "At the bottom of the snippet, click **Copy to clipboard**."
         },
         {
           "type": "markdown",
-          "content": "Review the configuration and click **Test integration** to verify that Alloy can reach the HAProxy metrics endpoint.\n\nIf the test succeeds, click **Save and apply**."
+          "content": "On the HAProxy server, open the Alloy configuration file:\n\n```\nsudo nano /etc/alloy/config.alloy\n```"
+        },
+        {
+          "type": "markdown",
+          "content": "Paste the snippet at the end of the file. It scrapes `localhost:8404`, which matches the stats frontend you added when you configured HAProxy.\n\nIf HAProxy and Alloy are on different machines, change `__address__` from `localhost:8404` to the HAProxy host and port."
+        },
+        {
+          "type": "markdown",
+          "content": "Save the file, then restart Alloy:\n\n```\nsudo systemctl restart alloy.service\n```"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='test-connection-button']",
+          "requirements": ["exists-reftarget"],
+          "content": "In Grafana Cloud, click **Test connection**. A successful test shows that Alloy is collecting HAProxy metrics and sending them to Grafana Cloud."
         }
       ]
     },

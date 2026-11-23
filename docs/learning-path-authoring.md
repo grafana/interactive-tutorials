@@ -78,6 +78,20 @@ website/                        # read-only; needed for create/convert, not for 
 
 When converting, the agent maps existing website front matter (including legacy `pathfinder_data` if present) into `website.yaml`. Do not edit the website repo for these workflows. See [frontmatter-schema](../.cursor/commands/create-learning-path/reference/frontmatter-schema.md) if you need the field mapping.
 
+## Declare learner prerequisites
+
+Use the path `manifest.json` for requirements learners must already satisfy before starting the path to complete its milestones. Pathfinder shows them before **Start** or **Resume** and in the expanded recommendation summary.
+
+Use a milestone manifest only for a pre-start requirement unique to that guide. Milestones do not inherit path requirements, including when a learner opens a milestone directly.
+
+Each `id` and `label` needs at least one non-whitespace character. IDs must be stable and exact-string unique within that manifest. Pathfinder preserves the order and exact strings; it does not trim or normalize them. Labels are plain text by default. Omit `format` unless a label needs supported inline Markdown or a setup link. See [prerequisites](manifest-reference.md#prerequisites) for the allowed syntax and safety rules.
+
+Do not infer prerequisites from guide content or copy path prerequisites into milestone manifests. List necessary prior access, permissions, tools, or external resources, not resources created or skills taught by the tutorial. The field informs learners; it does not check state or block progress. Use guide requirements and objectives for runtime conditions.
+
+If a pre-start requirement applies only to a specific setup, state that condition in its label, such as "If using a self-hosted instance, permission to add a data source." Short setup links can appear in Markdown labels. Keep detailed setup instructions, context, optional preparation, and recommended knowledge in `content.json` under a specific heading, such as "Preparation help" or "Recommended knowledge."
+
+For the field format, see [prerequisites](manifest-reference.md#prerequisites).
+
 ## Screenshots and videos (website-only in Pathfinder)
 
 Pathfinder already highlights the live Grafana UI, so screenshots and embedded videos belong on the website render, not in the in-product sidebar. Keep the media in `content.json`; gate it with a `conditional` so Pathfinder hides it and the website still shows it.

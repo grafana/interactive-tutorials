@@ -23,6 +23,7 @@ globs:
 | Best practices & decision trees | [best-practices.mdc](best-practices.mdc) |
 | Grot Guide (decision tree) block | [docs/json-guide-reference.md#grot-guide-block](../docs/json-guide-reference.md#grot-guide-block) |
 | Manifest (package metadata) | [docs/manifest-reference.md](../docs/manifest-reference.md) |
+| Authoring MCP, CLI, local e2e runner | [Pathfinder authoring tools](#pathfinder-authoring-tools) below |
 | Migration record (historical) | [docs/history/migration-record.md](../docs/history/migration-record.md) |
 
 ## JSON Guide Root Structure
@@ -35,18 +36,34 @@ globs:
 }
 ```
 
+## Pathfinder Authoring Tools
+
+[`grafana-pathfinder-app`](https://github.com/grafana/grafana-pathfinder-app) is the source of truth for the guide format. Its authoring MCP and CLI read the same schema, so ask them instead of copying tables from these docs. Where this repository is stricter than the schema (for example, requiring `exists-reftarget`), that is repo policy, not a schema rule.
+
+- **Authoring MCP.** In an MCP-capable client, prefer it for create/edit, schema lookup, validation, and artifact handoff. Run it locally with `npx pathfinder-cli mcp`, or with `docker run --rm -i ghcr.io/grafana/pathfinder-cli:main mcp`. Call `pathfinder_authoring_start` first, then `pathfinder_help` for the exact inputs of a tool; do not guess option names. Do not invent selectors. Run `pathfinder_validate` before `pathfinder_finalize_for_app_platform`. The MCP returns a handoff; it does not publish. See [MCP server](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/MCP_SERVER.md).
+- **CLI.** `pathfinder-cli` creates and edits packages (`create`, `add-block`, `add-step`, `add-choice`, `add-hint`, `edit-block`, `remove-block`, `move-block`, `set-manifest`, `inspect`, `rename-id`) and also runs `validate`, `schema`, `requirements`, `find-guides`, `e2e`, and the `build-*` commands. See [CLI tools](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) for flags.
+- **Discover, don't copy.** `pathfinder-cli schema --list` and `schema guide` print the current JSON Schema. `pathfinder-cli requirements list` prints the valid requirement tokens. `pathfinder-cli find-guides --queries <text>` searches the published catalog, so check it before authoring a guide that may already exist.
+- **Local browser test.** `pathfinder-cli e2e --package <dir> --repository <checkout-or-index>` runs a guide in a live Grafana; see [pr-e2e-testing.md](../docs/pr-e2e-testing.md).
+
+A guide produced by the MCP or CLI still has to meet the critical rules in [AGENTS.md](../AGENTS.md#critical-rules).
+
 ## Block Types
+
+The schema defines 21 block types.
 
 | Block Type    | Category    | Purpose                              | Key Properties                    |
 |---------------|-------------|--------------------------------------|-----------------------------------|
 | `markdown`    | Content     | Formatted text (headings, lists)     | content                           |
+| `divider`     | Content     | Horizontal separator between sections | (none)                           |
 | `html`        | Content     | Raw HTML (use sparingly)             | content                           |
 | `image`       | Content     | Embedded image (LP: gate with `renderer:website`) | src, alt, width          |
 | `video`       | Content     | YouTube/native video (LP: gate with `renderer:website`) | src, provider, start, end |
 | `interactive` | Interactive | Single action                        | action, reftarget, content        |
 | `multistep`   | Interactive | Automated multi-action sequence      | content, steps                    |
 | `guided`      | Interactive | User-performed with detection        | content, steps, stepTimeout       |
-| `section`     | Structural  | Grouped steps with "Do Section"      | id, title, blocks                 |
+| `section`     | Structural  | Grouped steps with "Do Section"      | id, title, blocks (sections cannot nest) |
+| `collapsible` | Structural  | Content hidden behind a toggle (content blocks only) | title, collapsed, blocks |
+| `callout`     | Content     | Highlighted, labeled box             | title, content                    |
 | `conditional` | Structural  | Runtime condition branching           | conditions, whenTrue, whenFalse   |
 | `assistant`   | Structural  | Wraps blocks with AI customization   | assistantType, blocks             |
 | `quiz`        | Assessment  | Knowledge check with choices         | question, choices                 |
@@ -54,6 +71,8 @@ globs:
 | `code-block`  | Interactive | Insert code into Monaco editor       | reftarget, code, language         |
 | `terminal`    | Interactive | Shell command with Copy/Exec         | command, content                  |
 | `terminal-connect` | Interactive | Connect to Coda terminal session | content, vmTemplate              |
+| `challenge`   | Interactive | Hands-on task checked in a Coda VM or the learner's instance | title, brief, successCriteria, mode, hintLevels |
+| `snippet-ref` | Reusable    | Reference to a published snippet (block editor only — CLI-excluded) | snippetId |
 | `grot-guide`  | Structural  | Choose-your-own-adventure decision tree | welcome, screens (block editor only — CLI-excluded) |
 
 ## Action Types & Decision Tree
@@ -117,7 +136,9 @@ Requirements are JSON arrays; all must pass before the step runs:
 
 **Fixed** (no arguments): `exists-reftarget`, `navmenu-open`, `form-valid`, `is-admin`, `is-editor`, `is-logged-in`, `has-datasources`, `dashboard-exists`, `is-terminal-active`
 
-**Parameterized**: `on-page:/path`, `has-datasource:name`, `datasource-configured:name`, `has-plugin:id`, `plugin-enabled:id`, `has-role:role`, `has-permission:permission`, `has-feature:toggle`, `has-dashboard-named:title`, `min-version:x.y.z`, `in-environment:env`, `section-completed:id`, `var-name:value`, `renderer:pathfinder|website`
+**Parameterized**: `on-page:/path`, `workflow-ready:name`, `coda-exit-zero:command`, `has-datasource:name`, `datasource-configured:name`, `has-plugin:id`, `plugin-enabled:id`, `has-role:role`, `has-permission:permission`, `has-feature:toggle`, `has-dashboard-named:title`, `min-version:x.y.z`, `in-environment:env`, `section-completed:id`, `var-name:value`, `renderer:pathfinder|website`
+
+`workflow-ready:cloud-access-policy-token` confirms a Grafana Cloud access-policy token was created in the current form. `coda-exit-zero:<command>` passes when the command exits 0 on the learner's challenge VM; it pairs with `challenge` blocks. Run `pathfinder-cli requirements list` for the full current vocabulary.
 
 ### Objectives (Auto-Completion)
 
@@ -191,7 +212,7 @@ Example: `"reftarget": "div[data-cy='item']:has(h3:contains('Service')) button[d
 
 ## Lazy-Rendered Targets
 
-Targets already in the DOM scroll into view automatically. For targets mounted only after scrolling, use a standalone `interactive` block with `lazyRender: true` and a verified `scrollContainer`. Keep `exists-reftarget`: the standalone action buttons permit lazy discovery when that is the unmet condition.
+Targets already in the DOM scroll into view automatically. For a target that is not mounted until it is scrolled into view, set `lazyRender: true` plus a verified `scrollContainer`. Both `interactive` blocks and `guided` steps support the two properties. Choose `guided` only when the learner's own action must be observed, not to get scrolling.
 
 ```json
 {
@@ -206,9 +227,13 @@ Targets already in the DOM scroll into view automatically. For targets mounted o
 }
 ```
 
-`#pageContent` is Grafana's scrolling main region when the extension sidebar is open; verify it for the target layout. Discovery scrolls the selected container, not pagination controls or every nested scroller.
+`#pageContent` is Grafana's scrolling main region when the extension sidebar is open; verify it for the target layout. Discovery scrolls the selected container, not pagination controls or every nested scroller. See [Lazy targets](../docs/guided-interactions.md#lazy-targets) for the evidence and the `guided` form.
 
-Use the block's individual **Show me** / **Do it**. Current `guided` conversion drops lazy-scroll properties, and **Do section** bypasses the standalone discovery handler. Do not replace automated observations with manual guided hovers to obtain scrolling. See [runtime evidence and limitations](../docs/guided-interactions.md#lazy-targets-and-current-runtime-support).
+## Schema Details Worth Knowing
+
+- `targetstate` (canonical lowercase; the runtime parser also tolerates `targetState`) makes a toggle step idempotent: the step reads the control and clicks only when its state differs. Use `"true"` / `"false"` to auto-detect, or `"<attribute>:<value>"` such as `"aria-expanded:true"`.
+- `authorNote` is editor-only metadata on a block (never on a step). It is stripped on export and never shown to learners. Use it for notes such as an unverified selector instead of inventing one.
+- Validation rejects: a `section` nested inside another `section` (also through `conditional` or `assistant`); `navigate` or `popout` steps inside a `guided` block; a non-`noop`, non-`popout` action without `reftarget`; and `formfill` with `validateInput: true` but no `targetvalue`.
 
 ## Best Practices
 
@@ -297,7 +322,7 @@ Never use auto-generated CSS classes, bare `div`/`span`, or `nth-of-type` withou
 
 ### Missing Lazy Discovery
 
-If a target is absent until scrolling, use standalone `interactive` with `lazyRender: true` and the verified scrolling container. Guided steps cannot discover absent targets in the current runtime. A target merely below the fold but already mounted does not require progressive discovery.
+If a target is absent until scrolling, set `lazyRender: true` and a verified `scrollContainer` on the `interactive` block or `guided` step. A target merely below the fold but already mounted does not require progressive discovery.
 
 ### Legacy `?doc=` Query String
 
@@ -322,11 +347,11 @@ Before finalizing a guide:
 - [ ] User-centric language per style guide
 - [ ] `popout` steps have `targetvalue: "sidebar"` or `"floating"` (no other values are valid)
 - [ ] `openGuide` used (not legacy `?doc=`) when chaining a guide after `navigate`
-- [ ] Targets absent until scrolling use standalone `interactive` with `lazyRender: true` and a verified container; individual action and **Do section** behavior are checked separately
+- [ ] Targets absent until scrolling set `lazyRender: true` and a verified `scrollContainer` (`interactive` or `guided`); individual action and **Do section** behavior are both checked
 
 ## Schema Validation
 
-CI runs strict schema checking via `.github/workflows/validate-json.yml`. You can script the equivalent locally to validate structure and syntax.
+CI runs strict schema checking via `.github/workflows/validate-json.yml`. Validate locally with `pathfinder-cli validate --package <dir>` (or `pathfinder_validate` in the MCP). Add `--snippets-catalog <index.json>` to check `snippet-ref` IDs.
 
 ## Manifest Authoring
 
@@ -339,4 +364,8 @@ Key points:
 - The `id` in `manifest.json` must match the `id` in `content.json`
 - `targeting.match` uses the same expression syntax as `index.json` rules
 - Learning path steps use `type: "guide"`; the `*-lj` root uses `type: "path"` with a `milestones` array
-- Validate with `validate --package <dir>` from a pathfinder-app checkout
+- Use `prerequisites` for requirements learners must already satisfy before starting: necessary access, permissions, tools, or external resources. Exclude resources created or skills taught by the tutorial, optional preparation, and runtime conditions; see [prerequisites](../docs/manifest-reference.md#prerequisites). Each `id` and `label` needs at least one non-whitespace character. IDs must be stable, exact-string unique within the manifest, and unchanged when labels change. Labels are literal by default. Set `format: "markdown"` only when you need supported inline formatting or a setup link.
+- A path manifest lists pre-start requirements for completing its milestones. A guide shows only its own pre-start requirements; milestones do not inherit parent-path requirements.
+- If a pre-start requirement applies only to a specific setup, state the condition in its label, such as "If using a self-hosted instance, permission to add a data source." Short setup links can appear in Markdown labels. Keep detailed setup instructions and optional advice in `content.json`; use guide requirements and objectives for runtime conditions.
+- Build the CLI from the Pathfinder commit pinned in [`.github/pathfinder-app-ref`](../.github/pathfinder-app-ref), as the validation and deployment workflows do. Validate with `validate --package <dir>`.
+- Only `id` and `type` are required by the schema. `description` and `author` are recommended; the CLI and MCP default `author`. This repository's policy still asks for an author (repo policy, not a schema rule). `tracks` (path manifests only) and `minGrafanaVersion` are covered in [manifest-reference.md](../docs/manifest-reference.md).

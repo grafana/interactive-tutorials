@@ -523,8 +523,9 @@ Present defaults where possible and ask for confirmation or overrides.
 
 **Requires user input:**
 - `category`: What category does this guide belong to?
-  Suggest based on context (e.g., "data-availability" for datasource guides,
-  "general" as fallback). Present as a question.
+  Suggest one of the allowed standalone categories listed in
+  [docs/manifest-reference.md](../../../docs/manifest-reference.md#category-standalone-guides)
+  based on the guide's topic. Never suggest `general`. Present as a question.
 - `startingLocation`: Where in Grafana does this guide launch?
   Suggest from target page in plan (e.g., "/connections/datasources/edit").
 - `targeting.match`: Where should this guide be recommended?

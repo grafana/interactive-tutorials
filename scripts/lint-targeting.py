@@ -9,9 +9,9 @@ datasource, userRole, cohort) scores > 0 on every page in the tenant and is
 returned everywhere. `or` accuracy is binary, so wrapping the `and` in an `or`
 keeps the expression at 1.0-or-absent.
 
-Results are sorted by accuracy alone, with no tie-break and a 10-item cap, so a
-precise guide cannot outrank a broad one -- it can only tie it. Reducing how many
-guides match a page is the only lever an author has.
+Ranking is versioned independently of accuracy. The optional report below is
+an approximate legacy contention diagnostic, not the production matcher/ranker.
+Use scripts/targeting-audit/run.py for evidence from the real pinned engine.
 
 Run from the repository root:
 

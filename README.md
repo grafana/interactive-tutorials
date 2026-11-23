@@ -39,6 +39,18 @@ The **Block Editor** is the recommended way to create guides:
 4. Preview your guide with the Preview toggle
 5. Export via "Copy JSON" or create a GitHub PR directly from the editor
 
+### Authoring with the MCP, CLI, or e2e runner
+
+Pathfinder ships three more tools that read the same schema as the Block Editor. They do different jobs:
+
+| Tool | Use it to | Notes |
+|------|-----------|-------|
+| [Authoring MCP](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/MCP_SERVER.md) | Let an MCP-capable agent create, edit, and validate a guide through tool calls | Run locally with `npx pathfinder-cli mcp` (or `docker run --rm -i ghcr.io/grafana/pathfinder-cli:main mcp`). Start with `pathfinder_authoring_start`, then `pathfinder_help`. It returns a handoff and does not publish. |
+| [CLI](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) | Create and edit packages, validate (`validate --package <dir>`), print the schema (`schema`) and valid requirements (`requirements list`), and search published guides (`find-guides`) | The MCP wraps most of the authoring commands. |
+| [e2e runner](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/E2E_TESTING.md) | Run a guide in a real browser against a live Grafana (`pathfinder-cli e2e --package <dir> --repository <checkout-or-index>`) | A local author tool. It is separate from the optional `/e2e-test` PR comment; see [docs/pr-e2e-testing.md](docs/pr-e2e-testing.md). |
+
+Neither the MCP nor `validate` can tell whether a selector is correct, so capture selectors with the Block Editor or test the guide in a browser. See [Pathfinder authoring tools](.cursor/authoring-guide.mdc#pathfinder-authoring-tools).
+
 ### Iterate & Develop
 
 The Block Editor auto-saves your work to localStorage, so you can iterate without losing progress.
@@ -95,7 +107,7 @@ an interactive guide like that!
 
 ## Getting Your Tutorial Into The Plugin
 
-1. **Submit**: Open a PR to this repo, ping reviewers
+1. **Submit**: Open a PR to this repo, ping reviewers (outside contributors: see [CONTRIBUTING.md](CONTRIBUTING.md) first)
 2. **Include**: several sentences describing when/where/who should see
 your guide, so we can include it in the recommender.
 
@@ -112,6 +124,7 @@ Primary documentation files in this repo:
 |-------|------|
 | Learning path authoring (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) |
 | Guide Reference | [docs/json-guide-reference.md](docs/json-guide-reference.md) |
+| Optional PR E2E testing | [docs/pr-e2e-testing.md](docs/pr-e2e-testing.md) |
 | Action Types | [docs/interactive-actions.md](docs/interactive-actions.md) |
 | Requirements | [docs/requirements-reference.md](docs/requirements-reference.md) |
 | Selectors | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) |

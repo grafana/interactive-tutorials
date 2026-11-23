@@ -13,22 +13,17 @@
       "blocks": [
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "a[href='/connections/datasources']",
-          "requirements": [
-            "navmenu-open",
-            "exists-reftarget"
-          ],
-          "content": "In the navigation menu, click **Connections > Data sources**."
+          "action": "navigate",
+          "reftarget": "/connections/datasources",
+          "verify": "on-page:/connections/datasources",
+          "content": "Open **Connections > Data sources** to review your existing connections."
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid data-source-add-button']",
-          "requirements": [
-            "exists-reftarget"
-          ],
-          "content": "Click **Add new data source**."
+          "action": "navigate",
+          "reftarget": "/connections/datasources/new",
+          "verify": "on-page:/connections/datasources/new",
+          "content": "Open the data source catalog to choose a connection type."
         },
         {
           "type": "interactive",
@@ -36,34 +31,39 @@
           "reftarget": "input[placeholder='Filter by name or type']",
           "targetvalue": "PostgreSQL",
           "requirements": [
+            "on-page:/connections/datasources/new",
             "exists-reftarget"
           ],
           "content": "In the **Search** field, enter `PostgreSQL`."
         },
         {
           "type": "interactive",
-          "action": "button",
-          "reftarget": "PostgreSQL",
+          "action": "highlight",
+          "reftarget": "#pageContent [data-testid='data-testid Card heading'] button:contains('PostgreSQL')",
           "requirements": [
+            "on-page:/connections/datasources/new",
             "exists-reftarget"
           ],
-          "content": "From the search results, click **PostgreSQL**."
+          "content": "From the search results, click **PostgreSQL**.",
+          "doIt": true,
+          "verify": "on-page:/connections/datasources/edit"
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Editable title edit button']",
-          "doIt": false,
+          "reftarget": "button[data-testid='data-testid Editable title edit button']",
           "requirements": [
+            "on-page:/connections/datasources/edit",
             "exists-reftarget"
           ],
-          "content": "To give your data source a descriptive name, click the **edit title** (pencil) icon next to the name at the top of the page, then enter a name such as `Production PostgreSQL Database`.\n\n**Did you know?** The name of the data source is displayed on dashboard panels, so it's important to choose a meaningful name."
+          "doIt": false,
+          "content": "To rename the data source, click the pencil icon next to its name, enter a descriptive name such as Production PostgreSQL, then click **Save**."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "In the next milestone, you'll configure the connection details and authentication credentials for your PostgreSQL server."
+      "content": "You opened the PostgreSQL data source settings and learned where to rename the connection. In the next milestone, configure its connection details."
     },
     {
       "type": "markdown",

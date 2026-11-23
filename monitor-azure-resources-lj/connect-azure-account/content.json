@@ -60,7 +60,7 @@
     },
     {
       "type": "markdown",
-      "content": "(Optional) Add Azure-formatted tags to organize and filter your metrics.\n\nBy default, resource information including tags is available on the `target_info` metric. When you add a tag here, you can add tags to your Azure Monitor metrics or filter the Azure Monitor metrics collected by tags. These tags must match the tags configured on your Azure resources.\n\nSkip the following section if you don't need to filter metrics by Azure tags."
+      "content": "(Optional) Add Azure resource tags to label your metrics, limit which resources are collected, or both.\n\nBy default, resource information including tags is available on the `target_info` metric. For each tag you add, you choose whether to add it as a label on your metrics (**Add tag to metrics**), use it to collect only resources whose Azure tag matches a value (**Filter by tag value**), or both.\n\nTag filters apply to every resource type the credential discovers. To use different filters for different resource types, create separate credentials.\n\nSkip the following section if you don't need tags."
     },
     {
       "type": "section",
@@ -71,15 +71,19 @@
           "type": "interactive",
           "action": "formfill",
           "reftarget": "#tags-input",
-          "targetvalue": "Environment:Production",
-          "content": "In the **Tags** section, enter an Azure tag, for example `Environment:Production`.",
+          "targetvalue": "environment",
+          "content": "In the **Tags** field, type the Azure resource tag key, for example `environment`, and press Enter. Use the Azure tag format, not the Prometheus format.",
           "doIt": false,
           "requirements": ["exists-reftarget"]
         },
         {
           "type": "interactive",
-          "action": "noop",
-          "content": "Click **Add** in the **Tags** section to save the tag."
+          "action": "highlight",
+          "reftarget": "[data-testid^='tags-container']",
+          "content": "In the table that appears, select **Add tag to metrics** to add the tag as a label on your metrics, or select **Filter by tag value** and enter a value in **Tag value filter**, for example `production`, to collect only resources with that tag value. Select at least one option for each tag.",
+          "doIt": false,
+          "skippable": true,
+          "requirements": ["exists-reftarget"]
         }
       ]
     },
