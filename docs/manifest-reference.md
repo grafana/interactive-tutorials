@@ -53,15 +53,17 @@ prometheus-lj/
 
 ### All fields
 
+The Pathfinder schema requires only `id` and `type`; `description` and `author` are recommended, and `category` is required by `validate --package` (not by runtime loading). The "Required" column below marks what **this repository** requires of a package: the stricter editorial policy is repo policy, not a schema rule. See the upstream [manifest field reference](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/package-authoring.md#manifestjson-field-reference).
+
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `schemaVersion` | `string` | No | `"1.1.0"` | Schema version. Can be omitted (schema default applies). |
 | `id` | `string` | **Yes** | — | Unique package identifier. Must match the `id` in `content.json`. |
 | `type` | `"guide"` \| `"path"` \| `"journey"` | **Yes** | — | `"guide"` for standalone guides and LJ steps; `"path"` (or `"journey"`) for `*-lj` root directories. |
 | `repository` | `string` | No | `"interactive-tutorials"` | Repository identifier. Can be omitted (schema default applies). |
-| `description` | `string` | **Yes** | — | Short description of the guide or path. |
+| `description` | `string` | Recommended (repo policy: required) | — | Short description of the guide or path. |
 | `category` | `string` | **Yes** | — | Content category for grouping and filtering. Standalone guides must use one of the [allowed categories](#category-standalone-guides). |
-| `author` | `object` | **Yes** | — | Attribution. See [author](#author). |
+| `author` | `object` | Recommended (repo policy: required) | — | Attribution. See [author](#author). The CLI and MCP default it (git `user.name`, else `pathfinder-mcp`); replace a fallback placeholder with the real author. |
 | `language` | `string` | No | `"en"` | BCP 47 language tag. Can be omitted (schema default applies). |
 | `startingLocation` | `string` | Recommended | `"/"` | URL path where the guide should be launched. |
 | `targeting` | `object` | No | — | Contextual recommendation rules. See [targeting](#targeting). |
@@ -74,7 +76,17 @@ prometheus-lj/
 | `conflicts` | `string[]` | No | `[]` | Packages that conflict (mutually exclusive). Schema-only in MVP. |
 | `replaces` | `string[]` | No | `[]` | Packages this one supersedes entirely. Schema-only in MVP. |
 | `milestones` | `string[]` | **Yes** (paths only) | — | Ordered list of step package IDs. Only for `type: "path"` or `"journey"`. |
+| `tracks` | `Track[]` | No (`type: "path"` only) | — | Named, independently ordered guide sequences alongside `milestones`. See [tracks](#tracks). |
+| `minGrafanaVersion` | `string` (semver) | No | — | Lowest Grafana this guide is written for; the docs panel warns readers below it. Not the same as `testEnvironment.minVersion`. |
 | `stats` | `object` | **No — never hand-author** | — | Completion block counts, computed by CI. See [stats](#stats). |
+
+### tracks
+
+`tracks` is valid only on a `type: "path"` manifest. Each entry is `{ "trackId", "label", "guides" }`: a unique `trackId` (not `"foundations"`, which is reserved), a display `label`, and a non-empty `guides` array of bare package IDs. A track is its own complete ordered sequence, not a reordering of `milestones`; `milestones` remains the default sequence. See [Tracks](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/package-authoring.md#tracks).
+
+### Unknown manifest keys
+
+A top-level key the schema does not name survives validation and `build-repository` forwards it into `repository.json` unchecked, so a misspelled field (for example `startingLocaton`) is not rejected and the real field keeps its default. Check the key list `build-repository` prints. See [extension fields](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/package-authoring.md#extension-fields).
 
 ### category (standalone guides)
 

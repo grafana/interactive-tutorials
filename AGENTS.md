@@ -32,7 +32,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 18. **`schemaVersion` is optional** -- if included, use `"schemaVersion": "1.1.0"`; the schema defaults to `"1.1.0"` when omitted
 19. **`popout` requires `targetvalue`** -- `popout` actions MUST set `targetvalue` to exactly `"sidebar"` or `"floating"`; the schema rejects any other value, and `popout` is not allowed inside `guided` blocks
 20. **Use `openGuide`, not `?doc=`** -- to chain a follow-up guide after a `navigate` step, set `openGuide: "bundled:<guide-id>"` on the interactive block; the legacy `?doc=` query param is back-compat only
-21. **Use supported lazy discovery** -- for targets absent until scrolling, use a standalone `interactive` block with `lazyRender: true`, `exists-reftarget`, and a verified `scrollContainer` (often `#pageContent` with the Grafana sidebar open). Its individual **Show me** / **Do it** handles discovery. Current `guided` steps and **Do section** do not run that discovery; see [guided-interactions.md](docs/guided-interactions.md#lazy-targets-and-current-runtime-support).
+21. **Use supported lazy discovery** -- for targets absent until scrolling, set `lazyRender: true` and a verified `scrollContainer` (often `#pageContent` with the Grafana sidebar open) on the `interactive` block or the `guided` step; both support it. Choose `guided` only when the learner's own action must be observed, not to get scrolling. See [guided-interactions.md](docs/guided-interactions.md#lazy-targets).
 
 ## Task Routing
 
@@ -46,6 +46,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
 | Author a learning path (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | [learning-path workflows](.cursor/learning-path-workflows/workflows.md), [/create-learning-path](.cursor/commands/create-learning-path.md), [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) |
 | Decision trees & code smells | [best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), `docs/` |
+| Author with Pathfinder tools (MCP, CLI, e2e runner) | [authoring-guide.mdc](.cursor/authoring-guide.mdc#pathfinder-authoring-tools) | [docs/pr-e2e-testing.md](docs/pr-e2e-testing.md), [MCP server](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/MCP_SERVER.md), [CLI tools](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) |
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
 | Make a guide recommended | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
@@ -57,7 +58,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Document | Purpose |
 |----------|---------|
 | [learning-path-authoring.md](docs/learning-path-authoring.md) | Docs-team entry point for interactive learning paths |
-| [json-guide-reference.md](docs/json-guide-reference.md) | Block types, properties, and guide structure |
+| [json-guide-reference.md](docs/json-guide-reference.md) | All 21 block types, properties, and guide structure |
 | [interactive-actions.md](docs/interactive-actions.md) | Action type behavior and button controls |
 | [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
 | [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |

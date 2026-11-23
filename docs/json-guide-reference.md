@@ -1,6 +1,6 @@
 # JSON Guide Reference
 
-Complete reference for the JSON guide format — root structure, all block types, properties, and examples.
+Reference for the JSON guide format — root structure, block types, properties, and examples. The schema defines 21 block types. This page is a practical companion; the current contract is the Pathfinder schema (`pathfinder-cli schema guide`, or `pathfinder_get_schema` in the authoring MCP) and the upstream [JSON guide format](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/interactive-examples/json-guide-format.md).
 
 ## Root Structure
 
@@ -28,13 +28,16 @@ Every JSON guide has these fields:
 | Block Type | Category | Purpose | When to Use |
 |------------|----------|---------|-------------|
 | `markdown` | Content | Formatted text | Explanations, instructions, section bookends |
+| `divider` | Content | Horizontal separator | Break up adjacent sections visually |
 | `html` | Content | Raw HTML (use sparingly) | Legacy content, custom rich HTML |
+| `callout` | Content | Highlighted, labeled box | An objective, summary, or call to action |
 | `image` | Content | Embedded image | Screenshots, diagrams |
 | `video` | Content | YouTube or native video | Tutorials, demos |
 | `interactive` | Interactive | Single action | Click, fill, navigate, highlight, hover, noop |
 | `multistep` | Interactive | Automated multi-action sequence | Bundle micro-steps (automated) |
 | `guided` | Interactive | User-performed with detection | User learns by doing, CSS :hover required |
-| `section` | Structural | Grouped steps with "Do Section" | Organize related steps |
+| `section` | Structural | Grouped steps with "Do Section" | Organize related steps (sections cannot nest) |
+| `collapsible` | Structural | Content hidden behind a toggle | Gate a solution or answer |
 | `conditional` | Structural | Runtime condition branching | Different content by user state |
 | `assistant` | Structural | Wraps blocks with AI customization | Adaptive content via Grafana Assistant |
 | `quiz` | Assessment | Knowledge check with choices | Test understanding |
@@ -42,7 +45,19 @@ Every JSON guide has these fields:
 | `code-block` | Interactive | Insert code into Monaco editor | Queries, configs for code editors |
 | `terminal` | Interactive | Shell command with Copy/Exec | Coda terminal commands |
 | `terminal-connect` | Interactive | Connect to Coda terminal | Establish terminal session |
+| `challenge` | Interactive | Hands-on task with a success check | Practice task verified in a Coda VM or the learner's instance |
+| `snippet-ref` | Reusable | Reference to a published snippet by ID | Reuse shared blocks (block editor only — CLI-excluded) |
 | `grot-guide` | Structural | Choose-your-own-adventure decision tree | Hand-authored branching guides (block editor only — CLI-excluded) |
+
+The five newest types are summarized below; see the upstream format guide for every property.
+
+| Block | Properties | Notes |
+|-------|------------|-------|
+| `divider` | `type` (and optional `id`) | No content fields. See [Divider block](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/interactive-examples/json-guide-format.md#divider-block). |
+| `callout` | `title`, `content` | Presentational; carries no completion state. See [Callout block](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/interactive-examples/json-guide-format.md#callout-block). |
+| `collapsible` | `title`, `collapsed` (default `true`), `blocks` | Holds content blocks only: `markdown`, `html`, `image`, `video`, `callout`, `divider`. Interactive steps and containers are rejected; use a `section` to gate steps. See [Collapsible block](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/interactive-examples/json-guide-format.md#collapsible-block). |
+| `challenge` | `title`, `brief`, `successCriteria`; optional `mode` (`coda` default, or `standard`), `hintLevels`, `failureMessage`, `setupScript` | `successCriteria` is a requirement string, typically `coda-exit-zero:<command>`; with `mode: "standard"` it runs against the learner's own Grafana. CLI-authorable. See [Challenge block](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/interactive-examples/json-guide-format.md#challenge-block). |
+| `snippet-ref` | `snippetId` | Resolved at parse time. Inserted from the block editor's Snippet Picker; the CLI cannot create it. Check IDs with `validate --snippets-catalog <index.json>`. See [Snippet reference block](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/interactive-examples/json-guide-format.md#snippet-reference-block). |
 
 ---
 
@@ -199,7 +214,8 @@ A single interactive step with "Show me" and "Do it" buttons.
 | `action` | string | ✅ | — | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
 | `reftarget` | string | ✅\* | — | Target reference (\*optional for `noop` and `popout`) |
 | `content` | string | ✅ | — | Markdown description shown to user |
-| `targetvalue` | string | ❌\* | — | Value for `formfill` actions; required for `popout` (must be `"sidebar"` or `"floating"`) |
+| `targetvalue` | string | ❌\* | — | Value for `formfill` actions; required for `popout` (must be `"sidebar"` or `"floating"`), and for `formfill` with `validateInput: true` |
+| `targetstate` | string | ❌ | — | Desired end state for a toggle target: `"true"`, `"false"`, or `"<attribute>:<value>"` (e.g. `"aria-expanded:true"`). The step clicks only when the state differs, so it is safe to re-run. Canonical form is lowercase; the runtime parser also tolerates `targetState`. |
 | `tooltip` | string | ❌ | — | Tooltip shown when element is highlighted |
 | `requirements` | string[] | ❌ | — | Preconditions that must pass |
 | `objectives` | string[] | ❌ | — | Conditions that auto-complete the step when met |
@@ -247,8 +263,8 @@ A single interactive step with "Show me" and "Do it" buttons.
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `lazyRender` | boolean | `false` | Enable progressive scroll discovery for virtualized containers |
-| `scrollContainer` | string | `".scrollbar-view"` | CSS selector for the scroll container when `lazyRender` is enabled |
+| `lazyRender` | boolean | `false` | Enable progressive scroll discovery for targets not mounted until scrolled into view. Supported on `interactive` blocks and `guided` steps |
+| `scrollContainer` | string | `".scrollbar-view"` | CSS selector for the scroll container when `lazyRender` is enabled. Verify it against the real page; see [Lazy targets](guided-interactions.md#lazy-targets) |
 
 ### Section Block
 
@@ -277,6 +293,8 @@ Groups related interactive steps into a sequence with "Do Section" functionality
 | `requirements` | string[] | ❌ | — | Section-level requirements |
 | `objectives` | string[] | ❌ | — | Auto-complete entire section when met |
 | `autoCollapse` | boolean | ❌ | `true` | Collapse section when completed |
+
+A `section` cannot contain another `section`, directly or through `conditional` or `assistant` blocks; validation rejects it. Make the inner section a sibling.
 
 ### Conditional Block
 
@@ -365,7 +383,7 @@ Highlights elements and **waits for user** to perform actions. See [Guided Inter
 | `objectives` | string[] | ❌ | — | Objectives tracked |
 | `skippable` | boolean | ❌ | `false` | Allow skipping |
 
-**Supported guided actions:** `hover`, `button`, `highlight`, `formfill` (navigate not supported).
+**Supported guided actions:** `hover`, `button`, `highlight`, `formfill`, `noop`. `navigate` and `popout` steps are not supported inside `guided`; `validate` reports them as errors. Use a separate `interactive` block, or a `multistep` block.
 
 **Key differences from multistep:**
 - **Multistep**: System performs all actions automatically
@@ -679,15 +697,16 @@ Steps used in `multistep` and `guided` blocks:
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
 | `action` | string | ✅ | — | Action type: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
-| `reftarget` | string | ✅\* | — | Target reference (\*optional for `noop` and `popout`) |
-| `targetvalue` | string | ❌\* | — | Value for `formfill` (regex-aware); required for `popout` (`"sidebar"` or `"floating"`) |
+| `reftarget` | string | ✅\* | — | Target reference (\*optional for `noop` and `popout`; required for every other action) |
+| `targetvalue` | string | ❌\* | — | Value for `formfill` (regex-aware; required when `validateInput` is `true`); required for `popout` (`"sidebar"` or `"floating"`) |
+| `targetstate` | string | ❌ | — | Desired end state for a toggle target (see the interactive block property) |
 | `requirements` | string[] | ❌ | — | Requirements for this specific step |
 | `tooltip` | string | ❌ | — | Tooltip shown during multistep execution |
 | `description` | string | ❌ | — | Description shown in guided steps panel |
 | `skippable` | boolean | ❌ | `false` | Whether this step can be skipped (guided only) |
 | `formHint` | string | ❌ | — | Hint shown when form validation fails |
 | `validateInput` | boolean | ❌ | `false` | Require input to match `targetvalue` pattern |
-| `lazyRender` | boolean | ❌ | `false` | Enable progressive scroll discovery |
+| `lazyRender` | boolean | ❌ | `false` | Enable progressive scroll discovery (also supported on guided steps) |
 | `scrollContainer` | string | ❌ | `".scrollbar-view"` | CSS selector for the scroll container |
 
 ---
@@ -787,6 +806,10 @@ Objectives use the same syntax but auto-complete when met:
 
 If objectives are met, the step is automatically marked complete regardless of requirements.
 
+### `authorNote`
+
+Every block accepts an optional `authorNote` string: an editor-only note for authors (for example, an unverified selector). It is stripped on export and never rendered to readers. Put it on the enclosing block, not on a step.
+
 ---
 
 ## TypeScript Types
@@ -800,9 +823,10 @@ import {
   // Block union
   JsonBlock,
   // Content blocks
-  JsonMarkdownBlock, JsonHtmlBlock, JsonImageBlock, JsonVideoBlock,
+  JsonMarkdownBlock, JsonDividerBlock, JsonHtmlBlock, JsonImageBlock, JsonVideoBlock,
+  JsonCalloutBlock,
   // Structural blocks
-  JsonSectionBlock, JsonConditionalBlock, ConditionalDisplayMode,
+  JsonSectionBlock, JsonCollapsibleBlock, JsonConditionalBlock, ConditionalDisplayMode,
   ConditionalSectionConfig, JsonAssistantBlock, AssistantProps,
   // Interactive blocks
   JsonInteractiveBlock, JsonMultistepBlock, JsonGuidedBlock,
@@ -811,6 +835,9 @@ import {
   JsonQuizBlock, JsonQuizChoice, JsonInputBlock,
   // Code and terminal blocks
   JsonCodeBlockBlock, JsonTerminalBlock, JsonTerminalConnectBlock,
+  JsonChallengeBlock,
+  // Reusable
+  JsonSnippetRefBlock,
   // Decision tree
   JsonGrotGuideBlock, GrotGuideWelcome, GrotGuideCta, GrotGuideScreen,
   GrotGuideQuestionScreen, GrotGuideResultScreen, GrotGuideOption,

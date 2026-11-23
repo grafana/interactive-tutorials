@@ -20,6 +20,7 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 | Preflight a learning path (before PR) | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | [preflight-learning-path](.cursor/skills/preflight-learning-path/SKILL.md), [audit-guide](.cursor/skills/audit-guide/SKILL.md), [review-learning-path](.cursor/skills/review-learning-path/SKILL.md) |
 | Author a learning path (docs writers) | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | [learning-path workflows](.cursor/learning-path-workflows/workflows.md), [/create-learning-path](.cursor/commands/create-learning-path.md), [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) |
 | Decision trees & code smells | [.cursor/best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/](docs/) |
+| Author with Pathfinder tools (MCP, CLI, e2e runner) | [authoring-guide.mdc](.cursor/authoring-guide.mdc#pathfinder-authoring-tools) | [docs/pr-e2e-testing.md](docs/pr-e2e-testing.md), [MCP server](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/MCP_SERVER.md), [CLI tools](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) |
 | Create a new guide | [/new](.cursor/commands/new.md) command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate a guide | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
 | Make a guide recommended | [.cursor/how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
@@ -32,7 +33,7 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 | Document | Purpose |
 |----------|---------|
 | [docs/learning-path-authoring.md](docs/learning-path-authoring.md) | Docs-team entry point for interactive learning paths |
-| [docs/json-guide-reference.md](docs/json-guide-reference.md) | All 16 block types and their properties |
+| [docs/json-guide-reference.md](docs/json-guide-reference.md) | All 21 block types and their properties |
 | [docs/interactive-actions.md](docs/interactive-actions.md) | Action type behavior: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
 | [docs/requirements-reference.md](docs/requirements-reference.md) | All requirement types (fixed + parameterized) |
 | [docs/selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns and pseudo-selectors |
@@ -69,7 +70,9 @@ This repo's content is rendered by the Grafana Pathfinder app. Authoritative sch
 - `src/types/json-guide.schema.ts` — Zod schemas (current `schemaVersion: "1.1.0"`)
 - `src/types/requirements.types.ts` — requirement vocabulary
 - `src/interactive-engine/action-handlers/` — action handlers (button, formfill, navigate, hover, popout, guided)
-- `src/cli/utils/block-registry.ts` — `CLI_EXCLUDED_BLOCK_TYPES` (e.g., `grot-guide` is hand-authored in the block editor)
+- `src/cli/utils/block-registry.ts` — `CLI_EXCLUDED_BLOCK_TYPES` (`grot-guide` and `snippet-ref` are authored in the block editor, not the CLI)
+
+Discover the current schema and requirement vocabulary from the tools rather than from copied tables: `pathfinder-cli schema --list` and `pathfinder-cli requirements list`, or `pathfinder_get_schema` in the authoring MCP (`npx pathfinder-cli mcp`; see [Pathfinder authoring tools](.cursor/authoring-guide.mdc#pathfinder-authoring-tools)).
 
 If a doc here disagrees with the schema, the schema wins. Validate locally from **this repository's root**, pointing at a built `grafana-pathfinder-app` checkout — `.` must resolve to this repo:
 

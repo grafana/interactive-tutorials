@@ -177,7 +177,7 @@ Chain to a follow-up guide when the user lands on a new page.
 
 ## Lazy-Rendered Target Pattern
 
-Targets inside virtualized containers (tables, paginated lists, below-fold dashboard rows) need `lazyRender: true` so the engine scrolls them into view. Always wrap the step in a `guided` block — user-paced detection avoids racing the scroll.
+Targets inside virtualized containers (tables, paginated lists, below-fold dashboard rows) need `lazyRender: true` plus a verified `scrollContainer` so the engine scrolls them into view. Set both on the `interactive` block or `guided` step; choose `guided` only when the learner's own action must be observed. The example below uses `guided`.
 
 ```json
 {
@@ -214,4 +214,4 @@ Targets inside virtualized containers (tables, paginated lists, below-fold dashb
 | Supplementary links section | `markdown` with `---` divider + H3 heading |
 | Toggle docs panel mode | `popout` with `targetvalue: "sidebar"` or `"floating"` |
 | Chain to another guide after navigate | `navigate` + `openGuide: "bundled:..."` |
-| Target inside virtualized scroll | `guided` block with step `lazyRender: true` |
+| Target inside virtualized scroll | `lazyRender: true` + verified `scrollContainer` on the `interactive` block or `guided` step |

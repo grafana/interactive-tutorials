@@ -56,7 +56,7 @@ When you want to highlight the chart/visualization inside a panel rather than th
 }
 ```
 
-Key things: targets panel content `div` inside the header `section`, uses `>` child combinator, content is action-oriented. **This `interactive` pattern is only valid for above-fold panels.** For below-fold panels, wrap in a `guided` block with `lazyRender: true` (see Example G).
+Key things: targets panel content `div` inside the header `section`, uses `>` child combinator, content is action-oriented. **Without `lazyRender`, this pattern is only valid for above-fold panels.** For below-fold panels, add `lazyRender: true` and a verified `scrollContainer` to the `interactive` block, or use a `guided` block (see Example G).
 
 ### Example C: Variable dropdown interaction
 
@@ -136,9 +136,9 @@ When no single element can be targeted but the user needs context about the dash
 
 Key things: `markdown` for dashboard-wide concepts (shared data source, time range, refresh interval). Do not use `noop` for “click / enter / select …” instructions or as a selector fallback. Include a docs link when referencing a Grafana feature or query language.
 
-### Example G: Below-fold panel highlight (guided + lazyRender)
+### Example G: Below-fold panel highlight (lazyRender)
 
-**CRITICAL**: Any panel below the fold (`gridPos.y >= 8`) must use a `guided` block with `lazyRender: true`, even if it has a unique title (Green-grade selector). Grafana lazy-renders panels — below-fold panels do not exist in the DOM until the user scrolls. A plain `interactive` block will fail with "Element not found" because `exists-reftarget` waits but cannot scroll.
+**CRITICAL**: Any panel below the fold (`gridPos.y >= 8`) must set `lazyRender: true` plus a verified `scrollContainer` (on the `interactive` block or the `guided` step), even if it has a unique title (Green-grade selector). Grafana lazy-renders panels — below-fold panels do not exist in the DOM until the user scrolls. Without `lazyRender`, the step fails with "Element not found" because `exists-reftarget` waits but cannot scroll. Use `guided` only when the learner's own action must be observed; for read-only panel tours an `interactive` `highlight` with `doIt: false` and `lazyRender: true` is equally valid. The example below uses `guided`.
 
 ```json
 {
@@ -156,7 +156,7 @@ Key things: `markdown` for dashboard-wide concepts (shared data source, time ran
 }
 ```
 
-Key things: `guided` (not `interactive`) with `lazyRender: true` on the step, educational `content` and `tooltip` live on the outer `guided` block, `description` provides the user-facing instruction (always include it — the default "Click this element" is too vague), the selector is Green-grade (unique title) but `lazyRender` is still required because the panel is below the fold. **This pattern applies to ALL below-fold panels regardless of selector grade.**
+Key things: `lazyRender: true` on the step (the `guided` form shown; the `interactive` form takes the same two properties), educational `content` and `tooltip` live on the outer `guided` block, `description` provides the user-facing instruction (always include it — the default "Click this element" is too vague), the selector is Green-grade (unique title) but `lazyRender` is still required because the panel is below the fold. **This pattern applies to ALL below-fold panels regardless of selector grade.**
 
 ---
 
@@ -182,9 +182,9 @@ When building a section's sub-agent prompt, pass only the relevant examples:
 | Dashboard Element | Guide Action |
 | --------------------- | ------------------------------------------------------ |
 | Panel (above fold, view mode) | `interactive` `highlight` with `doIt: false`, explain what it shows |
-| Panel (below fold, view mode) | **`guided`** with `highlight` step + `lazyRender: true` (see Lazy Rendering section) |
+| Panel (below fold, view mode) | `highlight` with `lazyRender: true` + verified `scrollContainer` (`interactive`, or `guided` step; see Lazy Rendering section) |
 | Panel content (above fold) | `interactive` `highlight` targeting panel content div, `doIt: false` |
-| Panel content (below fold) | **`guided`** with `highlight` step targeting content div + `lazyRender: true` |
+| Panel content (below fold) | `highlight` targeting content div + `lazyRender: true` + verified `scrollContainer` |
 | Panel with hover data | `guided` with `hover` step, then highlight |
 | Variable dropdown | `highlight` with `doIt: false`, explain filter options |
 | Time picker | `highlight` or `button`, explain time range |
@@ -212,7 +212,7 @@ When building a section's sub-agent prompt, pass only the relevant examples:
 
 Grafana lazy-renders panels. Only panels in or near the viewport exist in the DOM. Panels below the fold (`gridPos.y >= 8`) do NOT exist in the DOM at page load. `exists-reftarget` only waits — **it cannot scroll the page**. Rules:
 
-- **ALL panels below the fold** (any selector grade): MUST use `guided` with `lazyRender: true` — a plain `interactive` block WILL fail with "Element not found"
+- **ALL panels below the fold** (any selector grade): MUST set `lazyRender: true` plus a verified `scrollContainer`, on an `interactive` block or a `guided` step — without it the step WILL fail with "Element not found"
 - Green selectors (unique title) above the fold: safe in plain `interactive` blocks
 - Yellow/Red selectors using `nth-match(N)` where N > 1: **unreliable even with lazyRender** for below-fold panels — prefer `markdown`
 - Below-fold panel example:
@@ -238,16 +238,16 @@ These items apply to every dashboard guide review. The Phase 4 review sub-agent 
 - Every section should have on-page:/d/{uid}/{slug}
 
 **Lazy rendering** (the #1 source of dashboard guide bugs):
-- ANY below-fold panel (gridPos.y >= 8) in a plain `interactive` block is a bug — even Green-grade selectors
+- ANY below-fold panel (gridPos.y >= 8) targeted without `lazyRender: true` is a bug — even Green-grade selectors
 - Grafana lazy-renders panels: below-fold panels do not exist in the DOM until scrolled into view
 - `exists-reftarget` only waits — it CANNOT scroll the page — so the element never appears
-- For EVERY interactive step that targets a below-fold panel: verify it uses a `guided` block with `lazyRender: true`
-- Fix plain `interactive` blocks targeting below-fold panels by converting to `guided` with `lazyRender: true`:
+- For EVERY interactive step that targets a below-fold panel: verify it sets `lazyRender: true` and a verified `scrollContainer` (`interactive` block or `guided` step)
+- Fix a below-fold target that lacks it by adding both properties; keep the block type unless the learner's own action must be observed:
   Before: `{"type":"interactive","action":"highlight","reftarget":"...","doIt":false,"content":"...","tooltip":"..."}`
-  After:  `{"type":"guided","content":"...","tooltip":"...","steps":[{"action":"highlight","reftarget":"...","lazyRender":true,"description":"Click inside the highlighted area"}]}`
+  After:  `{"type":"interactive","action":"highlight","reftarget":"...","doIt":false,"lazyRender":true,"scrollContainer":"#pageContent","content":"...","tooltip":"..."}`
 - nth-match(1) on an above-fold untitled panel is acceptable in an `interactive` block
-- nth-match(N) where N > 1 in a plain `interactive` block is ALWAYS a bug — it will fail due to lazy rendering
-- Fix nth-match issues by converting to `guided` with `lazyRender: true`, or replacing with `markdown`
+- nth-match(N) where N > 1 without `lazyRender: true` is ALWAYS a bug — it will fail due to lazy rendering
+- Fix nth-match issues by adding `lazyRender: true` (and verifying the container), or replacing with `markdown`
 
 **Step budget and section viability**:
 - Verify each section has 3–8 interactive steps
