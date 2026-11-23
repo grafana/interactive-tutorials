@@ -175,7 +175,7 @@ jobs:
           #   guides          — legacy staging dir created earlier in this job
           #   packages        — the staging dir we are building right now
           #   courses         — published separately as bucket/courses/
-          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages courses"
+          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages courses spotlight"
 
           for dir in */; do
             dir="${dir%/}"
@@ -212,6 +212,10 @@ jobs:
           # repository.json must live inside packages/ so "path" entries
           # resolve as siblings on the CDN.
           node pathfinder-app/dist/cli/cli/index.js build-repository packages/ -o packages/repository.json
+
+          mkdir -p packages/spotlight
+          find spotlight -maxdepth 1 -type f -name '*.json' -exec cp {} packages/spotlight/ \;
+          python3 .github/scripts/build_spotlights.py spotlight packages/repository.json packages/spotlights.json
 
           echo "Guide directories staged under packages/:"
           find packages -maxdepth 1 -mindepth 1 -type d | sort

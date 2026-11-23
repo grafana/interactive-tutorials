@@ -318,6 +318,12 @@ jobs:
         echo ""
         echo "📦 repository.json generated successfully"
 
+    - name: Test spotlight aggregation
+      run: python3 -m unittest discover -s .github/scripts -p test_build_spotlights.py
+
+    - name: Validate team spotlights
+      run: python3 .github/scripts/build_spotlights.py spotlight repository.json spotlights.json
+
     - name: Build dependency graph
       continue-on-error: true
       run: |
