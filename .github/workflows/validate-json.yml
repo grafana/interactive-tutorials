@@ -87,10 +87,22 @@ jobs:
     # bumps the pin is validated with the CLI it proposes.
     - name: Read pinned pathfinder-app ref
       id: pin
+      # Keep in sync with the "Read pinned pathfinder-app ref" step in
+      # deploy.yml (resolve-app-ref job), which carries the same parse and
+      # validation.
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         ref="$(grep -Ev '^[[:space:]]*(#|$)' .github/pathfinder-app-ref || true)"
         if [[ ! "$ref" =~ ^[0-9a-f]{40}$ ]]; then
           echo "::error file=.github/pathfinder-app-ref::expected exactly one full 40-character commit SHA"
+          exit 1
+        fi
+        # checkout can also fetch a commit that exists only in a fork, so
+        # require the SHA to be on pathfinder-app main.
+        status="$(gh api "repos/grafana/grafana-pathfinder-app/compare/${ref}...main" --jq .status)" || status=missing
+        if [[ "$status" != "ahead" && "$status" != "identical" ]]; then
+          echo "::error file=.github/pathfinder-app-ref::$ref is not on grafana-pathfinder-app main ($status)"
           exit 1
         fi
         echo "pathfinder-app ref: $ref"
