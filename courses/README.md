@@ -73,12 +73,5 @@ Trigger types:
 
 ## Schema versioning
 
-`schemaVersion` is bumped only on **breaking** changes. Additive fields
-are forward-compatible because plugin-side parsing uses Zod `.loose()`.
-
-The authoritative schema lives in the plugin repo:
-[`grafana-pathfinder-app/src/types/courses.schema.ts`](https://github.com/grafana/grafana-pathfinder-app/blob/main/src/types/courses.schema.ts).
-Breaking schema changes must land in `interactive-tutorials` **before**
-the plugin release that requires the new shape, or the CDN will start
-serving content that the plugin rejects (and users will fall back to the
-bundled offline course).
+Bump `schemaVersion` in `course.json` and `badges.json` only on **breaking**
+changes to the file shape. Additive fields do not need a version bump.
