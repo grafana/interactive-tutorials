@@ -1,10 +1,10 @@
 {
   "id": "read-dashboard-panels-lj-preview",
-  "title": "What a dashboard is for",
+  "title": "What makes up a dashboard (preview)",
   "blocks": [
     {
       "type": "markdown",
-      "content": "Explore dashboards on Grafana Play to see whether a dashboard stays focused on its question and is easy to interpret, where a panel's data comes from, what its unit tells you, and which measurements its panels show."
+      "content": "Explore dashboards on Grafana Play to see whether a dashboard stays focused on its question, where a panel's data comes from, what unit its values are measured in, and how a dashboard's controls change the data its panels display."
     },
     {
       "type": "section",
@@ -27,7 +27,7 @@
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Find the **Memory / CPU** panel. The title says what the panel covers, and the values carry a unit, bytes, so the viewer doesn't have to think about it."
+          "content": "Find the **Memory / CPU** panel. The title says what the panel covers, and the values carry a unit, bytes."
         },
         {
           "type": "interactive",
@@ -105,7 +105,7 @@
     },
     {
       "type": "markdown",
-      "content": "Four panels, one title, no descriptions. A viewer must figure out what each one represents and how they differ. That is cognitive load the dashboard adds instead of reducing.\n\nA focused version would keep **Memory / CPU**, **Memory**, **server requests**, and **logins**, and drop the **Google hits** repeats."
+      "content": "Four panels, one title, no descriptions. A viewer must figure out what each one represents and how they differ.\n\nA focused version would keep **Memory / CPU**, **Memory**, **server requests**, and **logins**, and drop the **Google hits** repeats."
     },
     {
       "type": "markdown",
@@ -227,186 +227,78 @@
     },
     {
       "type": "markdown",
-      "content": "Explore the Memory gauge."
+      "content": "Explore a dashboard's controls to see how they change the data its panels display."
     },
     {
       "type": "section",
-      "id": "inspect-unit",
-      "title": "Connect the setting to the label",
+      "id": "dashboard-controls",
+      "title": "Time range, refresh, and filters",
       "blocks": [
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/d/3SWXxreWk/grafana-dashboard?from=now-1h&to=now&timezone=browser",
-          "content": "Open the **Grafana Dashboard**. Grafana may ask about unsaved changes even though you changed nothing. Select **Discard**."
+          "reftarget": "/d/canvvlh/filter-variables?from=now-6h&to=now&timezone=browser",
+          "content": "Open the **Filter variables** dashboard. Grafana may ask about unsaved changes even though you changed nothing. Select **Discard**."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-22']",
+          "reftarget": "[data-viz-panel-key='panel-1']",
           "requirements": [
-            "on-page:/d/3SWXxreWk",
+            "on-page:/d/canvvlh",
             "exists-reftarget"
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Find the **Memory** gauge and notice the B suffix beside its value."
-        },
-        {
-          "type": "guided",
-          "content": "Open the panel for editing.",
-          "steps": [
-            {
-              "action": "highlight",
-              "reftarget": "div[data-viz-panel-key='panel-22'] button[data-testid='data-testid Panel menu Memory']",
-              "description": "Click here to open the panel menu.",
-              "lazyRender": true
-            },
-            {
-              "action": "highlight",
-              "reftarget": "a[data-testid='data-testid Panel menu item Edit']",
-              "description": "Click Edit to open the panel editor.",
-              "lazyRender": true
-            }
-          ],
-          "completeEarly": true
+          "content": "Find the **HTTP requests** panel. The controls on this dashboard change the data this panel displays."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Options group Standard options toggle']",
+          "reftarget": "[data-testid='data-testid TimePicker Open Button']",
           "requirements": [
-            "on-page:/d/3SWXxreWk",
+            "on-page:/d/canvvlh",
             "exists-reftarget"
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Expand **Standard options** if it's collapsed."
+          "content": "Focus on the time picker. It shows the time range currently displayed in the dashboard, **Last 6 hours**.\n\nLast 6 hours is a relative time range, which steps back from the current date and time. You can change it to another relative time range, or to an absolute time range between two fixed dates and times."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-testid='data-testid Standard options Unit field property editor']",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
           "requirements": [
-            "on-page:/d/3SWXxreWk",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "content": "Find **Unit** and read its **bytes(IEC)** setting.\n\nThe **Memory** panel formats its numeric value as bytes. B means bytes. Larger values can use units such as KiB or MiB. Unit formatting changes the display, not the query's data, and doesn't change timestamps into byte values.\n\nSwitching the unit to percent wouldn't turn these byte values into a percentage of memory. The numbers would stay the same and be labeled incorrectly. The unit has to describe what the query returns."
-        }
-      ]
-    },
-    {
-      "type": "markdown",
-      "content": "Explore a dashboard to see which of its panels measure the machine's resources, the USE method, and which measure the service as its users experience it, the RED method."
-    },
-    {
-      "type": "section",
-      "id": "match-measurements",
-      "title": "Resource and service measurements",
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/000000003/sample-website-dashboard?from=now-1h&to=now&timezone=browser",
-          "content": "Open the **Sample Website Dashboard**. Grafana may ask about unsaved changes even though you changed nothing. Select **Discard**."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-28']",
-          "requirements": [
-            "on-page:/d/000000003",
+            "on-page:/d/canvvlh",
             "exists-reftarget"
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Find the **Memory / CPU** panel."
+          "content": "Notice **Refresh dashboard**. It runs every query on the dashboard and refreshes the visualizations."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-30']",
+          "reftarget": "[data-testid='data-testid RefreshPicker interval button']",
           "requirements": [
-            "on-page:/d/000000003",
+            "on-page:/d/canvvlh",
             "exists-reftarget"
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Focus on the **Memory** gauge. Both measure a machine's resources, so they belong to the USE method. Both show how much of the resource is in use: utilization. USE measurements report on the causes of issues."
+          "content": "View the auto refresh menu. You can select an interval here to refresh the dashboard regularly. Auto refresh is turned off on this dashboard."
         },
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-34']",
+          "reftarget": "input[data-testid='data-testid ad hoc filters combobox filter input']",
           "requirements": [
-            "on-page:/d/000000003",
+            "on-page:/d/canvvlh",
             "exists-reftarget"
           ],
           "doIt": false,
           "lazyRender": true,
-          "content": "Find the **server requests** panel."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-5']",
-          "requirements": [
-            "on-page:/d/000000003",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "Focus on the **client side full page load** panel.\n\nBoth measure the service as its users experience it, so they belong to the RED method. Requests over time is the rate. Page load time is the duration. Because RED reports symptoms rather than causes, it's the method to alert on.\n\nRED has a third measurement, errors. There is no panel that counts failing requests, so this dashboard can't tell you whether requests are failing.\n\nThe four golden signals name the same three service measurements as RED, as traffic, errors, and latency, and add saturation: how close a resource is to its capacity. No panel here shows that either.\n\nThe remaining panels, **logins**, **Google hits**, **Support calls**, and **Sign ups**, are business measurements. Neither method covers them."
-        }
-      ]
-    },
-    {
-      "type": "section",
-      "id": "match-red-measurements",
-      "title": "All three RED measurements",
-      "blocks": [
-        {
-          "type": "interactive",
-          "action": "navigate",
-          "reftarget": "/d/appenv-svc-account/account-service?from=now-6h&to=now&timezone=browser",
-          "content": "Open the **Account Service** dashboard."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-5']",
-          "requirements": [
-            "on-page:/d/appenv-svc-account",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "Find the **Request Rate** panel."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-6']",
-          "requirements": [
-            "on-page:/d/appenv-svc-account",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "Focus on the **Error Ratio** panel."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-viz-panel-key='panel-7']",
-          "requirements": [
-            "on-page:/d/appenv-svc-account",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "lazyRender": true,
-          "content": "Focus on the **Latency P50 / P95 / P99** panel.\n\nThese three panels measure the service as its users experience it. Request Rate is the rate, Error Ratio is the errors, and Latency is the duration, so together they cover the RED method.\n\nNo panel here shows saturation: how close a resource is to its capacity."
+          "content": "Find the **filter** control. A filter narrows the data displayed in a dashboard, and Grafana applies it to all panels on the dashboard.\n\nA filter pairs a label with a value, which is why the control reads **+ label = value**. A label adds context to the data, such as where a measurement was taken.\n\nVariables and filters appear only on a dashboard that includes them. This dashboard includes a filter and no variables."
         }
       ]
     }
