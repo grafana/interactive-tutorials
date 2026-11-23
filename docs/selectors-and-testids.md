@@ -290,7 +290,7 @@ Some UI elements only appear when hovering over their parent containers (e.g., T
 
 Some Grafana surfaces virtualize their content — long tables, dashboard rows below the fold, paginated lists. The target element does not exist in the DOM until the user (or the engine) scrolls it into view. `exists-reftarget` waits, but it cannot scroll on its own.
 
-Set `lazyRender: true` on the step and optionally `scrollContainer` (CSS selector of the scrolling parent, defaults to `.scrollbar-view`) to let the engine scroll the target into view before highlighting or acting.
+Set `lazyRender: true` on the `interactive` block or `guided` step and optionally `scrollContainer` (CSS selector of the scrolling parent, defaults to `.scrollbar-view`) to let the engine scroll the target into view before highlighting or acting.
 
 ```json
 {
@@ -308,7 +308,7 @@ Set `lazyRender: true` on the step and optionally `scrollContainer` (CSS selecto
 }
 ```
 
-Use a `guided` block (not a plain `interactive`) for these targets — the user-paced detection avoids racing the scroll. See [JSON Guide Reference — Step Structure](json-guide-reference.md#step-structure).
+Both a standalone `interactive` block and a `guided` step accept these two properties. Choose `guided` only when the learner's own action must be observed, not to get scrolling. Verify the scroll container first; see [Guided Interactions — Lazy targets](guided-interactions.md#lazy-targets).
 
 ---
 

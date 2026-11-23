@@ -48,7 +48,7 @@ def grade_element(element: dict) -> dict:
       selector         str   -- best CSS selector string
       recommended_action str -- "formfill" | "button" | "highlight" | "noop"
       do_it_allowed    bool  -- whether doIt: true is appropriate
-      requires_lazy_render bool -- whether guided+lazyRender is required
+      requires_lazy_render bool -- whether lazyRender (+ a verified scrollContainer) is required
       grade_reason     str   -- human-readable explanation
     """
     # Normalize field names (support both camelCase and snake_case keys)

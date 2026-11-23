@@ -220,7 +220,7 @@ You are the **Structural Audit** phase of the audit-guide skill. Read the follow
 - Critical rule 18 (`schemaVersion` is optional but if set must be `"1.1.0"`)
 - Critical rule 19 (`popout` requires `targetvalue` of exactly `"sidebar"` or `"floating"`)
 - Critical rule 20 (`navigate` actions chaining to another guide should use `openGuide` not `?doc=`)
-- Critical rule 21 (virtualised targets need `guided` + `lazyRender: true`) — heuristic: any step targeting a selector containing `[data-cy='wb-list-item']`, `tr[data-row-id`, table-row selectors, or `:contains(` text-match patterns in a list context is a candidate. Flag plain `interactive` blocks with such targets.
+- Critical rule 21 (unmounted targets need `lazyRender: true` plus a verified `scrollContainer`, on an `interactive` block or a `guided` step) — heuristic: any step targeting a selector containing `[data-cy='wb-list-item']`, `tr[data-row-id`, table-row selectors, or `:contains(` text-match patterns in a list context is a candidate. Flag such targets that lack `lazyRender`; do not flag a block type.
 
 **Output: a structured markdown report at `{guide_dir}/assets/structural-report.md`** with the standard frontmatter disclaimer and these sections:
 

@@ -12,7 +12,7 @@ These resolve cleanly in Phase 2:
 
 - "Add a markdown block at the end that says 'Thanks for trying this!'"
 - "Add a Loki section after the Prometheus one. It should cover installing the Loki data source, writing a basic LogQL query, and viewing logs in Explore."
-- "Add `lazyRender: true` to the step at `blocks[3].blocks[2]` and wrap it in a `guided` block."
+- "Add `lazyRender: true` and a verified `scrollContainer` to the step at `blocks[3].blocks[2]`."
 - "Swap `has-datasource:prometheus` for `has-datasource:loki` in the section with id `query-editor`."
 - "Remove the legacy `?doc=` query param from the navigate step at `blocks[5]` and replace it with `openGuide: \"bundled:next-steps\"`."
 

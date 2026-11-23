@@ -200,6 +200,24 @@ For manual UI instructions without a working highlight, use markdown:
 
 ---
 
+## Toggle state (`targetstate`)
+
+Add `targetstate` to a `button` or `highlight` step on a toggle (an expander, switch, or tab) so the step reads the control and clicks only when its state differs. A re-run then never toggles it back. Use `"true"` or `"false"` to auto-detect the common state attributes (`aria-expanded`, `aria-pressed`, `checked`, `aria-checked`, `aria-selected`), or `"<attribute>:<value>"` when the control exposes state another way.
+
+```json
+{
+  "type": "interactive",
+  "action": "button",
+  "reftarget": "Advanced settings",
+  "targetstate": "aria-expanded:true",
+  "content": "Expand **Advanced settings**."
+}
+```
+
+Write the field in lowercase (`targetstate`); the runtime parser also tolerates `targetState`, but author tooling and validation use the lowercase form.
+
+---
+
 ## Show-Only Mode
 
 Use `doIt: false` to create educational steps that only highlight elements without requiring user action:
