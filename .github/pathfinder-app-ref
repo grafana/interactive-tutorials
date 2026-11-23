@@ -23,6 +23,7 @@
 #
 #     git clone https://github.com/grafana/grafana-pathfinder-app pathfinder-app
 #     git -C pathfinder-app checkout <new SHA>
+#     git -C pathfinder-app merge-base --is-ancestor <new SHA> origin/main
 #     (cd pathfinder-app && npm ci && npm run build:cli)
 #     find . -name manifest.json -type f -not -path "./pathfinder-app/*" \
 #       -not -path "./shared/*" -not -path "./.git/*" -print0 \
@@ -31,8 +32,12 @@
 #     node pathfinder-app/dist/cli/cli/index.js build-repository . \
 #       --exclude pathfinder-app --exclude shared -o /tmp/repository.json
 #
-#   Both commands must exit 0. Do not commit /tmp/repository.json or the
-#   pathfinder-app checkout. After the merge, the next push to main deploys with
-#   the new SHA. To check deploy.yml before the merge, a maintainer can run it
-#   with workflow_dispatch from the pull request branch to the dev environment.
+#   The merge-base check must exit 0: the new SHA must be on
+#   grafana/grafana-pathfinder-app main, because checkout can also fetch a
+#   commit that exists only in a fork of the app. The validate and
+#   build-repository commands must also exit 0. Do not commit
+#   /tmp/repository.json or the pathfinder-app checkout. After the merge, the
+#   next push to main deploys with the new SHA. To check deploy.yml before the
+#   merge, a maintainer can run it with workflow_dispatch from the pull request
+#   branch to the dev environment.
 43185a5f79f986b23f9c73d006f7b75660030155
