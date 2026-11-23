@@ -30,7 +30,7 @@
           "steps": [
             {
               "action": "formfill",
-              "reftarget": "input[aria-label=\"Search checks\"]",
+              "reftarget": "[data-testid='checks filters search']",
               "description": "Enter the check name, then press Tab to apply your search.",
               "targetvalue": "^.+$",
               "validateInput": true
@@ -42,7 +42,7 @@
           "type": "interactive",
           "id": "sm-slo-open-first-check",
           "action": "highlight",
-          "reftarget": "a[href*=\"/a/grafana-synthetic-monitoring-app/checks/\"]:is([href$=\"/dashboard\"], [aria-label=\"Go to dashboard\"]):nth-match(1)",
+          "reftarget": "[data-testid='checks list-item dashboard-link']:nth-match(1)",
           "content": "Open the first check in the current results.",
           "tooltip": "Open the dashboard for the first check in the current results.",
           "showMe": false,
@@ -73,7 +73,7 @@
           "conditions": [
             "exists-reftarget"
           ],
-          "reftarget": "main button:contains(\" SLO\")",
+          "reftarget": "[data-testid='slo-integration open-button'][data-slo-count]:not([data-slo-count='0'])",
           "whenTrueSectionConfig": {
             "title": "2. Review your existing SLO",
             "requirements": [
@@ -97,12 +97,12 @@
               "steps": [
                 {
                   "action": "button",
-                  "reftarget": "main button:contains(\" SLO\")",
+                  "reftarget": "[data-testid='slo-integration open-button'][data-slo-count]:not([data-slo-count='0'])",
                   "description": "Click the highlighted SLO count to open the existing objective. Review its target and time window."
                 },
                 {
                   "action": "highlight",
-                  "reftarget": "[role=\"dialog\"] a:contains(\"View dashboard\")",
+                  "reftarget": "[data-testid='slo-integration dashboard-link']",
                   "description": "Click **View dashboard** to open the linked SLO dashboard and inspect its measured performance against the target."
                 }
               ]
@@ -120,22 +120,22 @@
               "steps": [
                 {
                   "action": "button",
-                  "reftarget": "SLOs",
+                  "reftarget": "[data-testid='slo-integration open-button'][data-slo-count='0']",
                   "description": "Click **SLOs** to review a reachability objective for this check."
                 },
                 {
                   "action": "hover",
-                  "reftarget": "[role=\"dialog\"] [aria-label=\"selector\"]",
+                  "reftarget": "[data-testid='slo-integration drawer'] [aria-label='selector']",
                   "description": "The prefilled query selects this check by job and target. Its service level indicator (SLI) is successful probe observations divided by total observations. Reachability falls when any probe fails; Synthetic Monitoring uptime falls only when all probes fail together. When you are ready, **hover over the highlighted query** to move to the next explanation."
                 },
                 {
                   "action": "hover",
-                  "reftarget": "[role=\"dialog\"] h4:contains(\"Target and error budget\")",
+                  "reftarget": "[data-testid='slo-integration drawer'] h4:text('Target and error budget')",
                   "description": "An SLO is your reliability target over a time window. For example, 99.5% over 28 days allows 0.5% failed observations. Review the displayed target and window against your service needs; this allowance is different from the measured budget remaining after failures. When you are ready, **hover over the highlighted Target and error budget heading** to continue."
                 },
                 {
                   "action": "button",
-                  "reftarget": "Create SLO",
+                  "reftarget": "[data-testid='slo-integration drawer'] button:has([data-testid='icon-save'])",
                   "description": "Review the name, target, window and alert settings, then click **Create SLO** when they suit your service. Alert rules are created only if enabled. Wait for the drawer to close and **1 SLO** to appear; if saving fails, resolve the error before continuing."
                 }
               ],
