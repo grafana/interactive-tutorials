@@ -52,6 +52,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Make a guide recommended | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
 | Write/edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Understand the system | [system-architecture.mdc](.cursor/system-architecture.mdc) | `docs/` |
+| Generate / migrate from source | [autogen-guide](.cursor/skills/autogen-guide/SKILL.md), [autogen-guide-dashboard](.cursor/skills/autogen-guide-dashboard/SKILL.md), [migrate-guide](.cursor/skills/migrate-guide/SKILL.md) | [shared/critical-rules.md](.cursor/skills/shared/critical-rules.md) |
 
 ## Reference Documentation (`docs/`)
 
@@ -59,10 +60,10 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 |----------|---------|
 | [learning-path-authoring.md](docs/learning-path-authoring.md) | Docs-team entry point for interactive learning paths |
 | [json-guide-reference.md](docs/json-guide-reference.md) | All 21 block types, properties, and guide structure |
-| [interactive-actions.md](docs/interactive-actions.md) | Action type behavior and button controls |
-| [requirements-reference.md](docs/requirements-reference.md) | All requirement types |
-| [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns |
-| [guided-interactions.md](docs/guided-interactions.md) | Detailed guided block documentation |
+| [interactive-actions.md](docs/interactive-actions.md) | Action type behavior: `highlight`, `button`, `formfill`, `navigate`, `hover`, `noop`, `popout` |
+| [requirements-reference.md](docs/requirements-reference.md) | All requirement types (fixed + parameterized) |
+| [selectors-and-testids.md](docs/selectors-and-testids.md) | Stable selector patterns and pseudo-selectors |
+| [guided-interactions.md](docs/guided-interactions.md) | Guided block deep dive |
 | [manifest-reference.md](docs/manifest-reference.md) | Manifest field reference and derivation rules |
 | [website-yaml-reference.md](docs/website-yaml-reference.md) | Learning Hub metadata in `website.yaml` |
 
@@ -91,6 +92,38 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | [/build-interactive-lj](.cursor/commands/build-interactive-lj.md) | Convert an existing website learning path to an interactive package |
 | [/preflight-learning-path](.cursor/commands/preflight-learning-path.md) | Author pre-PR self-review for a learning path (mirrors review checks + shared claim-check, then optional fixes) |
 | [/review-learning-path-pr](.cursor/commands/review-learning-path-pr.md) | Full learning path PR review (audit, consistency, Playwright, Pathfinder, GitHub submit) |
+
+## Skills
+
+Multi-phase workflow skills with their own `SKILL.md` files. Skills write intermediate artifacts to `{output_dir}/assets/`; see [.cursor/skills/skill-memory.md](.cursor/skills/skill-memory.md) for the shared convention.
+
+- [.cursor/skills/autogen-guide/](.cursor/skills/autogen-guide/SKILL.md) — generate a guide from React/TypeScript source
+- [.cursor/skills/autogen-guide-dashboard/](.cursor/skills/autogen-guide-dashboard/SKILL.md) — generate from a Grafana dashboard JSON
+- [.cursor/skills/audit-guide/](.cursor/skills/audit-guide/SKILL.md) — comprehensive read-only audit (structural + semantic + adversarial) producing one prioritised report
+- [.cursor/skills/update-guide/](.cursor/skills/update-guide/SKILL.md) — modify an existing guide with a planning checkpoint, review pass, and CLI-validated rollback
+- [.cursor/skills/migrate-guide/](.cursor/skills/migrate-guide/SKILL.md) — migrate a guide or learning path to the Pathfinder package format
+- [.cursor/skills/review-learning-path/](.cursor/skills/review-learning-path/SKILL.md) — human-guided learning path PR review (five-phase coach)
+- [.cursor/skills/preflight-learning-path/](.cursor/skills/preflight-learning-path/SKILL.md) — author pre-PR self-review for a learning path
+
+## Pathfinder source
+
+This repo's content is rendered by the Grafana Pathfinder app. Authoritative schemas, action handlers, and block parsers live in [`grafana-pathfinder-app`](https://github.com/grafana/grafana-pathfinder-app):
+
+- `src/types/json-guide.types.ts` — TypeScript types for all blocks
+- `src/types/json-guide.schema.ts` — Zod schemas (current `schemaVersion: "1.1.0"`)
+- `src/types/requirements.types.ts` — requirement vocabulary
+- `src/interactive-engine/action-handlers/` — action handlers (button, formfill, navigate, hover, popout, guided)
+- `src/cli/utils/block-registry.ts` — `CLI_EXCLUDED_BLOCK_TYPES` (`grot-guide` and `snippet-ref` are authored in the block editor, not the CLI)
+
+Discover the current schema and requirement vocabulary from the tools rather than from copied tables: `pathfinder-cli schema --list` and `pathfinder-cli requirements list`, or `pathfinder_get_schema` in the authoring MCP (`npx pathfinder-cli mcp`; see [Pathfinder authoring tools](.cursor/authoring-guide.mdc#pathfinder-authoring-tools)).
+
+If a doc here disagrees with the schema, the schema wins. Validate locally from **this repository's root**, pointing at a built `grafana-pathfinder-app` checkout — `.` must resolve to this repo:
+
+```bash
+node {pathfinder-app}/dist/cli/cli/index.js validate --packages .
+```
+
+This form is depth-1 only: it reaches the 128 immediate children that hold a `content.json`, not the 665 packages in the tree, so a nested milestone package is skipped in silence. Run it from the wrong root and it fails loudly (`No package directories found`) rather than false-passing; it is `build-stats` and `build-repository` that discover recursively and would quietly operate on Pathfinder's own manifests. The repo-wide enumeration loop and the working directory rules for those two commands live in [docs/manifest-reference.md](docs/manifest-reference.md#validation).
 
 ## Committing and pushing
 

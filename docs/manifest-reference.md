@@ -555,7 +555,7 @@ echo "passed: $PASSED  failed: $FAILED"
 
 Two details in that snippet are load-bearing. The counters must be fed by process substitution (`done < <(find ...)`), not by piping `find` into `while`: a pipe runs the loop body in a subshell, so the counters are discarded when it exits and the pipeline reports only the last iteration's status — a failure on package 200 of 665 would scroll away under 400-odd later `✅ PASS` trailers and still leave `$?` at 0. And the closing `[ "$FAILED" -eq 0 ]` is what makes the run's exit status reflect the whole tree; it is spelled as a test rather than `exit 1` so that pasting the block into an interactive shell does not close it.
 
-The `--packages` form — the one [CLAUDE.md](../CLAUDE.md) documents — is depth-1 only: `validatePackageTree` reads the root once and validates only immediate children containing `content.json`, which from this repository's root is 128 of the 665 packages. Nested milestone packages (`automate-k6-cicd-lj/<milestone>/`, for example) are skipped without a word, so do not rely on it after editing one:
+The `--packages` form — the one [AGENTS.md](../AGENTS.md#pathfinder-source) documents — is depth-1 only: `validatePackageTree` reads the root once and validates only immediate children containing `content.json`, which from this repository's root is 128 of the 665 packages. Nested milestone packages (`automate-k6-cicd-lj/<milestone>/`, for example) are skipped without a word, so do not rely on it after editing one:
 
 ```bash
 # cwd: the interactive-tutorials repository root, with grafana-pathfinder-app
