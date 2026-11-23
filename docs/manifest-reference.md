@@ -507,7 +507,7 @@ Website learning path markdown location: `<website-repo>/content/docs/learning-p
 
 ## Validation
 
-Build the CLI from Pathfinder's `main` branch, as specified in `.github/workflows/validate-json.yml` and `.github/workflows/deploy.yml`.
+Build the CLI from the Pathfinder commit pinned in [`.github/pathfinder-app-ref`](../.github/pathfinder-app-ref), which `.github/workflows/validate-json.yml` and `.github/workflows/deploy.yml` both read. That file also documents how to bump the pin.
 
 Validate individual packages with this CLI. It rejects missing prerequisite IDs or labels, whitespace-only values, duplicate IDs, and unsupported `format` values.
 
