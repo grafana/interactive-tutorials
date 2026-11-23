@@ -23,4 +23,4 @@ an object retires it after CDN publication and the next recommender reload.
 
 PR validation checks package IDs and page ownership. The deploy job combines
 the reviewed files into `packages/spotlights.json` beside `repository.json`.
-Individual team JSON files are also published under `packages/spotlight/`.
+Only the aggregate is published. See the [spotlight reference](../docs/spotlight-reference.md) for ownership, validation and the CDN contract.

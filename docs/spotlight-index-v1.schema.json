@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Page spotlight index v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "spotlights"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "spotlights": {
+      "$ref": "#/$defs/teamFile"
+    }
+  },
+  "$defs": {
+    "teamFile": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/spotlight"
+      }
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^/",
+      "maxLength": 2048
+    },
+    "date": {
+      "anyOf": [
+        {
+          "const": ""
+        },
+        {
+          "type": "string",
+          "format": "date"
+        }
+      ]
+    },
+    "spotlight": {
+      "type": "object",
+      "required": [
+        "path",
+        "heading",
+        "guides"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "additionalPaths": {
+          "type": "array",
+          "maxItems": 11,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/path"
+          }
+        },
+        "heading": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "guides": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "schedule": {
+          "type": "object",
+          "properties": {
+            "startDate": {
+              "$ref": "#/$defs/date"
+            },
+            "endDate": {
+              "$ref": "#/$defs/date"
+            }
+          }
+        }
+      }
+    }
+  }
+}

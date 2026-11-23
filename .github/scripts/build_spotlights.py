@@ -4,8 +4,14 @@ import json
 import posixpath
 import re
 import unicodedata
-from datetime import date
+import warnings
+from datetime import date, datetime, timezone
 from pathlib import Path
+
+
+# Keep aligned with cmd/recommender/spotlights.go in grafana-recommender.
+TEST_CATEGORY = "testing"
+TEST_PACKAGES = {"json-guide-demo", "e2e-framework-test"}
 
 
 def validate(item, catalog, members, owners, source):
@@ -31,7 +37,7 @@ def validate(item, catalog, members, owners, source):
         raise ValueError("expected 1 to 12 distinct guide or learning path IDs")
     for guide in guides:
         entry = catalog.get(guide, {})
-        if entry.get("type") not in {"guide", "journey", "path"} or guide in members or entry.get("category") == "testing" or guide in {"json-guide-demo", "e2e-framework-test"}:
+        if entry.get("type") not in {"guide", "journey", "path"} or guide in members or entry.get("category") == TEST_CATEGORY or guide in TEST_PACKAGES:
             raise ValueError(f"{guide!r} is not a standalone guide or learning path")
     window = item.get("schedule", {})
     if not isinstance(window, dict) or window.keys() - {"startDate", "endDate"}:
@@ -41,6 +47,8 @@ def validate(item, catalog, members, owners, source):
             raise ValueError("dates must use YYYY-MM-DD")
     if window.get("endDate") and window["endDate"] < window.get("startDate", ""):
         raise ValueError("end date precedes start date")
+    if window.get("endDate") and window["endDate"] < datetime.now(timezone.utc).date().isoformat():
+        warnings.warn(f"{source}: expired spotlight on {item['path']} still reserves its pages", stacklevel=2)
 
 
 def build(directory, catalog):
@@ -68,7 +76,7 @@ def build(directory, catalog):
                 result.append(item)
         except ValueError as err:
             raise ValueError(f"{source}: {err}") from err
-    return result
+    return {"schemaVersion": 1, "spotlights": result}
 
 
 if __name__ == "__main__":

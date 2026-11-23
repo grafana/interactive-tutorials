@@ -22,6 +22,7 @@ When a doc here disagrees with the upstream schema, the schema wins. Authoritati
 | Decision trees & code smells | [.cursor/best-practices.mdc](.cursor/best-practices.mdc) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [docs/](docs/) |
 | Create a new guide | [/new](.cursor/commands/new.md) command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate a guide | [/lint](.cursor/commands/lint.md), [/check](.cursor/commands/check.md), [/attack](.cursor/commands/attack.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
+| Feature guides on specific Grafana pages | [Page spotlight reference](docs/spotlight-reference.md) | `spotlight/<team>.json` |
 | Make a guide recommended | [.cursor/how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
 | Write / edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Understand the system | [.cursor/system-architecture.mdc](.cursor/system-architecture.mdc) | [docs/](docs/) |
