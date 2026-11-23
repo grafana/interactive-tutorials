@@ -82,11 +82,25 @@ jobs:
 
         echo "✅ All top-level -lj/-lp directories include content.json and website.yaml"
 
+    # The app commit is pinned in .github/pathfinder-app-ref, which also documents
+    # the bump procedure. It is read from this checkout, so a pull request that
+    # bumps the pin is validated with the CLI it proposes.
+    - name: Read pinned pathfinder-app ref
+      id: pin
+      run: |
+        ref="$(grep -Ev '^[[:space:]]*(#|$)' .github/pathfinder-app-ref || true)"
+        if [[ ! "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+          echo "::error file=.github/pathfinder-app-ref::expected exactly one full 40-character commit SHA"
+          exit 1
+        fi
+        echo "pathfinder-app ref: $ref"
+        echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
     - name: Checkout pathfinder-app CLI
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       with:
         repository: grafana/grafana-pathfinder-app
-        ref: main
+        ref: ${{ steps.pin.outputs.ref }}
         path: pathfinder-app
         persist-credentials: false
 
