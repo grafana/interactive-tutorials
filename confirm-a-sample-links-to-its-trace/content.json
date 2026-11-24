@@ -28,8 +28,8 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/explore?schemaVersion=1&panes=%7B%22one%22%3A%7B%22datasource%22%3A%22grafanacloud-logs%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22%7Bjob%3D~%5C%22.%2B%5C%22%7D%20%7C%3D%20%60op%3D%5C%22query_sample%5C%22%60%22%2C%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22grafanacloud-logs%22%7D%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D",
-          "content": "Select your logs data source and enter a query for the query sample lines.\n\n**Go there** opens Explore with the stack's logs data source selected and this query in the editor:\n\n`{job=~\".+\"} |= `op=\"query_sample\"``\n\nEvery query sample Alloy sends is a log line that contains `op=\"query_sample\"`, so the query keeps only those lines, from any job. If your logs data source has another name, pick it in the **Data source** picker and enter the query by hand.",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22one%22%3A%7B%22datasource%22%3A%22grafanacloud-logs%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22%7Bop%3D%5C%22query_sample%5C%22%7D%22%2C%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22grafanacloud-logs%22%7D%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D",
+          "content": "Select your logs data source and enter a query for the query sample lines.\n\n**Go there** opens Explore with this query in the editor:\n\n`{op=\"query_sample\"}`\n\nQuery sample lines are the logs under `op=\"query_sample\"`, and this selector keeps only those lines. Check that the **Data source** picker shows your logs data source. If it does not, pick it and enter the query by hand.",
           "requirements": ["on-page:/explore"]
         },
         {
@@ -78,7 +78,7 @@
           "reftarget": "[data-testid='Interactive table'] a[href^='/a/grafana-dbo11y-app/overview/']",
           "doIt": false,
           "skippable": true,
-          "content": "Click a query your application runs.\n\nThe list shows the queries Database Observability has collected. Pick one that your application ran in the time range, so it has recent samples.",
+          "content": "Click a query your application runs.\n\nThe list shows the queries Database Observability has collected. Pick one that your application runs often, so the chart is likely to show recent samples.",
           "requirements": ["on-page:/a/grafana-dbo11y-app", "exists-reftarget"]
         },
         {
@@ -100,13 +100,13 @@
         },
         {
           "type": "markdown",
-          "content": "Select **View trace in Explore**.\n\nThe trace of the request that ran the query opens in Traces Drilldown, with the database span inside it. If the box shows no link, the sample carries no `traceparent` or Alloy is below 1.17.0. If the link opens no trace, the trace was not kept."
+          "content": "Select **View trace in Explore**.\n\nThe trace of the request that ran the query opens in Traces Drilldown, with the database span inside it. If the box shows no link, the sample carries no `traceparent` or Alloy is below 1.17.0. If the link opens no trace, that trace is no longer available to open."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Where you ended tells you which part of the setup the result points at:\n\n- **The trace opened**: the comment travelled from your application through Alloy to the sample, and the link works end to end.\n- **The box showed no link**: the sample has no `traceparent`, so check the application setting for your language and the Alloy version.\n- **The link opened no trace**: the sample carried the `traceparent`, but the trace was not kept, so the link had nothing to open."
+      "content": "Where you ended tells you which part of the setup the result points at:\n\n- **The trace opened**: the comment travelled from your application through Alloy to the sample, and the link works end to end.\n- **The box showed no link**: the sample carries no `traceparent` or Alloy is below 1.17.0, so check the application setting for your language and the Alloy version.\n- **The link opened no trace**: the sample carried the `traceparent`, but the trace it points at is no longer available, so the link had nothing to open. Adaptive Traces can keep traces that contain database query spans."
     }
   ]
 }
