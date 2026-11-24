@@ -94,7 +94,7 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "section[data-testid='data-testid Panel header Stations with highest percentage of season ticket usage']",
-          "content": "This panel answers a different question: which stations rely most heavily on season ticket holders? The percentage isn't stored in the CSV — it's calculated inside Grafana using a **Calculate field** transformation that divides season ticket journeys by total journeys and multiplies by 100.",
+          "content": "This panel answers a different question: which stations rely most heavily on season ticket holders? The percentage isn't stored in the CSV — it's calculated inside Grafana using an **Add field from calculation** transformation that divides season ticket journeys by total journeys and multiplies by 100.",
           "doIt": false,
           "lazyRender": true
         },
@@ -221,7 +221,7 @@
         },
         {
           "type": "markdown",
-          "content": "The key steps in the transformation chain are:\n\n1. **Organize fields** — strips the table down to just the station name, season ticket count, and total entries/exits.\n2. **Calculate field** (used twice) — first divides season ticket journeys by total journeys to get a ratio, then multiplies by 100 to turn it into a readable percentage. The percentage isn't in the source data at all — Grafana computes it here.\n3. **Sort by** — orders stations from highest to lowest percentage so the most season-ticket-dependent stations appear at the top of the bar gauge.\n4. **Group by** — deduplicates the result to one row per station."
+          "content": "The key steps in the transformation chain are:\n\n1. **Organize fields** — strips the table down to just the station name, season ticket count, and total entries/exits.\n2. **Add field from calculation** (used twice) — first divides season ticket journeys by total journeys to get a ratio, then multiplies by 100 to turn it into a readable percentage. The percentage isn't in the source data at all — Grafana computes it here.\n3. **Sort by** — orders stations from highest to lowest percentage so the most season-ticket-dependent stations appear at the top of the bar gauge.\n4. **Group by** — deduplicates the result to one row per station."
         },
         {
           "type": "guided",
@@ -235,12 +235,24 @@
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
-              "description": "Click here to exit edit mode.",
+              "reftarget": "button[aria-label='Dashboard mode: Editing']",
+              "description": "Open the dashboard mode menu.",
               "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitemradio']:contains('Viewing')",
+              "description": "Choose **Viewing** to leave edit mode.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Discard')",
+              "description": "If Grafana asks about unsaved changes, click **Discard**; you haven't changed anything. Skip this step if no prompt appears.",
+              "lazyRender": true,
+              "skippable": true
             }
-          ],
-          "completeEarly": true
+          ]
         },
         {
           "type": "markdown",

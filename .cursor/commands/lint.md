@@ -22,7 +22,8 @@ best practices (prefer `data-testid` over CSS classes)
 10. Verify that `navmenu-open` is used for navigation menu elements and
 `on-page:` requirements are used for page-specific actions
 11. Check that any step targeting a virtualised container (long tables, paginated
-lists, dashboard rows below the fold) is inside a `guided` block with
-`lazyRender: true` on the step. Plain `interactive` will fail there.
+lists, dashboard rows below the fold) sets `lazyRender: true` and a verified
+`scrollContainer`, on an `interactive` block or a `guided` step. Either model
+supports it; `guided` is not required.
 12. Check that `navigate` actions chaining to another guide use the `openGuide`
 field (`"openGuide": "bundled:<guide-id>"`), not the legacy `?doc=` query param.

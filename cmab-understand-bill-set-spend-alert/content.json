@@ -13,6 +13,7 @@
       "blocks": [
         {
           "type": "interactive",
+          "id": "cmab-bill-open-usage-page",
           "action": "navigate",
           "reftarget": "/a/grafana-cmab-app/usage",
           "content": "Open the **Usage** page in Cost Management and Billing.",
@@ -23,6 +24,7 @@
         },
         {
           "type": "interactive",
+          "id": "cmab-bill-pop-out-guide",
           "action": "popout",
           "targetvalue": "floating",
           "content": "Pop this guide out into a floating window. The next steps open panels in Grafana that would otherwise cover it.",
@@ -44,6 +46,7 @@
       "blocks": [
         {
           "type": "interactive",
+          "id": "cmab-bill-show-total-spend",
           "action": "highlight",
           "reftarget": "[data-testid='all-products-header']",
           "content": "**Total spend this period** is what you've used so far. Your bill isn't final yet.",
@@ -57,6 +60,7 @@
         },
         {
           "type": "interactive",
+          "id": "cmab-bill-show-spend-by-product",
           "action": "highlight",
           "reftarget": "[data-testid='product-list']",
           "content": "**Spend by product** shows what drives that total. Watch the biggest one.",
@@ -81,6 +85,7 @@
       "blocks": [
         {
           "type": "interactive",
+          "id": "cmab-bill-open-alert-form",
           "action": "highlight",
           "reftarget": "[data-testid='usage-sidebar-first-alert']",
           "content": "Select **Create your first usage alert** in the sidebar. You don't need to navigate anywhere yourself.",
@@ -94,6 +99,7 @@
         },
         {
           "type": "interactive",
+          "id": "cmab-bill-check-alert-type",
           "action": "highlight",
           "reftarget": "[data-testid='cmab-alert-type-selector']",
           "content": "Check the **Alert type** is a threshold alert, which watches your spend against your set limit.",
@@ -107,6 +113,7 @@
         },
         {
           "type": "interactive",
+          "id": "cmab-bill-set-dollar-threshold",
           "action": "formfill",
           "reftarget": "[data-testid='cmab-threshold-input']",
           "content": "Set the **Dollar threshold** to a monthly amount that makes sense for you. **Do it** sets it to $500, but you can edit this.",
@@ -121,6 +128,7 @@
         },
         {
           "type": "interactive",
+          "id": "cmab-bill-set-alert-level",
           "action": "formfill",
           "reftarget": "[data-testid='cmab-custom-percentage-input']",
           "targetvalue": "75",
@@ -142,6 +150,7 @@
           "whenTrue": [
             {
               "type": "interactive",
+              "id": "cmab-bill-choose-contact-point",
               "action": "highlight",
               "reftarget": "[id='contact-point-selector']",
               "content": "Choose who should hear about it in **Contact point**. **Create alert** stays disabled until you pick one.",
@@ -155,6 +164,7 @@
             },
             {
               "type": "interactive",
+              "id": "cmab-bill-create-alert",
               "action": "button",
               "reftarget": "[data-testid='cmab-alert-drawer-submit']",
               "content": "Select **Create alert** to save it. This creates a real alert that sends notifications.",
@@ -170,6 +180,7 @@
           "whenFalse": [
             {
               "type": "interactive",
+              "id": "cmab-bill-no-contact-point",
               "action": "highlight",
               "reftarget": "[data-testid='cmab-manage-contact-points-link']",
               "content": "No contact point is available. Create one in **Manage contact points**, or ask an Alerting administrator to do so, then return here to finish the alert.",
@@ -187,7 +198,32 @@
     },
     {
       "type": "markdown",
-      "content": "Once you've created the alert, you're all set: when your spend approaches your threshold ($500 in this example), you'll be notified. You can change the amount any time in **Usage Alerts**."
+      "content": "After you save the alert, check that it appears in **Usage Alerts**."
+    },
+    {
+      "type": "section",
+      "id": "confirm-saved-spend-alert",
+      "title": "Confirm your saved alert",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "cmab-bill-confirm-saved-alert",
+          "action": "highlight",
+          "reftarget": "[data-testid='cmab-usage-alert-name'][data-alert-type='threshold_percent']",
+          "content": "Find your new **Global Spend** alert in the list and check its amount and percentage.",
+          "tooltip": "The saved alert name includes the percentage and threshold you chose.",
+          "doIt": true,
+          "showMe": true,
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-cmab-app/usage-alerts"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You can change the threshold or contact point in **Usage Alerts**."
     }
   ]
 }

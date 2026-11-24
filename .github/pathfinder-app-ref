@@ -1,0 +1,43 @@
+# grafana/grafana-pathfinder-app commit that CI builds its CLI from.
+#
+# This is the only place the app ref is defined. Three checkouts read it:
+#   - deploy.yml, deploy-guides (credentialed: it holds the deploy id-token)
+#   - deploy.yml, build-packages (sandboxed: contents: read only)
+#   - validate-json.yml, validate-packages (pull request and push checks)
+# deploy.yml reads this file from the workflow's own commit (github.workflow_sha),
+# never from the branch it deploys, so a deployed branch cannot choose which CLI
+# runs with the deploy token.
+#
+# Format: exactly one full 40-character lowercase commit SHA on its own line.
+# Lines that start with # and blank lines are ignored. A branch name, a tag or a
+# short SHA fails the workflows on purpose, because only a full SHA is immutable.
+#
+# Bump procedure
+#   Who: a /.github/ code owner (see .github/CODEOWNERS) reviews and approves
+#   every bump. Anyone with write access can open the bump pull request.
+#   How: a normal reviewed pull request that changes only the SHA below. Say in
+#   the description which app commits the bump brings in (the app compare view
+#   from the old SHA to the new SHA).
+#   Check: validate-json.yml runs on the pull request with the new SHA. Before
+#   you request review, also run this from the root of this repository:
+#
+#     git clone https://github.com/grafana/grafana-pathfinder-app pathfinder-app
+#     git -C pathfinder-app checkout <new SHA>
+#     git -C pathfinder-app merge-base --is-ancestor <new SHA> origin/main
+#     (cd pathfinder-app && npm ci && npm run build:cli)
+#     find . -name manifest.json -type f -not -path "./pathfinder-app/*" \
+#       -not -path "./shared/*" -not -path "./.git/*" -print0 \
+#       | xargs -0 -n1 dirname \
+#       | xargs -n1 node pathfinder-app/dist/cli/cli/index.js validate --package
+#     node pathfinder-app/dist/cli/cli/index.js build-repository . \
+#       --exclude pathfinder-app --exclude shared -o /tmp/repository.json
+#
+#   The merge-base check must exit 0: the new SHA must be on
+#   grafana/grafana-pathfinder-app main, because checkout can also fetch a
+#   commit that exists only in a fork of the app. The validate and
+#   build-repository commands must also exit 0. Do not commit
+#   /tmp/repository.json or the pathfinder-app checkout. After the merge, the
+#   next push to main deploys with the new SHA. To check deploy.yml before the
+#   merge, a maintainer can run it with workflow_dispatch from the pull request
+#   branch to the dev environment.
+43185a5f79f986b23f9c73d006f7b75660030155

@@ -138,6 +138,13 @@
           "content": "Open the table panel at the bottom of the dashboard for editing.",
           "steps": [
             {
+              "action": "hover",
+              "reftarget": "div[data-viz-panel-key='panel-2']",
+              "description": "Hover over the panel to reveal its menu button.",
+              "requirements": ["exists-reftarget"],
+              "lazyRender": true
+            },
+            {
               "action": "highlight",
               "reftarget": "div[data-viz-panel-key='panel-2'] button[data-testid='panel-menu-button']",
               "description": "Click here to open the panel menu.",
@@ -238,6 +245,13 @@
           "content": "Open the destination panel for the second arrival — the wide panel showing a destination on the first of the three compact rows.",
           "steps": [
             {
+              "action": "hover",
+              "reftarget": "div[data-viz-panel-key='panel-5']",
+              "description": "Hover over the panel to reveal its menu button.",
+              "requirements": ["exists-reftarget"],
+              "lazyRender": true
+            },
+            {
               "action": "highlight",
               "reftarget": "div[data-viz-panel-key='panel-5'] button[data-testid='panel-menu-button']",
               "description": "Click here to open the panel menu.",
@@ -272,13 +286,6 @@
           "type": "interactive",
           "action": "highlight",
           "reftarget": "[data-query-sidebar-card='filterByValue-0']",
-          "content": "Select **Filter data by values** in the sidebar.",
-          "requirements": ["exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-query-sidebar-card='filterByValue-0']",
           "content": "Select **Filter data by values** in the sidebar. It keeps only the row where `row_number` equals 2, because this panel is the second arrival. The four panels in the hero block skip this step entirely — they reduce the whole table with **First**, which lands on the soonest train because JQ already sorted the rows.",
           "requirements": ["exists-reftarget"],
           "doIt": true
@@ -303,9 +310,22 @@
             },
             {
               "action": "highlight",
-              "reftarget": "button[data-testid='data-testid Edit dashboard button']",
-              "description": "Click Exit edit to leave edit mode.",
-              "requirements": ["exists-reftarget"]
+              "reftarget": "button[aria-label='Dashboard mode: Editing']",
+              "description": "Open the dashboard mode menu.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitemradio']:contains('Viewing')",
+              "description": "Choose **Viewing** to leave edit mode.",
+              "lazyRender": true
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button:contains('Discard')",
+              "description": "If Grafana asks about unsaved changes, click **Discard**; you haven't changed anything. Skip this step if no prompt appears.",
+              "lazyRender": true,
+              "skippable": true
             }
           ]
         }

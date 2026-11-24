@@ -30,7 +30,7 @@ A warning finding means the guide **degrades user experience** but does not hard
 
 | Phase | Examples |
 |-------|----------|
-| Structural | `interactive` step targeting a virtualised-looking selector (table row, `[data-cy='wb-list-item']`, `:contains(...)` in a list) without being inside a `guided` block with `lazyRender: true` — heuristic; needs human confirmation |
+| Structural | `interactive` step targeting a virtualised-looking selector (table row, `[data-cy='wb-list-item']`, `:contains(...)` in a list) without `lazyRender: true` and a verified `scrollContainer` (valid on `interactive` blocks and `guided` steps) — heuristic; needs human confirmation |
 | Structural | `validateInput: true` without `formHint` (silent rejection on bad input) |
 | Structural | Missing `verify` on a state-changing action (save, create, navigate) |
 | Semantic | Critical rules 8, 9, 10, 11, 12, 14, 15, 16 violations (missing verify on state changes, prose verbosity, button word usage, weak requirement→objective chain, tooltip naming the element, no section bookends, button-word bolding, non-skippable conditional steps) |
