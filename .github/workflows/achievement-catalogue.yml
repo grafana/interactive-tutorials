@@ -1,0 +1,111 @@
+name: Achievement catalogue
+
+on:
+  pull_request:
+    paths:
+      - 'achievements/**'
+      - '.github/workflows/achievement-catalogue.yml'
+  workflow_dispatch:
+    inputs:
+      catalogue:
+        description: Catalogue to publish from reviewed main
+        type: choice
+        required: true
+        options:
+          - dev-v1
+          - shared-v2
+  push:
+    branches: [main]
+    paths:
+      - 'achievements/**'
+      - '.github/workflows/achievement-catalogue.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  catalogue:
+    strategy:
+      matrix:
+        include:
+          - name: dev-v1
+            version: v1
+            environment: dev
+            source: achievements/dev-v1/catalog
+            reader: c78fc5e8bd0fc6d154a419c2caa001a6c120cfc8
+          - name: shared-v2
+            version: v2
+            environment: prod
+            source: achievements/catalog
+            reader: 834e0e9839648fe935e0cad82c3470e22ae9d053
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: grafana/grafana-pathfinder-app
+          ref: ${{ matrix.reader }}
+          path: pathfinder-app
+          persist-credentials: false
+      - name: Build publisher
+        working-directory: pathfinder-app
+        run: go build -o "$RUNNER_TEMP/achievements-check" ./pkg/achievements/cmd/achievements-check
+      - name: Build catalogue and check published identities
+        env:
+          VERSION: ${{ matrix.version }}
+          SOURCE: ${{ matrix.source }}
+          BUCKET: interactive-learning-${{ matrix.environment }}
+        run: |
+          mkdir -p "staging/achievements/$VERSION" "$RUNNER_TEMP/source"
+          cp -R "$SOURCE" achievements/events achievements/art "$RUNNER_TEMP/source/"
+          cp -R achievements/art staging/achievements/
+          next="staging/achievements/$VERSION/definitions.json"
+          "$RUNNER_TEMP/achievements-check" build -src "$RUNNER_TEMP/source" -repo "$GITHUB_REPOSITORY" -commit "$GITHUB_SHA" -o "$next"
+          url="https://storage.googleapis.com/$BUCKET/achievements/$VERSION/definitions.json"
+          status=$(curl --silent --show-error --compressed --dump-header "$RUNNER_TEMP/headers" --output "$RUNNER_TEMP/live.json" --write-out '%{http_code}' "$url")
+          case "$status" in
+            200)
+              "$RUNNER_TEMP/achievements-check" compat "$RUNNER_TEMP/live.json" "$next"
+              generation=$(awk 'tolower($1) == "x-goog-generation:" {print $2}' "$RUNNER_TEMP/headers" | tr -d '\r')
+              [[ "$generation" =~ ^[0-9]+$ ]]
+              ;;
+            404) generation=0 ;;
+            *) echo "Could not check live catalogue (HTTP $status)" >&2; exit 1 ;;
+          esac
+          echo "$generation" > staging/generation
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: github.event_name == 'workflow_dispatch' && inputs.catalogue == matrix.name
+        with:
+          name: achievement-catalogue-${{ matrix.name }}
+          path: staging/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: catalogue
+    env:
+      BUCKET: ${{ inputs.catalogue == 'dev-v1' && 'interactive-learning-dev' || 'interactive-learning-prod' }}
+      VERSION: ${{ inputs.catalogue == 'dev-v1' && 'v1' || 'v2' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: achievement-catalogue-${{ inputs.catalogue }}
+          path: staging
+      - uses: grafana/shared-workflows/actions/login-to-gcs@1f02013f3a8a0c29e3cb7dc6793158defe914569 # login-to-gcs/v0.3.1
+        with:
+          bucket: ${{ env.BUCKET }}
+          environment: ${{ inputs.catalogue == 'dev-v1' && 'dev' || 'prod' }}
+          service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
+      - name: Publish art and compatible catalogue
+        working-directory: staging
+        run: |
+          destination="gs://$BUCKET/achievements"
+          gcloud storage cp achievements/art/*.svg "$destination/art/"
+          gcloud storage cp --if-generation-match="$(cat generation)" "achievements/$VERSION/definitions.json" "$destination/$VERSION/definitions.json"
