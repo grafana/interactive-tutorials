@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "confirm-a-sample-links-to-its-trace",
+  "title": "Confirm a sample links to its trace",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "This guide runs on your own stack. The steps that depend on your query samples carrying a `traceparent` can be skipped if your application does not add the comment yet or the link is not available on your stack."
+    },
+    {
+      "type": "markdown",
+      "content": "To check whether the comment reaches Alloy, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "check-the-query-sample-logs",
+      "title": "Check the query sample logs for a traceparent field",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/explore']",
+          "verify": "on-page:/explore",
+          "objectives": ["on-page:/explore"],
+          "content": "Click **Explore**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Data source picker select container']",
+          "doIt": false,
+          "content": "Select your logs data source.\n\nAlloy sends each query sample as a log line to the logs data source of your stack. Pick that data source in the picker.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='QueryEditorModeToggle'] label[for^='option-code-radiogroup']",
+          "skippable": true,
+          "content": "Switch the query editor to **Code**.\n\nSkip this step if the editor already shows a text field for the query.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "textarea.inputarea",
+          "targetvalue": "{job=~\".+\"} |= `op=\"query_sample\"`",
+          "content": "Enter a query for the query sample lines.\n\nEvery query sample Alloy sends is a log line that contains `op=\"query_sample\"`. The query keeps only those lines, from any job.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "button[data-testid='data-testid RefreshPicker run button']",
+          "content": "Click **Run query**.\n\nIf no lines come back, widen the time range to a period when your application ran database queries and run it again.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "div[data-testid='data-testid panel content']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Look for `traceparent=` in the lines.\n\nEach line is one query sample. A line that carries the comment ends with a `traceparent` field, such as `traceparent=\"00-5bd66ef5095369c7b0d1f8f4bd33716a-c532cb4098ac3dd2-01\"`. If the lines have the field, the comment reached Alloy. If they do not, either sqlcommenter is not appending the `traceparent` or Alloy is below 1.17.0.",
+          "requirements": ["on-page:/explore", "exists-reftarget"]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "You checked whether the query sample lines carry a `traceparent` field."
+    },
+    {
+      "type": "markdown",
+      "content": "To follow a sample's link to its trace, complete the following steps:"
+    },
+    {
+      "type": "section",
+      "id": "follow-a-samples-link-to-its-trace",
+      "title": "Follow a sample's link to its trace",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Nav menu item'][href='/a/grafana-dbo11y-app/overview']",
+          "verify": "on-page:/a/grafana-dbo11y-app",
+          "objectives": ["on-page:/a/grafana-dbo11y-app"],
+          "content": "Click **Database Observability**.",
+          "requirements": ["navmenu-open", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='Interactive table'] a[href^='/a/grafana-dbo11y-app/overview/']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Click a query your application runs.\n\nThe list shows the queries Database Observability has collected. Pick one that your application ran in the time range, so it has recent samples.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "a[data-testid='data-testid Tab Query samples']",
+          "skippable": true,
+          "content": "Open the **Query samples** tab.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app", "exists-reftarget"]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "section[data-testid='data-testid Panel header Select a query sample']",
+          "doIt": false,
+          "skippable": true,
+          "content": "Hover a point on the chart.\n\nEach point is one query sample. The box that opens shows that sample's details. When the sample carries a `traceparent` and Alloy is 1.17.0 or later, the box also shows **View trace in Explore**.",
+          "requirements": ["on-page:/a/grafana-dbo11y-app", "exists-reftarget"]
+        },
+        {
+          "type": "markdown",
+          "content": "Select **View trace in Explore**.\n\nThe trace of the request that ran the query opens in Traces Drilldown, with the database span inside it. If the box shows no link, the sample carries no `traceparent` or Alloy is below 1.17.0. If the link opens no trace, the trace was not kept."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Where you ended tells you which part of the setup the result points at:\n\n- **The trace opened**: the comment travelled from your application through Alloy to the sample, and the link works end to end.\n- **The box showed no link**: the sample has no `traceparent`, so check the application setting for your language and the Alloy version.\n- **The link opened no trace**: the sample carried the `traceparent`, but the trace was not kept, so the link had nothing to open."
+    }
+  ]
+}
