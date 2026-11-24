@@ -141,7 +141,7 @@
         },
         {
           "type": "markdown",
-          "content": "This query returns the total number of active series on your stack. When **Explain** is on, Grafana describes each part of the query under the field."
+          "content": "This query returns the total number of active series across all stacks in your Grafana Cloud account. When **Explain** is on, Grafana describes each part of the query under the field."
         },
         {
           "type": "interactive",
@@ -352,43 +352,9 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/explore",
-          "content": "Go to **Explore**.",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22a%22%3A%7B%22datasource%22%3A%22grafanacloud-prom%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22prometheus%22%2C%22uid%22%3A%22grafanacloud-prom%22%7D%2C%22expr%22%3A%22test_active_series_total%22%2C%22editorMode%22%3A%22code%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1",
+          "content": "Go to **Explore**. The link opens your stack's Prometheus data source with `test_active_series_total` in the query field, the metric name you entered for the rule.",
           "verify": "on-page:/explore"
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid explore-toolbar'] [data-testid='data-testid Data source picker select container']",
-          "requirements": [
-            "on-page:/explore",
-            "exists-reftarget"
-          ],
-          "doIt": false,
-          "content": "Select your stack's Prometheus data source, if it isn't already selected. The rule saved the recorded metric there."
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid QueryEditorModeToggle']",
-          "requirements": [
-            "on-page:/explore",
-            "exists-reftarget"
-          ],
-          "skippable": true,
-          "doIt": false,
-          "content": "Select **Code** if it isn't already selected."
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "[data-testid='data-testid Query field'] textarea.inputarea",
-          "targetvalue": "test_active_series_total",
-          "requirements": [
-            "on-page:/explore",
-            "exists-reftarget"
-          ],
-          "content": "In the query field, enter `test_active_series_total`, the metric name you entered for the rule. If the field already holds a query, replace it."
         },
         {
           "type": "interactive",
@@ -409,11 +375,11 @@
             "exists-reftarget"
           ],
           "doIt": false,
-          "content": "Find the **Graph** panel. It shows one data point for each evaluation of the rule."
+          "content": "Find the **Graph** panel. It plots the recorded metric over time."
         },
         {
           "type": "markdown",
-          "content": "Soon after you save the rule, the graph has one point. The rule writes another each minute. If the graph shows **No data**, the rule hasn't been evaluated yet. Wait a minute, then click **Run query** again.\n\nDashboards and alert rules can query `test_active_series_total` the same way."
+          "content": "Soon after you save the rule, the graph starts to show the recorded metric. The rule writes a new value each minute. If the graph shows **No data**, the rule hasn't been evaluated yet. Wait a minute, then click **Run query** again.\n\nDashboards and alert rules can query `test_active_series_total` the same way."
         }
       ]
     },
@@ -446,11 +412,11 @@
             "on-page:/alerting/list",
             "exists-reftarget"
           ],
-          "content": "In the search box, enter `Total active series`, then press Enter. The list now shows only that rule."
+          "content": "In the search box, enter `Total active series`, then press Enter. The list now shows only that rule. If it shows more than one rule with this name, delete only the one you created in this path. Leave any rule that was already on your stack."
         },
         {
           "type": "multistep",
-          "content": "In the **Total active series** row, click **More**, select **Delete**, and click **Yes, delete**.",
+          "content": "In the **Total active series** row, click **More** and select **Delete**.",
           "requirements": [
             "on-page:/alerting/list"
           ],
@@ -469,19 +435,18 @@
               "requirements": [
                 "exists-reftarget"
               ]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[role='dialog'] button:contains('Yes, delete')",
-              "requirements": [
-                "exists-reftarget"
-              ]
             }
           ]
         },
         {
-          "type": "markdown",
-          "content": "If the list shows more than one rule named **Total active series**, delete only the one you created in this path. Leave any rule that was already on your stack."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'] button:contains('Yes, delete')",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Click **Yes, delete** to delete the rule."
         }
       ]
     },
@@ -514,7 +479,7 @@
             "on-page:/dashboards",
             "exists-reftarget"
           ],
-          "content": "In the search box, enter `Recording rule practice (learning path)`. The list now shows only that folder."
+          "content": "In the search box, enter `Recording rule practice (learning path)`. The list now shows only that folder. If it shows more than one folder with this name, delete only the one you created in this path. Leave any folder that was already on your stack. Deleting a folder also deletes everything in it."
         },
         {
           "type": "interactive",
@@ -528,7 +493,7 @@
         },
         {
           "type": "multistep",
-          "content": "Click **Folder actions**, select **Delete this folder**, type `Delete` to confirm, and click **Delete**.",
+          "content": "Click **Folder actions**, select **Delete this folder**, and type `Delete` to confirm.",
           "requirements": [
             "on-page:/dashboards/f/"
           ],
@@ -555,19 +520,18 @@
               "requirements": [
                 "exists-reftarget"
               ]
-            },
-            {
-              "action": "highlight",
-              "reftarget": "[data-testid='data-testid Confirm Modal Danger Button']",
-              "requirements": [
-                "exists-reftarget"
-              ]
             }
           ]
         },
         {
-          "type": "markdown",
-          "content": "If the search shows more than one folder named **Recording rule practice (learning path)**, delete only the one you created in this path. Leave any folder that was already on your stack."
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Confirm Modal Danger Button']",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Click **Delete** to delete the folder."
         }
       ]
     },
