@@ -27,27 +27,10 @@
         },
         {
           "type": "interactive",
-          "action": "highlight",
-          "reftarget": "[data-testid='data-testid Data source picker select container']",
-          "doIt": false,
-          "content": "Select your logs data source.\n\nAlloy sends each query sample as a log line to the logs data source of your stack. Pick that data source in the picker.",
-          "requirements": ["on-page:/explore", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
-          "reftarget": "div[data-testid='QueryEditorModeToggle'] label[for^='option-code-radiogroup']",
-          "skippable": true,
-          "content": "Switch the query editor to **Code**.\n\nSkip this step if the editor already shows a text field for the query.",
-          "requirements": ["on-page:/explore", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "formfill",
-          "reftarget": "textarea.inputarea",
-          "targetvalue": "{job=~\".+\"} |= `op=\"query_sample\"`",
-          "content": "Enter a query for the query sample lines.\n\nEvery query sample Alloy sends is a log line that contains `op=\"query_sample\"`. The query keeps only those lines, from any job.",
-          "requirements": ["on-page:/explore", "exists-reftarget"]
+          "action": "navigate",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22one%22%3A%7B%22datasource%22%3A%22grafanacloud-logs%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22%7Bjob%3D~%5C%22.%2B%5C%22%7D%20%7C%3D%20%60op%3D%5C%22query_sample%5C%22%60%22%2C%22datasource%22%3A%7B%22type%22%3A%22loki%22%2C%22uid%22%3A%22grafanacloud-logs%22%7D%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D",
+          "content": "Select your logs data source and enter a query for the query sample lines.\n\n**Go there** opens Explore with the stack's logs data source selected and this query in the editor:\n\n`{job=~\".+\"} |= `op=\"query_sample\"``\n\nEvery query sample Alloy sends is a log line that contains `op=\"query_sample\"`, so the query keeps only those lines, from any job. If your logs data source has another name, pick it in the **Data source** picker and enter the query by hand.",
+          "requirements": ["on-page:/explore"]
         },
         {
           "type": "interactive",
