@@ -169,7 +169,7 @@ description: Edge cases, troubleshooting patterns, and debugging techniques for 
 
 **Cause**: Virtualized containers do not render off-screen elements. `exists-reftarget` waits for the element but cannot scroll on its own.
 
-**Solution**: Use a `guided` block with `lazyRender: true` on the step. Optionally set `scrollContainer` to the CSS selector of the scrolling parent (default `.scrollbar-view`). The engine scrolls the target into view before highlighting it. User-paced detection (`guided` rather than plain `interactive`) avoids racing the scroll.
+**Solution**: Set `lazyRender: true` on the `interactive` block or the `guided` step, with a verified `scrollContainer` (the CSS selector of the scrolling parent; default `.scrollbar-view`). The engine scrolls the target into view before highlighting it. Choose `guided` only when the learner's own action must be observed, not to get scrolling.
 
 ```json
 {

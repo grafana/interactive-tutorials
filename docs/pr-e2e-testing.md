@@ -1,5 +1,17 @@
 # Optional E2E tests for pull requests
 
+## PR service and the local runner
+
+This page documents only the optional PR service (the `/e2e-test` comment). Pathfinder's CLI also ships a separate local runner, `pathfinder-cli e2e`, that drives a real browser against a Grafana instance you point it at. It writes console output, an optional JSON report (`--output`), and failure artifacts such as screenshots. The two differ in who runs them:
+
+| | PR service (this page) | Local runner |
+|---|---|---|
+| Runs | In the trusted workflow, on request | On your machine, on demand |
+| Access | Admission, `CODEOWNERS`, and repository variables below | Whatever Grafana URL and credentials you supply |
+| Use it for | An optional check on a same-repository PR | Iterating on a guide while you author it |
+
+For the local runner's options and exit codes, see Pathfinder's [E2E testing guide](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/E2E_TESTING.md). The authoring MCP and the CLI's other commands are not test runners; see the [README](../README.md#authoring-with-the-mcp-cli-or-e2e-runner).
+
 ## Availability
 
 This workflow starts disabled. An unset or false `PR_E2E_ENABLED` repository variable prevents submission.

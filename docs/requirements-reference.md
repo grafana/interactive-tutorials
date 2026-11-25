@@ -399,6 +399,22 @@ This requirement is evaluated differently by different rendering tools, allowing
 
 ---
 
+## Workflow Requirements
+
+### `workflow-ready:<name>`
+
+**Purpose**: A supported workflow has confirmed its successful outcome. The documented example is `workflow-ready:cloud-access-policy-token`, which confirms a Grafana Cloud access-policy token was created in the current form. It does not prove that an earlier token exists or what permissions it has. Add an `on-page:` objective too when completion must be restricted to a page. See the upstream [requirements reference](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/interactive-examples/requirements-reference.md).
+
+---
+
+## Challenge Requirements
+
+### `coda-exit-zero:<command>`
+
+**Purpose**: Passes when the command exits 0 against the learner's active Coda challenge VM, for example `coda-exit-zero:curl -sf localhost:9090/-/healthy`. It is the usual `successCriteria` of a `challenge` block.
+
+---
+
 ## Variable Requirements
 
 ### `var-<variableName>:<expectedValue>`
@@ -556,6 +572,8 @@ Objectives declare what a guide step will accomplish. They use the same syntax a
 
 ## Complete Requirements Reference Table
 
+The current vocabulary is defined by the Pathfinder schema. `pathfinder-cli requirements list` prints it, and this table can lag it.
+
 ### Fixed Requirements (no parameters)
 
 | Requirement        | Purpose                                |
@@ -588,6 +606,8 @@ Objectives declare what a guide step will accomplish. They use the same syntax a
 | `section-completed:<sectionId>`      | Another section has been completed                     |
 | `var-<name>:<value>`                 | Guide variable has expected value (`*` = any non-empty) |
 | `renderer:<renderer>`                | Rendering context matches (`pathfinder` or `website`)  |
+| `workflow-ready:<name>`              | A supported workflow confirmed success (`cloud-access-policy-token`) |
+| `coda-exit-zero:<command>`           | Command exits 0 on the learner's challenge VM          |
 
 ---
 

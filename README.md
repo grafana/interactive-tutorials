@@ -39,6 +39,18 @@ The **Block Editor** is the recommended way to create guides:
 4. Preview your guide with the Preview toggle
 5. Export via "Copy JSON" or create a GitHub PR directly from the editor
 
+### Authoring with the MCP, CLI, or e2e runner
+
+Pathfinder ships three more tools that read the same schema as the Block Editor. They do different jobs:
+
+| Tool | Use it to | Notes |
+|------|-----------|-------|
+| [Authoring MCP](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/MCP_SERVER.md) | Let an MCP-capable agent create, edit, and validate a guide through tool calls | Run locally with `npx pathfinder-cli mcp` (or `docker run --rm -i ghcr.io/grafana/pathfinder-cli:main mcp`). Start with `pathfinder_authoring_start`, then `pathfinder_help`. It returns a handoff and does not publish. |
+| [CLI](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) | Create and edit packages, validate (`validate --package <dir>`), print the schema (`schema`) and valid requirements (`requirements list`), and search published guides (`find-guides`) | The MCP wraps most of the authoring commands. |
+| [e2e runner](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/E2E_TESTING.md) | Run a guide in a real browser against a live Grafana (`pathfinder-cli e2e --package <dir> --repository <checkout-or-index>`) | A local author tool. It is separate from the optional `/e2e-test` PR comment; see [docs/pr-e2e-testing.md](docs/pr-e2e-testing.md). |
+
+Neither the MCP nor `validate` can tell whether a selector is correct, so capture selectors with the Block Editor or test the guide in a browser. See [Pathfinder authoring tools](.cursor/authoring-guide.mdc#pathfinder-authoring-tools).
+
 ### Iterate & Develop
 
 The Block Editor auto-saves your work to localStorage, so you can iterate without losing progress.

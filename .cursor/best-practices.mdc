@@ -19,7 +19,8 @@ A decision-tree-style companion to [authoring-guide.mdc](authoring-guide.mdc). T
 | Selector patterns | [docs/selectors-and-testids.md](../docs/selectors-and-testids.md) |
 | Guided block deep dive | [docs/guided-interactions.md](../docs/guided-interactions.md) |
 | Manifest fields | [docs/manifest-reference.md](../docs/manifest-reference.md) |
-| Pathfinder app schema (authoritative) | `grafana-pathfinder-app/src/types/json-guide.schema.ts` |
+| Pathfinder app schema (authoritative) | `grafana-pathfinder-app/src/types/json-guide.schema.ts`; or `pathfinder-cli schema guide` / `requirements list` |
+| Authoring MCP, CLI, e2e runner | [authoring-guide.mdc — Pathfinder Authoring Tools](authoring-guide.mdc#pathfinder-authoring-tools) |
 
 If a doc here disagrees with the schema, the schema wins.
 
@@ -34,7 +35,9 @@ What kind of content?
   ├─ Formatted prose, lists, code samples → markdown
   ├─ Raw HTML (migration only)             → html         (avoid for new content)
   ├─ Image                                 → image        (require alt text)
-  └─ Embedded video                        → video        (YouTube or native)
+  ├─ Embedded video                        → video        (YouTube or native)
+  ├─ Visual break between sections         → divider
+  └─ Highlighted, labeled box              → callout      (title + content; no completion state)
 ```
 
 ### 2.2 Interactive vs Multistep vs Guided
@@ -45,8 +48,8 @@ How does the user perform the action?
   ├─ Two+ actions, the SYSTEM performs them auto    → multistep
   ├─ Two+ actions, the USER performs them manually  → guided
   │   (use for deliberate user interaction, including real CSS hover)
-  ├─ Target absent until scrolling                 → interactive + lazyRender
-  │   (individual action; verify the scrollContainer)
+  ├─ Target absent until scrolling                 → add lazyRender + a verified scrollContainer
+  │   (to the interactive block or the guided step; guided only if the user's action must be observed)
   └─ One step that wraps a multistep                → BAD — multistep singleton
 ```
 
@@ -54,6 +57,7 @@ How does the user perform the action?
 
 ```
 Need to group steps?                  → section (unique kebab-case id)
+Hide a solution or answer?            → collapsible (content blocks only; sections cannot nest)
 Branch on runtime state?              → conditional
   ├─ display: "inline"  → prose with hidden/shown branches
   └─ display: "section" → each branch gets its own "Do" button + title
@@ -81,6 +85,8 @@ Insert code into a Monaco editor?     → code-block (not formfill)
 Shell command demo?                   → terminal           (needs is-terminal-active)
 Open the terminal session itself?     → terminal-connect   (place before terminal blocks)
 Choose-your-own-adventure tree?       → grot-guide         (block editor, not CLI)
+Hands-on task with a success check?   → challenge          (successCriteria, e.g. coda-exit-zero:<cmd>)
+Reuse a published snippet?            → snippet-ref        (block editor, not CLI; validate with --snippets-catalog)
 ```
 
 ---
@@ -132,7 +138,7 @@ Use `validateInput: false` (default) when you want to accept any non-empty value
 
 ### 3.5 Lazy-rendered targets
 
-Set `lazyRender: true` on a standalone `interactive` block, together with `exists-reftarget` and a verified scrolling container. Its individual **Show me** / **Do it** can discover a target that has not yet mounted.
+For a target that is not mounted until it is scrolled into view, set `lazyRender: true` and a verified `scrollContainer`. The `interactive` block and the `guided` step both support them. Choose `guided` only when the learner's own action must be observed, not to get scrolling.
 
 ```json
 { "type": "interactive", "action": "highlight", "reftarget": "...",
@@ -140,7 +146,11 @@ Set `lazyRender: true` on a standalone `interactive` block, together with `exist
   "scrollContainer": "#pageContent", "content": "Open the target." }
 ```
 
-`#pageContent` scrolls Grafana content when the extension sidebar is open; verify the target layout. Existing DOM targets already scroll into view. Current guided steps drop lazy properties, while **Do section** bypasses standalone discovery. Do not convert an automated observation to a manual guided hover for scrolling. See [runtime evidence](../docs/guided-interactions.md#lazy-targets-and-current-runtime-support).
+`#pageContent` scrolls Grafana content when the extension sidebar is open; verify the target layout. Existing DOM targets already scroll into view. See [Lazy targets](../docs/guided-interactions.md#lazy-targets).
+
+### 3.6 Toggles (`targetstate`)
+
+For an expander, switch, or tab, add `targetstate` (lowercase; `"true"`, `"false"`, or `"<attribute>:<value>"`) so a re-run does not toggle it back. See [interactive-actions.md](../docs/interactive-actions.md#toggle-state-targetstate).
 
 ---
 
@@ -226,7 +236,7 @@ These extend the [18 + 3 critical rules in AGENTS.md](../AGENTS.md#critical-rule
 4. **Markdown `##` headers in place of sections** — restructure as `section` blocks with bookend markdown.
 5. **Leading markdown title duplicating the guide title** — remove. The frame renders the title.
 6. **Brittle CSS selectors** — `.css-xyz`, deep nesting, `nth-of-type` without a stable parent. Use `data-testid`, button text, or semantic attributes.
-7. **Missing discovery for an unmounted target** — use standalone `interactive` + `lazyRender: true` with a verified scrolling container; guided steps do not currently implement discovery.
+7. **Missing discovery for an unmounted target** — set `lazyRender: true` and a verified `scrollContainer` on the `interactive` block or `guided` step.
 8. **`popout` without a valid `targetvalue`** — must be exactly `"sidebar"` or `"floating"`.
 9. **Legacy `?doc=` query string** — use the `openGuide` field on the navigate step.
 10. **Admin-only step without `skippable`** — non-admins get stuck. Add `skippable: true` with a helpful hint.
@@ -276,7 +286,7 @@ Run through this before opening the PR.
 - [ ] No auto-generated CSS classes, no `nth-of-type` without a stable parent
 
 **Resilience**
-- [ ] Targets absent until scrolling use standalone `interactive` + `lazyRender: true`; verify the container and check individual actions separately from **Do section**
+- [ ] Targets absent until scrolling set `lazyRender: true` and a verified `scrollContainer` (`interactive` or `guided`); check individual actions and **Do section**
 - [ ] Admin / permission-gated steps are `skippable: true` with a hint
 - [ ] No multistep singletons; no focus-before-formfill
 - [ ] Post-transition drawer fields use Show me / skippable, not hard `exists-reftarget` gates

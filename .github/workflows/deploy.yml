@@ -27,9 +27,53 @@ env:
   DEPLOY_ENV: ${{ github.event_name == 'push' && 'prod' || github.event.inputs.environment }}
 
 jobs:
+  # Reads the pinned pathfinder-app commit from .github/pathfinder-app-ref at the
+  # workflow's own commit (github.workflow_sha), NOT from the branch being
+  # deployed: inputs.branch must not be able to choose which CLI runs in
+  # deploy-guides, which holds the deploy id-token. The bump procedure is in
+  # that file.
+  resolve-app-ref:
+    name: Resolve pinned pathfinder-app ref
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      ref: ${{ steps.pin.outputs.ref }}
+    steps:
+      - name: Checkout pin file from the workflow commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.workflow_sha }}
+          sparse-checkout: .github/pathfinder-app-ref
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Read pinned pathfinder-app ref
+        id: pin
+        # Keep in sync with the "Read pinned pathfinder-app ref" step in
+        # validate-json.yml, which carries the same parse and validation.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ref="$(grep -Ev '^[[:space:]]*(#|$)' .github/pathfinder-app-ref || true)"
+          if [[ ! "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error file=.github/pathfinder-app-ref::expected exactly one full 40-character commit SHA"
+            exit 1
+          fi
+          # checkout can also fetch a commit that exists only in a fork, so
+          # require the SHA to be on pathfinder-app main.
+          status="$(gh api "repos/grafana/grafana-pathfinder-app/compare/${ref}...main" --jq .status)" || status=missing
+          if [[ "$status" != "ahead" && "$status" != "identical" ]]; then
+            echo "::error file=.github/pathfinder-app-ref::$ref is not on grafana-pathfinder-app main ($status)"
+            exit 1
+          fi
+          echo "pathfinder-app ref: $ref"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
   deploy-guides:
     name: Deploy guides/ to GCS
     runs-on: ubuntu-latest
+    needs: resolve-app-ref
     permissions:
       contents: read
       id-token: write
@@ -47,8 +91,9 @@ jobs:
           # login-to-gcs accepts only 'dev' or 'prod'; map 'ops' to 'prod'
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
 
-      # NOTE: build-snippets runs the pathfinder-app@main CLI inside this trusted
-      # job so the generated guides/shared/snippets/index.json can be pushed
+      # NOTE: build-snippets runs the pathfinder-app CLI, at the commit pinned in
+      # .github/pathfinder-app-ref (resolved by resolve-app-ref), inside this
+      # trusted job so the generated guides/shared/snippets/index.json can be pushed
       # alongside the rest of guides/. This is a remaining un-sandboxed CLI
       # invocation in a credentialed job; sandboxing it would require routing
       # snippets through build-packages and is tracked as follow-up work.
@@ -56,7 +101,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: grafana/grafana-pathfinder-app
-          ref: main
+          ref: ${{ needs.resolve-app-ref.outputs.ref }}
           path: pathfinder-app
           persist-credentials: false
 
@@ -119,12 +164,14 @@ jobs:
           environment: ${{ env.DEPLOY_ENV == 'dev' && 'dev' || 'prod' }}
           service_account: github-interactive-learning@grafanalabs-workload-identity.iam.gserviceaccount.com
 
-  # Sandboxed: executes the pathfinder-app CLI from ref: main. Deliberately
+  # Sandboxed: executes the pathfinder-app CLI at the commit pinned in
+  # .github/pathfinder-app-ref (resolved by resolve-app-ref). Deliberately
   # holds no id-token so a compromised ref cannot mint a GCS OIDC token.
   # Artifacts produced here are integrity-checked by publish-packages before push.
   build-packages:
     name: Build Pathfinder packages and courses
     runs-on: ubuntu-latest
+    needs: resolve-app-ref
     permissions:
       contents: read
     steps:
@@ -138,7 +185,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: grafana/grafana-pathfinder-app
-          ref: main
+          ref: ${{ needs.resolve-app-ref.outputs.ref }}
           path: pathfinder-app
           persist-credentials: false
 

@@ -90,14 +90,14 @@ The most common case. Each panel has a unique `title` that maps directly to a st
 }
 ```
 
-**Below-fold panels** (`gridPos.y >= 8`) **must** use `guided` blocks with `lazyRender: true`. Grafana lazy-renders panels — panels below the viewport do not exist in the DOM until the user scrolls to them. The `exists-reftarget` requirement only waits; it cannot scroll the page. Without `lazyRender: true`, the element will never appear and the step will fail with "Element not found."
+**Below-fold panels** (`gridPos.y >= 8`) **must** set `lazyRender: true` plus a verified `scrollContainer` (on an `interactive` block or a `guided` step). Grafana lazy-renders panels — panels below the viewport do not exist in the DOM until the user scrolls to them. The `exists-reftarget` requirement only waits; it cannot scroll the page. Without `lazyRender: true`, the element will never appear and the step will fail with "Element not found."
 
 ```json
 // Dashboard JSON
 { "title": "Request Latency", "type": "timeseries", "gridPos": { "y": 16 }, ... }
 ```
 ```json
-// Guide step -- below fold, MUST use guided + lazyRender
+// Guide step -- below fold, MUST set lazyRender (guided form shown)
 {
   "type": "guided",
   "content": "Review the **Request Latency** panel.\n\nThis panel shows p95 request latency over time.",
@@ -172,10 +172,10 @@ Grafana **lazy-renders** panels: only panels visible in the viewport (plus a sma
 
 2. **If the panel is above the fold** (roughly `gridPos.y < 8`): `:nth-match(1)` may work for the first untitled panel since it will be in the DOM at page load. Always use `doIt: false`.
 
-3. **If the panel is below the fold** and you must target it: use a `guided` block with `lazyRender: true`. This tells the guide system to scroll the element into view and wait for it to render before attempting the selector.
+3. **If the panel is below the fold** and you must target it: set `lazyRender: true` and a verified `scrollContainer` on the `interactive` block or `guided` step. This tells the guide system to scroll the element into view and wait for it to render before attempting the selector.
 
 ```json
-// Untitled panel below the fold -- guided with lazyRender
+// Untitled panel below the fold -- lazyRender (guided form shown)
 {
   "type": "guided",
   "content": "Scroll down to review the vertical gradient bar gauge.\n\nThis panel shows 16 series using gradient mode in vertical orientation.",
@@ -230,7 +230,7 @@ Given a panel from the dashboard JSON, derive its best selector:
          → Use: interactive block with doIt: false
      → If below fold OR 2nd+ untitled panel:
          → Preferred: use noop or markdown to describe the panel (no selector needed)
-         → If selector is essential: use guided block with lazyRender: true
+         → If selector is essential: set lazyRender: true + a verified scrollContainer
            and section[data-testid='data-testid Panel header ']:nth-match(N)
          → N = this panel's position among untitled panels (sorted by gridPos.y, then x)
      → Record: fold position and recommended treatment in extraction report
@@ -243,8 +243,8 @@ Given a panel from the dashboard JSON, derive its best selector:
      If count == 1:
        → Grade: Green
        → Selector: `section[data-testid='data-testid Panel header {title}']`
-       → If above fold: use plain interactive block (exists-reftarget waits for the element)
-       → If below fold: MUST use guided block with lazyRender: true
+       → If above fold: plain interactive block (exists-reftarget waits for the element)
+       → If below fold: MUST set lazyRender: true + a verified scrollContainer
          (exists-reftarget only waits — it cannot scroll; without lazyRender
          Grafana never renders the panel and the selector times out)
      If count > 1:
@@ -307,7 +307,7 @@ Include this report alongside every generated guide as `assets/selector-report.m
 
 ## Dashboard-Specific Selector Caveats
 
-For lazy rendering guidance — why below-fold panels require `guided` blocks with `lazyRender: true`, and why `nth-match(N)` is unreliable for panels not yet in the DOM — see the **Lazy Rendering (CRITICAL)** section in `dashboard-guide-rules.md`.
+For lazy rendering guidance — why below-fold panels require `lazyRender: true` with a verified `scrollContainer`, and why `nth-match(N)` is unreliable for panels not yet in the DOM — see the **Lazy Rendering (CRITICAL)** section in `dashboard-guide-rules.md`.
 
 ### Repeated Panels
 
