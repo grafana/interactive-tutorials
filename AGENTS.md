@@ -49,6 +49,7 @@ Full reference documentation lives in `docs/`. AI-oriented references live in `.
 | Author with Pathfinder tools (MCP, CLI, e2e runner) | [authoring-guide.mdc](.cursor/authoring-guide.mdc#pathfinder-authoring-tools) | [docs/pr-e2e-testing.md](docs/pr-e2e-testing.md), [MCP server](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/MCP_SERVER.md), [CLI tools](https://github.com/grafana/grafana-pathfinder-app/blob/main/docs/developer/CLI_TOOLS.md) |
 | Create new guide | `/new` command | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [complete-example-tutorial.mdc](.cursor/complete-example-tutorial.mdc) |
 | Validate guide | `/lint`, `/check`, `/attack` commands | [authoring-guide.mdc](.cursor/authoring-guide.mdc), [best-practices.mdc](.cursor/best-practices.mdc) |
+| Feature guides on specific Grafana pages | [Page spotlight reference](docs/spotlight-reference.md) | `spotlight/<team>.json` |
 | Make a guide recommended | [how-to-write-recommendations.mdc](.cursor/how-to-write-recommendations.mdc) | `manifest.json`, [docs/manifest-reference.md](docs/manifest-reference.md) |
 | Write/edit manifest.json | [docs/manifest-reference.md](docs/manifest-reference.md) | [authoring-guide.mdc](.cursor/authoring-guide.mdc) |
 | Understand the system | [system-architecture.mdc](.cursor/system-architecture.mdc) | `docs/` |

@@ -222,7 +222,7 @@ jobs:
           #   guides          — legacy staging dir created earlier in this job
           #   packages        — the staging dir we are building right now
           #   courses         — published separately as bucket/courses/
-          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages courses"
+          EXCLUDE="pathfinder-app .github docs .cursor shared guides packages courses spotlight"
 
           for dir in */; do
             dir="${dir%/}"
@@ -265,6 +265,12 @@ jobs:
           echo ""
           echo "repository.json:"
           cat packages/repository.json
+
+      - name: Build optional spotlight index
+        continue-on-error: true
+        run: |
+          python3 .github/scripts/build_spotlights.py spotlight packages/repository.json "$RUNNER_TEMP/spotlights.json"
+          mv "$RUNNER_TEMP/spotlights.json" packages/spotlights.json
 
       - name: Build dependency graph
         continue-on-error: true
@@ -344,6 +350,14 @@ jobs:
             packages/repository.json > /dev/null \
             || { echo "❌ packages/repository.json malformed or empty"; exit 1; }
           echo "✅ repository.json well-formed with $(jq 'length' packages/repository.json) packages"
+
+          # Leave the previous CDN object in place if the optional artifact is invalid.
+          if [[ -f packages/spotlights.json ]] && ! jq -e '
+            .schemaVersion == 1 and (.spotlights | type == "array" and all(.[]; has("path") and has("heading") and has("guides")))
+          ' packages/spotlights.json >/dev/null; then
+            echo "::warning::Skipping invalid spotlight index"
+            rm packages/spotlights.json
+          fi
 
           # Optional graph.json: if present, must parse.
           if [ -f packages/graph.json ]; then

@@ -344,6 +344,27 @@ jobs:
         echo ""
         echo "📦 repository.json generated successfully"
 
+    - name: Test spotlight aggregation
+      run: python3 -m unittest discover -s .github/scripts -p test_build_spotlights.py
+
+    - name: Checkout trusted spotlight validator
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      with:
+        ref: main
+        path: .spotlight-trusted
+        sparse-checkout: .github/scripts
+        persist-credentials: false
+
+    - name: Validate team spotlights with main
+      run: |
+        validator=.spotlight-trusted/.github/scripts/build_spotlights.py
+        if [[ -f "$validator" ]]; then
+          python3 "$validator" spotlight repository.json spotlights.json
+        elif compgen -G 'spotlight/*.json' >/dev/null; then
+          echo "::error::Publish the trusted validator on main before adding team files"
+          exit 1
+        fi
+
     - name: Build dependency graph
       continue-on-error: true
       run: |
