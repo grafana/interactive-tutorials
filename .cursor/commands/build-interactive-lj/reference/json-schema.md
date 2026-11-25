@@ -22,7 +22,7 @@ This document defines the structure and field requirements for `content.json` fi
 
 | Field | Type | Required | Description | Example |
 |-------|------|----------|-------------|---------|
-| `schemaVersion` | string | Optional | Omit it and the parser defaults to `"1.1.0"`. If you include it, the value MUST be `"1.1.0"` — any other value (for example `"1.0.0"`) fails validation. | `"1.1.0"` |
+| `schemaVersion` | string | Optional | Omit it and the parser defaults to `"1.1.0"`, or set it to `"1.1.0"`. If you include it, it MUST match the sibling `manifest.json` `schemaVersion`; a mismatch fails validation. | `"1.1.0"` |
 | `id` | string | ✅ Yes | Format: `[learning-path-slug]-[milestone-slug]` (kebab-case) | `"billing-usage-navigate-to-billing-dashboard"` |
 | `title` | string | ✅ Yes | Human-readable milestone title from source markdown | `"Navigate to the billing dashboard"` |
 | `blocks` | array | ✅ Yes | Array of content blocks (see below) | `[{...}, {...}]` |
