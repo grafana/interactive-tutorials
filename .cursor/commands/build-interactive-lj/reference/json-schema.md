@@ -345,7 +345,7 @@ Convert ALL content to `markdown` blocks:
 
 ```json
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "id": "learning-path-milestone-slug",
   "title": "Milestone Title",
   "blocks": [
@@ -420,7 +420,7 @@ Supplementary blocks MUST appear at the end of the `blocks` array, in this order
 Before proceeding to selector discovery, verify EACH content.json file:
 
 ### Root-Level Schema:
-- [ ] File includes `"schemaVersion": "1.0.0"` at root level
+- [ ] File either omits `schemaVersion` or sets `"schemaVersion": "1.1.0"` at root level, matching `manifest.json`
 - [ ] File includes `"id"` field with format `[learning-path-slug]-[milestone-slug]`
 - [ ] File includes `"title"` field with human-readable milestone title
 - [ ] File includes `"blocks"` array at root level
