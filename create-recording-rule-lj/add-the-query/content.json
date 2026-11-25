@@ -1,0 +1,68 @@
+{
+  "id": "create-recording-rule-add-the-query",
+  "title": "Add the query",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Select the data source the rule queries and enter the query."
+    },
+    {
+      "type": "section",
+      "id": "create-rule-add-the-query",
+      "title": "Add the query",
+      "requirements": [
+        "has-datasource:grafanacloud-usage"
+      ],
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Query editor row'] input[data-testid='data-testid Select a data source']",
+          "targetvalue": "grafanacloud-usage",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "content": "In query **A**, select **grafanacloud-usage** as the data source the rule queries."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid QueryEditorModeToggle'] label[title='Code']",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "skippable": true,
+          "content": "Select **Code** if it isn't already selected."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Query editor row'] textarea.inputarea",
+          "targetvalue": "sum(grafanacloud_instance_active_series)",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "content": "In the field that reads **Enter a PromQL query…**, enter `sum(grafanacloud_instance_active_series)`.\n\nThis query returns the total number of active series across all stacks in your Grafana Cloud account. When **Explain** is on, Grafana describes each part of the query under the field."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid alert-rule step-2'] header:contains('Recording rule output')",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find the **Reduce** expression under **Expressions**. **Reduce** turns each series the query returns into a single number, and that number is what the rule records. The form adds it for you. Leave it as it is."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The rule queries one data source and records a single number from the result."
+    }
+  ]
+}

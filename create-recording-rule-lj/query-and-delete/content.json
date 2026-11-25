@@ -1,0 +1,213 @@
+{
+  "id": "create-recording-rule-query-and-delete",
+  "title": "Query the recorded metric and delete the rule",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Query the recorded metric in **Explore** to see the data the rule has written."
+    },
+    {
+      "type": "section",
+      "id": "create-rule-query-the-metric",
+      "title": "Query the recorded metric in Explore",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/explore?schemaVersion=1&panes=%7B%22a%22%3A%7B%22datasource%22%3A%22grafanacloud-prom%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22prometheus%22%2C%22uid%22%3A%22grafanacloud-prom%22%7D%2C%22expr%22%3A%22test_active_series_total%22%2C%22editorMode%22%3A%22code%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1",
+          "content": "Go to **Explore**. The link opens your stack's Prometheus data source with `test_active_series_total` in the query field, the metric name you entered for the rule.",
+          "verify": "on-page:/explore"
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid RefreshPicker run button']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "content": "Click **Run query**."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Panel header Graph']",
+          "requirements": [
+            "on-page:/explore",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Find the **Graph** panel. It plots the recorded metric over time.\n\nSoon after you save the rule, the graph starts to show the recorded metric. The rule writes a new value each minute.\n\nIf the graph shows **No data**, the rule hasn't been evaluated yet. Wait a minute, then click **Run query** again.\n\nDashboards and alert rules can query `test_active_series_total` the same way."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The recorded metric has a new data point for each evaluation, and you can query it by its metric name."
+    },
+    {
+      "type": "markdown",
+      "content": "Delete the rule you created."
+    },
+    {
+      "type": "section",
+      "id": "create-rule-delete-the-rule",
+      "title": "Delete the rule",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/list",
+          "content": "Go to **Alert rules**.",
+          "verify": "on-page:/alerting/list"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid alerting search-input']",
+          "targetvalue": "Total active series",
+          "requirements": [
+            "on-page:/alerting/list",
+            "exists-reftarget"
+          ],
+          "content": "In the search box, enter `Total active series`, then press Enter. The list now shows only that rule. If it shows more than one rule with this name, delete only the one you created in this path. Leave any rule that was already on your stack."
+        },
+        {
+          "type": "multistep",
+          "content": "In the **Total active series** row, click **More** and select **Delete**.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "li[role='treeitem']:contains('Total active series') button[aria-label='More']",
+              "requirements": [
+                "on-page:/alerting/list",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitem']:contains('Delete')",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[role='dialog'] button:contains('Yes, delete')",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Click **Yes, delete** to delete the rule."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The rule no longer appears on the **Alert rules** page."
+    },
+    {
+      "type": "markdown",
+      "content": "Delete the folder you created for the rule."
+    },
+    {
+      "type": "section",
+      "id": "create-rule-delete-the-folder",
+      "title": "Delete the folder",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/dashboards",
+          "content": "Go to **Dashboards**. The folder you created is still there after the rule is deleted, and folders are managed on the **Dashboards** page.",
+          "verify": "on-page:/dashboards"
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Browse dashboards search input']",
+          "targetvalue": "Recording rule practice (learning path)",
+          "requirements": [
+            "on-page:/dashboards",
+            "exists-reftarget"
+          ],
+          "content": "In the search box, enter `Recording rule practice (learning path)`. The list now shows only that folder. If it shows more than one folder with this name, delete only the one you created in this path. Leave any folder that was already on your stack. Deleting a folder also deletes everything in it."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "main a[href^='/dashboards/f/']:contains('Recording rule practice (learning path)')",
+          "requirements": [
+            "on-page:/dashboards",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Click **Recording rule practice (learning path)** to open the folder.\n\nThe folder page has a **Recently deleted** button. It opens a list of recently deleted items. It doesn't mean this folder is deleted."
+        },
+        {
+          "type": "multistep",
+          "content": "Click **Folder actions**, select **Delete this folder**, and type `Delete` to confirm.",
+          "requirements": [
+            "on-page:/dashboards/f/"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "main button:contains('Folder actions')",
+              "requirements": [
+                "on-page:/dashboards/f/",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "button[role='menuitem']:contains('Delete this folder')",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "formfill",
+              "reftarget": "[data-testid='data-testid Confirm Modal Input']",
+              "targetvalue": "Delete",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='data-testid Confirm Modal Danger Button']",
+          "requirements": [
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Click **Delete** to delete the folder."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid Browse dashboards search input']",
+          "targetvalue": "Recording rule practice (learning path)",
+          "requirements": [
+            "on-page:/dashboards",
+            "exists-reftarget"
+          ],
+          "content": "Search for `Recording rule practice (learning path)` again. No folder with this name appears."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Your stack no longer has the rule or its folder."
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "id": "create-recording-rule-name-the-rule",
+  "title": "Name the rule and the metric",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "Open the **New recording rule** form and give the rule its two names."
+    },
+    {
+      "type": "section",
+      "id": "create-rule-name-the-rule",
+      "title": "Name the rule and the metric",
+      "blocks": [
+        {
+          "type": "interactive",
+          "action": "navigate",
+          "reftarget": "/alerting/list",
+          "content": "Go to **Alert rules**.",
+          "verify": "on-page:/alerting/list"
+        },
+        {
+          "type": "multistep",
+          "content": "Click **More**, then select **New Grafana recording rule**.",
+          "requirements": [
+            "on-page:/alerting/list"
+          ],
+          "steps": [
+            {
+              "action": "highlight",
+              "reftarget": "[data-testid='data-testid rule-list more-menu-trigger-button']",
+              "requirements": [
+                "on-page:/alerting/list",
+                "exists-reftarget"
+              ]
+            },
+            {
+              "action": "highlight",
+              "reftarget": "a[role='menuitem'][href='/alerting/new/grafana-recording']",
+              "requirements": [
+                "exists-reftarget"
+              ]
+            }
+          ]
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "[data-testid='data-testid alert-rule name-field']",
+          "targetvalue": "Total active series",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "content": "In **Name**, enter a name for the rule itself. This path uses `Total active series`."
+        },
+        {
+          "type": "interactive",
+          "action": "formfill",
+          "reftarget": "input#metric",
+          "targetvalue": "test_active_series_total",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "content": "In **Metric**, enter the name for the recorded metric. This path uses `test_active_series_total`.\n\nA dashboard or an alert rule uses this name to get the recorded metric. The name can't contain spaces."
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "[data-testid='target-data-source']",
+          "requirements": [
+            "on-page:/alerting/new/grafana-recording",
+            "exists-reftarget"
+          ],
+          "doIt": false,
+          "content": "Notice **Target data source**. It shows the Prometheus data source that belongs to your own stack. Leave it as it is.\n\nThe target data source is where the rule writes the recorded metric. The recorded metric is stored on your stack, with your stack's other metrics.\n\nThe data source the rule queries is a different field. You select it in the next milestone."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "A recording rule has a rule name for the rule itself and a metric name for the recorded metric."
+    }
+  ]
+}
