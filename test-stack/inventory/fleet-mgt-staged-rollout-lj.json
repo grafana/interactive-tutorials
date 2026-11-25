@@ -1,0 +1,54 @@
+{
+  "path": "fleet-mgt-staged-rollout-lj",
+  "summary": "Teaches rolling out and rolling back a Fleet Management configuration pipeline across dev, staging and production via env attributes.",
+  "needs": [
+    {
+      "id": "registered-collectors-env",
+      "kind": "collector-fleet",
+      "description": "Collectors registered in Fleet Management, ideally at least one each with remote attribute env=dev, staging, production (path can add env attribute if missing)",
+      "category": "external-infra",
+      "evidence": "Before you begin: collectors already registered; verify-env-attributes",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "alloy-collector-host",
+      "kind": "external-infra",
+      "description": "Running Alloy instances behind those collectors",
+      "category": "external-infra",
+      "evidence": "Collectors already registered with Fleet Management",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "rollout-pipeline",
+      "kind": "other",
+      "description": "A remote configuration pipeline already created in Fleet Management ready to roll out",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: configuration pipeline ready to roll out; edit icon next to pipeline",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "collector-app-admin",
+      "kind": "permission-or-role",
+      "description": "Admin with has-permission:grafana-collector-app:admin",
+      "category": "entitlement",
+      "evidence": "requirements has-permission:grafana-collector-app:admin",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "fleet-management-app",
+      "kind": "plugin-or-app",
+      "description": "grafana-collector-app enabled",
+      "category": "in-cloud-seedable",
+      "evidence": "targeting urlPrefix /a/grafana-collector-app/fleet-management",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Section-completed requirement check-collector-attributes. Path mutates pipeline state; tests should reset.",
+  "externalInfraDependent": true
+}

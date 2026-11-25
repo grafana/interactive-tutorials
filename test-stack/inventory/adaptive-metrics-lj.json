@@ -1,0 +1,36 @@
+{
+  "path": "adaptive-metrics-lj",
+  "summary": "Teaches how to review/apply Adaptive Metrics recommendations, create rules and exemptions, segment by team, and enable auto-apply.",
+  "needs": [
+    {
+      "id": "metrics-ingested",
+      "kind": "telemetry-data",
+      "description": "Active metrics ingested into Grafana Cloud Prometheus with query usage so Adaptive Metrics produces recommendations and a Metrics rule list; Overview graph needs applied rules over time.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "content.json: \"Metrics ingested into Grafana Cloud\"; review-apply: recommendations list",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "adaptive-metrics-app",
+      "kind": "plugin-or-app",
+      "description": "Adaptive Metrics app (grafana-adaptive-metrics-app) available (enabled by default on Cloud).",
+      "category": "entitlement",
+      "evidence": "startingLocation /a/grafana-adaptive-metrics-app/overview",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "segment-for-rule-steps",
+      "kind": "existing-grafana-config",
+      "description": "A segment without auto-apply enabled (default segment suffices) for rules step; segments tab used for auto-apply step (default segment or created one).",
+      "category": "in-cloud-seedable",
+      "evidence": "rules-exemptions: \"select a segment ... that does not have Auto-apply enabled\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Recommendations may be empty on a seeded stack; per-row Apply step needs at least one recommendation. Also adaptive metrics aggregations need aged data.",
+  "externalInfraDependent": false
+}

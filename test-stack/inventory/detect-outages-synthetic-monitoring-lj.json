@@ -1,0 +1,54 @@
+{
+  "path": "detect-outages-synthetic-monitoring-lj",
+  "summary": "Teaches creating a ping synthetic check, choosing probes and viewing its dashboard in Synthetic Monitoring.",
+  "needs": [
+    {
+      "id": "synthetic-monitoring-plugin",
+      "kind": "plugin-or-app",
+      "description": "grafana-synthetic-monitoring-app installed; path has an initialize-plugin step, so it must be uninitialized (or the step tolerates already-initialized state)",
+      "category": "in-cloud-seedable",
+      "evidence": "initialize-plugin milestone; targeting urlPrefix /a/grafana-synthetic-monitoring-app/home",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "sm-default-datasources",
+      "kind": "datasource",
+      "description": "Prometheus and Loki data sources auto-created by SM initialization (metrics/logs for view-check-dashboard)",
+      "category": "in-cloud-seedable",
+      "evidence": "initialize-plugin: automatically creating the required Prometheus and Loki data sources",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "public-probes-and-egress",
+      "kind": "plan-or-entitlement",
+      "description": "Public probes available (North California, Singapore, Frankfurt) and internet reachability to grafana.com target",
+      "category": "entitlement",
+      "evidence": "select-probe-locations step; target grafana.com",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "plugin-install-permission",
+      "kind": "permission-or-role",
+      "description": "Permission to install/initialize plugins (Admin)",
+      "category": "entitlement",
+      "evidence": "Before you begin: permissions to install plugins",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "sm-check-data",
+      "kind": "telemetry-data",
+      "description": "A few minutes of check results so the Uptime panel populates",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "view-check-dashboard: Refresh after a few minutes to allow data to populate",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "If the stack's SM plugin is already initialized, initialize-plugin step may fail unless it has skip; a pre-existing job named grafana-ping-check could conflict.",
+  "externalInfraDependent": false
+}

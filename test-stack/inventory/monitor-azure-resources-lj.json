@@ -1,0 +1,54 @@
+{
+  "path": "monitor-azure-resources-lj",
+  "summary": "Teaches connecting an Azure subscription to Grafana Cloud using a service principal and serverless Azure Metrics.",
+  "needs": [
+    {
+      "id": "azure-subscription-cli",
+      "kind": "external-infra",
+      "description": "Azure account able to create a service principal and assign roles, Azure CLI installed, and running Azure resources.",
+      "category": "external-infra",
+      "evidence": "Before you begin: Azure account, Azure CLI, resources",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "grafana-csp-app-azure-roles",
+      "kind": "permission-or-role",
+      "description": "Admin basic role, or Azure Writer Cloud Provider role plus alerting/folder fixed roles.",
+      "category": "entitlement",
+      "evidence": "Before you begin roles list",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "grafana-csp-app",
+      "kind": "plugin-or-app",
+      "description": "Cloud Provider app Azure section with serverless Azure Metrics available.",
+      "category": "entitlement",
+      "evidence": "startingLocation /a/grafana-csp-app/azure",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "azure-credential",
+      "kind": "existing-grafana-config",
+      "description": "Valid service principal credentials; guide types placeholders (client id 12345678-..., secret your-secret-password) that real validation would reject.",
+      "category": "external-infra",
+      "evidence": "connect-azure-account formfills",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "azure-metrics",
+      "kind": "telemetry-data",
+      "description": "Azure Monitor metrics flowing so Services tab shows data.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "verify-data-collection",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Placeholder credentials mean real E2E needs a real Azure subscription or a pre-created credential on the stack.",
+  "externalInfraDependent": true
+}

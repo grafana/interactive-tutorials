@@ -1,0 +1,45 @@
+{
+  "path": "loki-data-source-lj",
+  "summary": "Teaches adding and configuring a Loki data source with auth, testing it and querying logs in Explore.",
+  "needs": [
+    {
+      "id": "loki-backend",
+      "kind": "external-infra",
+      "description": "A reachable Loki backend (Grafana Cloud Logs URL e.g. https://logs-prod-006.grafana.net, or self-managed/GEL) with credentials: user ID and a token with logs:read.",
+      "category": "external-infra",
+      "evidence": "configure-url formfill \"https://logs-prod-006.grafana.net\"; configure-authentication basic auth",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "loki-log-data",
+      "kind": "telemetry-data",
+      "description": "Logs in Loki queryable with a label selector such as {job=\"varlogs\"}.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "verify-logs: enter `{job=\"varlogs\"}`",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Admin rights to add data sources.",
+      "category": "entitlement",
+      "evidence": "Before you begin: Administrator rights",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "pdc-for-private-loki",
+      "kind": "external-infra",
+      "description": "Private data source connect agent, only if Loki is self-managed on a private network.",
+      "category": "external-infra",
+      "evidence": "Before you begin: PDC note",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Test could be satisfied by pointing at the stack own grafanacloud-*-logs Loki endpoint with an access policy token; secret provisioning needed. External-infra need only applies if using self-managed Loki.",
+  "externalInfraDependent": false
+}

@@ -1,0 +1,87 @@
+{
+  "path": "prom-remote-write-lj",
+  "id": "prom-remote-write-lj",
+  "type": "path",
+  "milestoneCount": 4,
+  "startingLocation": "/connections/add-new-connection/hmInstancePromId",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "or": [
+                {
+                  "and": [
+                    {
+                      "urlPrefix": "/connections/add-new-connection/hmInstancePromId"
+                    },
+                    {
+                      "targetPlatform": "cloud"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you send Prometheus metrics to Grafana Cloud, ensure that you have:\n\n- Experience working with Prometheus and an understanding of its basic setup and operation.\n- A running Prometheus server that's already configured to scrape metrics.\n- Access to the machine on which Prometheus is installed, with write permission for the Prometheus configuration file and permission to restart the Prometheus service.\n- A Grafana Cloud stack in which you have the Admin role, so you can create the access policy token."
+  ],
+  "milestones": [
+    {
+      "id": "prom-remote-write-verify-prom-data",
+      "dir": "prom-remote-write-lj/verify-prom-data",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "prom-remote-write-configure",
+      "dir": "prom-remote-write-lj/configure-prom-remote-write",
+      "requirements": {
+        "navmenu-open": 2,
+        "exists-reftarget": 10,
+        "on-page:/connections/add-new-connection": 2,
+        "section-completed:open-the-setup-page": 1,
+        "has-role:admin": 1,
+        "on-page:/connections/add-new-connection/hmInstancePromId": 7,
+        "section-completed:create-a-token-and-copy-the-config": 1
+      },
+      "navigate": [],
+      "needsText": [
+        "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Read-only or can't open file message when editing prometheus.yml](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/#receive-read-only-or-cant-open-file-message)\n- [Troubleshoot Cloud Metrics write issues](https://grafana.com/docs/grafana-cloud/send-data/metrics/troubleshoot/)"
+      ]
+    },
+    {
+      "id": "prom-remote-write-verify-metrics",
+      "dir": "prom-remote-write-lj/verify-metrics-query-works",
+      "requirements": {
+        "navmenu-open": 1,
+        "exists-reftarget": 2,
+        "on-page:/a/grafana-metricsdrilldown-app": 1
+      },
+      "navigate": [],
+      "needsText": [
+        "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Troubleshoot Cloud Metrics write issues](https://grafana.com/docs/grafana-cloud/send-data/metrics/troubleshoot/)\n- [Prometheus ingestion errors](https://grafana.com/docs/grafana-cloud/send-data/metrics/metrics-prometheus/ingestion-errors/)"
+      ]
+    },
+    {
+      "id": "prom-remote-write-end",
+      "dir": "prom-remote-write-lj/end-remote-write",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

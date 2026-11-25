@@ -1,0 +1,45 @@
+{
+  "path": "beyla-tempo-lj",
+  "summary": "Teaches instrumenting a service with Grafana Beyla (eBPF) and sending traces to Grafana Cloud via OTLP, then exploring them in Explore.",
+  "needs": [
+    {
+      "id": "linux-docker-host",
+      "kind": "external-infra",
+      "description": "Linux host with Docker and privileged container permission to run the sample goblog app and Beyla sidecar (--pid container, --privileged).",
+      "category": "external-infra",
+      "evidence": "Before you begin: \"A Linux system with Docker installed\"; instrument-application docker run commands",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "otlp-credentials",
+      "kind": "other",
+      "description": "OTLP endpoint and API token generated from Grafana Cloud OpenTelemetry configure page (Generate now); user must have rights to create tokens.",
+      "category": "entitlement",
+      "evidence": "configure-otlp-endpoint: \"Generate now\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "tempo-datasource",
+      "kind": "datasource",
+      "description": "Tempo traces data source (grafanacloud-traces) available in Explore.",
+      "category": "in-cloud-seedable",
+      "evidence": "testEnvironment.datasources: tempo; explore-traces: Select a data source",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "beyla-trace-data",
+      "kind": "telemetry-data",
+      "description": "Trace data in Tempo emitted by Beyla instrumenting goblog (spans for GET /); alternative is seeding generated traces so Explore search returns a trace ID.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "explore-traces: \"run a broad trace search ... Click a Trace ID\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "The path's data comes from a learner-run Docker host; E2E would need synthetic traces or a runner with Docker. Config steps (token generation) mutate the shared stack.",
+  "externalInfraDependent": true
+}

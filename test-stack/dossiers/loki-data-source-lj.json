@@ -1,0 +1,119 @@
+{
+  "path": "loki-data-source-lj",
+  "id": "loki-data-source-lj",
+  "type": "path",
+  "milestoneCount": 7,
+  "startingLocation": "/connections/datasources",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:loki"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
+              ]
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/loki"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "## Before you begin\n\nBefore you connect to a Loki data source, ensure you have:\n\n- A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account).\n- Administrator rights to your Grafana instance.\n- A Loki backend to connect to. This can be a self-managed Loki instance, a Grafana Enterprise Logs (GEL) cluster, or a Grafana Cloud Logs stack.\n- Network access between Grafana Cloud and your Loki backend. For self-managed Loki reachable only on a private network, you need a [private data source connection (PDC)](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/).\n- An agent shipping logs to Loki. Refer to [Send log data to Loki](https://grafana.com/docs/loki/latest/send-data/) for self-managed Loki, or [Collect logs with Grafana Alloy](https://grafana.com/docs/grafana-cloud/send-data/logs/) for Grafana Cloud.\n\n**Note:** Grafana Cloud includes a pre-configured `grafanacloud-<stack>-logs` data source backed by Loki. Add a Loki data source manually when you need to connect to a self-managed Loki instance, a Grafana Enterprise Logs cluster, or require a custom configuration beyond the pre-configured data source."
+  ],
+  "milestones": [
+    {
+      "id": "loki-data-source-prepare",
+      "dir": "loki-data-source-lj/prepare-connection",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "**1. Identify your Loki environment.** The Loki data source supports three common environments:\n\n- **Self-managed Loki** \u2014 Loki you run yourself, typically at `http://<host>:3100`.\n- **Grafana Cloud Logs** \u2014 The fully-managed Loki backend included with Grafana Cloud.\n- **Grafana Enterprise Logs (GEL)** \u2014 The self-hosted enterprise logging backend.\n\n**Note:** Grafana Cloud already includes a pre-configured `grafanacloud-<stack>-logs` data source. Add a Loki data source manually when you need to connect to a self-managed Loki instance or require a custom configuration."
+      ]
+    },
+    {
+      "id": "loki-data-source-add",
+      "dir": "loki-data-source-lj/add-data-source",
+      "requirements": {
+        "navmenu-open": 1,
+        "exists-reftarget": 4
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "loki-data-source-configure-url",
+      "dir": "loki-data-source-lj/configure-url",
+      "requirements": {
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "loki-data-source-configure-auth",
+      "dir": "loki-data-source-lj/configure-authentication",
+      "requirements": {
+        "exists-reftarget": 3
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "loki-data-source-test",
+      "dir": "loki-data-source-lj/save-and-test",
+      "requirements": {
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": [
+        "---\n\n### Troubleshooting\n\nExplore the following troubleshooting topics if you need help:\n\n- [Troubleshoot Loki data source issues](https://grafana.com/docs/grafana/latest/datasources/loki/troubleshooting/)\n- [Configure the Loki data source](https://grafana.com/docs/grafana/latest/datasources/loki/configure/)\n- [Loki service troubleshooting](https://grafana.com/docs/loki/latest/operations/troubleshooting/)\n- [Private data source connections](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/)"
+      ]
+    },
+    {
+      "id": "loki-data-source-verify",
+      "dir": "loki-data-source-lj/verify-logs",
+      "requirements": {
+        "navmenu-open": 1,
+        "exists-reftarget": 5,
+        "on-page:/explore": 4
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "loki-data-source-end",
+      "dir": "loki-data-source-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "path": "deploy-alert-terraform-lj",
+  "summary": "Teaches deploying a Grafana alert rule, contact point and notification policy with Terraform using a service account token.",
+  "needs": [
+    {
+      "id": "terraform-cli",
+      "kind": "external-infra",
+      "description": "Terraform >=1.0 CLI on the learner's machine to run plan/apply against the stack",
+      "category": "external-infra",
+      "evidence": "Before you begin: Terraform installed (version 1.0 or later)",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "alert-source-datasource",
+      "kind": "datasource",
+      "description": "A Prometheus data source (or grafana-testdata-datasource) whose UID is used as datasource_uid in the rule",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: A data source configured; note on grafana-testdata-datasource",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "admin-or-editor-role",
+      "kind": "permission-or-role",
+      "description": "User able to create service accounts/tokens (Admin) and manage alerting",
+      "category": "entitlement",
+      "evidence": "Before you begin: Admin or Editor permissions; create-service-account milestone",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Steps run in a local terminal; no in-UI requirements in dossier. Terraform apply is outside the browser so E2E can only cover UI steps (service account, verify).",
+  "externalInfraDependent": true
+}

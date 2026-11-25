@@ -1,0 +1,45 @@
+{
+  "path": "drilldown-profiles-lj",
+  "summary": "Teaches investigating continuous profiling data in Profiles Drilldown using labels, flame graphs and diff flame graphs.",
+  "needs": [
+    {
+      "id": "pyroscope-datasource-play-profiles",
+      "kind": "datasource",
+      "description": "Grafana Pyroscope data source named exactly 'grafanacloud-play-profiles' pointing at https://play-pyroscope.grafana.org/ (path offers to create it if missing; has-datasource requirement)",
+      "category": "in-cloud-seedable",
+      "evidence": "requirements has-datasource:grafanacloud-play-profiles; typed URL https://play-pyroscope.grafana.org/",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "play-pyroscope-reachability",
+      "kind": "external-infra",
+      "description": "Outbound access from the stack to the public play-pyroscope.grafana.org demo, which must serve checkoutservice with CPU profiles and a region label (ap-south-1 and two other regions)",
+      "category": "external-infra",
+      "evidence": "Steps: Quick filter 'checkout', region label, ap-south-1",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "profiles-drilldown-app",
+      "kind": "plugin-or-app",
+      "description": "grafana-pyroscope-app enabled",
+      "category": "in-cloud-seedable",
+      "evidence": "targeting urlPrefix /a/grafana-pyroscope-app/explore",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "assistant-for-profiles",
+      "kind": "plugin-or-app",
+      "description": "Grafana Assistant enabled for the investigate-with-assistant milestone",
+      "category": "in-cloud-seedable",
+      "evidence": "investigate-with-assistant milestone",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "low"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Data comes from Grafana's public play Pyroscope instance, not from the stack; if unreachable or data changed, steps fail. Alternatively seed own Pyroscope data with identical service/labels.",
+  "externalInfraDependent": true
+}

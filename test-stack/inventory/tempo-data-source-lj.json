@@ -1,0 +1,45 @@
+{
+  "path": "tempo-data-source-lj",
+  "summary": "Teaches how to add and configure a Tempo data source (URL, auth, test) and verify traces in Explore.",
+  "needs": [
+    {
+      "id": "tempo-backend",
+      "kind": "external-infra",
+      "description": "Tempo backend reachable from Cloud; steps type URL https://tempo-prod-01-eu-west-0.grafana.net/tempo and basic auth user/password. Needs a Cloud Traces endpoint plus credentials, or equivalent.",
+      "category": "external-infra",
+      "evidence": "configure-url targetvalue; Before you begin: \"A Tempo backend to connect to\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "tempo-basic-auth",
+      "kind": "other",
+      "description": "Basic auth username and password for Tempo (access policy token); formfill has no targetvalue so tester provides.",
+      "category": "none",
+      "evidence": "configure-authentication: #basic-auth-user-input",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "traces-data",
+      "kind": "telemetry-data",
+      "description": "Traces in that Tempo so Explore query returns results.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "Before you begin: \"An application or service emitting traces\"; verify-traces",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "medium"
+    },
+    {
+      "id": "admin-role",
+      "kind": "permission-or-role",
+      "description": "Test user with Grafana Admin / Organization administrator role on the stack",
+      "category": "none",
+      "evidence": "Before you begin: \"Administrator rights\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Hardcoded prod EU URL likely will not match the docsteam stack; credentials needed out-of-band.",
+  "externalInfraDependent": true
+}

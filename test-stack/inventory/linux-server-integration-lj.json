@@ -1,0 +1,36 @@
+{
+  "path": "linux-server-integration-lj",
+  "summary": "Walks through installing Alloy and the Linux Server integration to monitor Linux hosts with prebuilt dashboards and alerts.",
+  "needs": [
+    {
+      "id": "linux-integration-available",
+      "kind": "plugin-or-app",
+      "description": "Linux Server integration tile (/connections/add-new-connection/linux-node) available; install of dashboards and alerts allowed.",
+      "category": "in-cloud-seedable",
+      "evidence": "select-platform and install-dashboards-alerts steps",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    },
+    {
+      "id": "linux-host-with-alloy",
+      "kind": "external-infra",
+      "description": "A Linux host (chosen OS and architecture) on which Alloy is installed and running so Test connection succeeds.",
+      "category": "external-infra",
+      "evidence": "restart-test-connection: test-connection-button; install-alloy \"Run Grafana Alloy\"",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "node-exporter-metrics-logs",
+      "kind": "telemetry-data",
+      "description": "Linux node metrics/logs from the host arriving in Cloud so the connection test passes.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "test-connection-button verifies data",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Before you begin is absent; host need inferred from the Test connection step. The copy-config steps could pass without a host.",
+  "externalInfraDependent": true
+}

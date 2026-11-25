@@ -1,0 +1,118 @@
+{
+  "path": "cloudwatch-data-source-lj",
+  "id": "cloudwatch-data-source-lj",
+  "type": "path",
+  "milestoneCount": 7,
+  "startingLocation": "/connections/datasources/new",
+  "testEnvironment": {
+    "tier": "cloud"
+  },
+  "targeting": {
+    "match": {
+      "or": [
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/edit/"
+            },
+            {
+              "tag": "selected-datasource:cloudwatch"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRoleIn": [
+                "Admin"
+              ]
+            }
+          ]
+        },
+        {
+          "and": [
+            {
+              "urlPrefix": "/connections/datasources/cloudwatch"
+            },
+            {
+              "targetPlatform": "cloud"
+            },
+            {
+              "userRole": "Admin"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "manifestPrerequisites": null,
+  "pathBeforeYouBegin": [
+    "### Before you begin\n\nBefore you connect to Amazon CloudWatch, ensure you have:\n\n- A Grafana Cloud account. To create an account, refer to [Grafana Cloud](https://grafana.com/signup/cloud/connect-account).\n- An AWS account with CloudWatch metrics or logs to query.\n- Permission to create IAM roles and policies in your AWS account (the `Organization administrator` role in Grafana is required to configure the data source).\n- Familiarity with the AWS region your resources run in."
+  ],
+  "milestones": [
+    {
+      "id": "cloudwatch-data-source-prepare-permissions",
+      "dir": "cloudwatch-data-source-lj/prepare-permissions",
+      "requirements": {},
+      "navigate": [],
+      "needsText": [
+        "### Choose the permissions you need\n\nAttach one of the following policies to the IAM role, depending on what you plan to query:\n\n- **Metrics only** \u2014 read CloudWatch metrics plus EC2 tags, instances, and regions.\n- **Logs only** \u2014 read CloudWatch Logs plus EC2 tags, instances, and regions.\n- **Metrics and logs** \u2014 read both.\n\nThe metrics-and-logs policy is shown below. For the metrics-only and logs-only variants and the cross-account observability policy, refer to [Configure the CloudWatch data source](https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/configure/#iam-policy-examples)."
+      ]
+    },
+    {
+      "id": "cloudwatch-data-source-add",
+      "dir": "cloudwatch-data-source-lj/add-data-source",
+      "requirements": {
+        "on-page:/connections/datasources": 1,
+        "exists-reftarget": 3,
+        "on-page:/connections/datasources/new": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "cloudwatch-data-source-configure-authentication",
+      "dir": "cloudwatch-data-source-lj/configure-authentication",
+      "requirements": {
+        "exists-reftarget": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "cloudwatch-data-source-grafana-assume-role",
+      "dir": "cloudwatch-data-source-lj/grafana-assume-role",
+      "requirements": {
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "cloudwatch-data-source-test-connection",
+      "dir": "cloudwatch-data-source-lj/test-connection",
+      "requirements": {
+        "exists-reftarget": 1
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "cloudwatch-data-source-explore-data",
+      "dir": "cloudwatch-data-source-lj/explore-data",
+      "requirements": {
+        "exists-reftarget": 3,
+        "navmenu-open": 1,
+        "on-page:/explore": 2
+      },
+      "navigate": [],
+      "needsText": []
+    },
+    {
+      "id": "cloudwatch-data-source-end-journey",
+      "dir": "cloudwatch-data-source-lj/end-journey",
+      "requirements": {},
+      "navigate": [],
+      "needsText": []
+    }
+  ]
+}

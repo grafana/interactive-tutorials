@@ -1,0 +1,45 @@
+{
+  "path": "send-logs-alloy-loki-lj",
+  "summary": "Teaches how to install Alloy and configure it to send local log files to Grafana Cloud Loki, then view them in Logs Drilldown.",
+  "needs": [
+    {
+      "id": "alloy-host",
+      "kind": "external-infra",
+      "description": "Host where Alloy runs with readable log files (e.g. /var/log/*.log).",
+      "category": "external-infra",
+      "evidence": "send-logs-loki: local.file_match path /var/log/*.log; Before you begin: system logs",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "loki-datasource",
+      "kind": "datasource",
+      "description": "Grafana Cloud Logs (Loki) data source connected.",
+      "category": "in-cloud-seedable",
+      "evidence": "Before you begin: \"Loki up and running and connected as a data source\"",
+      "declaredInBeforeYouBegin": true,
+      "confidence": "high"
+    },
+    {
+      "id": "collector-app",
+      "kind": "plugin-or-app",
+      "description": "Collector app (grafana-collector-app) Alloy page available for install.",
+      "category": "none",
+      "evidence": "install-alloy: /a/grafana-collector-app/alloy",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "medium"
+    },
+    {
+      "id": "logs-data",
+      "kind": "telemetry-data",
+      "description": "Log streams in Loki so Logs Drilldown lists services/labels.",
+      "category": "in-cloud-needs-generated-data",
+      "evidence": "view-logs: /a/grafana-lokiexplore-app/explore",
+      "declaredInBeforeYouBegin": false,
+      "confidence": "high"
+    }
+  ],
+  "needsHumanReview": true,
+  "reviewNotes": "Log arrival depends on real Alloy; seeded logs could substitute for view-logs.",
+  "externalInfraDependent": true
+}
