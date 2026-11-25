@@ -5,15 +5,43 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "Each generation an instrumented agent sends links to its OpenTelemetry trace in Tempo, and a trace with generative AI attributes links back to its conversation. In this milestone you make that round trip, from a generation to its span tree and from the trace back to the conversation."
+      "content": "Each generation an instrumented agent sends can link to its OpenTelemetry trace in Tempo. The demo data carries no traces, so in this milestone you run a getting started example that sends generations and traces together, then open one generation's trace from its conversation."
     },
     {
       "type": "markdown",
-      "content": "This milestone needs a conversation from an agent of your own. Demo generations carry no trace link. If your stack only has demo data, read the steps and move on. Nothing later in the path depends on them."
+      "content": "Run the multi-agent getting started example, which sends a conversation of three generations with their traces."
+    },
+    {
+      "type": "section",
+      "id": "run-the-getting-started-example",
+      "title": "Run the getting started example",
+      "autoCollapse": true,
+      "blocks": [
+        {
+          "type": "markdown",
+          "content": "In a terminal, clone the Agent Observability repository and open the multi-agent example:\n\n```bash\ngit clone https://github.com/grafana/agento11y.git\ncd agento11y/examples/getting-started/python-multi-agent\n```\n\nIf you prefer Claude, `examples/getting-started/python-claude-agent-sdk` sends traces too. It needs Claude Code authentication instead of an OpenAI key."
+        },
+        {
+          "type": "markdown",
+          "content": "Follow the setup and run instructions in the example's `README.md`. It has you copy `.env.example` to `.env`, fill in your Grafana Cloud credentials and your LLM provider key, install `requirements.txt`, and run `python main.py`."
+        },
+        {
+          "type": "input",
+          "inputType": "boolean",
+          "variableName": "gettingStartedExampleRan",
+          "prompt": "Confirm before you continue.",
+          "checkboxLabel": "I ran the example and it printed Done without errors",
+          "required": true
+        }
+      ]
     },
     {
       "type": "markdown",
-      "content": "Open a generation your own agent sent and follow its trace link."
+      "content": "Your example sent a conversation with its generations and spans."
+    },
+    {
+      "type": "markdown",
+      "content": "Open the example's conversation and follow a generation to its trace."
     },
     {
       "type": "section",
@@ -24,17 +52,17 @@
         {
           "type": "interactive",
           "action": "navigate",
-          "reftarget": "/a/grafana-agento11y-app/conversations?from=now-7d&to=now",
-          "content": "Go to **Observability** > **Agent** > **Conversations** and set the time range to cover a run of your own agent.\n\nRows without a **Demo** badge came from your agent.",
+          "reftarget": "/a/grafana-agento11y-app/conversations?from=now-1h&to=now",
+          "content": "Go to **Observability** > **Agent** > **Conversations** with a time range that covers the last hour.\n\nRows without a **Demo** badge came from your example. Open the conversation `getting-started-multi-agent`.",
           "verify": "on-page:/a/grafana-agento11y-app/conversations"
         },
         {
           "type": "markdown",
-          "content": "Open one of your conversations and click a generation to open its detail view, the same view you read in Milestone 2."
+          "content": "Click a step in the conversation to open its generation's detail view, the same view you read in Milestone 2."
         },
         {
           "type": "markdown",
-          "content": "Select the generation's trace link in its detail view. Demo generations have no trace link, so this needs a generation your own agent sent.\n\nThe trace view opens in Tempo with the full span tree. It shows the LLM call's duration and error status, any tool execution spans beneath it, and nested agent invocations if the agent called other agents."
+          "content": "To view the generation's associated trace, click into a step, then click the **T** icon for Tempo traces so the traces panel appears.\n\nThe trace opens with the full span tree. It shows the LLM call's duration and error status, any tool execution spans beneath it, and nested agent invocations if the agent called other agents."
         }
       ]
     },
@@ -44,31 +72,27 @@
     },
     {
       "type": "markdown",
-      "content": "Come back to the conversation from the trace."
+      "content": "Close the trace and return to the whole conversation."
     },
     {
       "type": "section",
-      "id": "come-back-to-the-conversation",
-      "title": "Come back to the conversation",
+      "id": "close-the-trace",
+      "title": "Close the trace",
       "autoCollapse": true,
       "blocks": [
         {
           "type": "markdown",
-          "content": "In the trace view, click **View in Agent Observability**. Tempo shows it on traces that carry generative AI attributes, and it opens the conversation the trace belongs to."
-        },
-        {
-          "type": "markdown",
-          "content": "To land on one generation instead of the whole conversation, select a span, open its `gen_ai.conversation.id` attribute, choose **Open value in**, and select **View conversation**. The conversation opens at that span's generation."
+          "content": "You don't leave the conversation to see its trace. Click the **X** to close the traces panel, then click **Back to full conversation** to return to the whole thread."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You went from a generation to its trace and back, which is the route you take when an alert or a dashboard hands you a trace first and you need the conversation behind it."
+      "content": "You went from a generation to its trace and back without leaving the conversation."
     },
     {
       "type": "markdown",
-      "content": "No trace link on your generation? Check these in order:\n\n1. The generation came from your agent, not the demo. Demo rows carry a **Demo** badge and have no trace link.\n2. Your agent exports spans. In the Connect an agent to Agent Observability path, Milestone 7 adds the OpenTelemetry trace provider. Without it the SDK records the generation but sends no trace.\n3. The **Traces** data source on your stack receives data from the agent. Open **Explore**, choose the Traces data source, and search for a recent trace from the agent's service name."
+      "content": "No **T** icon on your generation? Check these in order:\n\n1. The generation came from your example, not the demo. Demo generations carry a **Demo** badge and have no trace.\n2. The example exports spans. Its `.env` needs the `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_HEADERS` values from your Grafana Cloud stack. Without them the SDK records the generation but sends no trace.\n3. The **Traces** data source on your stack receives data from the example. Open **Explore**, choose the Traces data source, and search for a recent trace from the service `getting-started-multi-agent`."
     }
   ]
 }

@@ -5,7 +5,7 @@
   "blocks": [
     {
       "type": "markdown",
-      "content": "The demo agents carry a name, a version, and labels your charts can break down by. The agent you ran in the Connect an agent to Agent Observability path carries none of these yet. This milestone happens on your machine, in the shell and the sample file from Milestone 5 of that path. You give the sample an agent name and a version and set a client tag, run it, and find the result in **Agents** and in **Analytics**."
+      "content": "The demo agents carry a name, a version, and labels your charts can break down by. In this milestone you run the Python getting started example, give it its own agent name and version, and replace its hardcoded client tags with one you set from the shell. This milestone happens on your machine. You then find the result in **Agents** and in **Analytics**."
     },
     {
       "type": "markdown",
@@ -19,29 +19,29 @@
       "blocks": [
         {
           "type": "markdown",
-          "content": "Open the shell where you set the `AGENTO11Y_` variables for the Connect an agent path, and set one more:\n\n```bash\nexport AGENTO11Y_TAGS=team=learning\n```\n\nA client tag is a key-value pair the SDK attaches to every generation, span, and metric it records. On the metrics, this one becomes the label `agento11y_tag_team`."
+          "content": "In a terminal, open the Python getting started example in the `agento11y` repository you cloned in Milestone 3, and set it up the way its `README.md` describes:\n\n```bash\ncd agento11y/examples/getting-started/python\ncp .env.example .env\npip install -r requirements.txt\n```\n\nFill in the values in `.env`, then set one more variable in the shell you will run it from:\n\n```bash\nexport AGENTO11Y_TAGS=team=learning\n```\n\nA client tag is a key-value pair the SDK attaches to every generation, span, and metric it records. On the metrics, this one becomes the label `agento11y_tag_team`."
         },
         {
           "type": "markdown",
-          "content": "Open the sample file from Milestone 5 and give the generation an agent name and a version. In Python, add two fields to `GenerationStart`:\n\n```python\nwith client.start_generation(\n    GenerationStart(\n        conversation_id=\"conv-2\",\n        model=ModelRef(provider=\"openai\", name=\"gpt-4o\"),\n        agent_name=\"learning-agent\",\n        agent_version=\"1.0.0\",\n    )\n) as rec:\n    rec.set_result(output=[assistant_text_message(\"Hello\")])\n```\n\nIn TypeScript, Go, Java, and .NET, set the matching agent name and agent version fields on the generation start object. The .NET sample already sets `AgentName`, so add the version beside it.\n\nChange the conversation ID too, so the new generation starts a new conversation rather than joining `conv-1`."
+          "content": "Open `main.py`. The example hardcodes its client tags, which would override the variable you just set. Comment out line 58:\n\n```python\n# tags={\"team\": \"checkout\", \"env\": \"dev\"},\n```\n\nThen, in `GenerationStart`, change the agent name, the version, and the conversation ID:\n\n```python\nGenerationStart(\n    conversation_id=\"conv-2\",\n    agent_name=\"learning-agent\",\n    agent_version=\"1.1.0\",\n    ...\n)\n```\n\nThe example already declares an agent name and a version. Changing them makes this run a new agent in the catalog, and changing the conversation ID starts a new conversation."
         },
         {
           "type": "markdown",
-          "content": "Run the file from that shell, the way you ran it in Milestone 5. The Python, TypeScript and JavaScript, Go, and Java samples don't call an LLM provider, so no provider key is needed."
+          "content": "Run the example from that shell:\n\n```bash\npython main.py\n```\n\nIt makes one OpenAI call, so `OPENAI_API_KEY` must be set in `.env`. It prints the response, followed by `Done`."
         },
         {
           "type": "input",
           "inputType": "boolean",
           "variableName": "annotatedSampleRan",
           "prompt": "Confirm before you continue.",
-          "checkboxLabel": "I added the name, version, and tag and ran the sample without errors",
+          "checkboxLabel": "I commented out the tags, changed the name and version, and ran the example without errors",
           "required": true
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "Your sample sent one generation with an agent name, a version, and a tag."
+      "content": "Your example sent one generation with an agent name, a version, and a tag."
     },
     {
       "type": "markdown",
@@ -80,13 +80,13 @@
         },
         {
           "type": "markdown",
-          "content": "Turn on the chart's breakdown and look at the dimensions it offers. Alongside **Agent**, **Model**, and **Provider**, the label `agento11y_tag_team` is now offered, because your sample's metrics carry it. Choose it, and the chart draws one line for `learning`.\n\nMetrics can take a few minutes to arrive. If the label isn't offered yet, wait and reload."
+          "content": "Turn on the chart's breakdown and look at the dimensions it offers. Alongside **Agent**, **Model**, and **Provider**, the label `agento11y_tag_team` is now offered, because your example's metrics carry it. Choose it, and the chart draws one line for `learning`.\n\nMetrics can take a few minutes to arrive. If the label isn't offered yet, wait and reload."
         }
       ]
     },
     {
       "type": "markdown",
-      "content": "You found your agent in the catalog under the version you declared, and broke a chart down by a label you added. Parents and workflow steps follow the same pattern: your code declares them, and the graphs draw what it declared. The Instrument agent dependencies and workflows page shows the fields.\n\nDon't see `learning-agent`? Check these in order:\n\n1. The sample ran from the shell where the `AGENTO11Y_` variables are set, and printed no error.\n2. The time range covers the last hour.\n3. The agent name in the sample is spelled `learning-agent`.\n\nFor the reference on what you added, refer to [Understand agent versions](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/observe-and-troubleshoot/agent-catalog/#understand-agent-versions) and [Client tags](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/sdk/#client-tags)."
+      "content": "You found your agent in the catalog under the version you declared, and broke a chart down by a label you added. Parents and workflow steps follow the same pattern: your code declares them, and the graphs draw what it declared. The Instrument agent dependencies and workflows page shows the fields.\n\nDon't see `learning-agent`? Check these in order:\n\n1. The example ran from the shell where the `AGENTO11Y_` variables are set, and printed no error.\n2. The time range covers the last hour.\n3. The agent name in `main.py` is spelled `learning-agent`.\n\nFor the reference on what you added, refer to [Understand agent versions](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/observe-and-troubleshoot/agent-catalog/#understand-agent-versions) and [Client tags](https://grafana.com/docs/grafana-cloud/observe-and-act/agent-observability/instrumentation/sdk/#client-tags)."
     }
   ]
 }

@@ -31,17 +31,23 @@
         {
           "type": "interactive",
           "action": "highlight",
-          "reftarget": "span[aria-label='Agent context'][role='button']",
-          "content": "Click **Agent context**.\n\nA **Generation context** panel opens with what the agent had when it made this call:\n\n- **Agent version**: `1.0.0`\n- **System prompt**: its token count and full text, *You are a data analysis assistant…*\n- **Tools**: the tools the agent could call and the tokens their definitions add, here `run_sql_query` at 20 tokens\n\nIt also carries **Open agent page**, which leads to this agent and version in **Agents**. Click anywhere outside the panel to close it.",
-          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"]
-        },
-        {
-          "type": "interactive",
-          "action": "highlight",
           "reftarget": "span[aria-label^='Generation cost']",
           "content": "Hover over the cost figure, `$0.0025`, next to the token counts.\n\nThe tooltip splits it into an input cost and an output cost and names the price it was calculated with. Here it reads **Priced at public list rates**, the model card price for `claude-sonnet-4-20250514`. A figure uses list rates when no price of your own is configured for that model, or when your configured rates could not be loaded.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
           "doIt": false
+        },
+        {
+          "type": "interactive",
+          "action": "highlight",
+          "reftarget": "span[aria-label='Agent context'][role='button']",
+          "content": "Click the agent name, `sigil.demo.data-analyst`, at the top of the generation.\n\nAn **Agent context** popup, titled **Generation context**, opens with what the agent had when it made this call:\n\n- **Agent version**: `1.0.0`\n- **System prompt**: its token count and full text, *You are a data analysis assistant…*\n- **Tools**: the tools the agent could call and the tokens their definitions add, here `run_sql_query` at 20 tokens\n\nIt also carries **Open agent page**, which leads to this agent and version in **Agents**. Close the popup with the **X** in its top-right corner before you continue, since it covers the rest of the generation.",
+          "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"],
+          "doIt": false
+        },
+        {
+          "type": "image",
+          "src": "https://grafana.com/media/docs/learning-journey/agent-observability/agent-context-popup.png",
+          "alt": "The generation's agent name, sigil.demo.data-analyst, highlighted, with the Generation context popup open beside it showing the agent version, system prompt, and tools"
         }
       ]
     },
@@ -64,7 +70,7 @@
           "action": "formfill",
           "reftarget": "textarea[placeholder='For example: Why did you choose this action?']",
           "targetvalue": "Why did this query time out, and what would you change about it?",
-          "content": "Scroll to **Debug this agent response** at the bottom of the generation and type a question about this step.\n\nThe follow-up is a one-off request that uses the system prompt and the conversation history captured up to this step. It goes to the original model when that model is available, or to a configured fallback.",
+          "content": "Scroll to **Debug this agent response** at the bottom of the generation and type in question `Why did this query time out, and what would you change about it?`.\n\nThe follow-up is a one-off request that uses the system prompt and the conversation history captured up to this step. It goes to the original model when that model is available, or to a configured fallback.",
           "requirements": ["on-page:/a/grafana-agento11y-app/conversations/sigil.demo.conv.data-analysis", "exists-reftarget"]
         },
         {
