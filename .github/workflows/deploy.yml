@@ -276,10 +276,6 @@ jobs:
         continue-on-error: true
         run: node pathfinder-app/dist/cli/cli/index.js build-graph interactive-tutorials:packages/repository.json > packages/graph.json
 
-      - name: Build courses platform indexes
-        continue-on-error: true
-        run: node pathfinder-app/dist/cli/cli/index.js build-courses courses/ -o courses/
-
       - name: Upload packages artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -315,9 +311,8 @@ jobs:
           name: pathfinder-packages
           path: packages
 
-      # Courses are optional: build-courses runs with continue-on-error in the
-      # sandbox, the upload uses if-no-files-found: warn, and this download
-      # tolerates a missing artifact. The push step below is gated on courses/
+      # Courses are optional: the upload uses if-no-files-found: warn, and this
+      # download tolerates a missing artifact. The push step below is gated on courses/
       # actually containing files.
       - name: Download courses artifact
         continue-on-error: true
