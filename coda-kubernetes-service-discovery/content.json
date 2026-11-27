@@ -1,0 +1,328 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "coda-kubernetes-service-discovery",
+  "title": "Deploy and discover a Kubernetes demo service",
+  "blocks": [
+    {
+      "type": "markdown",
+      "content": "You will start a disposable Kubernetes sandbox and deploy a web service with a traffic generator."
+    },
+    {
+      "type": "section",
+      "id": "prepare-sandbox",
+      "title": "Prepare the demo sandbox",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-1",
+          "action": "navigate",
+          "content": "Open **Instrumentation Hub** to begin the Kubernetes demo.",
+          "reftarget": "/a/grafana-collector-app/instrumentation-hub/onboarding",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Open the page used for this part of the demo."
+        },
+        {
+          "type": "terminal-connect",
+          "vmTemplate": "vm-aws-k8s",
+          "buttonText": "Start Kubernetes sandbox",
+          "content": "Start an isolated two-node Kubernetes sandbox with kubectl and Helm installed. Wait for the shell before continuing."
+        },
+        {
+          "type": "terminal",
+          "id": "deploy-demo",
+          "content": "Deploy a small web service and a traffic generator in the coda-demo namespace. Wait for the deployment to become ready.",
+          "command": "kubectl create namespace coda-demo --dry-run=client -o yaml | kubectl apply -f -\nkubectl -n coda-demo create deployment coda-demo --image=nginx:1.27-alpine --dry-run=client -o yaml | kubectl apply -f -\nkubectl -n coda-demo expose deployment coda-demo --port=80 --target-port=80 --dry-run=client -o yaml | kubectl apply -f -\nkubectl -n coda-demo rollout status deployment/coda-demo --timeout=180s\nkubectl -n coda-demo create deployment demo-traffic --image=busybox:1.37 --dry-run=client -o yaml -- sh -c \"while true; do wget -q -O /dev/null http://coda-demo; sleep 2; done\" | kubectl apply -f -\nkubectl -n coda-demo get deployments,services",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The deployment readiness check and resource list show how to confirm the demo service is running in `coda-demo`."
+    },
+    {
+      "type": "markdown",
+      "content": "You will create a short-lived token and choose a lightweight Alloy installation."
+    },
+    {
+      "type": "section",
+      "id": "configure-alloy",
+      "title": "Choose the collector setup",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-2",
+          "action": "navigate",
+          "content": "Open the Alloy installation wizard for service discovery.",
+          "reftarget": "/a/grafana-collector-app/alloy/installation?from=ihub&focus=service-discovery",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Open the page used for this part of the demo."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-3",
+          "action": "button",
+          "content": "Continue with Kubernetes by opening **2. Access token**.",
+          "reftarget": "button:contains(\"2. Access token\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Continue to the next part of the setup."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-4",
+          "action": "highlight",
+          "content": "In **Create a new token**, enter a unique name such as `coda-demo-YYYYMMDD-HHMM`, replacing the date and time with the current values, then choose the shortest offered expiry (1 day if supported) and create the token yourself.",
+          "reftarget": "#tokenName",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": false,
+          "showMe": true,
+          "tooltip": "Review this setting and follow the guide instructions."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-5",
+          "action": "button",
+          "content": "After creating the token, open **3. Choose setup**.",
+          "reftarget": "button:contains(\"3. Choose setup\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Continue to the next part of the setup."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-6",
+          "action": "highlight",
+          "content": "Choose **Lightweight** for this service discovery demo.",
+          "reftarget": "[data-testid='install-alloy-unified-helm-choose-setup-deployment-lightweight'] button",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Review this setting and follow the guide instructions."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-7",
+          "action": "button",
+          "content": "Open **4. Monitoring** to review service discovery.",
+          "reftarget": "button:contains(\"4. Monitoring\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Continue to the next part of the setup."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The lightweight setup gives this demo a collector configuration for discovering services."
+    },
+    {
+      "type": "markdown",
+      "content": "You will enable service discovery, name the cluster, and install Alloy in the sandbox."
+    },
+    {
+      "type": "section",
+      "id": "install-collector",
+      "title": "Install and check the collector",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-8",
+          "action": "highlight",
+          "content": "Confirm that automatic service discovery is enabled before continuing.",
+          "reftarget": "[data-testid='auto-discover-services-card']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": false,
+          "showMe": true,
+          "tooltip": "Review this setting and follow the guide instructions."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-9",
+          "action": "button",
+          "content": "Open **5. Deployment** to configure the collector installation.",
+          "reftarget": "button:contains(\"5. Deployment\")",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Continue to the next part of the setup."
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-10",
+          "action": "formfill",
+          "content": "Set the cluster name to `coda-guide-demo` so you can identify this sandbox in Grafana.",
+          "reftarget": "[data-testid='install-alloy-unified-helm-cluster-name-input']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "targetvalue": "coda-guide-demo",
+          "tooltip": "Give the sandbox a recognizable name in Grafana."
+        },
+        {
+          "type": "terminal",
+          "id": "prepare-helm",
+          "content": "Prepare the Grafana Helm repository in this sandbox.",
+          "command": "helm repo add grafana https://grafana.github.io/helm-charts\nhelm repo update",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-11",
+          "action": "highlight",
+          "content": "Copy the generated Helm command yourself and run it in the connected Kubernetes sandbox terminal; it contains your token, so keep it private and wait for it to finish.",
+          "reftarget": "[data-testid='install-alloy-unified-helm-copy-command']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": false,
+          "showMe": true,
+          "tooltip": "Review this setting and follow the guide instructions."
+        },
+        {
+          "type": "terminal",
+          "id": "check-alloy",
+          "content": "After the Helm command finishes, inspect the collector pods. Wait until they are Running before testing the connection.",
+          "command": "kubectl -n monitoring get pods\nkubectl -n coda-demo get deployments,services",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-12",
+          "action": "button",
+          "content": "Test the collector connection and wait for a successful result before continuing; if it is not ready, allow time for the collector to connect and test again.",
+          "reftarget": "[data-testid='install-alloy-unified-helm-test-connection']",
+          "requirements": [
+            "exists-reftarget",
+            "on-page:/a/grafana-collector-app/alloy/installation"
+          ],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Continue to the next part of the setup."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "The pod inspection and connection test let you check that Alloy can connect to your Grafana stack."
+    },
+    {
+      "type": "markdown",
+      "content": "You will return to Instrumentation Hub and confirm that the sandbox service has been discovered."
+    },
+    {
+      "type": "section",
+      "id": "discover-service",
+      "title": "Find the demo service",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-13",
+          "action": "navigate",
+          "content": "Open **Instrumentation Hub** and look for the discovered demo service.",
+          "reftarget": "/a/grafana-collector-app/instrumentation-hub",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Open the page used for this part of the demo."
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "In Instrumentation Hub, select **View and instrument services**, then open cluster **coda-guide-demo** and namespace **coda-demo**. Confirm that the `coda-demo` service appears alongside `demo-traffic`. Discovery can take up to five minutes. You can stop here; instrumenting the services is outside this demo."
+    },
+    {
+      "type": "markdown",
+      "content": "When you finish the demo, remove its monitoring configuration and Kubernetes resources."
+    },
+    {
+      "type": "section",
+      "id": "clean-up-demo",
+      "title": "Clean up the demo",
+      "blocks": [
+        {
+          "type": "interactive",
+          "id": "coda-kubernetes-service-discovery-step-14",
+          "action": "navigate",
+          "content": "Open **Kubernetes instrumentation** to stop monitoring the demo cluster.",
+          "reftarget": "/a/grafana-collector-app/instrumentation-hub/k8s-monitoring",
+          "requirements": [],
+          "doIt": true,
+          "showMe": true,
+          "tooltip": "Open the cleanup page for this demo."
+        },
+        {
+          "type": "callout",
+          "content": "Select only **coda-guide-demo**, choose **Remove instrumentation**, and review that the confirmation lists only this cluster. Select **Uninstrument 1 cluster**. The hub removes its generated monitoring pipelines automatically. After the request is accepted, you may continue; **Pending Uninstrumentation** can remain while recent telemetry ages out. If already uninstrumented, continue. The application services were discovered only and do not need application uninstrumentation.",
+          "title": "Remove demo monitoring"
+        },
+        {
+          "type": "terminal",
+          "id": "remove-demo",
+          "content": "To also delete the demo app and uninstall Alloy, expand the terminal and wait for a working shell in the same Kubernetes sandbox, then run this command. Confirm the command appears in the terminal. If Exec does not send it, use Copy and paste it into the terminal after reconnecting. This preserves the VM and Claude installation. If the VM has expired, its resources are already gone.",
+          "command": "helm uninstall grafana-cloud --namespace monitoring --ignore-not-found --wait --timeout 180s && kubectl delete namespace coda-demo --ignore-not-found --wait=true --timeout=180s",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "terminal",
+          "id": "verify-demo-removed",
+          "content": "Confirm the Helm release list and demo namespace result are empty. An API or connection error is not proof of removal.",
+          "command": "helm list --namespace monitoring --filter \"^grafana-cloud$\"\nkubectl get namespace coda-demo --ignore-not-found",
+          "requirements": [
+            "is-terminal-active"
+          ]
+        },
+        {
+          "type": "callout",
+          "content": "Instrumentation Hub does not revoke the access token. The one-day token expires automatically. To revoke it sooner, use Access Policies in the Grafana Cloud organization that owns this stack and revoke only the unique coda-demo token created for this run. This requires access to that Cloud organization.",
+          "title": "Optional: revoke the demo token now"
+        }
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "Instrumentation Hub handles the monitoring cleanup. The shell checks confirm the demo app and Alloy installation are removed. Historical telemetry and pending badges can remain temporarily. Keep the sandbox if you want to continue the Claude demo; terminating it also removes that installation."
+    }
+  ]
+}
